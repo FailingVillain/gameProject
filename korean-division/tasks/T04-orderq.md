@@ -1,8 +1,8 @@
-# T04 wip/orderq 병합 (사격 통제 · 명령 대기열 · 사선 표시)
-- id: T04 | 역할: merger | 등급: D上 H3 (선택 메모: R3 SM Wlight)
+# T04 wip/orderq 복원 · 병합 (사격 통제 · 명령 대기열 · 사선 표시)
+- id: T04 | 역할: sim(복원·검증) → reviewer(R3) → merger | 등급: D上 H3 (선택 메모: R3 SM Wlight)
 - 선행: T03 | 후행: T05
-- 핫스팟/만질 파일: Snapshot/Replay, FireControl, 명령 직렬화
-- 브랜치: wip/orderq (패치 보관) | 상태: queued | 담당 에이전트: -
+- 핫스팟/만질 파일: Snapshot/Replay, GameCommand, WorldCommands, Organisation, World, OrderQueue(신규)
+- 브랜치: main 에서 새 브랜치 `orderq` 에 `docs/legacy/wip_patches/orderq.patch` 복원(wip/orderq 는 원본 스냅샷, 그대로 병합 금지) | 상태: queued | 담당 에이전트: -
 ## 확정 결정 (사용자 원문+날짜, 변경 금지)
 - 사격 통제 K 순환 (사격 금지→응사→자유) 추후 검토였음 (2026-10-21); 이번 묶음 승인 (HANDOFF 2026-10-22)
 ## 범위 밖

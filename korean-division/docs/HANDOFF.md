@@ -2,23 +2,22 @@
 
 > **상태는 ops/STATE.md · 대기열은 ops/QUEUE.md 가 정본** (병합 = ops/MERGE_QUEUE.md · 한도 = ops/LIMITS.md · 작업 카드 = korean-division/tasks/).
 
-> 사용량 한계 · 세션 종료 대비. **새 세션은 이 파일부터 읽는다** (그다음 필요할 때만 `docs/ROADMAP_LONG.md` 를 Grep).
-> 사용자가 "상황 저장" (또는 `/save-state`) 하면 아래 절차대로 이 파일을 갱신한다. 재개는 "이어서" (또는 `/resume`).
-> 끝난 항목 = docs/legacy/HANDOFF_ARCHIVE.md (Grep 만).
+> 사용량 한계 · 세션 종료 대비. **새 세션은 `ops/STATE.md` 부터 읽는다**(재개 5단계 = `ops/PIPELINE.md`). 이 파일은 저장 절차 + 이사 전(2026-10-22 04:14) 기록 보관.
+> 사용자가 "상황 저장" (또는 `/save-state`) 하면 아래 절차대로 **ops/STATE.md** 를 갱신한다. 재개는 "이어서" (또는 `/resume`).
+> 끝난 항목 = docs/legacy/HANDOFF_ARCHIVE*.md (Grep 만).
 
 ## 저장 절차 (Claude 용)
-1. 진행 중인 에이전트마다 SendMessage: "지금 단계에서 멈추고, 빌드되는 상태로 WIP 커밋, 남은 일 · 다음 단계를 한국어로 짧게 보고".
-2. 보고를 받으면 (또는 기다릴 수 없으면 git log · git status 로 확인) 아래 "현재 상태" 를 갱신: 저장소 · 브랜치 · 마지막 커밋, 에이전트별 남은 대기열 (에이전트에 메시지로만 준 지시도 전부 옮겨 적기 — 세션이 끝나면 에이전트 대화는 사라진다), 사용자에게 받을 결정.
-3. korean-division 에 로컬 커밋 (push 금지). game-tools 도 남은 변경이 있으면 WIP 커밋.
+1. 진행 중인 에이전트마다 SendMessage: "지금 단계에서 멈추고, 빌드되는 상태로 WIP 커밋, 카드 상태 갱신, 남은 일 · 다음 단계를 한국어로 짧게 보고".
+2. 보고를 받으면 (또는 기다릴 수 없으면 git log · git status · git worktree list 로 확인) `ops/STATE.md` 갱신: main 해시 · 에이전트 · 잠금 · 워크트리 · "지금 진행 중 / 다음 한 걸음". 에이전트에 메시지로만 준 지시는 해당 작업 카드에 옮겨 적는다(세션이 끝나면 에이전트 대화는 사라진다). 새 결정거리는 `ops/DECISIONS.md`.
+3. 로컬 커밋 (push 금지). game-tools 도 남은 변경이 있으면 WIP 커밋.
 4. 사용자에게 "저장 완료 + 재개 방법" 한 줄 보고.
 
 ## 재개 절차
-1. 이 파일 → "현재 상태" 의 대기열 순서대로 에이전트를 새로 띄운다 (각 대기열 항목 = 지시문 원본).
-2. 워크트리 · 브랜치가 남아 있는지 `git worktree list` 로 확인. 합치기 대기 브랜치는 "합치기" 절 참고.
+`ops/PIPELINE.md` §지휘자 세션 재개 5단계 (STATE → QUEUE → DECISIONS → PIPELINE → 발주).
 
 ---
 
-## ⏸ 현재 상태 (최신 2026-10-22 04:14 정리)
+## ⏸ 이사 전 기록 (2026-10-22 04:14 정리 — 아래 해시 · 한도 · 대기열은 옛 저장소 값, 현재값은 ops/)
 main `ba4033fb` (2026-10-22 arty3 병합, FormatVersion 50 · Replay 18). 옛 상태 (2026-10-21 02:25 · 밤 중단 · 저녁 저장 · 밤샘 큐 · 2026-10-18~19 기록) 원문 → `docs/legacy/HANDOFF_ARCHIVE_2026-10-22.md`.
 에이전트 규칙: `tools/agent/AGENT_RULES.md` (한도 · 잠금 · 게이트 값은 규칙 파일이 최신).
 **오늘 결정 · 대기열 전체 = `docs/ROADMAP_SHORT.md` (상세 · 사용자 원문 인용 = `docs/ROADMAP_LONG.md` [1] — 재개 시 SHORT 부터)**.

@@ -1,52 +1,49 @@
-# MERGE_QUEUE - wip-ready 브랜치 순서 + 버전 번호 예약 (2026-10-22)
+# MERGE_QUEUE - wip-ready 브랜치 순서 + 버전 번호 예약 (갱신 2026-10-22)
 
-규칙(초안 §6): wip-ready >= 3 이면 merger 한 명이 이 순서대로 직렬 처리, 그동안 병합 잠금(`.git/kd-merge.lock`)은 병합 담당만 쥔다. 병합 직전 검증 = 빌드 · detcheck · 자기 묶음 · snaptest; 전체 selftest 는 큐 마지막(T05) 1회.
+규칙: merger 는 **상시** — `wip-ready` 카드가 1개라도 있으면 지휘자가 merger 를 띄우고 이 순서대로 직렬 처리. 잠금(`.git/kd-merge.lock`)은 merger 만(만료 30분, docs/procedures/merge-procedure.md). 병합 직전 검증 = 빌드 · detcheck · 자기 묶음 · snaptest; 전체 selftest 는 release(T13) 1회.
+쓰는 사람: merger(상태 · 완료 표 · 번호 확정) · 지휘자(wip-ready 행 추가) · release(큐 닫음 한 줄).
 
-## 현재 main 값 (코드 상수에서 읽음)
-- Snapshot.cs `FormatVersion = 52` (마지막: comms 통신 · 난이도)
-- Replay.cs `FormatVersion = 19` (마지막: comms 대대장 앞 명령 전달)
-- main 해시 `4d19119`. 주의: 위 두 값은 병합 때마다 다시 읽을 것.
+## 현재 main 값 (코드 상수; 병합 때마다 다시 읽을 것)
+- Snapshot.cs `FormatVersion = 52` · Replay.cs `FormatVersion = 19` (둘 다 comms ①). main 해시: `git -C C:/gameProject log -1 --format=%h main`.
 
-## 병합 완료 표 (2026-10-22 오늘 main 에 들어간 것)
-규칙: 조사·측정 작업 카드는 시작 전에 이 표를 grep 해 이미 구현됐는지 확인한다.
-커밋 해시는 새 저장소에 이력이 없어 '없음(스냅샷 이전)'; 브랜치명은 확인된 것만.
+## 병합 완료 표 (main 에 들어간 것)
+규칙: 조사·측정·spec 카드는 시작 전에 이 표 + `docs/legacy/GIT_HISTORY_DIGEST.md` 를 grep 해 이미 구현됐는지 확인. '스냅샷' = 첫 커밋 a1a35e6 에 포함.
 | 해시 | 브랜치 | 들어간 것 |
 |---|---|---|
-| 없음 | assaultinf | 돌격보병 강화 (FV49) |
-| 없음 | 확인 필요 | 기마 포병 |
-| 없음 | 확인 필요 | 저장 호환 정책 (FV 그대로) |
-| 없음 | arty3 | 포병·중화기 묶음 (FV50, Replay18) |
-| 없음 | 확인 필요 | 한국군 타찬카 (문서) |
-| 없음 | 확인 필요 | 신규 병종 4종 (사냥꾼·민단·엽총수·초안 마적) |
-| 없음 | 확인 필요 | 튜토리얼 챕터0 미션 2개 |
-| 없음 | 확인 필요 | 몽골/마적 외형 |
-| 없음 | formation | 대형 완화 (FV51; choke·산개 횡대는 꺼짐) |
-| 없음 | comms | 통신 알파 ① 난이도 구조+명령 전달 기반 (FV52, Replay19) |
-| 없음 | 확인 필요 | trench_assault 진단 문서 |
-| 없음 | 확인 필요 | S1~S3 진단 문서 |
+| 스냅샷 | assaultinf | 돌격보병 강화 (FV49) |
+| 스냅샷 | horseart | 기마 포병 (타찬카 마차 + 보병포) |
+| 스냅샷 | savecompat | 저장 형식 호환 정책 |
+| 스냅샷 | arty3 | 포병·중화기 묶음 (FV50, Replay18) |
+| 스냅샷 | tachanka | 한국군 타찬카 확인 + 시트 |
+| 스냅샷 | newunits | 신규 병종 4종 (사냥꾼·마적 엽총수·초안 마적·민단) |
+| 스냅샷 | tutorial | 튜토리얼 챕터0 0-1 · 0-2 |
+| 스냅샷 | lookfix | 몽골/마적 외형 |
+| 스냅샷 | formation | 대형 완화 (FV51; choke·산개 횡대 꺼짐) |
+| 스냅샷 | comms | 통신 알파 ① (FV52, Replay19) |
+| 스냅샷 | trenchdiag | trench_assault · S1~S3 진단 문서 |
+| 8d22ad5 | wip/bigbldg | 건물 크기 확대 (HouseBlocks 렌더) |
+| ba696b7 | gate-lanes | heavy_gate 3레인 (기본 비활성) |
+| 53712e9 · 4d19119 | - | 도구 정리 · 결정 장부 D01~D22 |
+| b5918a8 · a4c79c7 | docs-ops · docs-roles | 문서 재정비 (ops/tasks, 헌장/역할/절차) |
+| 병합 시 기록 | docs-fable | PIPELINE v1 · STATE/QUEUE 현행화 · T13 |
 
-## 병합 순서 (HANDOFF 병합 큐: 돌격보병 → 대형 완화 → 포병 → 기병 → 참호 돌파 → 사격 통제 → AI 3B; 앞쪽 4개는 이미 main)
+## 병합 순서 (wip-ready 가 된 것만 처리; 예정 순서)
 | 순 | 브랜치 | 카드 | R | 상태 | 비고 |
 |---|---|---|---|---|---|
-| 1 | wip/gemini-import | T01 | R2 | wip 스냅샷(패치 보관) | 패치 복원 필요, 저장 트랜잭션 수정 선행 |
-| 2 | wip/bigbldg | T02 | R2 | wip 스냅샷 | 지도 · 엄폐 · 길찾기 갱신, 철도(T07) 선행 |
-| 3 | wip/breach | T03 | R3 | wip 스냅샷(패치 보관) | Snapshot/Replay 번호 재조정 |
-| 4 | wip/orderq | T04 | R3 | wip 스냅샷(패치 보관) | 번호 재조정, breach 뒤 |
-| 5 | wip/ai3b2 | T05 | R3 | wip 스냅샷(패치 보관) | 마지막, 전체 selftest 1회 |
-| 후 | wip/rail | T07 | R2 | 패치 보관 | bigbldg 뒤 |
-| 후 | wip/casualty | T06 | R3 | 브랜치 | D19 결정 뒤 |
-| 후 | wip/chokefix · battlereport · doctrines · sfxnew | - | 확인 필요 | 확인 필요 | 카드 없음, 내용 확인 필요 |
-| 비병합 | wip/rerender-1 · gt-brender · gt-face-proto · gt-rerender-prep | T11 | R1 | game-tools 쪽 | 렌더 예약 3칸 |
+| 1 | wip-resolved/breach | T03 | R3 | 복원됨, 검증 대기 | FV53/R20 적용본, reviewer 뒤 wip-ready |
+| 2 | gemini-import (복원) | T01 | R2 | 패치 보관 | 저장 트랜잭션 선행 |
+| 3 | orderq (복원) | T04 | R3 | 패치 보관 | breach 뒤 |
+| 4 | ai3b2 (복원) | T05 | R3 | 패치 보관 | 마지막; 전체 selftest 는 release |
+| 후 | rail (복원) | T07 | R2 | 패치 보관 | 선행 없음 |
+| 후 | wip/casualty | T06 | R3 | 브랜치 | D19 뒤 |
+| 후 | chokefix · battlereport · doctrines · sfxnew | -/T17/T19/- | - | 브랜치·패치 | 카드 발주 때 복원; chokefix 는 D14 |
+| 비병합 | rerender-1 · gt-brender · gt-rerender-prep · gt-face-proto | T11 | R1 | game-tools | 렌더 3칸, 시트 검수 뒤 |
 
-## 버전 번호 예약표 (병합 담당이 병합 때 최종 확정; 예약은 추정)
-지시문의 "breach 51→" 는 구 값이다. main 이 이미 Snapshot 52 · Replay 19 이므로 다음 번호부터.
+## 버전 번호 예약표 (merger 가 병합 때 확정; 겹치면 병합 순서가 앞선 쪽이 먼저. 골든 재생성은 큐 전체 1회)
 | 브랜치 | Snapshot 예약 | Replay 예약 | 변경 내용 | 확정 |
 |---|---|---|---|---|
-| breach | 53 | 20 | 연막 · 철조망 절단 상태 / 명령 | 미확정 |
+| breach | 53 | 20 | 연막 · 철조망 절단 (wip-resolved/breach 에 적용됨) | 미확정 |
 | orderq | 54 | 21 | 명령 대기열 / 사격선 | 미확정 |
-| ai3b2 | 55 | 확인 필요 | AI 블랙보드 3B (46 은 구 3B, 재확인) | 미확정 |
-| casualty | 확인 필요 | 확인 필요 | 데이터 값 위주일 가능성 | 미확정 |
-| rail | 56 | 확인 필요 | 철도 지형 (지도 직렬화) | 미확정 |
-| bigbldg | 확인 필요 | 확인 필요 | 지도 크기 변경이면 Snapshot 영향 | 미확정 |
-| gemini-import | 확인 필요 | 확인 필요 | 캠페인 저장은 별도 schemaVersion | 미확정 |
-번호가 겹치면 병합 순서가 앞선 쪽이 먼저 번호를 가진다. 골든 재생성은 큐 전체에서 1회.
+| ai3b2 | 55 | - | AI 블랙보드 3B (46 은 구 3B, 재확인) | 미확정 |
+| rail | 56 | - | 철도 지형 (지도 직렬화) | 미확정 |
+| casualty · gemini-import | 확인 필요 | 확인 필요 | 값 위주 / 캠페인 schemaVersion 별도 | 미확정 |
