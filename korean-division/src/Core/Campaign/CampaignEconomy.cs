@@ -26,6 +26,13 @@ public static class CampaignEconomy
     public static float TotalDeployCost(IEnumerable<CampaignState.RosterCompany> selected, float scaleMul = 1.0f) =>
         selected.Sum(c => CompanyDeployCost(c, scaleMul));
 
+    /// <summary>작전 투입 비용 (상한 전): 대규모 투입 (LargeDeployThreshold 초과) 이면 규모 배수 (§1-1). BeginOperation · 병참 탭 미리보기 공용.</summary>
+    public static float DeployCost(IReadOnlyCollection<CampaignState.RosterCompany> selected, int maxDeploy)
+    {
+        float scaleMul = (maxDeploy > 0 && selected.Sum(c => c.Strength) > CampaignEconomyDefs.Current.LargeDeployThreshold) ? CampaignEconomyDefs.Current.LargeDeployScaleMul : 1.0f;
+        return TotalDeployCost(selected, scaleMul);
+    }
+
     public static int TotalRifles(CampaignState s) => s.Stock.Rifles.Values.Sum();
 
     /// <summary>
@@ -172,8 +179,7 @@ public static class CampaignEconomy
         // 전투 결과가 확정될 때 SettleBattle 이 한 번에 반영한다 (출격 후 강제 종료 · 포기해도 자원이 사라지지 않음).
         bool refusedMandatory = s.Roster.Any(c => c.Mandatory && !deployedIds.Contains(c.Id));
 
-        float scaleMul = (maxDeploy > 0 && selected.Sum(c => c.Strength) > CampaignEconomyDefs.Current.LargeDeployThreshold) ? CampaignEconomyDefs.Current.LargeDeployScaleMul : 1.0f;
-        float cost = Math.Min(s.Supply, TotalDeployCost(selected, scaleMul));
+        float cost = Math.Min(s.Supply, DeployCost(selected, maxDeploy));
 
         // 구경별 탄약 (전투 안에서는 구경 구분 없음 → 미션에는 합친 비율 하나)
         var ammoBy = new Dictionary<string, int>();
