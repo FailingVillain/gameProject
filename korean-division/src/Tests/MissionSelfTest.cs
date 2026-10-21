@@ -583,6 +583,33 @@ public static class MissionSelfTest
 
         var E = CampaignEconomyDefs.Current;   // T29: 경제 숫자는 assets/data/campaign_economy.json 에서 읽는다
         check(E.RegularSupply == 1500f && E.RegularRecruits == 1000 && E.HealCostPerMan == 0.5f && E.HowitzerCompanyStrength == 40, "CampaignEconomyDefs: JSON 값 = 이전 코드 상수 (T29 값 불변)");
+        {   // T29b: 경제 JSON 검증 · 폴백 (없음 / 깨짐 / 범위 밖 / 폴더)
+            string td = Path.Combine(Path.GetTempPath(), "kd_econ_" + Environment.ProcessId); Directory.CreateDirectory(td);
+            try
+            {
+                var dflt = new CampaignEconomyDefs();
+                check(CampaignEconomyDefs.Load(Path.Combine(td, "none.json")).HealCostPerMan == dflt.HealCostPerMan, "경제 JSON 없음 → 기본값");
+                string bad = Path.Combine(td, "bad.json"); File.WriteAllText(bad, "{ not json");
+                check(CampaignEconomyDefs.Load(bad).RegularSupply == dflt.RegularSupply, "경제 JSON 깨짐 → 기본값");
+                check(CampaignEconomyDefs.Load(td).RegularSupply == dflt.RegularSupply, "경제 경로가 폴더(접근 오류) → 기본값");
+                string oor = Path.Combine(td, "oor.json");
+                File.WriteAllText(oor, "{\"WoundReturnRatio\":5,\"PenaltyCap\":-1,\"HealCostPerMan\":0,\"RecruitAssignCostPerMan\":-3,\"AmmoPerInfantry\":-9,\"AmmoPerMg\":-1,\"RegularRecruits\":-5,\"RegularSupply\":-100,\"LootAmmoPerKill\":-2,\"HowitzerCompanyStrength\":0,\"LargeDeployScaleMul\":0}");
+                var o = CampaignEconomyDefs.Load(oor);
+                check(o.WoundReturnRatio == 1f && o.PenaltyCap == 0f && o.HealCostPerMan >= 0.01f && o.RecruitAssignCostPerMan >= 0.01f
+                    && o.AmmoPerInfantry == 0 && o.AmmoPerMg == 0 && o.RegularRecruits == 0 && o.RegularSupply == 0f && o.LootAmmoPerKill == 0
+                    && o.HowitzerCompanyStrength >= 1 && o.LargeDeployScaleMul >= 1f, "경제 JSON 범위 밖 값 → 정상 범위로 자름");
+                string oor2 = Path.Combine(td, "oor2.json");   // T19b 새 키: 범위 밖 · null · 모르는 포탄 키
+                File.WriteAllText(oor2, "{\"shortLoadRatio\":7,\"shellWeapons\":{\"gun_field\":\"field\",\"bad\":\"nope\",\"nul\":null},\"lootShellsPerKill\":{\"infGun\":-3,\"howitzer\":99999,\"zzz\":1}}");
+                var o2 = CampaignEconomyDefs.Load(oor2);
+                check(o2.ShortLoadRatio == 1f && o2.ShellWeapons.Count == 1 && o2.ShellWeapons["gun_field"] == "field" && o2.LootShellsPerKill[StockKeys.InfGun] == 0f
+                    && o2.LootShellsPerKill[StockKeys.Howitzer] == 1000f && !o2.LootShellsPerKill.ContainsKey("zzz"), "경제 JSON T19b 새 키(포탄 휴대 · 노획) 범위 보정");
+                string nul = Path.Combine(td, "nul.json"); File.WriteAllText(nul, "{\"shellWeapons\":null,\"lootShellsPerKill\":null}");
+                check(CampaignEconomyDefs.Load(nul).ShellWeapons.Count == dflt.ShellWeapons.Count, "경제 JSON 포탄 사전 null → 기본값");
+                check(World.ToPermille(0.5f) == 500 && World.ToPermille(0.333f) == 333 && World.ToPermille(2f) == 1000 && World.ToPermille(-1f) == 0 && World.ToPermille(float.NaN) == 1000
+                    && World.ScaleAmmoPermille(7, 500) == 4, "탄약 배율 천분율 정수 변환");
+            }
+            finally { try { Directory.Delete(td, true); } catch { } }
+        }
         // 3) CampaignEconomy: 부상자 치료 (보급 HealCostPerMan 차감)
         var sEco = new CampaignState { Supply = 100f };
         var c1 = sEco.Roster.First(c => c.Id == "b1_c1");
