@@ -127,3 +127,4 @@ V1 연대 배속 규칙: 대대 소속 중대는 대대 단위로 함께 배속,
 - 렌더 드라이버 2개(--group A / B)가 **백그라운드 프로세스로 계속 돌고 있음**. 유닛당 16~64분, 2병렬 기준 70개 완료까지 약 26시간(컴퓨터 부하 큼). 진행 줄·신규 유닛은 아직 미커밋.
 - **Y1** 계속 돌릴지: A★ 지금 시트(rerender96_partial.png: infantry-regular · cavalry-default · standard-bearer-japanese · cavalry-fengtian) 검수 뒤 방향 확정 후 계속(그동안 드라이버는 유지) / B 지금 멈추고 시트 확인 뒤 재개 / C 전체 중단. 무응답 시 드라이버 유지(다른 heavy 작업과 겹치지 않게 T16 측정과 시간대 분리 필요).
 - 시트: 워크트리 `docs/art_review/rerender96_partial.png` (+ 메인 체크아웃 같은 경로 사본).
+- **J1 보강** (T06 리뷰): 리뷰어도 A(×0.7 되돌리기) 권고. 결정 전까지 wip/casualty2 는 병합 비권장. A 선택 시: ×0.7 폐기 + `bnRetreatCasMul` 기본 1(코드 보존) 또는 브랜치 폐기, golden 은 main 값 복귀. 대대전 손실 목표는 별도 카드(재투입 제한·종료 조건).
