@@ -36,7 +36,7 @@ public static class CampaignEconomy
     public static int HealWounded(CampaignState s, int maxCount = int.MaxValue)
     {
         int totalWounded = s.Roster.Sum(c => c.Wounded) + s.Manpower.Wounded;
-        int maxAffordable = (int)(s.Supply / 0.5f);
+        int maxAffordable = (int)(s.Supply / CampaignEconomyDefs.Current.HealCostPerMan);
         int budget = Math.Min(totalWounded, Math.Min(maxCount, maxAffordable));
         if (budget <= 0) return 0;
 
@@ -69,7 +69,7 @@ public static class CampaignEconomy
             healedTotal += heal;
         }
 
-        s.Supply = Math.Max(0f, s.Supply - healedTotal * 0.5f);
+        s.Supply = Math.Max(0f, s.Supply - healedTotal * CampaignEconomyDefs.Current.HealCostPerMan);
         return healedTotal;
     }
 
@@ -83,14 +83,14 @@ public static class CampaignEconomy
         if (c == null) return 0;
 
         int space = Math.Max(0, c.MaxStrength - c.Strength);
-        int supplyLimit = (int)(s.Supply / 0.5f);
+        int supplyLimit = (int)(s.Supply / CampaignEconomyDefs.Current.RecruitAssignCostPerMan);
         int riflesAvail = TotalRifles(s);
         int n = Math.Min(requestedCount, Math.Min(space, Math.Min(s.Manpower.Recruits, Math.Min(riflesAvail, supplyLimit))));
         if (n <= 0) return 0;
 
         c.Strength += n;
         s.Manpower.Recruits -= n;
-        s.Supply = Math.Max(0f, s.Supply - n * 0.5f);
+        s.Supply = Math.Max(0f, s.Supply - n * CampaignEconomyDefs.Current.RecruitAssignCostPerMan);
 
         // 소총 차감 ("ru" 우선)
         int needed = n;
@@ -128,12 +128,12 @@ public static class CampaignEconomy
         // 전투 결과가 확정될 때 SettleBattle 이 한 번에 반영한다 (출격 후 강제 종료 · 포기해도 자원이 사라지지 않음).
         bool refusedMandatory = s.Roster.Any(c => c.Mandatory && !deployedIds.Contains(c.Id));
 
-        float scaleMul = (maxDeploy > 0 && selected.Sum(c => c.Strength) > 180) ? 1.5f : 1.0f;
+        float scaleMul = (maxDeploy > 0 && selected.Sum(c => c.Strength) > CampaignEconomyDefs.Current.LargeDeployThreshold) ? CampaignEconomyDefs.Current.LargeDeployScaleMul : 1.0f;
         float cost = Math.Min(s.Supply, TotalDeployCost(selected, scaleMul));
 
         // 소총탄 기본 휴대량 (보병 1명당 60발, 기관총 200발)
-        int neededAmmo = selected.Where(c => c.Kind is "infantry" or "recruit" or "guard" or "assault" or "sniper").Sum(c => c.Strength) * 60;
-        neededAmmo += selected.Where(c => c.Kind is "mg").Sum(c => c.Strength) * 200;
+        int neededAmmo = selected.Where(c => c.Kind is "infantry" or "recruit" or "guard" or "assault" or "sniper").Sum(c => c.Strength) * CampaignEconomyDefs.Current.AmmoPerInfantry;
+        neededAmmo += selected.Where(c => c.Kind is "mg").Sum(c => c.Strength) * CampaignEconomyDefs.Current.AmmoPerMg;
 
         int availAmmo = s.Stock.Ammo.GetValueOrDefault(StockKeys.Ru, 0);
         int ammoLoaded = 0;
@@ -172,7 +172,7 @@ public static class CampaignEconomy
         int heirMood = s.Flags.GetValueOrDefault("heir_mood", 60);
         if (heirMood < 20) recruitPenalty = 0.20f;
         else if (heirMood < 40) recruitPenalty = 0.10f;
-        recruitPenalty = Math.Clamp(recruitPenalty, 0f, 0.30f);
+        recruitPenalty = Math.Clamp(recruitPenalty, 0f, CampaignEconomyDefs.Current.PenaltyCap);
 
         float supplyPenalty = 0f;
         int cmdFavor = s.Flags.GetValueOrDefault("cmd_favor", 50);
@@ -181,7 +181,7 @@ public static class CampaignEconomy
 
         float extraSupply = s.Flags.GetValueOrDefault("next_supply_penalty_pct", 0) / 100f;
         supplyPenalty += extraSupply;
-        supplyPenalty = Math.Clamp(supplyPenalty, 0f, 0.30f);
+        supplyPenalty = Math.Clamp(supplyPenalty, 0f, CampaignEconomyDefs.Current.PenaltyCap);
 
         return (recruitPenalty, supplyPenalty);
     }
@@ -193,8 +193,19 @@ public static class CampaignEconomy
     public static string EnemyCaliber(MissionResults r) =>
         r.Factions.Any(f => !f.Player && f.Name.Contains("일본")) ? StockKeys.Jp : StockKeys.Ru;
 
-    /// <param name="firstWin">false = 이미 끝낸 미션을 다시 이김 → 정기 보급 · 신병 없음 (D10 A, 2026-10-22).</param>
-    public static void SettleBattle(CampaignState s, MissionResults r, bool firstWin = true)
+    /// <summary>이미 이긴 미션의 반복 승리 (D23): 자원 · 병력 변화 없이 결과 요약만 남기고 출격 기록(Pending)을 버린다.</summary>
+    public static void RecordRepeatVictory(CampaignState s, MissionResults r)
+    {
+        var me = r.Factions.FirstOrDefault(f => f.Player);
+        s.LastDebrief = new CampaignState.DebriefReport
+        {
+            MissionId = r.MissionId, Title = r.Title, TotalLost = me?.Lost ?? 0, EnemyKills = r.EnemyKills,
+            SupplyBefore = s.Supply, SupplyAfter = s.Supply
+        };
+        s.Pending = null;
+    }
+
+    public static void SettleBattle(CampaignState s, MissionResults r)
     {
         // 0) 출격 때 기록해 둔 비용 · 탄약 · 거부 패널티를 결과 확정 시점에 반영 (원자적 커밋)
         if (s.Pending != null && s.Pending.MissionId == r.MissionId)
@@ -240,7 +251,7 @@ public static class CampaignEconomy
             foreach (var c in deployed)
             {
                 int lostC = Math.Min(c.Strength, (int)(((long)c.Strength * lostFrac + me.Spawned / 2) / me.Spawned));
-                int woundC = (int)MathF.Round(lostC * 0.25f);
+                int woundC = (int)MathF.Round(lostC * CampaignEconomyDefs.Current.WoundReturnRatio);
                 c.Strength -= lostC;
                 c.Wounded += woundC;
                 totalLost += lostC; woundedReturned += woundC;
@@ -249,7 +260,7 @@ public static class CampaignEconomy
         }
         else
         {
-            woundedReturned = (int)MathF.Round(totalLost * 0.25f);
+            woundedReturned = (int)MathF.Round(totalLost * CampaignEconomyDefs.Current.WoundReturnRatio);
             dead = totalLost - woundedReturned;
             s.Manpower.Wounded += woundedReturned;
         }
@@ -270,9 +281,9 @@ public static class CampaignEconomy
         int lootedHorses = 0;
         if (r.Result == "won")
         {
-            lootedSupply = r.EnemyKills * 0.3f;
-            lootedRifles = (int)(r.EnemyKills * 0.5f);
-            lootedAmmo = r.EnemyKills * 20;
+            lootedSupply = r.EnemyKills * CampaignEconomyDefs.Current.LootSupplyPerKill;
+            lootedRifles = (int)(r.EnemyKills * CampaignEconomyDefs.Current.LootRiflesPerKill);
+            lootedAmmo = r.EnemyKills * CampaignEconomyDefs.Current.LootAmmoPerKill;
             string enemyCaliber = EnemyCaliber(r);
             s.Supply += lootedSupply;
             s.Stock.Rifles[enemyCaliber] = s.Stock.Rifles.GetValueOrDefault(enemyCaliber, 0) + lootedRifles;
@@ -282,10 +293,10 @@ public static class CampaignEconomy
         // 5) 정기 보급 (기본 보급 +1500, 신병 +1000, 패널티 상한 30%)
         float supplyBefore = s.Supply;
         var (recruitPenalty, supplyPenalty) = ComputePenalty(s);
-        if (firstWin) s.Flags.Remove("next_supply_penalty_pct");   // 보급이 안 오는 재승리는 다음 보급 감액을 소모하지 않는다
+        s.Flags.Remove("next_supply_penalty_pct");
 
-        float regularSupply = firstWin ? 1500f * (1.0f - supplyPenalty) : 0f;
-        int regularRecruits = firstWin ? (int)MathF.Round(1000 * (1.0f - recruitPenalty)) : 0;
+        float regularSupply = CampaignEconomyDefs.Current.RegularSupply * (1.0f - supplyPenalty);
+        int regularRecruits = (int)MathF.Round(CampaignEconomyDefs.Current.RegularRecruits * (1.0f - recruitPenalty));
         s.Supply += regularSupply;
         s.Manpower.Recruits = Math.Min(CampaignState.ManpowerState.MaxRecruits, s.Manpower.Recruits + regularRecruits);
 

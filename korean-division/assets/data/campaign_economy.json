@@ -1,0 +1,16 @@
+{
+  "regularSupply": 1500,
+  "regularRecruits": 1000,
+  "woundReturnRatio": 0.25,
+  "ammoPerInfantry": 60,
+  "ammoPerMg": 200,
+  "lootSupplyPerKill": 0.3,
+  "lootRiflesPerKill": 0.5,
+  "lootAmmoPerKill": 20,
+  "penaltyCap": 0.3,
+  "largeDeployThreshold": 180,
+  "largeDeployScaleMul": 1.5,
+  "healCostPerMan": 0.5,
+  "recruitAssignCostPerMan": 0.5,
+  "howitzerCompanyStrength": 40
+}
