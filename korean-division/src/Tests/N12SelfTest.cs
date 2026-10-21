@@ -91,6 +91,14 @@ public static class N12SelfTest
 
     static void TestNoReassignUnderThreshold()
     {
+        // formation (FV51): 비접적 휴식 정렬 (FormRelax.cs) 은 8초 쉰 중대에서 formArriveZone (1.5칸) 넘게 벗어난 병사를 일부러 다시 세운다 (설계 결정) — 이 시험은 '빈자리 점검' 의 2.75칸 문턱만 보므로 끈다.
+        float restWas = defs.CombatRules.RestAlignSec;
+        defs.CombatRules.RestAlignSec = 0;
+        try { NoReassignBody(); } finally { defs.CombatRules.RestAlignSec = restWas; }
+    }
+
+    static void NoReassignBody()
+    {
         var (w, c, us) = Stationed();
         bool settled = c.Anchor == null && c.Facing != Vector2.Zero;
         var men = us.Where(u => !u.IsOfficer).OrderBy(u => u.Id).ToList();

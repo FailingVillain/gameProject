@@ -287,8 +287,8 @@ public static class GapFillSelfTest
             float shortMove = cr.ShortMoveDist;
             cr.ShortMoveDist = 0;   // formation: 이 장면은 '도착한 공격 이동 깃발에 남아 싸우는 병사' 를 만든다 — 1.5칸 전진이 평행이동 (FormRelax) 이면 바로 도착해 깃발을 떠남
             w.AttackMove(1, men, Centroid(men) + c.Facing * 1.5f);
+            for (int t = 0; t < Sec(20) && !(c.Anchor is { Arrived: true } && men.Count(u => u.Target != null) >= 10); t++) w.Step();   // 명령은 다음 Step 에서 실행되므로 (지연 큐) 끄기는 이 루프 뒤에 되돌린다
             cr.ShortMoveDist = shortMove;
-            for (int t = 0; t < Sec(20) && !(c.Anchor is { Arrived: true } && men.Count(u => u.Target != null) >= 10); t++) w.Step();
             var a0 = c.Anchor;
             var rear = RearFirst(c, men);
             var hit = new List<Unit>();
