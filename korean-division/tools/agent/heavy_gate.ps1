@@ -1,6 +1,6 @@
-# Heavy-job gate with 3 lanes. Waits until the caller's lane has room.
+# Heavy-job gate. DEFAULT = legacy single pool (lanes OFF). Lanes apply only with explicit -Lane or env KD_GATE_LANES=1.
 # Usage: heavy_gate.ps1 [-Lane validate|measure|render] [-Render] [-Priority] [-Max 8] [-TimeoutMin 60]
-#  Guaranteed limits: validate 3 / measure 3 / render 2 (total Max=8). A lane below its limit passes if total < Max.
+#  (lane mode) Guaranteed limits: validate 3 / measure 3 / render 2 (total Max=8). A lane below its limit passes if total < Max.
 #  A lane at its limit may borrow free slots (total < Max) unless another lane that is below its limit is waiting.
 #  -Render == -Lane render. -Priority (merge-lock holder): limits and Max +3.
 param([int]$Max = 8, [int]$TimeoutMin = 60, [string]$Lane = 'validate', [switch]$Render, [switch]$Priority)
@@ -49,7 +49,21 @@ function Get-HeavyCounts {
 
 if ($MyInvocation.InvocationName -eq '.') { return }   # dot-sourced by tests: functions only
 
+$laneMode = $PSBoundParameters.ContainsKey('Lane') -or ($env:KD_GATE_LANES -eq '1')
 if ($Render) { $Lane = 'render' }
+if (-not $laneMode) {
+  # legacy single pool: render sees Max, others Max-1, priority +3
+  if (-not $Render) { $Max = $Max - 1 }
+  if ($Priority) { $Max = $Max + 3 }
+  $deadline0 = (Get-Date).AddMinutes($TimeoutMin)
+  while ($true) {
+    $c0 = Get-HeavyCounts
+    $n = $c0.validate + $c0.measure + $c0.render
+    if ($n -lt $Max) { "gate open: heavy=$n"; exit 0 }
+    if ((Get-Date) -gt $deadline0) { "gate timeout: heavy=$n - proceed carefully"; exit 1 }
+    Start-Sleep -Seconds 20
+  }
+}
 if (-not $script:LaneLimits.ContainsKey($Lane)) { "gate: unknown lane '$Lane' (validate|measure|render)"; exit 2 }
 $dir = Join-Path $env:TEMP 'kd-gate'
 New-Item -ItemType Directory -Force $dir | Out-Null
