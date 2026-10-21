@@ -21,6 +21,8 @@
 | +75분 | T21 sfxnew wip-ready (sonnet, 61k, 264초): kd-develop/kd-sfxnew aaba414, 빌드·cleanup·ai PASS, detcheck GOLDEN match. 패치 3-way 충돌 1건(DECISIONS_PENDING) 수동 처리 | 병합 안 함 · 사용자 결정(함성 A/B/C) · 청취 시험 대기 |
 | +85분 | T01 gemini-import wip-ready (sonnet, 99k, 407초, 도구 41회): kd-gemini-import 06424c8. 3-way 불가 → --reject 후 4파일 수동 합침. 빌드 0 오류 · GOLDEN match · snaptest · missions · savecompat PASS. 위험: CampaignMenu 즉시 저장이 읽기 실패 상태에서 덮어쓸 수 있음(배너만) | 발주: T08(sonnet)·T09(opus) 를 gemini-import 위 스택으로 (첫 스택 발주) |
 | +100분 | 4건 추가 발주(reviewer×2 · spec 카드 4장 · docs 로드맵 정리). T21 리뷰 완료(51k, 54초): 시뮬 불변 확인, 차단 항목 0, 경미 3 | 리뷰 단계 가동 시작 |
+| +125분 | T03 wip-ready (opus, 108k, 530초, 43회): wip/breach2 b94be2c+6ad6c50. replay 묶음 실패(명령 표본 2개 누락)를 찾아 고침 — 7faccf0 에서도 있던 결함. detcheck 8설정 일치, breach 16/16, 나머지 묶음 PASS. 교훈: 새 명령 작업은 replay 묶음 필수 | 병목 해소 → T04·T10 즉시 발주(wip/breach2 위 스택), T16·T25·T24 는 카드 도착 후 |
+| 참고 | main QUEUE 행이 낡는 문제: 작업자는 자기 브랜치에서만 상태를 바꾸므로 main 에서는 보이지 않음 → 지휘자가 wip-ready 보고를 받을 때 main 행 동기화(이번에 T01·T03·T21·T22·T23 수행) | 규칙화 |
 
 ## 점검 (완료 보고마다 갱신)
 | 지표 | v1 이전 | 지금 | 비고 |
@@ -28,7 +30,7 @@
 | 중복 조사 | 250k 토큰 | scout 1회 66k | 겹침 조사를 한 번에 |
 | 병합 잠금 대기 | 2h+ | 해당 없음(병합 금지 정책) | merger 미사용 |
 | 지휘자 토큰 | 360k | 측정 전 | |
-| wip-ready 형식 준수 | - | 4/4 준수(T22·T23·T21·T01: 카드·QUEUE·커밋·시트·알려진 흠) | 첫 보고 도착 시 |
+| wip-ready 형식 준수 | - | 5/5 준수(T22·T23·T21·T01·T03: 카드·QUEUE·커밋·시트·알려진 흠) | 첫 보고 도착 시 |
 | scout(haiku) charter 준수 | - | 준수(표 형식 · 근거 · 열린 질문 포함) | 1건 |
-| 완료된 카드 / 발주 | 10/13 병합 | 5/13 (T18 종결 · T22 · T23 · T21 · T01 wip-ready) | |
+| 완료된 카드 / 발주 | 10/13 병합 | 6/15 (T18 종결 · T22 · T23 · T21 · T01 · T03 wip-ready) | |
 | 오류·재작업 | - | 2건(T26 역할 오배정 44k) · 1건(T18 중복 발주, 낭비 56k) → 규칙 추가: 발주 전 QUEUE 행을 MERGE_QUEUE 완료표와 대조 | |
