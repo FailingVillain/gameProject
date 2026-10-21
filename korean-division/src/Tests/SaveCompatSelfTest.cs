@@ -130,6 +130,7 @@ public static class SaveCompatSelfTest
         }
         check(cBad == 0, $"캠페인 저장: 빈 · 쓰레기 · 잘못된 형식은 예외 없이 한국어 사유와 함께 거부 (벗어난 경우 {cBad}) {cFirst}");
         CampaignSlotsSelfTest.Run(check);   // T19a 슬롯 9칸 · 자동 저장 · 실패 재시도
+        CampaignAmmoSelfTest.Run(check);    // T19b 구경별 탄약 · 포탄 (저장 v3 · 적재 · 발사 차감 · 노획)
         string cdir = TestTemp.Child("kd_compat_campaign");
         string? oldEnv = Environment.GetEnvironmentVariable("KD_CAMPAIGN_DIR");
         Environment.SetEnvironmentVariable("KD_CAMPAIGN_DIR", cdir);

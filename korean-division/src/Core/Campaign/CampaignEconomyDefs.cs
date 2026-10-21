@@ -21,6 +21,12 @@ public sealed class CampaignEconomyDefs
     public float HealCostPerMan { get; set; } = 0.5f;
     public float RecruitAssignCostPerMan { get; set; } = 0.5f;
     public int HowitzerCompanyStrength { get; set; } = 40;
+    /// <summary>[T19b Q5 · Q6] 재고가 기본 휴대량보다 모자랄 때 싣는 비율 (재고가 그보다도 적으면 남은 만큼). 탄약 구경별 · 포탄 종류별 같은 규칙.</summary>
+    public float ShortLoadRatio { get; set; } = 0.5f;
+    /// <summary>[T19b Q6] 포 무기 키 (balance.json weapons) → 포탄 재고 키 (StockKeys.InfGun · Field · Howitzer). 기본 휴대량 = 그 무기의 ammo.</summary>
+    public Dictionary<string, string> ShellWeapons { get; set; } = new() { ["gun_infantry"] = StockKeys.InfGun, ["gun_field"] = StockKeys.Field, ["howitzer_heavy"] = StockKeys.Howitzer };
+    /// <summary>[T19b Q6] 승리 시 적 손실 1명당 노획 포탄 (종류별, 내림).</summary>
+    public Dictionary<string, float> LootShellsPerKill { get; set; } = new() { [StockKeys.InfGun] = 0.1f, [StockKeys.Field] = 0.05f, [StockKeys.Howitzer] = 0.02f };
 
     static CampaignEconomyDefs? current;
     public static CampaignEconomyDefs Current => current ??= Load(Path.Combine(AppContext.BaseDirectory, "assets", "data", "campaign_economy.json"));

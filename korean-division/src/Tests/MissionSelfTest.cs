@@ -553,7 +553,7 @@ public static class MissionSelfTest
         }
         """;
         var s1 = CampaignState.FromJson(v1Json);
-        check(s1 != null && s1.Version == 2, "v1 JSON 읽기: Version=2 마이그레이션");
+        check(s1 != null && s1.Version == CampaignState.SchemaVersion, $"v1 JSON 읽기: Version={CampaignState.SchemaVersion} 마이그레이션");
         check(s1!.Supply == 3000f, $"v1 읽기: Supply = 3000 (실제 {s1.Supply})");
         check(s1.Manpower.Recruits == 2000 && s1.Manpower.Wounded == 0, $"v1 읽기: Recruits = 2000, Wounded = 0");
         check(s1.Stock.Rifles.GetValueOrDefault("ru") == 3000, "v1 읽기: Rifles['ru'] = 3000");

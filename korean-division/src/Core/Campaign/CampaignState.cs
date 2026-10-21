@@ -74,6 +74,8 @@ public sealed class CampaignState
         public int UnhealedOps { get; set; } = 0;
         public bool Available { get; set; } = true;
         public bool Mandatory { get; set; } = false;
+        /// <summary>[v3 · T19b Q5] 이 중대 소총 · 기관총이 쓰는 탄약 구경 (StockKeys.AllCalibers). 옛 파일 = 노식 (ru, 그때 유일한 재고 키).</summary>
+        public string Caliber { get; set; } = StockKeys.Ru;
     }
 
     public sealed class PendingOperation
@@ -83,6 +85,11 @@ public sealed class CampaignState
         public float SupplySpent { get; set; }
         public int AmmoLoaded { get; set; }
         public float AmmoScale { get; set; } = 1f;
+        /// <summary>[v3] 구경별 실은 탄약 (합 = AmmoLoaded). 옛 출격 기록은 EnsureInitialized 가 {ru: AmmoLoaded} 로 채운다.</summary>
+        public Dictionary<string, int> AmmoByCaliber { get; set; } = new();
+        /// <summary>[v3 · Q6] 포탄 종류별 실은 수 · 비율 (기본 휴대량 = 미션의 플레이어 포 × 무기 ammo). 포 없는 미션은 비어 있다.</summary>
+        public Dictionary<string, int> ShellsLoaded { get; set; } = new();
+        public Dictionary<string, float> ShellScale { get; set; } = new();
         public bool RefusedMandatory { get; set; }
     }
 
@@ -104,13 +111,17 @@ public sealed class CampaignState
         public int LootedAmmo { get; set; }
         public int LootedHorses { get; set; }
         public int AmmoRefunded { get; set; }
+        /// <summary>[v3 · Q6] 포탄 종류별 실제 발사로 재고에서 뺀 수 · 노획으로 더한 수.</summary>
+        public Dictionary<string, int> ShellsFired { get; set; } = new();
+        public Dictionary<string, int> LootedShells { get; set; } = new();
         public string? TriggeredEventId { get; set; }
     }
 
     /// <summary>캠페인 저장 스키마 버전. 규칙 (ENGINE_NOTES 저장 호환): 필드는 추가만 한다 — 새 필드는 C# 기본값이 곧 "옛 파일에 없을 때의 값"
     /// 이라 옛 파일 (Version 1, 또는 Version 필드가 없는 파일 — 없으면 기본값 = 현재 버전으로 읽는다) 은 변환 없이 열고 모자란 필드는 기본값으로 채운다. Version 0 · 음수는 깨진 파일로 거부한다. 필드를 지우거나 뜻을 바꾸면 SchemaVersion 을 올리고
-    /// 그 옛 파일은 거부한다. 현재보다 큰 Version (더 새 게임이 만든 파일) 과 깨진 파일도 거부 (사유는 LastLoadError, 한국어).</summary>
-    public const int SchemaVersion = 2;
+    /// 그 옛 파일은 거부한다. 현재보다 큰 Version (더 새 게임이 만든 파일) 과 깨진 파일도 거부 (사유는 LastLoadError, 한국어).
+    /// 3 (T19b): 구경별 탄약 · 포탄 정산 — RosterCompany.Caliber · Pending.AmmoByCaliber/ShellsLoaded/ShellScale · DebriefReport.ShellsFired/LootedShells (추가만, v2 는 기본값으로 이행).</summary>
+    public const int SchemaVersion = 3;
     public int Version { get; set; } = SchemaVersion;
     public string CampaignId { get; set; } = "c1";
     /// <summary>다음에 할 미션 id (파일이 없으면 '준비 중' 화면).</summary>
@@ -177,6 +188,13 @@ public sealed class CampaignState
         if (!Stock.Shells.ContainsKey(StockKeys.Howitzer)) Stock.Shells[StockKeys.Howitzer] = 150;
         Stock.Heavy ??= new();
         Stock.RecentLog ??= new();
+        foreach (var c in Roster ?? new()) if (c != null && string.IsNullOrEmpty(c.Caliber)) c.Caliber = StockKeys.Ru;   // v2 → v3 (명시 null 포함)
+        if (Pending != null)
+        {   // v2 출격 기록 → v3: 탄약은 그때 ru 한 종만 실었다. 포탄 기록은 없음 (= 정산 때 발사 수만큼, 재고 한도로)
+            Pending.AmmoByCaliber ??= new(); Pending.ShellsLoaded ??= new(); Pending.ShellScale ??= new();
+            if (Pending.AmmoByCaliber.Count == 0 && Pending.AmmoLoaded > 0) Pending.AmmoByCaliber[StockKeys.Ru] = Pending.AmmoLoaded;
+        }
+        if (LastDebrief != null) { LastDebrief.ShellsFired ??= new(); LastDebrief.LootedShells ??= new(); }
         Flags ??= new();
         if (!Flags.ContainsKey("heir_mood")) Flags["heir_mood"] = 60;
         if (!Flags.ContainsKey("cmd_favor")) Flags["cmd_favor"] = 50;
@@ -217,6 +235,14 @@ public sealed class CampaignState
         }
         if (Pending != null && (string.IsNullOrEmpty(Pending.MissionId) || Pending.DeployedCompanyIds == null)) Pending = null;
         if (Pending != null) Pending.AmmoScale = float.IsFinite(Pending.AmmoScale) ? Math.Clamp(Pending.AmmoScale, 0f, 1f) : 1f;
+        foreach (var c in Roster) if (Array.IndexOf(StockKeys.AllCalibers, c.Caliber) < 0) c.Caliber = StockKeys.Ru;   // 모르는 구경 키 → 노식
+        if (Pending != null)
+        {
+            foreach (var d in new[] { Pending.AmmoByCaliber, Pending.ShellsLoaded })
+                foreach (var k in d.Keys.ToList()) if (d[k] < 0) d[k] = 0;
+            foreach (var k in Pending.ShellScale.Keys.ToList())
+                Pending.ShellScale[k] = float.IsFinite(Pending.ShellScale[k]) ? Math.Clamp(Pending.ShellScale[k], 0f, 1f) : 1f;
+        }
     }
 
     public static bool IsCampaignMission(string id) => Chain.Any(c => c.Id == id);

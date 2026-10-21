@@ -88,6 +88,16 @@ public static class CampaignCarry
                 ApplyAmmoScale(forces);
                 ApplyAmmoScale(root["reinforcements"] as JsonArray);
             }
+
+            // [T19b Q6] 포탄 종류별 비율 → 무기 키별 (플레이어 포에만 적용, 중대 ammoScale 보다 우선). 소총탄만 모자라도 포는 포탄 비율 (가득이면 1) 을 쓴다.
+            // 포 없는 미션은 ShellScale 이 비어 있어 아무것도 쓰지 않는다.
+            if (s.Pending.ShellScale.Count > 0 && (s.Pending.AmmoScale < 1f || s.Pending.ShellScale.Values.Any(v => v < 1f)))
+            {
+                var byWeapon = new JsonObject();
+                foreach (var (wk, shell) in CampaignEconomyDefs.Current.ShellWeapons.OrderBy(kv => kv.Key, StringComparer.Ordinal))
+                    if (s.Pending.ShellScale.TryGetValue(shell, out float sc)) byWeapon[wk] = Math.Round((double)sc, 3);
+                if (byWeapon.Count > 0) root["ammoScaleByWeapon"] = byWeapon;
+            }
         }
 
         if (wantCarry && force?["companies"] is JsonArray compsForCarry)
