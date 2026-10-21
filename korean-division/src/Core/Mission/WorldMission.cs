@@ -17,10 +17,20 @@ public sealed partial class World
 
     /// <summary>[훅] 사건으로 날씨 · 시간대가 바뀜 (구현 = Weather.cs). 시작 날씨는 CreateMissionWorld 가 SetupWeather 로 적용한다.</summary>
     /// <summary>미션 탄약 배율 (AmmoScale) 을 정수 천분율로 적용 (결정성: 정수 연산, 반올림 = 반올림 올림). NaN · 무한대는 배율 없음(1.0)으로, 범위는 0..1 로 자른다.</summary>
-    public static int ScaleAmmo(int ammo, float scale)
+    public static int ScaleAmmo(int ammo, float scale) => ScaleAmmoPermille(ammo, ToPermille(scale));
+
+    /// <summary>배율(0..1) → 천분율 정수 (0..1000). NaN · 무한대 = 1000(배율 없음). 반올림은 double Math.Round(AwayFromZero) — 소수 3자리 입력은 정확.</summary>
+    public static int ToPermille(float scale)
     {
-        if (!float.IsFinite(scale)) return ammo;
-        int permille = (int)Math.Floor(Math.Clamp(scale, 0f, 1f) * 1000f + 0.5f);
+        if (!float.IsFinite(scale)) return 1000;
+        double p = Math.Round((double)scale * 1000.0, MidpointRounding.AwayFromZero);
+        return p <= 0 ? 0 : p >= 1000 ? 1000 : (int)p;
+    }
+
+    /// <summary>정수 천분율 탄약 배율 적용 (정수 연산, 반올림).</summary>
+    public static int ScaleAmmoPermille(int ammo, int permille)
+    {
+        permille = Math.Clamp(permille, 0, 1000);
         return (int)Math.Max(0L, ((long)ammo * permille + 500) / 1000);
     }
 
