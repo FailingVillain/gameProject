@@ -91,6 +91,7 @@ public sealed partial class World
             case ThrowGrenadeCommand c: ExecThrowGrenade(f, Resolve(f, c.Units), c.Target); break;   // 수류탄 (Combat4.cs)
             case ThrowSmokeCommand c: ExecThrowSmoke(Resolve(f, c.Units), c.Target); break;   // 연막 수류탄 (Breach.cs, N65)
             case CutWireCommand c: ExecCutWire(ResolveOrder(f, c.Units), c.Target); break;   // 철조망 절단 (Breach.cs, N59)
+            case FireFlareCommand c: ExecFireFlare(Resolve(f, c.Units), c.Target); break;   // 조명탄 (FieldOps.cs, T10)
             case MountCommand mc: foreach (var u in Resolve(f, mc.Units)) ExecMount(u, mc.Mount); break;   // N61
             case ChargeOnlyCommand c: foreach (var u in Resolve(f, c.Units)) if (u.CanCharge && u.Def.Mounted) u.ChargeOnly = c.On; break;
             case SetScoutAutoCommand c: ExecSetScoutAuto(f, Resolve(f, c.Units), c.On); break;   // 정찰병 자율 토글 (Scouts.cs)

@@ -684,3 +684,10 @@
 - 철조망 절단: `unit.wireCutter` (돌격보병), `CutWireCommand` (단축키 U) — 지점 둘레 `wireCutSearch` 칸 철조망을 가까운 순으로 한 사람씩 맡아 옆 칸 (상하좌우 우선) 으로 가서 사수 자세로 `wireCutSec` (4초) → 칸 = 흙 (`GameMap.OpenWire`: Version · ChangeLog → 길찾기 갱신). 새 명령 (`ResetOrder`) = 취소. 진행 막대 = `ProgressRing`.
 - 경박격포 (사거리 36, 관측자 불필요 곡사 — 자기 세력이 보는 적): 한국 `heavy_mortar_korean` (경 미넨베르퍼) · 일본 `heavy_mortar_japanese` (척탄통, 1인) · 그 밖 `heavy_mortar` (스톡스, 봉천 · 러시아). 수치 = 초안 (밸런스 승인 전), 그림 = 보병포 별칭 (artAs).
 - 저장 = CMB2 끝 `WriteBreach` (FormatVersion 53, Replay 20), 체크섬 `HashBreach`, 리플레이 v19. 시험 `KD_SELFTEST_ONLY=breach`. 참호 돌격 순서 (N32) 의 `smokeHook` · `wireCutHook` 는 아직 자리만 (AI 사용은 다음 단계).
+
+## T10 대포병 · 조명탄 · 행군 피로 (FieldOps.cs, 2026-10-22, 기본 끔)
+- 데이터 = `assets/data/fieldops.json` (`FieldOpsDefs.Current`, 테스트 `Override`). 세 기능 모두 `enabled: false` 기본 — 기존 동작 · 골든 체크섬 불변. 수치 초안 (사용자 승인 전).
+- ② 대포병: 곡사 · 간접 사격 포가 쏠 때 (`Fire` · `FireAtGround` → `CbOnFire`) 포 둘레 `detectRange` 칸 안에 관측 유닛 (Def.Spotter) 을 둔 적대 세력이 한 발마다 `detectChance` → `World.CbMarks` (세력 · 포 Id · 만료 틱, `revealSec`). 표시 중이면 `FogOfWar.CanSee` · `SeenBySpotter` 참 → 곡사포가 그 포를 쏠 수 있다. 전술 AI `PickArtilleryTarget` 은 `aiPriority` 면 돌격 지원 다음 순위로 탐지된 포 (가장 가까운 · 유효 · 안전).
+- ③ 조명탄: `FireFlareCommand` (리플레이 "flare") — 장교만, 장교마다 `perOfficer` 발 (`Unit.FlaresUsed`), `range` 칸, 낮이면 무시. `World.Flares` 원 (`radius` · `sec`). 낮이 아닐 때 원 중심 `seeRange`+반경 안에 유닛이 있는 세력은 안개 갱신 때 원을 찍고 (`Stamp`), 원 안 표적의 명중 배수 = 날씨 × 낮 (`WeatherHitMulAt`). AI 사용 · 화면 표시 · 버튼은 아직 없음.
+- ④ 행군 피로: 켜면 걷기 이동 중 스태미나 회복 대신 `walkDrain`/초 소모 (`UpdateStamina`). 지침 효과는 기존 스태미나 규칙.
+- 저장 = CMB2 끝 `WriteFieldOps` (FormatVersion 57 예약값, Replay 22 예약값 — 병합 때 재예약), 체크섬 `HashFieldOps` (기본 상태면 생략). 시험 `KD_SELFTEST_ONLY=fieldops`.

@@ -134,6 +134,7 @@ public sealed partial class World
     {
         u.LastShotTick = Tick; u.RevealUntil = Tick + RevealTicks;
         MarkAlert(u.Owner, u.Pos);
+        if (CbOn && (IsIndirect(w) || w.SpotterIndirect)) CbOnFire(u);   // T10 ② 대포병 탐지 (FieldOps.cs)
         float frac = w.Range > 0 ? MathF.Min(1f, dist / w.Range) : 0f;
         float mul = Defs.CombatRules.GroundScatterMul;
         float maxErr = (w.Scatter > 0 ? ScatterAt(w, dist) : w.Splash * (0.3f + 0.7f * frac)) * mul;

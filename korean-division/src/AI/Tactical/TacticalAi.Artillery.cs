@@ -578,6 +578,19 @@ public sealed partial class TacticalAi
         for (int i = 0; i < supportBuf.Count; i++) supportOrder.Add(i);
         supportOrder.Sort((a, b) => { int r = supportPri[a].CompareTo(supportPri[b]); return r != 0 ? r : Vector2.DistanceSquared(supportBuf[a], c).CompareTo(Vector2.DistanceSquared(supportBuf[b], c)); });
         foreach (int i in supportOrder) if (Near(supportBuf[i], A.SupportRadius) is { } e1) return e1;
+        // ①-2 대포병 (T10, FieldOps.cs — 기본 끔): 탐지된 적 포 중 쏠 수 있는 · 안전한 가장 가까운 것
+        if (w.CbMarks.Count > 0 && FieldOpsDefs.Current.CounterBattery.AiPriority)
+        {
+            Unit? cb = null; float cbd = float.MaxValue;
+            foreach (var m in w.CbMarks)
+            {
+                if (m.Until < w.Tick || (m.Faction != s.Faction && !w.Allied(s.Faction, m.Faction))) continue;
+                if (w.Find(m.GunId) is not Unit e || !Valid(e) || !Safe(e)) continue;
+                float d2 = Vector2.DistanceSquared(e.Pos, c);
+                if (d2 < cbd) { cbd = d2; cb = e; }
+            }
+            if (cb != null) { w.Stats.CbAiTargets++; return cb; }
+        }
         // ② 자동 표적이 과반 근접 위험 (아군이 다가감) → 연신: 연대가 연신했으면 연대 화력 표적 (깊은 표적) 둘레, 아니면 포대에서 가장 가까운 안전한 적.
         //    (엔진에 아군 오사가 없어 연신은 화력 손해 — 실제로 아군이 위험 거리 안에 들 때만 옮긴다)
         int bad = 0, n = 0;
