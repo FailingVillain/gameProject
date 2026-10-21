@@ -32,3 +32,6 @@ n50 대형 K/E 악화 → 대형 완화로 대체, 닫음 · orderq/breach 번�
 
 ## C. 설계 질문 (T23)
 캠페인 홈 설계 Q1~Q10 = `kd-develop/kd-t23/korean-division/docs/CAMPAIGN_HOME_DESIGN.md` §15 (브랜치 spec/t23-campaign-home). 답이 있어야 T09/T19 구현 범위 확정.
+
+## D. 확정 (사용자 2026-10-22)
+D01 B 3칸 유지(전환 거리 변경 안 함, 예비 타이머 시작점만 필요 시 카드에서) · D02 A 모든 돌격 · D07 D 통합 측정(T12) 뒤 결정 · D08 A S1~S3 세 가지 모두 카드 발주 · D12 A · D15 A · D19 C(둘 다 + 재측정) · D20 A(훅 설치 허용). 위 표의 '보류' 는 모두 해소됨.

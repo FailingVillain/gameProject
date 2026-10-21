@@ -11,11 +11,11 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T03 | 참호 돌파 (wip-resolved/breach 검증 → 병합) | sim → merger | D上 R3 SM H3 Wheavy | 없음 (D17 기본값 승인) | assigned |
 | T04 | wip/orderq 복원·병합 (사격 통제 · 명령 대기열) | sim → merger | D上 R3 SM H3 Wlight | T03 | queued |
 | T05 | wip/ai3b2 복원·병합 (전술 AI 3B) | sim → merger | D上 R3 SM H3 Wheavy | T04 | queued |
-| T06 | 사상자 속도 조정 (wip/casualty) | sim | D中~上 R3 SM H2 Wheavy | D19 | blocked(D19) |
+| T06 | 사상자 속도 조정 (wip/casualty) | sim | D中~上 R3 SM H2 Wheavy | D19 | assigned (D19 C 확정) |
 | T07 | 철도 지형 (wip/rail 복원, 장갑열차 제외) | feature → merger | D上 R2 SM H2 Wlight | 없음 (T02 병합됨) | assigned |
 | T08 | 조작 UI 묶음 + UI 종이 질감 개편 | feature | D中 R1 SM H1 Wlight | T01 | queued |
 | T09 | 캠페인 수직 슬라이스 (0-1→0-2→1-1 한 사이클) | feature | D上 R3 SM H2 Wlight | T01(저장 트랜잭션) | queued |
-| T10 | 통신 알파 ②~④ (대포병 · 야간 · 행군 피로) | sim | D上 R3 SM H3 Wheavy | D15 | blocked(D15) |
+| T10 | 통신 알파 ②~④ (대포병 · 야간 · 행군 피로) | sim | D上 R3 SM H3 Wheavy | 없음(D15 A 확정); H3 직렬: T03 wip-ready 뒤 스택 | queued |
 | T11 | 전 유닛 재렌더 (rerender-1, gt-brender, gt-rerender-prep) | art | D中 R1 SM H0 Wheavy | 병합 큐 종료 뒤 렌더 3칸 예약 | queued |
 | T12 | 통합 밸런스 측정 (A/B/C 시나리오 시드 8) → BASELINE_CURRENT | measure | D中 R1 S H0 Wheavy | T03 T04 T05 (T06 은 D19 뒤 재측정) | queued |
 | T13 | release (전체 selftest · 골든 · publish · 기록) | release | D中 R2 SM H1 Wheavy | T12 | queued |
@@ -28,6 +28,9 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T21 | wip/sfxnew 복원 (효과음: sounds.json · SfxDirector · SOUND_POLICY) | feature | D中 R1 SM H1 Wlight | 없음 | queued |
 | T22 | wip/gt-face-proto 재개 (얼굴 프로토타입, game-tools) | art | D中 R1 S H0 Wlight | 없음 | queued |
 | T23 | 캠페인 홈 설계 문서 (docs/CAMPAIGN_HOME_DESIGN.md, 코드 없음) | spec | D中 R1 S H0 Wlight | 없음 | queued |
+| T24 | D08 수정안 S1~S3 (대리 지휘 범위 · 관측반 전진 한계 · 돌격 제압 확인) | sim | D上 R3 SM H3 Wheavy | T04 위 스택 | queued |
+| T25 | 착검 멈춤 범위 = 모든 돌격 (D02 A); 전환 거리 3칸 유지 (D01 B, 코드 변경 없음) | sim | D中 R3 S H3 Wlight | T03 위 스택 | queued |
+| T26 | 레거시 이메일 차단 git 훅 설치 (D20 A) | docs | D下 R1 S H0 Wlight | 없음 | assigned |
 | T20 | 저장소 이동 마무리 (옛 폴더 삭제 = 사용자 U02) | docs | D下 R1 S H0 Wlight | U02 | blocked(U02) |
 
 **정책 (사용자 2026-10-22, 강조): WIP 는 병합하지 않는다. WIP 작업은 재개해서 완료(wip-ready)까지만 한다.** merger 는 발주하지 않는다. 선행이 '병합'인 카드는 선행 카드의 wip 브랜치 위에 쌓아(스택) 진행한다. main 에는 WIP 가 들어가지 않는다(사용자 지시 전까지).
