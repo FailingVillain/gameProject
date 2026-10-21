@@ -27,6 +27,7 @@
 | +140분 | T07 rail wip-ready (opus, 89k, 566초): kd-rail 423e326+9f513e7, FV53 로 맞춤(breach2 와 FV53 충돌 예상 → 병합 단계 아닌 '스택' 시 재번호 필요), terrain·detcheck·snaptest PASS. spec 카드 4장 완료(75k). 발주: reviewer×2(T03·T07) · T25(sonnet, breach2 위) · T16 scout(haiku) | 병렬도 확대, 동시 약 9 |
 | +150분 | 설계서 v0.4 완료(64k, 76초): 15탭 배치안 · T09/T19 범위 구분. 사용자 검토 F1~F4(무응답 시 제안대로) | 사용자 취침 중 → 무응답 기본값으로 진행 |
 | +160분 | T08 wip-ready (sonnet, 98k, 186초): t08-ui-bundle 2e9aef5 (gemini-import 위 첫 스택 성공), uiicons PASS · uifuzz 30 크래시 0. T16 scout(haiku, 61k, 24초): 파라미터 위치·실행 명령·breach 무충돌 확인 → T16 sim(opus)·T17 feature(sonnet, t08 위) 발주 | 동시 약 11, 上 5 |
+| +165분 | T07 리뷰 완료(65k, 71초): 차단 0. 유일한 충돌 = FormatVersion 줄(rail·breach2·orderq2·t10 모두 53 예약) → 병합은 안 하지만 '스택' 단계에서 번호 정리 필요. 권고: breach2 기준 순서 확정 후 rail 54 | 번호 충돌은 FV 줄 하나, 사전 예측 가능 → FV 예약표 필요 |
 
 ## 점검 (완료 보고마다 갱신)
 | 지표 | v1 이전 | 지금 | 비고 |
