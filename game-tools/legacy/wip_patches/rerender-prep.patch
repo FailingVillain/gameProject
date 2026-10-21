@@ -1,0 +1,30 @@
+diff --git a/image/RERENDER_PROGRESS.txt b/image/RERENDER_PROGRESS.txt
+index 8aa42aa..8463728 100644
+--- a/image/RERENDER_PROGRESS.txt
++++ b/image/RERENDER_PROGRESS.txt
+@@ -23,3 +23,7 @@ Render: python -u make_unit.py <unit> (run heavy_gate first). Contact sheet: kor
+ ## 2026-10-20 missing theme units
+ - New (copy of cavalry-officer-fengtian, swap cap + uniform): cavalry-officer-japanese (japanese_officer_cap, jkhaki), cavalry-officer-russian-white (officer_cap_ru_olive, ru_olive), cavalry-officer-russian-red (officer_cap_ru_greybrown, ru_greybrown). Rendered rc=0, collide 0 hits > 1.5.
+ - Contact sheet: korean-division/docs/art_review/missing_theme_units.png
++R96 infantry-regular rc=0 collide_hits>1.5=0 secs=991 10-22 (first test render, --res96)
++
++## 2026-10-22 res96 full re-render (192x240/96x120/48x60 + tinted outline + smooth + 6/4 tones + prone 08 wide + flag 3:2 + quickstep)
++Driver: python rerender96.py [--group A|B|deferred|all] (resumable; one "R96 <unit> rc=.. collide_hits>1.5=.." line per unit). Out: korean-division-image-out/_res96/
+diff --git a/image/rerender96.py b/image/rerender96.py
+index e9d0720..1f39a73 100644
+--- a/image/rerender96.py
++++ b/image/rerender96.py
+@@ -39,9 +39,10 @@ def main():
+     q = a.only.split(",") if a.only else (sum((QUEUE[k] for k in ("A", "B", "deferred")), []) if a.group == "all" else list(QUEUE[a.group]))
+     shard = None
+     if a.shard:
+-        shard = tuple(int(x) for x in a.shard.split("/")); q = list(QUEUE["B"]) + list(reversed(QUEUE["A"])) if not a.only and a.group in ("A", "B") else q
+-        if a.group == "A" and not a.only: q = list(reversed(QUEUE["A"]))
+-        if a.group == "B" and not a.only: q = list(QUEUE["B"])
++        shard = tuple(int(x) for x in a.shard.split("/"))
++        if not a.only:
++            rA, B = list(reversed(QUEUE["A"])), list(QUEUE["B"])
++            q = {"A": rA, "B": B, "deferred": list(QUEUE["deferred"]), "all": B + rA}[a.group]
+         k, n = shard; q = q[k:] + q[:k]      # stagger start so shards do not fight over the first claim
+     d = done(); todo = [u for u in q if u not in d][:a.limit]
+     print(f"{len(todo)} to render, {len([u for u in q if u in d])} already done"); 

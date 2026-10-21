@@ -1,0 +1,784 @@
+diff --git a/assets/maps/terrain_demo.json b/assets/maps/terrain_demo.json
+index 16fbd861..aabb02ef 100644
+--- a/assets/maps/terrain_demo.json
++++ b/assets/maps/terrain_demo.json
+@@ -12,8 +12,14 @@
+     { "terrain": "high", "rect": [21, 96, 24, 12] },
+     { "terrain": "high", "rect": [123, 60, 24, 12] },
+     { "terrain": "high", "circle": [84, 84, 9] },
+-    { "terrain": "house", "tiles": [[57, 144], [58, 144], [59, 144], [63, 144], [64, 144], [65, 144], [57, 148], [58, 148], [57, 149], [58, 149], [59, 148], [59, 149], [63, 150], [64, 150], [65, 150]] },
+-    { "terrain": "house", "tiles": [[109, 23], [110, 23], [108, 23], [103, 23], [104, 23], [102, 23], [109, 18], [110, 18], [109, 19], [110, 19], [108, 18], [108, 19], [103, 17], [104, 17], [102, 17]] },
++    { "terrain": "house", "rect": [56, 143, 4, 3] },
++    { "terrain": "house", "rect": [62, 143, 3, 3] },
++    { "terrain": "house", "rect": [56, 148, 4, 3] },
++    { "terrain": "house", "rect": [62, 149, 6, 4] },
++    { "terrain": "house", "rect": [101, 15, 4, 3] },
++    { "terrain": "house", "rect": [107, 16, 6, 4] },
++    { "terrain": "house", "rect": [102, 22, 3, 3] },
++    { "terrain": "house", "rect": [108, 23, 4, 3] },
+     { "terrain": "rubble", "rect": [66, 141, 8, 6] },
+     { "terrain": "rubble", "rect": [94, 21, 8, 6] },
+     { "terrain": "wire", "rect": [39, 129, 12, 1] },
+diff --git a/assets/missions/ai_bn_assault.json b/assets/missions/ai_bn_assault.json
+index 74527a90..aa4d7162 100644
+--- a/assets/missions/ai_bn_assault.json
++++ b/assets/missions/ai_bn_assault.json
+@@ -272,35 +272,12 @@
+      12
+     ]
+    },
+-   {
+-    "terrain": "house",
+-    "tiles": [
+-     [
+-      70,
+-      22
+-     ],
+-     [
+-      70,
+-      28
+-     ],
+-     [
+-      77,
+-      22
+-     ],
+-     [
+-      77,
+-      28
+-     ],
+-     [
+-      84,
+-      22
+-     ],
+-     [
+-      84,
+-      28
+-     ]
+-    ]
+-   },
++   { "terrain": "house", "rect": [67, 19, 4, 3] },
++   { "terrain": "house", "rect": [73, 19, 3, 3] },
++   { "terrain": "house", "rect": [84, 19, 4, 3] },
++   { "terrain": "house", "rect": [67, 25, 4, 3] },
++   { "terrain": "house", "rect": [73, 25, 3, 3] },
++   { "terrain": "house", "rect": [84, 25, 4, 3] },
+    {
+     "terrain": "trench",
+     "rect": [
+diff --git a/assets/missions/ai_bn_meeting.json b/assets/missions/ai_bn_meeting.json
+index 886fca60..de80ec10 100644
+--- a/assets/missions/ai_bn_meeting.json
++++ b/assets/missions/ai_bn_meeting.json
+@@ -261,59 +261,12 @@
+      12
+     ]
+    },
+-   {
+-    "terrain": "house",
+-    "tiles": [
+-     [
+-      68,
+-      52
+-     ],
+-     [
+-      68,
+-      57
+-     ],
+-     [
+-      68,
+-      62
+-     ],
+-     [
+-      74,
+-      52
+-     ],
+-     [
+-      74,
+-      57
+-     ],
+-     [
+-      74,
+-      62
+-     ],
+-     [
+-      80,
+-      52
+-     ],
+-     [
+-      80,
+-      57
+-     ],
+-     [
+-      80,
+-      62
+-     ],
+-     [
+-      86,
+-      52
+-     ],
+-     [
+-      86,
+-      57
+-     ],
+-     [
+-      86,
+-      62
+-     ]
+-    ]
+-   },
++   { "terrain": "house", "rect": [69, 50, 6, 4] },
++   { "terrain": "house", "rect": [83, 50, 4, 3] },
++   { "terrain": "house", "rect": [89, 50, 3, 3] },
++   { "terrain": "house", "rect": [67, 62, 4, 3] },
++   { "terrain": "house", "rect": [73, 62, 3, 3] },
++   { "terrain": "house", "rect": [84, 62, 6, 4] },
+    {
+     "terrain": "rubble",
+     "rect": [
+diff --git a/assets/missions/ai_kr_vs_ft_1000.json b/assets/missions/ai_kr_vs_ft_1000.json
+index 230dc342..076cc1af 100644
+--- a/assets/missions/ai_kr_vs_ft_1000.json
++++ b/assets/missions/ai_kr_vs_ft_1000.json
+@@ -64,171 +64,20 @@
+      3
+     ]
+    },
+-   {
+-    "terrain": "house",
+-    "tiles": [
+-     [
+-      92,
+-      68
+-     ],
+-     [
+-      92,
+-      71
+-     ],
+-     [
+-      95,
+-      68
+-     ],
+-     [
+-      95,
+-      71
+-     ],
+-     [
+-      98,
+-      68
+-     ],
+-     [
+-      98,
+-      71
+-     ],
+-     [
+-      92,
+-      76
+-     ],
+-     [
+-      92,
+-      79
+-     ],
+-     [
+-      95,
+-      76
+-     ],
+-     [
+-      95,
+-      79
+-     ],
+-     [
+-      98,
+-      76
+-     ],
+-     [
+-      98,
+-      79
+-     ],
+-     [
+-      92,
+-      86
+-     ],
+-     [
+-      92,
+-      89
+-     ],
+-     [
+-      95,
+-      86
+-     ],
+-     [
+-      95,
+-      89
+-     ],
+-     [
+-      98,
+-      86
+-     ],
+-     [
+-      98,
+-      89
+-     ],
+-     [
+-      113,
+-      68
+-     ],
+-     [
+-      113,
+-      71
+-     ],
+-     [
+-      116,
+-      68
+-     ],
+-     [
+-      116,
+-      71
+-     ],
+-     [
+-      119,
+-      68
+-     ],
+-     [
+-      119,
+-      71
+-     ],
+-     [
+-      113,
+-      76
+-     ],
+-     [
+-      113,
+-      79
+-     ],
+-     [
+-      116,
+-      76
+-     ],
+-     [
+-      116,
+-      79
+-     ],
+-     [
+-      119,
+-      76
+-     ],
+-     [
+-      119,
+-      79
+-     ],
+-     [
+-      113,
+-      86
+-     ],
+-     [
+-      113,
+-      89
+-     ],
+-     [
+-      116,
+-      86
+-     ],
+-     [
+-      116,
+-      89
+-     ],
+-     [
+-      119,
+-      86
+-     ],
+-     [
+-      119,
+-      89
+-     ],
+-     [
+-      100,
+-      80
+-     ],
+-     [
+-      101,
+-      80
+-     ],
+-     [
+-      116,
+-      81
+-     ],
+-     [
+-      117,
+-      81
+-     ]
+-    ]
+-   },
++   { "terrain": "house", "rect": [91, 66, 4, 3] },
++   { "terrain": "house", "rect": [97, 66, 6, 4] },
++   { "terrain": "house", "rect": [91, 72, 4, 3] },
++   { "terrain": "house", "rect": [97, 73, 4, 3] },
++   { "terrain": "house", "rect": [121, 66, 4, 3] },
++   { "terrain": "house", "rect": [113, 66, 6, 4] },
++   { "terrain": "house", "rect": [121, 72, 4, 3] },
++   { "terrain": "house", "rect": [115, 73, 4, 3] },
++   { "terrain": "house", "rect": [91, 84, 4, 3] },
++   { "terrain": "house", "rect": [91, 89, 4, 3] },
++   { "terrain": "house", "rect": [97, 88, 4, 3] },
++   { "terrain": "house", "rect": [121, 84, 4, 3] },
++   { "terrain": "house", "rect": [121, 89, 4, 3] },
++   { "terrain": "house", "rect": [113, 86, 6, 4] },
+    {
+     "terrain": "rubble",
+     "rect": [
+diff --git a/assets/missions/artillery_spotters.json b/assets/missions/artillery_spotters.json
+index afa0974c..af753827 100644
+--- a/assets/missions/artillery_spotters.json
++++ b/assets/missions/artillery_spotters.json
+@@ -82,35 +82,8 @@
+      40
+     ]
+    },
+-   {
+-    "terrain": "house",
+-    "tiles": [
+-     [
+-      132,
+-      48
+-     ],
+-     [
+-      133,
+-      48
+-     ],
+-     [
+-      134,
+-      48
+-     ],
+-     [
+-      132,
+-      52
+-     ],
+-     [
+-      133,
+-      52
+-     ],
+-     [
+-      134,
+-      52
+-     ]
+-    ]
+-   }
++   { "terrain": "house", "rect": [131, 45, 4, 3] },
++   { "terrain": "house", "rect": [131, 52, 4, 3] }
+   ],
+   "starts": [
+    [
+diff --git a/assets/missions/bandit_raid.json b/assets/missions/bandit_raid.json
+index e9cd427c..cea173a1 100644
+--- a/assets/missions/bandit_raid.json
++++ b/assets/missions/bandit_raid.json
+@@ -22,7 +22,8 @@
+     "width": 120, "height": 120, "base": "grass",
+     "paint": [
+       { "terrain": "dirt", "rect": [57, 0, 6, 120] },
+-      { "terrain": "house", "tiles": [[52, 56], [53, 56], [52, 57], [53, 57], [66, 62], [67, 62], [66, 63], [67, 63]] },
++      { "terrain": "house", "rect": [51, 55, 4, 3] },
++      { "terrain": "house", "rect": [65, 61, 4, 3] },
+       { "terrain": "forest", "rect": [10, 20, 24, 18] }
+     ],
+     "starts": [ [60, 100], [60, 20] ]
+diff --git a/assets/missions/c0_01_bandits.json b/assets/missions/c0_01_bandits.json
+index 563eaddd..201254d5 100644
+--- a/assets/missions/c0_01_bandits.json
++++ b/assets/missions/c0_01_bandits.json
+@@ -27,8 +27,13 @@
+       { "terrain": "dirt", "rect": [57, 11, 6, 85] },
+       { "terrain": "forest", "rect": [8, 30, 18, 14] },
+       { "terrain": "forest", "rect": [92, 52, 16, 14] },
+-      { "terrain": "house", "tiles": [[40, 50], [41, 50], [40, 51], [41, 51], [46, 56], [47, 56], [46, 57], [47, 57], [70, 52], [71, 52], [70, 53], [71, 53], [76, 58], [77, 58], [76, 59], [77, 59]] },
+-      { "terrain": "house", "tiles": [[52, 22], [53, 22], [52, 23], [53, 23], [66, 20], [67, 20], [66, 21], [67, 21], [60, 28], [61, 28]] },
++      { "terrain": "house", "rect": [39, 49, 4, 3] },
++      { "terrain": "house", "rect": [45, 55, 4, 3] },
++      { "terrain": "house", "rect": [69, 51, 4, 3] },
++      { "terrain": "house", "rect": [75, 57, 4, 3] },
++      { "terrain": "house", "rect": [50, 21, 4, 3] },
++      { "terrain": "house", "rect": [65, 19, 4, 3] },
++      { "terrain": "house", "rect": [64, 27, 3, 3] },
+       { "terrain": "rubble", "rect": [56, 40, 3, 2] }
+     ],
+     "starts": [ [60, 86], [60, 24] ]
+diff --git a/assets/missions/c0_02_yalu.json b/assets/missions/c0_02_yalu.json
+index 1d521167..5f3cfd60 100644
+--- a/assets/missions/c0_02_yalu.json
++++ b/assets/missions/c0_02_yalu.json
+@@ -39,23 +39,27 @@
+       // 남안 (아군 쪽): 숲 · 집
+       { "terrain": "forest", "rect": [10, 120, 22, 18] },
+       { "terrain": "forest", "rect": [190, 126, 24, 20] },
+-      { "terrain": "house", "tiles": [[100, 120], [101, 120], [100, 121], [101, 121], [108, 124], [109, 124], [108, 125], [109, 125]] },
++      { "terrain": "house", "rect": [99, 119, 4, 3] },
++      { "terrain": "house", "rect": [107, 123, 4, 3] },
+       // 북안: 북서 숲 · 북동 산악
+       { "terrain": "forest", "rect": [8, 20, 52, 50] },
+       { "terrain": "high", "rect": [170, 12, 50, 40] },
+       { "terrain": "rock", "rect": [186, 24, 14, 10] },
+       { "terrain": "forest", "rect": [140, 60, 20, 14] },
+       // 초소 둘레 (집 · 참호 · 철조망)
+-      { "terrain": "house", "tiles": [[92, 126], [93, 126], [92, 127], [93, 127]] },
++      { "terrain": "house", "rect": [93, 126, 4, 3] },
+       { "terrain": "trench", "rect": [84, 124, 14, 1] },
+-      { "terrain": "house", "tiles": [[152, 90], [153, 90], [152, 91], [153, 91]] },
++      { "terrain": "house", "rect": [151, 90, 4, 3] },
+       { "terrain": "trench", "rect": [144, 88, 16, 1] },
+-      { "terrain": "house", "tiles": [[34, 86], [35, 86], [34, 87], [35, 87]] },
++      { "terrain": "house", "rect": [33, 86, 4, 3] },
+       { "terrain": "trench", "rect": [26, 84, 14, 1] },
+-      { "terrain": "house", "tiles": [[62, 52], [63, 52], [62, 53], [63, 53]] },
++      { "terrain": "house", "rect": [61, 52, 4, 3] },
+       { "terrain": "trench", "rect": [54, 50, 14, 1] },
+       // 산채: 집 · 철조망 · 참호
+-      { "terrain": "house", "tiles": [[112, 20], [113, 20], [112, 21], [113, 21], [118, 18], [119, 18], [118, 19], [119, 19], [124, 22], [125, 22], [124, 23], [125, 23], [120, 28], [121, 28], [120, 29], [121, 29]] },
++      { "terrain": "house", "rect": [111, 19, 4, 3] },
++      { "terrain": "house", "rect": [117, 15, 4, 3] },
++      { "terrain": "house", "rect": [123, 21, 4, 3] },
++      { "terrain": "house", "rect": [123, 27, 4, 3] },
+       { "terrain": "wire", "rect": [104, 36, 32, 1] },
+       { "terrain": "trench", "rect": [108, 33, 24, 1] }
+     ],
+diff --git a/assets/missions/c1_01_hoeryong.json b/assets/missions/c1_01_hoeryong.json
+index c523d77d..b4e4225e 100644
+--- a/assets/missions/c1_01_hoeryong.json
++++ b/assets/missions/c1_01_hoeryong.json
+@@ -25,7 +25,12 @@
+       { "terrain": "dirt", "rect": [77, 8, 6, 8] },
+       { "terrain": "dirt", "rect": [77, 16, 6, 124] },
+       { "terrain": "dirt", "rect": [50, 78, 60, 3] },
+-      { "terrain": "house", "tiles": [[66, 70], [67, 70], [66, 71], [67, 71], [70, 85], [71, 85], [70, 86], [71, 86], [88, 70], [89, 70], [88, 71], [89, 71], [90, 71], [92, 86], [93, 86], [92, 87], [93, 87], [60, 80], [61, 80], [60, 81], [61, 81], [99, 80], [100, 80], [99, 81], [100, 81]] },
++      { "terrain": "house", "rect": [65, 69, 4, 3] },
++      { "terrain": "house", "rect": [87, 69, 6, 4] },
++      { "terrain": "house", "rect": [59, 81, 4, 3] },
++      { "terrain": "house", "rect": [98, 81, 4, 3] },
++      { "terrain": "house", "rect": [69, 85, 4, 3] },
++      { "terrain": "house", "rect": [91, 85, 3, 3] },
+       { "terrain": "rubble", "rect": [84, 76, 3, 3] },
+       { "terrain": "trench", "rect": [64, 56, 14, 2] },
+       { "terrain": "trench", "rect": [83, 56, 14, 2] },
+diff --git a/assets/missions/c1_02_tumen.json b/assets/missions/c1_02_tumen.json
+index f187b639..71554c3c 100644
+--- a/assets/missions/c1_02_tumen.json
++++ b/assets/missions/c1_02_tumen.json
+@@ -36,7 +36,12 @@
+       { "terrain": "high", "rect": [120, 28, 21, 15] },
+       { "terrain": "high", "circle": [36, 93, 8] },
+       { "terrain": "high", "circle": [30, 40, 6] },
+-      { "terrain": "house", "tiles": [[99, 50], [100, 50], [101, 50], [105, 50], [106, 50], [107, 50], [99, 70], [99, 71], [100, 70], [101, 70], [100, 71], [101, 71], [106, 70], [107, 70], [106, 71], [107, 71], [112, 58], [113, 58], [112, 59], [113, 59], [112, 62], [113, 62], [112, 63], [113, 63]] },
++      { "terrain": "house", "rect": [98, 49, 4, 3] },
++      { "terrain": "house", "rect": [105, 49, 4, 3] },
++      { "terrain": "house", "rect": [98, 69, 4, 3] },
++      { "terrain": "house", "rect": [105, 69, 4, 3] },
++      { "terrain": "house", "rect": [111, 56, 4, 3] },
++      { "terrain": "house", "rect": [111, 62, 4, 3] },
+       { "terrain": "rubble", "rect": [91, 57, 5, 4] },
+       { "terrain": "trench", "rect": [86, 44, 1, 32] },
+       { "terrain": "trench", "rect": [80, 26, 6, 1] },
+diff --git a/assets/missions/village_defense.json b/assets/missions/village_defense.json
+index b0ee65a0..9dbefaf6 100644
+--- a/assets/missions/village_defense.json
++++ b/assets/missions/village_defense.json
+@@ -21,7 +21,12 @@
+     "width": 144, "height": 144, "base": "grass",
+     "paint": [
+       { "terrain": "dirt", "rect": [69, 0, 6, 144] },
+-      { "terrain": "house", "tiles": [[62, 63], [62, 64], [63, 63], [64, 63], [63, 64], [64, 64], [79, 63], [80, 63], [79, 64], [80, 64], [81, 63], [81, 64], [62, 79], [62, 80], [63, 79], [64, 79], [63, 80], [64, 80], [79, 79], [80, 79], [79, 80], [80, 80], [81, 79], [81, 80], [66, 71], [67, 71], [78, 73], [78, 74]] },
++      { "terrain": "house", "rect": [61, 62, 4, 3] },
++      { "terrain": "house", "rect": [78, 61, 6, 4] },
++      { "terrain": "house", "rect": [61, 79, 4, 3] },
++      { "terrain": "house", "rect": [79, 79, 4, 3] },
++      { "terrain": "house", "rect": [64, 70, 3, 3] },
++      { "terrain": "house", "rect": [77, 72, 3, 3] },
+       { "terrain": "rubble", "rect": [66, 75, 3, 3] },
+       { "terrain": "trench", "rect": [51, 53, 42, 3] },
+       { "terrain": "wire", "rect": [51, 47, 14, 1] },
+diff --git a/assets/missions/yalu_crossing.json b/assets/missions/yalu_crossing.json
+index cac3871c..f652d356 100644
+--- a/assets/missions/yalu_crossing.json
++++ b/assets/missions/yalu_crossing.json
+@@ -28,7 +28,10 @@
+       { "terrain": "forest", "rect": [78, 84, 18, 18] },
+       { "terrain": "high", "rect": [108, 27, 21, 15] },
+       { "terrain": "high", "circle": [36, 93, 8] },
+-      { "terrain": "house", "tiles": [[99, 50], [100, 50], [101, 50], [105, 50], [106, 50], [107, 50], [99, 70], [99, 71], [100, 70], [101, 70], [100, 71], [101, 71], [106, 70], [107, 70], [106, 71], [107, 71]] },
++      { "terrain": "house", "rect": [98, 49, 4, 3] },
++      { "terrain": "house", "rect": [105, 49, 4, 3] },
++      { "terrain": "house", "rect": [98, 69, 4, 3] },
++      { "terrain": "house", "rect": [105, 69, 4, 3] },
+       { "terrain": "rubble", "rect": [91, 57, 5, 4] },
+       { "terrain": "trench", "rect": [86, 51, 1, 18] },
+       { "terrain": "wire", "rect": [80, 45, 1, 8] },
+diff --git a/src/Render/BuildingRenderer.cs b/src/Render/BuildingRenderer.cs
+index a51225e4..6a4727b3 100644
+--- a/src/Render/BuildingRenderer.cs
++++ b/src/Render/BuildingRenderer.cs
+@@ -36,27 +36,54 @@ public static class BuildingRenderer
+     }
+ 
+     static readonly string[] HouseKeys = { "building_art.house.thatch", "building_art.house.tile", "building_art.house.brick", "building_art.house.barn" };
++    // 가옥 그림 고르기 (가로/세로 비율별): 정사각에 가까운 묶음 = 초가 · 벽돌 (그림 폭/높이 ≈ 1.1~1.25), 가로로 긴 묶음 = 기와 · 헛간 (≈ 1.5~1.6)
++    static readonly int[] SquareKeys = { 0, 2, 0, 2, 1 }, WideKeys = { 1, 3 };
++
++    /// <summary>테마에 가옥 그림이 있는지 (있으면 지형 타일은 가옥 칸을 마당 흙으로 굽고 가옥은 여기서 건물 단위로 그린다 — MapRenderer.SlotInfo).</summary>
++    public static bool HasHouseArt(Theme? th) => th?.Get(HouseKeys[0])?.Lod != null;
++
++    static uint Hash(int x, int y)
++    {
++        uint h = (uint)(x * 73856093) ^ (uint)(y * 19349663);
++        h ^= h >> 13; h *= 0x5bd1e995; h ^= h >> 15;
++        return h;
++    }
+ 
+     /// <summary>
+-    /// 지형 'house' 칸 위에 집 그림 (초가 · 기와 · 벽돌 · 헛간, 칸 좌표 해시로 고름). 확대 (MapRenderer.Lod64Zoom 이상) 에서만, 테마에 그림이 없으면 아무것도 안 그림 (지형 타일 그대로).
++    /// 가옥: 'house' 칸을 건물 단위 사각형으로 묶어 (HouseBlocks) 한 채씩 그 발자국에 맞춘 집 그림 (초가 · 기와 · 벽돌 · 헛간, 비율 + 좌표 해시로 고름). 모든 줌에서 그림 (LOD 시트).
++    /// 잔해 칸은 예전처럼 3칸에 1칸 폐가 (확대에서만). 테마에 그림이 없으면 아무것도 안 그림 (지형 타일 그대로).
+     /// 렌더 전용 — 시뮬 상태를 읽기만 한다. 위 줄부터 아래 줄 순서로 그려 아래 집이 위 집을 덮는다.
+     /// </summary>
+     static void DrawHouses(GameMap map, RtsCamera cam, Vector2 min, Vector2 max)
+     {
+-        if (cam.Zoom < MapRenderer.Lod64Zoom || Theme.Current == null) return;
++        if (Theme.Current == null) return;
++        foreach (var b in HouseBlocks.Of(map))
++        {
++            if (b.X + b.W < min.X - 1 || b.X > max.X + 1 || b.Y + b.H < min.Y - 1 || b.Y > max.Y + 2) continue;
++            foreach (var p in HouseBlocks.Pieces(b))
++            {
++                uint h = Hash(p.X, p.Y);
++                bool wide = p.W >= p.H * 1.4f;
++                int k = wide ? WideKeys[h % (uint)WideKeys.Length] : SquareKeys[h % (uint)SquareKeys.Length];
++                if (Theme.Current.Get(HouseKeys[k])?.Lod is not { } lod) continue;
++                const float m = 0.06f;   // 발자국 가장자리 여백 (칸) — 이웃 칸 병사와 겹치지 않게
++                var r = new Rectangle((p.X + m) * TS, (p.Y + m) * TS, (p.W - 2 * m) * TS, (p.H - 2 * m) * TS);
++                LodDraw.CellFit(lod, 0, r, cam.Zoom, Color.White);
++                TeamShader.Leave();
++            }
++        }
++        if (cam.Zoom < MapRenderer.Lod64Zoom) return;
+         int x0 = Math.Max(0, (int)MathF.Floor(min.X) - 2), y0 = Math.Max(0, (int)MathF.Floor(min.Y) - 1);
+         int x1 = Math.Min(map.Width - 1, (int)MathF.Ceiling(max.X) + 2), y1 = Math.Min(map.Height - 1, (int)MathF.Ceiling(max.Y) + 3);
+         for (int y = y0; y <= y1; y++)
+         for (int x = x0; x <= x1; x++)
+         {
+-            var tt = map.Get(x, y);
+-            if (tt != TerrainType.House && tt != TerrainType.Rubble) continue;
+-            uint h = (uint)(x * 73856093) ^ (uint)(y * 19349663);
+-            h ^= h >> 13; h *= 0x5bd1e995; h ^= h >> 15;
+-            if (tt == TerrainType.Rubble && (h >> 8) % 3 != 0) continue;   // 잔해 칸은 3칸에 1칸만 폐가 그림 (겹쳐서 너저분해지는 것 방지)
++            if (map.Get(x, y) != TerrainType.Rubble) continue;
++            uint h = Hash(x, y);
++            if ((h >> 8) % 3 != 0) continue;   // 잔해 칸은 3칸에 1칸만 폐가 그림 (겹쳐서 너저분해지는 것 방지)
+             var sp = Theme.Current.Get(HouseKeys[h % 4]);
+             if (sp?.Lod is not { } lod) continue;
+-            LodDraw.Cell(lod, 0, false, tt == TerrainType.Rubble ? 1 : 0, new Vector2((x + 0.5f) * TS, (y + 0.5f) * TS), lod.Scale, lod.Scale * cam.Zoom, Color.White);
++            LodDraw.Cell(lod, 0, false, 1, new Vector2((x + 0.5f) * TS, (y + 0.5f) * TS), lod.Scale, lod.Scale * cam.Zoom, Color.White);
+             TeamShader.Leave();
+         }
+     }
+diff --git a/src/Render/HouseBlocks.cs b/src/Render/HouseBlocks.cs
+new file mode 100644
+index 00000000..1a111d28
+--- /dev/null
++++ b/src/Render/HouseBlocks.cs
+@@ -0,0 +1,73 @@
++using KoreanDivision.Core;
++
++namespace KoreanDivision.Render;
++
++/// <summary>
++/// 가옥 칸 (TerrainType.House) 을 건물 단위 사각형으로 묶는다 — 렌더 전용 (시뮬은 칸 단위 그대로: 통행 · 사선 · 시야 · 가옥 옆 엄폐).
++/// 지도에서 가옥은 3×3 · 4×3 (민가) · 6×4 (큰 건물) 사각형으로 칠한다 (ROADMAP_LONG '건물 크기 확대'). 붙어 있는 가옥은 한 건물로 보이므로 1칸 이상 띄운다.
++/// 탐욕 분해: 위 줄 → 아래, 왼쪽 → 오른쪽으로 아직 안 묶인 가옥 칸에서 오른쪽으로 늘리고 (≤ MaxSide), 그 폭 그대로 아래로 늘린다 (≤ MaxSide).
++/// 세로로 긴 묶음 (높이 &gt; 폭) 은 그림이 가로로 넓은 3/4 시점이라 세로로 나눠 여러 채로 그린다 (<see cref="Pieces"/>).
++/// </summary>
++public static class HouseBlocks
++{
++    public const int MaxSide = 6;
++
++    public readonly record struct Block(int X, int Y, int W, int H);
++
++    static GameMap? cachedMap;
++    static long cachedVer = -1;
++    static List<Block> cached = new();
++
++    /// <summary>지도의 가옥 묶음 (지형 버전이 같으면 이전 결과 재사용).</summary>
++    public static IReadOnlyList<Block> Of(GameMap map)
++    {
++        if (!ReferenceEquals(map, cachedMap) || map.TerrainVersion != cachedVer)
++        {
++            cached = Build(map);
++            cachedMap = map;
++            cachedVer = map.TerrainVersion;
++        }
++        return cached;
++    }
++
++    public static List<Block> Build(GameMap map)
++    {
++        int W = map.Width, H = map.Height;
++        var used = new bool[W * H];
++        var res = new List<Block>();
++        bool Free(int x, int y) => map.Get(x, y) == TerrainType.House && !used[y * W + x];
++        for (int y = 0; y < H; y++)
++        for (int x = 0; x < W; x++)
++        {
++            if (!Free(x, y)) continue;
++            int w = 1;
++            while (w < MaxSide && x + w < W && Free(x + w, y)) w++;
++            int h = 1;
++            while (h < MaxSide && y + h < H)
++            {
++                bool row = true;
++                for (int k = 0; k < w && row; k++) row = Free(x + k, y + h);
++                if (!row) break;
++                h++;
++            }
++            for (int yy = y; yy < y + h; yy++)
++            for (int xx = x; xx < x + w; xx++) used[yy * W + xx] = true;
++            res.Add(new Block(x, y, w, h));
++        }
++        return res;
++    }
++
++    /// <summary>그림 한 장씩 그릴 조각: 높이가 폭보다 크면 세로로 n 등분 (조각 높이 ≈ 폭 × 0.75), 아니면 그대로.</summary>
++    public static IEnumerable<Block> Pieces(Block b)
++    {
++        if (b.H <= b.W) { yield return b; yield break; }
++        int n = Math.Max(1, (int)MathF.Round(b.H / MathF.Max(1f, b.W * 0.75f)));
++        int y = b.Y;
++        for (int i = 0; i < n; i++)
++        {
++            int h = (b.Y + b.H - y) / (n - i);
++            yield return new Block(b.X, y, b.W, h);
++            y += h;
++        }
++    }
++}
+diff --git a/src/Render/LodSprite.cs b/src/Render/LodSprite.cs
+index 30300b19..479414e5 100644
+--- a/src/Render/LodSprite.cs
++++ b/src/Render/LodSprite.cs
+@@ -333,6 +333,28 @@ internal static class LodDraw
+         if (lv.Group < Drawn.Length) Drawn[lv.Group]++;
+     }
+ 
++    /// <summary>
++    /// 칸 (행 0) 의 그림 — 투명 여백을 잘라낸 부분 — 을 사각형 r (월드 좌표) 안에 비율을 지켜 맞춰 그린다: 가로 가운데 · 아래 맞춤.
++    /// 여러 칸짜리 가옥 발자국 그리기용 (그림을 바꾸지 않고 배율로 크기를 맞춤). zoom = 카메라 줌 (LOD 선택).
++    /// </summary>
++    public static void CellFit(LodSprite s, int frame, Rectangle r, float zoom, Color team)
++    {
++        if ((uint)frame >= (uint)s.FrameNames.Length || s.Levels.Length == 0) return;
++        var l0 = s.Levels[0];
++        float est = MathF.Min(r.Width / (l0.FrameW * 0.9f), r.Height / (l0.FrameH * 0.7f)) * zoom;   // LOD 0 1px → 화면 px (대략)
++        var lv = s.Atlas?.Resolve(s, s.LevelFor(est));
++        if (lv == null) return;
++        int ci = frame;
++        if (lv.CW[ci] == 0) { lv = s.Atlas?.FindCell(s, lv.Group, ci); if (lv == null) return; }
++        int cw = lv.CW[ci], ch = lv.CH[ci];
++        float k = MathF.Min(r.Width / cw, r.Height / ch);
++        float w = cw * k, h = ch * k;
++        var dest = new Rectangle(r.X + (r.Width - w) / 2, r.Y + r.Height - h, w, h);
++        TeamShader.Enter();
++        Raylib.DrawTexturePro(lv.CellTex[ci], new Rectangle(lv.CX[ci], lv.CY[ci], cw, ch), dest, Vector2.Zero, 0, team);
++        if (lv.Group < Drawn.Length) Drawn[lv.Group]++;
++    }
++
+     static readonly bool MissLog = Environment.GetEnvironmentVariable("KD_LODMISS") == "1";
+     static readonly HashSet<string> missSeen = new();
+     /// <summary>[확인용] KD_LODMISS=1: 그리지 못한 칸을 (종류 · 프레임 · 행 · LOD · 이유) 별로 한 번씩 기록.</summary>
+diff --git a/src/Render/MapRenderer.cs b/src/Render/MapRenderer.cs
+index 4da8c07c..7434646e 100644
+--- a/src/Render/MapRenderer.cs
++++ b/src/Render/MapRenderer.cs
+@@ -301,7 +301,7 @@ public sealed partial class MapRenderer : IDisposable
+         var src = new Color[NS][][];
+         for (int t = 0; t < NS; t++)
+         {
+-            var (name, fb) = SlotInfo(t);
++            var (name, fb) = SlotInfo(t, houseYard);
+             var imgs = th?.TerrainImages(name, L.R) ?? th?.TerrainImages(fb, L.R);
+             bool own = imgs == null;
+             imgs ??= ProceduralTiles(fb, L.R);
+@@ -333,12 +333,13 @@ public sealed partial class MapRenderer : IDisposable
+     }
+ 
+     /// <summary>슬롯의 테마 이름과 대체 지형 (테마에 그 이름이 없을 때).</summary>
+-    static (string name, TerrainType fb) SlotInfo(int t)
++    /// houseYard: 가옥 그림이 있으면 가옥 칸 바닥은 마당 흙 (집은 BuildingRenderer 가 건물 단위로 덮어 그림).
++    static (string name, TerrainType fb) SlotInfo(int t, bool houseYard)
+     {
+         if (t < NT)
+         {
+             var ty = (TerrainType)t;
+-            string n = ty switch { TerrainType.Forest => "forest_deep", TerrainType.Wire => "barbed_wire", TerrainType.Trench => "trench_h", _ => ty.ToString().ToLowerInvariant() };
++            string n = ty switch { TerrainType.Forest => "forest_deep", TerrainType.Wire => "barbed_wire", TerrainType.Trench => "trench_h", TerrainType.House when houseYard => "dirt", _ => ty.ToString().ToLowerInvariant() };
+             return (n, ty);
+         }
+         if (t == SlotEdge) return ("forest_edge", TerrainType.Forest);
+@@ -347,7 +348,7 @@ public sealed partial class MapRenderer : IDisposable
+         return ("trench_" + TrenchPieces[t - SlotTrench], TerrainType.Trench);
+     }
+ 
+-    bool slotSplit, slotPieces, slotHg;
++    bool slotSplit, slotPieces, slotHg, houseYard;
+ 
+     /// <summary>칸마다 그림 슬롯: 숲 = 8방향 이웃이 모두 숲이면 깊은 숲 · 아니면 가장자리, 참호 = 4방향 참호 이웃 마스크로 조각, 풀 고지 = 고지 타일.</summary>
+     byte[] BuildSlots(Theme? th)
+@@ -355,6 +356,7 @@ public sealed partial class MapRenderer : IDisposable
+         slotSplit = th?.HasTerrain("forest_edge") == true && th.HasTerrain("forest_deep");
+         slotPieces = th?.HasTerrain("trench_h") == true;
+         slotHg = th?.HasTerrain("high_ground") == true;
++        houseYard = BuildingRenderer.HasHouseArt(th) && th!.HasTerrain("dirt");
+         useRim = th?.HasTerrain("high_ground_rim_n") == true && th.HasTerrain("high_ground_rim_e") && th.HasTerrain("high_ground_rim_s") && th.HasTerrain("high_ground_rim_w");
+         var sl = new byte[W * H];
+         for (int y = 0; y < H; y++)
+diff --git a/src/Tests/TerrainSelfTest.cs b/src/Tests/TerrainSelfTest.cs
+index 647f0a38..4deb83dc 100644
+--- a/src/Tests/TerrainSelfTest.cs
++++ b/src/Tests/TerrainSelfTest.cs
+@@ -174,6 +174,43 @@ public static class TerrainSelfTest
+             check(lw.ComputeChecksum() == ws.ComputeChecksum() && lw.Fog.Grid(1).SequenceEqual(ws.Fog.Grid(1)), "불러온 뒤 이어 돌려도 체크섬 · 안개 일치");
+         }
+ 
++        // ---- 건물 크기 (2026-10-22): 가옥 칸 → 건물 묶음 (렌더) · 미션 지도 가옥 = 민가 3×3~4×3 · 큰 건물 6×4
++        {
++            const string HouseMap = """
++            { "name": "house test", "width": 48, "height": 48, "base": "grass", "starts": [ [2, 2], [45, 45] ],
++              "paint": [
++                { "terrain": "house", "rect": [5, 5, 3, 3] },
++                { "terrain": "house", "rect": [10, 5, 4, 3] },
++                { "terrain": "house", "rect": [5, 12, 6, 4] },
++                { "terrain": "house", "rect": [20, 5, 3, 4] },
++                { "terrain": "house", "rect": [20, 20, 8, 3] }
++              ] }
++            """;
++            var hm = MapFile.LoadText(HouseMap, "housetest", opt.Seed);
++            var hb = KoreanDivision.Render.HouseBlocks.Build(hm);
++            string got = string.Join(" ", hb.Select(b => $"{b.X},{b.Y},{b.W}x{b.H}"));
++            check(got == "5,5,3x3 10,5,4x3 20,5,3x4 5,12,6x4 20,20,6x3 26,20,2x3", $"가옥 묶음: 칠한 사각형 그대로 · 긴 줄은 6칸에서 끊음 ({got})");
++            var tall = KoreanDivision.Render.HouseBlocks.Pieces(new KoreanDivision.Render.HouseBlocks.Block(0, 0, 3, 4)).ToList();
++            check(tall.Count == 2 && tall.Sum(p => p.H) == 4 && KoreanDivision.Render.HouseBlocks.Pieces(new KoreanDivision.Render.HouseBlocks.Block(0, 0, 4, 3)).Count() == 1,
++                  "세로로 긴 묶음 (3×4) 은 그림 두 채, 가로 묶음 (4×3) 은 한 채");
++            check(!hm.IsWalkable(6, 6) && hm.IsHouseAdjacent(4, 6) && hm.IsHouseAdjacent(8, 6) && !hm.IsHouseAdjacent(9, 9), "큰 가옥: 발자국 전체 통행 불가 · 둘레 칸 가옥 엄폐");
++            var bad = new List<string>();
++            int nMis = 0, nHouse = 0;
++            foreach (var id in MissionDef.Available())
++            {
++                var md = MissionDef.Load(id);
++                var mm = md.MapData is { ValueKind: System.Text.Json.JsonValueKind.Object } mj ? MapFile.LoadText(mj.GetRawText(), "m_" + id, opt.Seed) : MapFile.Load(md.Map!, opt.Seed);
++                nMis++;
++                foreach (var b in KoreanDivision.Render.HouseBlocks.Build(mm))
++                {
++                    nHouse++;
++                    if (Math.Min(b.W, b.H) < 3 || Math.Max(b.W, b.H) > 6) bad.Add($"{id}:{b.X},{b.Y},{b.W}x{b.H}");
++                }
++            }
++            Console.WriteLine($"  [houses] 미션 {nMis}개 · 가옥 {nHouse}채");
++            check(bad.Count == 0, $"미션 지도 가옥은 모두 3~6칸 건물 (어긋남 {bad.Count}: {string.Join(" ", bad.Take(6))})");
++        }
++
+         // ---- 생성 맵: 숲 · 언덕 흩뿌리기 (결정적 · 2인 대칭)
+         {
+             var g1 = GameMap.Generate(128, 128, opt.Seed);

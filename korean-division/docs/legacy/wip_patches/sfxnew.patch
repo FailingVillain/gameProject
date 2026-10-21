@@ -1,0 +1,229 @@
+diff --git a/assets/sounds/kd1920/sounds.json b/assets/sounds/kd1920/sounds.json
+index 150bbe96..e10ba6d4 100644
+--- a/assets/sounds/kd1920/sounds.json
++++ b/assets/sounds/kd1920/sounds.json
+@@ -7,6 +7,14 @@
+     "maxVoices": 1,
+     "loop": true
+   },
++  "ambient_night": {
++    "files": [
++      "ambient_night_loop.wav"
++    ],
++    "volume": 0.35,
++    "maxVoices": 1,
++    "loop": true
++  },
+   "ambient_rain": {
+     "files": [
+       "rain_loop.wav"
+@@ -23,14 +31,6 @@
+     "maxVoices": 1,
+     "loop": true
+   },
+-  "ambient_night": {
+-    "files": [
+-      "ambient_night_loop.wav"
+-    ],
+-    "volume": 0.35,
+-    "maxVoices": 1,
+-    "loop": true
+-  },
+   "ambient_wind": {
+     "files": [
+       "wind_loop.wav"
+@@ -355,6 +355,59 @@
+     "maxVoices": 3,
+     "minInterval": 0.06
+   },
++  "mortar_fire": {
++    "files": [
++      "gun37_fire_near_1.wav",
++      "gun37_fire_near_2.wav"
++    ],
++    "volume": 0.6,
++    "maxVoices": 3,
++    "minInterval": 0.15,
++    "farDist": 30,
++    "important": true
++  },
++  "mortar_fire_far": {
++    "files": [
++      "gun37_fire_far_1.wav",
++      "gun37_fire_far_2.wav"
++    ],
++    "volume": 0.4,
++    "maxVoices": 3,
++    "minInterval": 0.15,
++    "important": true
++  },
++  "mortar_impact": {
++    "files": [
++      "grenade_explosion_near_1.wav",
++      "grenade_explosion_near_2.wav",
++      "grenade_explosion_near_3.wav"
++    ],
++    "volume": 0.85,
++    "maxVoices": 4,
++    "minInterval": 0.1,
++    "farDist": 30,
++    "important": true
++  },
++  "mortar_impact_far": {
++    "files": [
++      "grenade_explosion_far_1.wav",
++      "grenade_explosion_far_2.wav"
++    ],
++    "volume": 0.55,
++    "maxVoices": 4,
++    "minInterval": 0.1,
++    "important": true
++  },
++  "mount_switch": {
++    "files": [
++      "horse_snort_1.wav",
++      "horse_snort_2.wav",
++      "horse_stomp_1.wav"
++    ],
++    "volume": 0.5,
++    "maxVoices": 3,
++    "minInterval": 0.5
++  },
+   "pistol": {
+     "files": [
+       "pistol_shot_near_1.wav",
+@@ -418,6 +471,24 @@
+     "maxVoices": 3,
+     "minInterval": 0.25
+   },
++  "shotgun": {
++    "files": [
++      "atrifle_shot_near_1.wav",
++      "atrifle_shot_near_2.wav"
++    ],
++    "volume": 0.75,
++    "maxVoices": 3,
++    "minInterval": 0.1,
++    "farDist": 22
++  },
++  "shotgun_far": {
++    "files": [
++      "atrifle_shot_far_1.wav"
++    ],
++    "volume": 0.5,
++    "maxVoices": 3,
++    "minInterval": 0.1
++  },
+   "smg": {
+     "files": [
+       "smg_burst_near_1.wav",
+@@ -438,6 +509,15 @@
+     "maxVoices": 3,
+     "minInterval": 0.12
+   },
++  "smoke_burst": {
++    "files": [
++      "grenade_explosion_far_1.wav",
++      "grenade_explosion_far_2.wav"
++    ],
++    "volume": 0.4,
++    "maxVoices": 2,
++    "minInterval": 0.2
++  },
+   "tank_idle": {
+     "files": [
+       "ft_engine_idle_loop.wav"
+@@ -478,5 +558,14 @@
+     "volume": 0.5,
+     "maxVoices": 1,
+     "loop": true
++  },
++  "wire_cut": {
++    "files": [
++      "melee_clash_1.wav",
++      "melee_clash_2.wav"
++    ],
++    "volume": 0.35,
++    "maxVoices": 2,
++    "minInterval": 0.3
+   }
+ }
+\ No newline at end of file
+diff --git a/docs/DECISIONS_PENDING.md b/docs/DECISIONS_PENDING.md
+index ec1a3e9e..a414392e 100644
+--- a/docs/DECISIONS_PENDING.md
++++ b/docs/DECISIONS_PENDING.md
+@@ -8,3 +8,4 @@
+ - [돌격보병 강화] suppressResist: 지시 ×0.6 이지만 기존 값 0.5(N23)가 이미 더 강해 유지했음 — 0.6 으로 약화할지(요청 문구대로) / 0.5 유지(권장)
+ - [정리 권한] 병합 후 남은 워크트리 폴더 `..\kd-develop\kd-assaultinf` Permission denied — 사용자가 직접 삭제하거나 `git worktree remove` 허용 필요
+ - [시트 검수] 기마 포병 `docs/art_review/horse_artillery.png` — 북(n) 방향 가장자리 접촉(@144 13칸, @72 21칸) 잘림 여부 확인, 마부 다리 접촉 75건은 supply-wagon 과 같은 의도된 접촉
++- [소리 방침] 함성 방침 A(공용)/B(세력군 3묶음, 권장)/C(세력별 녹음) 선택 + 연막 · 철조망 · 박격포 임시 매핑을 새 음원으로 바꿀지 — docs/SOUND_POLICY_2026-10-22.md
+diff --git a/docs/SOUND_POLICY_2026-10-22.md b/docs/SOUND_POLICY_2026-10-22.md
+new file mode 100644
+index 00000000..d5d47168
+--- /dev/null
++++ b/docs/SOUND_POLICY_2026-10-22.md
+@@ -0,0 +1,13 @@
++# 소리 방침 초안 (2026-10-22)
++1. **원칙**: 소리 변경은 표현 전용 (SfxDirector · sounds.json) — 시뮬 · 골든 불변. 새 음원 제작 없이 기존 kd1920 WAV 재사용 매핑부터, 맞는 음원이 없으면 가장 가까운 것을 쓰고 아래 목록에 기록.
++2. **이번 연결 (sfxnew)**: 엽총 `shotgun` = 대전차소총 근접/원거리 WAV 재사용 (연결됨) · 타찬카 / 기마 포병 이동 = `wagon_loop` (연결됨) · 기병 하마/승마 전환 시작 = `mount_switch` (말 콧김 · 발구름, 연결됨).
++3. **키만 준비 (breach 병합 후 연결)**: `mortar_fire(_far)` = 37mm포 발사음 재사용 · `mortar_impact(_far)` = 수류탄 폭발음 · `smoke_burst` = 수류탄 먼 폭발음 낮은 음량 · `wire_cut` = 근접 충돌음 낮은 음량. breach 미병합이라 박격포 무기 키 · 연막 / 철조망 사건이 main 에 없음.
++4. **대체 음원 후보 (진짜 소리 아님)**: 연막은 쉬익 소리, 철조망은 금속 가위 소리, 박격포는 "퐁" 발사음이 맞음 — 지금 매핑은 임시. 사용자 승인 후 해당 WAV 만 추가 제작.
++5. **무전 음성 임시본 교체 계획**: 현재 `audio-voice/` 변조 음성은 임시. 사용자 녹음 4대사 × en/de/ru (총 12개) 를 받으면 `voice_fx.py` 로 무전 변조 → `assets/voice/` 교체, 키 · 길이는 그대로 두어 코드 변경 없음. Gemini TTS 는 사용자 거절 (10-20) 이라 제외.
++6. **세력별 함성 방침 후보**:
++   - **A안: 공용 함성 1세트** (`charge_shout`) — 제작 최소, 일관됨. 단점: 세력 구분이 소리로는 안 됨.
++   - **B안: 세력군 3묶음** (동아시아 · 슬라브 · 게르만/서구; 한국·일본·중국 / 러시아·소련 / 독일·영국) — 사용자 녹음 부담 적당, 구분 가능. 단점: 한중일 구분 못 함.
++   - **C안: 세력별 개별 녹음** (한국·일본·러시아·소련·독일·마적 등) — 몰입 최고. 단점: 녹음 · 검수량 크고 사용자 목소리 한계로 대사가 비슷해짐.
++   - 권장 B안 (필요하면 한국만 C안으로 승격).
++7. **음량 · 혼잡**: 신규 키는 기존처럼 maxVoices · minInterval 로 폭주 방지 (수천 기 교전 대비), far 변형은 `farDist` 로 자동.
++8. **검수**: 신규 키 청취는 `KD_SFX_BATTLE=1` 교전 테스트 (엽총수 · 타찬카 · 기병) 에서 사용자 확인.
+diff --git a/src/UI/SfxDirector.cs b/src/UI/SfxDirector.cs
+index 5fbdca38..7aeb69aa 100644
+--- a/src/UI/SfxDirector.cs
++++ b/src/UI/SfxDirector.cs
+@@ -22,6 +22,7 @@ internal static class SfxDirector
+     /// <summary>발굽 고리에 동시에 더해 줄 말 수 상한 (많은 기병 = 한 고리를 조금 키울 뿐, 여러 겹 쌓지 않음). 표현 전용.</summary>
+     const int HoofLoopCap = 3;
+     static double lastFrameTime;
++    static readonly HashSet<int> mounting = new();   // 하마 · 승마 전환 중인 기병 (전환 시작에 한 번만 소리). 표현 전용.
+ 
+     /// <summary>월드가 바뀌었거나 시간이 되감겼으면 기준을 다시 잡는다. 다시 잡았으면 true (이번 프레임 사건은 건너뜀).</summary>
+     static bool Sync(World world)
+@@ -29,7 +30,7 @@ internal static class SfxDirector
+         if (ReferenceEquals(world, lastWorld) && world.Tick >= shotTick) return false;
+         lastWorld = world;
+         shotTick = meleeTick = world.Tick;
+-        combatRate = 0; eventsThisFrame = 0;
++        combatRate = 0; eventsThisFrame = 0; mounting.Clear();
+         return true;
+     }
+ 
+@@ -48,6 +49,7 @@ internal static class SfxDirector
+                 "lmg" or "lmg_chauchat" or "mg" => ("lmg", 1f),
+                 "hmg" or "hmg_type3" => ("hmg_loop", 1f),
+                 "at_rifle" => ("at_rifle", 1f),
++                "shotgun" => ("shotgun", 1f),   // 엽총 (마적 엽총수): 묵직한 단발 — 대전차소총 소리 재사용
+                 "ft_gun" => ("gun37_fire", 1f),
+                 "tank_gun" => ("artillery_fire", 0.9f),
+                 _ => ("rifle", 1f),
+@@ -191,16 +193,18 @@ internal static class SfxDirector
+             var p = u.Pos;
+             if (p.X < min.X || p.X > max.X || p.Y < min.Y || p.Y > max.Y) continue;
+             var d = u.Def;
+-            if (d.IsInfantry && !d.Mounted) continue;   // 보병은 고리 없음 (대부분의 유닛이 여기서 끝)
++            if (d.IsInfantry && !d.Mounted && !(d.SetupTime > 0 && d.Key is "heavy_tachanka")) continue;   // 보병은 고리 없음 (대부분의 유닛이 여기서 끝; 타찬카는 마차라 예외)
+             if (u.Owner != seat && !fog.IsVisible(seat, p)) continue;
+             if (d.IsArmored)
+             {
+                 if (u.Walking) { Sfx.LoopAt("tank_move", p, cam, 0.5f); Sfx.LoopAt("tank_tracks", p, cam, 0.5f); }
+                 else Sfx.LoopAt("tank_idle", p, cam, 0.5f);
+             }
+-            else if (d.IsSupplyWagon) { if (u.Walking) Sfx.LoopAt("wagon_loop", p, cam, 0.6f); }
++            else if (d.IsSupplyWagon || d.Key is "heavy_tachanka" or "heavy_horse_artillery") { if (u.Walking) Sfx.LoopAt("wagon_loop", p, cam, 0.6f); }   // 보급 · 타찬카 · 기마 포병 마차 바퀴
+             else if (d.Mounted)
+             {
++                if (u.MountLeft > 0) { if (mounting.Add(u.Id)) Sfx.PlayAt("mount_switch", p, cam); }   // 하마 · 승마 전환 시작 한 번
++                else if (mounting.Count > 0) mounting.Remove(u.Id);
+                 if (u.Charging) { if (chargers++ < HoofLoopCap) Sfx.LoopAt("cavalry_charge", p, cam, 0.4f); }
+                 else if (u.Walking && u.Velocity.LengthSquared() > 2.25f) { if (gallopers++ < HoofLoopCap) Sfx.LoopAt("cavalry_move", p, cam, 0.4f); }
+                 else if (!u.Walking && Vector2.DistanceSquared(p, center) < 18f * 18f && rng.Next(++horses) == 0) horse = u;   // 서 있는 말: 한 마리 뽑기

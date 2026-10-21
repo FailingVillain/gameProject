@@ -1,0 +1,542 @@
+diff --git a/assets/data/ai_profiles.json b/assets/data/ai_profiles.json
+index f70bddf8..c74e7f74 100644
+--- a/assets/data/ai_profiles.json
++++ b/assets/data/ai_profiles.json
+@@ -51,6 +51,7 @@
+   //   withdrawAt         철수 (목표 포기) 문턱: 지시 그룹 병력 비율, 0 = 끝까지 — 미션 factions[].aiWithdrawAt 이 덮어씀 (사용자 결정 5)
+   //   commitment         목표 고수 정도 0~1 (0.5 = 그대로): 공격 한계 · 철수 문턱 배수 2 × (1 − 값) — 미션 factions[].aiCommitment 가 덮어씀
+   //   fixPush · fixPushSec · fixWait   (3B, 기본 끔 — 측정에서 발동 0) 기동 제대 도착 뒤 고정 제대가 fixPushSec 초 교전 못 하면 사거리 ×0.85 까지 밀기 · 돌격 허가까지 최대 대기 (옛 20초)
++  //   manReplace         (3B2) 측면 · 협공 중 기동 제대가 모두 빠지면 고정 제대 바깥 중대 하나를 대신 보냄 (고정 1개 이상 남김, 도착 ≤ maxArrive)
+   // ---- tactics 3단계 B (방어 · 예비 · 역습, TacticalAi.Reserve3B.cs — 끄기 = 겹침 "no3b", 측정 docs/ai3b_raw)
+   //   ammoRotate · ammoRotateAt · ammoRotateReady · ammoRotateCooldown   저탄약 교대: 예비 중대 (탄약 ≥ ready) ↔ 탄약 평균 < at 인 전선 중대, 대대마다 cooldown 초에 한 번
+   //   reserveEvents · plugSeconds   방어 대대 예비 사건 투입: 전선 중대 붕괴 (틈) · 주저항선을 넘은 적 (돌파 = 국지 역습) · 측면 끝의 적 → 그 지점, plugSeconds 뒤 전선 합류
+@@ -70,7 +71,7 @@
+         "manoeuvre": true, "prePlan": false, "planFrontal": 0, "planFlank": 0, "planPincer": 0, "planSchwerpunkt": 0, "maxDetour": 2.0, "maxArrive": 120,
+         "flankShare": 0.34, "pincerShare": 0.5, "flankMinOdds": 1.2, "pincerMinOdds": 1.8, "mgWeight": 0.35, "fixLead": 20,
+         "objectives": true, "objectiveWeight": 0.3, "withdrawAt": 0, "commitment": 0.5,
+-        "fixPush": false, "fixPushSec": 8, "fixWait": 20
++        "fixPush": false, "fixPushSec": 8, "fixWait": 20, "manReplace": false
+       },
+       "tactics": {
+         "aggressiveness": 0.5, "retreatStrength": 0.67, "retreatSuppression": 0.6, "trench": 0.6,
+@@ -105,6 +106,8 @@
+     "3b_repick": { "tactics": { "defendRepick": 0.5 } },
+     "3b_fixpush": { "strategy": { "fixPush": true, "fixWait": 35 } },
+     "norepick": { "tactics": { "defendRepick": 0 } },
++    "3b_pincer65": { "strategy": { "pincerShare": 0.65 } },
++    "3b_manrepl": { "strategy": { "manReplace": true } },
+     // 측정용: 전술 틀 켜기 / 끄기 (--ai tactical:templates · tactical:notemplates)
+     "templates": { "tactics": { "templates": true } },
+     "notemplates": { "tactics": { "templates": false } },
+diff --git a/docs/DECISIONS_PENDING.md b/docs/DECISIONS_PENDING.md
+index ec1a3e9e..8bcb5713 100644
+--- a/docs/DECISIONS_PENDING.md
++++ b/docs/DECISIONS_PENDING.md
+@@ -8,3 +8,4 @@
+ - [돌격보병 강화] suppressResist: 지시 ×0.6 이지만 기존 값 0.5(N23)가 이미 더 강해 유지했음 — 0.6 으로 약화할지(요청 문구대로) / 0.5 유지(권장)
+ - [정리 권한] 병합 후 남은 워크트리 폴더 `..\kd-develop\kd-assaultinf` Permission denied — 사용자가 직접 삭제하거나 `git worktree remove` 허용 필요
+ - [시트 검수] 기마 포병 `docs/art_review/horse_artillery.png` — 북(n) 방향 가장자리 접촉(@144 13칸, @72 21칸) 잘림 여부 확인, 마부 다리 접촉 75건은 supply-wagon 과 같은 의도된 접촉
++- [ai3b2/AI 3B] 결정: 3B 합격 지표 '방어 중대 간 24칸 안 ≥50%' 는 90명 중대 정면 폭(≈30칸)상 거의 불가 (C1/C2 기본 34~42%) — 40칸 안 비율로 바꿀지, 값 유지할지. 또 pincerShare 0.5→0.65 (협공 고정 몫 축소) 는 측면 계획으로 바뀌는 효과라 기본 유지 제안.
+diff --git a/docs/ENGINE_NOTES.md b/docs/ENGINE_NOTES.md
+index 03eaa24b..352c0645 100644
+--- a/docs/ENGINE_NOTES.md
++++ b/docs/ENGINE_NOTES.md
+@@ -667,3 +667,7 @@
+ - 곡사포 조정 사격 (`adjustFireShots` 5 · `adjustFireMinMul` 1/3 · `adjustFireZone` 5칸): 관측 사격 (FireArtillery) 만, 앞 조준점 5칸 안이면 연속 발수 +1 → 퍼짐 9 → 7.5 → 6 → 4.5 → 3칸, 구역을 벗어나면 1발째부터. 지점 포격 (관측 없음) 은 해당 없음. 상태 Unit.AdjustShots · AdjustAim.
+ - 중기관총 최후 저지선 (FireMode.FinalLine, K 순환: 자유 → 금지 → 응사만 → [중기관총 있으면 지점 고르기] → 자유): `SetFinalLineCommand` (지점), 사격선 = 유닛 → 지점 방향 사거리까지, 띠 `finalLineBand` 2칸 안의 적만 표적 (FindTarget fpl 필터 · FireAllowed). 상태 Unit.FinalLinePoint. 선택 시 사격선 표시 (Game.DrawFinalLines).
+ - 저장: ORG_ 사격 통제 바이트 뒤에 (유닛 색인, FinalLinePoint, AdjustShots, AdjustAim) 목록 (값이 있는 유닛만). 테스트 `KD_SELFTEST_ONLY=arty3`.
++### 전술 AI 3B2 — 대체 중대 · bn_campaign 측정 (2026-10-22, 브랜치 `ai3b2`, FormatVersion 51)
++- `strategy.manReplace` (기본 끔, 겹침 `3b_manrepl`): 측면 · 협공 중 기동 제대가 모두 빠지면 (후퇴 · 조우 · 전멸) 고정 제대 중 성한 소총 중대 (8명↑ · 후퇴 · Spent 아님) 가 2개 이상일 때 경유점에 가장 가까운 중대를 같은 경유점 · 돌격 진지로 보냄 (도착 예정 ≤ maxArrive, 기한 연장). 누계 `TacFaction.ManReplaces` (tactics-obs `ManRepl`). 테스트 `KD_SELFTEST_ONLY=s3a` 2항목.
++- 측정 도구: `tools/bn_campaign/gen_scen.py`·`gen_scen2.py` 기관총 중대를 세력 전용 유닛으로 (봉천 = `heavy_machinegunner_fengtian` — 전엔 MGD_* · C1 기관총 시나리오가 검증 오류로 전부 실패), `gen_scen4.py` (DR_* — 방어 대대 3~4개 중대 = 예비 있음; C1/C2 방어는 2개 중대라 3B 예비 기능이 발동 0), `agg_3b2.py` (변형별 승 · 미결 · 손실 · 방어 24칸 · 참호 · Defend→Advance · 예비 · 역습 · 투입 · 계획).
++- 측정 (main e0dc64d, C1 7 + C2 9 시나리오 × 시드 1~5, 같은 실행 파일 KD_AI_OVERLAY, `docs/ai3b2_raw/summary_base.md`): counterOdds 1.8 = 기본과 완전히 같음 (역습 발동 0) · defendRepick 0.5 = 승 50/80 같음, Defend→Advance 1.59→1.39 · fixPush = 발동 5회, 승 50→49 · pincerShare 0.65 = 협공이 거의 안 골라짐 (측면만), 승 50→52 (RIV_br2 1→4, MGD 4→3, D_hill 방어 손실 25→11%). 방어 예비 · 역습 지표는 이 시나리오에서 0 → DR_* 로 다음 통합 측정.
+diff --git a/docs/TACTICAL_AI_STAGE3_REVIEW_2026-10-19.md b/docs/TACTICAL_AI_STAGE3_REVIEW_2026-10-19.md
+index 324a9296..01774c90 100644
+--- a/docs/TACTICAL_AI_STAGE3_REVIEW_2026-10-19.md
++++ b/docs/TACTICAL_AI_STAGE3_REVIEW_2026-10-19.md
+@@ -220,3 +220,7 @@
+ 구현 (ENGINE_NOTES '전술 AI 3단계 B'): S3 사건 투입 (틈 · 돌파 · 측면) · S3 예비 재지정 · 예비 저탄약 교대 — 기본 켬. S8 역습 병력비 (`counterOdds`) · S4 진지 히스테리시스 (`defendRepick`) · 3A 남은 일 1 (고정 제대 밀기 `fixPush` · `fixWait`) — 구현 · 테스트, 기본 끔. S7 교착은 ④ stale 로 이미 main.
+ 측정 (같은 실행 파일, 기본 대 `no3b`): tactics-obs A/B/C 시드 1~5 = A 2/5 0.85 · B 3/5 0.98→0.94 · C 5/5 0.66 (퇴행 없음), 방어 미션 9판 동일. 3단계 합격표의 bn_campaign C1/C2 (D_* · CTR_* · RIV_*) 는 시간 상한으로 못 함 → 다음 측정.
+ 남은 일: 3A 남은 일 1 의 '기동 제대 후퇴 시 대체 중대', 2 (협공 고정 몫 축소 — `pincerShare` 값 실험), 4 (MGD_T · D_hill 측정), counterOdds · defendRepick · fixPush 을 C1/C2 시나리오로 재측정 후 켤지 결정.
++
++## 3B2 (2026-10-22, 브랜치 `ai3b2`, opus) — 3A 남은 일 정리
++- 3A 남은 일 1 '기동 제대 후퇴 시 대체 중대' = `strategy.manReplace` 구현 (기본 끔). 남은 일 2 (협공 몫) = `3b_pincer65` 측정: 협공 대신 측면만 골라 승 50→52/80, 섞임. 남은 일 4 (MGD_T · D_hill) = 측정 (기관총 시나리오 생성기 오류 수정 후). counterOdds · defendRepick · fixPush 의 C1/C2 재측정 = ENGINE_NOTES '전술 AI 3B2' — counterOdds 발동 0, 나머지 차이 ≤1승 → **기본값 그대로 (끔)**.
++- 합격표 3B 지표 중 방어 예비 · 역습 · 곤경 투입은 C1/C2 방어 측이 2개 중대 (예비 없음) 라 측정 불가 → `gen_scen4` DR_* 를 병합 큐 뒤 통합 측정으로 이월 (코디네이터 지시). '방어 24칸 안 ≥50%' 는 90명 중대 정면 (≈30칸) 상 중심 거리 24칸이 거의 불가능 — 지표 재정의 필요 (DECISIONS_PENDING).
+diff --git a/docs/ai3b2_raw/summary_base.md b/docs/ai3b2_raw/summary_base.md
+new file mode 100644
+index 00000000..b04e250f
+--- /dev/null
++++ b/docs/ai3b2_raw/summary_base.md
+@@ -0,0 +1,88 @@
++| cfg | var | n | W1 | TO | L1 | L2 | dur | sup24 | trench | DA/co | res | resTr | ctr | plug | rel | abort | repl | push | asRet | plans |
++|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
++| AGG_def_def | default | 5 | 2 | 2 | 77% | 69% | 514 | - | - | - | - | - | - | - | 5 | 1 | 0 | 0 | 67% | f |
++| AGG_def_def | 3b_counter | 5 | 2 | 2 | 77% | 69% | 514 | - | - | - | - | - | - | - | 5 | 1 | 0 | 0 | 67% | f |
++| AGG_def_def | 3b_repick | 5 | 2 | 2 | 77% | 69% | 514 | - | - | - | - | - | - | - | 5 | 1 | 0 | 0 | 67% | f |
++| AGG_def_def | 3b_fixpush | 5 | 2 | 2 | 77% | 69% | 514 | - | - | - | - | - | - | - | 5 | 1 | 0 | 0 | 67% | f |
++| AGG_def_def | 3b_pincer65 | 5 | 2 | 2 | 77% | 69% | 514 | - | - | - | - | - | - | - | 5 | 1 | 0 | 0 | 67% | f |
++| AMB_F_column_r1 | default | 5 | 1 | 5 | 68% | 38% | 600 | 96% | 0% | 1.4 | 0.0 | - | 0.0 | 0.0 | 8 | 1 | 0 | 0 | 100% | f |
++| AMB_F_column_r1 | 3b_counter | 5 | 1 | 5 | 68% | 38% | 600 | 96% | 0% | 1.4 | 0.0 | - | 0.0 | 0.0 | 8 | 1 | 0 | 0 | 100% | f |
++| AMB_F_column_r1 | 3b_repick | 5 | 1 | 4 | 63% | 48% | 541 | 84% | 0% | 1.0 | 0.0 | - | 0.0 | 0.0 | 6 | 1 | 0 | 0 | 87% | f |
++| AMB_F_column_r1 | 3b_fixpush | 5 | 0 | 5 | 70% | 34% | 600 | 96% | 0% | 1.3 | 0.0 | - | 0.0 | 0.0 | 6 | 3 | 0 | 0 | 100% | f |
++| AMB_F_column_r1 | 3b_pincer65 | 5 | 1 | 5 | 68% | 38% | 600 | 96% | 0% | 1.4 | 0.0 | - | 0.0 | 0.0 | 8 | 1 | 0 | 0 | 100% | f |
++| CTR_front2 | default | 5 | 5 | 5 | 33% | 80% | 600 | 0% | 85% | 2.1 | 0.0 | - | 0.0 | 0.0 | 0 | 0 | 0 | 0 | 100% | f |
++| CTR_front2 | 3b_counter | 5 | 5 | 5 | 33% | 80% | 600 | 0% | 85% | 2.1 | 0.0 | - | 0.0 | 0.0 | 0 | 0 | 0 | 0 | 100% | f |
++| CTR_front2 | 3b_repick | 5 | 5 | 5 | 35% | 73% | 600 | 2% | 83% | 1.5 | 0.0 | - | 0.0 | 0.0 | 0 | 0 | 0 | 0 | - | f |
++| CTR_front2 | 3b_fixpush | 5 | 5 | 5 | 33% | 80% | 600 | 0% | 85% | 2.1 | 0.0 | - | 0.0 | 0.0 | 0 | 0 | 0 | 0 | 100% | f |
++| CTR_front2 | 3b_pincer65 | 5 | 5 | 5 | 33% | 80% | 600 | 0% | 85% | 2.1 | 0.0 | - | 0.0 | 0.0 | 0 | 0 | 0 | 0 | 100% | f |
++| CTR_one4 | default | 5 | 0 | 0 | 97% | 44% | 225 | 6% | 60% | 0.9 | 0.0 | - | 0.0 | 0.0 | 5 | 0 | 0 | 0 | - | f |
++| CTR_one4 | 3b_counter | 5 | 0 | 0 | 97% | 44% | 225 | 6% | 60% | 0.9 | 0.0 | - | 0.0 | 0.0 | 5 | 0 | 0 | 0 | - | f |
++| CTR_one4 | 3b_repick | 5 | 0 | 0 | 97% | 44% | 249 | 0% | 54% | 0.4 | 0.0 | - | 0.0 | 0.0 | 6 | 0 | 0 | 0 | 50% | f,f/p |
++| CTR_one4 | 3b_fixpush | 5 | 0 | 0 | 97% | 44% | 225 | 6% | 60% | 0.9 | 0.0 | - | 0.0 | 0.0 | 5 | 0 | 0 | 0 | - | f |
++| CTR_one4 | 3b_pincer65 | 5 | 0 | 0 | 97% | 44% | 225 | 6% | 60% | 0.9 | 0.0 | - | 0.0 | 0.0 | 5 | 0 | 0 | 0 | - | f |
++| CTR_res2 | default | 5 | 0 | 1 | 95% | 44% | 297 | 11% | 64% | 0.9 | 0.0 | - | 0.0 | 0.0 | 5 | 0 | 0 | 0 | - | f/p,p,p/f |
++| CTR_res2 | 3b_counter | 5 | 0 | 1 | 95% | 44% | 297 | 11% | 64% | 0.9 | 0.0 | - | 0.0 | 0.0 | 5 | 0 | 0 | 0 | - | f/p,p,p/f |
++| CTR_res2 | 3b_repick | 5 | 0 | 1 | 94% | 40% | 376 | 4% | 64% | 0.6 | 0.0 | - | 0.0 | 0.0 | 7 | 1 | 0 | 0 | 100% | f/p,p |
++| CTR_res2 | 3b_fixpush | 5 | 0 | 1 | 95% | 44% | 297 | 11% | 64% | 0.9 | 0.0 | - | 0.0 | 0.0 | 5 | 0 | 0 | 0 | - | f/p,p,p/f |
++| CTR_res2 | 3b_pincer65 | 5 | 0 | 0 | 97% | 33% | 188 | 0% | 59% | 1.0 | 0.0 | - | 0.0 | 0.0 | 4 | 1 | 0 | 0 | - | f |
++| D_hill_r2.0_RM | default | 5 | 0 | 5 | 72% | 25% | 600 | 92% | 0% | 2.8 | 0.0 | - | 0.0 | 0.0 | 6 | 0 | 0 | 0 | 100% | f/p,p,p/s |
++| D_hill_r2.0_RM | 3b_counter | 5 | 0 | 5 | 72% | 25% | 600 | 92% | 0% | 2.8 | 0.0 | - | 0.0 | 0.0 | 6 | 0 | 0 | 0 | 100% | f/p,p,p/s |
++| D_hill_r2.0_RM | 3b_repick | 5 | 0 | 5 | 72% | 25% | 600 | 92% | 0% | 2.8 | 0.0 | - | 0.0 | 0.0 | 6 | 0 | 0 | 0 | 100% | f/p,p,p/s |
++| D_hill_r2.0_RM | 3b_fixpush | 5 | 0 | 5 | 72% | 28% | 600 | 92% | 0% | 3.1 | 0.0 | - | 0.0 | 0.0 | 6 | 0 | 0 | 1 | 100% | f/p,p,p/s |
++| D_hill_r2.0_RM | 3b_pincer65 | 5 | 0 | 5 | 66% | 11% | 600 | 86% | 0% | 0.6 | 0.0 | - | 0.0 | 0.0 | 5 | 1 | 0 | 0 | 50% | f |
++| D_open_r1.5_RM | default | 5 | 4 | 1 | 49% | 87% | 347 | 91% | 0% | 2.7 | 0.0 | - | 0.0 | 0.0 | 1 | 0 | 0 | 0 | 100% | f,s |
++| D_open_r1.5_RM | 3b_counter | 5 | 4 | 1 | 49% | 87% | 347 | 91% | 0% | 2.7 | 0.0 | - | 0.0 | 0.0 | 1 | 0 | 0 | 0 | 100% | f,s |
++| D_open_r1.5_RM | 3b_repick | 5 | 4 | 1 | 49% | 87% | 347 | 91% | 0% | 2.7 | 0.0 | - | 0.0 | 0.0 | 1 | 0 | 0 | 0 | 100% | f,s |
++| D_open_r1.5_RM | 3b_fixpush | 5 | 4 | 1 | 49% | 87% | 347 | 91% | 0% | 2.7 | 0.0 | - | 0.0 | 0.0 | 1 | 0 | 0 | 0 | 100% | f,s |
++| D_open_r1.5_RM | 3b_pincer65 | 5 | 4 | 1 | 49% | 87% | 347 | 91% | 0% | 2.7 | 0.0 | - | 0.0 | 0.0 | 1 | 0 | 0 | 0 | 100% | f,s |
++| D_open_r2.0_RM | default | 5 | 5 | 0 | 23% | 97% | 182 | 77% | 0% | 0.9 | 0.0 | - | 0.0 | 0.0 | 2 | 0 | 0 | 0 | 83% | p,s |
++| D_open_r2.0_RM | 3b_counter | 5 | 5 | 0 | 23% | 97% | 182 | 77% | 0% | 0.9 | 0.0 | - | 0.0 | 0.0 | 2 | 0 | 0 | 0 | 83% | p,s |
++| D_open_r2.0_RM | 3b_repick | 5 | 5 | 0 | 23% | 97% | 182 | 77% | 0% | 0.9 | 0.0 | - | 0.0 | 0.0 | 2 | 0 | 0 | 0 | 83% | p,s |
++| D_open_r2.0_RM | 3b_fixpush | 5 | 5 | 0 | 23% | 97% | 182 | 77% | 0% | 0.9 | 0.0 | - | 0.0 | 0.0 | 2 | 0 | 0 | 0 | 83% | p,s |
++| D_open_r2.0_RM | 3b_pincer65 | 5 | 5 | 0 | 23% | 97% | 175 | 75% | 0% | 0.5 | 0.0 | - | 0.0 | 0.0 | 2 | 0 | 0 | 0 | 75% | f,s |
++| D_town_r2.0_RM | default | 5 | 5 | 0 | 38% | 97% | 260 | 89% | 0% | 0.2 | 0.0 | - | 0.0 | 0.0 | 5 | 0 | 0 | 0 | 67% | p,p/s |
++| D_town_r2.0_RM | 3b_counter | 5 | 5 | 0 | 38% | 97% | 260 | 89% | 0% | 0.2 | 0.0 | - | 0.0 | 0.0 | 5 | 0 | 0 | 0 | 67% | p,p/s |
++| D_town_r2.0_RM | 3b_repick | 5 | 5 | 0 | 38% | 97% | 258 | 91% | 0% | 0.1 | 0.0 | - | 0.0 | 0.0 | 5 | 0 | 0 | 0 | 100% | p |
++| D_town_r2.0_RM | 3b_fixpush | 5 | 5 | 0 | 38% | 97% | 260 | 89% | 0% | 0.2 | 0.0 | - | 0.0 | 0.0 | 5 | 0 | 0 | 0 | 67% | p,p/s |
++| D_town_r2.0_RM | 3b_pincer65 | 5 | 5 | 0 | 34% | 97% | 217 | 85% | 0% | 0.1 | 0.0 | - | 0.0 | 0.0 | 5 | 0 | 0 | 0 | - | f |
++| F_trench_r1.5_RM | default | 5 | 5 | 0 | 48% | 97% | 281 | 8% | 71% | 1.1 | 0.0 | - | 0.0 | 0.0 | 0 | 6 | 0 | 0 | 33% | f |
++| F_trench_r1.5_RM | 3b_counter | 5 | 5 | 0 | 48% | 97% | 281 | 8% | 71% | 1.1 | 0.0 | - | 0.0 | 0.0 | 0 | 6 | 0 | 0 | 33% | f |
++| F_trench_r1.5_RM | 3b_repick | 5 | 5 | 1 | 54% | 94% | 389 | 20% | 61% | 1.0 | 0.0 | - | 0.0 | 0.0 | 0 | 5 | 0 | 0 | 38% | f,f/f,f/s |
++| F_trench_r1.5_RM | 3b_fixpush | 5 | 5 | 0 | 48% | 97% | 281 | 8% | 71% | 1.1 | 0.0 | - | 0.0 | 0.0 | 0 | 6 | 0 | 0 | 33% | f |
++| F_trench_r1.5_RM | 3b_pincer65 | 5 | 5 | 0 | 48% | 97% | 281 | 8% | 71% | 1.1 | 0.0 | - | 0.0 | 0.0 | 0 | 6 | 0 | 0 | 33% | f |
++| MGD_T_r2_m1 | default | 5 | 4 | 1 | 43% | 92% | 332 | 15% | 46% | 1.4 | 0.0 | - | 0.0 | 0.0 | 5 | 1 | 0 | 0 | - | f,f/p,p |
++| MGD_T_r2_m1 | 3b_counter | 5 | 4 | 1 | 43% | 92% | 332 | 15% | 46% | 1.4 | 0.0 | - | 0.0 | 0.0 | 5 | 1 | 0 | 0 | - | f,f/p,p |
++| MGD_T_r2_m1 | 3b_repick | 5 | 4 | 1 | 45% | 91% | 333 | 11% | 48% | 1.3 | 0.0 | - | 0.0 | 0.0 | 5 | 1 | 0 | 0 | - | f,f/p,p |
++| MGD_T_r2_m1 | 3b_fixpush | 5 | 4 | 1 | 43% | 92% | 332 | 15% | 46% | 1.4 | 0.0 | - | 0.0 | 0.0 | 5 | 1 | 0 | 0 | - | f,f/p,p |
++| MGD_T_r2_m1 | 3b_pincer65 | 5 | 3 | 2 | 63% | 87% | 447 | 17% | 44% | 1.5 | 0.0 | - | 0.0 | 0.0 | 6 | 0 | 0 | 0 | - | f |
++| PIN_T_front4 | default | 5 | 5 | 0 | 38% | 97% | 290 | 12% | 57% | 2.0 | 0.0 | - | 0.0 | 0.0 | 4 | 1 | 0 | 0 | 75% | f/p,p |
++| PIN_T_front4 | 3b_counter | 5 | 5 | 0 | 38% | 97% | 290 | 12% | 57% | 2.0 | 0.0 | - | 0.0 | 0.0 | 4 | 1 | 0 | 0 | 75% | f/p,p |
++| PIN_T_front4 | 3b_repick | 5 | 5 | 0 | 34% | 97% | 237 | 9% | 56% | 1.7 | 0.0 | - | 0.0 | 0.0 | 4 | 1 | 0 | 0 | 50% | p |
++| PIN_T_front4 | 3b_fixpush | 5 | 5 | 0 | 38% | 97% | 290 | 12% | 57% | 2.0 | 0.0 | - | 0.0 | 0.0 | 4 | 1 | 0 | 0 | 75% | f/p,p |
++| PIN_T_front4 | 3b_pincer65 | 5 | 5 | 0 | 44% | 97% | 294 | 8% | 64% | 2.3 | 0.0 | - | 0.0 | 0.0 | 4 | 1 | 0 | 0 | - | f |
++| RIV_br1_r2 | default | 5 | 4 | 5 | 14% | 7% | 600 | 38% | 0% | 0.3 | 0.0 | - | 0.0 | 0.0 | 0 | 0 | 0 | 0 | - | - |
++| RIV_br1_r2 | 3b_counter | 5 | 4 | 5 | 14% | 7% | 600 | 38% | 0% | 0.3 | 0.0 | - | 0.0 | 0.0 | 0 | 0 | 0 | 0 | - | - |
++| RIV_br1_r2 | 3b_repick | 5 | 4 | 5 | 14% | 7% | 600 | 38% | 0% | 0.3 | 0.0 | - | 0.0 | 0.0 | 0 | 0 | 0 | 0 | - | - |
++| RIV_br1_r2 | 3b_fixpush | 5 | 4 | 5 | 14% | 7% | 600 | 38% | 0% | 0.3 | 0.0 | - | 0.0 | 0.0 | 0 | 0 | 0 | 0 | - | - |
++| RIV_br1_r2 | 3b_pincer65 | 5 | 4 | 5 | 14% | 7% | 600 | 38% | 0% | 0.3 | 0.0 | - | 0.0 | 0.0 | 0 | 0 | 0 | 0 | - | - |
++| RIV_br2_r2 | default | 5 | 1 | 5 | 39% | 19% | 600 | 75% | 0% | 4.0 | 0.0 | - | 0.0 | 0.0 | 5 | 1 | 0 | 0 | - | f/p,p |
++| RIV_br2_r2 | 3b_counter | 5 | 1 | 5 | 39% | 19% | 600 | 75% | 0% | 4.0 | 0.0 | - | 0.0 | 0.0 | 5 | 1 | 0 | 0 | - | f/p,p |
++| RIV_br2_r2 | 3b_repick | 5 | 1 | 5 | 39% | 19% | 600 | 75% | 0% | 4.0 | 0.0 | - | 0.0 | 0.0 | 5 | 1 | 0 | 0 | - | f/p,p |
++| RIV_br2_r2 | 3b_fixpush | 5 | 1 | 5 | 34% | 19% | 600 | 75% | 0% | 3.3 | 0.0 | - | 0.0 | 0.0 | 3 | 2 | 0 | 4 | - | p |
++| RIV_br2_r2 | 3b_pincer65 | 5 | 4 | 5 | 15% | 17% | 600 | 38% | 0% | 1.2 | 0.0 | - | 0.0 | 0.0 | 5 | 0 | 0 | 0 | - | f |
++| T_r1.5_RM | default | 5 | 4 | 1 | 60% | 87% | 416 | 13% | 70% | 2.1 | 0.0 | - | 0.0 | 0.0 | 4 | 3 | 0 | 0 | 83% | f,f/s |
++| T_r1.5_RM | 3b_counter | 5 | 4 | 1 | 60% | 87% | 416 | 13% | 70% | 2.1 | 0.0 | - | 0.0 | 0.0 | 4 | 3 | 0 | 0 | 83% | f,f/s |
++| T_r1.5_RM | 3b_repick | 5 | 4 | 1 | 58% | 85% | 399 | 10% | 68% | 1.7 | 0.0 | - | 0.0 | 0.0 | 4 | 3 | 0 | 0 | 83% | f |
++| T_r1.5_RM | 3b_fixpush | 5 | 4 | 1 | 60% | 87% | 416 | 13% | 70% | 2.1 | 0.0 | - | 0.0 | 0.0 | 4 | 3 | 0 | 0 | 83% | f,f/s |
++| T_r1.5_RM | 3b_pincer65 | 5 | 4 | 1 | 60% | 87% | 416 | 13% | 70% | 2.1 | 0.0 | - | 0.0 | 0.0 | 4 | 3 | 0 | 0 | 83% | f,f/s |
++| T_r2.0_RM | default | 5 | 5 | 0 | 33% | 97% | 221 | 2% | 42% | 1.0 | 0.0 | - | 0.0 | 0.0 | 5 | 0 | 0 | 0 | - | f,p |
++| T_r2.0_RM | 3b_counter | 5 | 5 | 0 | 33% | 97% | 221 | 2% | 42% | 1.0 | 0.0 | - | 0.0 | 0.0 | 5 | 0 | 0 | 0 | - | f,p |
++| T_r2.0_RM | 3b_repick | 5 | 5 | 0 | 39% | 97% | 262 | 5% | 36% | 0.9 | 0.0 | - | 0.0 | 0.0 | 5 | 0 | 0 | 0 | - | f,p |
++| T_r2.0_RM | 3b_fixpush | 5 | 5 | 0 | 33% | 97% | 221 | 2% | 42% | 1.0 | 0.0 | - | 0.0 | 0.0 | 5 | 0 | 0 | 0 | - | f,p |
++| T_r2.0_RM | 3b_pincer65 | 5 | 5 | 0 | 28% | 97% | 216 | 5% | 40% | 1.0 | 0.0 | - | 0.0 | 0.0 | 5 | 0 | 0 | 0 | 100% | f |
++
++TOTAL default: runs 80 W1 50 TO 31 L1 52% L2 67% sup24 42% trench 33% DA 1.59 ctr 0 plug 0 rel 60 abort 14 repl 0 push 0
++TOTAL 3b_counter: runs 80 W1 50 TO 31 L1 52% L2 67% sup24 42% trench 33% DA 1.59 ctr 0 plug 0 rel 60 abort 14 repl 0 push 0
++TOTAL 3b_repick: runs 80 W1 50 TO 31 L1 52% L2 67% sup24 41% trench 31% DA 1.39 ctr 0 plug 0 rel 61 abort 14 repl 0 push 0
++TOTAL 3b_fixpush: runs 80 W1 49 TO 31 L1 52% L2 67% sup24 42% trench 33% DA 1.55 ctr 0 plug 0 rel 56 abort 17 repl 0 push 5
++TOTAL 3b_pincer65: runs 80 W1 52 TO 31 L1 51% L2 65% sup24 38% trench 33% DA 1.25 ctr 0 plug 0 rel 59 abort 14 repl 0 push 0
+diff --git a/src/AI/Tactical/AiProfile.cs b/src/AI/Tactical/AiProfile.cs
+index 36dd40e5..73ae70e1 100644
+--- a/src/AI/Tactical/AiProfile.cs
++++ b/src/AI/Tactical/AiProfile.cs
+@@ -100,6 +100,8 @@ public sealed class StrategyProfile
+     public bool FixPush = false;
+     public float FixPushSec = 8f;
+     public float FixWait = 20f;
++    /// <summary>3B2 (3A 남은 일 1 — 대체 중대): 측면 · 협공 계획 중 기동 제대가 모두 빠지면 (후퇴 · 조우 · 전멸) 고정 제대의 바깥 중대 하나를 새 기동 중대로 (고정 1개 이상 남김).</summary>
++    public bool ManReplace = false;
+     public object Clone() => MemberwiseClone();
+ }
+ 
+diff --git a/src/AI/Tactical/TacticalAi.Manoeuvre.cs b/src/AI/Tactical/TacticalAi.Manoeuvre.cs
+index aba2fdc2..ce16f872 100644
+--- a/src/AI/Tactical/TacticalAi.Manoeuvre.cs
++++ b/src/AI/Tactical/TacticalAi.Manoeuvre.cs
+@@ -468,6 +468,7 @@ public sealed partial class TacticalAi
+             if (g.Element == ManElement.None || g.Pending || RegimentOfGroup(s, g) != r.Id) continue;
+             if (g.Element == ManElement.Manoeuvre) man.Add(g); else fix.Add(g);
+         }
++        if (man.Count == 0 && S.ManReplace && ReplaceManoeuvre(w, s, r, fix, man)) fix.Remove(man[0]);   // 3B2: 고정 제대 바깥 중대를 대신 보낸다
+         if (man.Count == 0) { s.PlanAborts++; EndPlan(w, s, r, 1); return; }   // 기동 제대가 없어짐 (전멸 · 후퇴 · 조우)
+         // 고정 제대 교전: 절반 이상 중대가 사격 중
+         if (r.FixTick == 0 && fix.Count > 0)
+@@ -506,6 +507,37 @@ public sealed partial class TacticalAi
+         }
+     }
+ 
++    /// <summary>
++    /// 3B2 대체 중대 (strategy.manReplace): 기동 제대가 모두 빠졌을 때 고정 제대 중 성한 (소총 · 8명 이상 · 후퇴 · Spent 아님) 중대가 2개 이상이면
++    /// 측면 쪽 바깥 중대 하나를 같은 경유점 · 돌격 진지로 보낸다. 도착 예정 (경로 / 계획 속도) 이 maxArrive 를 넘으면 안 보낸다. 기한은 새 도착 예정에 맞춰 늘린다.
++    /// 성공하면 man 에 그 중대를 넣고 true.
++    /// </summary>
++    bool ReplaceManoeuvre(World w, TacFaction s, TacRegiment r, List<TacGroup> fix, List<TacGroup> man)
++    {
++        var S = s.Profile.Strategy;
++        int nOk = 0; TacGroup? c = null; float best = float.MaxValue;
++        foreach (var g in fix)
++        {
++            if (g.Kind != TacKind.Line || g.Alive < 8 || g.State == TacState.Fallback || g.Spent) continue;
++            nOk++;
++            float dw = Vector2.DistanceSquared(g.Center, r.PlanWay);   // 경유점에 가장 가까운 = 측면 쪽 바깥 중대 (같으면 Id)
++            if (dw < best || (dw == best && c != null && g.Id < c.Id)) { best = dw; c = g; }
++        }
++        if (nOk < 2 || c == null) return false;
++        float v = r.PlanEta > 0 ? MathF.Max(0.5f, r.PlanDetour / r.PlanEta) : 1.5f;
++        float eta = (Vector2.Distance(c.Center, r.PlanWay) + Vector2.Distance(r.PlanWay, r.PlanAxis)) / v;
++        if (eta > S.MaxArrive) return false;
++        c.Element = ManElement.Manoeuvre; c.ManStage = 1; c.ManArrive = 0; c.Task = TacTask.Attack;
++        c.ManWay = r.PlanWay; c.ManGoal = r.PlanAxis; c.ManFace = SafeNorm(r.PlanEnemy - r.PlanAxis, c.ManFace);
++        c.OrderTick = -100000; c.SquadBound = 0;
++        r.ArriveTick = 0;
++        r.PlanDeadline = Math.Max(r.PlanDeadline, w.Tick + Sec(eta * 1.25f + 10f));
++        s.ManReplaces++;
++        man.Add(c);
++        PlanTrace?.Invoke($"  plan R{r.Id} t={w.Tick / 60} 대체 중대 L{c.Id} eta {eta:0}s");
++        return true;
++    }
++
+     /// <summary>계획 끝 (풀기 · 취소): 제대 표시를 지우고 기동 중대는 적 측면 끝을 향해 보통 공격으로.</summary>
+     void EndPlan(World w, TacFaction s, TacRegiment r, int reason)
+     {
+diff --git a/src/AI/Tactical/TacticalState.cs b/src/AI/Tactical/TacticalState.cs
+index cded23d7..1704ffd4 100644
+--- a/src/AI/Tactical/TacticalState.cs
++++ b/src/AI/Tactical/TacticalState.cs
+@@ -269,4 +269,5 @@ public sealed class TacFaction
+     public int FallbacksSupp;            // 중대 스스로 후퇴 중 제압 판단 (N25) 으로 난 것 (Fallbacks 에 포함)
+     // 3B 누계 (측정용): 저탄약 교대 · 사건 투입 (틈 · 돌파 · 측면) · 예비 재지정 · 고정 제대 밀기 (3A 남은 일 1)
+     public int AmmoRotations, PlugGaps, PlugBreaches, PlugFlanks, ReserveRedesignations, FixPushes;
++    public int ManReplaces;              // 3B2 기동 제대 대체 중대 지정 수 (strategy.manReplace)
+ }
+diff --git a/src/Core/Snapshot/Snapshot.cs b/src/Core/Snapshot/Snapshot.cs
+index facab4b4..51402fa2 100644
+--- a/src/Core/Snapshot/Snapshot.cs
++++ b/src/Core/Snapshot/Snapshot.cs
+@@ -80,7 +80,7 @@ public sealed class LoadedSnapshot
+ public static class Snapshot
+ {
+     /// <summary>파일 구조가 바뀌면 올린다 (옛 저장은 불러올 수 없다 — 명확한 메시지와 함께 거부).</summary>
+-    public const int FormatVersion = 50;   // 50: arty3 곡사포 조정 사격 (유닛마다 AdjustShots · AdjustAim) + 중기관총 최후 저지선 (FireMode.FinalLine · FinalLinePoint) — ORG_ 사격 통제 뒤 유닛 목록 (FireControl.cs) · 49: assaultinf 돌격 접근 약진 (유닛마다 HopUntil/HopTo, ChargeHop.cs) · 48: pronemove 엎드림 이동 (유닛마다 ProneHoldSince/StandUntil/ForceCross) · 47: N68 기수 쓰러짐 Unit.BearerFellUntil (CMB2 Prone/Broken 뒤, units) · 46: 전술 AI 3B (AI 블랙보드 TacGroup RotateUntil · RotateOut, TacBattalion RotateTick · CalmSince · Plug*, TacFaction 3B 누계, 프로필 3B 키, ai3b) · 45: N32 참호 돌격 (ORG_ 끝 중대마다 TA 단계 · 목표 · 시각, TrenchAssault.cs) · 44: N79a 집결 지점 (ORG_ 끝 중대마다 HasRally · RallyPoint) + 포격 종류 (유닛마다 GroundKind · GroundRounds · GroundDir · GroundStart, Rally.cs · GroundFire.cs) · 43: N79b 항복 (CMB2 유닛마다 Surrendered · SuppHighTicks, Surrender.cs) · 42: F6 엄폐물 소품 (지도 PropSeeds + ORG_ 끝 소품 hp · 변종, Props.cs) · 41: 제압 재설계 2 엎드림 · 붕괴 (CMB2 유닛마다 Prone · BrokenUntil · BrokenAt · BreakTo, supp) · 40: F1 2차 중대 대형 유지 (ORG_ 접적 구역 중대마다 KeepFormation, ContactF2.cs) · 39: N73 사격 통제 (ORG_ 끝 유닛마다 FireMode, FireControl.cs) · 38: 기병 동시 근접 제한 (CMB2 유닛마다 MeleeVictims · MeleeLastId, N61) + 기병 하마 사격 (Dismounted · MountLeft · MountLock, N61) + F1 접적 · 구역 · 사격 위치 (ORG_ 끝, Contact.cs) · 36: 착검 (CMB2 유닛마다 BayonetFixed · FixLeft, N57 charge) · 35: 후퇴 뒤 재정비 (전술 AI 블랙보드 TacGroup RegroupUntil · RegroupCheck · RegroupAlive, pursuit2) · 34: 중대 자세 (ORG_ 끝 중대마다 Posture) + 정찰병 노출 기억 (ORG_ 정찰병마다 ScoutExposed · ScoutThreat · ScoutExposedTick, tweak1) · 33: 도하 · 역습 AI 상태 (전술 AI 스냅샷 — TacGroup CrossStage · CrossRegiment · CrossLane · CrossPoint · CounterAssaultTick, TacRegiment Cross* · CounterStage, TacFaction 누계; crossing) · 32: 고정 (엎드림 — CMB2 유닛마다 Pinned, 제압 재설계 N25) + 전술 AI 후퇴 원인 · 제압 후퇴 수 (AI 블랙보드) (supp N39) · 31: 전술 AI 3단계 A — 기동 계획 · 제대 · 철수 · 미션 철수 문턱 (AI 블랙보드 TacRegiment · TacGroup · TacDirective · TacFaction, 프로필 strategy 키, s3a) · 30: 엄폐 찾기 · 진지 점유 (SUPL 참호 구역 유닛마다 CoverHold, engage) · 29: 후퇴 중 (CMB2 유닛마다 Retreating, pursuit) + 전술 AI 추격 · 기병 상태 (AI 블랙보드) · 28: 대열 정비 2 (ORG_ 끝 중대마다 깃발 Close 표시, gapfill2) · 27: 대열 정비 (ORG_ 끝 — 중대마다 CloseAlarm · CloseAt · CloseUntil, gapfill) · 26: 전술 틀 2단계 (ORG_ 전술 틀 구역 중대마다 ActiveTactic + 행동 상태 DrillState, N4) · 25: 기병 돌격 쿨다운 (CMB2 유닛마다 ChargeCdLeft, 돌격 충격 제압 burst) · 24: 경기관총 점사 (CMB2 유닛마다 BurstLeft) · 23: 장교 직책 계급 · 임시 진급 · 경험치 (CMB2 유닛마다 OfficerBase · TempRank · OfficerXp) + 지휘관 · 인계 (ORG_ 끝 — 대대 · 중대 Commander · HandoverUntil) · 22: 전투 대형 · 전술 틀 (ORG_ 끝 — 중대 Tactic · 구성원 Role · 분대 Form) · 21: 플레이어 지점 포격 (UnitOrder.GroundFire, CMB2 유닛마다 GroundPoint) · 20: 중대 돌격 사격 허용 MarchFireOn (ORG_ 중대 MarchUntil 뒤) · 19: 충돌 · 대형 재설계 (ORG_ 깃발 속도 배수 SpeedMul, 중대 · 분대 행진 사격 지휘 MarchUntil) · 18: 건설 제거 (SUPL 의 개인 참호 · 참호선 작업 상태 삭제) + 참호 자동 점유 (SUPL 끝: 유닛별 참호 자리 · 사수 · 무시 묶음) · 17: 정찰병 (ORG_ 끝 — 정찰조 · 자율 상태, Unit.ScoutAuto 등) · 16: 날아가는 포탄 (CMB2 끝, ShellFlight) · 15: 자주포 · 견인포 · 중형 전차 · 광산 · 유전 정의 삭제 (옛 저장 호환 안 됨) · 14: 미션 (MISN 구역 — 미션 정의 JSON · 목표 · 사건 · 증원 · 배치, WTHR 뒤) · 13: 참호선 (작업 · 칸 진행량 · 유닛 작업, SUPL 끝) + 포탄 구덩이 지형 · 12: 날씨 · 시간대 (WTHR, ORG_ 뒤) · 11: 분대 (ORG_ 중대마다 Holes + 분대 목록, nextSquadId) · 장교 칼 흔들기 틱 (CMB2 뒤쪽) · 10: 지형 · 높이 (지형 종류 5개 추가, 지도 고지 배열, 안개 = 세력별 자기 시야 격자 · 시차 갱신) · 9: 외교 삭제 → 정적 팀 (DiplomacySnapshot · StartedAtWar 제거, Faction.Team 추가) · 8: 교전 4차 (수류탄 · 돌격 충격 · 돌격만 · 행진 사격 표적, CMB2 뒤쪽 + 날아가는 수류탄) · 유닛 id 이름 규칙 (machinegunner -> heavy_machinegunner 등) · 2: v0.4 확장 구역 틀 · 3: SUPL · CMB2 · CMDX 내용 + 낡은 NavToken 엔티티 · 4: 교전 2차 (제압 · 사살 · 돌격 · 멍칫, CMB2 뒤쪽) · 5: 스태미나 · 속보 (피로 · QuickStep) + 정찰 제거 (UnitOrder · PatrolBack 삭제) · 6: 편제 ORG_ (중대 · 대대 · 깃발) · 7: 방향 변경 (자원 · 생산 · 건설 · 공병 · 연료 · 포탑 삭제, SUPL = 탄약 회복 · 보급 마차 · 엄폐 · 참호, 지도 유닛 배치)
++    public const int FormatVersion = 51;   // 51: ai3b2 기동 제대 대체 중대 (AI 블랙보드 TacFaction ManReplaces, 프로필 strategy.manReplace) · 50: arty3 곡사포 조정 사격 (유닛마다 AdjustShots · AdjustAim) + 중기관총 최후 저지선 (FireMode.FinalLine · FinalLinePoint) — ORG_ 사격 통제 뒤 유닛 목록 (FireControl.cs) · 49: assaultinf 돌격 접근 약진 (유닛마다 HopUntil/HopTo, ChargeHop.cs) · 48: pronemove 엎드림 이동 (유닛마다 ProneHoldSince/StandUntil/ForceCross) · 47: N68 기수 쓰러짐 Unit.BearerFellUntil (CMB2 Prone/Broken 뒤, units) · 46: 전술 AI 3B (AI 블랙보드 TacGroup RotateUntil · RotateOut, TacBattalion RotateTick · CalmSince · Plug*, TacFaction 3B 누계, 프로필 3B 키, ai3b) · 45: N32 참호 돌격 (ORG_ 끝 중대마다 TA 단계 · 목표 · 시각, TrenchAssault.cs) · 44: N79a 집결 지점 (ORG_ 끝 중대마다 HasRally · RallyPoint) + 포격 종류 (유닛마다 GroundKind · GroundRounds · GroundDir · GroundStart, Rally.cs · GroundFire.cs) · 43: N79b 항복 (CMB2 유닛마다 Surrendered · SuppHighTicks, Surrender.cs) · 42: F6 엄폐물 소품 (지도 PropSeeds + ORG_ 끝 소품 hp · 변종, Props.cs) · 41: 제압 재설계 2 엎드림 · 붕괴 (CMB2 유닛마다 Prone · BrokenUntil · BrokenAt · BreakTo, supp) · 40: F1 2차 중대 대형 유지 (ORG_ 접적 구역 중대마다 KeepFormation, ContactF2.cs) · 39: N73 사격 통제 (ORG_ 끝 유닛마다 FireMode, FireControl.cs) · 38: 기병 동시 근접 제한 (CMB2 유닛마다 MeleeVictims · MeleeLastId, N61) + 기병 하마 사격 (Dismounted · MountLeft · MountLock, N61) + F1 접적 · 구역 · 사격 위치 (ORG_ 끝, Contact.cs) · 36: 착검 (CMB2 유닛마다 BayonetFixed · FixLeft, N57 charge) · 35: 후퇴 뒤 재정비 (전술 AI 블랙보드 TacGroup RegroupUntil · RegroupCheck · RegroupAlive, pursuit2) · 34: 중대 자세 (ORG_ 끝 중대마다 Posture) + 정찰병 노출 기억 (ORG_ 정찰병마다 ScoutExposed · ScoutThreat · ScoutExposedTick, tweak1) · 33: 도하 · 역습 AI 상태 (전술 AI 스냅샷 — TacGroup CrossStage · CrossRegiment · CrossLane · CrossPoint · CounterAssaultTick, TacRegiment Cross* · CounterStage, TacFaction 누계; crossing) · 32: 고정 (엎드림 — CMB2 유닛마다 Pinned, 제압 재설계 N25) + 전술 AI 후퇴 원인 · 제압 후퇴 수 (AI 블랙보드) (supp N39) · 31: 전술 AI 3단계 A — 기동 계획 · 제대 · 철수 · 미션 철수 문턱 (AI 블랙보드 TacRegiment · TacGroup · TacDirective · TacFaction, 프로필 strategy 키, s3a) · 30: 엄폐 찾기 · 진지 점유 (SUPL 참호 구역 유닛마다 CoverHold, engage) · 29: 후퇴 중 (CMB2 유닛마다 Retreating, pursuit) + 전술 AI 추격 · 기병 상태 (AI 블랙보드) · 28: 대열 정비 2 (ORG_ 끝 중대마다 깃발 Close 표시, gapfill2) · 27: 대열 정비 (ORG_ 끝 — 중대마다 CloseAlarm · CloseAt · CloseUntil, gapfill) · 26: 전술 틀 2단계 (ORG_ 전술 틀 구역 중대마다 ActiveTactic + 행동 상태 DrillState, N4) · 25: 기병 돌격 쿨다운 (CMB2 유닛마다 ChargeCdLeft, 돌격 충격 제압 burst) · 24: 경기관총 점사 (CMB2 유닛마다 BurstLeft) · 23: 장교 직책 계급 · 임시 진급 · 경험치 (CMB2 유닛마다 OfficerBase · TempRank · OfficerXp) + 지휘관 · 인계 (ORG_ 끝 — 대대 · 중대 Commander · HandoverUntil) · 22: 전투 대형 · 전술 틀 (ORG_ 끝 — 중대 Tactic · 구성원 Role · 분대 Form) · 21: 플레이어 지점 포격 (UnitOrder.GroundFire, CMB2 유닛마다 GroundPoint) · 20: 중대 돌격 사격 허용 MarchFireOn (ORG_ 중대 MarchUntil 뒤) · 19: 충돌 · 대형 재설계 (ORG_ 깃발 속도 배수 SpeedMul, 중대 · 분대 행진 사격 지휘 MarchUntil) · 18: 건설 제거 (SUPL 의 개인 참호 · 참호선 작업 상태 삭제) + 참호 자동 점유 (SUPL 끝: 유닛별 참호 자리 · 사수 · 무시 묶음) · 17: 정찰병 (ORG_ 끝 — 정찰조 · 자율 상태, Unit.ScoutAuto 등) · 16: 날아가는 포탄 (CMB2 끝, ShellFlight) · 15: 자주포 · 견인포 · 중형 전차 · 광산 · 유전 정의 삭제 (옛 저장 호환 안 됨) · 14: 미션 (MISN 구역 — 미션 정의 JSON · 목표 · 사건 · 증원 · 배치, WTHR 뒤) · 13: 참호선 (작업 · 칸 진행량 · 유닛 작업, SUPL 끝) + 포탄 구덩이 지형 · 12: 날씨 · 시간대 (WTHR, ORG_ 뒤) · 11: 분대 (ORG_ 중대마다 Holes + 분대 목록, nextSquadId) · 장교 칼 흔들기 틱 (CMB2 뒤쪽) · 10: 지형 · 높이 (지형 종류 5개 추가, 지도 고지 배열, 안개 = 세력별 자기 시야 격자 · 시차 갱신) · 9: 외교 삭제 → 정적 팀 (DiplomacySnapshot · StartedAtWar 제거, Faction.Team 추가) · 8: 교전 4차 (수류탄 · 돌격 충격 · 돌격만 · 행진 사격 표적, CMB2 뒤쪽 + 날아가는 수류탄) · 유닛 id 이름 규칙 (machinegunner -> heavy_machinegunner 등) · 2: v0.4 확장 구역 틀 · 3: SUPL · CMB2 · CMDX 내용 + 낡은 NavToken 엔티티 · 4: 교전 2차 (제압 · 사살 · 돌격 · 멍칫, CMB2 뒤쪽) · 5: 스태미나 · 속보 (피로 · QuickStep) + 정찰 제거 (UnitOrder · PatrolBack 삭제) · 6: 편제 ORG_ (중대 · 대대 · 깃발) · 7: 방향 변경 (자원 · 생산 · 건설 · 공병 · 연료 · 포탑 삭제, SUPL = 탄약 회복 · 보급 마차 · 엄폐 · 참호, 지도 유닛 배치)
+     public const string Extension = ".kds";
+     static readonly byte[] Magic = { (byte)'K', (byte)'D', (byte)'S', (byte)'V' };
+     const int BrotliQuality = 4, BrotliWindow = 22;
+diff --git a/src/Tests/BnCamp.cs b/src/Tests/BnCamp.cs
+index 292273e3..a7f88e75 100644
+--- a/src/Tests/BnCamp.cs
++++ b/src/Tests/BnCamp.cs
+@@ -472,7 +472,7 @@ public static class BnCamp
+         foreach (var (f, ai) in w.Controllers)
+             if (ai is TacticalAi ta && ta.StateOf(f) is { } s)
+                 plans[f.ToString()] = new Dictionary<string, object> { ["log"] = s.PlanLog.ToList(), ["stride"] = TacticalAi.PlanLogStride, ["profile"] = s.Profile.Name, ["manoeuvre"] = s.Profile.Strategy.Manoeuvre,
+-                    ["frontal"] = s.PlansFrontal, ["flank"] = s.PlansFlank, ["pincer"] = s.PlansPincer, ["schwerpunkt"] = s.PlansSchwerpunkt, ["releases"] = s.PlanReleases, ["aborts"] = s.PlanAborts, ["withdrawals"] = s.Withdrawals,
++                    ["frontal"] = s.PlansFrontal, ["flank"] = s.PlansFlank, ["pincer"] = s.PlansPincer, ["schwerpunkt"] = s.PlansSchwerpunkt, ["releases"] = s.PlanReleases, ["aborts"] = s.PlanAborts, ["withdrawals"] = s.Withdrawals, ["manReplaces"] = s.ManReplaces, ["fixPushes"] = s.FixPushes,
+                     ["open"] = s.Regiments.Where(r => r.Plan is ManPlan.Flank or ManPlan.Pincer && r.PlanStage == 1).Select(r => new[] { r.Id, (int)r.Plan, r.PlanSide, (int)r.PlanTick, (int)r.FixTick, (int)r.ArriveTick }).ToList() };
+         o["plans"] = plans;
+         o["firstShot"] = firstShot; o["firstCharge"] = firstCharge; o["firstCas"] = firstCas;
+diff --git a/src/Tests/MissionSelfTest.cs b/src/Tests/MissionSelfTest.cs
+index 68b19101..2d3de42c 100644
+--- a/src/Tests/MissionSelfTest.cs
++++ b/src/Tests/MissionSelfTest.cs
+@@ -385,7 +385,7 @@ public static class MissionSelfTest
+         foreach (var f in res.Factions) Console.WriteLine($"  faction {f.Id} {f.Name}: spawned {f.Spawned}, lost {f.Lost}, alive {f.Alive}, trench peak {trenchPeak.GetValueOrDefault(f.Id)} (now {w.Units.Count(u => u.Owner == f.Id && u.InTrench)})");
+         foreach (var (fid, ai) in w.Controllers)   // 전술 AI 예비 · 역습 누계 (3B 측정, 읽기 전용)
+             if (ai is TacticalAi ta && ta.StateOf(fid) is { } ts)
+-                Console.WriteLine($"  tac {fid}: reserve {ts.ReserveCommits} counter {ts.Counterattacks} fallbacks {ts.Fallbacks} ammoRot {ts.AmmoRotations} plug {ts.PlugGaps}/{ts.PlugBreaches}/{ts.PlugFlanks} redesig {ts.ReserveRedesignations} fixPush {ts.FixPushes}");
++                Console.WriteLine($"  tac {fid}: reserve {ts.ReserveCommits} counter {ts.Counterattacks} fallbacks {ts.Fallbacks} ammoRot {ts.AmmoRotations} plug {ts.PlugGaps}/{ts.PlugBreaches}/{ts.PlugFlanks} redesig {ts.ReserveRedesignations} fixPush {ts.FixPushes} manRepl {ts.ManReplaces}");
+         Console.WriteLine($"  events fired {m.EventFired.Count(x => x)}/{m.EventFired.Length}, reinforcements {m.ReinforcementSpawned.Count(x => x)}/{m.ReinforcementSpawned.Length}, messages {m.Messages.Count}, top kills {(res.TopUnits.Count > 0 ? res.TopUnits[0].Kills : 0)}, promotions {res.Promotions.Count}");
+         Console.WriteLine($"  results: {path}");
+         Console.WriteLine($"  checksum {w.ComputeChecksum():X16} tick {w.Tick}");
+diff --git a/src/Tests/S3aSelfTest.cs b/src/Tests/S3aSelfTest.cs
+index 24e18875..25bfbe0a 100644
+--- a/src/Tests/S3aSelfTest.cs
++++ b/src/Tests/S3aSelfTest.cs
+@@ -28,6 +28,7 @@ public static class S3aSelfTest
+             TestObjectiveMapping();
+             TestMissionWithdraw();
+             TestSnapshot();
++            TestManReplace();
+         }
+         catch (Exception e) { check(false, $"s3a 테스트 중 예외: {e.GetType().Name}: {e.Message}\n{e.StackTrace}"); }
+     }
+@@ -87,6 +88,29 @@ public static class S3aSelfTest
+         return PlanReg(w);
+     }
+ 
++    // ---------------------------------------------------------------- 3B2 대체 중대 (strategy.manReplace)
++
++    static void TestManReplace()
++    {
++        foreach (bool on in new[] { true, false })
++        {
++            var w = MissionWorld(TrenchMission(prof1: on ? "korean+3b_manrepl" : "korean", atk: 4), 3);
++            var r = StepToPlan(w);
++            var s = St(w, 1);
++            if (r == null || r.Plan is not (ManPlan.Flank or ManPlan.Pincer) || r.PlanStage != 1) { check(false, $"대체 중대: 측면 · 협공 계획이 안 생김 ({r?.Plan})"); return; }
++            var gone = s.Groups.Where(g => g.Element == ManElement.Manoeuvre).Select(g => g.Id).ToList();
++            foreach (var g in s.Groups) if (g.Element == ManElement.Manoeuvre) { g.Element = ManElement.None; g.ManStage = 0; }   // 기동 제대 후퇴 (AI 상태만 — 시험용)
++            int aborts = s.PlanAborts;
++            Steps(w, 3);
++            var nm = s.Groups.Where(g => g.Element == ManElement.Manoeuvre).ToList();
++            if (on)
++                check(s.ManReplaces == 1 && r.PlanStage == 1 && nm.Count == 1 && !gone.Contains(nm[0].Id) && nm[0].ManStage == 1 && nm[0].ManWay == r.PlanWay && s.PlanAborts == aborts,
++                    $"manReplace: 기동 제대가 빠지면 고정 중대 L{(nm.Count > 0 ? nm[0].Id : 0)} 를 같은 경유점으로 (대체 {s.ManReplaces}, 계획 단계 {r.PlanStage})");
++            else
++                check(s.ManReplaces == 0 && r.PlanStage == 2 && nm.Count == 0 && s.PlanAborts == aborts + 1, $"manReplace 끔: 기동 제대가 빠지면 계획 취소 (옛 동작, 단계 {r.PlanStage})");
++        }
++    }
++
+     // ---------------------------------------------------------------- 프로필 · 겹침
+ 
+     static void TestProfiles()
+diff --git a/src/Tests/TacticsObs.cs b/src/Tests/TacticsObs.cs
+index a4969b11..62989433 100644
+--- a/src/Tests/TacticsObs.cs
++++ b/src/Tests/TacticsObs.cs
+@@ -226,7 +226,7 @@ public static class TacticsObs
+         var offAll = new List<Unit>(); var offDist = new List<double>(); var offFar = 0;   // N35: 시작 장교 · 1초마다 장교 ↔ 중대 무게중심 거리 표본
+         bool killDone = false; double killT = -1; string killLog = "";
+         double t50 = -1; long kf50 = 0, km50 = 0;   // 12차: 한쪽 50% 미만 (추격 국면 시작) 시각 · 그때까지 사살 (사격 / 근접)
+-        string[] cname = { "Orders", "Charges", "CavCharges", "TrenchMoves", "Fallbacks", "ArtMoves", "FireHolds", "ReserveCommits", "Preps", "Lifts", "SquadBounds", "Outposts", "OutpostWithdraw", "Counterattacks", "Reinforced", "Culminations", "AmmoRot", "PlugGap", "PlugBreach", "PlugFlank", "ResRedesig", "FixPush" };
++        string[] cname = { "Orders", "Charges", "CavCharges", "TrenchMoves", "Fallbacks", "ArtMoves", "FireHolds", "ReserveCommits", "Preps", "Lifts", "SquadBounds", "Outposts", "OutpostWithdraw", "Counterattacks", "Reinforced", "Culminations", "AmmoRot", "PlugGap", "PlugBreach", "PlugFlank", "ResRedesig", "FixPush", "ManRepl" };
+         while (w.Winner == 0 && w.Tick < max)
+         {
+             if (BnCamp.On) BnCamp.BeforeStep();
+@@ -264,7 +264,7 @@ public static class TacticsObs
+                 if (ai is not TacticalAi ta || ta.StateOf(f) is not { } s || s.Phase < 2) continue;
+                 if (!sides.TryGetValue(f, out var sd)) { sides[f] = sd = new Side(); foreach (var n in cname) sd.Counters[n] = new List<double>(); startAlive[f] = w.Units.Count(u => u.Owner == f && u.Alive); }
+                 Sample(w, ta, s, sd, gs, pend, t);
+-                var c = new[] { s.Orders, s.Charges, s.CavalryCharges, s.TrenchMoves, s.Fallbacks, s.ArtilleryMoves, s.FireHolds, s.ReserveCommits, s.Preps, s.Lifts, s.SquadBounds, s.Outposts, s.OutpostWithdrawals, s.Counterattacks, s.Reinforced, s.Culminations, s.AmmoRotations, s.PlugGaps, s.PlugBreaches, s.PlugFlanks, s.ReserveRedesignations, s.FixPushes };
++                var c = new[] { s.Orders, s.Charges, s.CavalryCharges, s.TrenchMoves, s.Fallbacks, s.ArtilleryMoves, s.FireHolds, s.ReserveCommits, s.Preps, s.Lifts, s.SquadBounds, s.Outposts, s.OutpostWithdrawals, s.Counterattacks, s.Reinforced, s.Culminations, s.AmmoRotations, s.PlugGaps, s.PlugBreaches, s.PlugFlanks, s.ReserveRedesignations, s.FixPushes, s.ManReplaces };
+                 var p = prevCnt.GetValueOrDefault(f) ?? new int[c.Length];
+                 for (int i = 0; i < c.Length; i++) for (int k = p[i]; k < c[i]; k++) sd.Counters[cname[i]].Add(t);
+                 prevCnt[f] = c;
+diff --git a/tools/bn_campaign/agg_3b2.py b/tools/bn_campaign/agg_3b2.py
+new file mode 100644
+index 00000000..822ce973
+--- /dev/null
++++ b/tools/bn_campaign/agg_3b2.py
+@@ -0,0 +1,112 @@
++#!/usr/bin/env python3
++"""3B2 A/B comparison: one line per (config, variant) — wins, timeouts, losses, defender-side 3B metrics.
++
++  python tools/bn_campaign/agg_3b2.py --base docs/ai3b2_raw/base --var default --var 3b_counter ...
++Each variant = <base>/<var>_c1 and <base>/<var>_c2 (run.py outputs). Defender = side whose posture is defend
++(cfg p1/p2, else role_of). Metrics on the defender: sup24 = share of company samples with a friendly company within 24 tiles,
++trench = share of under-fire soldiers standing in trench tiles, DA = Defend->Advance/Approach switches per company,
++res = reserve commits (trouble share), ctr = Counterattacks, plug = gap/breach/flank plugs. Attacker: plan releases/aborts, manRepl, fixPush.
++"""
++import argparse, glob, gzip, json, os, re, statistics as st, sys
++from collections import defaultdict
++
++HERE = os.path.dirname(os.path.abspath(__file__))
++sys.path.insert(0, HERE)
++import aggregate as A
++
++
++def trig(text, side, name):
++    parts = re.split(r'^## 세력 (\d+)', text, flags=re.M)
++    for i in range(1, len(parts), 2):
++        if int(parts[i]) != side: continue
++        line = re.search(r'^트리거 누계.*$', parts[i + 1], flags=re.M)
++        m = re.search(r'(?:: |\| )' + name + r' (\d+)', line.group(0)) if line else None
++        return int(m.group(1)) if m else 0
++    return 0
++
++
++def defender(cfg):
++    if cfg.get('p1') == 'defend': return 1
++    if cfg.get('p2') == 'defend': return 2
++    r = A.role_of(cfg, 1)
++    return 1 if r == 'def' else 2 if r == 'att' else 0
++
++
++def load_var(base, var):
++    out = []
++    for sub in ('c1', 'c2', 'c4'):
++        raw = os.path.join(base, f'{var}_{sub}')
++        if not os.path.isdir(raw): continue
++        cf = A.matrix(raw)
++        for r in A.load(raw):
++            A.derive(r, cf[r['cid']]); out.append(r)
++    return out
++
++
++def metrics(r):
++    cfg = r['cfg']; d = defender(cfg); a = 3 - d if d else 1
++    m = {'win1': r['att_win'], 'to': 1.0 if r['dur'] >= 590 else 0.0, 'l1': r['l1'], 'l2': r['l2'], 'dur': r['dur']}
++    if d:
++        n = A.cnt(r, d, 'sup.n')
++        if n > 0: m['sup24'] = A.cnt(r, d, 'sup.within24') / n
++        rs = [x for x in r['R'] if x['side'] == d]
++        uf = sum(x['underFire'] for x in rs)
++        if uf > 0: m['trench'] = sum(x['cTrench'] for x in rs) / uf
++        ev = [e for e in r['E'] if e['side'] == d]
++        gids = {e['gid'] for e in ev}
++        da = sum(1 for e in ev if e['from'] == 'Defend' and e['to'] in ('Advance', 'Approach'))
++        if gids: m['DA'] = da / len(gids)
++        T = r['T'].get(d, {})
++        if 'reserve' in T:
++            m['res'] = T['reserve']['n']
++            if T['reserve']['n']: m['resTr'] = T['reserve']['trouble'] / T['reserve']['n']
++        m['ctr'] = trig(r['text'], d, 'Counterattacks')
++        m['plug'] = trig(r['text'], d, 'PlugGap') + trig(r['text'], d, 'PlugBreach') + trig(r['text'], d, 'PlugFlank')
++    p = (r.get('plans') or {}).get(str(a), {})
++    m['rel'] = p.get('releases', 0); m['abort'] = p.get('aborts', 0); m['repl'] = trig(r['text'], a, 'ManRepl'); m['push'] = trig(r['text'], a, 'FixPush')
++    m['plan'] = '/'.join(k[0] for k in ('flank', 'pincer', 'schwerpunkt', 'frontal') if p.get(k, 0) > 0) or '-'
++    T = r['T'].get(a, {})
++    if 'assault' in T and T['assault']['done'] > 0: m['asRet'] = T['assault']['retreat'] / T['assault']['done']
++    return m
++
++
++def mean(xs):
++    xs = [x for x in xs if x is not None]
++    return st.mean(xs) if xs else None
++
++
++def f(x, pct=False, d=2):
++    if x is None: return '-'
++    return f'{x * 100:.0f}%' if pct else f'{x:.{d}f}'
++
++
++def main():
++    ap = argparse.ArgumentParser()
++    ap.add_argument('--base', required=True)
++    ap.add_argument('--var', action='append', required=True)
++    a = ap.parse_args()
++    data = {v: load_var(a.base, v) for v in a.var}
++    cids = sorted({r['cid'] for v in data.values() for r in v})
++    hdr = ['cfg', 'var', 'n', 'W1', 'TO', 'L1', 'L2', 'dur', 'sup24', 'trench', 'DA/co', 'res', 'resTr', 'ctr', 'plug', 'rel', 'abort', 'repl', 'push', 'asRet', 'plans']
++    print('| ' + ' | '.join(hdr) + ' |'); print('|' + '---|' * len(hdr))
++    tot = defaultdict(lambda: defaultdict(list))
++    for c in cids:
++        for v in a.var:
++            rs = [r for r in data[v] if r['cid'] == c]
++            if not rs: continue
++            ms = [metrics(r) for r in rs]
++            g = lambda k: [m.get(k) for m in ms]
++            for k in ('win1', 'to', 'l1', 'l2', 'sup24', 'trench', 'DA', 'res', 'ctr', 'plug', 'rel', 'abort', 'repl', 'push'):
++                tot[v][k] += [x for x in g(k) if x is not None]
++            print('| ' + ' | '.join([c, v, str(len(rs)), f'{sum(g("win1")):.0f}', f'{sum(g("to")):.0f}', f(mean(g('l1')), True), f(mean(g('l2')), True), f(mean(g('dur')), d=0),
++                                      f(mean(g('sup24')), True), f(mean(g('trench')), True), f(mean(g('DA')), d=1), f(mean(g('res')), d=1), f(mean(g('resTr')), True),
++                                      f(mean(g('ctr')), d=1), f(mean(g('plug')), d=1), str(sum(g('rel'))), str(sum(g('abort'))), str(sum(g('repl'))), str(sum(g('push'))),
++                                      f(mean(g('asRet')), True), ','.join(sorted(set(m['plan'] for m in ms)))]) + ' |')
++    print()
++    for v in a.var:
++        t = tot[v]
++        print(f"TOTAL {v}: runs {len(t['win1'])} W1 {sum(t['win1']):.0f} TO {sum(t['to']):.0f} L1 {f(mean(t['l1']), True)} L2 {f(mean(t['l2']), True)} sup24 {f(mean(t['sup24']), True)} trench {f(mean(t['trench']), True)} DA {f(mean(t['DA']), d=2)} ctr {sum(t['ctr'])} plug {sum(t['plug'])} rel {sum(t['rel'])} abort {sum(t['abort'])} repl {sum(t['repl'])} push {sum(t['push'])}")
++
++
++if __name__ == '__main__':
++    main()
+diff --git a/tools/bn_campaign/gen_scen.py b/tools/bn_campaign/gen_scen.py
+index c7ac9c07..c4913ab1 100644
+--- a/tools/bn_campaign/gen_scen.py
++++ b/tools/bn_campaign/gen_scen.py
+@@ -48,7 +48,19 @@ def rifle_co(fac, k=1):
+ 
+ def mg_units(fac, big):
+     f = FAC[fac]
+-    return {f['off']: 1, "heavy_maxim": 5 if big else 2, "heavy_machinegunner": 8 if big else 4, "infantry": 4 if big else 3}
++    return mg_mix(fac, 5 if big else 2, 8 if big else 4, 4 if big else 3)
++
++
++# 경기관총 사수는 세력 전용 (balance.json factions): 한국 = heavy_machinegunner, 봉천 · 러시아 = _fengtian, 일본 = 없음 (소총병으로)
++LMG = {'kr': 'heavy_machinegunner', 'ft': 'heavy_machinegunner_fengtian', 'ru': 'heavy_machinegunner_fengtian'}
++
++
++def mg_mix(fac, maxim, lmg, inf):
++    f = FAC[fac]
++    d = {f['off']: 1, "heavy_maxim": maxim}
++    if fac in LMG: d[LMG[fac]] = lmg; d[f['inf'] if fac != 'kr' else 'infantry'] = inf
++    else: d[f['inf']] = inf + lmg
++    return {k: v for k, v in d.items() if v}
+ 
+ 
+ def forces(cfg):
+diff --git a/tools/bn_campaign/gen_scen2.py b/tools/bn_campaign/gen_scen2.py
+index 24fade06..961cfc89 100644
+--- a/tools/bn_campaign/gen_scen2.py
++++ b/tools/bn_campaign/gen_scen2.py
+@@ -9,6 +9,7 @@ No tanks, no AT riflemen.
+ """
+ import json, sys, os, copy
+ import gen_scen as G
++import gen_scen
+ from gen_scen import FAC, TERRAINS, ROAD, CORNER_FOREST, TRENCH
+ 
+ SEEDS = [1, 2, 3, 4, 5]
+@@ -36,8 +37,7 @@ def rifle_co(fac, n=None, off=3, scouts=2, inf=None, rank=0, slr=None):
+ 
+ 
+ def mg_units(fac, maxim, lmg, inf):
+-    f = FAC[fac]
+-    return {f['off']: 1, "heavy_maxim": maxim, "heavy_machinegunner": lmg, "infantry": inf}
++    return gen_scen.mg_mix(fac, maxim, lmg, inf)
+ 
+ 
+ MG1 = (2, 4, 3)     # campaign 1 defender MG company
+diff --git a/tools/bn_campaign/gen_scen4.py b/tools/bn_campaign/gen_scen4.py
+new file mode 100644
+index 00000000..e8e76642
+--- /dev/null
++++ b/tools/bn_campaign/gen_scen4.py
+@@ -0,0 +1,38 @@
++#!/usr/bin/env python3
++"""Defence-reserve matrix (2026-10-22, branch ai3b2): the C1/C2 defence scenarios have only 2 defending rifle companies,
++so a defending battalion never holds a reserve and the 3B reserve features (reserveEvents · counterOdds · defendRepick) never fire.
++DR_<terrain>_d<n>_r<ratio>: defender (side 2, fengtian) = one battalion of n rifle companies (n >= 3 -> battalion reserve),
++attacker (side 1, korean) = one battalion of round(n * ratio) companies. Rifle only. No tanks, no AT riflemen.
++
++Usage: python run.py --gen gen_scen4 --out <dir> --seeds 1-5
++"""
++import json, os, sys
++import gen_scen2 as G2
++from gen_scen2 import bn, TERRAINS
++
++SEEDS = [1, 2, 3, 4, 5]
++
++
++def mission(cfg):
++    return G2.mission(cfg)
++
++
++def cfgs():
++    L = []
++    ax, ay = 80, 100
++    for terrain in ('open', 'trench', 'town'):
++        for nd, r in ((3, 2.0), (4, 1.5)):
++            x, y = TERRAINS[terrain]['def_at']
++            na = int(round(nd * r))
++            fs = [bn("f1_bn", 1, 'kr', "한국군 소총대대", (ax, ay), 0, na, n=84), bn("f2_bn", 2, 'ft', "적 소총대대", (x, y), 180, nd, n=84)]
++            L.append(dict(id=f"DR_{terrain}_d{nd}_r{r:g}", kind='defence', terrain=terrain, forces=fs, p1='attack', p2='defend',
++                          fac1='kr', fac2='ft', def_at=(x, y), ratio=r, seeds=SEEDS))
++    return L
++
++
++if __name__ == '__main__':
++    out = sys.argv[1]
++    os.makedirs(out, exist_ok=True)
++    for c in cfgs():
++        json.dump(mission(c), open(os.path.join(out, c['id'] + '.json'), 'w', encoding='utf8'), ensure_ascii=False, indent=1)
++    print(len(cfgs()), "configs")

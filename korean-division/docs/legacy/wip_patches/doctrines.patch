@@ -1,0 +1,229 @@
+diff --git a/assets/data/doctrines.json b/assets/data/doctrines.json
+new file mode 100644
+index 00000000..cde0ee93
+--- /dev/null
++++ b/assets/data/doctrines.json
+@@ -0,0 +1,65 @@
++{
++  "version": 1,
++  "source": "docs/OFFICER_DOCTRINES.md (사용자 승인 2026-10-21)",
++  "retreatCasualtyBasis": [0.30, 0.40],
++  "aiAxes": ["commandDelay", "maneuver", "assault", "firePrep", "retreatThreshold", "reserve", "afterObjective", "specialty"],
++  "schools": [
++    { "key": "german", "name": "독일", "officer": "독단 · 재량 (임무형 지휘), 부사관 신뢰",
++      "tactics": "1918 돌격대식 침투 · 약점 돌파 · 측면 우회 · 탄력 방어 후 즉각 반격",
++      "ai": ["지휘 지연 짧음", "측면/침투 선호", "돌격보병 활용", "후퇴 문턱 중", "반격 빠름"],
++      "research": ["침투 전술", "돌격대"], "figures": ["김 참장", "김주현", "남 참장"], "axes": null },
++    { "key": "french", "name": "불란서", "officer": "신중 · 계획적, 상부 통제 · 시간표",
++      "tactics": "\"화력이 죽인다\" — 포병 준비 → 정해진 목표까지 단계 전진",
++      "ai": ["포격 준비 김", "화력 후 전진", "진격 느림", "손실 적음", "목표에서 굳힘"],
++      "research": ["이동탄막 협동", "포병"], "figures": [], "axes": null },
++    { "key": "russian", "name": "노서아", "officer": "완고 · 인내, 손실 감수",
++      "tactics": "병력 집중 · 정면 공세 · 착검 돌격 전통 · 끈질긴 방어",
++      "ai": ["돌격 선호", "후퇴 문턱 높음", "예비대 일괄 투입", "정찰/조율 약함"],
++      "research": ["착검 돌격", "방어 진지"], "figures": ["황자 이석", "민 대장"], "axes": null },
++    { "key": "pyongyang", "name": "평양", "officer": "규율 · 훈련, 균형형 (영국식 + 러시아식)",
++      "tactics": "영국식 소총 사격술 · 화력과 기동 · 점령 후 굳히기 + 러시아식 끈기",
++      "ai": ["소총 사격 효율", "점령 후 굳히기", "후퇴 문턱 중상", "표준형 (신설 부대 기본)"],
++      "research": ["사격술", "대형"], "figures": ["황손 이태"], "axes": null },
++    { "key": "beijing", "name": "북경", "officer": "실리 · 정치적, 병력 보존 (보정군관학교, 보정학파)",
++      "tactics": "일본식 공세 정신 (야습 · 기습) + 군벌식 실리 · 포위/우회 · 불리하면 빠른 철수",
++      "ai": ["후퇴 문턱 낮음", "야간/기습", "포위 기동", "화력 준비 짧음"],
++      "research": ["야간 전투", "기병/기동"], "figures": [], "axes": null }
++  ],
++  "factions": {
++    "japanese": { "name": "일본 (관동군)", "dispositions": [
++      { "key": "offensive", "name": "공세파 (관동군 정예)", "character": "공격 정신 · 야습 · 착검 돌격, 위험 감수 — \"폭주\" 이벤트의 주역",
++        "ai": ["돌격 성향 높음", "야간 공격", "후퇴 문턱 높음", "기관총 엄호 후 돌격"], "axes": null },
++      { "key": "railway_guard", "name": "철도수비대", "character": "철도 부속지 · 역 고수, 거점 방어",
++        "ai": ["거점 고수", "기관총 진지", "장갑열차", "철도 따라 증원", "반격은 국지적"], "axes": null },
++      { "key": "staff", "name": "참모형", "character": "계산적 · 기만, 국지 충돌 수위 조절",
++        "ai": ["포위 · 우회", "화력 준비", "손실 회피", "불리하면 협상/정전 (스크립트)"], "axes": null }
++    ] },
++    "fengtian": { "name": "봉천", "dispositions": [
++      { "key": "elite_guard", "name": "직속 정예 (장작림 위대 · 강무당 출신)", "character": "비교적 정규, 충성",
++        "ai": ["포병 활용", "끈질긴 방어", "역습", "후퇴 문턱 중"], "axes": null },
++      { "key": "kangwu_new", "name": "강무당 신식파 (일본식 교육 영향)", "character": "공세적, 일본 교관 영향",
++        "ai": ["우회", "기습", "야습", "기관총 운용 양호"], "axes": null },
++      { "key": "old_local", "name": "구식 지방군 (순방대 · 녹림 출신 장교)", "character": "병력 보존, 사기 낮음",
++        "ai": ["화력 약함", "정면 대치", "후퇴 문턱 낮음", "예비대 늦게"], "axes": null },
++      { "key": "toby", "name": "토비형 (최하위 — 마적 공유)", "character": "약탈 · 매복, 규율 없음",
++        "ai": ["매복", "기습", "대도 돌격", "불리하면 즉시 흩어져 도주", "거점 방어 약함"], "axes": null }
++    ] },
++    "bandit": { "name": "마적", "sharesWith": "fengtian.toby", "dispositions": [] },
++    "russian-white": { "name": "러시아 백군", "dispositions": [
++      { "key": "imperial_officers", "name": "제정 장교단 (정통파)", "character": "명예 · 장교 선두, 사기 의존",
++        "ai": ["정면 돌격", "장교 앞장", "장교 잃으면 급격히 약화"], "axes": null },
++      { "key": "ataman", "name": "아타만형 (세묘노프식 코사크)", "character": "기병 습격 · 약탈 · 불안정",
++        "ai": ["기병 기동", "습격", "후퇴 문턱 낮음", "장갑열차"], "axes": null },
++      { "key": "railway_defense", "name": "철도 방어형", "character": "철도 · 도시 고수, 패배주의",
++        "ai": ["거점 방어", "장갑열차", "철수 판단 빠름"], "axes": null }
++    ] },
++    "russian-red": { "name": "적군 (극동공화국 포함)", "dispositions": [
++      { "key": "commissar", "name": "정치위원 통제형", "character": "후퇴 금지 · 손실 감수",
++        "ai": ["후퇴 문턱 매우 높음", "대중 공세", "정면 반복 공격"], "axes": null },
++      { "key": "red_cavalry", "name": "내전 기동파 (붉은 기병)", "character": "기병 집단 돌파 · 타찬카",
++        "ai": ["기병 · 타찬카 기동", "측면", "추격"], "axes": null },
++      { "key": "partisan", "name": "빨치산형 (극동 빨치산)", "character": "매복 · 기습 · 철도 파괴",
++        "ai": ["매복", "숲/산 활용", "치고 빠지기", "거점 방어 약함"], "axes": null }
++    ] }
++  }
++}
+diff --git a/src/Core/Doctrines.cs b/src/Core/Doctrines.cs
+new file mode 100644
+index 00000000..052c24f6
+--- /dev/null
++++ b/src/Core/Doctrines.cs
+@@ -0,0 +1,100 @@
++using System.Text.Json;
++
++namespace KoreanDivision.Core;
++
++/// <summary>장교 학파 (대한제국군) 정의 — 읽기 전용 자료 (docs/OFFICER_DOCTRINES.md). 시뮬레이션이 아직 쓰지 않음.</summary>
++public sealed class DoctrineSchool
++{
++    public string Key { get; set; } = "";
++    public string Name { get; set; } = "";
++    public string Officer { get; set; } = "";
++    public string Tactics { get; set; } = "";
++    public List<string> Ai { get; set; } = new();
++    public List<string> Research { get; set; } = new();
++    public List<string> Figures { get; set; } = new();
++    /// <summary>AI 경향 축 수치 (문서에 없음 → null, DECISIONS_PENDING).</summary>
++    public Dictionary<string, double>? Axes { get; set; }
++}
++
++/// <summary>적 세력 성향 하나.</summary>
++public sealed class Disposition
++{
++    public string Key { get; set; } = "";
++    public string Name { get; set; } = "";
++    public string Character { get; set; } = "";
++    public List<string> Ai { get; set; } = new();
++    public Dictionary<string, double>? Axes { get; set; }
++}
++
++public sealed class FactionDoctrine
++{
++    public string Name { get; set; } = "";
++    public string? SharesWith { get; set; }
++    public List<Disposition> Dispositions { get; set; } = new();
++}
++
++/// <summary>assets/data/doctrines.json 로더 · 검증. 읽기 전용 정의, Defs.Hash 와 무관 (시뮬 미사용).</summary>
++public sealed class Doctrines
++{
++    public int Version { get; set; }
++    public string Source { get; set; } = "";
++    public double[] RetreatCasualtyBasis { get; set; } = Array.Empty<double>();
++    public List<string> AiAxes { get; set; } = new();
++    public List<DoctrineSchool> Schools { get; set; } = new();
++    public Dictionary<string, FactionDoctrine> Factions { get; set; } = new();
++
++    public static string DefaultPath => Path.Combine(AppContext.BaseDirectory, "assets", "data", "doctrines.json");
++
++    public static Doctrines Load(string? path = null)
++    {
++        path ??= DefaultPath;
++        var opts = new JsonSerializerOptions { PropertyNameCaseInsensitive = true, ReadCommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true };
++        var d = JsonSerializer.Deserialize<Doctrines>(File.ReadAllText(path), opts) ?? throw new InvalidDataException($"빈 데이터 파일: {path}");
++        var errs = d.Validate();
++        if (errs.Count > 0) throw new InvalidDataException($"doctrines.json: {string.Join("; ", errs)}");
++        return d;
++    }
++
++    public DoctrineSchool? School(string key) => Schools.FirstOrDefault(s => s.Key == key);
++
++    /// <summary>세력 성향 목록 (SharesWith 따라감, 예: bandit → fengtian.toby).</summary>
++    public IReadOnlyList<Disposition> DispositionsOf(string faction)
++    {
++        if (!Factions.TryGetValue(faction, out var f)) return Array.Empty<Disposition>();
++        if (f.SharesWith == null) return f.Dispositions;
++        var parts = f.SharesWith.Split('.');
++        return Factions.TryGetValue(parts[0], out var o) ? o.Dispositions.Where(x => parts.Length < 2 || x.Key == parts[1]).ToList() : Array.Empty<Disposition>();
++    }
++
++    /// <summary>스키마 · 키 중복 · 공유 참조 검사. 오류 문장 목록 (비면 정상).</summary>
++    public List<string> Validate()
++    {
++        var e = new List<string>();
++        if (Version < 1) e.Add("version");
++        if (Schools.Count == 0) e.Add("schools 비어 있음");
++        var seen = new HashSet<string>();
++        foreach (var s in Schools)
++        {
++            if (string.IsNullOrWhiteSpace(s.Key) || !seen.Add(s.Key)) e.Add($"학파 키 비었거나 중복: '{s.Key}'");
++            if (s.Name.Length == 0 || s.Officer.Length == 0 || s.Tactics.Length == 0 || s.Ai.Count == 0) e.Add($"학파 {s.Key}: 필수 항목 누락");
++        }
++        foreach (var (fk, f) in Factions)
++        {
++            if (f.Name.Length == 0) e.Add($"세력 {fk}: 이름 없음");
++            var keys = new HashSet<string>();
++            foreach (var x in f.Dispositions)
++            {
++                if (string.IsNullOrWhiteSpace(x.Key) || !keys.Add(x.Key)) e.Add($"성향 키 비었거나 중복: {fk}.'{x.Key}'");
++                if (x.Name.Length == 0 || x.Character.Length == 0 || x.Ai.Count == 0) e.Add($"성향 {fk}.{x.Key}: 필수 항목 누락");
++            }
++            if (f.SharesWith != null)
++            {
++                var p = f.SharesWith.Split('.');
++                bool ok = p.Length == 2 && Factions.TryGetValue(p[0], out var o) && o.SharesWith == null && o.Dispositions.Any(x => x.Key == p[1]);
++                if (!ok) e.Add($"세력 {fk}: sharesWith '{f.SharesWith}' 참조 오류");
++                if (f.Dispositions.Count > 0) e.Add($"세력 {fk}: sharesWith 와 자체 성향 동시 지정");
++            }
++        }
++        return e;
++    }
++}
+diff --git a/src/SelfTest.cs b/src/SelfTest.cs
+index e058213b..e5f6a1a9 100644
+--- a/src/SelfTest.cs
++++ b/src/SelfTest.cs
+@@ -22,6 +22,7 @@ public static partial class SelfTest
+         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "s4") { Tests.S4SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "assaultinf") { Tests.AssaultInfSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "units") { Tests.UnitsSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
++        if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "doctrines") { Tests.DoctrinesSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "n61") { Tests.N61SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "f4") { Tests.F4SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "armour") { Tests.ArmourSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+@@ -133,6 +134,7 @@ public static partial class SelfTest
+         Tests.F4SelfTest.Run(opt, Check);
+         Tests.N61SelfTest.Run(opt, Check);
+         Tests.UnitsSelfTest.Run(opt, Check);
++        Tests.DoctrinesSelfTest.Run(opt, Check);
+         Tests.AssaultInfSelfTest.Run(opt, Check);
+         Tests.NavSelfTest.Run(opt, Check);
+         Tests.FormationSelfTest.Run(opt, Check);
+diff --git a/src/Tests/DoctrinesSelfTest.cs b/src/Tests/DoctrinesSelfTest.cs
+new file mode 100644
+index 00000000..4541798d
+--- /dev/null
++++ b/src/Tests/DoctrinesSelfTest.cs
+@@ -0,0 +1,26 @@
++using KoreanDivision.Core;
++
++namespace KoreanDivision.Tests;
++
++/// <summary>장교 학파 · 적 세력 성향 자료 (assets/data/doctrines.json): 스키마 · 키 중복 · 문서 항목 수 (학파 5 · 일본 3 · 봉천 4 · 백군 3 · 적군 3 · 마적 = 봉천 토비형 공유). KD_SELFTEST_ONLY=doctrines.</summary>
++public static class DoctrinesSelfTest
++{
++    public static void Run(GameOptions opt, Action<bool, string> check)
++    {
++        Doctrines? d = null; string err = "";
++        try { d = Doctrines.Load(); } catch (Exception ex) { err = ex.Message; }
++        check(d != null, "doctrines: 로드 + 스키마 검증 " + err);
++        if (d == null) return;
++        check(d.Validate().Count == 0, "doctrines: 검증 오류 없음");
++        check(d.Schools.Count == 5 && new[] { "german", "french", "russian", "pyongyang", "beijing" }.All(k => d.School(k) != null), "doctrines: 학파 5종 (독일 · 불란서 · 노서아 · 평양 · 북경)");
++        check(d.Schools.Select(s => s.Key).Distinct().Count() == d.Schools.Count, "doctrines: 학파 키 중복 없음");
++        check(d.DispositionsOf("japanese").Count == 3 && d.DispositionsOf("fengtian").Count == 4 && d.DispositionsOf("russian-white").Count == 3 && d.DispositionsOf("russian-red").Count == 3, "doctrines: 세력 성향 수 (일본 3 · 봉천 4 · 백군 3 · 적군 3)");
++        var bandit = d.DispositionsOf("bandit");
++        check(bandit.Count == 1 && bandit[0].Key == d.DispositionsOf("fengtian")[3].Key, "doctrines: 마적 = 봉천 최하위(4번) 성향 공유");
++        check(d.Factions.Values.SelectMany(f => f.Dispositions).All(x => x.Axes == null) && d.Schools.All(s => s.Axes == null), "doctrines: 수치 축 미정 (null, DECISIONS_PENDING)");
++        var bad = new Doctrines { Version = 1 };
++        bad.Schools.Add(new DoctrineSchool { Key = "a", Name = "x", Officer = "x", Tactics = "x", Ai = { "x" } });
++        bad.Schools.Add(new DoctrineSchool { Key = "a", Name = "x", Officer = "x", Tactics = "x", Ai = { "x" } });
++        check(bad.Validate().Any(m => m.Contains("중복")), "doctrines: 키 중복 검출");
++    }
++}

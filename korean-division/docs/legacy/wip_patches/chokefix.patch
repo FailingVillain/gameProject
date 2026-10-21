@@ -1,0 +1,78 @@
+diff --git a/src/Core/Choke.cs b/src/Core/Choke.cs
+index 2fd489de..8a6f9c25 100644
+--- a/src/Core/Choke.cs
++++ b/src/Core/Choke.cs
+@@ -76,7 +76,8 @@ public sealed partial class World
+     /// 통과 큐: 이 깃발이 지금 서서 기다려야 하나 (StepAnchors 가 호출). 깃발이 이미 길목 안이거나 앞에 길목이 없으면 기다림 끝 (ChokeHold 0).
+     /// 기다리는 조건 = 같은 편 · 같은 방향의 이동 중 깃발 Z 가 앞에 있고, Z 의 구성원이 길목 안에 있거나 Z 가 길목 입구에 더 가깝다 (같으면 중대 Id 낮은 쪽이 먼저).
+     /// </summary>
+-    const float ChokeQueueGap = 3f;
++    static float EnvF(string k, float d) { var v = Environment.GetEnvironmentVariable(k); return v == null ? d : float.Parse(v, System.Globalization.CultureInfo.InvariantCulture); }
++    static readonly float ChokeQueueGap = EnvF("KD_CQ_GAP", 3f), CqSlack = EnvF("KD_CQ_SLACK", 0f), CqEnter = EnvF("KD_CQ_ENTER", 0f);
+ 
+     internal bool StepChokeQueue(Company c, CompanyAnchor a)
+     {
+@@ -98,7 +99,7 @@ public sealed partial class World
+                 if (!m.Alive) continue;
+                 if (ChokeAt(m.Pos)) { entered = true; continue; }
+                 Vector2 rel = m.Pos - hit;
+-                if (Vector2.Dot(rel, a.Heading) < 0f && rel.LengthSquared() < 30f * 30f && Vector2.Dot(m.Pos - a.Pos, a.Heading) > 0f) tailBehind = true;
++                if (Vector2.Dot(rel, a.Heading) < -CqSlack && rel.LengthSquared() < 30f * 30f && Vector2.Dot(m.Pos - a.Pos, a.Heading) > 0f) tailBehind = true;
+             }
+             bool occupying = entered && tailBehind;
+             float theirs = ChokeAhead(za, out _);
+diff --git a/src/Core/OrgFormation.cs b/src/Core/OrgFormation.cs
+index e016e0e2..bb30e865 100644
+--- a/src/Core/OrgFormation.cs
++++ b/src/Core/OrgFormation.cs
+@@ -210,7 +210,7 @@ public sealed partial class World
+             bool hold = Defs.CombatRules.ChokeEnabled && StepChokeQueue(c, a);   // 길목 앞에서 앞 중대가 빠지기를 기다림 (Choke.cs)
+             bool fight = engaged > n / 4;   // 공격 이동: 구성원 4분의 1 넘게 교전 중 → 대열 전체가 서서 싸운다 (기다림 상한 없음)
+             if (fight) { mul = 0f; a.WaitTicks = 0; }
+-            else if (hold) { mul = 0; a.WaitTicks = 0; }
++            else if (hold) { mul = MathF.Min(mul, KdHoldMul); a.WaitTicks = 0; }
+             else if (mul == 0) { if (++a.WaitTicks > MaxWaitTicks) mul = 0.5f; }
+             else a.WaitTicks = 0;
+             // 깃발 속도 배수는 목표값 (0 · 0.5 · 1) 으로 바로 뛰지 않고 가속 제한으로 따라간다 (서고 가기 깜빡임 방지, (a)-4 · (b)-3)
+@@ -221,6 +221,7 @@ public sealed partial class World
+         }
+     }
+ 
++    static readonly float KdHoldMul = Environment.GetEnvironmentVariable("KD_CQ_HOLDMUL") is { } hm ? float.Parse(hm, System.Globalization.CultureInfo.InvariantCulture) : 0f;
+     void MoveFlag(Company c, CompanyAnchor a, float dt, float mul)
+     {
+         var f = a.Flag;
+@@ -274,7 +275,7 @@ public sealed partial class World
+             if (!a.Column) EnterColumn(c, a);
+         }
+         else if (a.Column && worst >= exit) a.ClearTicks = 0;   // 아직 덜 트임 — 종대 유지
+-        else if (a.Column && Defs.CombatRules.ChokeEnabled && CompanyInChoke(c)) a.ClearTicks = 0;   // choke: 꼬리가 길목을 다 빠질 때까지 종대 유지 (대형 재배정 없음)
++        else if (a.Column && Defs.CombatRules.ChokeEnabled && Environment.GetEnvironmentVariable("KD_CQ_NOCOL") == null && CompanyInChoke(c)) a.ClearTicks = 0;   // choke: 꼬리가 길목을 다 빠질 때까지 종대 유지 (대형 재배정 없음)
+         else if (a.Column && (a.ClearTicks += NarrowCheckInterval) >= Defs.CombatRules.NarrowClearTicks)
+         {
+             a.Column = false;
+diff --git a/src/Core/Squads.cs b/src/Core/Squads.cs
+index 01a5b8ed..aed8f896 100644
+--- a/src/Core/Squads.cs
++++ b/src/Core/Squads.cs
+@@ -211,7 +211,7 @@ public sealed partial class World
+             if (c.Holes == 0 || (Tick + c.Id * 97L) % Math.Max(ivMin, DecideInterval(c, iv)) != 0) continue;   // 경험치 많은 지휘관은 더 자주 (CommandRanks.cs) — 단 gapCheckMinSec 보다 자주는 아님 (N12)
+             if (c.TA.Stage != TaStage.None) continue;               // N32 참호 돌격 중
+             if (c.Anchor != null) continue;                         // 행군 · 정렬 중 — 도착한 뒤 다음 점검에서
+-            if (rules.ChokeEnabled && CompanyInChoke(c)) continue;  // choke: 길목 안에서는 빈자리를 메우지 않는다 (빠져나간 뒤 다음 점검에서)
++            if (rules.ChokeEnabled && Environment.GetEnvironmentVariable("KD_CQ_NOGAP") == null && CompanyInChoke(c)) continue;  // choke: 길목 안에서는 빈자리를 메우지 않는다 (빠져나간 뒤 다음 점검에서)
+             if (c.Drill.Phase != DrillPhase.Idle) continue;         // 틀 행동 중 (TacticDrill.cs) — 행동이 끝나면 정렬
+             if (c.Facing == Vector2.Zero || c.Members.Count == 0) { c.Holes = 0; continue; }
+             var cen = Centroid(c.Members);
+diff --git a/src/Tests/ChokeProbe.cs b/src/Tests/ChokeProbe.cs
+index 031edb0f..db8c88c4 100644
+--- a/src/Tests/ChokeProbe.cs
++++ b/src/Tests/ChokeProbe.cs
+@@ -36,6 +36,7 @@ public static class ChokeProbe
+         }
+         var defs = Defs.Load();
+         defs.CombatRules.ChokeEnabled = !off;
++        if (Environment.GetEnvironmentVariable("KD_CQ_PUSH") is { } pv) defs.CombatRules.ChokePushScale = float.Parse(pv, System.Globalization.CultureInfo.InvariantCulture);
+         Console.WriteLine($"[choke] 다리 폭 {width} · 중대 {co} x {men} · {terrain} · 길목 기능 {(off ? "끔" : "켬")}");
+         for (int s = 0; s < seeds; s++)
+         {
