@@ -1,0 +1,1010 @@
+diff --git a/docs/CONTROLS.md b/docs/CONTROLS.md
+index 6a4f99dc..3341a634 100644
+--- a/docs/CONTROLS.md
++++ b/docs/CONTROLS.md
+@@ -62,6 +62,10 @@
+ 
+ **명령 대기**: `M` · `A` · `Q` · `C` · `X` · `T` 는 누른 뒤 지점(또는 적)을 좌클릭해야 실행된다. 대기 중 우클릭 · `Esc` 로 취소.
+ 
++**명령 대기열 (N74, `Shift`)**: `Shift` + 우클릭 (이동 · 적 공격) · `Shift` + 우클릭-드래그 (전선) · `M`/`A`/`Q`/`C` 뒤 `Shift` + 좌클릭 (`Shift` 를 누르고 있는 동안 명령 대기가 유지돼 여러 지점을 이어 찍음) · `Shift` + `H` (끝에 사수) 는 지금 명령 뒤에 이어 붙인다. 같은 유닛 묶음은 같은 대기열, 다른 묶음을 고르면 그 유닛들만 새 대기열. 묶음 전원이 한 다리를 끝내면 (도착 · 표적 소멸) 다음 다리. 선택하면 경로 (선 · 원, 사수 = 네모) 가 보인다. **취소**: `Shift` 없이 내린 이동 · 공격 · 정지 · 사수 · 돌격 · 후퇴 · 포격 명령 = 남은 대기열 버림. 뒤 다리는 지휘 계통 지연이 없다 (반응 지연만).
++
++**사선 막힘 표시 (N75)**: 우리 직사 사수 중 사거리 안에 보이는 적이 있는데 전부 사선이 막힌 병사 머리 위에 빗금 원 — 짙은 초록 = 숲, 갈색 = 고지 너머, 회색 = 바위 · 건물 등. 표시 전용 (시뮬 무관).
++
+ `Enter` 는 명령 입력창(콘솔)을 연다 (§9).
+ 
+ ---
+diff --git a/docs/ENGINE_NOTES.md b/docs/ENGINE_NOTES.md
+index 1e496cc1..02a43ba7 100644
+--- a/docs/ENGINE_NOTES.md
++++ b/docs/ENGINE_NOTES.md
+@@ -648,3 +648,7 @@
+ - 리플레이 결정성: AI 가 낸 명령은 `Ai` 플래그를 명령에 싣는다 (재생에는 AI 컨트롤러가 없으므로 시뮬이 세력 `IsAi` 를 보면 어긋남 — 미션 리플레이 시험이 잡음). AI 는 기동 계획 (stage 3A 고정 · 기동 제대) · 도하 · 역습 중인 중대에는 쓰지 않는다.
+ - 통계 (`MoveStats`): TaStarts/Done/Fail/Cancel · TaBounds · TaGrenades · TaCharges · TaConsolidations · TaAiStarts · TaStageEntered[]. 시험 `KD_SELFTEST_ONLY=n32` (`N32SelfTest`).
+ - 단축키 선택: **W** (쓴 키 M S A Q H X T V E C G I N F L R Z B K D, Tab, Space, F3/5/6/7/10 과 겹치지 않음). 명령 탭에 빈 칸이 있으면 카드 버튼, 보병 중대처럼 가득 차면 전투 탭 (2,0) 버튼 + 어느 탭에서나 W.
++
++## N74 명령 대기열 · N75 사선 막힘 사수 표시 (2026-10-22)
++- **대기열** (`OrderQueue.cs`, `QueueOrderCommand` json `queue`, 리플레이 18, Snapshot FV 49 — ORG_ 끝 `WriteOrderQueues`, 체크섬은 대기열을 쓴 판만): 다리 종류 이동 · 공격 이동 · 속보 · 공격 (표적 Id) · 사수 · 돌격. 같은 유닛 묶음 (Id 집합) = 끝에 덧붙임, 아니면 그 유닛을 옛 대기열에서 빼고 새 대기열. 새 대기열이 모두 한가하면 첫 다리 즉시 (보통 명령 · N37 · 지휘 계통 지연 그대로). `StepOrderQueues` (FlushCommands 바로 뒤): 구성원 전원이 Move/AttackMove/Attack 이 아니고 ReactDelay 0 이면 다음 다리 — 다리는 같은 명령 객체를 `Execute` 로 실행 (기록 안 함, `queueExec`), 뒤 다리는 `queueNoChain` → `ChainDelayTicks` 0. 취소 = `QueueCancelByOrder` (Shift 없는 이동 · 공격 · 정지 · 사수 · 돌격 · 후퇴 · 포격 · 진지 점유 · 참호 돌격). 공격 다리 표적이 죽었거나 안 보이면 건너뜀. AI 는 쓰지 않음.
++- **사선 막힘 사수 표시** (`Render/OrderOverlay.cs`, 화면 전용): 표적 없는 우리 직사 (`los`) 사수 중, 세력이 보는 사거리 안 적이 있고 전부 `GameMap.FiringLineBlock` (HasFiringLine 과 같은 걸음, 막은 것 숲 · 고지 · 장애물을 돌려줌 — 시뮬은 안 씀) 이 막힌 사수. 10프레임마다 화면 안 최대 1500명, 적은 8칸 버킷. firectl 테스트가 두 판정 일치 (무작위 4000쌍) 와 체크섬 불변을 확인.
+diff --git a/src/Core/CommandDelay.cs b/src/Core/CommandDelay.cs
+index b44ca098..5cc8747b 100644
+--- a/src/Core/CommandDelay.cs
++++ b/src/Core/CommandDelay.cs
+@@ -84,6 +84,7 @@ public sealed partial class World
+     /// <summary>지휘 계통 지연 (틱): 단계별 범위 안 결정적 해시 (유닛 Id · 명령 틱), 후퇴 (이동 명령, 돌격 아님) ×retreatMul, 플레이어 선택 인원 배수 ×mul (N37).</summary>
+     int ChainDelayTicks(Unit u, float mul = 1f)
+     {
++        if (queueNoChain) return 0;   // N74: 대기열 뒤 다리는 이미 받은 명령 — 지휘 계통 지연 없음 (OrderQueue.cs)
+         var d = Defs.Command;
+         var tier = ChainTierOf(u);
+         float lo, hi;
+diff --git a/src/Core/Commands/GameCommand.cs b/src/Core/Commands/GameCommand.cs
+index 4a3f31f7..d8be697b 100644
+--- a/src/Core/Commands/GameCommand.cs
++++ b/src/Core/Commands/GameCommand.cs
+@@ -47,6 +47,7 @@ namespace KoreanDivision.Core;
+ [JsonDerivedType(typeof(SetKeepFormationCommand), "keepform")]
+ [JsonDerivedType(typeof(SetFireModeCommand), "firemode")]
+ [JsonDerivedType(typeof(TrenchAssaultCommand), "trenchassault")]
++[JsonDerivedType(typeof(QueueOrderCommand), "queue")]
+ public abstract record GameCommand(int Faction)
+ {
+     /// <summary>N37 (2026-10-19): 플레이어가 직접 내린 명령의 선택 인원 (0 = AI · 옛 기록 → 지연 배수 1). 명령 반응 · 지휘 계통 지연이 balance.json command.playerSel* 곡선으로 줄어든다.
+diff --git a/src/Core/Commands/Replay.cs b/src/Core/Commands/Replay.cs
+index 22b2a2f6..2f6728ca 100644
+--- a/src/Core/Commands/Replay.cs
++++ b/src/Core/Commands/Replay.cs
+@@ -11,7 +11,7 @@ public readonly record struct ChecksumRecord(long Tick, ulong Checksum);
+ /// </summary>
+ public sealed class ReplayFile
+ {
+-    public const int FormatVersion = 17;   // 17: 참호 돌격 명령 (trenchassault, N32) · 16: 집결 지점 · 포격 종류 명령 (rally · groundfireex · retreat UseRally, N79a) · 15: 중대 대형 유지 명령 (keepform, F1 2차) · 14: 기병 하마/승마 명령 (mount, N61) · 13: 중대 자세 명령 (posture, tweak1) · 12: 명령 선택 인원 Sel (N37, 플레이어 명령 지연 곡선) · 11: 진지 점유 명령 (occupy, engage) · 10: 대열 정비 명령 (closeranks, gapfill) · 9: 돌격 사격 켜기 명령 (marchfire) · 8: 참호 파기 · 참호선 명령 삭제 (dig · digline — 건설 제거 2026-10-19) · 7: 미션 (머리말 Mission = 미션 JSON + 배치 단계 결과, MissionEndCommand) · 6: 연대 → 대대 이름 변경 (battalion · batnumber · batform 명령) · 5: 외교 명령 삭제 (정적 팀) · 4: 교전 4차 (수류탄 · 돌격만 명령, 유닛 id 이름 규칙 변경) · 3: 방향 변경 (생산 · 건설 · 자원 명령 삭제, 참호 파기 추가)
++    public const int FormatVersion = 18;   // 18: 명령 대기열 (queue, N74) · 17: 참호 돌격 명령 (trenchassault, N32) · 16: 집결 지점 · 포격 종류 명령 (rally · groundfireex · retreat UseRally, N79a) · 15: 중대 대형 유지 명령 (keepform, F1 2차) · 14: 기병 하마/승마 명령 (mount, N61) · 13: 중대 자세 명령 (posture, tweak1) · 12: 명령 선택 인원 Sel (N37, 플레이어 명령 지연 곡선) · 11: 진지 점유 명령 (occupy, engage) · 10: 대열 정비 명령 (closeranks, gapfill) · 9: 돌격 사격 켜기 명령 (marchfire) · 8: 참호 파기 · 참호선 명령 삭제 (dig · digline — 건설 제거 2026-10-19) · 7: 미션 (머리말 Mission = 미션 JSON + 배치 단계 결과, MissionEndCommand) · 6: 연대 → 대대 이름 변경 (battalion · batnumber · batform 명령) · 5: 외교 명령 삭제 (정적 팀) · 4: 교전 4차 (수류탄 · 돌격만 명령, 유닛 id 이름 규칙 변경) · 3: 방향 변경 (생산 · 건설 · 자원 명령 삭제, 참호 파기 추가)
+     public const int ChecksumInterval = 600;   // 10초마다 체크섬 기록
+ 
+     public int Format { get; set; } = FormatVersion;
+diff --git a/src/Core/GameMapTerrain.cs b/src/Core/GameMapTerrain.cs
+index c3cba4c3..0123aec5 100644
+--- a/src/Core/GameMapTerrain.cs
++++ b/src/Core/GameMapTerrain.cs
+@@ -2,6 +2,9 @@ using System.Numerics;
+ 
+ namespace KoreanDivision.Core;
+ 
++/// <summary>사선을 막은 것 (표시용 — GameMap.FiringLineBlock).</summary>
++public enum LosBlock : byte { None = 0, Obstacle = 1, Forest = 2, High = 3 }
++
+ /// <summary>
+ /// 지형 시뮬 (ROADMAP '지형 · 높이'): 고지 (칸마다 bool) · 지형별 이동 배수 · 엄폐 · 숲 깊이 · 가옥 옆 · 경사, 직사 사선 (시야 규칙 포함).
+ /// 구조 정보 (숲 깊이 · 가옥 옆 · 경사 · 지형 해시) 는 지형이 바뀐 뒤 처음 물을 때 다시 만든다 (지도는 생성 · 불러오기 때만 바뀐다).
+@@ -219,6 +222,44 @@ public sealed partial class GameMap
+         return true;
+     }
+ 
++    /// <summary>
++    /// [읽기 전용 — 표시용, N75 사선 막힘 사수 표시] HasFiringLine 과 같은 걸음으로 무엇이 사선을 막는지 돌려준다 (None = 트임).
++    /// 시뮬은 이 함수를 쓰지 않는다 (HasFiringLine 그대로). 둘이 같은 결과인지는 firectl 셀프테스트가 무작위 쌍으로 확인.
++    /// </summary>
++    public LosBlock FiringLineBlock(Vector2 a, Vector2 b, int ignoreA, int ignoreB)
++    {
++        EnsureTerrain();
++        int seeDepth = Defs.Current.Terrain.ForestSeeDepth;
++        var (x, y) = TileOf(a);
++        var (ex, ey) = TileOf(b);
++        if (!ClearFor(x, y, ignoreA, ignoreB)) return LosBlock.Obstacle;
++        bool shooterLow = !high[y * Width + x];
++        bool passedHigh = false;
++        Vector2 d = b - a;
++        int stepX = Math.Sign(d.X), stepY = Math.Sign(d.Y);
++        float tDeltaX = d.X != 0 ? MathF.Abs(1f / d.X) : float.MaxValue;
++        float tDeltaY = d.Y != 0 ? MathF.Abs(1f / d.Y) : float.MaxValue;
++        float tMaxX = d.X > 0 ? (x + 1 - a.X) * tDeltaX : d.X < 0 ? (a.X - x) * tDeltaX : float.MaxValue;
++        float tMaxY = d.Y > 0 ? (y + 1 - a.Y) * tDeltaY : d.Y < 0 ? (a.Y - y) * tDeltaY : float.MaxValue;
++        int guard = Math.Abs(ex - x) + Math.Abs(ey - y) + 2;
++        while ((x != ex || y != ey) && guard-- > 0)
++        {
++            if (tMaxX < tMaxY) { x += stepX; tMaxX += tDeltaX; }
++            else if (tMaxY < tMaxX) { y += stepY; tMaxY += tDeltaY; }
++            else
++            {
++                if (!ClearFor(x + stepX, y, ignoreA, ignoreB) || !ClearFor(x, y + stepY, ignoreA, ignoreB)) return LosBlock.Obstacle;
++                x += stepX; y += stepY; tMaxX += tDeltaX; tMaxY += tDeltaY;
++            }
++            if (!ClearFor(x, y, ignoreA, ignoreB)) return LosBlock.Obstacle;
++            if (passedHigh) return LosBlock.High;
++            int i = y * Width + x;
++            if ((x != ex || y != ey) && forestDepth[i] > seeDepth) return LosBlock.Forest;
++            if (shooterLow && high[i]) passedHigh = true;
++        }
++        return LosBlock.None;
++    }
++
+     bool ClearFor(int x, int y, int ignoreA, int ignoreB)
+     {
+         if (!InBounds(x, y)) return false;
+diff --git a/src/Core/OrderQueue.cs b/src/Core/OrderQueue.cs
+new file mode 100644
+index 00000000..c7f263e6
+--- /dev/null
++++ b/src/Core/OrderQueue.cs
+@@ -0,0 +1,229 @@
++using System.Numerics;
++
++namespace KoreanDivision.Core;
++
++/// <summary>N74 대기열 명령 종류 (이동 경로 · 공격 · 행동).</summary>
++public enum QueuedKind : byte { Move = 0, AttackMove = 1, QuickStep = 2, Attack = 3, Hold = 4, Charge = 5 }
++
++/// <summary>
++/// N74 명령 대기열 (Shift + 명령, 사용자 승인 2026-10-20 · 지휘 편의 ④). 대기열 = (유닛 묶음, 다리 목록). 리플레이 기록 (Replay 18).
++/// 규칙:
++///  · 같은 유닛 묶음 (살아 있는 구성원 Id 집합이 같음) 의 대기열이 있으면 끝에 덧붙인다. 아니면 그 유닛들을 다른 대기열에서 빼고 새 대기열을 만든다.
++///  · 새 대기열의 구성원이 모두 할 일이 없으면 (이동 · 공격 이동 · 공격 중이 아님) 첫 다리를 바로 실행 — 보통 명령과 같다 (N37 지연 곡선 · 지휘 계통 지연 그대로).
++///    아니면 지금 하던 일이 끝난 뒤 실행.
++///  · 다리 진행: 구성원 전원 (살아 있는) 이 지금 다리를 끝내면 (도착 · 표적 소멸 = Idle/Hold) 다음 다리를 실행 (대기열마다 한 틱에 한 다리).
++///    뒤 다리는 이미 받은 명령이므로 지휘 계통 지연 없음 (반응 지연 0~2틱 · N37 배수만) — 결정 2026-10-22.
++///  · 취소: 그 유닛에 Shift 없이 내린 이동 · 공격 · 정지 · 사수 · 돌격 · 후퇴 · 포격 · 진지 점유 · 참호 돌격 명령 = 대기열에서 빠짐 (남은 다리 버림). 죽으면 빠짐.
++///  · 공격 다리의 표적이 실행 때 죽었거나 안 보이면 (적대 아님 포함) 건너뜀.
++/// 상태 = World.OrderQueues (ORG_ 끝, WriteRally 뒤 — FormatVersion 49). 틱 · 명령의 함수 — 결정적.
++/// </summary>
++public sealed record QueueOrderCommand(int Faction, int[] Units, QueuedKind Kind, Vector2 Target, int TargetId = 0, FormSpec? Form = null) : GameCommand(Faction);
++
++public readonly record struct QueuedLeg(QueuedKind Kind, Vector2 Target, int TargetId, FormSpec? Form);
++
++public sealed class OrderQueue
++{
++    public int Id;
++    public int Faction;
++    public int Sel;                                // 처음 명령의 선택 인원 (N37 배수 — 뒤 다리도 같은 배수)
++    public readonly List<int> Units = new();       // 구성원 Id (오름차순)
++    public readonly List<QueuedLeg> Legs = new();  // 아직 실행 안 한 다리
++    public bool HasCurrent;                        // 지금 실행 중인 다리 (표시용 · 진행 판정)
++    public QueuedLeg Current;
++}
++
++public sealed partial class World
++{
++    /// <summary>N74 명령 대기열 (Id 순). 저장 · 체크섬.</summary>
++    public readonly List<OrderQueue> OrderQueues = new();
++    int nextQueueId = 1;
++    /// <summary>[작업값] 대기열 다리를 실행하는 중 (취소 훅 건너뜀 · 뒤 다리는 지휘 계통 지연 없음). 틱 안에서만.</summary>
++    bool queueExec, queueNoChain;
++
++    public void QueueOrder(int faction, IEnumerable<Unit> units, QueuedKind kind, Vector2 target, int targetId = 0, FormSpec? form = null) =>
++        IssueUnits(faction, units, ids => new QueueOrderCommand(faction, ids, kind, target, targetId, NormForm(form)));
++
++    /// <summary>[읽기] 이 유닛이 든 대기열 (없으면 null).</summary>
++    public OrderQueue? QueueOf(Unit u)
++    {
++        foreach (var q in OrderQueues) if (q.Faction == u.Owner && q.Units.BinarySearch(u.Id) >= 0) return q;
++        return null;
++    }
++
++    static bool Busy(Unit u) => u.Order is UnitOrder.Move or UnitOrder.AttackMove or UnitOrder.Attack;
++
++    void ExecQueueOrder(QueueOrderCommand c)
++    {
++        int f = c.Faction;
++        if (!Enum.IsDefined(typeof(QueuedKind), c.Kind) || !float.IsFinite(c.Target.X) || !float.IsFinite(c.Target.Y)) return;
++        var list = Resolve(f, c.Units).Where(u => u.Alive).Select(u => u.Id).Distinct().ToList();
++        if (list.Count == 0) return;
++        list.Sort();
++        var leg = new QueuedLeg(c.Kind, c.Target, c.TargetId, c.Form);
++        OrderQueue? q = null;
++        foreach (var e in OrderQueues)
++            if (e.Faction == f && e.Units.Count == list.Count && e.Units.SequenceEqual(list)) { q = e; break; }
++        if (q != null) { q.Legs.Add(leg); return; }
++        RemoveFromQueues(f, list);
++        q = new OrderQueue { Id = nextQueueId++, Faction = f, Sel = c.Sel };
++        q.Units.AddRange(list);
++        OrderQueues.Add(q);
++        bool idle = true;
++        foreach (int id in list) if (Find(id) is Unit u && Busy(u)) { idle = false; break; }
++        if (idle) RunLeg(q, leg, chain: true);
++        else q.Legs.Add(leg);
++    }
++
++    void RemoveFromQueues(int faction, IEnumerable<int> ids)
++    {
++        if (OrderQueues.Count == 0) return;
++        foreach (int id in ids)
++            foreach (var q in OrderQueues)
++                if (q.Faction == faction) { int i = q.Units.BinarySearch(id); if (i >= 0) q.Units.RemoveAt(i); }
++        OrderQueues.RemoveAll(q => q.Units.Count == 0);
++    }
++
++    static int[]? CmdUnits(GameCommand command) => command switch
++    {
++        MoveCommand c => c.Units, AttackMoveCommand c => c.Units, QuickStepCommand c => c.Units, RetreatCommand c => c.Units,
++        AttackCommand c => c.Units, StopCommand c => c.Units, HoldCommand c => c.Units, ChargeCommand c => c.Units,
++        OccupyPositionsCommand c => c.Units, GroundFireCommand c => c.Units, GroundFireExCommand c => c.Units, _ => null,
++    };
++
++    /// <summary>Shift 없는 유닛 명령 = 그 유닛은 대기열에서 빠진다 (대기열 다리 실행 중에는 건너뜀).</summary>
++    void QueueCancelByOrder(GameCommand command)
++    {
++        if (queueExec || OrderQueues.Count == 0) return;
++        int[]? ids = CmdUnits(command);
++        if (command is TrenchAssaultCommand { On: true } ta)
++            ids = Companies.Where(co => co.Owner == ta.Faction && ta.Companies.Contains(co.Id)).SelectMany(co => co.Members).Select(u => u.Id).ToArray();
++        if (ids != null) RemoveFromQueues(command.Faction, ids);
++    }
++
++    /// <summary>매 틱 (명령 실행 뒤): 죽은 구성원 정리, 다리가 끝난 대기열은 다음 다리 실행 (대기열마다 한 틱에 하나).</summary>
++    void StepOrderQueues()
++    {
++        if (OrderQueues.Count == 0) return;
++        for (int qi = 0; qi < OrderQueues.Count; qi++)
++        {
++            var q = OrderQueues[qi];
++            q.Units.RemoveAll(id => Find(id) is not Unit { Alive: true } u || u.Owner != q.Faction);
++            if (q.Units.Count == 0) continue;
++            bool done = true;
++            foreach (int id in q.Units) if (Find(id) is Unit u && (Busy(u) || u.ReactDelay > 0)) { done = false; break; }
++            if (!done) continue;
++            if (q.Legs.Count == 0) { q.Units.Clear(); continue; }   // 마지막 다리까지 끝 = 대기열 끝
++            var leg = q.Legs[0];
++            q.Legs.RemoveAt(0);
++            RunLeg(q, leg, chain: false);
++        }
++        OrderQueues.RemoveAll(q => q.Units.Count == 0);
++    }
++
++    /// <summary>다리 하나를 보통 명령처럼 실행 (명령 기록은 안 함 — 대기열 상태가 저장 · 체크섬되므로 리플레이는 같은 다리를 다시 실행).</summary>
++    void RunLeg(OrderQueue q, QueuedLeg leg, bool chain)
++    {
++        q.HasCurrent = true; q.Current = leg;
++        int f = q.Faction;
++        var units = new List<Unit>();
++        foreach (int id in q.Units) if (Find(id) is Unit { Alive: true } u && u.Owner == f) units.Add(u);
++        if (units.Count == 0) return;
++        int[] all = units.Select(u => u.Id).ToArray();
++        var cmds = new List<GameCommand>(2);
++        switch (leg.Kind)
++        {
++            case QueuedKind.Move: cmds.Add(new MoveCommand(f, all, leg.Target, leg.Form)); break;
++            case QueuedKind.AttackMove: cmds.Add(new AttackMoveCommand(f, all, leg.Target, leg.Form)); break;
++            case QueuedKind.QuickStep: cmds.Add(new QuickStepCommand(f, units.Where(u => u.CanQuickStep).Select(u => u.Id).ToArray(), leg.Target, leg.Form)); break;
++            case QueuedKind.Hold: cmds.Add(new HoldCommand(f, all)); break;
++            case QueuedKind.Attack:
++                if (Find(leg.TargetId) is not Entity t || !t.Alive || t.Indestructible || !IsHostile(f, t.Owner) || !Fog.CanSee(f, t)) break;   // 표적 소멸 · 안 보임 = 건너뜀
++                cmds.Add(new AttackCommand(f, units.Where(u => u.Weapon != null).Select(u => u.Id).ToArray(), t.Id));
++                cmds.Add(new MoveCommand(f, units.Where(u => u.Weapon == null).Select(u => u.Id).ToArray(), t.Pos));   // 비전투 유닛은 따라 이동 (UI 우클릭 공격과 같음)
++                break;
++            case QueuedKind.Charge:
++            {
++                if (!units.Exists(u => u.CanCharge)) break;
++                int tid = 0; Vector2 p = leg.Target;
++                if (leg.TargetId != 0 && Find(leg.TargetId) is Entity ct && ct.Alive && !ct.Indestructible && IsHostile(f, ct.Owner) && ct is not Unit { Def.IsArmored: true } && Fog.CanSee(f, ct)) { tid = ct.Id; p = ct.Pos; }
++                cmds.Add(new ChargeCommand(f, units.Where(u => u.CanCharge).Select(u => u.Id).ToArray(), p, tid));
++                cmds.Add(new HoldCommand(f, units.Where(u => !u.CanCharge).Select(u => u.Id).ToArray()));   // N36 섞인 선택 돌격과 같음
++                break;
++            }
++        }
++        bool e0 = queueExec, c0 = queueNoChain;
++        queueExec = true; queueNoChain = !chain;
++        try { foreach (var c in cmds) if (CmdUnits(c) is { Length: > 0 }) Execute(c with { Sel = q.Sel }); }
++        finally { queueExec = e0; queueNoChain = c0; }
++    }
++
++    // ---------------------------------------------------------------- 저장 · 체크섬 (ORG_ 끝, WriteRally 뒤 — FormatVersion 49)
++
++    static void WriteLeg(SnapWriter w, in QueuedLeg l)
++    {
++        w.Byte((byte)l.Kind); w.Vec(l.Target); w.I(l.TargetId);
++        w.Bool(l.Form != null);
++        if (l.Form is { } fs) { w.I(fs.Type); w.I(fs.Order); w.Vec(fs.Dir); w.F(fs.Width); }
++    }
++
++    static QueuedLeg ReadLeg(SnapReader r)
++    {
++        byte k = r.Byte();
++        if (!Enum.IsDefined(typeof(QueuedKind), k)) throw new SnapshotException(string.Format(SnapMsg.Invalid, "queued order kind"));
++        var t = r.Vec(); int tid = r.I();
++        FormSpec? fs = r.Bool() ? new FormSpec(r.I(), r.I(), r.Vec(), r.F()) : null;
++        if (!float.IsFinite(t.X) || !float.IsFinite(t.Y)) throw new SnapshotException(string.Format(SnapMsg.Invalid, "queued order target"));
++        return new QueuedLeg((QueuedKind)k, t, tid, fs);
++    }
++
++    void WriteOrderQueues(SnapWriter w)
++    {
++        w.I(nextQueueId);
++        w.I(OrderQueues.Count);
++        foreach (var q in OrderQueues)
++        {
++            w.I(q.Id); w.I(q.Faction); w.I(q.Sel);
++            w.I(q.Units.Count); foreach (int id in q.Units) w.I(id);
++            w.I(q.Legs.Count); foreach (var l in q.Legs) WriteLeg(w, l);
++            w.Bool(q.HasCurrent); if (q.HasCurrent) WriteLeg(w, q.Current);
++        }
++    }
++
++    void ReadOrderQueues(SnapReader r)
++    {
++        OrderQueues.Clear();
++        nextQueueId = r.I();
++        int n = r.Count(4);
++        for (int i = 0; i < n; i++)
++        {
++            var q = new OrderQueue { Id = r.I(), Faction = r.I(), Sel = r.I() };
++            int nu = r.Count(1);
++            for (int k = 0; k < nu; k++) q.Units.Add(r.I());
++            int nl = r.Count(4);
++            for (int k = 0; k < nl; k++) q.Legs.Add(ReadLeg(r));
++            q.HasCurrent = r.Bool();
++            if (q.HasCurrent) q.Current = ReadLeg(r);
++            if (q.Faction <= 0 || q.Faction >= Factions.Count || q.Id <= 0 || q.Id >= nextQueueId) throw new SnapshotException(string.Format(SnapMsg.Invalid, "order queue"));
++            OrderQueues.Add(q);
++        }
++    }
++
++    static void HashLeg(ref Hasher h, in QueuedLeg l)
++    {
++        h.Add((int)l.Kind); h.Add(l.Target.X); h.Add(l.Target.Y); h.Add(l.TargetId);
++        if (l.Form is { } fs) { h.Add(1); h.Add(fs.Type); h.Add(fs.Order); h.Add(fs.Dir.X); h.Add(fs.Dir.Y); h.Add(fs.Width); } else h.Add(0);
++    }
++
++    void HashOrderQueues(ref Hasher h)
++    {
++        if (OrderQueues.Count == 0 && nextQueueId == 1) return;   // 대기열을 쓰지 않은 판 = 체크섬 그대로 (골든 불변)
++        h.Add(nextQueueId);
++        foreach (var q in OrderQueues)
++        {
++            h.Add(q.Id); h.Add(q.Faction); h.Add(q.Sel);
++            foreach (int id in q.Units) h.Add(id);
++            h.Add(q.Legs.Count); foreach (var l in q.Legs) HashLeg(ref h, l);
++            h.Add(q.HasCurrent ? 1 : 0); if (q.HasCurrent) HashLeg(ref h, q.Current);
++        }
++    }
++}
+diff --git a/src/Core/Organisation.cs b/src/Core/Organisation.cs
+index 23477819..09b8ec98 100644
+--- a/src/Core/Organisation.cs
++++ b/src/Core/Organisation.cs
+@@ -426,6 +426,7 @@ public sealed partial class World
+         WriteProps(w);            // F6 소품 상태 (Props.cs, FormatVersion 42)
+         WriteTrenchAssault(w);    // N32 참호 돌격 상태 (TrenchAssault.cs, FormatVersion 43)
+         WriteRally(w);            // N79a 집결 지점 · 포격 종류 (Rally.cs, FormatVersion 43)
++        WriteOrderQueues(w);      // N74 명령 대기열 (OrderQueue.cs, FormatVersion 49)
+     }
+ 
+     static void WriteSlots(SnapWriter w, Dictionary<int, Vector2> d)
+@@ -531,6 +532,7 @@ public sealed partial class World
+         ReadProps(r);
+         ReadTrenchAssault(r);
+         ReadRally(r);
++        ReadOrderQueues(r);
+     }
+ 
+     CompanyAnchor ReadAnchor(SnapReader r, SnapCtx ctx, Defs defs, Company c)
+@@ -587,5 +589,6 @@ public sealed partial class World
+         HashProps(ref h);            // F6 소품 (Props.cs)
+         HashTrenchAssault(ref h);    // N32 참호 돌격 (TrenchAssault.cs)
+         HashRally(ref h);            // N79a 집결 지점 · 포격 종류 (Rally.cs)
++        HashOrderQueues(ref h);      // N74 명령 대기열 (OrderQueue.cs)
+     }
+ }
+diff --git a/src/Core/Snapshot/Snapshot.cs b/src/Core/Snapshot/Snapshot.cs
+index 39617510..4b2db886 100644
+--- a/src/Core/Snapshot/Snapshot.cs
++++ b/src/Core/Snapshot/Snapshot.cs
+@@ -80,7 +80,7 @@ public sealed class LoadedSnapshot
+ public static class Snapshot
+ {
+     /// <summary>파일 구조가 바뀌면 올린다 (옛 저장은 불러올 수 없다 — 명확한 메시지와 함께 거부).</summary>
+-    public const int FormatVersion = 48;   // 48: pronemove 엎드림 이동 (유닛마다 ProneHoldSince/StandUntil/ForceCross) · 47: N68 기수 쓰러짐 Unit.BearerFellUntil (CMB2 Prone/Broken 뒤, units) · 46: 전술 AI 3B (AI 블랙보드 TacGroup RotateUntil · RotateOut, TacBattalion RotateTick · CalmSince · Plug*, TacFaction 3B 누계, 프로필 3B 키, ai3b) · 45: N32 참호 돌격 (ORG_ 끝 중대마다 TA 단계 · 목표 · 시각, TrenchAssault.cs) · 44: N79a 집결 지점 (ORG_ 끝 중대마다 HasRally · RallyPoint) + 포격 종류 (유닛마다 GroundKind · GroundRounds · GroundDir · GroundStart, Rally.cs · GroundFire.cs) · 43: N79b 항복 (CMB2 유닛마다 Surrendered · SuppHighTicks, Surrender.cs) · 42: F6 엄폐물 소품 (지도 PropSeeds + ORG_ 끝 소품 hp · 변종, Props.cs) · 41: 제압 재설계 2 엎드림 · 붕괴 (CMB2 유닛마다 Prone · BrokenUntil · BrokenAt · BreakTo, supp) · 40: F1 2차 중대 대형 유지 (ORG_ 접적 구역 중대마다 KeepFormation, ContactF2.cs) · 39: N73 사격 통제 (ORG_ 끝 유닛마다 FireMode, FireControl.cs) · 38: 기병 동시 근접 제한 (CMB2 유닛마다 MeleeVictims · MeleeLastId, N61) + 기병 하마 사격 (Dismounted · MountLeft · MountLock, N61) + F1 접적 · 구역 · 사격 위치 (ORG_ 끝, Contact.cs) · 36: 착검 (CMB2 유닛마다 BayonetFixed · FixLeft, N57 charge) · 35: 후퇴 뒤 재정비 (전술 AI 블랙보드 TacGroup RegroupUntil · RegroupCheck · RegroupAlive, pursuit2) · 34: 중대 자세 (ORG_ 끝 중대마다 Posture) + 정찰병 노출 기억 (ORG_ 정찰병마다 ScoutExposed · ScoutThreat · ScoutExposedTick, tweak1) · 33: 도하 · 역습 AI 상태 (전술 AI 스냅샷 — TacGroup CrossStage · CrossRegiment · CrossLane · CrossPoint · CounterAssaultTick, TacRegiment Cross* · CounterStage, TacFaction 누계; crossing) · 32: 고정 (엎드림 — CMB2 유닛마다 Pinned, 제압 재설계 N25) + 전술 AI 후퇴 원인 · 제압 후퇴 수 (AI 블랙보드) (supp N39) · 31: 전술 AI 3단계 A — 기동 계획 · 제대 · 철수 · 미션 철수 문턱 (AI 블랙보드 TacRegiment · TacGroup · TacDirective · TacFaction, 프로필 strategy 키, s3a) · 30: 엄폐 찾기 · 진지 점유 (SUPL 참호 구역 유닛마다 CoverHold, engage) · 29: 후퇴 중 (CMB2 유닛마다 Retreating, pursuit) + 전술 AI 추격 · 기병 상태 (AI 블랙보드) · 28: 대열 정비 2 (ORG_ 끝 중대마다 깃발 Close 표시, gapfill2) · 27: 대열 정비 (ORG_ 끝 — 중대마다 CloseAlarm · CloseAt · CloseUntil, gapfill) · 26: 전술 틀 2단계 (ORG_ 전술 틀 구역 중대마다 ActiveTactic + 행동 상태 DrillState, N4) · 25: 기병 돌격 쿨다운 (CMB2 유닛마다 ChargeCdLeft, 돌격 충격 제압 burst) · 24: 경기관총 점사 (CMB2 유닛마다 BurstLeft) · 23: 장교 직책 계급 · 임시 진급 · 경험치 (CMB2 유닛마다 OfficerBase · TempRank · OfficerXp) + 지휘관 · 인계 (ORG_ 끝 — 대대 · 중대 Commander · HandoverUntil) · 22: 전투 대형 · 전술 틀 (ORG_ 끝 — 중대 Tactic · 구성원 Role · 분대 Form) · 21: 플레이어 지점 포격 (UnitOrder.GroundFire, CMB2 유닛마다 GroundPoint) · 20: 중대 돌격 사격 허용 MarchFireOn (ORG_ 중대 MarchUntil 뒤) · 19: 충돌 · 대형 재설계 (ORG_ 깃발 속도 배수 SpeedMul, 중대 · 분대 행진 사격 지휘 MarchUntil) · 18: 건설 제거 (SUPL 의 개인 참호 · 참호선 작업 상태 삭제) + 참호 자동 점유 (SUPL 끝: 유닛별 참호 자리 · 사수 · 무시 묶음) · 17: 정찰병 (ORG_ 끝 — 정찰조 · 자율 상태, Unit.ScoutAuto 등) · 16: 날아가는 포탄 (CMB2 끝, ShellFlight) · 15: 자주포 · 견인포 · 중형 전차 · 광산 · 유전 정의 삭제 (옛 저장 호환 안 됨) · 14: 미션 (MISN 구역 — 미션 정의 JSON · 목표 · 사건 · 증원 · 배치, WTHR 뒤) · 13: 참호선 (작업 · 칸 진행량 · 유닛 작업, SUPL 끝) + 포탄 구덩이 지형 · 12: 날씨 · 시간대 (WTHR, ORG_ 뒤) · 11: 분대 (ORG_ 중대마다 Holes + 분대 목록, nextSquadId) · 장교 칼 흔들기 틱 (CMB2 뒤쪽) · 10: 지형 · 높이 (지형 종류 5개 추가, 지도 고지 배열, 안개 = 세력별 자기 시야 격자 · 시차 갱신) · 9: 외교 삭제 → 정적 팀 (DiplomacySnapshot · StartedAtWar 제거, Faction.Team 추가) · 8: 교전 4차 (수류탄 · 돌격 충격 · 돌격만 · 행진 사격 표적, CMB2 뒤쪽 + 날아가는 수류탄) · 유닛 id 이름 규칙 (machinegunner -> heavy_machinegunner 등) · 2: v0.4 확장 구역 틀 · 3: SUPL · CMB2 · CMDX 내용 + 낡은 NavToken 엔티티 · 4: 교전 2차 (제압 · 사살 · 돌격 · 멍칫, CMB2 뒤쪽) · 5: 스태미나 · 속보 (피로 · QuickStep) + 정찰 제거 (UnitOrder · PatrolBack 삭제) · 6: 편제 ORG_ (중대 · 대대 · 깃발) · 7: 방향 변경 (자원 · 생산 · 건설 · 공병 · 연료 · 포탑 삭제, SUPL = 탄약 회복 · 보급 마차 · 엄폐 · 참호, 지도 유닛 배치)
++    public const int FormatVersion = 49;   // 49: N74 명령 대기열 (ORG_ 끝 World.OrderQueues · nextQueueId, OrderQueue.cs) · 48: pronemove 엎드림 이동 (유닛마다 ProneHoldSince/StandUntil/ForceCross) · 47: N68 기수 쓰러짐 Unit.BearerFellUntil (CMB2 Prone/Broken 뒤, units) · 46: 전술 AI 3B (AI 블랙보드 TacGroup RotateUntil · RotateOut, TacBattalion RotateTick · CalmSince · Plug*, TacFaction 3B 누계, 프로필 3B 키, ai3b) · 45: N32 참호 돌격 (ORG_ 끝 중대마다 TA 단계 · 목표 · 시각, TrenchAssault.cs) · 44: N79a 집결 지점 (ORG_ 끝 중대마다 HasRally · RallyPoint) + 포격 종류 (유닛마다 GroundKind · GroundRounds · GroundDir · GroundStart, Rally.cs · GroundFire.cs) · 43: N79b 항복 (CMB2 유닛마다 Surrendered · SuppHighTicks, Surrender.cs) · 42: F6 엄폐물 소품 (지도 PropSeeds + ORG_ 끝 소품 hp · 변종, Props.cs) · 41: 제압 재설계 2 엎드림 · 붕괴 (CMB2 유닛마다 Prone · BrokenUntil · BrokenAt · BreakTo, supp) · 40: F1 2차 중대 대형 유지 (ORG_ 접적 구역 중대마다 KeepFormation, ContactF2.cs) · 39: N73 사격 통제 (ORG_ 끝 유닛마다 FireMode, FireControl.cs) · 38: 기병 동시 근접 제한 (CMB2 유닛마다 MeleeVictims · MeleeLastId, N61) + 기병 하마 사격 (Dismounted · MountLeft · MountLock, N61) + F1 접적 · 구역 · 사격 위치 (ORG_ 끝, Contact.cs) · 36: 착검 (CMB2 유닛마다 BayonetFixed · FixLeft, N57 charge) · 35: 후퇴 뒤 재정비 (전술 AI 블랙보드 TacGroup RegroupUntil · RegroupCheck · RegroupAlive, pursuit2) · 34: 중대 자세 (ORG_ 끝 중대마다 Posture) + 정찰병 노출 기억 (ORG_ 정찰병마다 ScoutExposed · ScoutThreat · ScoutExposedTick, tweak1) · 33: 도하 · 역습 AI 상태 (전술 AI 스냅샷 — TacGroup CrossStage · CrossRegiment · CrossLane · CrossPoint · CounterAssaultTick, TacRegiment Cross* · CounterStage, TacFaction 누계; crossing) · 32: 고정 (엎드림 — CMB2 유닛마다 Pinned, 제압 재설계 N25) + 전술 AI 후퇴 원인 · 제압 후퇴 수 (AI 블랙보드) (supp N39) · 31: 전술 AI 3단계 A — 기동 계획 · 제대 · 철수 · 미션 철수 문턱 (AI 블랙보드 TacRegiment · TacGroup · TacDirective · TacFaction, 프로필 strategy 키, s3a) · 30: 엄폐 찾기 · 진지 점유 (SUPL 참호 구역 유닛마다 CoverHold, engage) · 29: 후퇴 중 (CMB2 유닛마다 Retreating, pursuit) + 전술 AI 추격 · 기병 상태 (AI 블랙보드) · 28: 대열 정비 2 (ORG_ 끝 중대마다 깃발 Close 표시, gapfill2) · 27: 대열 정비 (ORG_ 끝 — 중대마다 CloseAlarm · CloseAt · CloseUntil, gapfill) · 26: 전술 틀 2단계 (ORG_ 전술 틀 구역 중대마다 ActiveTactic + 행동 상태 DrillState, N4) · 25: 기병 돌격 쿨다운 (CMB2 유닛마다 ChargeCdLeft, 돌격 충격 제압 burst) · 24: 경기관총 점사 (CMB2 유닛마다 BurstLeft) · 23: 장교 직책 계급 · 임시 진급 · 경험치 (CMB2 유닛마다 OfficerBase · TempRank · OfficerXp) + 지휘관 · 인계 (ORG_ 끝 — 대대 · 중대 Commander · HandoverUntil) · 22: 전투 대형 · 전술 틀 (ORG_ 끝 — 중대 Tactic · 구성원 Role · 분대 Form) · 21: 플레이어 지점 포격 (UnitOrder.GroundFire, CMB2 유닛마다 GroundPoint) · 20: 중대 돌격 사격 허용 MarchFireOn (ORG_ 중대 MarchUntil 뒤) · 19: 충돌 · 대형 재설계 (ORG_ 깃발 속도 배수 SpeedMul, 중대 · 분대 행진 사격 지휘 MarchUntil) · 18: 건설 제거 (SUPL 의 개인 참호 · 참호선 작업 상태 삭제) + 참호 자동 점유 (SUPL 끝: 유닛별 참호 자리 · 사수 · 무시 묶음) · 17: 정찰병 (ORG_ 끝 — 정찰조 · 자율 상태, Unit.ScoutAuto 등) · 16: 날아가는 포탄 (CMB2 끝, ShellFlight) · 15: 자주포 · 견인포 · 중형 전차 · 광산 · 유전 정의 삭제 (옛 저장 호환 안 됨) · 14: 미션 (MISN 구역 — 미션 정의 JSON · 목표 · 사건 · 증원 · 배치, WTHR 뒤) · 13: 참호선 (작업 · 칸 진행량 · 유닛 작업, SUPL 끝) + 포탄 구덩이 지형 · 12: 날씨 · 시간대 (WTHR, ORG_ 뒤) · 11: 분대 (ORG_ 중대마다 Holes + 분대 목록, nextSquadId) · 장교 칼 흔들기 틱 (CMB2 뒤쪽) · 10: 지형 · 높이 (지형 종류 5개 추가, 지도 고지 배열, 안개 = 세력별 자기 시야 격자 · 시차 갱신) · 9: 외교 삭제 → 정적 팀 (DiplomacySnapshot · StartedAtWar 제거, Faction.Team 추가) · 8: 교전 4차 (수류탄 · 돌격 충격 · 돌격만 · 행진 사격 표적, CMB2 뒤쪽 + 날아가는 수류탄) · 유닛 id 이름 규칙 (machinegunner -> heavy_machinegunner 등) · 2: v0.4 확장 구역 틀 · 3: SUPL · CMB2 · CMDX 내용 + 낡은 NavToken 엔티티 · 4: 교전 2차 (제압 · 사살 · 돌격 · 멍칫, CMB2 뒤쪽) · 5: 스태미나 · 속보 (피로 · QuickStep) + 정찰 제거 (UnitOrder · PatrolBack 삭제) · 6: 편제 ORG_ (중대 · 대대 · 깃발) · 7: 방향 변경 (자원 · 생산 · 건설 · 공병 · 연료 · 포탑 삭제, SUPL = 탄약 회복 · 보급 마차 · 엄폐 · 참호, 지도 유닛 배치)
+     public const string Extension = ".kds";
+     static readonly byte[] Magic = { (byte)'K', (byte)'D', (byte)'S', (byte)'V' };
+     const int BrotliQuality = 4, BrotliWindow = 22;
+diff --git a/src/Core/World.cs b/src/Core/World.cs
+index 96068468..27b121a0 100644
+--- a/src/Core/World.cs
++++ b/src/Core/World.cs
+@@ -219,6 +219,7 @@ public sealed partial class World
+         long pt = Profile ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
+         float dt = Config.SimDt;
+         FlushCommands();
++        StepOrderQueues();   // N74 명령 대기열: 다리가 끝난 묶음은 다음 다리 (OrderQueue.cs)
+         StepWeather();   // 날씨 · 시간대 일정 (Weather.cs)
+         if (Map.Version != lastMapVersion) RefreshPaths();
+         if (nav != null) { nav.BeginTick(Tick); nav.Process(RouteWorkPerTick); }
+diff --git a/src/Core/WorldCommands.cs b/src/Core/WorldCommands.cs
+index ea1b9ca7..ca2758e2 100644
+--- a/src/Core/WorldCommands.cs
++++ b/src/Core/WorldCommands.cs
+@@ -56,6 +56,7 @@ public sealed partial class World
+     void ExecuteInner(GameCommand command, int f)
+     {
+         TaCancelByOrder(command);   // N32: 이 중대 유닛에 내린 다른 명령 = 참호 돌격 취소
++        QueueCancelByOrder(command);   // N74: Shift 없는 명령 = 대기열에서 빠짐 (OrderQueue.cs)
+         switch (command)
+         {
+             case MoveCommand c: ExecGroupOrder(f, ResolveOrder(f, c.Units), c.Target, UnitOrder.Move, c.Form); break;
+@@ -94,6 +95,7 @@ public sealed partial class World
+             case SetScoutAutoCommand c: ExecSetScoutAuto(f, Resolve(f, c.Units), c.On); break;   // 정찰병 자율 토글 (Scouts.cs)
+             case MissionEndCommand c: ExecMissionEnd(c.Won); break;   // [치트] 미션 즉시 종료 (Mission/WorldMission.cs)
+             case CloseRanksCommand c: ExecCloseRanks(f, c.Companies); break;   // 대열 정비 (CloseRanks.cs)
++            case QueueOrderCommand c: ExecQueueOrder(c); break;   // N74 명령 대기열 (OrderQueue.cs)
+             case SetFireModeCommand c: ExecSetFireMode(f, c.Units, c.Mode); break;   // N73 사격 통제 (FireControl.cs)
+             case SetPostureCommand c: ExecSetPosture(f, c.Companies, c.Posture); break;   // 중대 자세 (CoverSeek.cs, tweak1)
+             case TrenchAssaultCommand c: ExecTrenchAssault(f, c.Companies, c.Target, c.On, c.Ai); break;   // 참호 돌격 (TrenchAssault.cs, N32)
+diff --git a/src/Game.cs b/src/Game.cs
+index 13776005..c5404e4e 100644
+--- a/src/Game.cs
++++ b/src/Game.cs
+@@ -91,7 +91,7 @@ public sealed partial class Game : IDisposable
+     public CardTab Tab { get; private set; }
+     FormType lastSimDefaultForm = FormType.Free;
+     public bool ShowGrid { get; private set; }
+-    bool losShow, losCursor; int frameCounter;   // N75 사선 표시
++    bool losShow, losCursor; int frameCounter, blockFrame;   // N75 사선 표시
+     public bool Paused { get; private set; }
+     public float Speed => Speeds[speedIndex];
+     static readonly float[] PlaySpeeds = { 0.5f, 1f, 1.5f, 2f, 3f };
+@@ -745,8 +745,8 @@ public sealed partial class Game : IDisposable
+         {
+             rightStartScreen = rightStartWorld = null;
+             var units = OwnUnits();
+-            if (units.Count > 0 && Vector2.Distance(mouse, rs) >= Config.DragThreshold) IssueFrontLine(units, rw, mouseWorld);
+-            else SmartCommand(rw, hover);
++            if (units.Count > 0 && Vector2.Distance(mouse, rs) >= Config.DragThreshold) IssueFrontLine(units, rw, mouseWorld, shift);
++            else SmartCommand(rw, hover, shift);   // N74: Shift = 명령 대기열에 덧붙임
+         }
+ 
+         if (Input.IsMouseButtonDown(MouseButton.Middle))
+@@ -1067,10 +1067,10 @@ public sealed partial class Game : IDisposable
+         return new FormSpec((int)DefaultType, (int)DefaultOrder, n, len);
+     }
+ 
+-    void IssueFrontLine(List<Unit> units, Vector2 a, Vector2 b)
++    void IssueFrontLine(List<Unit> units, Vector2 a, Vector2 b, bool queue = false)
+     {
+         var spec = FrontLineSpec(units, a, b, out var mid);
+-        PlayerOrder(units.Count, () => World.Move(Me, units, mid, spec));
++        PlayerOrder(units.Count, () => { if (queue) World.QueueOrder(Me, units, QueuedKind.Move, mid, 0, spec); else World.Move(Me, units, mid, spec); });   // N74: Shift = 대기열
+         Mark(mid, Palette.MarkerMove);
+         Voice("move");
+     }
+@@ -1286,7 +1286,7 @@ public sealed partial class Game : IDisposable
+         switch (key)
+         {
+             case "stop": World.Stop(Me, units); break;
+-            case "hold": World.Hold(Me, units); break;
++            case "hold": if (ShiftHeld) PlayerOrder(units.Count, () => World.QueueOrder(Me, units, QueuedKind.Hold, Vector2.Zero)); else World.Hold(Me, units); break;   // N74: Shift+사수 = 대기열 끝에 사수
+             case "marchfire": World.SetMarchFire(Me, units, !units.Where(u => u.Company != null && u.Def.MarchFire && u.Def.Category == "infantry").All(u => u.Company!.MarchFireOn)); break;   // 돌격 사격 토글 (중대 단위)
+             case "chargeonly": World.SetChargeOnly(Me, units, !units.Where(u => u.Def.Mounted).All(u => u.ChargeOnly)); break;   // 기병 돌격만 토글
+             case "mount": World.SetMount(Me, units, units.Where(u => u.Def.Mounted && !u.IsOfficer).All(u => u.Dismounted || u.MountLeft > 0)); break;   // 기병 하마/승마 토글 (N61): 모두 내렸으면 타기
+@@ -1327,11 +1327,34 @@ public sealed partial class Game : IDisposable
+     void ResolvePending(Vector2 point, Entity? target)
+     {
+         var key = PendingCommand!;
+-        PendingCommand = null;
++        bool queue = ShiftHeld && key is "move" or "quickstep" or "attack" or "charge";   // N74: Shift+좌클릭 = 대기열에 덧붙이고 명령 대기 유지
++        PendingCommand = queue ? key : null;
+         var units = OwnUnits();
++        if (queue) { if (units.Count > 0) PlayerOrder(units.Count, () => QueueFor(key, units, point, target)); return; }
+         PlayerOrder(units.Count, () => ResolvePendingFor(key, units, point, target));
+     }
+ 
++    static bool ShiftHeld => Input.IsKeyDown(KeyboardKey.LeftShift) || Input.IsKeyDown(KeyboardKey.RightShift);
++
++    /// <summary>N74 명령 대기열 (OrderQueue.cs): 진형 방향은 비움 → 그 다리를 실행할 때 무게중심 → 목표로 정한다.</summary>
++    void QueueFor(string key, List<Unit> units, Vector2 point, Entity? target)
++    {
++        var form = FormFor(units, point) is { } f ? f with { Dir = Vector2.Zero } : null;
++        bool foe = target != null && World.IsHostile(Me, target.Owner) && !target.Indestructible;
++        switch (key)
++        {
++            case "move": World.QueueOrder(Me, units, QueuedKind.Move, point, 0, form); Mark(point, Palette.MarkerMove); break;
++            case "quickstep": World.QueueOrder(Me, units, QueuedKind.QuickStep, point, 0, form); Mark(point, Palette.MarkerMove); break;
++            case "attack":
++                if (foe) World.QueueOrder(Me, units, QueuedKind.Attack, target!.Pos, target.Id);
++                else World.QueueOrder(Me, units, QueuedKind.AttackMove, point, 0, form);
++                Mark(target?.Pos ?? point, Palette.HpLow);
++                break;
++            case "charge": World.QueueOrder(Me, units, QueuedKind.Charge, foe ? target!.Pos : point, foe ? target!.Id : 0); Mark(target?.Pos ?? point, Palette.HpLow); break;
++        }
++        Sfx.Play("ui_click");
++    }
++
+     void ResolvePendingFor(string key, List<Unit> units, Vector2 point, Entity? target)
+     {
+         switch (key)
+@@ -1390,11 +1413,12 @@ public sealed partial class Game : IDisposable
+     }
+ 
+     /// <summary>우클릭 기본 동작: 적 → 공격, 그 외 → 이동.</summary>
+-    void SmartCommand(Vector2 point, Entity? target)
++    void SmartCommand(Vector2 point, Entity? target, bool queue = false)
+     {
+         if (Observer) return;
+         var units = OwnUnits();
+         if (units.Count == 0) return;
++        if (queue) { PlayerOrder(units.Count, () => QueueFor(target != null && World.IsHostile(Me, target.Owner) && !target.Indestructible ? "attack" : "move", units, point, target)); return; }   // N74 Shift+우클릭
+         PlayerOrder(units.Count, () => SmartCommandFor(units, point, target));
+     }
+ 
+@@ -1872,6 +1896,7 @@ public sealed partial class Game : IDisposable
+         LastSeen.Draw();
+         DrawFrontLinePreview();
+         if (losShow) { LosOverlay.Update(World, OwnUnits(), mouseWorld, losCursor, Camera.VisibleWorld(), frameCounter++); LosOverlay.Draw(); }   // N75 사선 표시 (표시 전용)
++        if (!Observer) { OrderOverlay.DrawQueues(World, OwnUnits(), Camera.Zoom); if (Camera.Zoom >= UnitRenderer.DotZoom) { OrderOverlay.UpdateBlocked(World, Me, Camera.VisibleWorld(), blockFrame++); OrderOverlay.DrawBlocked(World, Camera.Zoom); } }   // N74 대기열 경로 · N75 사선 막힘 사수 (표시 전용, OrderOverlay.cs)
+         Raylib.EndMode2D();
+         weatherFx.Draw(World, Camera, vp, Raylib.GetFrameTime());   // 날씨 · 시간대 색조 · 안개 · 비 · 눈 (화면 전용)
+         if (Camera.Zoom < UnitRenderer.DotZoom) UnitSymbols.Draw(World, Camera, ViewSeat, mouse, mouseInViewport, vp);
+diff --git a/src/Render/OrderOverlay.cs b/src/Render/OrderOverlay.cs
+new file mode 100644
+index 00000000..aec2e2fa
+--- /dev/null
++++ b/src/Render/OrderOverlay.cs
+@@ -0,0 +1,135 @@
++using System.Numerics;
++using Raylib_cs;
++using KoreanDivision.Core;
++using KoreanDivision.UI;
++
++namespace KoreanDivision.Render;
++
++/// <summary>
++/// 화면 전용 (시뮬 상태 · 저장 · 체크섬 무관):
++///  · N74 명령 대기열 경로 — 선택한 유닛이 든 대기열의 무게중심 → 지금 다리 → 남은 다리 지점을 선 · 표식으로.
++///  · N75 사선 막힘 사수 — 우리 직사 사수 중 표적이 없고, 세력이 보는 사거리 안 적이 있는데 전부 숲 · 고지 · 장애물에 사선이 막힌 사수 머리 위 표식
++///    (docs/legacy/NOFIRE_DIAG_2026-10-19.md 원인 2 · 5 의 (a) 표시 개선). 판정 = GameMap.FiringLineBlock (HasFiringLine 과 같은 걸음, 읽기 전용).
++/// </summary>
++public static class OrderOverlay
++{
++    // ---------------------------------------------------------------- N74 대기열 경로
++
++    public static void DrawQueues(World w, IReadOnlyList<Unit> sel, float zoom)
++    {
++        if (w.OrderQueues.Count == 0 || sel.Count == 0) return;
++        var shown = new HashSet<int>();
++        float th = MathF.Max(1f, 2f / zoom);
++        float ts = Config.TileSize;
++        foreach (var u in sel)
++        {
++            if (w.QueueOf(u) is not { } q || !shown.Add(q.Id)) continue;
++            Vector2 c = Vector2.Zero; int n = 0;
++            foreach (int id in q.Units) if (w.Find(id) is Unit { Alive: true } m) { c += m.Pos; n++; }
++            if (n == 0) continue;
++            Vector2 prev = c / n;
++            var pts = new List<(Vector2 P, QueuedKind K)>();
++            if (q.HasCurrent) pts.Add((LegPoint(w, q.Current), q.Current.Kind));
++            foreach (var l in q.Legs) pts.Add((LegPoint(w, l), l.Kind));
++            for (int i = 0; i < pts.Count; i++)
++            {
++                var (p, k) = pts[i];
++                var col = KindColor(k);
++                bool cur = q.HasCurrent && i == 0;
++                Raylib.DrawLineEx(prev * ts, p * ts, th, Palette.Alpha(col, cur ? 110 : 190));
++                if (k == QueuedKind.Hold) Raylib.DrawRectangleLinesEx(new Rectangle(p.X * ts - 6 / zoom, p.Y * ts - 6 / zoom, 12 / zoom, 12 / zoom), th, col);
++                else Raylib.DrawCircleLines((int)(p.X * ts), (int)(p.Y * ts), 6f / zoom, col);
++                prev = p;
++            }
++        }
++    }
++
++    static Vector2 LegPoint(World w, in QueuedLeg l) =>
++        l.Kind is QueuedKind.Attack or QueuedKind.Charge && l.TargetId != 0 && w.Find(l.TargetId) is Entity { Alive: true } t ? t.Pos : l.Target;
++
++    static Color KindColor(QueuedKind k) => k switch
++    {
++        QueuedKind.Attack or QueuedKind.AttackMove or QueuedKind.Charge => Palette.HpLow,
++        QueuedKind.Hold => Palette.Accent,
++        _ => Palette.MarkerMove,
++    };
++
++    // ---------------------------------------------------------------- N75 사선 막힘 사수
++
++    public const int Interval = 10, MaxShooters = 1500, Bucket = 8;
++    static int frame = -1000;
++    static readonly List<(int Id, LosBlock Why)> blocked = new();
++    static readonly Dictionary<long, List<Unit>> grid = new();
++    public static int BlockedCount => blocked.Count;
++    public static LosBlock BlockedWhy(int unitId) { foreach (var b in blocked) if (b.Id == unitId) return b.Why; return LosBlock.None; }
++
++    /// <summary>[읽기 전용] 이 사수가 지금 '보이는 적이 사거리 안에 있으나 전부 사선이 막힘' 이면 가장 가까운 적을 막은 것 (아니면 None). 테스트 · 표시 공용.</summary>
++    public static LosBlock Classify(World w, Unit u, int me, Func<Vector2, float, IEnumerable<Unit>> near)
++    {
++        if (!u.Alive || u.Owner != me || u.Weapon is not { } wd || !wd.Los || wd.Indirect || wd.Range <= 0 || u.Target != null) return LosBlock.None;
++        float best = float.MaxValue; LosBlock why = LosBlock.None;
++        foreach (var e in near(u.Pos, wd.Range))
++        {
++            if (!e.Alive || !w.IsHostile(me, e.Owner) || !w.Fog.CanSee(me, e)) continue;
++            float d = Vector2.Distance(u.Pos, e.Pos);
++            if (d > wd.Range) continue;
++            var b = w.Map.FiringLineBlock(u.Pos, e.Pos, u.Id, e.Id);
++            if (b == LosBlock.None) return LosBlock.None;   // 한 명이라도 트였으면 막힘 아님 (사격 대기 · 반응 거리 등 다른 이유)
++            if (d < best) { best = d; why = b; }
++        }
++        return why;
++    }
++
++    public static void UpdateBlocked(World w, int me, (Vector2 Min, Vector2 Max) view, int frameNo)
++    {
++        if (frameNo - frame < Interval) return;
++        frame = frameNo;
++        blocked.Clear();
++        grid.Clear();
++        foreach (var e in w.Units)
++        {
++            if (!e.Alive || e.Owner == me) continue;
++            long k = Key((int)MathF.Floor(e.Pos.X / Bucket), (int)MathF.Floor(e.Pos.Y / Bucket));
++            if (!grid.TryGetValue(k, out var l)) grid[k] = l = new List<Unit>();
++            l.Add(e);
++        }
++        if (grid.Count == 0) return;
++        int n = 0;
++        foreach (var u in w.Units)
++        {
++            if (u.Owner != me || !u.Alive) continue;
++            if (u.Pos.X < view.Min.X - 2 || u.Pos.Y < view.Min.Y - 2 || u.Pos.X > view.Max.X + 2 || u.Pos.Y > view.Max.Y + 2) continue;
++            if (++n > MaxShooters) break;
++            var why = Classify(w, u, me, Near);
++            if (why != LosBlock.None) blocked.Add((u.Id, why));
++        }
++    }
++
++    static long Key(int bx, int by) => ((long)bx << 32) ^ (uint)by;
++
++    static IEnumerable<Unit> Near(Vector2 p, float r)
++    {
++        int x0 = (int)MathF.Floor((p.X - r) / Bucket), x1 = (int)MathF.Floor((p.X + r) / Bucket);
++        int y0 = (int)MathF.Floor((p.Y - r) / Bucket), y1 = (int)MathF.Floor((p.Y + r) / Bucket);
++        for (int by = y0; by <= y1; by++)
++        for (int bx = x0; bx <= x1; bx++)
++            if (grid.TryGetValue(Key(bx, by), out var l)) foreach (var e in l) yield return e;
++    }
++
++    /// <summary>월드 좌표 (2D 카메라 모드 안) 에서 호출: 사수 머리 위 작은 표식 (숲 = 짙은 초록, 고지 = 갈색, 장애물 = 회색 — 붉은 사선 줄).</summary>
++    public static void DrawBlocked(World w, float zoom)
++    {
++        if (blocked.Count == 0) return;
++        float ts = Config.TileSize, r = MathF.Max(3f, 4.5f / MathF.Max(zoom, 0.3f));
++        var slash = new Color((byte)230, (byte)50, (byte)40, (byte)230);
++        foreach (var (id, why) in blocked)
++        {
++            if (w.Find(id) is not Unit { Alive: true } u) continue;
++            var p = new Vector2(u.Pos.X * ts, u.Pos.Y * ts - ts * 0.9f);
++            var fill = why switch { LosBlock.Forest => new Color((byte)40, (byte)110, (byte)50, (byte)230), LosBlock.High => new Color((byte)150, (byte)105, (byte)55, (byte)230), _ => new Color((byte)130, (byte)130, (byte)130, (byte)230) };
++            Raylib.DrawCircleV(p, r, fill);
++            Raylib.DrawCircleLines((int)p.X, (int)p.Y, r, slash);
++            Raylib.DrawLineEx(p + new Vector2(-r, -r) * 0.7f, p + new Vector2(r, r) * 0.7f, MathF.Max(1f, r * 0.3f), slash);
++        }
++    }
++}
+diff --git a/src/SelfTest.cs b/src/SelfTest.cs
+index 4fb89e53..d811aed5 100644
+--- a/src/SelfTest.cs
++++ b/src/SelfTest.cs
+@@ -55,6 +55,8 @@ public static partial class SelfTest
+         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "tactical") { Tests.TacticalSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "snapshot") { Tests.SnapshotSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "command") { Tests.CommandSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
++        if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "orderq") { Tests.OrderQueueSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
++        if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "firectl") { Tests.FireCtlSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "n73") { Tests.N73SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "pronemove") { Tests.ProneMoveSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "n79a") { Tests.N79aSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+@@ -147,7 +149,8 @@ public static partial class SelfTest
+         Tests.PropsSelfTest.Run(opt, Check);               // F6 엄폐물 소품 층
+         Tests.F2SelfTest.Run(opt, Check);                  // F1 2차 제자리 방향 전환 · 선까지 전진 · 대형 유지 · AI 재명령 제한
+         Tests.N32SelfTest.Run(opt, Check);
+-        Tests.N73SelfTest.Run(opt, Check);                 // N73 사격 통제
++        Tests.FireCtlSelfTest.Run(opt, Check);             // N73 사격 통제 + N75 사선 막힘 사수 표시 판정 (firectl)
++        Tests.OrderQueueSelfTest.Run(opt, Check);          // N74 명령 대기열 (orderq)
+         Tests.N79aSelfTest.Run(opt, Check);                // N79a 집결 지점 · 포격 종류
+         Tests.ProneMoveSelfTest.Run(opt, Check);         // pronemove 엎드림 이동
+         Tests.SurrenderSelfTest.Run(opt, Check);          // N79b 항복
+diff --git a/src/Tests/OrderQueueSelfTest.cs b/src/Tests/OrderQueueSelfTest.cs
+new file mode 100644
+index 00000000..0b215a6d
+--- /dev/null
++++ b/src/Tests/OrderQueueSelfTest.cs
+@@ -0,0 +1,271 @@
++using System.Numerics;
++using System.Text.Json;
++using KoreanDivision.Core;
++using KoreanDivision.Render;
++
++namespace KoreanDivision.Tests;
++
++/// <summary>N74 명령 대기열 (OrderQueue.cs): 이어 붙이기 · 진행 · 취소 · 중대 · 공격 다리 건너뜀 · 사수 끝 · 저장 왕복 · 리플레이. KD_SELFTEST_ONLY=orderq.</summary>
++public static class OrderQueueSelfTest
++{
++    static Action<bool, string> check = null!;
++    static Defs defs = null!;
++    static readonly SnapshotMeta Meta = new("orderq", 1, false, "standard");
++
++    public static void Run(GameOptions opt, Action<bool, string> chk)
++    {
++        check = chk;
++        defs = Defs.Current;
++        Console.WriteLine("[N74 명령 대기열]");
++        try
++        {
++            using (TestDefs.NoCommandDelay())
++            {
++                TestLegs();
++                TestCancel();
++                TestCompany();
++                TestSkipDeadTarget();
++                TestRoundTrip();
++            }
++            TestChainDelay();
++        }
++        catch (Exception e) { check(false, $"orderq 테스트 중 예외: {e.GetType().Name}: {e.Message}\n{e.StackTrace}"); }
++    }
++
++    static World Bare(bool record = false)
++    {
++        const int size = 100;
++        var m = new GameMap(size, size, 1);
++        for (int y = 0; y < size; y++) for (int x = 0; x < size; x++) m.Set(x, y, TerrainType.Grass);
++        var w = new World(m, defs, 2) { RecordCommands = record };
++        var hq = defs.Headquarters;
++        w.PlaceBuilding(hq, 1, 1, 1);
++        w.PlaceBuilding(hq, 2, size - 1 - hq.Size, size - 1 - hq.Size);
++        w.Fog.Enabled = false;
++        return w;
++    }
++
++    static void Steps(World w, int n) { for (int i = 0; i < n; i++) w.Step(); }
++
++    static List<Unit> Squad(World w, int n, Vector2 at)
++    {
++        var us = new List<Unit>();
++        for (int i = 0; i < n; i++) us.Add(w.SpawnUnit(defs.Units["infantry"], 1, at + new Vector2(i, 0)));
++        w.Step();
++        return us;
++    }
++
++    static Vector2 Cen(List<Unit> us) { var c = Vector2.Zero; foreach (var u in us) c += u.Pos; return c / us.Count; }
++
++    /// <summary>다리 3개 (이동 → 이동 → 사수): 첫 다리 바로 실행, 도착하면 다음, 끝은 사수 · 대기열 사라짐.</summary>
++    static void TestLegs()
++    {
++        var w = Bare();
++        var us = Squad(w, 3, new Vector2(20, 20));
++        var A = new Vector2(20, 35); var B = new Vector2(35, 35);
++        w.QueueOrder(1, us, QueuedKind.Move, A); w.Step();
++        bool first = us.All(u => u.Order == UnitOrder.Move) && w.OrderQueues.Count == 1;
++        w.QueueOrder(1, us, QueuedKind.Move, B); w.Step();
++        w.QueueOrder(1, us, QueuedKind.Hold, Vector2.Zero); w.Step();
++        int legs = w.OrderQueues.Count == 1 ? w.OrderQueues[0].Legs.Count : -1;
++        bool passedA = false;
++        for (int i = 0; i < 60 * 40 && w.OrderQueues.Count > 0; i++) { w.Step(); if (Vector2.Distance(Cen(us), A) < 2.5f) passedA = true; }
++        Steps(w, 5);
++        float dB = Vector2.Distance(Cen(us), B);
++        check(first && legs == 2 && passedA && dB < 3f && us.All(u => u.Order == UnitOrder.Hold) && w.OrderQueues.Count == 0,
++            $"대기열: 첫 다리 바로 {first} · 남은 다리 {legs} (2) · A 경유 {passedA} · B 도착 거리 {dB:0.0} · 끝 사수 {us.Count(u => u.Order == UnitOrder.Hold)}/3 · 대기열 정리 {w.OrderQueues.Count == 0}");
++
++        // 바쁜 유닛에 Shift = 지금 명령 끝난 뒤
++        var w2 = Bare();
++        var us2 = Squad(w2, 2, new Vector2(20, 20));
++        w2.Move(1, us2, new Vector2(20, 32)); w2.Step();
++        w2.QueueOrder(1, us2, QueuedKind.Move, new Vector2(32, 32)); w2.Step();
++        bool waits = w2.OrderQueues.Count == 1 && w2.OrderQueues[0].Legs.Count == 1 && !w2.OrderQueues[0].HasCurrent;
++        for (int i = 0; i < 60 * 30 && w2.OrderQueues.Count > 0; i++) w2.Step();
++        Steps(w2, 5);
++        check(waits && Vector2.Distance(Cen(us2), new Vector2(32, 32)) < 3f, $"대기열: 이동 중에 Shift = 지금 명령 뒤에 (대기 {waits}, 끝 거리 {Vector2.Distance(Cen(us2), new Vector2(32, 32)):0.0})");
++    }
++
++    /// <summary>Shift 없는 명령 = 대기열 버림. 다른 묶음 = 새 대기열 (그 유닛만 옛 대기열에서 빠짐). 죽으면 빠짐.</summary>
++    static void TestCancel()
++    {
++        var w = Bare();
++        var us = Squad(w, 3, new Vector2(20, 20));
++        w.QueueOrder(1, us, QueuedKind.Move, new Vector2(20, 40)); w.Step();
++        w.QueueOrder(1, us, QueuedKind.Move, new Vector2(40, 40)); w.Step();
++        w.Move(1, us, new Vector2(10, 20)); w.Step();
++        bool cancelled = w.OrderQueues.Count == 0;
++        Steps(w, 60 * 20);
++        check(cancelled && Vector2.Distance(Cen(us), new Vector2(10, 20)) < 3f, $"취소: Shift 없는 이동 = 대기열 버림 ({cancelled}) · 새 목표로");
++
++        var w2 = Bare();
++        var us2 = Squad(w2, 3, new Vector2(20, 20));
++        w2.QueueOrder(1, us2, QueuedKind.Move, new Vector2(20, 40)); w2.Step();
++        w2.QueueOrder(1, us2, QueuedKind.Move, new Vector2(40, 40)); w2.Step();
++        w2.QueueOrder(1, us2.Take(1), QueuedKind.Hold, Vector2.Zero); w2.Step();
++        bool split = w2.OrderQueues.Count == 2 && w2.QueueOf(us2[0]) is { Units.Count: 1 } && w2.QueueOf(us2[1]) is { Units.Count: 2, Legs.Count: 1 };
++        w2.Stop(1, us2.Skip(1)); w2.Step();
++        bool stop = w2.QueueOf(us2[1]) == null && w2.QueueOf(us2[2]) == null;
++        check(split && stop, $"취소: 다른 묶음 Shift = 새 대기열 · 옛 대기열은 나머지만 ({split}) · 정지 = 버림 ({stop})");
++
++        var w3 = Bare();
++        var us3 = Squad(w3, 2, new Vector2(20, 20));
++        w3.QueueOrder(1, us3, QueuedKind.Move, new Vector2(20, 40)); w3.Step();
++        w3.QueueOrder(1, us3, QueuedKind.Move, new Vector2(40, 40)); w3.Step();
++        us3[0].Hp = 0; Steps(w3, 3);
++        bool dead = w3.OrderQueues.Count == 1 && w3.OrderQueues[0].Units.Count == 1 && w3.OrderQueues[0].Units[0] == us3[1].Id;
++        check(dead, $"죽은 구성원은 대기열에서 빠짐 ({dead})");
++    }
++
++    /// <summary>중대 (깃발 대형 이동) 도 다리마다 함께 도착한 뒤 다음 다리.</summary>
++    static void TestCompany()
++    {
++        var w = Bare();
++        var us = Squad(w, 8, new Vector2(20, 20));
++        w.FormCompany(1, us); w.Step();
++        bool co = us.All(u => u.Company != null);
++        var A = new Vector2(20, 40); var B = new Vector2(45, 40);
++        w.QueueOrder(1, us, QueuedKind.Move, A); w.Step();
++        w.QueueOrder(1, us, QueuedKind.AttackMove, B); w.Step();
++        bool passedA = false; int ticks = 0;
++        for (; ticks < 60 * 60 && w.OrderQueues.Count > 0; ticks++) { w.Step(); if (Vector2.Distance(Cen(us), A) < 3f) passedA = true; }
++        Steps(w, 30);
++        float dB = Vector2.Distance(Cen(us), B);
++        check(co && passedA && dB < 4f && w.OrderQueues.Count == 0, $"중대 대기열: A 경유 {passedA} · B 거리 {dB:0.0} · {ticks / 60f:0.0}초");
++    }
++
++    /// <summary>공격 다리의 표적이 실행 전에 죽으면 건너뛰고 다음 다리.</summary>
++    static void TestSkipDeadTarget()
++    {
++        var w = Bare();
++        var us = Squad(w, 3, new Vector2(20, 20));
++        var foe = w.SpawnUnit(defs.Units["infantry"], 2, new Vector2(80, 80)); foe.FireMode = FireMode.Hold;
++        w.Step();
++        w.QueueOrder(1, us, QueuedKind.Move, new Vector2(20, 30)); w.Step();
++        w.QueueOrder(1, us, QueuedKind.Attack, foe.Pos, foe.Id); w.Step();
++        w.QueueOrder(1, us, QueuedKind.Move, new Vector2(30, 30)); w.Step();
++        foe.Hp = 0;
++        for (int i = 0; i < 60 * 30 && w.OrderQueues.Count > 0; i++) w.Step();
++        Steps(w, 5);
++        float d = Vector2.Distance(Cen(us), new Vector2(30, 30));
++        check(d < 3f && us.All(u => u.Target == null), $"공격 다리 표적 소멸 = 건너뜀 → 다음 이동 (끝 거리 {d:0.0})");
++    }
++
++    /// <summary>뒤 다리는 지휘 계통 지연 없음 (첫 다리는 보통 명령과 같음).</summary>
++    static void TestChainDelay()
++    {
++        var w = Bare();
++        var us = Squad(w, 4, new Vector2(20, 20));
++        w.QueueOrder(1, us, QueuedKind.Move, new Vector2(20, 26)); w.Step();
++        int firstMax = us.Max(u => u.ReactDelay);
++        w.QueueOrder(1, us, QueuedKind.Move, new Vector2(26, 26)); w.Step();
++        int laterMax = -1;
++        for (int i = 0; i < 60 * 30 && w.OrderQueues.Count > 0; i++)
++        {
++            w.Step();
++            if (w.OrderQueues.Count > 0 && w.OrderQueues[0].Legs.Count == 0 && laterMax < 0) laterMax = us.Max(u => u.ReactDelay);
++        }
++        int basicMax = (int)MathF.Round(defs.CombatRules.ReactDelayMaxTicks) + 1;
++        check(firstMax > 0 && laterMax >= 0 && laterMax <= basicMax, $"지연: 첫 다리 최대 {firstMax}틱 (지휘 계통 포함) · 뒤 다리 최대 {laterMax}틱 (≤ 반응 지연 {basicMax})");
++    }
++
++    static void TestRoundTrip()
++    {
++        var w = Bare(record: true);
++        var us = Squad(w, 4, new Vector2(20, 20));
++        w.QueueOrder(1, us, QueuedKind.Move, new Vector2(20, 35), 0, new FormSpec((int)FormType.Line, 0, Vector2.Zero, 6)); w.Step();
++        w.QueueOrder(1, us, QueuedKind.QuickStep, new Vector2(35, 35)); w.Step();
++        w.QueueOrder(1, us, QueuedKind.Hold, Vector2.Zero); w.Step();
++        Steps(w, 60);
++        var bytes = Snapshot.Save(w, Meta);
++        var y = Snapshot.Load(bytes, defs).World;
++        bool same = Snapshot.RawBody(Snapshot.Save(y, Meta)).AsSpan().SequenceEqual(Snapshot.RawBody(bytes));
++        bool fields = y.OrderQueues.Count == 1 && y.OrderQueues[0].Legs.Count == w.OrderQueues[0].Legs.Count && y.OrderQueues[0].Units.SequenceEqual(w.OrderQueues[0].Units);
++        var h0 = w.ComputeChecksum();
++        w.OrderQueues[0].Legs.RemoveAt(0); bool hash = w.ComputeChecksum() != h0;
++        var y2 = Snapshot.Load(bytes, defs).World;
++        Steps(y, 900); Steps(y2, 900);
++        check(same && fields && hash && y.ComputeChecksum() == y2.ComputeChecksum(), $"저장: 바이트 동일 {same} · 필드 {fields} · 체크섬 반영 {hash} · 이어 돌려도 같음 (형식 {Snapshot.FormatVersion})");
++
++        var cmds = w.CommandLog.Select(c => c.Command).OfType<QueueOrderCommand>().ToList();
++        bool json = cmds.Count == 3;
++        if (json)
++        {
++            var s = JsonSerializer.Serialize<GameCommand>(cmds[0], CommandJson.Options);
++            var back = JsonSerializer.Deserialize<GameCommand>(s, CommandJson.Options) as QueueOrderCommand;
++            json = back != null && back.Kind == cmds[0].Kind && back.Target == cmds[0].Target && back.Form == cmds[0].Form && back.Units.SequenceEqual(cmds[0].Units);
++        }
++        ulong Run()
++        {
++            var a = Bare();
++            var ua = Squad(a, 4, new Vector2(20, 20));
++            a.QueueOrder(1, ua, QueuedKind.Move, new Vector2(20, 35)); a.Step();
++            a.QueueOrder(1, ua, QueuedKind.AttackMove, new Vector2(35, 35)); a.Step();
++            Steps(a, 900);
++            return a.ComputeChecksum();
++        }
++        ulong r1 = Run(), r2 = Run();
++        check(json && r1 == r2, $"리플레이: 대기열 명령 {cmds.Count}건 · JSON 왕복 {json} · 같은 명령 = 같은 체크섬 ({r1:X16}) (리플레이 형식 {ReplayFile.FormatVersion})");
++    }
++}
++
++/// <summary>N73 사격 통제 + N75 사선 막힘 사수 표시 판정 (KD_SELFTEST_ONLY=firectl).</summary>
++public static class FireCtlSelfTest
++{
++    public static void Run(GameOptions opt, Action<bool, string> check)
++    {
++        N73SelfTest.Run(opt, check);
++        Console.WriteLine("[N75 사선 막힘 사수 표시]");
++        try { TestBlocker(check); }
++        catch (Exception e) { check(false, $"firectl 테스트 중 예외: {e.GetType().Name}: {e.Message}\n{e.StackTrace}"); }
++    }
++
++    static void TestBlocker(Action<bool, string> check)
++    {
++        var defs = Defs.Current;
++        const int size = 80;
++        var m = new GameMap(size, size, 1);
++        for (int y = 0; y < size; y++) for (int x = 0; x < size; x++) m.Set(x, y, TerrainType.Grass);
++        for (int y = 10; y < 30; y++) for (int x = 30; x < 40; x++) m.Set(x, y, TerrainType.Forest);   // 깊은 숲 띠 (폭 10 — forestSeeDepth 3 보다 깊음)
++        for (int y = 40; y < 60; y++) for (int x = 30; x < 33; x++) m.SetHigh(x, y, true);           // 고지 띠
++        m.Set(34, 74, TerrainType.Rock); m.Set(34, 75, TerrainType.Rock); m.Set(34, 76, TerrainType.Rock);
++        var w = new World(m, defs, 2);
++        var hq = defs.Headquarters;
++        w.PlaceBuilding(hq, 1, 1, 1);
++        w.PlaceBuilding(hq, 2, size - 1 - hq.Size, size - 1 - hq.Size);
++        w.Fog.Enabled = false;
++
++        // 1) 무작위 쌍: 표시 판정 (FiringLineBlock) 과 시뮬 판정 (HasFiringLine) 이 같음
++        int n = 0, agree = 0;
++        uint s = 12345;
++        float R() { s = s * 1664525 + 1013904223; return (s >> 8) / 16777216f; }
++        for (int i = 0; i < 4000; i++)
++        {
++            var a = new Vector2(1 + R() * (size - 2), 1 + R() * (size - 2));
++            var b = new Vector2(1 + R() * (size - 2), 1 + R() * (size - 2));
++            n++;
++            if ((m.FiringLineBlock(a, b, 0, 0) == LosBlock.None) == m.HasFiringLine(a, b, 0, 0)) agree++;
++        }
++        check(agree == n, $"사선 막힘 판정: 표시용 FiringLineBlock 과 시뮬 HasFiringLine 일치 {agree}/{n}");
++
++        // 2) 사수 분류: 숲 · 고지 · 바위 · 트임, 시뮬 상태 불변
++        Unit Shooter(Vector2 p) { var u = w.SpawnUnit(defs.Units["infantry"], 1, p); u.FireMode = FireMode.Hold; return u; }
++        Unit Foe(Vector2 p) { var u = w.SpawnUnit(defs.Units["infantry"], 2, p); u.FireMode = FireMode.Hold; u.Hp = 1e9f; return u; }
++        var sForest = Shooter(new Vector2(28.5f, 20.5f)); Foe(new Vector2(41.5f, 20.5f));
++        var sHigh = Shooter(new Vector2(27.5f, 50.5f)); Foe(new Vector2(36.5f, 50.5f));
++        var sRock = Shooter(new Vector2(31.5f, 75.5f)); Foe(new Vector2(37.5f, 75.5f));
++        var sOpen = Shooter(new Vector2(60.5f, 5.5f)); Foe(new Vector2(66.5f, 5.5f));
++        w.Step();
++        var h0 = w.ComputeChecksum();
++        IEnumerable<Unit> Near(Vector2 p, float r) => w.Units.Where(e => Vector2.Distance(e.Pos, p) <= r);
++        var f = OrderOverlay.Classify(w, sForest, 1, Near);
++        var hi = OrderOverlay.Classify(w, sHigh, 1, Near);
++        var rk = OrderOverlay.Classify(w, sRock, 1, Near);
++        var op = OrderOverlay.Classify(w, sOpen, 1, Near);
++        OrderOverlay.UpdateBlocked(w, 1, (Vector2.Zero, new Vector2(size, size)), 100000);
++        int cnt = OrderOverlay.BlockedCount;
++        bool pure = w.ComputeChecksum() == h0;
++        check(f == LosBlock.Forest && hi == LosBlock.High && rk == LosBlock.Obstacle && op == LosBlock.None && cnt == 3 && pure,
++            $"사선 막힘 사수: 숲 {f} · 고지 {hi} · 바위 {rk} · 트임 {op} · 표시 {cnt}명 (3) · 시뮬 체크섬 불변 {pure}");
++    }
++}
+diff --git a/src/Tests/ReplaySelfTest.cs b/src/Tests/ReplaySelfTest.cs
+index 1deb252b..50cbe59b 100644
+--- a/src/Tests/ReplaySelfTest.cs
++++ b/src/Tests/ReplaySelfTest.cs
+@@ -68,6 +68,7 @@ public static class ReplaySelfTest
+             new SetPostureCommand(1, new[] { 1, 2 }, CompanyPosture.Defend),
+             new SetKeepFormationCommand(1, new[] { 1, 2 }, true),
+             new SetFireModeCommand(1, new[] { 1, 2 }, FireMode.ReturnFire),
++            new QueueOrderCommand(1, new[] { 1, 2 }, QueuedKind.AttackMove, new Vector2(9, 10), 0, new FormSpec(1, 0, Vector2.Zero, 6)),
+             new TrenchAssaultCommand(1, new[] { 1, 2 }, new System.Numerics.Vector2(40.5f, 22.5f), true),
+             new SetRallyCommand(1, new[] { 1, 2 }, new Vector2(5, 6), false), new GroundFireExCommand(1, new[] { 3 }, new Vector2(7, 8), GroundFireKind.Barrage, new Vector2(1, 0)),
+         };
+diff --git a/src/Tests/SnapshotSelfTest.cs b/src/Tests/SnapshotSelfTest.cs
+index 31ab3bb1..cbdd5347 100644
+--- a/src/Tests/SnapshotSelfTest.cs
++++ b/src/Tests/SnapshotSelfTest.cs
+@@ -654,8 +654,8 @@ public static class SnapshotSelfTest
+             "ChangeLog terrainDirty terrainHashDirty TerrainVersion TrenchVersion terrainLock forestDepth tileFlags terrainHash terrainEdits");   // terrainEdits = 렌더러용 편집 기록   // 숲 깊이 · 칸 표시 · 지형 해시 = 지형 · 고지에서 다시 계산   // ChangeLog 는 길찾기가 소비하는 기록 — 불러올 때 길찾기 그래프를 현재 지도에서 새로 만든다
+         Audit1(typeof(World),
+             "Map Defs Factions Units Buildings Fog Controllers Tick nextId lastMapVersion byId navEpoch nav pending CheatsUsed CommandLog RecordCommands " +
+-            "LastAttacked Blasts Shells Winner Winners ChecksumLog BattleMode Battle OriginSnapshot OriginTick Companies Battalions nextCompanyId nextBattalionId nextSquadId Weather",
+-            "executing CommandFeed Stats IssueSel execSel " +                                              // 틱 안에서만 쓰는 목록 · 리플레이 공급 훅 · IssueSel/execSel = 명령 발행/실행 중 선택 인원 (N37, 명령의 Sel 이 원본) (스냅샷은 틱 경계에서 찍고, 리플레이 월드는 따로 만든다)
++            "LastAttacked Blasts Shells Winner Winners ChecksumLog BattleMode Battle OriginSnapshot OriginTick Companies Battalions nextCompanyId nextBattalionId nextSquadId Weather OrderQueues nextQueueId",
++            "executing CommandFeed Stats IssueSel execSel queueExec queueNoChain " +                                              // 틱 안에서만 쓰는 목록 · 리플레이 공급 훅 · IssueSel/execSel = 명령 발행/실행 중 선택 인원 (N37, 명령의 Sel 이 원본) (스냅샷은 틱 경계에서 찍고, 리플레이 월드는 따로 만든다)
+             "cavThreatTick cavThreats cellStart cellCount cellCursor occCells occCount sortTmp coarseMask coarseW cellMask unitMask bldgMask sortedIdx unitCell sepX sepY sepR sepR0 sepDX sepDY sepN sepFlag sepOwner sepHostile sepGrp sepLast hashDirty fIndex indexAllRebuild " +   // 공간 해시 · 충돌 해소: 틱 경계에서 항상 다시 만든다
+             "jamBuf queryBuffer captureCount aliveCount supplyCities supplyWagons trenchComp trenchCompVer trenchOwners trenchOwnersTick " +       // 작업 버퍼 (쓰기 전에 항상 비우거나 덮어씀; supplyCities · supplyWagons = 탄약 회복 틱 안 목록; trenchComp = 지형 해시로 다시 계산하는 참호 묶음, trenchOwners = 틱마다 유닛에서 다시 모으는 참호 자리 표)
+             "Shots Deaths Notices Impacts splashBuffer MeleeStrikes sprayBuffer officers bearers spotters grenBuffer cmdOfficers cmdOfficersTick taGun taAs taOff taTmp taMv taTiles drillBuf drillRole heavyCompany heavyGroup heavyScan closeChargers coverBuf occCand nearMissBuf dangerBuffer cavGateBuf");   // dangerBuffer = 포수 규율 작업 버퍼 (Pursuit.cs, pursuit2)   // nearMissBuf = 근접 탄착 제압 작업 버퍼 (Suppression.cs)   // coverBuf · occCand = 엄폐 찾기 · 진지 점유 작업 버퍼 (CoverSeek.cs, engage)   // closeChargers = 대열 정비 돌격 감지 목록 (감지 틱마다 다시 모음, CloseRanks.cs)   // heavy* = 중화기 보폭 기준 (틱마다 다시 계산, HeavyPacing.cs)   // drillBuf · drillRole = 틀 행동 판단 작업 버퍼 (TacticDrill.cs)   // 교전 2차: 근접 효과 · 흩뿌림 버퍼 · 장교 목록 (RebuildHash 가 다시 모은다)                                                // 화면 효과 · 알림 (시뮬레이션과 무관)
+@@ -669,6 +669,7 @@ public static class SnapshotSelfTest
+         Audit1(typeof(Company), "Id Owner Number Form Tactic ActiveTactic Drill InitialStrength Facing Members Battalion Anchor Squads Holes Scouts MarchUntil MarchFireOn MarchAdvUntil Commander HandoverUntil CloseAlarm CloseAt CloseUntil Posture ContactTick ContactSince KeepFormation HasRally RallyPoint TA", "");
+         Audit1(typeof(TrenchAssaultState), "Stage Sub Result Flags Target Dir FirePoint StartTick StageTick ReadyTick SubTick BoundTick CooldownUntil BoundGroup", "");   // N32 (TrenchAssault.cs)
+         Audit1(typeof(Squad), "Id Number Company Members MarchUntil Form", "");
++        Audit1(typeof(OrderQueue), "Id Faction Sel Units Legs HasCurrent Current", "");   // N74 (OrderQueue.cs)
+         Audit1(typeof(DrillState), "Phase Passive PhaseTick ContactTick Enemy Home BoundSquad BoundLast BoundTick Man ManTick ManGoal ManWay FollowGoal LiftUntil LiftPos", "");   // ORG_ 전술 틀 구역 (TacticDrill.cs)
+         Audit1(typeof(Battalion), "Id Owner Number Form Companies Commander HandoverUntil", "");
+         Audit1(typeof(MissionState), "Def Started Deployment ForceUnits Tags StartRank ObjState ObjProgress ObjRevealed EventFired ReinforcementSpawned Spawned Messages Weather TimeOfDay Result EndTick FailReason", "Alive");   // Alive = 매 틱 다시 세는 작업 버퍼
