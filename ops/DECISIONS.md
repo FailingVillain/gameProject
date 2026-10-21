@@ -29,3 +29,6 @@ D03 A 돌격보병 제압 저항 0.5 유지(B=0.6) · D04 A 포병 해석 4건 �
 
 ## C. 정보 (닫아도 됨)
 n50 대형 K/E 악화 → 대형 완화로 대체, 닫음 · orderq/breach 번호 재조정 → merger · crossing 시험 3건 실패 → scout 조사 발주(결정 아님) · Ammo float→정수 퍼센트 → 上 작업에 포함 · gemini-import 패치 64MB 는 GitHub 경고만 · 외인 영향력 모병/이탈/붕괴 → 캠페인 화면 설계 때.
+
+## C. 설계 질문 (T23)
+캠페인 홈 설계 Q1~Q10 = `kd-develop/kd-t23/korean-division/docs/CAMPAIGN_HOME_DESIGN.md` §15 (브랜치 spec/t23-campaign-home). 답이 있어야 T09/T19 구현 범위 확정.
