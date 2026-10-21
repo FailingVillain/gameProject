@@ -15,4 +15,4 @@ snaptest, 리플레이 호환
 - orderq.patch 를 wip/breach2(6ad6c50) 위에 --reject 로 복원 (원본 blob 없어 3way 불가), 거부 11곳 손으로 반영: GameCommand `queue`, WorldCommands case, World StepOrderQueues, ORG_ 끝 WriteComms 뒤 Write/Read/HashOrderQueues, SelfTest orderq·firectl 묶음, Replay 표본, Snapshot Audit, Game.cs 오버레이, ENGINE_NOTES.
 - 번호: Snapshot FV 54 · Replay 21 (예약대로). 대기열 미사용 판은 체크섬 불변 → detcheck 19501757040f0d62 GOLDEN match (재생성 불필요).
 - 검증: 빌드 오류 0, selftest 묶음 orderq · firectl · replay · snapshot(Audit) · command PASS, snaptest OK, uifuzz 30 (875 동작, 오류 0).
-- 메모(reviewer): 대기열 취소 목록(CmdUnits)에 breach 의 smokegrenade · cutwire 는 없음 — 원 설계 그대로 둠 (새 규칙 추가 안 함).
+- 리뷰 반영(wip/orderq2 추가 커밋): CmdUnits 에 CutWireCommand 추가 (ExecCutWire 가 Order=Move 로 바꾸므로 대기열 취소). ThrowSmokeCommand 는 Order 를 안 바꿔 제외 (던져도 대기열 유지). HashOrderQueues 에 q.Units.Count 추가. orderq 묶음에 철조망/연막 케이스, orderq·firectl·replay·snapshot·command PASS, detcheck GOLDEN match (19501757040f0d62 불변).

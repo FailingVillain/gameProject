@@ -23,6 +23,7 @@ public static class OrderQueueSelfTest
             {
                 TestLegs();
                 TestCancel();
+                TestWireSmoke();
                 TestCompany();
                 TestSkipDeadTarget();
                 TestRoundTrip();
@@ -87,6 +88,23 @@ public static class OrderQueueSelfTest
     }
 
     /// <summary>Shift 없는 명령 = 대기열 버림. 다른 묶음 = 새 대기열 (그 유닛만 옛 대기열에서 빠짐). 죽으면 빠짐.</summary>
+    static void TestWireSmoke()
+    {
+        var w = Bare(record: true);
+        w.Map.Set(30, 40, TerrainType.Wire);
+        var us = new List<Unit>();
+        for (int i = 0; i < 2; i++) us.Add(w.SpawnUnit(defs.Units["infantry_assault"], 1, new Vector2(30.5f + i, 35.5f)));
+        w.Step();
+        w.QueueOrder(1, us, QueuedKind.Move, new Vector2(30, 30)); w.Step();
+        w.QueueOrder(1, us, QueuedKind.Move, new Vector2(40, 30)); w.Step();
+        bool queued = w.OrderQueues.Count == 1;
+        w.ThrowSmokeAt(1, new[] { us[0] }, new Vector2(30.5f, 37.5f)); w.Step();
+        bool smokeKeeps = w.OrderQueues.Count == 1 && w.OrderQueues[0].Units.Count == 2;
+        w.CutWire(1, new[] { us[0] }, new Vector2(30.5f, 40.5f)); w.Step();
+        bool cutLeaves = w.OrderQueues.Count == 1 && w.OrderQueues[0].Units.Count == 1 && w.OrderQueues[0].Units[0] == us[1].Id;
+        check(queued && smokeKeeps && cutLeaves, $"철조망/연막: 대기열 {queued} · 연막 던져도 유지 {smokeKeeps} · 철조망 절단 = 그 유닛만 대기열에서 빠짐 {cutLeaves}");
+    }
+
     static void TestCancel()
     {
         var w = Bare();

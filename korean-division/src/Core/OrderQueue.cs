@@ -87,7 +87,7 @@ public sealed partial class World
     {
         MoveCommand c => c.Units, AttackMoveCommand c => c.Units, QuickStepCommand c => c.Units, RetreatCommand c => c.Units,
         AttackCommand c => c.Units, StopCommand c => c.Units, HoldCommand c => c.Units, ChargeCommand c => c.Units,
-        OccupyPositionsCommand c => c.Units, GroundFireCommand c => c.Units, GroundFireExCommand c => c.Units, _ => null,
+        OccupyPositionsCommand c => c.Units, GroundFireCommand c => c.Units, GroundFireExCommand c => c.Units, CutWireCommand c => c.Units, _ => null,   // 철조망 절단은 Order=Move (ThrowSmoke 는 Order 를 안 바꿔 제외)
     };
 
     /// <summary>Shift 없는 유닛 명령 = 그 유닛은 대기열에서 빠진다 (대기열 다리 실행 중에는 건너뜀).</summary>
@@ -221,6 +221,7 @@ public sealed partial class World
         foreach (var q in OrderQueues)
         {
             h.Add(q.Id); h.Add(q.Faction); h.Add(q.Sel);
+            h.Add(q.Units.Count);
             foreach (int id in q.Units) h.Add(id);
             h.Add(q.Legs.Count); foreach (var l in q.Legs) HashLeg(ref h, l);
             h.Add(q.HasCurrent ? 1 : 0); if (q.HasCurrent) HashLeg(ref h, q.Current);
