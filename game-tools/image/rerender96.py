@@ -39,9 +39,10 @@ def main():
     q = a.only.split(",") if a.only else (sum((QUEUE[k] for k in ("A", "B", "deferred")), []) if a.group == "all" else list(QUEUE[a.group]))
     shard = None
     if a.shard:
-        shard = tuple(int(x) for x in a.shard.split("/")); q = list(QUEUE["B"]) + list(reversed(QUEUE["A"])) if not a.only and a.group in ("A", "B") else q
-        if a.group == "A" and not a.only: q = list(reversed(QUEUE["A"]))
-        if a.group == "B" and not a.only: q = list(QUEUE["B"])
+        shard = tuple(int(x) for x in a.shard.split("/"))
+        if not a.only:
+            rA, B = list(reversed(QUEUE["A"])), list(QUEUE["B"])
+            q = {"A": rA, "B": B, "deferred": list(QUEUE["deferred"]), "all": B + rA}[a.group]
         k, n = shard; q = q[k:] + q[:k]      # stagger start so shards do not fight over the first claim
     d = done(); todo = [u for u in q if u not in d][:a.limit]
     print(f"{len(todo)} to render, {len([u for u in q if u in d])} already done"); 
