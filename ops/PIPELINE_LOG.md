@@ -59,6 +59,7 @@
 | 실측 ~07:1x | T19a 리뷰 수정 완료(sonnet, 71k, 152초): t19a-save-slots 43e69b1 — 깨진/새 버전 슬롯 저장 거부, 결과 화면 이탈 2단계 확인, 실패 창 클릭 무시, .bak.N 보존. 시험 추가, savecompat·missions PASS, GOLDEN 일치. (2)(3) 은 GUI 미확인 | T19b 는 e511f75 기반 → 43e69b1 체리픽 필요 |
 | 실측 ~06:5x | T29b 리뷰 수정 완료(sonnet, 63k, 135초): t29b-on-t09 a89b4d2 — 경제 JSON 범위 보정·예외 폴백·시험 추가, 탄약 정수 천분율(파일 형식 유지), (3) 건드리지 않음, (4) 조건부 로드는 WantsPending 때문에 불가로 보류. 검증 전부 PASS | T19b 재정리 대기(t19a 43e69b1 + t29b a89b4d2 체리픽) |
 | 실측 ~07:0x | T19b wip-ready (opus, 211k — 한도 근접, 1067초, 87회): t19b-ammo-shells 622db02. 캠페인 저장 v3, 구경별 탄약·포탄 규칙(Q6), 발사 수는 측정 통계(FV 불변), 값은 campaign_economy.json. CampaignAmmoSelfTest 10, missions·savecompat PASS, GOLDEN 일치. 전체 selftest 5실패 중 4 = n12/forest 선재(fix/n12-forest 로 해소). 발주: T19b2 동기화(t19a 43e69b1 + t29b a89b4d2 체리픽) | 완료 21/31 |
+| 실측 ~07:xx | T19b2 동기화 완료(sonnet, 67k, 400초): t19b2-synced 4980e7b (t19a 43e69b1 + t29b a89b4d2 체리픽, 코드 충돌 0; T19b 신규 JSON 키 보정 추가, 시험 +2). 전부 PASS. 발주: T19c 홈 3화면(opus, t19b2 위) | 체인 gemini-import→t09→t19a→t19b→t19b2→t19c |
 
 ## 점검 (완료 보고마다 갱신)
 | 지표 | v1 이전 | 지금 | 비고 |
