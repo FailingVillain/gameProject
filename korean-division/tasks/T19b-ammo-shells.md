@@ -25,3 +25,4 @@ T29 가 정산을 "첫 승리만 · 경제 수치 JSON" 으로 바꾸고 T09 도
 ## T19b2 동기화 (t19b2-synced)
 - `t19b-ammo-shells`(622db02) 위에 t19a 리뷰 수정 43e69b1 · t29b 리뷰 수정 a89b4d2 체리픽 (소스 브랜치 무수정). 43e69b1: 충돌 없음(자동 병합). a89b4d2: 코드 충돌 없음, `tasks/T29b-restack.md` 만 modify/delete (이 스택엔 카드가 없어 삭제 유지 → 카드는 t29b-on-t09 쪽에만 있음).
 - 추가: `CampaignEconomyDefs.Sanitized()` 가 T19b 새 키도 보정 — shortLoadRatio 0..1(NaN=기본), shellWeapons null=기본·모르는 포탄 키/null 값 버림, lootShellsPerKill null=기본·모르는 키 버림·값 0..1000 (MissionSelfTest 에 2 check). 탄약 배율 정수 천분율은 CampaignCarry(AmmoScale 쓰기)에 그대로 합쳐짐.
+- 검증: 빌드 오류 0 · savecompat PASS (CampaignAmmo · CampaignSlots 포함) · missions PASS · detcheck GOLDEN match (8aa6448b9690b922) · uifuzz 30 크래시 0.
