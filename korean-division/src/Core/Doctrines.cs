@@ -71,26 +71,33 @@ public sealed class Doctrines
     {
         var e = new List<string>();
         if (Version < 1) e.Add("version");
-        if (Schools.Count == 0) e.Add("schools 비어 있음");
+        if (Schools == null || Schools.Count == 0) { e.Add("schools 비어 있음"); Schools = new(); }
+        if (Factions == null) { e.Add("factions 없음"); Factions = new(); }
         var seen = new HashSet<string>();
         foreach (var s in Schools)
         {
+            if (s == null) { e.Add("학파 항목이 null"); continue; }
             if (string.IsNullOrWhiteSpace(s.Key) || !seen.Add(s.Key)) e.Add($"학파 키 비었거나 중복: '{s.Key}'");
-            if (s.Name.Length == 0 || s.Officer.Length == 0 || s.Tactics.Length == 0 || s.Ai.Count == 0) e.Add($"학파 {s.Key}: 필수 항목 누락");
+            if (string.IsNullOrEmpty(s.Name) || string.IsNullOrEmpty(s.Officer) || string.IsNullOrEmpty(s.Tactics) || s.Ai == null || s.Ai.Count == 0) e.Add($"학파 {s.Key}: 필수 항목 누락");
+            if (s.Research == null) e.Add($"학파 {s.Key}: research 가 null (빈 목록 [] 으로 쓸 것)");
+            if (s.Figures == null) e.Add($"학파 {s.Key}: figures 가 null (빈 목록 [] 으로 쓸 것)");
         }
         foreach (var (fk, f) in Factions)
         {
-            if (f.Name.Length == 0) e.Add($"세력 {fk}: 이름 없음");
+            if (f == null) { e.Add($"세력 {fk}: null"); continue; }
+            if (string.IsNullOrEmpty(f.Name)) e.Add($"세력 {fk}: 이름 없음");
+            if (f.Dispositions == null) { e.Add($"세력 {fk}: dispositions 가 null"); f.Dispositions = new(); }
             var keys = new HashSet<string>();
             foreach (var x in f.Dispositions)
             {
+                if (x == null) { e.Add($"성향 항목이 null: {fk}"); continue; }
                 if (string.IsNullOrWhiteSpace(x.Key) || !keys.Add(x.Key)) e.Add($"성향 키 비었거나 중복: {fk}.'{x.Key}'");
-                if (x.Name.Length == 0 || x.Character.Length == 0 || x.Ai.Count == 0) e.Add($"성향 {fk}.{x.Key}: 필수 항목 누락");
+                if (string.IsNullOrEmpty(x.Name) || string.IsNullOrEmpty(x.Character) || x.Ai == null || x.Ai.Count == 0) e.Add($"성향 {fk}.{x.Key}: 필수 항목 누락");
             }
             if (f.SharesWith != null)
             {
                 var p = f.SharesWith.Split('.');
-                bool ok = p.Length == 2 && Factions.TryGetValue(p[0], out var o) && o.SharesWith == null && o.Dispositions.Any(x => x.Key == p[1]);
+                bool ok = p.Length == 2 && Factions.TryGetValue(p[0], out var o) && o != null && o.SharesWith == null && o.Dispositions != null && o.Dispositions.Any(x => x.Key == p[1]);
                 if (!ok) e.Add($"세력 {fk}: sharesWith '{f.SharesWith}' 참조 오류");
                 if (f.Dispositions.Count > 0) e.Add($"세력 {fk}: sharesWith 와 자체 성향 동시 지정");
             }

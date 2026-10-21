@@ -25,7 +25,8 @@ public sealed partial class CampaignMenu
         float x = body.X + 20, y = body.Y + 16;
         Ui.Text(S.CmStaffTitle, x, y, 22, Palette.Accent); y += 32;
         if (doctrines == null) { Ui.Text(S.CmStaffLoadFail, x, y, 16, Palette.Warning); return; }
-        var schools = doctrines.Schools;
+        var schools = doctrines.Schools ?? new();
+        if (schools.Count == 0) { Ui.Text(S.CmStaffLoadFail, x, y, 16, Palette.Warning); return; }
         staffSel = Math.Clamp(staffSel, 0, schools.Count - 1);
 
         const float listW = 150;
@@ -37,9 +38,9 @@ public sealed partial class CampaignMenu
         Ui.Text(string.Format(S.CmStaffSchoolHead, s.Name), dx, dy, 20, Palette.Text); dy += 30;
         dy = StaffLines(S.CmStaffOfficer, s.Officer, dx, dy, dw);
         dy = StaffLines(S.CmStaffTactics, s.Tactics, dx, dy, dw);
-        dy = StaffLines(S.CmStaffAi, string.Join(" · ", s.Ai), dx, dy, dw);
-        dy = StaffLines(S.CmStaffResearch, string.Join(" · ", s.Research), dx, dy, dw);
-        dy = StaffLines(S.CmStaffFigures, s.Figures.Count > 0 ? string.Join(" · ", s.Figures) : S.CmStaffNoFigures, dx, dy, dw);
+        dy = StaffLines(S.CmStaffAi, string.Join(" · ", s.Ai ?? new()), dx, dy, dw);
+        dy = StaffLines(S.CmStaffResearch, string.Join(" · ", s.Research ?? new()), dx, dy, dw);
+        dy = StaffLines(S.CmStaffFigures, s.Figures is { Count: > 0 } ? string.Join(" · ", s.Figures) : S.CmStaffNoFigures, dx, dy, dw);
         Ui.Text(S.CmStaffNote, x, (body.Y + body.Height) - 30, 14, Palette.TextDim);
     }
 

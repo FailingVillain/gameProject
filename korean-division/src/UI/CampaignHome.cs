@@ -7,7 +7,7 @@ namespace KoreanDivision.UI;
 /// <summary>
 /// [T19c] 캠페인 홈 3화면 · 15탭 틀 (설계 CAMPAIGN_HOME_DESIGN §2 · §11-1, 사용자 Q1 2026-10-22: 중앙 9 + 좌 3 + 우 3).
 /// 탭 추가 = <see cref="Tab"/> 열거형 · <see cref="ScreenTabs"/> 배치 · 문자열 (StringsCampaignHome) 만 건드린다 (§14).
-/// MVP 5탭 (1 · 2 · 4 · 10 · 13) 본문은 CampaignMenu.cs, 나머지 10탭은 틀 (<see cref="DrawTabPlaceholder"/>).
+/// MVP 5탭 (1 · 2 · 4 · 10 · 13) 본문은 CampaignMenu.cs, 6번째 본문 8 참모진은 읽기 전용 (CampaignHomeStaff.cs, T19d), 나머지 9탭은 틀 (<see cref="DrawTabPlaceholder"/>).
 /// </summary>
 public sealed partial class CampaignMenu
 {

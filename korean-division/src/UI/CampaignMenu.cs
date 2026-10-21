@@ -5,7 +5,7 @@ using KoreanDivision.Core;
 namespace KoreanDivision.UI;
 
 /// <summary>
-/// 사단 캠페인 홈 화면 (3화면 15탭 — 배치 · 틀은 CampaignHome.cs, MVP 5탭 본문은 여기 · 작전 전 출격 준비 · 전과 보고 모달).
+/// 사단 캠페인 홈 화면 (3화면 15탭 — 배치 · 틀은 CampaignHome.cs, MVP 5탭 본문은 여기 (6번째 8 참모진은 읽기 전용, CampaignHomeStaff.cs) · 작전 전 출격 준비 · 전과 보고 모달).
 /// S2(home-ui), S3(작전 전 투입), S4(전과 보고), S5(본국 전문) 통합 UI.
 /// </summary>
 public sealed partial class CampaignMenu
