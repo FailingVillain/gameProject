@@ -1,0 +1,1674 @@
+diff --git a/assets/data/balance.json b/assets/data/balance.json
+index 6541fbda..84cd68e8 100644
+--- a/assets/data/balance.json
++++ b/assets/data/balance.json
+@@ -158,6 +158,10 @@
+   },
+   // 수류탄 (교전 4차): unit.grenades 개 보유 (돌격보병 1). 사거리 5칸, 신관 1.5초, 반경 1.5칸, 피해 60 -> 20 (엄폐 무시), 제압 +300.
+   // 자동 투척: 엄폐 중(참호) 적 보병 4칸 이내, 전차 3칸 이내. 전차에는 묶음 수류탄 고정 피해 tankDamage. 회복: 비전투 중 regenSeconds 초에 1개
++  // [N59 · N65] 참호 돌파 묶음 (Breach.cs): 연막 = 원형, 크기 · 위치 고정 (바람 없음), 지속 시간 뒤 사라짐. 시선이 연막 속을 smokeSeeDepth 칸 넘게 지나면 시야 · 직사 사선 차단.
++  // 연막 수류탄 (돌격보병 unit.smokeGrenades) 반경 · 초 (사거리 · 신관은 grenade), 연막탄 지속 초 (반경 = weapon.smokeRadius), 지점 포격 '연막' 발수.
++  // 철조망 절단 (unit.wireCutter = 돌격보병): 칸 옆에서 wireCutSec 초 → 흙 (통과 가능), 절단 중 칸 중심까지 wireCutReach 칸 안, 명령 지점 둘레 wireCutSearch 칸에서 철조망을 찾는다.
++  "breach": { "smokeGrenadeRadius": 2.5, "smokeGrenadeSec": 30, "smokeShellSec": 45, "smokeRounds": 3, "smokeSeeDepth": 1.0, "wireCutSec": 4, "wireCutReach": 2.0, "wireCutSearch": 4 },
+   "grenade": { "range": 5, "fuse": 1.5, "radius": 1.5, "damage": 60, "edgeDamage": 20, "suppress": 300, "tankDamage": 40, "autoCoverRange": 4, "autoTankRange": 3, "regenSeconds": 180, "scatter": 0.5 },
+   // [N54] 세력별 소총 분배 (map factions[].en → {무기 → 가중치 %}). 소총 칸 (weapon = rifle_mosin) 보병이 생성될 때 유닛 id · 지도 시드의 해시로 결정적으로 고른다. 없는 세력 = 모신나강. 공용 유닛은 분배 안 함 (모신나강).
+   "factionRifles": {
+@@ -219,7 +223,13 @@
+     "dadao":       { "name": "대도",        "damage": 60, "range": 0.3, "cooldown": 1.4, "cooldownMin": 1.2, "cooldownMax": 1.6, "accuracy": 0.6, "fire": "direct", "aimTime": 0, "holdTime": 0.2, "bonus": { "armored": 0 } },
+     "gun_infantry": { "name": "보병포",     "damage": 70, "range": 40,  "cooldown": 3.3, "cooldownMin": 3.0, "cooldownMax": 3.6, "accuracy": 0.6, "accNear": 0.8, "accFar": 0.35, "fire": "direct", "los": true, "aimTime": 0.3, "holdTime": 0.3, "splash": 1.5, "splashEdge": 0.3, "scatter": 2.0, "ammo": 60, "suppress": 250, "craterChance": 0.08, "shellSpeed": 60, "flightMax": 1.0, "traverseArc": 45 },   // tweak1 (2026-10-19 사용자 결정 4): 피해 45 → 70 · 반경 0.8 → 1.5 · 제압 150 → 250 (야전포 피해 · 반경 상한, C 10+10판 감도 시험 — ARTILLERY_EFFECT N44)
+     "gun_field":   { "name": "야전포",      "damage": 100, "spotterIndirect": true, "range": 80,  "cooldown": 5.5, "cooldownMin": 5.0, "cooldownMax": 6.0, "accuracy": 0.6, "accNear": 0.8, "accFar": 0.35, "fire": "direct", "los": true, "aimTime": 0.4, "holdTime": 0.4, "splash": 1.5, "splashEdge": 0.3, "scatter": 4.0, "ammo": 40, "suppress": 250, "craterChance": 0.2, "shellSpeed": 80, "flightMax": 1.2, "traverseArc": 45 },
+-    "howitzer_heavy": { "name": "곡사포",   "damage": 100, "range": 120, "minRange": 6, "cooldown": 15.5, "cooldownMin": 14.0, "cooldownMax": 17.0, "accuracy": 1.0, "fire": "indirect", "spotterOnly": true, "aimTime": 2.0, "holdTime": 1.0, "spotterDelay": 0, "splash": 3, "adjustFireShots": 5, "adjustFireMinMul": 0.3333, "adjustFireZone": 5, "splashEdge": 0.3, "scatter": 9.0, "ammo": 32, "suppress": 400, "craterChance": 0.5, "shellSpeed": 22, "flightBase": 1.5, "flightMin": 1.5, "flightMax": 8.0, "traverseArc": 60 }
++    "howitzer_heavy": { "name": "곡사포",   "damage": 100, "range": 120, "minRange": 6, "cooldown": 15.5, "cooldownMin": 14.0, "cooldownMax": 17.0, "accuracy": 1.0, "fire": "indirect", "spotterOnly": true, "aimTime": 2.0, "holdTime": 1.0, "spotterDelay": 0, "splash": 3, "adjustFireShots": 5, "adjustFireMinMul": 0.3333, "adjustFireZone": 5, "splashEdge": 0.3, "scatter": 9.0, "ammo": 32, "suppress": 400, "craterChance": 0.5, "shellSpeed": 22, "flightBase": 1.5, "flightMin": 1.5, "flightMax": 8.0, "traverseArc": 60, "smokeRadius": 5 },
++    // [N60] 경박격포 (참호 돌파 묶음, 사용자 결정 사거리 36): 중대 · 대대 곡사 화력 — 관측자 없이 자기 세력이 보는 적에게 곡사 (spotterOnly 아님, 사선 무시).
++    // 세력별 변형: 한국 = 독일식 경 미넨베르퍼 (7.58cm, 무겁고 강함) · 일본 = 척탄통 (1인, 가볍고 빠름 · 약함) · 그 밖 = 스톡스 박격포. smokeRadius = 연막탄 (지점 포격 '연막').
++    // 수치는 초안 (밸런스 승인 전): 피해 · 반경은 보병포 (70 · 1.5) 이하, 퍼짐은 곡사포 (9) 보다 훨씬 작게.
++    "mortar_minenwerfer": { "name": "경 미넨베르퍼", "damage": 70, "range": 36, "minRange": 5, "cooldown": 6.0, "cooldownMin": 5.5, "cooldownMax": 6.5, "accuracy": 1.0, "fire": "indirect", "aimTime": 1.0, "holdTime": 0.6, "splash": 1.5, "splashEdge": 0.3, "scatter": 3.0, "ammo": 30, "suppress": 300, "craterChance": 0.15, "shellSpeed": 14, "flightBase": 1.5, "flightMin": 2.0, "flightMax": 5.0, "smokeRadius": 3.5 },
++    "mortar_discharger": { "name": "척탄통", "damage": 45, "range": 36, "minRange": 3, "cooldown": 3.5, "cooldownMin": 3.0, "cooldownMax": 4.0, "accuracy": 1.0, "fire": "indirect", "aimTime": 0.6, "holdTime": 0.4, "splash": 1.2, "splashEdge": 0.3, "scatter": 3.5, "ammo": 40, "suppress": 200, "craterChance": 0.03, "shellSpeed": 14, "flightBase": 1.2, "flightMin": 1.5, "flightMax": 4.0, "smokeRadius": 2.5 },
++    "mortar_stokes": { "name": "스톡스 박격포", "damage": 60, "range": 36, "minRange": 4, "cooldown": 4.5, "cooldownMin": 4.0, "cooldownMax": 5.0, "accuracy": 1.0, "fire": "indirect", "aimTime": 0.8, "holdTime": 0.5, "splash": 1.4, "splashEdge": 0.3, "scatter": 3.2, "ammo": 36, "suppress": 250, "craterChance": 0.1, "shellSpeed": 14, "flightBase": 1.5, "flightMin": 2.0, "flightMax": 5.0, "smokeRadius": 3.0 }
+   },
+   "armors": {
+     "none":      { "name": "없음",      "armor": 0 },   // 보병 전원 (2차 추가 D): 피해 전액
+@@ -295,7 +305,7 @@
+       "hp": 130, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+       "weapon": "carbine_assault", "melee": "sabre_short", "armor": "none", "category": "infantry", "suppressResist": 0.5,
+       "suppressRecoverMul": 1.5, "movingHitMul": 0.75, "shellCenterKillRadius": 0.5, "chargeHopRange": 6, "chargeHopMaxHit": 0.85, "chargeHopMinDist": 9, "chargeHopMaxSec": 4,   // assaultinf (2026-10-22): A 제압 저항 (받는 제압 suppressResist 0.5 는 N23 부터 ×0.6 보다 강해 유지) + 회복 ×1.5 · B 이동 중 피격 ×0.75 · 포탄 착탄 중심 0.5칸 즉사 · C 돌격 접근 6칸 안 엄폐 약진 (체력 130 은 이미 반영)
+-      "marchFire": true, "grenades": 2, "koreaOnly": true, "marchFireDefault": true, "marchAccMul": 0.8, "marchIntervalMul": 1.0, "marchMoveMul": 0.5, "marchGrenadeFrac": 0.5, "sidearm": "pistol_assault", "sidearmRange": 6, "canCapture": true, "autoAttack": true,
++      "marchFire": true, "grenades": 2, "smokeGrenades": 1, "wireCutter": true, "koreaOnly": true, "marchFireDefault": true, "marchAccMul": 0.8, "marchIntervalMul": 1.0, "marchMoveMul": 0.5, "marchGrenadeFrac": 0.5, "sidearm": "pistol_assault", "sidearmRange": 6, "canCapture": true, "autoAttack": true,
+     },
+     // ---- 교전 4차 (ROADMAP 추가 병종 / 이름 규칙). 그림은 기존 별칭 (theme.json)
+     "infantry_regular": {
+@@ -386,6 +396,25 @@
+       "weapon": "howitzer_heavy", "armor": "basic", "category": "gun", "suppressResist": 0.75, "setupTime": 20, "packTime": 15, "turnRate": 20,
+       "canCapture": false, "autoAttack": true,
+     },
++    // ---- [N60] 경박격포 (참호 돌파 묶음): 세력별 변형, 사거리 36 곡사. 그림은 보병포 별칭 (artAs, 전용 그림은 별도 작업).
++    "heavy_mortar_korean": {
++      "name": "경박격포", "description": "2인이 운용하는 한국군 독일식 경 미넨베르퍼 (7.58cm). 아군이 보는 적에게 곡사 (사선 무시, 사거리 36 · 최소 5). 지점 포격 · 연막탄 가능. 방열(6초) 후 사격, 이동하려면 철수(4초).",
++      "hp": 160, "speed": 2.4, "radius": 0.5, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
++      "weapon": "mortar_minenwerfer", "armor": "none", "category": "infantry", "suppressResist": 0.6, "setupTime": 6, "packTime": 4,
++      "factions": ["korean"], "artAs": "heavy_infantry_gun", "canCapture": true, "autoAttack": true,
++    },
++    "heavy_mortar_japanese": {
++      "name": "척탄통병", "description": "일본군 척탄통 (1인 운용 경박격포). 아군이 보는 적에게 곡사 (사선 무시, 사거리 36 · 최소 3). 가볍고 빠르게 쏘지만 한 발이 약합니다. 지점 포격 · 연막탄 가능. 거치(2초) 후 사격, 해제(1초).",
++      "hp": 100, "speed": 3.0, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
++      "weapon": "mortar_discharger", "armor": "none", "category": "infantry", "suppressResist": 0.75, "setupTime": 2, "packTime": 1,
++      "factions": ["japanese"], "artAs": "heavy_infantry_gun", "canCapture": true, "autoAttack": true,
++    },
++    "heavy_mortar": {
++      "name": "박격포병", "description": "2인이 운용하는 스톡스 박격포. 아군이 보는 적에게 곡사 (사선 무시, 사거리 36 · 최소 4). 지점 포격 · 연막탄 가능. 방열(4초) 후 사격, 철수(3초).",
++      "hp": 160, "speed": 2.6, "radius": 0.5, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
++      "weapon": "mortar_stokes", "armor": "none", "category": "infantry", "suppressResist": 0.6, "setupTime": 4, "packTime": 3,
++      "factions": ["fengtian", "russian"], "artAs": "heavy_infantry_gun", "canCapture": true, "autoAttack": true,
++    },
+     // ---- [N26] 마적 (bandit, 2026-10-19 사용자 결정). 세력 제한 factions:["bandit"]. 그림은 봉천 그림 대용 (artAs · artVariant) — 전용 그림이 오면 unit.bandit_* 로 바뀐다.
+     "bandit_thug": {
+       "name": "마적 잡병", "description": "대도 한 자루뿐인 마적 졸개. 총이 없어 사격하지 못하고 근접 돌격만 합니다 (체력 · 속도는 정규군 보병과 같음).",
+diff --git a/assets/data/detcheck.golden b/assets/data/detcheck.golden
+index 0f780d15..2a0e579b 100644
+--- a/assets/data/detcheck.golden
++++ b/assets/data/detcheck.golden
+@@ -1 +1 @@
+-32639a67c417c7cf 35ca59abc3d9fe72
++fe57f0a89f0284ff 8ee8fcedea808082
+diff --git a/assets/missions/trench_assault_mortar.json b/assets/missions/trench_assault_mortar.json
+new file mode 100644
+index 00000000..c42dfac5
+--- /dev/null
++++ b/assets/missions/trench_assault_mortar.json
+@@ -0,0 +1,312 @@
++{
++ "propScatter": true,
++ "propDensity": 4.0,
++ "propCell": 6,
++ "id": "trench_assault_mortar",
++ "title": "참호 돌격 (경기관총 · 중기관총)",
++ "date": "1920년 가을",
++ "location": "간도 전선",
++ "briefing": "일본군이 두 겹 참호와 철조망 뒤에서 경기관총 · 중기관총을 걸고 버틴다. 기관총반으로 제압하고 보병으로 참호를 점령하라 (20~40분).",
++ "seed": 21,
++ "weather": "clear",
++ "time": "day",
++ "player": 1,
++ "factions": [
++  {
++   "name": "한국",
++   "en": "korean",
++   "lang": "ko",
++   "color": [
++    60,
++    130,
++    235
++   ],
++   "team": 1,
++   "posture": "attack",
++   "area": "trench"
++  },
++  {
++   "name": "일본",
++   "en": "japanese",
++   "lang": "ja",
++   "color": [
++    235,
++    195,
++    50
++   ],
++   "team": 2,
++   "posture": "hold",
++   "area": "trench",
++   "aiProfile": "japan_garrison"
++  }
++ ],
++ "mapData": {
++  "name": "참호 지대",
++  "width": 150,
++  "height": 90,
++  "base": "grass",
++  "paint": [
++   {
++    "terrain": "trench",
++    "rect": [
++     100,
++     20,
++     1,
++     50
++    ]
++   },
++   {
++    "terrain": "trench",
++    "rect": [
++     108,
++     20,
++     1,
++     50
++    ]
++   },
++   {
++    "terrain": "wire",
++    "rect": [
++     90,
++     20,
++     1,
++     50
++    ]
++   },
++   {
++    "terrain": "rubble",
++    "rect": [
++     70,
++     30,
++     6,
++     5
++    ]
++   },
++   {
++    "terrain": "rubble",
++    "rect": [
++     72,
++     55,
++     6,
++     5
++    ]
++   },
++   {
++    "terrain": "forest",
++    "rect": [
++     40,
++     5,
++     16,
++     14
++    ]
++   },
++   {
++    "terrain": "high",
++    "circle": [
++     125,
++     45,
++     7
++    ]
++   }
++  ],
++  "starts": [
++   [
++    20,
++    45
++   ],
++   [
++    110,
++    45
++   ]
++  ]
++ },
++ "areas": {
++  "trench": {
++   "rect": [
++    98,
++    18,
++    14,
++    54
++   ]
++  }
++ },
++ "deployZones": [
++  {
++   "faction": 1,
++   "rect": [
++    6,
++    15,
++    40,
++    60
++   ]
++  }
++ ],
++ "forces": [
++  {
++   "id": "b1",
++   "faction": 1,
++   "name": "제1대대",
++   "at": [
++    30,
++    45
++   ],
++   "facing": 90,
++   "battalion": 1,
++   "battalionForm": "line",
++   "formation": "line",
++   "companies": [
++    {
++     "units": {
++      "officer": 1,
++      "infantry": 40
++     },
++     "rank": 1
++    },
++    {
++     "units": {
++      "officer": 1,
++      "infantry": 40
++     }
++    },
++    {
++     "units": {
++      "officer": 1,
++      "infantry": 40
++     }
++    }
++   ]
++  },
++  {
++   "id": "lmg",
++   "faction": 1,
++   "name": "경기관총반",
++   "at": [
++    22,
++    45
++   ],
++   "facing": 90,
++   "formation": "line",
++   "units": {
++    "officer": 1,
++    "heavy_machinegunner": 10
++   }
++  },
++  {
++   "id": "hmg",
++   "faction": 1,
++   "name": "중기관총반",
++   "at": [
++    18,
++    40
++   ],
++   "facing": 90,
++   "formation": "line",
++   "units": {
++    "officer": 1,
++    "heavy_maxim": 2
++   }
++  },
++  {
++   "id": "mtr",
++   "faction": 1,
++   "name": "박격포반",
++   "at": [
++    24,
++    52
++   ],
++   "facing": 90,
++   "formation": "line",
++   "units": {
++    "officer": 1,
++    "heavy_mortar_korean": 4
++   }
++  },
++  {
++   "id": "j1",
++   "faction": 2,
++   "name": "일본군 수비대",
++   "at": [
++    104,
++    45
++   ],
++   "facing": 270,
++   "formation": "line",
++   "companies": [
++    {
++     "units": {
++      "officer": 1,
++      "infantry_japanese": 50
++     }
++    },
++    {
++     "units": {
++      "officer": 1,
++      "infantry_japanese": 50
++     }
++    }
++   ]
++  },
++  {
++   "id": "j_lmg",
++   "faction": 2,
++   "name": "경기관총 진지",
++   "at": [
++    102,
++    45
++   ],
++   "facing": 270,
++   "formation": "line",
++   "units": {
++    "officer": 1,
++    "infantry_japanese": 10
++   }
++  },
++  {
++   "id": "j_hmg",
++   "faction": 2,
++   "name": "중기관총 진지",
++   "at": [
++    109,
++    45
++   ],
++   "facing": 270,
++   "formation": "line",
++   "units": {
++    "officer": 1,
++    "heavy_type3": 2
++   }
++  }
++ ],
++ "objectives": [
++  {
++   "id": "take",
++   "type": "capture",
++   "area": "trench",
++   "seconds": 45,
++   "text": "참호선 점령 후 45초 유지"
++  }
++ ],
++ "failures": [
++  {
++   "type": "losses",
++   "percent": 70
++  },
++  {
++   "type": "timeLimit",
++   "seconds": 2400
++  }
++ ],
++ "events": [
++  {
++   "id": "intro",
++   "when": {
++    "time": 1
++   },
++   "do": [
++    {
++     "message": "기관총으로 제압 사격 후 돌격하라"
++    }
++   ]
++  }
++ ]
++}
+\ No newline at end of file
+diff --git a/docs/ENGINE_NOTES.md b/docs/ENGINE_NOTES.md
+index 03eaa24b..181c0bd1 100644
+--- a/docs/ENGINE_NOTES.md
++++ b/docs/ENGINE_NOTES.md
+@@ -658,7 +658,7 @@
+ - 테스트: `KD_SELFTEST_ONLY=savecompat` (`SaveCompatSelfTest`) — 옛/새 형식 헤더, 빈 · 잘린 · 임의 바이트 저장, 빈 · 잘린 · 쓰레기 리플레이가 SnapshotException / InvalidDataException 으로만 실패.
+ - **캠페인 저장 (`campaign.json`)**: `CampaignState.SchemaVersion` (현재 1, JSON `version`). 규칙 = 필드는 **추가만**; 새 필드의 C# 기본값이 곧 옛 파일에 없을 때의 값이라 옛/부분 파일은 변환 없이 열고 모자란 필드를 기본값으로 채운다 (모르는 필드는 무시). 필드 삭제 · 뜻 변경 시 SchemaVersion 을 올리고 그 옛 파일은 거부. 더 큰 version · 깨진 파일은 `CampaignState.Load()` 가 null + `LastLoadError` (한국어 `SnapMsg.CampaignNewer`/`CampaignBroken`) — 캠페인 메뉴가 사유를 표시하고 "새로 시작하면 덮어쓰입니다" 안내.
+ 
+-## arty3 포병 · 중화기 묶음 (2026-10-22, 브랜치 `arty3`, `src/Core/Arty3.cs`, FormatVersion 50)
++## arty3 포병 · 중화기 묶음 (2026-10-22, 브랜치 `arty3`, `src/Core/Arty3.cs`, FormatVersion 51)
+ - 수치 (balance.json): 중기관총 hmg · hmg_type3 사거리 24 → 32 (명중 곡선은 거리/사거리 비라 같은 거리 명중이 오름 — 24칸 0.12 → 0.20), 야전포 피해 70 → 100, 곡사포 splash 2.5 → 3.
+ - 방렬 난수: 대포 (category gun) 만 방렬 시간 ×(1 ± `gunDeployTimeVar` 0.15) + 시작 지연 0~`gunDeployDelayMax` 3초. 포마다 고정 (PairNoise(Id), 상태 없음) — DeployLeft 에 지연을 더해 Deploying 앞쪽에서 소모. 중기관총 거치는 그대로.
+ - 자리 유지 (`GunKeepsPlace`: 방렬(중) 대포 · 공격 명령 아님): 사선 막힘 자동 표적 → 철수 대신 표적을 놓음. 사거리 밖 자동 표적 → `gunOutOfRangeHoldSec` 8초 기다림 (HoldWait), 방렬 완료 뒤 `gunRepackCooldownSec` 20초 안에는 쫓아 철수하지 않음. 사계 안 = 포신만 · 큰 각 = 공격 명령만 재방렬 · 이동 명령 = 곧바로 철수 (기존 그대로).
+@@ -667,3 +667,11 @@
+ - 곡사포 조정 사격 (`adjustFireShots` 5 · `adjustFireMinMul` 1/3 · `adjustFireZone` 5칸): 관측 사격 (FireArtillery) 만, 앞 조준점 5칸 안이면 연속 발수 +1 → 퍼짐 9 → 7.5 → 6 → 4.5 → 3칸, 구역을 벗어나면 1발째부터. 지점 포격 (관측 없음) 은 해당 없음. 상태 Unit.AdjustShots · AdjustAim.
+ - 중기관총 최후 저지선 (FireMode.FinalLine, K 순환: 자유 → 금지 → 응사만 → [중기관총 있으면 지점 고르기] → 자유): `SetFinalLineCommand` (지점), 사격선 = 유닛 → 지점 방향 사거리까지, 띠 `finalLineBand` 2칸 안의 적만 표적 (FindTarget fpl 필터 · FireAllowed). 상태 Unit.FinalLinePoint. 선택 시 사격선 표시 (Game.DrawFinalLines).
+ - 저장: ORG_ 사격 통제 바이트 뒤에 (유닛 색인, FinalLinePoint, AdjustShots, AdjustAim) 목록 (값이 있는 유닛만). 테스트 `KD_SELFTEST_ONLY=arty3`.
++
++## 참호 돌파 묶음 (N59 연막 · 철조망 절단, N60 경박격포, N65 연막 수류탄 — 2026-10-22, `src/Core/Breach.cs`)
++- 연막 = `World.Smokes` (원형, 위치 · 크기 고정, 바람 · 번짐 없음, `EndTick` 에 사라짐). 시선 a→b 가 연막 속을 지나는 길이 합 > `breach.smokeSeeDepth` (1칸) 이면 막힘 (`World.SmokeBlocks`, 스칼라 연산). 적용: 직사 사선 `World.HasFiringLine` · 자동 표적 `FindTarget` · `CavReact` · 관측자 `SeenBySpotter` · 안개 찍기 (`FogOfWar.StampSmoky` — 시야 원이 연막과 겹치는 관측자만 칸마다 검사, 같은 칸 · 같은 반경은 한 번). `GameMap.HasFiringLine` (지형 전용) · 전술 AI 지형 점수는 연막을 모른다 (캐시 결정성).
++- 연막 수류탄: `unit.smokeGrenades` (돌격보병 1), `ThrowSmokeCommand` (단축키 Y), 사거리 · 신관 · 흩어짐 = grenade, 반경 2.5 · 30초. 회복 = 수류탄이 다 찬 뒤 같은 시계.
++- 연막탄: `weapon.smokeRadius` (곡사포 5 · 박격포 2.5~3.5) 가 있는 포만 지점 포격 '연막' 종류 (`breach.smokeRounds` 3발 뒤 끝, 지속 45초). `ShellFlight.Smoke` · `GrenadeBlast.Smoke` 이면 착탄 때 피해 대신 연막.
++- 철조망 절단: `unit.wireCutter` (돌격보병), `CutWireCommand` (단축키 U) — 지점 둘레 `wireCutSearch` 칸 철조망을 가까운 순으로 한 사람씩 맡아 옆 칸 (상하좌우 우선) 으로 가서 사수 자세로 `wireCutSec` (4초) → 칸 = 흙 (`GameMap.OpenWire`: Version · ChangeLog → 길찾기 갱신). 새 명령 (`ResetOrder`) = 취소. 진행 막대 = `ProgressRing`.
++- 경박격포 (사거리 36, 관측자 불필요 곡사 — 자기 세력이 보는 적): 한국 `heavy_mortar_korean` (경 미넨베르퍼) · 일본 `heavy_mortar_japanese` (척탄통, 1인) · 그 밖 `heavy_mortar` (스톡스, 봉천 · 러시아). 수치 = 초안 (밸런스 승인 전), 그림 = 보병포 별칭 (artAs).
++- 저장 = CMB2 끝 `WriteBreach` (FormatVersion 51), 체크섬 `HashBreach`, 리플레이 v19. 시험 `KD_SELFTEST_ONLY=breach`. 참호 돌격 순서 (N32) 의 `smokeHook` · `wireCutHook` 는 아직 자리만 (AI 사용은 다음 단계).
+diff --git a/src/Core/Breach.cs b/src/Core/Breach.cs
+new file mode 100644
+index 00000000..f3315652
+--- /dev/null
++++ b/src/Core/Breach.cs
+@@ -0,0 +1,315 @@
++using System.Numerics;
++
++namespace KoreanDivision.Core;
++
++/// <summary>
++/// 참호 돌파 묶음 (N59 · N60 · N65, 사용자 승인 2026-10-19 · 2026-10-20):
++///  · 연막 (SmokeCloud): 연막 수류탄 (돌격보병, unit.smokeGrenades) · 연막탄 (지점 포격 '연막' 종류, weapon.smokeRadius 가 있는 박격포 · 곡사포) 이 떨어진 곳에
++///    반경 r 의 원형 연막이 breach.*Sec 초 동안 그대로 있다 (바람 · 번짐 · 옅어짐 없음). 연막을 지나는 선분 길이 합이 breach.smokeSeeDepth 칸을 넘으면
++///    시야 (안개 찍기 · 관측자) 와 직사 사선 (World.HasFiringLine · 자동 표적) 이 막힌다 — 연막 가장자리 근처끼리 · 연막 안 바로 옆끼리는 보인다. 곡사 사격은 사선과 무관.
++///  · 철조망 절단 (CutWireCommand): unit.wireCutter (돌격보병) 가 지점 둘레 철조망 칸 하나씩을 맡아 옆 칸으로 가서 breach.wireCutSec 초 → 그 칸이 흙 (통과 가능) 이 된다.
++///    새 명령 · 정지 = 취소. 선로 파괴는 나중.
++/// 모두 틱 · 입력의 함수 (명령 · 목록 순서). 상태 = Smokes · 유닛 SmokeGrenades · WireCutTile · WireCutTicks · 수류탄 · 포탄의 연막 표시
++/// (CMB2 끝 WriteBreach, FormatVersion 51), 체크섬 HashBreach.
++/// </summary>
++public sealed record ThrowSmokeCommand(int Faction, int[] Units, Vector2 Target) : GameCommand(Faction);
++
++/// <summary>철조망 절단 명령 (N59): Target 둘레 breach.wireCutSearch 칸 안 철조망. 리플레이 v19.</summary>
++public sealed record CutWireCommand(int Faction, int[] Units, Vector2 Target) : GameCommand(Faction);
++
++/// <summary>연막 한 덩이 (원형, 크기 고정). EndTick 이 되면 사라진다.</summary>
++public sealed class SmokeCloud
++{
++    public int Owner;
++    public Vector2 Pos;
++    public float Radius;
++    public long StartTick, EndTick;
++}
++
++/// <summary>balance.json "breach" — 연막 · 철조망 절단 수치.</summary>
++public sealed class BreachDef
++{
++    /// <summary>연막 수류탄 연막 반경 (칸) · 지속 (초). 사거리 · 신관 · 흩어짐은 grenade 와 같다.</summary>
++    public float SmokeGrenadeRadius { get; set; } = 2.5f;
++    public float SmokeGrenadeSec { get; set; } = 30f;
++    /// <summary>연막탄 지속 (초). 반경은 무기마다 weapon.smokeRadius.</summary>
++    public float SmokeShellSec { get; set; } = 45f;
++    /// <summary>지점 포격 '연막' 종류 한 번에 쏘는 발수.</summary>
++    public int SmokeRounds { get; set; } = 3;
++    /// <summary>시선이 연막 속을 이 길이 (칸) 넘게 지나면 막힌다.</summary>
++    public float SmokeSeeDepth { get; set; } = 1.0f;
++    /// <summary>철조망 한 칸 절단 시간 (초) · 절단 중 칸 중심까지 최대 거리 (칸) · 명령 지점 둘레 철조망 찾기 반경 (칸).</summary>
++    public float WireCutSec { get; set; } = 4f;
++    public float WireCutReach { get; set; } = 2.0f;
++    public float WireCutSearch { get; set; } = 4f;
++}
++
++public sealed partial class Unit
++{
++    /// <summary>남은 연막 수류탄 (시작 = Def.SmokeGrenades, N65).</summary>
++    [SnapExt] public int SmokeGrenades { get; internal set; }
++    /// <summary>자르러 가는 · 자르는 철조망 칸 (y × 지도 폭 + x), -1 = 없음. 새 명령이면 해제 (ResetOrder).</summary>
++    [SnapExt] internal int WireCutTile = -1;
++    /// <summary>이번 칸 절단 진행 (틱).</summary>
++    [SnapExt] internal int WireCutTicks;
++    /// <summary>[표시] 철조망을 자르러 가는 중이거나 자르는 중.</summary>
++    public bool CuttingWire => WireCutTile >= 0;
++    /// <summary>[표시] 절단 진행 0..1.</summary>
++    public float WireCutProgress => WireCutTile >= 0 && Defs.Current.Breach.WireCutSec > 0 ? Math.Clamp(WireCutTicks * Config.SimDt / Defs.Current.Breach.WireCutSec, 0f, 1f) : 0f;
++}
++
++public sealed partial class GameMap
++{
++    /// <summary>철조망 칸을 흙으로 (통과 가능): 통행 정보가 바뀌므로 Version · ChangeLog (길찾기가 그 칸만 다시 읽음).</summary>
++    internal void OpenWire(int x, int y)
++    {
++        if (!InBounds(x, y) || Get(x, y) != TerrainType.Wire) return;
++        EditTerrain(x, y, TerrainType.Dirt);
++        Version++;
++        ChangeLog.Add((x, y, 1, 1));
++    }
++}
++
++public sealed partial class World
++{
++    /// <summary>떠 있는 연막 (생긴 순서). 저장 · 체크섬.</summary>
++    [SnapExt] public readonly List<SmokeCloud> Smokes = new();
++
++    // ---------------------------------------------------------------- 연막
++
++    void SpawnSmoke(int owner, Vector2 pos, float radius, float sec)
++    {
++        if (radius <= 0 || sec <= 0 || !float.IsFinite(pos.X) || !float.IsFinite(pos.Y)) return;
++        Smokes.Add(new SmokeCloud { Owner = owner, Pos = pos, Radius = radius, StartTick = Tick, EndTick = Tick + Math.Max(1, (int)MathF.Round(sec / Config.SimDt)) });
++        Stats.SmokesSpawned++;
++    }
++
++    /// <summary>다 탄 연막 지우기 (UpdateBlasts 앞).</summary>
++    void UpdateSmokes()
++    {
++        if (Smokes.Count == 0) return;
++        Smokes.RemoveAll(s => s.EndTick <= Tick);
++    }
++
++    /// <summary>선분 a → b 가 연막 속을 지나는 길이 합이 breach.smokeSeeDepth 를 넘는가 (시야 · 사선 차단). 연막이 없으면 즉시 false.</summary>
++    public bool SmokeBlocks(Vector2 a, Vector2 b)
++    {
++        if (Smokes.Count == 0) return false;
++        return SmokeBlocksAmong(Smokes, a.X, a.Y, b.X, b.Y, Defs.Breach.SmokeSeeDepth);
++    }
++
++    /// <summary>직선 (ax, ay) → (bx, by) 가 clouds 속을 지나는 길이 합 &gt; depth 인가. 스칼라 연산만 (결정적).</summary>
++    internal static bool SmokeBlocksAmong(List<SmokeCloud> clouds, float ax, float ay, float bx, float by, float depth)
++    {
++        float dx = bx - ax, dy = by - ay;
++        float len2 = dx * dx + dy * dy;
++        float len = MathF.Sqrt(len2);
++        float sum = 0;
++        for (int i = 0; i < clouds.Count; i++)
++        {
++            var s = clouds[i];
++            float fx = ax - s.Pos.X, fy = ay - s.Pos.Y;
++            float c = fx * fx + fy * fy - s.Radius * s.Radius;
++            if (len2 < 1e-8f) { if (c < 0 && depth <= 0) return true; continue; }
++            float bb = fx * dx + fy * dy;
++            float disc = bb * bb - len2 * c;
++            if (disc <= 0) continue;
++            float sq = MathF.Sqrt(disc);
++            float t0 = (-bb - sq) / len2, t1 = (-bb + sq) / len2;
++            if (t0 < 0) t0 = 0;
++            if (t1 > 1) t1 = 1;
++            if (t1 <= t0) continue;
++            sum += (t1 - t0) * len;
++            if (sum > depth) return true;
++        }
++        return false;
++    }
++
++    /// <summary>[안개] center 둘레 radius 시야와 겹치는 연막을 buf 에 모은다. 하나라도 있으면 true.</summary>
++    internal bool SmokesNear(Vector2 center, float radius, List<SmokeCloud> buf)
++    {
++        buf.Clear();
++        for (int i = 0; i < Smokes.Count; i++)
++        {
++            var s = Smokes[i];
++            float dx = s.Pos.X - center.X, dy = s.Pos.Y - center.Y, rr = radius + s.Radius + 3f;   // 지형 시야는 묶음 (2칸) 단위라 원보다 조금 넓게 찍힌다
++            if (dx * dx + dy * dy < rr * rr) buf.Add(s);
++        }
++        return buf.Count > 0;
++    }
++
++    // ---------------------------------------------------------------- 연막 수류탄 (N65)
++
++    void ThrowSmoke(Unit u, Vector2 at)
++    {
++        var g = Defs.Grenade;
++        u.SmokeGrenades--;
++        float d = Vector2.Distance(u.Pos, at);
++        float maxErr = g.Range > 0 ? g.Scatter * MathF.Min(1f, d / g.Range) : 0f;
++        float err = maxErr * MathF.Sqrt(Roll(u.Id, 0x5A01));
++        float ang = Roll(u.Id, 0x5A02) * DetMath.Tau;
++        Vector2 land = at + new Vector2(DetMath.Cos(ang) * err, DetMath.Sin(ang) * err);
++        Blasts.Add(new GrenadeBlast { ThrowerId = u.Id, Owner = u.Owner, Pos = land, ExplodeTick = Tick + Math.Max(1, (int)MathF.Round(g.Fuse / Config.SimDt)), Smoke = true });
++        FaceToward(u, at, 1f);
++    }
++
++    void ExecThrowSmoke(List<Unit> list, Vector2 target)
++    {
++        float range = Defs.Grenade.Range;
++        foreach (var u in list)
++        {
++            if (u.SmokeGrenades <= 0 || !u.Alive || u.Surrendered) continue;
++            if (Vector2.Distance(u.Pos, target) > range + 0.01f) continue;   // 사거리 밖은 던지지 않는다
++            ThrowSmoke(u, target);
++        }
++    }
++
++    /// <summary>연막 수류탄 투척 (플레이어 · 참호 돌격). 보유한 유닛만.</summary>
++    public void ThrowSmokeAt(int faction, IEnumerable<Unit> units, Vector2 target) =>
++        IssueUnits(faction, units.Where(u => u.SmokeGrenades > 0), ids => new ThrowSmokeCommand(faction, ids, target));
++
++    /// <summary>수류탄 폭발 처리에서: 연막 수류탄이면 연막을 피우고 true.</summary>
++    bool BlastSmoke(GrenadeBlast b)
++    {
++        if (!b.Smoke) return false;
++        var bd = Defs.Breach;
++        SpawnSmoke(b.Owner, b.Pos, bd.SmokeGrenadeRadius, bd.SmokeGrenadeSec);
++        return true;
++    }
++
++    /// <summary>포탄 착탄 처리에서: 연막탄이면 연막을 피우고 true.</summary>
++    bool ShellSmoke(ShellFlight s)
++    {
++        if (!s.Smoke) return false;
++        SpawnSmoke(s.Owner, s.Pos, s.Weapon.SmokeRadius, Defs.Breach.SmokeShellSec);
++        return true;
++    }
++
++    // ---------------------------------------------------------------- 철조망 절단 (N59)
++
++    /// <summary>철조망 절단 명령 (wireCutter 유닛만).</summary>
++    public void CutWire(int faction, IEnumerable<Unit> units, Vector2 target) =>
++        IssueUnits(faction, units.Where(u => u.Def.WireCutter), ids => new CutWireCommand(faction, ids, target));
++
++    /// <summary>지점 둘레 radius 칸 안 철조망 칸 (거리², 칸 번호 순). 철조망이 없으면 빈 목록.</summary>
++    public List<(float D2, int Tile)> WireTilesNear(Vector2 target, float radius)
++    {
++        var wireCand = new List<(float D2, int Tile)>();
++        int W = Map.Width;
++        int x0 = Math.Max(0, (int)MathF.Floor(target.X - radius)), x1 = Math.Min(W - 1, (int)MathF.Floor(target.X + radius));
++        int y0 = Math.Max(0, (int)MathF.Floor(target.Y - radius)), y1 = Math.Min(Map.Height - 1, (int)MathF.Floor(target.Y + radius));
++        float r2 = radius * radius;
++        for (int y = y0; y <= y1; y++)
++            for (int x = x0; x <= x1; x++)
++            {
++                if (Map.Get(x, y) != TerrainType.Wire) continue;
++                float dx = x + 0.5f - target.X, dy = y + 0.5f - target.Y, d2 = dx * dx + dy * dy;
++                if (d2 <= r2) wireCand.Add((d2, y * W + x));
++            }
++        wireCand.Sort((p, q) => p.D2 != q.D2 ? p.D2.CompareTo(q.D2) : p.Tile.CompareTo(q.Tile));
++        return wireCand;
++    }
++
++    /// <summary>철조망 칸 옆 설 자리: 상하좌우 → 대각 이웃 중 걸을 수 있는 칸, from 에 가장 가까운 칸 중심 (없으면 null).</summary>
++    Vector2? WireStandSpot(int tile, Vector2 from)
++    {
++        int W = Map.Width, tx = tile % W, ty = tile / W;
++        Vector2? best = null; float bd = float.MaxValue;
++        for (int pass = 0; pass < 2 && best == null; pass++)
++            for (int k = 0; k < 4; k++)
++            {
++                int dx = pass == 0 ? (k == 0 ? 1 : k == 1 ? -1 : 0) : (k < 2 ? 1 : -1);
++                int dy = pass == 0 ? (k == 2 ? 1 : k == 3 ? -1 : 0) : (k % 2 == 0 ? 1 : -1);
++                int x = tx + dx, y = ty + dy;
++                if (!Map.IsWalkable(x, y)) continue;
++                var c = new Vector2(x + 0.5f, y + 0.5f);
++                float d = Vector2.DistanceSquared(c, from);
++                if (d < bd) { bd = d; best = c; }
++            }
++        return best;
++    }
++
++    void ExecCutWire(List<Unit> list, Vector2 target)
++    {
++        var cutters = list.Where(u => u.Alive && u.Def.WireCutter && !u.Surrendered).ToList();
++        if (cutters.Count == 0) return;
++        var tiles = WireTilesNear(target, Defs.Breach.WireCutSearch).Select(t => t.Tile).ToList();
++        if (tiles.Count == 0) return;
++        for (int k = 0; k < cutters.Count; k++)
++        {
++            var u = cutters[k];
++            int tile = tiles[k % tiles.Count];   // 가까운 칸부터 한 사람씩 (칸보다 사람이 많으면 다시 처음부터)
++            if (WireStandSpot(tile, u.Pos) is not Vector2 spot) continue;
++            ResetOrder(u);
++            u.WireCutTile = tile;
++            u.WireCutTicks = 0;
++            u.Group = new MoveGroup(this, spot, 1);
++            u.Order = UnitOrder.Move;
++            u.CoverHold = true;   // 도착하면 사수 (자리를 지키며 자른다, CoverSeek.cs)
++            u.LeashOrigin = spot;
++            Acknowledge(u);
++        }
++    }
++
++    /// <summary>철조망 절단 한 틱 (UpdateUnitCore): 걸어가는 중이면 기다리고, 칸 옆에 섰으면 진행, 다 되면 칸을 연다. 멀어지면 · 칸이 이미 열렸으면 끝.</summary>
++    void UpdateWireCut(Unit u)
++    {
++        if (u.WireCutTile < 0) return;
++        int W = Map.Width, x = u.WireCutTile % W, y = u.WireCutTile / W;
++        if (!Map.InBounds(x, y) || Map.Get(x, y) != TerrainType.Wire) { u.WireCutTile = -1; u.WireCutTicks = 0; return; }
++        if (u.Group != null) return;   // 아직 가는 중
++        var bd = Defs.Breach;
++        float dx = x + 0.5f - u.Pos.X, dy = y + 0.5f - u.Pos.Y;
++        if (dx * dx + dy * dy > bd.WireCutReach * bd.WireCutReach) { u.WireCutTile = -1; u.WireCutTicks = 0; return; }   // 밀려났거나 못 닿음
++        if (++u.WireCutTicks < Math.Max(1, (int)MathF.Round(bd.WireCutSec / Config.SimDt))) return;
++        Map.OpenWire(x, y);
++        Fog.TerrainChanged(x, y);
++        Stats.WiresCut++;
++        u.WireCutTile = -1; u.WireCutTicks = 0;
++    }
++
++    // ---------------------------------------------------------------- 저장 (CMB2 끝, WriteCombat3 뒤) · 체크섬
++
++    void WriteBreach(SnapWriter w)
++    {
++        foreach (var u in Units) { w.I(u.SmokeGrenades); w.I(u.WireCutTile); w.I(u.WireCutTicks); }
++        w.I(Blasts.Count);
++        foreach (var b in Blasts) w.Bool(b.Smoke);
++        w.I(Shells.Count);
++        foreach (var s in Shells) w.Bool(s.Smoke);
++        w.I(Smokes.Count);
++        foreach (var s in Smokes) { w.I(s.Owner); w.F(s.Pos.X); w.F(s.Pos.Y); w.F(s.Radius); w.L(s.StartTick); w.L(s.EndTick); }
++    }
++
++    void ReadBreach(SnapReader r)
++    {
++        int n = Map.Width * Map.Height;
++        foreach (var u in Units)
++        {
++            u.SmokeGrenades = r.I(); u.WireCutTile = r.I(); u.WireCutTicks = r.I();
++            if (u.SmokeGrenades < 0 || u.SmokeGrenades > Math.Max(1, u.Def.SmokeGrenades)) throw new SnapshotException(string.Format(SnapMsg.Invalid, "smoke grenades"));
++            if (u.WireCutTile < -1 || u.WireCutTile >= n || u.WireCutTicks < 0) throw new SnapshotException(string.Format(SnapMsg.Invalid, "wire cut"));
++        }
++        if (r.Count() != Blasts.Count) throw new SnapshotException(string.Format(SnapMsg.Invalid, "smoke blasts"));
++        foreach (var b in Blasts) b.Smoke = r.Bool();
++        if (r.Count() != Shells.Count) throw new SnapshotException(string.Format(SnapMsg.Invalid, "smoke shells"));
++        foreach (var s in Shells) s.Smoke = r.Bool();
++        Smokes.Clear();
++        int m = r.Count(24);
++        for (int i = 0; i < m; i++)
++        {
++            var s = new SmokeCloud { Owner = r.I(), Pos = new Vector2(r.F(), r.F()), Radius = r.F(), StartTick = r.L(), EndTick = r.L() };
++            if (!float.IsFinite(s.Pos.X) || !float.IsFinite(s.Pos.Y) || !(s.Radius > 0) || s.EndTick < s.StartTick) throw new SnapshotException(string.Format(SnapMsg.Invalid, "smoke"));
++            Smokes.Add(s);
++        }
++    }
++
++    void HashBreach(ref Hasher h)
++    {
++        foreach (var u in Units) { h.Add(u.SmokeGrenades); h.Add(u.WireCutTile); h.Add(u.WireCutTicks); }
++        foreach (var b in Blasts) h.Add(b.Smoke ? 1 : 0);
++        foreach (var s in Shells) h.Add(s.Smoke ? 1 : 0);
++        h.Add(Smokes.Count);
++        foreach (var s in Smokes) { h.Add(s.Owner); h.Add(s.Pos.X); h.Add(s.Pos.Y); h.Add(s.Radius); h.Add(s.StartTick); h.Add(s.EndTick); }
++    }
++}
+diff --git a/src/Core/CavReact.cs b/src/Core/CavReact.cs
+index 9cc0abad..0ae05140 100644
+--- a/src/Core/CavReact.cs
++++ b/src/Core/CavReact.cs
+@@ -47,7 +47,7 @@ public sealed partial class World
+             float d = c.EdgeDistance(u.Pos) - u.Radius;
+             if (d > w.Range || d < w.MinRange || d >= bd) continue;
+             if (!Fog.CanSee(u.Owner, c)) continue;
+-            if (w.Los && !Map.HasFiringLine(u.Pos, c.Pos, u.Id, c.Id)) continue;
++            if (w.Los && (!Map.HasFiringLine(u.Pos, c.Pos, u.Id, c.Id) || SmokeBlocks(u.Pos, c.Pos))) continue;
+             (best, bd) = (c, d);
+         }
+         if (best == null) return;
+diff --git a/src/Core/Combat2.cs b/src/Core/Combat2.cs
+index 52187190..9e49f31c 100644
+--- a/src/Core/Combat2.cs
++++ b/src/Core/Combat2.cs
+@@ -110,7 +110,7 @@ public sealed partial class World
+ 
+     /// <summary>직사 무기의 사선 (weapon.los): 사격자 → 표적 직선이 막힌 칸(건물 · 지형 · 깊은 숲 · 평지에서 본 고지 너머)을 지나면 false (GameMap.HasFiringLine). 사격자 · 표적 자신의 건물 발자국은 막힌 것으로 치지 않는다. los 가 없는 무기는 항상 true.</summary>
+     public bool HasFiringLine(Entity shooter, Entity target, WeaponDef w) =>
+-        !w.Los || Map.HasFiringLine(shooter.Pos, target.Pos, shooter.Id, target.Id);
++        !w.Los || (Map.HasFiringLine(shooter.Pos, target.Pos, shooter.Id, target.Id) && !SmokeBlocks(shooter.Pos, target.Pos));   // 연막 (N59, Breach.cs)
+ 
+     /// <summary>엄폐 · 지형 보정: 표적의 엄폐 (숲 · 잔해 · 참호 지형 · 포탄 구덩이 · 가옥 옆 중 가장 좋은 값, Supply.cs) × 높이 (고지 → 평지 terrain.highToLowHit, 반대 lowToHighHit).</summary>
+     float TerrainAccuracy(Entity shooter, Entity target, bool props = true)
+diff --git a/src/Core/Combat3.cs b/src/Core/Combat3.cs
+index f9692cff..46553415 100644
+--- a/src/Core/Combat3.cs
++++ b/src/Core/Combat3.cs
+@@ -416,6 +416,7 @@ public sealed partial class World
+         w.I(Blasts.Count);
+         foreach (var b in Blasts) { w.I(b.ThrowerId); w.I(b.Owner); w.F(b.Pos.X); w.F(b.Pos.Y); w.L(b.ExplodeTick); }
+         WriteShells(w);   // 날아가는 포탄 (ShellFlight.cs)
++        WriteBreach(w);   // 연막 · 철조망 절단 (Breach.cs, FormatVersion 51)
+     }
+ 
+     void ReadCombat3(SnapReader r)
+@@ -477,6 +478,7 @@ public sealed partial class World
+         for (int i = 0; i < nb; i++)
+             Blasts.Add(new GrenadeBlast { ThrowerId = r.I(), Owner = r.I(), Pos = new Vector2(r.F(), r.F()), ExplodeTick = r.L() });
+         ReadShells(r);
++        ReadBreach(r);
+     }
+ 
+     void HashCombat3(ref Hasher h)
+@@ -510,5 +512,6 @@ public sealed partial class World
+         }
+         foreach (var b in Blasts) { h.Add(b.ThrowerId); h.Add(b.Pos.X); h.Add(b.Pos.Y); h.Add(b.ExplodeTick); }
+         HashShells(ref h);
++        HashBreach(ref h);
+     }
+ }
+diff --git a/src/Core/Combat4.cs b/src/Core/Combat4.cs
+index b99f8ea3..f015552f 100644
+--- a/src/Core/Combat4.cs
++++ b/src/Core/Combat4.cs
+@@ -37,6 +37,8 @@ public sealed class GrenadeBlast
+     public int ThrowerId, Owner;
+     public Vector2 Pos;
+     public long ExplodeTick;
++    /// <summary>연막 수류탄 (N65): 터지면 피해 대신 연막 (Breach.cs).</summary>
++    public bool Smoke;
+ }
+ 
+ public sealed partial class World
+@@ -55,7 +57,7 @@ public sealed partial class World
+         {
+             var s = spotters[i];
+             if (!s.Alive || (s.Owner != faction && !Allied(faction, s.Owner))) continue;
+-            if (t.EdgeDistance(s.Pos) <= SightOf(s)) return true;
++            if (t.EdgeDistance(s.Pos) <= SightOf(s) && !SmokeBlocks(s.Pos, t.Pos)) return true;   // 연막 너머는 관측 못 함 (N59)
+         }
+         return false;
+     }
+@@ -145,17 +147,19 @@ public sealed partial class World
+     void RegenGrenade(Unit u, float dt)
+     {
+         var g = Defs.Grenade;
+-        if (u.Grenades >= u.Def.Grenades || g.RegenSeconds <= 0) return;
++        bool needSmoke = u.SmokeGrenades < u.Def.SmokeGrenades;   // N65: 수류탄이 다 찬 뒤 연막 수류탄 (같은 시계)
++        if ((u.Grenades >= u.Def.Grenades && !needSmoke) || g.RegenSeconds <= 0) return;
+         if (Tick - LastCombatTick(u) < (long)(Defs.Supply.RegenDelay / Config.SimDt)) return;
+         float mul = AmmoRegenMulAt(u.Owner, u.Pos);   // 수류탄 보충은 아군 도시 · 보급 마차 근처에서만 (탄약과 같은 배수)
+         if (mul <= 1f) return;
+         u.GrenadeRegen += dt * mul;
+-        if (u.GrenadeRegen >= g.RegenSeconds) { u.Grenades++; u.GrenadeRegen = 0; }
++        if (u.GrenadeRegen >= g.RegenSeconds) { if (u.Grenades < u.Def.Grenades) u.Grenades++; else u.SmokeGrenades++; u.GrenadeRegen = 0; }
+     }
+ 
+     /// <summary>신관이 다 탄 수류탄 폭발: 반경 안 적대 유닛에 피해 (중심 damage → 가장자리 edgeDamage, 엄폐 무시), 전차는 묶음 고정 피해, 제압 +suppress (엄폐 무시).</summary>
+     void UpdateBlasts()
+     {
++        UpdateSmokes();   // 다 탄 연막 지우기 (Breach.cs)
+         if (Blasts.Count == 0) return;
+         var g = Defs.Grenade;
+         for (int bi = 0; bi < Blasts.Count;)
+@@ -163,6 +167,7 @@ public sealed partial class World
+             var b = Blasts[bi];
+             if (b.ExplodeTick > Tick) { bi++; continue; }
+             Blasts.RemoveAt(bi);
++            if (BlastSmoke(b)) continue;   // 연막 수류탄 (N65, Breach.cs)
+             var thrower = Find(b.ThrowerId);
+             Impacts.Add((b.Pos, b.Pos, b.Owner, Tick, g.Radius, b.ThrowerId, "grenade"));
+             UnitsInRadius(b.Pos, g.Radius + Defs.MaxUnitRadius, grenBuffer);
+diff --git a/src/Core/Commands.cs b/src/Core/Commands.cs
+index 76e6499f..08bc94b8 100644
+--- a/src/Core/Commands.cs
++++ b/src/Core/Commands.cs
+@@ -27,6 +27,8 @@ public static class Commands
+         new("chargeonly", S.CmdChargeOnly, S.TipChargeOnly, 'V', TargetMode.None, 1, 2, d => d.Mounted),   // 기병 돌격만 토글
+         new("mount", S.CmdMount, S.TipMount, 'D', TargetMode.None, 0, 2, d => d.Mounted && !d.IsOfficer),   // 기병 하마/승마 토글 (N61)
+         new("scoutauto", S.CmdScoutAuto, S.TipScoutAuto, 'E', TargetMode.None, 2, 1, d => d.Scout),   // 정찰병 자율 행동 토글 (Scouts.cs)
++        new("smokegrenade", S.CmdSmokeGrenade, S.TipSmokeGrenade, 'Y', TargetMode.Point, 0, 2, d => d.SmokeGrenades > 0),   // 연막 수류탄 (N65, Breach.cs)
++        new("cutwire", S.CmdCutWire, S.TipCutWire, 'U', TargetMode.Point, 1, 2, d => d.WireCutter),   // 철조망 절단 (N59, Breach.cs)
+         new("charge", S.CmdCharge, S.TipCharge, 'C', TargetMode.PointOrEntity, 2, 2, d => d.Melee != null),   // 착검 돌격 (ROADMAP §2-4b)
+     };
+ 
+diff --git a/src/Core/Commands/GameCommand.cs b/src/Core/Commands/GameCommand.cs
+index 10b50a2b..7e6bb922 100644
+--- a/src/Core/Commands/GameCommand.cs
++++ b/src/Core/Commands/GameCommand.cs
+@@ -22,6 +22,8 @@ namespace KoreanDivision.Core;
+ [JsonDerivedType(typeof(SetCombatSettingCommand), "combatset")]
+ [JsonDerivedType(typeof(ChargeCommand), "charge")]
+ [JsonDerivedType(typeof(ThrowGrenadeCommand), "grenade")]
++[JsonDerivedType(typeof(ThrowSmokeCommand), "smokegrenade")]   // N65 (Breach.cs, 리플레이 v19)
++[JsonDerivedType(typeof(CutWireCommand), "cutwire")]   // N59 (Breach.cs, 리플레이 v19)
+ [JsonDerivedType(typeof(ChargeOnlyCommand), "chargeonly")]
+ [JsonDerivedType(typeof(MountCommand), "mount")]
+ [JsonDerivedType(typeof(FormCompanyCommand), "company")]
+diff --git a/src/Core/Commands/Replay.cs b/src/Core/Commands/Replay.cs
+index cddac855..51b01d1d 100644
+--- a/src/Core/Commands/Replay.cs
++++ b/src/Core/Commands/Replay.cs
+@@ -19,7 +19,7 @@ public readonly record struct ChecksumRecord(long Tick, ulong Checksum);
+ /// </summary>
+ public sealed class ReplayFile
+ {
+-    public const int FormatVersion = 18;   // 18: arty3 최후 저지선 명령 (finalline) · 17: 참호 돌격 명령 (trenchassault, N32) · 16: 집결 지점 · 포격 종류 명령 (rally · groundfireex · retreat UseRally, N79a) · 15: 중대 대형 유지 명령 (keepform, F1 2차) · 14: 기병 하마/승마 명령 (mount, N61) · 13: 중대 자세 명령 (posture, tweak1) · 12: 명령 선택 인원 Sel (N37, 플레이어 명령 지연 곡선) · 11: 진지 점유 명령 (occupy, engage) · 10: 대열 정비 명령 (closeranks, gapfill) · 9: 돌격 사격 켜기 명령 (marchfire) · 8: 참호 파기 · 참호선 명령 삭제 (dig · digline — 건설 제거 2026-10-19) · 7: 미션 (머리말 Mission = 미션 JSON + 배치 단계 결과, MissionEndCommand) · 6: 연대 → 대대 이름 변경 (battalion · batnumber · batform 명령) · 5: 외교 명령 삭제 (정적 팀) · 4: 교전 4차 (수류탄 · 돌격만 명령, 유닛 id 이름 규칙 변경) · 3: 방향 변경 (생산 · 건설 · 자원 명령 삭제, 참호 파기 추가)
++    public const int FormatVersion = 19;   // 19: 연막 수류탄 · 철조망 절단 명령 (smokegrenade · cutwire) + 지점 포격 연막 종류 실행 (N59 · N65, Breach.cs) · 18: arty3 최후 저지선 명령 (finalline) · 17: 참호 돌격 명령 (trenchassault, N32) · 16: 집결 지점 · 포격 종류 명령 (rally · groundfireex · retreat UseRally, N79a) · 15: 중대 대형 유지 명령 (keepform, F1 2차) · 14: 기병 하마/승마 명령 (mount, N61) · 13: 중대 자세 명령 (posture, tweak1) · 12: 명령 선택 인원 Sel (N37, 플레이어 명령 지연 곡선) · 11: 진지 점유 명령 (occupy, engage) · 10: 대열 정비 명령 (closeranks, gapfill) · 9: 돌격 사격 켜기 명령 (marchfire) · 8: 참호 파기 · 참호선 명령 삭제 (dig · digline — 건설 제거 2026-10-19) · 7: 미션 (머리말 Mission = 미션 JSON + 배치 단계 결과, MissionEndCommand) · 6: 연대 → 대대 이름 변경 (battalion · batnumber · batform 명령) · 5: 외교 명령 삭제 (정적 팀) · 4: 교전 4차 (수류탄 · 돌격만 명령, 유닛 id 이름 규칙 변경) · 3: 방향 변경 (생산 · 건설 · 자원 명령 삭제, 참호 파기 추가)
+     public const int ChecksumInterval = 600;   // 10초마다 체크섬 기록
+ 
+     public int Format { get; set; } = FormatVersion;
+diff --git a/src/Core/Defs.cs b/src/Core/Defs.cs
+index 5724db02..0a0b54dd 100644
+--- a/src/Core/Defs.cs
++++ b/src/Core/Defs.cs
+@@ -94,6 +94,8 @@ public sealed class WeaponDef
+     public float FlightMax { get; set; }
+     /// <summary>방열 사계 (도, 전체 폭): 방열한 대포는 방열 때 정한 중심 ± 절반 안만 쏜다. 밖이면 방열한 채 포가 회전 (옮길 각 < combat.traverseRedeployDeg) 또는 철수 → 회전 → 재방열 (Combat2.cs CanTraverseTo · ShiftTraverse). 0 = 제한 없음.</summary>
+     public float TraverseArc { get; set; }
++    /// <summary>연막탄 반경 (칸, 참호 돌파 묶음 N59). 0 = 연막탄 없음. 지점 포격 '연막' 종류로만 쏜다 (Breach.cs).</summary>
++    public float SmokeRadius { get; set; }
+     // ---- arty3 포병 · 중화기 묶음 (사용자 2026-10-21, ROADMAP_LONG 3 · 9 · 14)
+     /// <summary>직사 + 간접 (야전포): 사선이 막혔거나 직사 표적이 없을 때, 아군 관측 유닛 (장교 · 정찰병) 이 보는 사거리 안 표적에 간접 사격 (퍼짐 = ScatterAt, 사선 무시).</summary>
+     public bool SpotterIndirect { get; set; }
+@@ -171,6 +173,10 @@ public sealed class UnitDef
+     // ---- 교전 4차 (ROADMAP 기병 · 수류탄 · 행진 사격 · 곡사포 관측)
+     /// <summary>수류탄 보유 수 (시작 · 최대). 0 = 없음. grenade 규칙은 balance.json "grenade".</summary>
+     public int Grenades { get; set; }
++    /// <summary>연막 수류탄 보유 수 (N65, 시작 · 최대). 0 = 없음. 규칙은 balance.json "breach" (Breach.cs).</summary>
++    public int SmokeGrenades { get; set; }
++    /// <summary>철조망 절단 가능 (N59 — 돌격보병이 공병 역할): 철조망 칸 옆에서 breach.wireCutSec 초 → 통과 가능 (Breach.cs).</summary>
++    public bool WireCutter { get; set; }
+     /// <summary>한국군 전용 유닛 (N21): 미션 로드 시 en = "korean" 이 아닌 세력의 편성에 있으면 오류 (MissionDef.Validate).</summary>
+     public bool KoreaOnly { get; set; }
+     /// <summary>[N26] 세력 제한 목록 (map factions[].en, 대소문자 무시). 있으면 이 세력만 편성 가능 (koreaOnly 의 일반화: koreaOnly = ["korean"]). 예: 마적 유닛 ["bandit"].</summary>
+@@ -776,6 +782,8 @@ public sealed class GrenadeDef
+ public sealed class Defs
+ {
+     public GrenadeDef Grenade { get; set; } = new();
++    /// <summary>참호 돌파 묶음 (balance.json "breach", Breach.cs): 연막 · 철조망 절단.</summary>
++    public BreachDef Breach { get; set; } = new();
+     public StartDef Start { get; set; } = new();
+     public SupplyRulesDef Supply { get; set; } = new();
+     public TerrainRulesDef Terrain { get; set; } = new();
+diff --git a/src/Core/FogOfWar.cs b/src/Core/FogOfWar.cs
+index 38a74159..cd3cf8c2 100644
+--- a/src/Core/FogOfWar.cs
++++ b/src/Core/FogOfWar.cs
+@@ -100,7 +100,7 @@ public sealed partial class FogOfWar
+         {
+             if (!due[f]) continue;
+             stampEpoch = (stampEpoch + 1) & 0xFFFFFF;
+-            if (stampEpoch == 0) { stampEpoch = 1; Array.Clear(stampMark); }
++            if (stampEpoch == 0) { stampEpoch = 1; Array.Clear(stampMark); Array.Clear(smokeMark); }
+             var g = own[f]!;
+             Decay(g);
+             // 시야 2단계 (v0.4 §3): 평소 sightNear, 경계 상태(World.IsAlerted) 면 sightFar, × 역할 · 고지 (World.SightOf)
+@@ -195,6 +195,7 @@ public sealed partial class FogOfWar
+         int cx = (int)MathF.Floor(center.X), cy = (int)MathF.Floor(center.Y);
+         bool inMap = (uint)cx < (uint)width && (uint)cy < (uint)height;
+         var tv = Vision;
++        if (inMap && world.Smokes.Count > 0 && world.SmokesNear(center, radius, smokeNear)) { StampSmoky(grid, cx, cy, radius, tv); return; }   // 연막 (N59)
+         if (inMap)
+         {
+             int cell = tv != null ? (cy / tv.Bs) * tv.Bw + cx / tv.Bs : cy * width + cx;
+@@ -222,6 +223,35 @@ public sealed partial class FogOfWar
+         }
+     }
+ 
++    // 연막 (N59, Breach.cs): 시야 원이 연막과 겹치는 관측자는 칸마다 (관측자 칸 중심 → 칸 중심) 연막 차단을 따져 찍는다.
++    // 같은 갱신 안 같은 칸 · 같거나 작은 반경 관측자는 결과가 부분집합 → 건너뛴다. 작업 버퍼 · 표시만 (저장 안 함).
++    readonly List<SmokeCloud> smokeNear = new();
++    uint[] smokeMark = Array.Empty<uint>();
++
++    void StampSmoky(byte[] grid, int cx, int cy, int radius, TerrainVision? tv)
++    {
++        if (smokeMark.Length != width * height) smokeMark = new uint[width * height];
++        if (radius < 126)
++        {
++            uint r1 = (uint)radius + 1;
++            ref uint m = ref smokeMark[cy * width + cx];
++            if (m >> 8 == stampEpoch && ((m >> 1) & 127) >= r1) return;
++            m = (stampEpoch << 8) | (r1 << 1);
++        }
++        var near = smokeNear;
++        float ox = cx + 0.5f, oy = cy + 0.5f, depth = world.Defs.Breach.SmokeSeeDepth;
++        bool Ok(int x, int y) => !World.SmokeBlocksAmong(near, ox, oy, x + 0.5f, y + 0.5f, depth);
++        if (tv != null) { tv.StampWhere(grid, cx, cy, radius, Ok); return; }
++        int[] half = Circle(radius);
++        int y0 = Math.Max(0, cy - radius), y1 = Math.Min(height - 1, cy + radius);
++        for (int y = y0; y <= y1; y++)
++        {
++            int hw = half[y - cy + radius];
++            int x0 = Math.Max(0, cx - hw), x1 = Math.Min(width - 1, cx + hw);
++            for (int x = x0; x <= x1; x++) if (grid[y * width + x] != 2 && Ok(x, y)) grid[y * width + x] = 2;
++        }
++    }
++
+     /// <summary>반경 r 원의 dy 별 반폭. 타일 중심 기준이라 0.5 를 더해 모서리가 덜 각지게.</summary>
+     int[] Circle(int r)
+     {
+diff --git a/src/Core/FogVision.cs b/src/Core/FogVision.cs
+index ef650bff..9b42a6e8 100644
+--- a/src/Core/FogVision.cs
++++ b/src/Core/FogVision.cs
+@@ -76,7 +76,10 @@ internal sealed class TerrainVision
+     public int Memoized => memo.Count;
+ 
+     /// <summary>타일 pos 에 선 관측자 (반경 r 타일) 의 가시 구간을 grid 에 2 로 찍는다.</summary>
+-    public void Stamp(byte[] grid, int tx, int ty, int r)
++    public void Stamp(byte[] grid, int tx, int ty, int r) => StampWhere(grid, tx, ty, r, null);
++
++    /// <summary>Stamp 와 같되 ok(x, y) 가 false 인 칸은 찍지 않는다 (연막 차단, N59 — ok 가 null 이면 Stamp).</summary>
++    public void StampWhere(byte[] grid, int tx, int ty, int r, Func<int, int, bool>? ok)
+     {
+         int bx = tx / Bs, by = ty / Bs;
+         if ((uint)bx >= (uint)Bw || (uint)by >= (uint)Bh) return;
+@@ -98,7 +101,11 @@ internal sealed class TerrainVision
+             if (x0 < 0) x0 = 0;
+             if (x1 < x0) continue;
+             int y0 = rby * Bs, y1 = Math.Min(H - 1, y0 + Bs - 1);
+-            for (int y = Math.Max(0, y0); y <= y1; y++) Array.Fill(grid, (byte)2, y * W + x0, x1 - x0 + 1);
++            for (int y = Math.Max(0, y0); y <= y1; y++)
++            {
++                if (ok == null) { Array.Fill(grid, (byte)2, y * W + x0, x1 - x0 + 1); continue; }
++                for (int x = x0; x <= x1; x++) if (grid[y * W + x] != 2 && ok(x, y)) grid[y * W + x] = 2;
++            }
+         }
+     }
+ 
+diff --git a/src/Core/GroundFire.cs b/src/Core/GroundFire.cs
+index 9b899fdb..4e0afb19 100644
+--- a/src/Core/GroundFire.cs
++++ b/src/Core/GroundFire.cs
+@@ -13,7 +13,7 @@ namespace KoreanDivision.Core;
+ /// <summary>
+ /// 포격 종류 (N79a, 사용자 승인 2026-10-20): Sustained = 지속 사격 (취소 · 탄약 소진까지, 기존 지점 포격), Prep = 준비 사격 (combat.prepRounds 발을 한 지점에 쏘고 끝),
+ /// Barrage = 이동탄막 (착탄선이 combat.barrageStepSec 초마다 barrageStepTiles 칸씩 Dir 방향으로 전진, 사거리 · 지도 끝 · barrageMaxTiles 를 넘으면 끝),
+-/// Smoke = 연막 (아직 없음 — 명령 종류만 있고 실행되지 않는다. 참호 돌파 묶음에서 구현). 탄약 한도는 모든 종류에 적용.
++/// Smoke = 연막 (N59, 참호 돌파 묶음): weapon.smokeRadius 가 있는 포만, breach.smokeRounds 발 연막탄을 쏘고 끝 (착탄 = 연막, Breach.cs). 탄약 한도는 모든 종류에 적용.
+ /// </summary>
+ public enum GroundFireKind : byte { Sustained = 0, Prep = 1, Barrage = 2, Smoke = 3 }
+ 
+@@ -51,7 +51,8 @@ public sealed partial class World
+     /// <summary>지점 포격 명령 (플레이어 전용 — AI 는 부르지 않는다). 곡사포 · 방열 직사포만 골라 보낸다.</summary>
+     public void GroundFire(int faction, IEnumerable<Unit> units, Vector2 point, GroundFireKind kind = GroundFireKind.Sustained, Vector2 dir = default)
+     {
+-        if (kind == GroundFireKind.Smoke || !Enum.IsDefined(typeof(GroundFireKind), kind)) return;   // 연막탄 없음 (N79a — 참호 돌파 묶음에서)
++        if (!Enum.IsDefined(typeof(GroundFireKind), kind)) return;
++        if (kind == GroundFireKind.Smoke) units = units.Where(CanSmoke);   // 연막탄이 있는 포만 (N59)
+         if (kind == GroundFireKind.Sustained) IssueUnits(faction, units.Where(CanGroundFire), ids => new GroundFireCommand(faction, ids, point));
+         else IssueUnits(faction, units.Where(CanGroundFire), ids => new GroundFireExCommand(faction, ids, point, kind, dir));
+     }
+@@ -68,15 +69,16 @@ public sealed partial class World
+ 
+     void ExecGroundFire(int faction, List<Unit> list, Vector2 point, GroundFireKind kind, Vector2 dir)
+     {
+-        if (kind == GroundFireKind.Smoke || !Enum.IsDefined(typeof(GroundFireKind), kind)) return;
++        if (!Enum.IsDefined(typeof(GroundFireKind), kind)) return;
+         foreach (var u in list)
+         {
+-            if (!CanGroundFireAt(u, point)) continue;
++            if (!CanGroundFireAt(u, point) || (kind == GroundFireKind.Smoke && !CanSmoke(u))) continue;
+             ResetOrder(u);
+             u.Order = UnitOrder.GroundFire;
+             u.GroundPoint = point;
+             u.GroundKind = kind;
+             if (kind == GroundFireKind.Prep) u.GroundRounds = Math.Max(1, Defs.CombatRules.PrepRounds);
++            if (kind == GroundFireKind.Smoke) u.GroundRounds = Math.Max(1, Defs.Breach.SmokeRounds);
+             if (kind == GroundFireKind.Barrage)
+             {
+                 Vector2 d = float.IsFinite(dir.X) && float.IsFinite(dir.Y) && dir.LengthSquared() > 1e-6f ? dir : point - u.Pos;
+@@ -123,7 +125,7 @@ public sealed partial class World
+             if (!ConsumeAmmo(u)) { ResetOrder(u); return; }
+             u.Cooldown = NextCooldown(u, w) * FireIntervalMul(u);
+             FireAtGround(u, p, w, dist);
+-            if (u.GroundKind == GroundFireKind.Prep && --u.GroundRounds <= 0) ResetOrder(u);   // 준비 사격: 정해진 발수를 쏘면 끝
++            if (u.GroundKind is GroundFireKind.Prep or GroundFireKind.Smoke && --u.GroundRounds <= 0) ResetOrder(u);   // 준비 사격 · 연막: 정해진 발수를 쏘면 끝
+         }
+     }
+ 
+@@ -138,6 +140,9 @@ public sealed partial class World
+         float err = maxErr * MathF.Sqrt(Roll(u.Id, 0x6701));
+         float ang = Roll(u.Id, 0x6702) * DetMath.Tau;
+         Vector2 impact = p + new Vector2(DetMath.Cos(ang) * err, DetMath.Sin(ang) * err);
+-        LaunchShell(u, u.Pos, impact, 0, w);
++        LaunchShell(u, u.Pos, impact, 0, w, u.GroundKind == GroundFireKind.Smoke);   // 연막탄 (N59)
+     }
++
++    /// <summary>연막탄을 쏠 수 있는 포인가 (weapon.smokeRadius &gt; 0, N59).</summary>
++    public static bool CanSmoke(Unit u) => CanGroundFire(u) && u.Weapon!.SmokeRadius > 0;
+ }
+diff --git a/src/Core/MoveStats.cs b/src/Core/MoveStats.cs
+index 7cdfbf6b..bbdb3145 100644
+--- a/src/Core/MoveStats.cs
++++ b/src/Core/MoveStats.cs
+@@ -30,6 +30,7 @@ public sealed class MoveStats
+     public long AssaultSignal, AssaultOverwatch, AssaultFallback, AssaultBlocked;   // 결정 4: 돌격 허가 이유 (TacticDrill.cs AssaultClearance — 엔진 기동조 + 전술 AI 중대 돌격)
+     public long MarchChargeGated, MarchChargeBlocked;   // N47: 행진 사격 → 돌격 전환 허가 · 막힘
+     public long Dismounts, Mounts;   // N61: 하마 · 승마 전환 시작 수 (Dismount.cs)
++    public long WiresCut, SmokesSpawned;   // N59: 자른 철조망 칸 · 피운 연막 수 (Breach.cs)
+     public long BayonetFixes, BladeDraws;   // N57: 착검 · 칼 뽑기 멈춤 시작 수 (Bayonet.cs)
+     public long HeavyHeld;   // 중화기가 보병 앞선을 넘으려다 기다린 유닛 · 틱 (HeavyPacing.cs)
+     public long OfficerHeld; // N12: 장교가 중대 보병 앞선을 넘으려다 기다린 틱 (HeavyPacing.cs PaceOfficer)
+diff --git a/src/Core/ShellFlight.cs b/src/Core/ShellFlight.cs
+index 7849e1f7..2917b9ea 100644
+--- a/src/Core/ShellFlight.cs
++++ b/src/Core/ShellFlight.cs
+@@ -14,6 +14,8 @@ public sealed class ShellFlight
+     public WeaponDef Weapon = null!;
+     public Vector2 From, Pos;
+     public long FireTick, ImpactTick;
++    /// <summary>연막탄 (N59): 착탄하면 피해 대신 연막 (Breach.cs).</summary>
++    public bool Smoke;
+ }
+ 
+ public sealed partial class World
+@@ -32,12 +34,13 @@ public sealed partial class World
+     }
+ 
+     /// <summary>포 발사: 포구 섬광 · 발사음 기록 (Shots), 비행 시간이 있으면 포탄을 띄우고 아니면 즉시 폭발.</summary>
+-    void LaunchShell(Entity shooter, Vector2 from, Vector2 impact, int targetId, WeaponDef w)
++    void LaunchShell(Entity shooter, Vector2 from, Vector2 impact, int targetId, WeaponDef w, bool smoke = false)
+     {
+         Shots.Add((from, impact, shooter.Owner, Tick, true, shooter.Id));
+         int ticks = FlightTicks(w, Vector2.Distance(from, impact));
+-        if (ticks <= 0) { Explode(shooter.Id, shooter.Owner, shooter, from, impact, targetId, w); return; }
+-        Shells.Add(new ShellFlight { ShooterId = shooter.Id, Owner = shooter.Owner, TargetId = targetId, Weapon = w, From = from, Pos = impact, FireTick = Tick, ImpactTick = Tick + ticks });
++        var shell = new ShellFlight { ShooterId = shooter.Id, Owner = shooter.Owner, TargetId = targetId, Weapon = w, From = from, Pos = impact, FireTick = Tick, ImpactTick = Tick + ticks, Smoke = smoke };
++        if (ticks <= 0) { if (!ShellSmoke(shell)) Explode(shooter.Id, shooter.Owner, shooter, from, impact, targetId, w); return; }
++        Shells.Add(shell);
+     }
+ 
+     /// <summary>착탄 틱이 된 포탄 폭발 (UpdateBlasts 옆, 유닛 이동 뒤). 사격자가 죽었어도 폭발한다 (피해 출처 없음 → 반격 · 사살 수 없음).</summary>
+@@ -49,6 +52,7 @@ public sealed partial class World
+             var s = Shells[i];
+             if (s.ImpactTick > Tick) { i++; continue; }
+             Shells.RemoveAt(i);
++            if (ShellSmoke(s)) continue;   // 연막탄 (N59, Breach.cs)
+             var shooter = Find(s.ShooterId);
+             if (shooter != null && !shooter.Alive) shooter = null;
+             Explode(s.ShooterId, s.Owner, shooter, s.From, s.Pos, s.TargetId, s.Weapon);
+diff --git a/src/Core/Snapshot/Snapshot.cs b/src/Core/Snapshot/Snapshot.cs
+index facab4b4..3ae4384e 100644
+--- a/src/Core/Snapshot/Snapshot.cs
++++ b/src/Core/Snapshot/Snapshot.cs
+@@ -80,7 +80,7 @@ public sealed class LoadedSnapshot
+ public static class Snapshot
+ {
+     /// <summary>파일 구조가 바뀌면 올린다 (옛 저장은 불러올 수 없다 — 명확한 메시지와 함께 거부).</summary>
+-    public const int FormatVersion = 50;   // 50: arty3 곡사포 조정 사격 (유닛마다 AdjustShots · AdjustAim) + 중기관총 최후 저지선 (FireMode.FinalLine · FinalLinePoint) — ORG_ 사격 통제 뒤 유닛 목록 (FireControl.cs) · 49: assaultinf 돌격 접근 약진 (유닛마다 HopUntil/HopTo, ChargeHop.cs) · 48: pronemove 엎드림 이동 (유닛마다 ProneHoldSince/StandUntil/ForceCross) · 47: N68 기수 쓰러짐 Unit.BearerFellUntil (CMB2 Prone/Broken 뒤, units) · 46: 전술 AI 3B (AI 블랙보드 TacGroup RotateUntil · RotateOut, TacBattalion RotateTick · CalmSince · Plug*, TacFaction 3B 누계, 프로필 3B 키, ai3b) · 45: N32 참호 돌격 (ORG_ 끝 중대마다 TA 단계 · 목표 · 시각, TrenchAssault.cs) · 44: N79a 집결 지점 (ORG_ 끝 중대마다 HasRally · RallyPoint) + 포격 종류 (유닛마다 GroundKind · GroundRounds · GroundDir · GroundStart, Rally.cs · GroundFire.cs) · 43: N79b 항복 (CMB2 유닛마다 Surrendered · SuppHighTicks, Surrender.cs) · 42: F6 엄폐물 소품 (지도 PropSeeds + ORG_ 끝 소품 hp · 변종, Props.cs) · 41: 제압 재설계 2 엎드림 · 붕괴 (CMB2 유닛마다 Prone · BrokenUntil · BrokenAt · BreakTo, supp) · 40: F1 2차 중대 대형 유지 (ORG_ 접적 구역 중대마다 KeepFormation, ContactF2.cs) · 39: N73 사격 통제 (ORG_ 끝 유닛마다 FireMode, FireControl.cs) · 38: 기병 동시 근접 제한 (CMB2 유닛마다 MeleeVictims · MeleeLastId, N61) + 기병 하마 사격 (Dismounted · MountLeft · MountLock, N61) + F1 접적 · 구역 · 사격 위치 (ORG_ 끝, Contact.cs) · 36: 착검 (CMB2 유닛마다 BayonetFixed · FixLeft, N57 charge) · 35: 후퇴 뒤 재정비 (전술 AI 블랙보드 TacGroup RegroupUntil · RegroupCheck · RegroupAlive, pursuit2) · 34: 중대 자세 (ORG_ 끝 중대마다 Posture) + 정찰병 노출 기억 (ORG_ 정찰병마다 ScoutExposed · ScoutThreat · ScoutExposedTick, tweak1) · 33: 도하 · 역습 AI 상태 (전술 AI 스냅샷 — TacGroup CrossStage · CrossRegiment · CrossLane · CrossPoint · CounterAssaultTick, TacRegiment Cross* · CounterStage, TacFaction 누계; crossing) · 32: 고정 (엎드림 — CMB2 유닛마다 Pinned, 제압 재설계 N25) + 전술 AI 후퇴 원인 · 제압 후퇴 수 (AI 블랙보드) (supp N39) · 31: 전술 AI 3단계 A — 기동 계획 · 제대 · 철수 · 미션 철수 문턱 (AI 블랙보드 TacRegiment · TacGroup · TacDirective · TacFaction, 프로필 strategy 키, s3a) · 30: 엄폐 찾기 · 진지 점유 (SUPL 참호 구역 유닛마다 CoverHold, engage) · 29: 후퇴 중 (CMB2 유닛마다 Retreating, pursuit) + 전술 AI 추격 · 기병 상태 (AI 블랙보드) · 28: 대열 정비 2 (ORG_ 끝 중대마다 깃발 Close 표시, gapfill2) · 27: 대열 정비 (ORG_ 끝 — 중대마다 CloseAlarm · CloseAt · CloseUntil, gapfill) · 26: 전술 틀 2단계 (ORG_ 전술 틀 구역 중대마다 ActiveTactic + 행동 상태 DrillState, N4) · 25: 기병 돌격 쿨다운 (CMB2 유닛마다 ChargeCdLeft, 돌격 충격 제압 burst) · 24: 경기관총 점사 (CMB2 유닛마다 BurstLeft) · 23: 장교 직책 계급 · 임시 진급 · 경험치 (CMB2 유닛마다 OfficerBase · TempRank · OfficerXp) + 지휘관 · 인계 (ORG_ 끝 — 대대 · 중대 Commander · HandoverUntil) · 22: 전투 대형 · 전술 틀 (ORG_ 끝 — 중대 Tactic · 구성원 Role · 분대 Form) · 21: 플레이어 지점 포격 (UnitOrder.GroundFire, CMB2 유닛마다 GroundPoint) · 20: 중대 돌격 사격 허용 MarchFireOn (ORG_ 중대 MarchUntil 뒤) · 19: 충돌 · 대형 재설계 (ORG_ 깃발 속도 배수 SpeedMul, 중대 · 분대 행진 사격 지휘 MarchUntil) · 18: 건설 제거 (SUPL 의 개인 참호 · 참호선 작업 상태 삭제) + 참호 자동 점유 (SUPL 끝: 유닛별 참호 자리 · 사수 · 무시 묶음) · 17: 정찰병 (ORG_ 끝 — 정찰조 · 자율 상태, Unit.ScoutAuto 등) · 16: 날아가는 포탄 (CMB2 끝, ShellFlight) · 15: 자주포 · 견인포 · 중형 전차 · 광산 · 유전 정의 삭제 (옛 저장 호환 안 됨) · 14: 미션 (MISN 구역 — 미션 정의 JSON · 목표 · 사건 · 증원 · 배치, WTHR 뒤) · 13: 참호선 (작업 · 칸 진행량 · 유닛 작업, SUPL 끝) + 포탄 구덩이 지형 · 12: 날씨 · 시간대 (WTHR, ORG_ 뒤) · 11: 분대 (ORG_ 중대마다 Holes + 분대 목록, nextSquadId) · 장교 칼 흔들기 틱 (CMB2 뒤쪽) · 10: 지형 · 높이 (지형 종류 5개 추가, 지도 고지 배열, 안개 = 세력별 자기 시야 격자 · 시차 갱신) · 9: 외교 삭제 → 정적 팀 (DiplomacySnapshot · StartedAtWar 제거, Faction.Team 추가) · 8: 교전 4차 (수류탄 · 돌격 충격 · 돌격만 · 행진 사격 표적, CMB2 뒤쪽 + 날아가는 수류탄) · 유닛 id 이름 규칙 (machinegunner -> heavy_machinegunner 등) · 2: v0.4 확장 구역 틀 · 3: SUPL · CMB2 · CMDX 내용 + 낡은 NavToken 엔티티 · 4: 교전 2차 (제압 · 사살 · 돌격 · 멍칫, CMB2 뒤쪽) · 5: 스태미나 · 속보 (피로 · QuickStep) + 정찰 제거 (UnitOrder · PatrolBack 삭제) · 6: 편제 ORG_ (중대 · 대대 · 깃발) · 7: 방향 변경 (자원 · 생산 · 건설 · 공병 · 연료 · 포탑 삭제, SUPL = 탄약 회복 · 보급 마차 · 엄폐 · 참호, 지도 유닛 배치)
++    public const int FormatVersion = 51;   // 51: 참호 돌파 묶음 (CMB2 끝 WriteBreach — 유닛마다 SmokeGrenades · WireCutTile · WireCutTicks, 수류탄 · 포탄 연막 표시, 연막 목록, Breach.cs) · 50: arty3 곡사포 조정 사격 (유닛마다 AdjustShots · AdjustAim) + 중기관총 최후 저지선 (FireMode.FinalLine · FinalLinePoint) — ORG_ 사격 통제 뒤 유닛 목록 (FireControl.cs) · 49: assaultinf 돌격 접근 약진 (유닛마다 HopUntil/HopTo, ChargeHop.cs) · 48: pronemove 엎드림 이동 (유닛마다 ProneHoldSince/StandUntil/ForceCross) · 47: N68 기수 쓰러짐 Unit.BearerFellUntil (CMB2 Prone/Broken 뒤, units) · 46: 전술 AI 3B (AI 블랙보드 TacGroup RotateUntil · RotateOut, TacBattalion RotateTick · CalmSince · Plug*, TacFaction 3B 누계, 프로필 3B 키, ai3b) · 45: N32 참호 돌격 (ORG_ 끝 중대마다 TA 단계 · 목표 · 시각, TrenchAssault.cs) · 44: N79a 집결 지점 (ORG_ 끝 중대마다 HasRally · RallyPoint) + 포격 종류 (유닛마다 GroundKind · GroundRounds · GroundDir · GroundStart, Rally.cs · GroundFire.cs) · 43: N79b 항복 (CMB2 유닛마다 Surrendered · SuppHighTicks, Surrender.cs) · 42: F6 엄폐물 소품 (지도 PropSeeds + ORG_ 끝 소품 hp · 변종, Props.cs) · 41: 제압 재설계 2 엎드림 · 붕괴 (CMB2 유닛마다 Prone · BrokenUntil · BrokenAt · BreakTo, supp) · 40: F1 2차 중대 대형 유지 (ORG_ 접적 구역 중대마다 KeepFormation, ContactF2.cs) · 39: N73 사격 통제 (ORG_ 끝 유닛마다 FireMode, FireControl.cs) · 38: 기병 동시 근접 제한 (CMB2 유닛마다 MeleeVictims · MeleeLastId, N61) + 기병 하마 사격 (Dismounted · MountLeft · MountLock, N61) + F1 접적 · 구역 · 사격 위치 (ORG_ 끝, Contact.cs) · 36: 착검 (CMB2 유닛마다 BayonetFixed · FixLeft, N57 charge) · 35: 후퇴 뒤 재정비 (전술 AI 블랙보드 TacGroup RegroupUntil · RegroupCheck · RegroupAlive, pursuit2) · 34: 중대 자세 (ORG_ 끝 중대마다 Posture) + 정찰병 노출 기억 (ORG_ 정찰병마다 ScoutExposed · ScoutThreat · ScoutExposedTick, tweak1) · 33: 도하 · 역습 AI 상태 (전술 AI 스냅샷 — TacGroup CrossStage · CrossRegiment · CrossLane · CrossPoint · CounterAssaultTick, TacRegiment Cross* · CounterStage, TacFaction 누계; crossing) · 32: 고정 (엎드림 — CMB2 유닛마다 Pinned, 제압 재설계 N25) + 전술 AI 후퇴 원인 · 제압 후퇴 수 (AI 블랙보드) (supp N39) · 31: 전술 AI 3단계 A — 기동 계획 · 제대 · 철수 · 미션 철수 문턱 (AI 블랙보드 TacRegiment · TacGroup · TacDirective · TacFaction, 프로필 strategy 키, s3a) · 30: 엄폐 찾기 · 진지 점유 (SUPL 참호 구역 유닛마다 CoverHold, engage) · 29: 후퇴 중 (CMB2 유닛마다 Retreating, pursuit) + 전술 AI 추격 · 기병 상태 (AI 블랙보드) · 28: 대열 정비 2 (ORG_ 끝 중대마다 깃발 Close 표시, gapfill2) · 27: 대열 정비 (ORG_ 끝 — 중대마다 CloseAlarm · CloseAt · CloseUntil, gapfill) · 26: 전술 틀 2단계 (ORG_ 전술 틀 구역 중대마다 ActiveTactic + 행동 상태 DrillState, N4) · 25: 기병 돌격 쿨다운 (CMB2 유닛마다 ChargeCdLeft, 돌격 충격 제압 burst) · 24: 경기관총 점사 (CMB2 유닛마다 BurstLeft) · 23: 장교 직책 계급 · 임시 진급 · 경험치 (CMB2 유닛마다 OfficerBase · TempRank · OfficerXp) + 지휘관 · 인계 (ORG_ 끝 — 대대 · 중대 Commander · HandoverUntil) · 22: 전투 대형 · 전술 틀 (ORG_ 끝 — 중대 Tactic · 구성원 Role · 분대 Form) · 21: 플레이어 지점 포격 (UnitOrder.GroundFire, CMB2 유닛마다 GroundPoint) · 20: 중대 돌격 사격 허용 MarchFireOn (ORG_ 중대 MarchUntil 뒤) · 19: 충돌 · 대형 재설계 (ORG_ 깃발 속도 배수 SpeedMul, 중대 · 분대 행진 사격 지휘 MarchUntil) · 18: 건설 제거 (SUPL 의 개인 참호 · 참호선 작업 상태 삭제) + 참호 자동 점유 (SUPL 끝: 유닛별 참호 자리 · 사수 · 무시 묶음) · 17: 정찰병 (ORG_ 끝 — 정찰조 · 자율 상태, Unit.ScoutAuto 등) · 16: 날아가는 포탄 (CMB2 끝, ShellFlight) · 15: 자주포 · 견인포 · 중형 전차 · 광산 · 유전 정의 삭제 (옛 저장 호환 안 됨) · 14: 미션 (MISN 구역 — 미션 정의 JSON · 목표 · 사건 · 증원 · 배치, WTHR 뒤) · 13: 참호선 (작업 · 칸 진행량 · 유닛 작업, SUPL 끝) + 포탄 구덩이 지형 · 12: 날씨 · 시간대 (WTHR, ORG_ 뒤) · 11: 분대 (ORG_ 중대마다 Holes + 분대 목록, nextSquadId) · 장교 칼 흔들기 틱 (CMB2 뒤쪽) · 10: 지형 · 높이 (지형 종류 5개 추가, 지도 고지 배열, 안개 = 세력별 자기 시야 격자 · 시차 갱신) · 9: 외교 삭제 → 정적 팀 (DiplomacySnapshot · StartedAtWar 제거, Faction.Team 추가) · 8: 교전 4차 (수류탄 · 돌격 충격 · 돌격만 · 행진 사격 표적, CMB2 뒤쪽 + 날아가는 수류탄) · 유닛 id 이름 규칙 (machinegunner -> heavy_machinegunner 등) · 2: v0.4 확장 구역 틀 · 3: SUPL · CMB2 · CMDX 내용 + 낡은 NavToken 엔티티 · 4: 교전 2차 (제압 · 사살 · 돌격 · 멍칫, CMB2 뒤쪽) · 5: 스태미나 · 속보 (피로 · QuickStep) + 정찰 제거 (UnitOrder · PatrolBack 삭제) · 6: 편제 ORG_ (중대 · 대대 · 깃발) · 7: 방향 변경 (자원 · 생산 · 건설 · 공병 · 연료 · 포탑 삭제, SUPL = 탄약 회복 · 보급 마차 · 엄폐 · 참호, 지도 유닛 배치)
+     public const string Extension = ".kds";
+     static readonly byte[] Magic = { (byte)'K', (byte)'D', (byte)'S', (byte)'V' };
+     const int BrotliQuality = 4, BrotliWindow = 22;
+diff --git a/src/Core/SupplyUnit.cs b/src/Core/SupplyUnit.cs
+index d4e2ef09..2f3f5c6b 100644
+--- a/src/Core/SupplyUnit.cs
++++ b/src/Core/SupplyUnit.cs
+@@ -17,6 +17,7 @@ public sealed partial class Unit
+         Ammo = Weapon?.Ammo ?? 0;
+         Cargo = Def.Cargo;
+         Grenades = Def.Grenades;
++        SmokeGrenades = Def.SmokeGrenades;   // N65 (Breach.cs)
+     }
+ 
+     /// <summary>무기 탄약 칸 (0 = 무한 · 무기 없음).</summary>
+diff --git a/src/Core/WorldCombat.cs b/src/Core/WorldCombat.cs
+index 907f699b..5f874a94 100644
+--- a/src/Core/WorldCombat.cs
++++ b/src/Core/WorldCombat.cs
+@@ -40,7 +40,7 @@ public sealed partial class World
+         UpdateStamina(u, moved, dt);   // 스태미나 (Combat3.cs)
+         if (!u.Charging) { u.HopUntil = 0; u.ChargeRun = 0; u.ImpactSpent = false; u.MeleeVictims = 0; u.MeleeLastId = 0; } else if (moved) u.ChargeRun++;   // 돌격 충격 (Combat3.cs)
+         if (u.ChargeCdLeft > 0) u.ChargeCdLeft--;   // 돌격 충격 쿨다운 (Combat3.cs)
+-        if (u.Def.Grenades > 0) RegenGrenade(u, dt);   // 수류탄 회복 (Combat4.cs)
++        if (u.Def.Grenades > 0 || u.Def.SmokeGrenades > 0) RegenGrenade(u, dt);   // 수류탄 · 연막 수류탄 회복 (Combat4.cs)
+         if (u.Cooldown > 0) u.Cooldown -= dt;
+         DecaySuppression(u);   // 제압 감소 (Combat3.cs, 15틱마다 Id 분산)
+         UpdatePinned(u);       // 고정 (엎드림) 이력 pinAt / pinRelease (Suppression.cs)
+@@ -72,6 +72,7 @@ public sealed partial class World
+         UpdateCoverSeek(u);   // 피격 중인 대기 · 사수 보병: 가까운 참호 자리 · 엄폐 칸으로 (CoverSeek.cs)
+         UpdateSpot(u);        // F1 접적 중 구역 · 사격 위치 (Contact.cs)
+         CavReact(u);          // n61 돌격 기병 우선 표적 (CavReact.cs)
++        UpdateWireCut(u);     // N59 철조망 절단 진행 (Breach.cs)
+ 
+         switch (u.Order)
+         {
+@@ -418,7 +419,7 @@ public sealed partial class World
+                                 if (score >= bestScore) continue;
+                                 if (!Fog.CanSee(faction, e)) continue;
+                                 if (spotterOnly && !SeenBySpotter(faction, e)) continue;
+-                                if (losFrom != null && !Map.HasFiringLine(losFrom.Pos, e.Pos, losFrom.Id, e.Id)) continue;
++                                if (losFrom != null && (!Map.HasFiringLine(losFrom.Pos, e.Pos, losFrom.Id, e.Id) || SmokeBlocks(losFrom.Pos, e.Pos))) continue;   // 연막 (N59)
+                                 (best, bestScore) = (e, score);
+                             }
+                         }
+@@ -438,7 +439,7 @@ public sealed partial class World
+                     float score = d + 300;
+                     if (arcFrom != null) { float sh = TraverseShiftTo(arcFrom, b.Pos); if (sh > 0) { if (sh >= RedeployRad) continue; score += 5000 + sh; } }
+                     if (score >= bestScore) continue;
+-                    if (losFrom != null && !Map.HasFiringLine(losFrom.Pos, b.Pos, losFrom.Id, b.Id)) continue;
++                    if (losFrom != null && (!Map.HasFiringLine(losFrom.Pos, b.Pos, losFrom.Id, b.Id) || SmokeBlocks(losFrom.Pos, b.Pos))) continue;
+                     (best, bestScore) = (b, score);
+                 }
+             }
+diff --git a/src/Core/WorldCommands.cs b/src/Core/WorldCommands.cs
+index 7d00cceb..c344f138 100644
+--- a/src/Core/WorldCommands.cs
++++ b/src/Core/WorldCommands.cs
+@@ -89,6 +89,8 @@ public sealed partial class World
+             case SetCombatSettingCommand c: ExecSetCombatSetting(f, c.Setting, c.Value); break;
+             case ChargeCommand c: ExecCharge(f, ResolveOrder(f, c.Units), c.Target, c.TargetId != 0 ? Find(c.TargetId) : null); break;
+             case ThrowGrenadeCommand c: ExecThrowGrenade(f, Resolve(f, c.Units), c.Target); break;   // 수류탄 (Combat4.cs)
++            case ThrowSmokeCommand c: ExecThrowSmoke(Resolve(f, c.Units), c.Target); break;   // 연막 수류탄 (Breach.cs, N65)
++            case CutWireCommand c: ExecCutWire(ResolveOrder(f, c.Units), c.Target); break;   // 철조망 절단 (Breach.cs, N59)
+             case MountCommand mc: foreach (var u in Resolve(f, mc.Units)) ExecMount(u, mc.Mount); break;   // N61
+             case ChargeOnlyCommand c: foreach (var u in Resolve(f, c.Units)) if (u.CanCharge && u.Def.Mounted) u.ChargeOnly = c.On; break;
+             case SetScoutAutoCommand c: ExecSetScoutAuto(f, Resolve(f, c.Units), c.On); break;   // 정찰병 자율 토글 (Scouts.cs)
+@@ -320,6 +322,7 @@ public sealed partial class World
+     {
+         LeaveTrench(u);   // 참호 자리 해제 + 이번 명령 동안 그 참호 묶음은 도중 점유 안 함 (Trenches.cs)
+         u.CoverHold = false;   // 엄폐 찾기 이동 취소 (CoverSeek.cs)
++        u.WireCutTile = -1; u.WireCutTicks = 0;   // 철조망 절단 취소 (Breach.cs)
+         if (u.SpotTick >= 0) Stats.SpotReleases++;
+         u.SpotTick = -1; u.HasZone = false;   // F1: 새 명령 = 사격 위치 · 구역 해제 (Contact.cs)
+         u.ReactDelay = 0;
+diff --git a/src/Game.cs b/src/Game.cs
+index 24bbf5d3..2008f041 100644
+--- a/src/Game.cs
++++ b/src/Game.cs
+@@ -1305,9 +1305,9 @@ public sealed partial class Game : IDisposable
+             case "closeranks": World.CloseRanks(Me, units); ShowNotice(S.CloseRanksIssued); break;   // 대열 정비 (CloseRanks.cs)
+             case "firekind":   // N79a: 지속 → 준비 → 이동탄막 → 연막 순환
+                 FireKindSel = (GroundFireKind)(((int)FireKindSel + 1) % 4);
+-                ShowNotice(FireKindSel == GroundFireKind.Smoke ? S.FireKindSmokeNone : FireKindName(FireKindSel));
++                ShowNotice(FireKindSel == GroundFireKind.Smoke && !OwnUnits().Any(World.CanSmoke) ? S.FireKindSmokeNone : FireKindName(FireKindSel));
+                 break;
+-            case "move" or "quickstep" or "attack" or "charge" or "grenade" or "groundfire" or "rally":
++            case "move" or "quickstep" or "attack" or "charge" or "grenade" or "groundfire" or "rally" or "smokegrenade" or "cutwire":
+                 PendingCommand = key;
+                 break;
+         }
+@@ -1362,6 +1362,11 @@ public sealed partial class Game : IDisposable
+                 break;
+             }
+             case "grenade": World.ThrowGrenadeAt(Me, units, point); Mark(point, Palette.HpLow); Voice("attack"); break;   // 수류탄 (교전 4차)
++            case "smokegrenade": World.ThrowSmokeAt(Me, units, point); Mark(point, Palette.MarkerMove); Voice("attack"); break;   // 연막 수류탄 (N65)
++            case "cutwire":   // 철조망 절단 (N59)
++                if (World.WireTilesNear(point, World.Defs.Breach.WireCutSearch).Count == 0) { ShowNotice(S.CutWireNone); break; }
++                World.CutWire(Me, units, point); Mark(point, Palette.MarkerMove); Voice("move");
++                break;
+             case "finalline":   // arty3 최후 저지선: 중기관총 = 사격선 지정, 나머지 무장 유닛 = 순환 다음 (자유 사격)
+             {
+                 var fpl = units.Where(World.CanFinalLine).ToList();
+@@ -1374,7 +1379,7 @@ public sealed partial class Game : IDisposable
+             }
+             case "groundfire":   // 플레이어 지점 포격 (GroundFire.cs) + 포격 종류 (N79a)
+             {
+-                if (FireKindSel == GroundFireKind.Smoke) { ShowNotice(S.FireKindSmokeNone); break; }   // 연막탄 없음
++                if (FireKindSel == GroundFireKind.Smoke && !units.Any(World.CanSmoke)) { ShowNotice(S.FireKindSmokeNone); break; }   // 연막탄이 있는 포가 없음 (N59)
+                 var guns = units.Where(World.CanGroundFire).ToList();
+                 if (guns.Count == 0) break;
+                 Vector2 gc = Vector2.Zero;
+diff --git a/src/Render/ProgressRing.cs b/src/Render/ProgressRing.cs
+index 8a1ecdee..d48c859a 100644
+--- a/src/Render/ProgressRing.cs
++++ b/src/Render/ProgressRing.cs
+@@ -21,6 +21,7 @@ internal static class ProgressRing
+             case DeployPhase.Deploying: ratio = u.DeployProgress; kind = 0; return true;
+             case DeployPhase.Packing: ratio = 1f - u.DeployProgress; kind = 1; return true;
+         }
++        if (u.CuttingWire && u.WireCutProgress > 0) { ratio = u.WireCutProgress; kind = 0; return true; }   // 철조망 절단 (N59)
+         return false;
+     }
+ 
+diff --git a/src/Render/SmokeFx.cs b/src/Render/SmokeFx.cs
+new file mode 100644
+index 00000000..f7d06786
+--- /dev/null
++++ b/src/Render/SmokeFx.cs
+@@ -0,0 +1,44 @@
++using System.Numerics;
++using Raylib_cs;
++using KoreanDivision.Core;
++using KoreanDivision.UI;
++
++namespace KoreanDivision.Render;
++
++/// <summary>
++/// 연막 (N59, Breach.cs) 그리기 — 표현 전용. 연막 한 덩이 = 회색 반투명 원 여러 개 (위치 해시로 고정된 뭉게 모양), 처음 1.5초 피어오르고 마지막 5초 옅어진다.
++/// 가장자리나 중심이 한 곳이라도 보이면 그린다 (연막 속은 시야가 막혀 안 보이므로). 전용 그림은 나중.
++/// </summary>
++internal static class SmokeFx
++{
++    static readonly Vector2[] Dirs = { new(1, 0), new(-1, 0), new(0, 1), new(0, -1) };
++
++    public static void Draw(World world, int me, Vector2 min, Vector2 max)
++    {
++        if (world.Smokes.Count == 0) return;
++        var fog = world.Fog;
++        float ts = Config.TileSize;
++        foreach (var s in world.Smokes)
++        {
++            if (s.Pos.X + s.Radius < min.X - 1 || s.Pos.X - s.Radius > max.X + 1 || s.Pos.Y + s.Radius < min.Y - 1 || s.Pos.Y - s.Radius > max.Y + 1) continue;
++            bool seen = s.Owner == me || fog.IsVisible(me, s.Pos);
++            for (int k = 0; k < Dirs.Length && !seen; k++) seen = fog.IsVisible(me, s.Pos + Dirs[k] * (s.Radius * 0.9f));
++            if (!seen) continue;
++            float age = (world.Tick - s.StartTick) * Config.SimDt, left = (s.EndTick - world.Tick) * Config.SimDt;
++            float a = MathF.Min(1f, age / 1.5f) * MathF.Min(1f, left / 5f);
++            if (a <= 0) continue;
++            float grow = 0.6f + 0.4f * MathF.Min(1f, age / 1.5f);
++            uint h = (uint)(s.StartTick * 2654435761L) ^ (uint)(int)(s.Pos.X * 16) * 40503u ^ (uint)(int)(s.Pos.Y * 16) * 2246822519u;
++            var c = s.Pos * ts;
++            Raylib.DrawCircleV(c, s.Radius * ts * grow, Palette.Alpha(new Color(200, 200, 196, 255), (int)(150 * a)));
++            for (int i = 0; i < 7; i++)
++            {
++                h ^= h >> 15; h *= 2246822519u; h ^= h >> 13;
++                float ang = (h & 1023) / 1024f * MathF.Tau, dist = ((h >> 10) & 255) / 255f * 0.55f * s.Radius;
++                float r = (0.35f + ((h >> 18) & 63) / 63f * 0.3f) * s.Radius;
++                var p = c + new Vector2(MathF.Cos(ang), MathF.Sin(ang)) * dist * ts * grow;
++                Raylib.DrawCircleV(p, r * ts * grow, Palette.Alpha(new Color(226, 226, 220, 255), (int)(110 * a)));
++            }
++        }
++    }
++}
+diff --git a/src/Render/UnitRenderer.cs b/src/Render/UnitRenderer.cs
+index 6c57effe..7e209abf 100644
+--- a/src/Render/UnitRenderer.cs
++++ b/src/Render/UnitRenderer.cs
+@@ -515,6 +515,7 @@ public static class UnitRenderer
+ 
+         SquadIcons.Draw(world, cam, me, sorted.AsSpan(0, n), false);
+         Impacts.Draw(world, cam, me, min, max);
++        SmokeFx.Draw(world, me, min, max);   // 연막 (N59) — 유닛 · 폭발 위
+     }
+ 
+     static void MiniBar(Rectangle r, float ratio, Color c)
+diff --git a/src/SelfTest.cs b/src/SelfTest.cs
+index e058213b..3665f1e9 100644
+--- a/src/SelfTest.cs
++++ b/src/SelfTest.cs
+@@ -59,6 +59,7 @@ public static partial class SelfTest
+         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "command") { Tests.CommandSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "n73") { Tests.N73SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "pronemove") { Tests.ProneMoveSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
++        if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "breach") { Tests.BreachSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "n79a") { Tests.N79aSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "f1") { Tests.F1SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "props") { Tests.PropsSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+@@ -153,6 +154,7 @@ public static partial class SelfTest
+         Tests.N32SelfTest.Run(opt, Check);
+         Tests.N73SelfTest.Run(opt, Check);                 // N73 사격 통제
+         Tests.N79aSelfTest.Run(opt, Check);                // N79a 집결 지점 · 포격 종류
++        Tests.BreachSelfTest.Run(opt, Check);              // N59 · N60 · N65 참호 돌파 묶음 (연막 · 철조망 절단 · 경박격포)
+         Tests.ProneMoveSelfTest.Run(opt, Check);         // pronemove 엎드림 이동
+         Tests.SurrenderSelfTest.Run(opt, Check);          // N79b 항복
+         Tests.SuppressionSelfTest.Run(opt, Check);        // 제압 재설계 N25 (근접 탄착 · 명중률 · 고정 · 장교 제압 후퇴)
+diff --git a/src/Tests/BreachSelfTest.cs b/src/Tests/BreachSelfTest.cs
+new file mode 100644
+index 00000000..52b1f57f
+--- /dev/null
++++ b/src/Tests/BreachSelfTest.cs
+@@ -0,0 +1,276 @@
++using System.Numerics;
++using KoreanDivision.Core;
++
++namespace KoreanDivision.Tests;
++
++/// <summary>
++/// 참호 돌파 묶음 (N59 연막 · 철조망 절단, N60 경박격포, N65 연막 수류탄 — Breach.cs): 연막이 사선 · 안개 시야 · 관측을 막음 (옆 선은 그대로),
++/// 지속 뒤 사라짐, 연막 수류탄 (보유자만 · 피해 없음), 연막탄 지점 포격 (발수 · 연막탄 있는 포만), 경박격포 세력별 변형 · 자동 곡사 (사거리 36),
++/// 철조망 절단 (돌격보병만 · 몇 초 뒤 통과 · 정지 = 취소 · 통로로 건넘), 저장 · 체크섬 · 명령 직렬화. `KD_SELFTEST_ONLY=breach`.
++/// </summary>
++public static class BreachSelfTest
++{
++    static readonly SnapshotMeta Meta = new("breach", 1, false, "standard");
++
++    public static void Run(GameOptions opt, Action<bool, string> check)
++    {
++        Console.WriteLine("[참호 돌파 묶음 — 연막 · 철조망 절단 · 경박격포]");
++        try
++        {
++            using var _ = TestDefs.NoCommandDelay();
++            TestSmokeLine(check);
++            TestSmokeFog(check);
++            TestSmokeGrenade(check);
++            TestSmokeShell(check);
++            TestMortar(check);
++            TestWireCut(check);
++            TestSaveLoad(check);
++            TestSerialization(check);
++        }
++        catch (Exception e) { check(false, $"breach 테스트 중 예외: {e.GetType().Name}: {e.Message}\n{e.StackTrace}"); }
++    }
++
++    static World Bare(int size = 90, bool fog = false, int wireRow = -1)
++    {
++        var defs = Defs.Current;
++        var m = new GameMap(size, size, 1);
++        for (int y = 0; y < size; y++)
++        for (int x = 0; x < size; x++) m.Set(x, y, y == wireRow && x >= 8 && x < size - 8 ? TerrainType.Wire : TerrainType.Grass);
++        var w = new World(m, defs, 2) { RecordCommands = true };
++        var hq = defs.Headquarters;
++        w.PlaceBuilding(hq, 1, 1, 1);
++        w.PlaceBuilding(hq, 2, size - 1 - hq.Size, size - 1 - hq.Size);
++        w.Fog.Enabled = fog;
++        return w;
++    }
++
++    static void Steps(World w, int n) { for (int i = 0; i < n; i++) w.Step(); }
++    static int Sec(float s) => (int)MathF.Round(s / Config.SimDt);
++
++    static Unit Dummy(World w, int faction, Vector2 at)
++    {
++        var d = w.SpawnUnit(Defs.Current.Units["infantry"], faction, at);
++        d.Weapon = null; d.Hp = 100000;
++        w.Hold(faction, new[] { d });
++        return d;
++    }
++
++    static SmokeCloud Cloud(World w, Vector2 at, float r, float sec) =>
++        new() { Owner = 1, Pos = at, Radius = r, StartTick = w.Tick, EndTick = w.Tick + Sec(sec) };
++
++    // ---------------------------------------------------------------- 연막: 사선 · 시야
++
++    static void TestSmokeLine(Action<bool, string> check)
++    {
++        var w = Bare();
++        var rifle = w.SpawnUnit(Defs.Current.Units["infantry"], 1, new Vector2(20.5f, 40.5f));
++        var foe = Dummy(w, 2, new Vector2(36.5f, 40.5f));
++        w.Hold(1, new[] { rifle });
++        w.Step();
++        var wd = rifle.Weapon!;
++        bool before = w.HasFiringLine(rifle, foe, wd);
++        w.Smokes.Add(Cloud(w, new Vector2(28.5f, 40.5f), 2.5f, 20));
++        bool blocked = !w.HasFiringLine(rifle, foe, wd);
++        bool side = !w.SmokeBlocks(new Vector2(20.5f, 45.5f), new Vector2(36.5f, 45.5f));   // 연막에서 5칸 옆 선
++        bool edge = !w.SmokeBlocks(new Vector2(20.5f, 40.5f), new Vector2(26.5f, 40.5f));   // 가장자리 0.5칸 안 = 보임 (깊이 1칸 이하)
++        check(before && blocked && side && edge, $"연막 사선: 연막 전 사격선 {before} → 연막이 가로막음 {blocked} · 옆 선은 그대로 {side} · 가장자리 얕은 곳은 보임 {edge}");
++        long shot0 = rifle.LastShotTick;
++        Steps(w, Sec(15));
++        bool noShot = rifle.LastShotTick == shot0;
++        Steps(w, Sec(6));   // 20초 지속 → 사라짐
++        bool gone = w.Smokes.Count == 0;
++        Steps(w, Sec(10));
++        bool shotAfter = rifle.LastShotTick > shot0;
++        check(noShot && gone && shotAfter, $"연막 사격: 연막 동안 쏘지 못함 {noShot} · 지속 뒤 사라짐 {gone} · 그 뒤 사격 {shotAfter}");
++    }
++
++    static void TestSmokeFog(Action<bool, string> check)
++    {
++        var w = Bare(fog: true);
++        var obs = w.SpawnUnit(Defs.Current.Units["infantry"], 1, new Vector2(20.5f, 40.5f));
++        var t1 = Dummy(w, 2, new Vector2(32.5f, 40.5f));
++        var t2 = Dummy(w, 2, new Vector2(32.5f, 48.5f));
++        w.Hold(1, new[] { obs });
++        w.Step();
++        w.Fog.Update();
++        bool seen = w.Fog.CanSee(1, t1) && w.Fog.CanSee(1, t2);
++        w.Smokes.Add(Cloud(w, new Vector2(26.5f, 40.5f), 2.5f, 30));
++        w.Fog.Update();
++        bool hidden = !w.Fog.CanSee(1, t1), other = w.Fog.CanSee(1, t2);
++        // 관측자 (곡사포 관측) 도 연막 너머를 못 본다
++        var off = w.SpawnUnit(Defs.Current.Units["officer"], 1, new Vector2(20.5f, 41.5f));
++        w.Step();
++        bool spot = !w.SeenBySpotter(1, t1) && w.SeenBySpotter(1, t2);
++        check(seen && hidden && other && spot, $"연막 시야: 연막 전 보임 {seen} → 연막 너머 안 보임 {hidden} · 옆 표적은 보임 {other} · 관측자도 막힘 {spot}");
++        _ = off;
++    }
++
++    // ---------------------------------------------------------------- 연막 수류탄 · 연막탄
++
++    static void TestSmokeGrenade(Action<bool, string> check)
++    {
++        var w = Bare();
++        var a = w.SpawnUnit(Defs.Current.Units["infantry_assault"], 1, new Vector2(20.5f, 40.5f));
++        var rifle = w.SpawnUnit(Defs.Current.Units["infantry"], 1, new Vector2(20.5f, 42.5f));
++        var foe = Dummy(w, 2, new Vector2(24.5f, 40.5f));
++        w.Hold(1, new[] { a, rifle });
++        w.Step();
++        int g0 = a.Grenades, s0 = a.SmokeGrenades;
++        float hp0 = foe.Hp;
++        int log0 = w.CommandLog.Count;
++        w.ThrowSmokeAt(1, new[] { a, rifle }, foe.Pos);
++        Steps(w, Sec(2.5f));
++        bool one = w.Smokes.Count == 1 && a.SmokeGrenades == s0 - 1 && s0 == Defs.Current.Units["infantry_assault"].SmokeGrenades && s0 > 0;
++        bool logged = w.CommandLog.Skip(log0).Any(k => k.Command is ThrowSmokeCommand c && c.Units.Length == 1 && c.Units[0] == a.Id);
++        bool harmless = foe.Hp == hp0 && a.Grenades == g0;
++        var s = w.Smokes.Count > 0 ? w.Smokes[0] : null;
++        bool size = s != null && MathF.Abs(s.Radius - Defs.Current.Breach.SmokeGrenadeRadius) < 1e-4f && Vector2.Distance(s.Pos, foe.Pos) < 1f;
++        Steps(w, Sec(Defs.Current.Breach.SmokeGrenadeSec));
++        check(one && logged && harmless && size && w.Smokes.Count == 0,
++            $"연막 수류탄: 돌격보병만 ({logged}) 1발 → 연막 1 ({one}) · 피해 · 수류탄 소모 없음 {harmless} · 반경 · 위치 {size} · {Defs.Current.Breach.SmokeGrenadeSec}초 뒤 사라짐 (남은 {w.Smokes.Count})");
++    }
++
++    static void TestSmokeShell(Action<bool, string> check)
++    {
++        var w = Bare();
++        var c = new Vector2(30.5f, 40.5f);
++        var mortar = w.SpawnUnit(Defs.Current.Units["heavy_mortar_korean"], 1, c);
++        var pt = c + new Vector2(20, 0);   // 적 없는 지점 (명령이 끝난 뒤 자동 사격이 섞이지 않게)
++        var foe = Dummy(w, 1, c + new Vector2(0, 6));   // 아군 더미 (연막탄은 피해 없음)
++        w.Hold(1, new[] { mortar });
++        w.Step();
++        int ammo0 = mortar.Ammo;
++        w.GroundFire(1, new[] { mortar }, pt, GroundFireKind.Smoke);
++        int clouds = 0;
++        for (int i = 0; i < Sec(40); i++) { w.Step(); clouds = Math.Max(clouds, w.Smokes.Count); }
++        int rounds = Defs.Current.Breach.SmokeRounds;
++        bool ended = mortar.Order != UnitOrder.GroundFire;
++        bool ammo = !w.AmmoEnabled || mortar.Ammo == ammo0 - rounds;
++        bool near = w.Smokes.All(s => Vector2.Distance(s.Pos, pt) < 8f && MathF.Abs(s.Radius - mortar.Weapon!.SmokeRadius) < 1e-4f);
++        check(clouds == rounds && ended && ammo && near && foe.Hp == 100000,
++            $"연막탄: 지점 포격 '연막' = {rounds}발 연막 ({clouds}) · 명령 끝 {ended} · 탄약 {ammo} · 목표 근처 · 반경 {near} · 피해 없음 {foe.Hp == 100000}");
++        var u = Defs.Current.Units;
++        var how = w.SpawnUnit(u["heavy_howitzer"], 1, c + new Vector2(0, 10));
++        var fg = w.SpawnUnit(u["heavy_field_gun"], 1, c + new Vector2(0, -10));
++        bool can = World.CanSmoke(how) && !World.CanSmoke(fg) && !World.CanSmoke(foe);
++        int log0 = w.CommandLog.Count;
++        w.GroundFire(1, new[] { fg }, pt, GroundFireKind.Smoke);
++        w.Step();
++        check(can && w.CommandLog.Count == log0, $"연막탄 있는 포만: 곡사포 · 박격포 가능, 야전포 불가 {can} · 야전포만 고르면 명령 없음 {w.CommandLog.Count == log0}");
++    }
++
++    // ---------------------------------------------------------------- 경박격포 (N60)
++
++    static void TestMortar(Action<bool, string> check)
++    {
++        var u = Defs.Current.Units;
++        var keys = new[] { ("heavy_mortar_korean", "korean"), ("heavy_mortar_japanese", "japanese"), ("heavy_mortar", "fengtian") };
++        bool defs = keys.All(k => u.TryGetValue(k.Item1, out var d) && d.AllowedFor(k.Item2) && Defs.Current.Weapon(d.Weapon) is { Indirect: true, SpotterOnly: false, Range: 36f } wd && wd.SmokeRadius > 0);
++        bool excl = !u["heavy_mortar_korean"].AllowedFor("japanese") && !u["heavy_mortar_japanese"].AllowedFor("korean");
++        check(defs && excl, $"경박격포 세력별 변형 3종: 곡사 · 관측자 불필요 · 사거리 36 · 연막탄 {defs} · 세력 전용 {excl}");
++        foreach (var (key, dist, want) in new[] { ("heavy_mortar_korean", 30f, true), ("heavy_mortar_japanese", 30f, true), ("heavy_mortar_korean", 42f, false) })
++        {
++            var w = Bare();
++            var m = w.SpawnUnit(u[key], 1, new Vector2(20.5f, 40.5f));
++            var foe = Dummy(w, 2, new Vector2(20.5f + dist, 40.5f));
++            w.Step();
++            int booms = 0;
++            for (int i = 0; i < Sec(40); i++) { w.Step(); foreach (var im in w.Impacts) if (im.ShooterId == m.Id && im.Tick == w.Tick - 1) booms++; }
++            check((booms > 0) == want, $"{key} 자동 곡사 {dist}칸 (사거리 36): 착탄 {booms}발 — 기대 {(want ? "쏨" : "안 쏨")}");
++        }
++    }
++
++    // ---------------------------------------------------------------- 철조망 절단 (N59)
++
++    static void TestWireCut(Action<bool, string> check)
++    {
++        var w = Bare(wireRow: 40);
++        var a = w.SpawnUnit(Defs.Current.Units["infantry_assault"], 1, new Vector2(30.5f, 35.5f));
++        var rifle = w.SpawnUnit(Defs.Current.Units["infantry"], 1, new Vector2(33.5f, 35.5f));
++        w.Hold(1, new[] { a, rifle });
++        w.Step();
++        bool blockedBefore = !w.Map.IsWalkable(30, 40);
++        w.CutWire(1, new[] { a, rifle }, new Vector2(30.5f, 40.5f));
++        Steps(w, 3);
++        bool assigned = a.CuttingWire && !rifle.CuttingWire;
++        int t = 0;
++        while (t < Sec(20) && w.Map.Get(30, 40) == TerrainType.Wire) { w.Step(); t++; }
++        bool open = w.Map.Get(30, 40) != TerrainType.Wire && w.Map.IsWalkable(30, 40);
++        float sec = t * Config.SimDt;
++        bool time = sec >= Defs.Current.Breach.WireCutSec - 0.1f && sec < Defs.Current.Breach.WireCutSec + 8f;
++        bool others = w.Map.Get(29, 40) == TerrainType.Wire && w.Map.Get(31, 40) == TerrainType.Wire && !a.CuttingWire;
++        check(blockedBefore && assigned && open && time && others, $"철조망 절단: 돌격보병만 맡음 {assigned} · {sec:0.0}초 뒤 칸 통과 가능 {open} (시간 {time}) · 옆 칸은 그대로 · 끝나면 해제 {others}");
++        // 통로로 건너기
++        var dest = new Vector2(30.5f, 46.5f);
++        w.Move(1, new[] { a }, dest);
++        Steps(w, Sec(25));
++        float dd = Vector2.Distance(a.Pos, dest);
++        check(dd < 1.5f, $"절단한 통로로 철조망 건너기: 목표까지 {dd:0.0}칸");
++        // 정지 = 취소
++        var w2 = Bare(wireRow: 40);
++        var b = w2.SpawnUnit(Defs.Current.Units["infantry_assault"], 1, new Vector2(50.5f, 35.5f));
++        w2.Step();
++        w2.CutWire(1, new[] { b }, new Vector2(50.5f, 40.5f));
++        Steps(w2, Sec(4));
++        bool was = b.CuttingWire;
++        w2.Stop(1, new[] { b });
++        Steps(w2, Sec(8));
++        check(was && !b.CuttingWire && w2.Map.Get(50, 40) == TerrainType.Wire, $"철조망 절단 취소: 정지 명령이면 그만둠 (절단 중 {was} → {b.CuttingWire}) · 칸은 그대로");
++        // 철조망 없는 곳은 명령 무시
++        var w3 = Bare();
++        var c3 = w3.SpawnUnit(Defs.Current.Units["infantry_assault"], 1, new Vector2(50.5f, 35.5f));
++        w3.Step();
++        w3.CutWire(1, new[] { c3 }, new Vector2(50.5f, 40.5f));
++        Steps(w3, 3);
++        check(!c3.CuttingWire && w3.WireTilesNear(new Vector2(50.5f, 40.5f), 4).Count == 0, "철조망 없는 지점: 절단 명령 무시");
++    }
++
++    // ---------------------------------------------------------------- 저장 · 체크섬 · 직렬화
++
++    static void TestSaveLoad(Action<bool, string> check)
++    {
++        var defs = Defs.Current;
++        var x = Bare(wireRow: 40);
++        var a = x.SpawnUnit(defs.Units["infantry_assault"], 1, new Vector2(30.5f, 35.5f));
++        var a2 = x.SpawnUnit(defs.Units["infantry_assault"], 1, new Vector2(40.5f, 35.5f));
++        var m = x.SpawnUnit(defs.Units["heavy_mortar_korean"], 1, new Vector2(20.5f, 30.5f));
++        Dummy(x, 2, new Vector2(40.5f, 50.5f));
++        x.Step();
++        x.CutWire(1, new[] { a }, new Vector2(30.5f, 40.5f));
++        x.ThrowSmokeAt(1, new[] { a2 }, new Vector2(42.5f, 37.5f));
++        x.GroundFire(1, new[] { m }, new Vector2(40.5f, 50.5f), GroundFireKind.Smoke);
++        int k = 0;
++        while (k < Sec(30) && !(a.WireCutTicks > 0 && x.Smokes.Count > 0)) { x.Step(); k++; }
++        bool mid = a.WireCutTicks > 0 && x.Smokes.Count > 0;
++        var bytes = Snapshot.Save(x, Meta);
++        var y = Snapshot.Load(bytes, defs).World;
++        var ya = y.Units.First(u => u.Id == a.Id);
++        bool fields = ya.WireCutTile == a.WireCutTile && ya.WireCutTicks == a.WireCutTicks && y.Smokes.Count == x.Smokes.Count
++            && y.Units.First(u => u.Id == a2.Id).SmokeGrenades == a2.SmokeGrenades && y.Shells.Count(s => s.Smoke) == x.Shells.Count(s => s.Smoke);
++        bool same = Snapshot.RawBody(Snapshot.Save(y, Meta)).AsSpan().SequenceEqual(Snapshot.RawBody(bytes)) && x.ComputeChecksum() == y.ComputeChecksum();
++        var h0 = x.ComputeChecksum();
++        a.WireCutTicks++; bool h1 = x.ComputeChecksum() != h0; a.WireCutTicks--;
++        x.Smokes[0].Radius += 0.5f; bool h2 = x.ComputeChecksum() != h0; x.Smokes[0].Radius -= 0.5f;
++        bool cont = true;
++        for (int i = 0; i < Sec(30); i++)
++        {
++            x.Step(); y.Step();
++            if (i % 30 == 29 && x.ComputeChecksum() != y.ComputeChecksum()) { cont = false; break; }
++        }
++        bool cut = x.Map.Get(30, 40) != TerrainType.Wire && y.Map.Get(30, 40) != TerrainType.Wire;
++        check(mid && fields && same && h1 && h2 && cont && cut,
++            $"참호 돌파 저장: 진행 중 상태 {mid} · 필드 복원 {fields} · 바이트 · 체크섬 동일 {same} · 체크섬 반영 (절단 {h1} · 연막 {h2}) · 30초 이어 돌려도 같음 {cont} · 절단 완료 {cut} (형식 {Snapshot.FormatVersion})");
++    }
++
++    static void TestSerialization(Action<bool, string> check)
++    {
++        GameCommand a = new ThrowSmokeCommand(1, new[] { 3, 4 }, new Vector2(10.5f, 20.5f));
++        GameCommand b = new CutWireCommand(2, new[] { 5 }, new Vector2(1.25f, 2));
++        var ja = System.Text.Json.JsonSerializer.Serialize(a, CommandJson.Options);
++        var jb = System.Text.Json.JsonSerializer.Serialize(b, CommandJson.Options);
++        var ba = System.Text.Json.JsonSerializer.Deserialize<GameCommand>(ja, CommandJson.Options);
++        var bb = System.Text.Json.JsonSerializer.Deserialize<GameCommand>(jb, CommandJson.Options);
++        check(ba is ThrowSmokeCommand { Target.X: 10.5f } sa && sa.Units.Length == 2 && bb is CutWireCommand { Faction: 2, Target.X: 1.25f } && ReplayFile.FormatVersion >= 19,
++            $"참호 돌파 명령 직렬화 (smokegrenade · cutwire), 리플레이 형식 {ReplayFile.FormatVersion}");
++    }
++}
+diff --git a/src/Tests/N79aSelfTest.cs b/src/Tests/N79aSelfTest.cs
+index b8d65333..82e6ba6d 100644
+--- a/src/Tests/N79aSelfTest.cs
++++ b/src/Tests/N79aSelfTest.cs
+@@ -5,7 +5,7 @@ namespace KoreanDivision.Tests;
+ 
+ /// <summary>
+ /// N79a 집결 지점 · 포격 종류 (Rally.cs · GroundFire.cs): 집결 지점 지정 (자기 중대만 · 리플레이 기록), 후퇴 → 집결 지점, 집결 지점 없는 중대는 기존 목표,
+-/// 준비 사격 N발 뒤 끝, 이동탄막 착탄선 전진, 연막 미구현 (명령 거부), 탄약 한도, 지속 사격 그대로, 저장 · 체크섬 · 명령 직렬화. `KD_SELFTEST_ONLY=n79a`.
++/// 준비 사격 N발 뒤 끝, 이동탄막 착탄선 전진, 연막 (N59 구현 — 곡사포 연막 실행), 탄약 한도, 지속 사격 그대로, 저장 · 체크섬 · 명령 직렬화. `KD_SELFTEST_ONLY=n79a`.
+ /// </summary>
+ public static class N79aSelfTest
+ {
+@@ -196,15 +196,14 @@ public static class N79aSelfTest
+ 
+     static void TestSmoke(GameOptions opt, Action<bool, string> check)
+     {
++        // N59 (참호 돌파 묶음): 연막 종류가 구현됨 — 연막탄 있는 곡사포는 breach.smokeRounds 발을 쏘고 끝 (상세는 BreachSelfTest)
+         var (w, gun, c) = Battery(opt.Seed + 13);
+         int log0 = w.CommandLog.Count;
+         w.GroundFire(1, new[] { gun }, c + new Vector2(10, 0), GroundFireKind.Smoke);
+         Steps(w, 5);
+-        // 직접 명령을 넣어도 실행되지 않는다
+-        w.Issue(new GroundFireExCommand(1, new[] { gun.Id }, c + new Vector2(10, 0), GroundFireKind.Smoke, Vector2.Zero));
+-        Steps(w, 5);
+-        check(gun.Order != UnitOrder.GroundFire && w.CommandLog.Count == log0 + 1, $"연막: 명령 종류만 있고 실행 안 됨 (연막탄 없음) — 명령 {gun.Order}");
+-        check(!string.IsNullOrEmpty(KoreanDivision.UI.S.FireKindSmokeNone) && KoreanDivision.UI.S.FireKindSmokeNone.Contains("연막탄 없음"), "연막 안내 문구 (Strings)");
++        check(gun.Order == UnitOrder.GroundFire && gun.GroundKind == GroundFireKind.Smoke && gun.GroundRounds == Defs.Current.Breach.SmokeRounds && w.CommandLog.Count == log0 + 1,
++            $"연막: 곡사포 연막 지점 포격 실행 (명령 {gun.Order} · 종류 {gun.GroundKind} · 발수 {gun.GroundRounds})");
++        check(!string.IsNullOrEmpty(KoreanDivision.UI.S.FireKindSmokeNone) && KoreanDivision.UI.S.FireKindSmokeNone.Contains("연막탄"), "연막 안내 문구 (Strings)");
+     }
+ 
+     static void TestAmmoCap(GameOptions opt, Action<bool, string> check)
+diff --git a/src/Tests/SnapshotSelfTest.cs b/src/Tests/SnapshotSelfTest.cs
+index 0f735528..86fdfc78 100644
+--- a/src/Tests/SnapshotSelfTest.cs
++++ b/src/Tests/SnapshotSelfTest.cs
+@@ -648,7 +648,7 @@ public static class SnapshotSelfTest
+         Audit1(typeof(WeatherState), "Kind Time StartKind StartTime Schedule Next TimeStepTicks Changes", "");   // WTHR
+         Audit1(typeof(Faction), "Id Name Lang IsAi RevealAll Defeated Revealed NoHqTime Team", "");
+         Audit1(typeof(FogOfWar), "world width height own memory Enabled Version seeded stampEpoch",
+-            "grids circles forget stampMark vision due fversion");   // grids = own 의 동맹 합침 (불러올 때 다시 만듦) · 원 표 캐시 · 작업 버퍼 · 표시 마크 (epoch 로 무효화) · 지형 시야 메모 (지형만의 순수 함수)
++            "grids circles forget stampMark vision due fversion smokeNear smokeMark");   // smokeNear · smokeMark = 연막 찍기 작업 버퍼 · 표시 (N59)   // grids = own 의 동맹 합침 (불러올 때 다시 만듦) · 원 표 캐시 · 작업 버퍼 · 표시 마크 (epoch 로 무효화) · 지형 시야 메모 (지형만의 순수 함수)
+         Audit1(typeof(GameMap),
+             "Width Height Seed Id DisplayName FileHash Mirrored tiles walkable occupant passable high Version StartTiles ResourceSites UnitSpawns",
+             "ChangeLog terrainDirty terrainHashDirty TerrainVersion TrenchVersion terrainLock forestDepth tileFlags terrainHash terrainEdits");   // terrainEdits = 렌더러용 편집 기록   // 숲 깊이 · 칸 표시 · 지형 해시 = 지형 · 고지에서 다시 계산   // ChangeLog 는 길찾기가 소비하는 기록 — 불러올 때 길찾기 그래프를 현재 지도에서 새로 만든다
+diff --git a/src/UI/Strings.cs b/src/UI/Strings.cs
+index 822f6808..db0f9a7d 100644
+--- a/src/UI/Strings.cs
++++ b/src/UI/Strings.cs
+@@ -98,7 +98,12 @@ public static partial class S
+     public const string FireKindPrep = "준비 사격";
+     public const string FireKindBarrage = "이동탄막";
+     public const string FireKindSmoke = "연막";
+-    public const string FireKindSmokeNone = "연막탄 없음 (참호 돌파 묶음 때)";
++    public const string FireKindSmokeNone = "연막탄이 있는 포가 없습니다 (박격포 · 곡사포)";
++    public const string CmdSmokeGrenade = "연막탄";
++    public const string TipSmokeGrenade = "연막 수류탄을 지점에 던집니다 (사거리 5칸). 연막은 30초 동안 반경 2.5칸을 덮고, 그 너머로는 보이지도 쏘지도 못합니다 (양쪽 모두).";
++    public const string CmdCutWire = "철조망 절단";
++    public const string TipCutWire = "지점 근처 철조망 칸을 한 사람씩 맡아 옆으로 가서 4초 동안 잘라 통로를 냅니다. 새 명령이면 그만둡니다.";
++    public const string CutWireNone = "근처에 철조망이 없습니다";
+     public const string CmdGrenade = "수류탄";
+     public const string TipGrenade = "수류탄을 지점에 던집니다 (사거리 5칸, 1.5초 뒤 폭발, 반경 1.5칸, 엄폐 무시). 엄폐 중인 적이 4칸 안, 전차가 3칸 안이면 자동으로 던집니다. 비전투 중 천천히 회복합니다.";
+     public const string CmdMount = "하마/승마";
