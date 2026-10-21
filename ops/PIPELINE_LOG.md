@@ -43,6 +43,7 @@
 | 06:3x | spec T19 분할 완료(78k, 95초): T19a 저장 슬롯 → T19b 탄약·포탄 → T19c 홈 3화면 → T19d 학파, 전부 스택 체인(spec/t19-split aea476b). 발주: T19a(opus, t09 위). 열린 질문 4: T29 를 t09 위로 재스택할지(정산 코드 겹침) · 후속 탭 포함 여부 · 규칙 9 키 카드 분리 | T19b 는 T29 재스택 결정 뒤 |
 | 06:4x | fix/n12-forest 완료(sonnet, 98k, 1205초): 코드 결함 아님, 시험 장면 낡음(formRelax 휴식 정렬). 시험 3파일만 수정, 전 묶음 PASS, GOLDEN 일치. 사용자 판단 M1(main 병합 여부) | main selftest 정상화 대기 → release 재실행 필요 |
 | 06:5x | T29 wip-ready (sonnet, 88k, 555초): t29-campaign-economy-json 783e7ce (gemini-import 63080df 위). D23·D24 완료, 경제 숫자 14개 JSON 이전(campaign_economy.json), missions·savecompat PASS, GOLDEN 일치. 발주: T29b 재스택(t09 위, 정산 로직 통합) — L1 기본값 이행 | 완료 14/24 |
+| 07:0x | T04 wip-ready (opus, 111k, 1498초): wip/orderq2 79ae768 (breach2 위). patch 3way 불가 → --reject + 11곳 수동 반영. FV54/Replay21, GOLDEN 일치, orderq·firectl·replay·snapshot·command PASS, uifuzz 875동작 0오류. 교훈: 옛 패치는 처음부터 --reject. 발주: T05(opus)·T24(opus)·T04 리뷰(sonnet) | 上 5 가동, 완료 15/27 |
 
 ## 점검 (완료 보고마다 갱신)
 | 지표 | v1 이전 | 지금 | 비고 |
@@ -52,5 +53,5 @@
 | 지휘자 토큰 | 360k | 측정 전 | |
 | wip-ready 형식 준수 | - | 8/8 준수(T22·T23·T21·T01·T03·T07·T08·T28: 카드·QUEUE·커밋·시트·알려진 흠) | 첫 보고 도착 시 |
 | scout(haiku) charter 준수 | - | 준수(표 형식 · 근거 · 열린 질문 포함) | 1건 |
-| 완료된 카드 / 발주 | 10/13 병합 | 14/24 (T29 포함; T27 포함; T09 포함; T18 종결 · T22 · T23 · T21 · T01 · T03 · T07 · T08 · T28 · T06 wip-ready(T06 은 수용 기준 미달)) | |
+| 완료된 카드 / 발주 | 10/13 병합 | 15/27 (T04 포함; T29 포함; T27 포함; T09 포함; T18 종결 · T22 · T23 · T21 · T01 · T03 · T07 · T08 · T28 · T06 wip-ready(T06 은 수용 기준 미달)) | |
 | 오류·재작업 | - | 2건(T26 역할 오배정 44k) · 1건(T18 중복 발주, 낭비 56k) → 규칙 추가: 발주 전 QUEUE 행을 MERGE_QUEUE 완료표와 대조 | |
