@@ -69,6 +69,8 @@ public sealed class MoveStats
     public long MarchStart, MarchStop;   // 행진 사격 시작 · 종료 (유닛 또는 중대 단위)
     public readonly Dictionary<int, float> lastFlagMul = new();
     /// <summary>[측정 전용] 아군 오사 (같은 팀 · 동맹이 가한 피해) — 무기 종류별 (명중 수 · 피해량 · 사살 수). 시뮬은 읽지 않음 — 저장 · 체크섬 없음 (불러오면 0 부터).</summary>
+    /// <summary>[측정 전용] 전과 보고용: 희생자 세력별 사살 원인 [0 사격, 1 근접, 2 포격]. 시뮬은 읽지 않음 — 저장 없음 (불러오면 0 부터).</summary>
+    public readonly Dictionary<int, long[]> LossCause = new();
     public readonly SortedDictionary<string, int> KillSources = new(StringComparer.Ordinal);   // [측정 전용] 사살 원인 (Combat3.CountKill)
     public readonly SortedDictionary<string, FriendlyFireLine> FriendlyFire = new(StringComparer.Ordinal);
     public sealed class FriendlyFireLine { public int Hits; public int Kills; public double Damage; }

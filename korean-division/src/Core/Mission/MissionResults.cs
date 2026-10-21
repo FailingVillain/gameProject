@@ -30,6 +30,10 @@ public sealed class MissionResults
     /// <summary>[측정] 아군 오사 — 무기 종류별 (명중 · 사살 · 피해량). 저장 · 체크섬과 무관한 부가 계수기.</summary>
     public Dictionary<string, FriendlyFireEntry> FriendlyFire { get; set; } = new();
     public sealed class FriendlyFireEntry { public int Hits { get; set; } public int Kills { get; set; } public double Damage { get; set; } }
+    /// <summary>전과 보고 (표시 전용): 세력별 사상 원인 [사격, 근접, 포격] (이번 실행에서 센 것) · 아군 중대별 병력.</summary>
+    public Dictionary<int, long[]> LossCause { get; set; } = new();
+    public List<CompanyLine> Companies { get; set; } = new();
+    public sealed class CompanyLine { public int Number { get; set; } public int Initial { get; set; } public int Alive { get; set; } public int Kills { get; set; } }
     public string SavedAt { get; set; } = "";
     public List<FactionLine> Factions { get; set; } = new();
     public List<ObjectiveLine> Objectives { get; set; } = new();
@@ -74,6 +78,9 @@ public sealed class MissionResults
                 State = m.ObjState[i] == MissionState.Done ? "done" : m.ObjState[i] == MissionState.Failed ? "failed" : "active",
             });
         }
+        foreach (var (f, c) in w.Stats.LossCause) r.LossCause[f] = (long[])c.Clone();
+        foreach (var c in w.CompaniesOf(m.Player).OrderBy(c => c.Number))
+            r.Companies.Add(new CompanyLine { Number = c.Number, Initial = Math.Max(c.InitialStrength, c.Members.Count), Alive = c.Members.Count(u => u.Alive), Kills = c.Members.Sum(u => u.Kills) });
         var forceOf = new Dictionary<int, string>();
         foreach (var (fid, ids) in m.ForceUnits) foreach (int id in ids) forceOf[id] = fid;
         foreach (var u in w.Units)

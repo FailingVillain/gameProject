@@ -186,6 +186,11 @@ public sealed partial class World
     {
         if (target.Hp <= 0 && target is Unit kv && source is Unit ks && !(ks.Owner == kv.Owner || Allied(ks.Owner, kv.Owner)))   // [측정 전용] 사살 원인: 10초 구간 / 공격자 종류 / 무기 / 피해자 종류
         { string kk = $"{(int)(Time / 10) * 10:000}s {ks.Def.Key}/{weapon ?? ks.Def.Weapon}->{kv.Def.Key}"; Stats.KillSources[kk] = Stats.KillSources.GetValueOrDefault(kk) + 1; }
+        if (target.Hp <= 0 && target is Unit lv && source is Unit lk && !(lk.Owner == lv.Owner || Allied(lk.Owner, lv.Owner)))   // [측정 전용] 전과 보고: 희생자 세력별 원인
+        {
+            if (!Stats.LossCause.TryGetValue(lv.Owner, out var lc)) Stats.LossCause[lv.Owner] = lc = new long[3];
+            lc[lk.Charging ? 1 : Defs.Current.Weapon(weapon ?? lk.Def.Weapon) is { Splash: > 0 } ? 2 : 0]++;
+        }
         bool friendly = source != null && (source.Owner == target.Owner || Allied(source.Owner, target.Owner));   // 아군 오사 (포탄 파편, pursuit2) 는 사살 · 계급에 넣지 않음
         if (target.Hp <= 0 && target is Unit tv && source is Unit sv && !friendly)
         {

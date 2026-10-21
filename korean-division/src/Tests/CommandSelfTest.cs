@@ -384,6 +384,7 @@ public static class CommandSelfTest
             "미션 결과: 장교 정식 계급 · 임시 진급 · 경험치 · 직책 기록 (사병은 없음)");
         string json = System.Text.Json.JsonSerializer.Serialize(res, CommandJson.Options);
         check(json.Contains("\"xp\"", StringComparison.OrdinalIgnoreCase) && json.Contains("\"tempRank\"", StringComparison.OrdinalIgnoreCase), "결과 json 에 xp · tempRank");
+        check(res.Companies.Count > 0 && res.Companies.All(c => c.Alive <= c.Initial && c.Alive >= 0) && json.Contains("\"companies\"", StringComparison.OrdinalIgnoreCase), "전과 보고: 중대별 요약 (잔존 ≤ 편성) 이 결과에 포함");
         // 임시 진급한 장교는 진급 후보
         p1[0].Hp = 0;
         for (int i = 0; i < 2; i++) w.Step();

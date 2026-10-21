@@ -18,6 +18,10 @@ public static class SaveManager
 
     public const string QuickName = "quicksave";
     public const int AutosaveKeep = 3;
+    /// <summary>큰 교전 직전 자동 저장 슬롯 (한 개, 덮어씀) · 조용한 시간 20초 · 최소 한 번에 6발 · 저장 간격 2분 (게임 시간 틱).</summary>
+    public const string BattleName = "autosave_battle";
+    public const long BattleLullTicks = 20 * 60, BattleSaveGap = 2 * 60 * 60;
+    public const int BattleShotMin = 6;
     /// <summary>자동 저장 간격 (게임 시간, 틱). 10분. 퍼즈가 짧게 바꾼다.</summary>
     public static long AutosaveTicks = 10 * 60 * 60;
 

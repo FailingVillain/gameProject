@@ -677,3 +677,7 @@
 - 산개 파상 횡대 (`formations.json lineShape = "line_waves"`) · choke (`combat.chokeEnabled`) 는 **기본 끔**. 측정 변형 `KD_OBS_VARIANT` = FMOFF · LWON · LWX(`KD_OBS_LW`) · CHOKE · RST0 등 (TacticsObs.ApplyVariant, --collide 도 같음). `--collide` 끝에 `[rev]` 역전 유닛 상태 분류.
 - 측정 (같은 빌드, 2026-10-22): --collide 역전/s 대형 완화 끔→켬 amove 1.63→1.29 · battle 0.77→0.71 · march 0.20→0.11. tactics-obs 5시드 B(ai_bn_assault) 승: 끔 5 · 켬 4 · 산개 파상 1 · 간격만 1.3 2 (넓은 횡대는 공격 측 불리). choke 켬: tactics-obs A 2→4/5 · B 4→5/5 이지만 --choke 다리 통과 틱 2193→2748 (w3 co3) · 2524→4641 (co5) · 역전/유닛-분 34→56 — 큐가 통과를 늦춤 → 끔 유지.
 - 테스트 `KD_SELFTEST_ONLY=formrelax` · `choke`, 측정 `--choke [w=3] [co=3] [terrain=bridge|ford] [off=1]`.
+
+## 지휘 편의 ①⑤ 전투 자동 저장 · 전과 보고 (2026-10-22, T17 = 구 `battlereport` 복원)
+- 미션 중 저장 = 기존 HUD 저장 버튼 · F6 (`.kds`). 큰 교전 직전 자동 저장 = `Game.BattleAutosave`: 사격 없는 20초 뒤 `World.Shots` 가 한 번에 6발 이상 되는 틱 경계에서 슬롯 `autosave_battle` 한 개를 덮어씀 (최소 간격 2분, 미션만, 월드 읽기만 — 시뮬 · 저장 형식 무변경, FV 불변). 상수 `SaveManager.Battle*`.
+- 전과 보고 = 결과 화면 `DrawBattleReport`: 세력별 사상 원인(사격 · 근접 · 포격 %, `MoveStats.LossCause` 측정 전용 — 불러오면 0부터) + 아군 중대별 잔존/편성/사살. `MissionResults.LossCause/Companies` (JSON 추가 필드).
