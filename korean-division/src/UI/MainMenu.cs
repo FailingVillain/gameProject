@@ -12,7 +12,8 @@ namespace KoreanDivision.UI;
 /// </summary>
 public sealed class MainMenu
 {
-    enum Page { Main, Setup, Replays, Battle, Load, Missions, Campaign }
+    enum Page { Main, Setup, Replays, Battle, Load, Missions, Campaign, Settings, Codex }
+    CodexMenu? codex;
     CampaignMenu? campaign;
     MissionMenu? missions;   // 미션 선택 · 브리핑 (MissionMenu.cs)
 
@@ -60,6 +61,8 @@ public sealed class MainMenu
             case "spectate": page = Page.Setup; spectate = true; break;
             case "replays": OpenReplays(); break;
             case "battle": page = Page.Battle; break;
+            case "settings": page = Page.Settings; break;
+            case "codex": page = Page.Codex; codex = new CodexMenu(); break;
             case "load": OpenLoad(); break;
             case "missions": page = Page.Missions; missions = new MissionMenu(); break;
             case "campaign": page = Page.Campaign; campaign = new CampaignMenu(); break;
@@ -110,7 +113,13 @@ public sealed class MainMenu
             case Page.Setup: DrawSetup(); break;
             case Page.Replays: DrawReplays(); break;
             case Page.Battle: DrawBattle(); break;
+            case Page.Settings: DrawSettings(); break;
             case Page.Load: DrawLoad(); break;
+            case Page.Codex:
+                codex ??= new CodexMenu();
+                codex.Draw(screenW, screenH);
+                if (codex.BackRequested) { codex.BackRequested = false; page = Page.Main; }
+                break;
             case Page.Campaign:
                 campaign ??= new CampaignMenu();
                 campaign.Draw(screenW, screenH);
@@ -184,7 +193,8 @@ public sealed class MainMenu
         if (Button(new Rectangle(x, y, lw, h), S.MenuLoad, size: 24)) OpenLoad();
         if (Button(new Rectangle(x + lw + gap, y, lw, h), S.MenuReplays, size: 24)) OpenReplays();
         y += h + gap;
-        if (Button(new Rectangle(x, y, w, h), S.MenuBattle, size: 26)) page = Page.Battle;
+        if (Button(new Rectangle(x, y, lw, h), S.MenuBattle, size: 24)) page = Page.Battle;
+        if (Button(new Rectangle(x + lw + gap, y, lw, h), S.MenuCodex, size: 24)) { page = Page.Codex; codex ??= new CodexMenu(); }
         y += h + gap;
         // 빠른 교전 두 가지: 200 대 200 (가볍게) · 500 대 500 — 한 줄에 반씩
         float hw = (w - gap) / 2;
@@ -193,7 +203,54 @@ public sealed class MainMenu
         if (Button(new Rectangle(x + hw + gap, y, hw, h), S.MenuQuickBattle, size: 24)) Chosen = QuickBattleOptions();
         if (Ui.Contains(new Rectangle(x + hw + gap, y, hw, h), mouse)) Ui.Text(S.MenuQuickBattleTip, x + (w - Ui.Measure(S.MenuQuickBattleTip, 16).X) / 2, screenH - 40, 16, Palette.TextDim);
         y += h + gap;
-        if (Button(new Rectangle(x, y, w, h), S.Quit, size: 26)) ExitRequested = true;
+        if (Button(new Rectangle(x, y, lw, h), S.MenuSettings, size: 24)) page = Page.Settings;
+        if (Button(new Rectangle(x + lw + gap, y, lw, h), S.Quit, size: 24)) ExitRequested = true;
+    }
+
+    // ---------------------------------------------------------------- 환경 설정 (UserSettings)
+
+    void DrawSettings()
+    {
+        float pw = MathF.Min(760, screenW - 40), ph = 360;
+        var panel = new Rectangle((screenW - pw) / 2, MathF.Max(16, (screenH - ph) / 2 - 10), pw, ph);
+        Ui.Panel(panel, Palette.Alpha(Palette.PanelDark, 235), Palette.HudTrim);
+        Ui.Text(S.MenuSettings, panel.X + 24, panel.Y + 16, 26, Palette.Accent);
+        float lx = panel.X + 24, cx = panel.X + 170, y = panel.Y + 70;
+        bool windowed = UserSettings.Mode == UserSettings.WindowMode.Windowed;
+
+        Ui.Text(S.SetResolution, lx, y + 6, 16, Palette.TextDim);
+        float x = cx;
+        foreach (var (rw, rh) in UserSettings.Resolutions)
+        {
+            string lab = $"{rw}x{rh}";
+            float bw = Ui.Measure(lab, 16).X + 28;
+            if (Button(new Rectangle(x, y, bw, 32), lab, windowed, windowed && UserSettings.Width == rw && UserSettings.Height == rh))
+            { UserSettings.Width = rw; UserSettings.Height = rh; UserSettings.Apply(); UserSettings.Save(); }
+            x += bw + 8;
+        }
+        y += 38;
+        if (!windowed) Ui.Text(S.SetResolutionNote, cx, y, 16, Palette.TextDim);
+        y += RowH - 38 + 16;
+
+        Ui.Text(S.SetWindowMode, lx, y + 6, 16, Palette.TextDim);
+        var modes = new[] { (UserSettings.WindowMode.Windowed, S.SetModeWindowed), (UserSettings.WindowMode.Borderless, S.SetModeBorderless), (UserSettings.WindowMode.Fullscreen, S.SetModeFullscreen) };
+        x = cx;
+        foreach (var (m, lab) in modes)
+        {
+            if (Button(new Rectangle(x, y, 120, 32), lab, true, UserSettings.Mode == m))
+            { UserSettings.Mode = m; UserSettings.Apply(); UserSettings.Save(); }
+            x += 128;
+        }
+        y += RowH + 16;
+
+        Ui.Text(S.SetVolume, lx, y + 6, 16, Palette.TextDim);
+        if (Button(new Rectangle(cx, y, 36, 32), "-")) { UserSettings.SetVolume(UserSettings.Volume - 0.1f); UserSettings.Save(); }
+        Ui.TextCentered($"{(int)MathF.Round(UserSettings.Volume * 100)}%", new Rectangle(cx + 40, y, 80, 32), 16, Palette.Text);
+        if (Button(new Rectangle(cx + 124, y, 36, 32), "+")) { UserSettings.SetVolume(UserSettings.Volume + 0.1f); UserSettings.Save(); }
+        if (Button(new Rectangle(cx + 180, y, 100, 32), S.SetMute, true, Sfx.Muted)) Sfx.Muted = !Sfx.Muted;
+
+        Ui.Text(S.SetFileNote, lx, panel.Y + panel.Height - 96, 16, Palette.TextDim);
+        if (Button(new Rectangle(panel.X + 24, panel.Y + panel.Height - 62, 140, 40), S.MenuBack)) page = Page.Main;
     }
 
     // ---------------------------------------------------------------- 설정

@@ -5,7 +5,7 @@ namespace KoreanDivision.Tests;
 
 /// <summary>
 /// 미션 틀 검증 (KD_SELFTEST_ONLY=missions): 샘플 미션 읽기 · 목표 종류별 판정 · 패배 조건 · 사건표 · 배치 단계 결정성 ·
-/// 미션 중 저장 / 불러오기 · 리플레이. 그리고 창 없는 미션 실행 (--mission-run &lt;id&gt; [--seconds N] [--seed N] [--verify]).
+/// 미션 중 저장 / 불러오기 · 리플레이. 그리고 창 없는 미션 실행 (--mission-run <id> [--seconds N] [--seed N] [--verify]).
 /// </summary>
 public static class MissionSelfTest
 {
@@ -40,6 +40,7 @@ public static class MissionSelfTest
         var defs = Defs.Current;
         CampaignChecks(defs, check);
         Campaign2Checks(defs, check);
+        CampaignHomeChecks(defs, check);
         TutorialChecks(defs, check);
 
         // ---- 샘플 미션: 읽기 · 생성 · 병력 수 · 중대/대대 · 계급 · 태그
@@ -241,7 +242,7 @@ public static class MissionSelfTest
 
     // ---------------------------------------------------------------- 창 없는 미션 실행 (CLI)
 
-    /// <summary>--mission-run &lt;id&gt; [--seconds N] [--seed N] [--verify] [--deploy force:x,y,facing]: 모든 세력 AI 로 끝까지 (또는 N초) 돌리고 결과 json 을 쓴다.</summary>
+    /// <summary>--mission-run <id> [--seconds N] [--seed N] [--verify] [--deploy force:x,y,facing]: 모든 세력 AI 로 끝까지 (또는 N초) 돌리고 결과 json 을 쓴다.</summary>
     /// <summary>캠페인 1-1 미션: 읽기 · 300틱 실행 · 400 마적 · 캠페인 상태 왕복 저장.</summary>
     static void CampaignChecks(Defs defs, Action<bool, string> check)
     {
@@ -429,6 +430,220 @@ public static class MissionSelfTest
             check(w4.Units.Count(u => u.Owner == 1 && u.Def.Key == "infantry" && u.Rank >= r3) >= 20 && w4.Units.Any(u => u.Owner == 1 && u.IsOfficer && u.OfficerXp == 70), "1-2 다시 하기: 처음 받은 이월 병력으로 시작 (1-2 생존자로 덮이지 않음)");
         }
         finally { Environment.SetEnvironmentVariable("KD_CAMPAIGN_DIR", old); }
+    }
+
+    /// <summary>
+    /// 캠페인 홈 MVP (S1 home-state, S5 home-events):
+    /// v1 JSON 호환성 및 v2 기본값 초기화 · CampaignEconomy (비용/치료/전역/신병배치/전투정산/패널티상한) · CampaignEvents (5종 로드/선택지/결정적 분기).
+    /// </summary>
+    static void CampaignHomeChecks(Defs defs, Action<bool, string> check)
+    {
+        // 1) v1 JSON 읽기 호환성 및 v2 기본값 초기화
+        string v1Json = """
+        {
+          "Version": 1,
+          "CampaignId": "c1",
+          "NextMission": "c1_02_tumen",
+          "Completed": [ "c1_01_hoeryong" ],
+          "History": [],
+          "Units": [],
+          "Officers": [],
+          "HowitzerCompany": false
+        }
+        """;
+        var s1 = CampaignState.FromJson(v1Json);
+        check(s1 != null && s1.Version == 2, "v1 JSON 읽기: Version=2 마이그레이션");
+        check(s1!.Supply == 3000f, $"v1 읽기: Supply = 3000 (실제 {s1.Supply})");
+        check(s1.Manpower.Recruits == 2000 && s1.Manpower.Wounded == 0, $"v1 읽기: Recruits = 2000, Wounded = 0");
+        check(s1.Stock.Rifles.GetValueOrDefault("ru") == 3000, "v1 읽기: Rifles['ru'] = 3000");
+        check(s1.Stock.Ammo["ru"] == 100000 && s1.Stock.Ammo["jp"] == 100000 && s1.Stock.Ammo["de"] == 100000 && s1.Stock.Ammo["fr"] == 100000 && s1.Stock.Ammo["jpOld"] == 100000, "v1 읽기: Ammo 5종 각 100,000");
+        check(s1.Stock.Shells["infGun"] == 500 && s1.Stock.Shells["field"] == 300 && s1.Stock.Shells["howitzer"] == 150, "v1 읽기: Shells 500/300/150");
+        check(s1.Roster.Count >= 4 && s1.Roster.Any(c => c.Id == "b1_c1") && s1.Roster.Any(c => c.Id == "mg"), "v1 읽기: Roster 4개 중대 초기화");
+        check(s1.Flags["heir_mood"] == 60 && s1.Flags["cmd_favor"] == 50, "v1 읽기: Flags heir_mood=60, cmd_favor=50");
+
+        // 2) CampaignEconomy: 병종별 투입 비용 계산
+        check(CampaignEconomy.UnitDeployCost("infantry") == 1.0f &&
+              CampaignEconomy.UnitDeployCost("recruit") == 1.0f &&
+              CampaignEconomy.UnitDeployCost("guard") == 1.0f &&
+              CampaignEconomy.UnitDeployCost("assault") == 1.5f &&
+              CampaignEconomy.UnitDeployCost("sniper") == 1.5f &&
+              CampaignEconomy.UnitDeployCost("mg") == 2.0f &&
+              CampaignEconomy.UnitDeployCost("cavalry") == 3.0f &&
+              CampaignEconomy.UnitDeployCost("infGun") == 5.0f &&
+              CampaignEconomy.UnitDeployCost("fieldGun") == 7.0f &&
+              CampaignEconomy.UnitDeployCost("howitzer") == 9.0f &&
+              CampaignEconomy.UnitDeployCost("armoredCar") == 12.0f &&
+              CampaignEconomy.UnitDeployCost("armoredTrain") == 40.0f,
+              "CampaignEconomy: 병종별 투입 비용 매핑");
+        var cInf = new CampaignState.RosterCompany { Id = "test_inf", Kind = "infantry", Strength = 60 };
+        var cMg = new CampaignState.RosterCompany { Id = "test_mg", Kind = "mg", Strength = 30 };
+        check(CampaignEconomy.CompanyDeployCost(cInf) == 60f && CampaignEconomy.CompanyDeployCost(cMg) == 60f, "CampaignEconomy: 중대 투입 비용");
+        check(CampaignEconomy.TotalDeployCost(new[] { cInf, cMg }, 1.5f) == 180f, "CampaignEconomy: 총 투입 비용 (scaleMul 1.5)");
+
+        // 3) CampaignEconomy: 부상자 치료 (보급 0.5 차감)
+        var sEco = new CampaignState { Supply = 100f };
+        var c1 = sEco.Roster.First(c => c.Id == "b1_c1");
+        c1.Strength = 40;
+        c1.Wounded = 20;
+        c1.UnhealedOps = 2;
+        int healed = CampaignEconomy.HealWounded(sEco, 15);
+        check(healed == 15 && c1.Strength == 55 && c1.Wounded == 5 && c1.UnhealedOps == 0 && MathF.Abs(sEco.Supply - (100f - 15 * 0.5f)) < 1e-3f, "CampaignEconomy: 부상자 치료 (보급 0.5 차감, Strength 복귀, UnhealedOps 리셋)");
+
+        // 4) CampaignEconomy: 미치료 3회 전역 처리
+        var sUnheal = new CampaignState();
+        var cu = sUnheal.Roster.First(c => c.Id == "b1_c1");
+        cu.Wounded = 10;
+        cu.UnhealedOps = 2;
+        var rTest = new MissionResults { MissionId = "c1_01_hoeryong", Result = "won" };
+        rTest.Factions.Add(new MissionResults.FactionLine { Id = 1, Player = true, Lost = 0 });
+        CampaignEconomy.SettleBattle(sUnheal, rTest);
+        check(cu.Wounded == 0 && cu.UnhealedOps == 0 && sUnheal.LastDebrief?.DischargedWounded == 10, "CampaignEconomy: 미치료 3회 부상자 전역 처리");
+
+        // 5) CampaignEconomy: 신병 배치 (보급 0.5 + 소총 1 차감, 소총 0일 때 배치 불가)
+        var sRec = new CampaignState { Supply = 100f };
+        sRec.Manpower.Recruits = 50;
+        sRec.Stock.Rifles["ru"] = 10;
+        var cr = sRec.Roster.First(c => c.Id == "b1_c1");
+        cr.Strength = 30; // MaxStrength=60, 여유 30
+        int assigned = CampaignEconomy.AssignRecruits(sRec, "b1_c1", 20); // 소총 10정이므로 10명만 배치
+        check(assigned == 10 && cr.Strength == 40 && sRec.Stock.Rifles["ru"] == 0 && sRec.Manpower.Recruits == 40 && MathF.Abs(sRec.Supply - (100f - 5f)) < 1e-3f, "CampaignEconomy: 신병 배치 (소총 1정 + 보급 0.5 차감, 소총 한도 제한)");
+        int assignedFail = CampaignEconomy.AssignRecruits(sRec, "b1_c1", 10);
+        check(assignedFail == 0 && cr.Strength == 40, "CampaignEconomy: 소총 0일 때 신병 배치 불가 (0 반환)");
+
+        // 6) CampaignEconomy: 전투 정산 (사상자 25% 부상자 복귀, 적 사살 노획, 정기 보급 도착)
+        var sBat = new CampaignState
+        {
+            Supply = 1000f,
+            Manpower = new CampaignState.ManpowerState { Recruits = 1000, Wounded = 0 }
+        };
+        sBat.Stock.Rifles["ru"] = 500;
+        sBat.Stock.Ammo["ru"] = 10000;
+        var rBat = new MissionResults { MissionId = "c1_01_hoeryong", Result = "won", EnemyKills = 100 };
+        rBat.Factions.Add(new MissionResults.FactionLine { Id = 1, Player = true, Lost = 40, Spawned = 100, Alive = 60 });
+        rBat.Factions.Add(new MissionResults.FactionLine { Id = 2, Player = false, Name = "마적" });
+        CampaignEconomy.SettleBattle(sBat, rBat);
+        check(sBat.Manpower.Wounded == 10 && sBat.LastDebrief?.WoundedReturned == 10 && sBat.LastDebrief?.Dead == 30, "CampaignEconomy: 사상자 25% 부상자 복귀");
+        check(MathF.Abs((sBat.LastDebrief?.LootedSupply ?? 0) - 30f) < 0.01f && sBat.LastDebrief?.LootedRifles == 50 && sBat.LastDebrief?.LootedAmmo == 2000, $"CampaignEconomy: 적 사살 노획 정산 (보급/소총/탄약: sup={sBat.LastDebrief?.LootedSupply}, rif={sBat.LastDebrief?.LootedRifles}, ammo={sBat.LastDebrief?.LootedAmmo})");
+        check(sBat.LastDebrief?.RegularSupplyAdded == 1500f && sBat.LastDebrief?.RecruitsAdded == 1000, "CampaignEconomy: 정기 보급 도착");
+        check(sBat.Stock.RecentLog.Count > 0, "CampaignEconomy: RecentLog 정산 기록 추가");
+
+        // 7) CampaignEconomy: 패널티 합산 상한 30% 제한
+        var sPen = new CampaignState();
+        sPen.Flags["heir_mood"] = 5;
+        sPen.Flags["cmd_favor"] = 5;
+        sPen.Flags["next_supply_penalty_pct"] = 25;
+        var (recPen, supPen) = CampaignEconomy.ComputePenalty(sPen);
+        check(recPen <= 0.30f && supPen <= 0.30f && supPen == 0.30f, $"CampaignEconomy: 패널티 상한 30% 제한 (신병: {recPen:0.00}, 보급: {supPen:0.00})");
+
+        // 8) CampaignEvents: 5종 이벤트 로드
+        var events = CampaignEvents.Current;
+        check(events.Count == 5 &&
+              events.Any(e => e.Id == "e1_guard_front") &&
+              events.Any(e => e.Id == "e2_credit_steal") &&
+              events.Any(e => e.Id == "e3_bleed_order") &&
+              events.Any(e => e.Id == "e4_heir_lecture") &&
+              events.Any(e => e.Id == "e5_corps_restraint"),
+              "CampaignEvents: 5종 이벤트 로드 완료");
+
+        // 9) CampaignEvents: E1(a) 시위대 의무 투입 & E2(c) 남 참장 동맹 플래그
+        var sEv1 = new CampaignState();
+        CampaignEvents.ApplyChoice(sEv1, "e1_guard_front", 0);
+        var guardCo = sEv1.Roster.FirstOrDefault(c => c.Id == "guard");
+        check(sEv1.Flags["heir_mood"] == 70 && sEv1.Supply == 3200f && guardCo != null && guardCo.Mandatory && sEv1.Flags["ev_e1_guard_front"] == 1,
+              "CampaignEvents: E1(a) 수락 -> 심기+10, 보급+200, 시위대 의무 투입");
+
+        var sEv2 = new CampaignState();
+        CampaignEvents.ApplyChoice(sEv2, "e2_credit_steal", 2);
+        check(sEv2.Flags.GetValueOrDefault("nam_ally") == 1 && sEv2.Flags["ev_e2_credit_steal"] == 3,
+              "CampaignEvents: E2(c) 통보 -> nam_ally=1 플래그");
+
+        // 10) CampaignEvents: 시드 기반 50% 분기 결정성 확인
+        var sDet1 = new CampaignState { Seed = 12345 };
+        var sDet2 = new CampaignState { Seed = 12345 };
+        int roll1a = CampaignEvents.RollDeterministic(sDet1, "e1_guard_front_b");
+        int roll2a = CampaignEvents.RollDeterministic(sDet2, "e1_guard_front_b");
+        check(roll1a == roll2a, $"CampaignEvents: 동일 시드 동일 분기 결정성 (roll: {roll1a})");
+        var sDet3 = new CampaignState { Seed = 98765 };
+        int roll3 = CampaignEvents.RollDeterministic(sDet3, "e1_guard_front_b");
+        check(roll1a is >= 0 and < 100 && roll3 is >= 0 and < 100, "CampaignEvents: 결정적 난수 0..99 범위");
+
+        // 11) CampaignEvents: E5(a) 군단장 만류 수용
+        var sEv5 = new CampaignState();
+        CampaignEvents.ApplyChoice(sEv5, "e5_corps_restraint", 0);
+        check(sEv5.Supply == 3200f && sEv5.Flags["heir_mood"] == 55, "CampaignEvents: E5(a) 수용 -> 보급+200, 심기-5");
+
+        // 12) Phase 2 S3: PendingOperation (AmmoScale & 출격 중대) 미션 반영 검증
+        string s3Dir = TestTemp.Child("campaign_s3");
+        string? oldS3Dir = Environment.GetEnvironmentVariable("KD_CAMPAIGN_DIR");
+        Environment.SetEnvironmentVariable("KD_CAMPAIGN_DIR", s3Dir);
+        try
+        {
+            var sS3 = new CampaignState();
+            sS3.Pending = new CampaignState.PendingOperation
+            {
+                MissionId = CampaignState.FirstMission,
+                DeployedCompanyIds = new() { "b1_c1", "b1_c2" },
+                AmmoScale = 0.5f,
+            };
+            sS3.Save();
+            var dS3 = MissionDef.Load(CampaignState.FirstMission);
+            check(dS3.Json.Contains("\"ammoScale\": 0.5"), "S3: PendingOperation ammoScale 미션 JSON 반영");
+            var wS3 = World.CreateMissionWorld(dS3, defs);
+            var uS3 = wS3.Units.First(u => u.Owner == 1 && u.Def.Category == "infantry");
+            check(uS3.Ammo == (int)MathF.Round((uS3.Weapon?.Ammo ?? 0) * 0.5f), $"S3: World 생성 시 유닛 Ammo 절반 감량 ({uS3.Ammo}/{uS3.Weapon?.Ammo})");
+        }
+        finally
+        {
+            CampaignState.Reset();
+            Environment.SetEnvironmentVariable("KD_CAMPAIGN_DIR", oldS3Dir);
+        }
+
+        // 13) 출격 직전 저장 위험: BeginOperation 은 Pending 에만 기록하고 자원은 결과 확정 (SettleBattle) 때 반영
+        var sOp = new CampaignState();
+        float supply0 = sOp.Supply; int ammo0 = sOp.Stock.Ammo[StockKeys.Ru];
+        CampaignEconomy.BeginOperation(sOp, CampaignState.FirstMission, new[] { "b1_c1", "b1_c2" });
+        check(sOp.Supply == supply0 && sOp.Stock.Ammo[StockKeys.Ru] == ammo0 && sOp.Pending is { SupplySpent: > 0f, AmmoLoaded: > 0 },
+            "출격 개시: 자원은 그대로, Pending 에만 비용 · 탄약 기록");
+        float cost = sOp.Pending!.SupplySpent; int loaded = sOp.Pending.AmmoLoaded;
+        var rOp = new MissionResults { MissionId = CampaignState.FirstMission, Result = "won" };
+        rOp.Factions.Add(new MissionResults.FactionLine { Id = 1, Player = true, Spawned = 120, Alive = 120 });
+        CampaignEconomy.SettleBattle(sOp, rOp);
+        check(sOp.Pending == null && MathF.Abs(sOp.Supply - (supply0 - cost + 1500f)) < 0.01f && sOp.Stock.Ammo[StockKeys.Ru] == ammo0 && sOp.LastDebrief?.AmmoRefunded == loaded,
+            $"전투 정산: 비용 차감 후 정기 보급 +1500, 생존 100% 라 탄약 전량 환원 (보급 {sOp.Supply})");
+        var sStale = new CampaignState();
+        sStale.Pending = new CampaignState.PendingOperation { MissionId = "other", SupplySpent = 999f, DeployedCompanyIds = new() { "b1_c1" } };
+        CampaignEconomy.SettleBattle(sStale, rOp);
+        check(sStale.Pending == null && sStale.Supply == 3000f + 1500f, "전투 정산: 다른 미션의 묵은 Pending 은 비용 없이 버림");
+
+        // 14) 출격 검증 · 군수 계산 (투입 비용 · 상한 · 탄약 부족)
+        var sCap = new CampaignState();
+        CampaignEconomy.BeginOperation(sCap, "m", new[] { "b1_c1", "b1_c2", "b1_c3", "mg" }, maxDeploy: 2);
+        check(sCap.Pending!.SupplySpent == (180f + 60f) * 1.5f, $"출격 비용: 상한 지정 미션에서 180명 초과 = x1.5 ({sCap.Pending.SupplySpent})");
+        var sLow = new CampaignState();
+        sLow.Stock.Ammo[StockKeys.Ru] = 3600;   // 60명 x 60발 = 3600 필요 → 절반만 있으면 scale 0.5
+        sLow.Stock.Ammo[StockKeys.Ru] = 1800;
+        CampaignEconomy.BeginOperation(sLow, "m", new[] { "b1_c1" });
+        check(MathF.Abs(sLow.Pending!.AmmoScale - 0.5f) < 0.001f && sLow.Pending.AmmoLoaded == 1800, "출격 탄약 부족: AmmoScale = 보유 / 필요");
+        var sMand = new CampaignState();
+        sMand.Roster.First(c => c.Id == "b1_c1").Mandatory = true;
+        CampaignEconomy.BeginOperation(sMand, "m", new[] { "b1_c2" });
+        check(sMand.Pending!.RefusedMandatory && sMand.Flags["heir_mood"] == 60, "의무 중대 제외: 출격 때는 심기 불변, 기록만");
+        sMand.Pending.MissionId = CampaignState.FirstMission;
+        CampaignEconomy.SettleBattle(sMand, rOp);
+        check(sMand.Flags["heir_mood"] == 50 && sMand.Flags["cmd_favor"] == 45, "의무 중대 제외: 결과 확정 때 심기 -10 · 총사령관 -5");
+
+        // 15) 저장 보정 (Sanitize) · 상수 키
+        var sBad = CampaignState.FromJson("{\"Version\":2,\"Supply\":-50,\"Manpower\":{\"Recruits\":99999},\"Roster\":[{\"Id\":\"x\",\"Strength\":500,\"MaxStrength\":60}],\"Stock\":{\"Ammo\":{\"ru\":-5}}}")!;
+        check(sBad.Supply == 0f && sBad.Manpower.Recruits == CampaignState.ManpowerState.MaxRecruits && sBad.Roster[0].Strength == 60 && sBad.Stock.Ammo[StockKeys.Ru] == 0 && sBad.Stock.Ammo.ContainsKey(StockKeys.Jp),
+            "캠페인 저장 보정: 음수 · 상한 초과 값 정리, 빠진 키는 기본값");
+
+        // 16) 도감 필터 (정적 Filter)
+        var allUnits = defs.Units.Values.ToList();
+        check(UI.CodexMenu.Filter(allUnits, UI.CodexMenu.FactionFilter.All, UI.CodexMenu.CategoryFilter.All).Count == allUnits.Count, "도감 필터: 전체 = 전부");
+        var cavs = UI.CodexMenu.Filter(allUnits, UI.CodexMenu.FactionFilter.All, UI.CodexMenu.CategoryFilter.Cavalry);
+        check(cavs.All(u => u.Mounted) && cavs.Count == allUnits.Count(u => u.Mounted), "도감 필터: 기병 = Mounted 만");
+        var infs = UI.CodexMenu.Filter(allUnits, UI.CodexMenu.FactionFilter.All, UI.CodexMenu.CategoryFilter.Infantry);
+        check(infs.All(u => !u.Mounted && !u.IsArmored) && !infs.Any(cavs.Contains), "도감 필터: 보병 · 기병 겹치지 않음");
     }
 
     public static int RunCli(string[] args)

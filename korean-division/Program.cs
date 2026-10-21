@@ -31,13 +31,14 @@ string? factionArg = null, verifyReplay = null, menuShot = null, menuPage = null
 string? battleA = null, battleB = null, battleMap = "flat";   // 교전 테스트: --battle "종류:수,..." --vs "..." [--battle-map flat|terrain|city] [--battle-ai-vs-ai] [--battle-distance N]
 bool battleAiVsAi = false;
 int battleDistance = 40;
+bool crashTest = false;
 bool aiGiven = false;   // --ai 를 명시했는가 (교전 테스트도 그 AI 로 — 비교용)
 bool gameFlag = false;   // 게임을 바로 시작하는 인자가 하나라도 있으면 시작 화면을 건너뛴다
 try
 {
     for (int i = 0; i < args.Length; i++)
     {
-        if (args[i] is not ("--novsync" or "--menu-shot" or "--menu-page" or "--theme" or "--uifuzz" or "--fuzz-menu" or "--mute")) gameFlag = true;   // 테마만 바꿔도 시작 화면은 그대로
+        if (args[i] is not ("--novsync" or "--menu-shot" or "--menu-page" or "--theme" or "--uifuzz" or "--fuzz-menu" or "--mute" or "--crash-test")) gameFlag = true;   // 테마만 바꿔도 시작 화면은 그대로
         switch (args[i])
         {
             case "--map":
@@ -98,6 +99,7 @@ try
             case "--mission": opt.MissionId = args[++i]; break;   // 미션 (assets/missions/<id>.json) — 배치 단계부터
             case "--mission-start": opt.MissionSkipDeploy = true; break;   // 미션 배치 단계 건너뛰기
             case "--probe": break;
+            case "--crash-test": crashTest = true; break;   // 충돌 로그 확인용: 시작 직후 예외
             default: throw new ArgumentException($"알 수 없는 인자: {args[i]}");
         }
     }
@@ -155,10 +157,13 @@ if (verifyReplay != null)
     return bad < 0 ? 0 : 2;
 }
 
+CrashLog.Install();   // 처리 안 된 예외 → logs/crash-*.txt
+UserSettings.Load();   // 해상도 · 창 모드 · 음량 (settings.json)
 Raylib.SetTraceLogLevel(TraceLogLevel.Warning);
 Raylib.SetConfigFlags(ConfigFlags.ResizableWindow | ConfigFlags.Msaa4xHint | (noVsync ? 0 : ConfigFlags.VSyncHint));
-Raylib.InitWindow(Config.ScreenWidth, Config.ScreenHeight, $"{Config.Title} {Config.Version}");
+Raylib.InitWindow(UserSettings.Width, UserSettings.Height, $"{Config.Title} {Config.Version}");
 Raylib.SetWindowMinSize(Config.MinScreenWidth, Config.MinScreenHeight);
+if (UserSettings.Mode != UserSettings.WindowMode.Windowed) UserSettings.Apply();
 Raylib.SetExitKey(KeyboardKey.Null);   // Esc 는 게임 내 취소 키로 사용
 Raylib.SetTargetFPS(noVsync ? 0 : Config.MaxFps);
 Ui.LoadFonts(defs.AllText().Concat(MissionDef.AllText()));   // 미션 파일의 제목 · 브리핑 · 목표 글자도 아틀라스에
@@ -166,6 +171,7 @@ KoreanDivision.Render.Theme.Use(opt.Theme);   // 이미지 세트 (assets/themes
 Sfx.Init(opt.Theme == "none" ? "ww2" : opt.Theme);   // 효과음 (assets/sounds/<id>)
 
 UiFuzz? fuzz = fuzzSeconds > 0 ? new UiFuzz(fuzzSeconds, opt.Seed) : null;
+if (crashTest) throw new InvalidOperationException("crash-test");
 bool running = true;
 double updMs = 0, drawMs = 0;
 int measured = 0;
@@ -208,6 +214,7 @@ while (running)
         startError = e.Message;
     }
     if (created == null) { menu?.ShowMain(cur.FromMenu ? string.Format(S.StartFailed, startError) : null); continue; }
+    CrashLog.Context = $"미션 {cur.MissionId ?? "-"}, 시드 {(cur.MissionId != null ? cur.MissionSeed ?? cur.Seed : cur.Seed)}, 지도 {cur.MapId ?? $"{cur.MapWidth}x{cur.MapHeight}"}, AI {cur.Ai}";
     cur.Loaded = null;   // 월드는 게임이 가져갔다 (다시 시작 · 메뉴 복귀가 옛 저장 월드를 다시 쓰지 않게)
     using var game = created;
     int frame = 0;

@@ -285,6 +285,7 @@ public sealed partial class World
             var u = SpawnUnit(def, f.Faction, WalkablePos(pos));
             u.Facing = facing;
             if (comps[block].Weapon is { } ow && u.Def.Weapon == Defs.RifleSlot) u.Weapon = Defs.Weapon(ow);   // 미션이 소총을 고정 (N54)
+            if (comps[block].AmmoScale is float asc && u.Ammo > 0) u.Ammo = Math.Max(0, (int)MathF.Round(u.Ammo * Math.Clamp(asc, 0f, 1f)));
             if (comps[block].Rank is { } mr && !u.IsOfficer)   // 명시 계급 (0 = 훈련병 허용); 없으면 SpawnUnit 의 기본 1
             {
                 int rank = RankNames.Snap(FactionEn(f.Faction), mr);   // 미사용 계급은 아래로 (ranks.json null)
@@ -710,5 +711,5 @@ public sealed partial class MapFile
     }
 }
 
-/// <summary>[치트 · 테스트] 미션 즉시 승리 / 패배 (콘솔 "mission win|lose", UI 퍼즈).</summary>
+/// <summary>[치트 · 테스트] 미션을 즉시 끝낸다 (콘솔 "mission win|lose", UI 퍼즈).</summary>
 public sealed record MissionEndCommand(int Faction, bool Won) : GameCommand(Faction);

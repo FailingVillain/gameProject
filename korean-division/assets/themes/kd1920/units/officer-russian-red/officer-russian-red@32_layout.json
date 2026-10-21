@@ -21,6 +21,10 @@
   "walk_2",
   "walk_3",
   "walk_4",
+  "walk_quick_1",
+  "walk_quick_2",
+  "walk_quick_3",
+  "walk_quick_4",
   "aim_a",
   "fire_a",
   "aim_c",
@@ -63,6 +67,16 @@
     "walk_4"
    ],
    "ms": 130,
+   "shared_fit": false
+  },
+  "walk_quick": {
+   "frames": [
+    "walk_quick_1",
+    "walk_quick_2",
+    "walk_quick_3",
+    "walk_quick_4"
+   ],
+   "ms": 95,
    "shared_fit": false
   },
   "fire_a": {
@@ -181,6 +195,10 @@
     "walk_2",
     "walk_3",
     "walk_4",
+    "walk_quick_1",
+    "walk_quick_2",
+    "walk_quick_3",
+    "walk_quick_4",
     "aim_a",
     "fire_a",
     "aim_c",
@@ -208,7 +226,7 @@
     "dead_c"
    ],
    "size": [
-    960,
+    1088,
     200
    ]
   }
@@ -234,105 +252,121 @@
    "sheet": "officer-russian-red@32.png",
    "col": 4
   },
-  "aim_a": {
+  "walk_quick_1": {
    "sheet": "officer-russian-red@32.png",
    "col": 5
   },
-  "fire_a": {
+  "walk_quick_2": {
    "sheet": "officer-russian-red@32.png",
    "col": 6
   },
-  "aim_c": {
+  "walk_quick_3": {
    "sheet": "officer-russian-red@32.png",
    "col": 7
   },
-  "fire_c": {
+  "walk_quick_4": {
    "sheet": "officer-russian-red@32.png",
    "col": 8
   },
-  "idle_alt": {
+  "aim_a": {
    "sheet": "officer-russian-red@32.png",
    "col": 9
   },
-  "hit": {
+  "fire_a": {
    "sheet": "officer-russian-red@32.png",
    "col": 10
   },
-  "fall": {
+  "aim_c": {
    "sheet": "officer-russian-red@32.png",
    "col": 11
   },
-  "dead": {
+  "fire_c": {
    "sheet": "officer-russian-red@32.png",
    "col": 12
   },
-  "charge_1": {
+  "idle_alt": {
    "sheet": "officer-russian-red@32.png",
    "col": 13
   },
-  "charge_2": {
+  "hit": {
    "sheet": "officer-russian-red@32.png",
    "col": 14
   },
-  "charge_3": {
+  "fall": {
    "sheet": "officer-russian-red@32.png",
    "col": 15
   },
-  "charge_4": {
+  "dead": {
    "sheet": "officer-russian-red@32.png",
    "col": 16
   },
-  "melee_1": {
+  "charge_1": {
    "sheet": "officer-russian-red@32.png",
    "col": 17
   },
-  "melee_2": {
+  "charge_2": {
    "sheet": "officer-russian-red@32.png",
    "col": 18
   },
-  "melee_3": {
+  "charge_3": {
    "sheet": "officer-russian-red@32.png",
    "col": 19
   },
-  "wave_1": {
+  "charge_4": {
    "sheet": "officer-russian-red@32.png",
    "col": 20
   },
-  "wave_2": {
+  "melee_1": {
    "sheet": "officer-russian-red@32.png",
    "col": 21
   },
-  "wave_3": {
+  "melee_2": {
    "sheet": "officer-russian-red@32.png",
    "col": 22
   },
-  "wave_4": {
+  "melee_3": {
    "sheet": "officer-russian-red@32.png",
    "col": 23
   },
-  "stagger_b": {
+  "wave_1": {
    "sheet": "officer-russian-red@32.png",
    "col": 24
   },
-  "kneel_b": {
+  "wave_2": {
    "sheet": "officer-russian-red@32.png",
    "col": 25
   },
-  "dead_b": {
+  "wave_3": {
    "sheet": "officer-russian-red@32.png",
    "col": 26
   },
-  "stagger_c": {
+  "wave_4": {
    "sheet": "officer-russian-red@32.png",
    "col": 27
   },
-  "slump_c": {
+  "stagger_b": {
    "sheet": "officer-russian-red@32.png",
    "col": 28
   },
-  "dead_c": {
+  "kneel_b": {
    "sheet": "officer-russian-red@32.png",
    "col": 29
+  },
+  "dead_b": {
+   "sheet": "officer-russian-red@32.png",
+   "col": 30
+  },
+  "stagger_c": {
+   "sheet": "officer-russian-red@32.png",
+   "col": 31
+  },
+  "slump_c": {
+   "sheet": "officer-russian-red@32.png",
+   "col": 32
+  },
+  "dead_c": {
+   "sheet": "officer-russian-red@32.png",
+   "col": 33
   }
  },
  "anchors": "officer-russian-red@32_anchors.json"

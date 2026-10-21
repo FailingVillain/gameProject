@@ -94,7 +94,7 @@ internal sealed class UnitArt
     LodAnim? aCrawl, aTrenchFire, aGrenade, aIdle, aWalkFire, aSalute, aPresent, aStart, aHitB, aSupply, aGallop, aDeploy, aPack, aCrewFire, aBinocKneel, aSurrender;
     LodAnim[] idleExtras = Array.Empty<LodAnim>();
     int fPackedPose = -1, fDeployedPose = -1;
-    LodAnim? aIdleAlt, aIdleLean, aWalk, aWalkShoulder, aCharge, aMelee, aMeleeB, aSwordWave, aWaveFlag, aHullMove, aTurretFire, aBinoc;
+    LodAnim? aIdleAlt, aIdleLean, aWalk, aWalkShoulder, aWalkQuick, aCharge, aMelee, aMeleeB, aSwordWave, aWaveFlag, aHullMove, aTurretFire, aBinoc;
     LodAnim[] fire = Array.Empty<LodAnim>();
     LodAnim? aFixBayonet;   // N57 착검 · 칼 뽑기 (보병 시트에만 — 없으면 조준 자세)
     LodAnim? aPistolFire;   // 권총 사격 (보조 무기, 카빈은 멜빵) — 현재 무기가 sidearm 일 때 fire 대신
@@ -137,7 +137,7 @@ internal sealed class UnitArt
         aCrewFire = aDeploy != null && aPack != null ? (s.Anim("fire") ?? s.Anim("fire_prone") ?? s.Anim("fire_kneel")) : null;
         if (aCrewFire != null && aCrewFire.Frames.Length < 2) aCrewFire = null;
         if (aCrewFire == null) { aDeploy = null; aPack = null; }
-        aWalk = s.Anim("walk") ?? s.Anim("move"); aWalkShoulder = s.Anim("walk_shoulder");
+        aWalk = s.Anim("walk") ?? s.Anim("move"); aWalkShoulder = s.Anim("walk_shoulder"); aWalkQuick = s.Anim("walk_quick");
         aCharge = s.Anim("charge"); aMelee = s.Anim("melee"); aMeleeB = s.Anim("melee_b"); aSwordWave = s.Anim("sword_wave"); aWaveFlag = s.Anim("wave_flag"); aFixBayonet = s.Anim("fix_bayonet"); aBinoc = s.Anim("binoculars"); aBinocKneel = s.Anim("binoculars_kneel");
         if (aCrewFire != null)
         {
@@ -176,7 +176,7 @@ internal sealed class UnitArt
     {
         var b = new HashSet<int> { fIdle };
         void Add(LodAnim? a) { if (a != null) foreach (int f in a.Frames) b.Add(f); }
-        foreach (var a in new[] { aIdle, aIdleAlt, aIdleLean, aWalk, aWalkShoulder, aWalkFire, aCharge, aMelee, aMeleeB, aSwordWave, aWaveFlag, aFixBayonet, aCrawl, aTrenchFire, aGrenade, aSalute, aPresent, aSurrender, aStart, aHitB, aSupply, aGallop, aDeploy, aPack, aCrewFire, aBinoc, aBinocKneel, aHullMove }) Add(a);
+        foreach (var a in new[] { aIdle, aIdleAlt, aIdleLean, aWalk, aWalkShoulder, aWalkQuick, aWalkFire, aCharge, aMelee, aMeleeB, aSwordWave, aWaveFlag, aFixBayonet, aCrawl, aTrenchFire, aGrenade, aSalute, aPresent, aSurrender, aStart, aHitB, aSupply, aGallop, aDeploy, aPack, aCrewFire, aBinoc, aBinocKneel, aHullMove }) Add(a);
         foreach (var a in idleExtras) Add(a);
         foreach (var a in fire) Add(a);
         Add(aPistolFire);
@@ -197,7 +197,7 @@ internal sealed class UnitArt
     ///   장교 빈자리 점검 칼 흔들기 (SwordWaveTick) = sword_wave 한 번.
     ///   돌격: 근접 공격 직후 melee · melee_b (공격마다 해시) → 달리는 중 charge, 장교는 돌격 명령 직후 sword_wave.
     ///   사격 직후 = 사격 칸 (fire_a/b/c 를 사격마다 해시로), 고정 (Unit.Pinned) 이고 서 있으면 엎드려 쏘기.
-    ///   맞은 직후 0.15초 = hit, 걷기 = walk (이동 명령마다 33% 는 walk_shoulder, 없으면 walk), 표적 = 조준,
+    ///   맞은 직후 0.15초 = hit, 속보 = walk_quick (없으면 walk), 걷기 = walk (이동 명령마다 33% 는 walk_shoulder, 없으면 walk), 표적 = 조준,
     ///   대기 = idle (가끔 idle_alt · idle_lean).
     /// </summary>
     public int LodFrame(Unit u, long tick, bool victory = false, bool inTrench = false, bool marching = false)
@@ -261,6 +261,7 @@ internal sealed class UnitArt
         if (u.Walking)
         {
             if (aGallop != null && u.Velocity.Length() > u.Def.Speed * 1.25f) return aGallop.FrameAt(Ms(tick + u.Id * 7), true);
+            if (aWalkQuick != null && u.QuickStep && !u.Def.Mounted) return aWalkQuick.FrameAt(Ms(tick + u.Id * 7), true);   // 속보 (표시 전용): 빠른 박자 · 큰 보폭 · 앞으로 숙임 · 총 높이 듦. 시트에 없으면 보통 걷기
             var w = aWalkShoulder != null && Hash(u.Id * 31 + 7, u.LastOrderTick) % 100 < ShoulderPct ? aWalkShoulder : aWalk;
             if (w != null) return w.FrameAt(Ms(tick + u.Id * 7), true);
         }
