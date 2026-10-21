@@ -86,3 +86,7 @@ L1 T29(첫 승리 정산+경제 JSON)를 t09-camp-slice 위로 재스택해 T09 
 
 ## O. T19a 질문 (2026-10-22; 브랜치 t19a-save-slots e511f75) — 무응답 시 괄호
 O1 자동 저장은 시도 1회당 1개만 보관(현행) vs 2개 이상 보관? (현행) · O2 재도전 복귀(작전 직전 자동 저장 불러오기)의 GUI 수동 확인 필요(사용자 또는 후속 검수).
+
+## P. T25 결과와 D01 불일치 (2026-10-22; 브랜치 kd/t25-bayonet-all 29695c3, kd-develop/kd-t25)
+- T25 구현: `bayonetFixOrderedOnly` true→false (D02 A 모든 돌격), balance.json·Defs.cs 기본값·Bayonet.cs 주석. 시험 수정 3(ChargeSelfTest·PursuitSelfTest 후퇴 적 2), **detcheck 골든 정당 재생성**(동작이 의도대로 바뀜): 19501757040f0d62 → 07def638b60429d7. tactics 묶음 5건 실패는 베이스(breach2)에도 있던 선재(gapfill·숲 2·카드 칸 단축키). tactics-obs 시드 8 측정·R3 리뷰는 미실시.
+- **P1 D01 불일치**: 사용자 답은 "3칸 유지"인데 **main 에는 이미 `marchChargeRange: 5`**(스냅샷 a1a35e6 이후 balance.json:135). 에이전트는 값을 건드리지 않음. 사용자 뜻대로 3칸으로 되돌릴까? A★ 3으로 변경(별도 작은 카드, 골든 재생성) / B 5 유지(제안이 이미 반영된 상태). 무응답 시 B(현행 5 유지, 변경 없음).
