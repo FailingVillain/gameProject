@@ -44,7 +44,8 @@ public static class CampaignSaves
         }
     }
 
-    public static bool SaveSlot(CampaignState s, int slot) => slot is >= 1 and <= SlotCount && WriteAtomic(SlotPath(slot), s.ToJson());
+    /// <summary>슬롯 저장. 이미 있는 칸이 깨졌거나 더 새 버전이면(Error) 덮어쓰지 않는다 — 원본 보존.</summary>
+    public static bool SaveSlot(CampaignState s, int slot) => slot is >= 1 and <= SlotCount && Describe(SlotPath(slot)).Error == null && WriteAtomic(SlotPath(slot), s.ToJson());
     public static bool SaveAuto(CampaignState s, Auto a) => WriteAtomic(AutoPath(a), s.ToJson());
 
     /// <summary>진행 저장 + 자동 저장 한 쌍 (작전 직전 · 정산 직후). 둘 다 성공해야 true (실패 시 호출자가 알림 + 다시 시도).</summary>

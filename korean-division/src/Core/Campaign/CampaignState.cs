@@ -352,7 +352,9 @@ public sealed class CampaignState
         try
         {
             if (!File.Exists(FilePath)) return false;
-            File.Move(FilePath, FilePath + ".bak", true);
+            string bak = FilePath + ".bak";
+            for (int i = 1; File.Exists(bak); i++) bak = FilePath + ".bak." + i;   // 기존 .bak 는 덮어쓰지 않는다
+            File.Move(FilePath, bak);
             return true;
         }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException) { return false; }
