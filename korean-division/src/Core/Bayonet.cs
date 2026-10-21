@@ -4,7 +4,7 @@ namespace KoreanDivision.Core;
 /// N57 착검 · 칼 뽑기 (사용자 2026-10-19): 착검 안 된 병사가 돌격을 시작하면 잠깐 제자리에서 착검 (소총 1~1.5초, 노병 ×0.7 · 신병 ×1.3)
 /// · 칼 뽑기 (대도 · 군도 · 단검 0.3~0.5초, 기병 군도 0.5초) 뒤 달린다. 한 번 꽂으면 유지 (BayonetFixed).
 /// 멈춤은 명령 반응 지연 (ReactDelay) 이 끝난 뒤 따로 센다 → N37 선택 규모 지연 단축이 줄이지 않는다.
-/// balance.json combat.bayonetFixOrderedOnly = true (기본) 이면 돌격 명령에만 멈추고, 자동 · 행진 · 역돌격은 멈춤 없이 착검된 것으로 친다.
+/// balance.json combat.bayonetFixOrderedOnly = true 이면 (기본 false, D02 A) 돌격 명령에만 멈추고, 자동 · 행진 · 역돌격은 멈춤 없이 착검된 것으로 친다.
 /// 저장 CMB2 (WriteCombat3 끝, FormatVersion 36) · 체크섬 HashCombat3.
 /// </summary>
 public sealed partial class Unit

@@ -79,8 +79,8 @@ public static class ChargeSelfTest
               && c.FixVeteranMul == 0.7f && c.FixRecruitMul > 1f,
             $"balance.json 착검 {c.BayonetFixSec[0]}~{c.BayonetFixSec[1]}초 (노병 ×{c.FixVeteranMul} · 신병 ×{c.FixRecruitMul}) · 칼 뽑기 {c.BladeDrawSec[0]}~{c.BladeDrawSec[1]}초 · 기병 군도 {c.CavalryDrawSec}초");
         check(c.SquadFollowFireAttackMove, $"balance.json squadFollowFireAttackMove {c.SquadFollowFireAttackMove} (N46b 사용자 결정: 대형 공격 이동도 따라 쏘기)");
-        check(c.BayonetFixOrderedOnly && b.MarchChargeSince == "phase",
-            $"스위치 기본값: bayonetFixOrderedOnly {c.BayonetFixOrderedOnly} (돌격 명령에만) · tactics.json marchChargeSince \"{b.MarchChargeSince}\" (전술 틀 국면 틱, 없으면 명령 틱)");
+        check(!c.BayonetFixOrderedOnly && c.MarchChargeRange == 5f && b.MarchChargeSince == "phase",
+            $"스위치 기본값: bayonetFixOrderedOnly {c.BayonetFixOrderedOnly} (D02 A: 모든 돌격 멈춤) · tactics.json marchChargeSince \"{b.MarchChargeSince}\" (전술 틀 국면 틱, 없으면 명령 틱)");
         check(Snapshot.FormatVersion >= 36 && LodSprite.UsedAnimNames.Contains("fix_bayonet"), $"Snapshot v{Snapshot.FormatVersion} (≥36 착검) · fix_bayonet 애니메이션 아틀라스 포함");
     }
 
@@ -146,8 +146,8 @@ public static class ChargeSelfTest
         check(!blocked && !u1.Charging && w1.Stats.MarchChargeBlocked > blk0, $"행진 돌격 허가: 적 4칸 (5칸 안) 이어도 신호 · 엄호 없고 교전 직후면 막힘 (돌격 {blocked}, 막힘 +{w1.Stats.MarchChargeBlocked - blk0})");
         // 신호: 적 제압
         bool sig = Try((w, c, u, foe) => { u.LastOrderTick = w.Tick; foreach (var f in foe) f.Suppression = (short)(defs.CombatRules.SuppressMax * 0.9f); return true; }, out var w2, out var u2);
-        check(sig && u2.Charging && u2.BayonetFixed && u2.FixLeft == 0 && w2.Stats.MarchChargeGated > 0,
-            $"행진 돌격 허가: 적이 제압되면 (신호) 돌격 {sig} · 자동 돌격이라 착검 멈춤 없음 (착검 {u2.BayonetFixed}, 남은 {u2.FixLeft}틱)");
+        check(sig && u2.Charging && !u2.BayonetFixed && u2.FixLeft > 0 && w2.Stats.MarchChargeGated > 0,
+            $"행진 돌격 허가: 적이 제압되면 (신호) 돌격 {sig} · D02 A 착검 멈춤 (착검 {u2.BayonetFixed}, 남은 {u2.FixLeft}틱)");
         // 예비 타이머: 국면 없음 → 명령 틱 기준 assaultFallbackSec 지남
         long fbTicks = Ticks(b.AssaultFallbackSec) + 5;
         bool fb = Try((w, c, u, foe) => { u.LastOrderTick = w.Tick - fbTicks; c.Drill.Phase = DrillPhase.Idle; return true; }, out _, out _);
@@ -228,7 +228,7 @@ public static class ChargeSelfTest
         check(second <= 4 && u.BayonetFixed, $"한 번 꽂으면 유지: 두 번째 돌격은 {second}틱 만에 출발 (착검 {u.BayonetFixed})");
     }
 
-    /// <summary>자동 돌격 (적이 1칸 안): 기본 (돌격 명령에만) = 멈춤 없이 착검 처리, bayonetFixOrderedOnly false = 자동 돌격도 멈춤.</summary>
+    /// <summary>자동 돌격 (적이 1칸 안): 기본 (D02 A, false) = 자동 돌격도 멈춤, bayonetFixOrderedOnly true = 멈춤 없이 착검 처리.</summary>
     static void TestAutoChargeSwitch()
     {
         (bool Charged, int Left, bool Fixed) Run(bool orderedOnly)
@@ -246,9 +246,9 @@ public static class ChargeSelfTest
             }
             finally { c.BayonetFixOrderedOnly = saved; }
         }
-        var a = Run(true); var b = Run(false);
-        check(a.Charged && a.Left == 0 && a.Fixed, $"자동 돌격 (기본 bayonetFixOrderedOnly true): 멈춤 없음 (남은 {a.Left}틱) · 착검 처리 {a.Fixed}");
-        check(b.Charged && b.Left > 0 && !b.Fixed, $"자동 돌격 (bayonetFixOrderedOnly false): 착검 멈춤 {b.Left}틱");
+        var a = Run(true); var b = Run(false);   // a = 옛 동작 (true), b = 기본 (false)
+        check(a.Charged && a.Left == 0 && a.Fixed, $"자동 돌격 (bayonetFixOrderedOnly true 스위치): 멈춤 없음 (남은 {a.Left}틱) · 착검 처리 {a.Fixed}");
+        check(b.Charged && b.Left > 0 && !b.Fixed, $"자동 돌격 (기본 bayonetFixOrderedOnly false): 착검 멈춤 {b.Left}틱");
     }
 
     static void TestFixInterrupt()
