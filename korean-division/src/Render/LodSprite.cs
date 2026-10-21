@@ -333,6 +333,28 @@ internal static class LodDraw
         if (lv.Group < Drawn.Length) Drawn[lv.Group]++;
     }
 
+    /// <summary>
+    /// 칸 (행 0) 의 그림 — 투명 여백을 잘라낸 부분 — 을 사각형 r (월드 좌표) 안에 비율을 지켜 맞춰 그린다: 가로 가운데 · 아래 맞춤.
+    /// 여러 칸짜리 가옥 발자국 그리기용 (그림을 바꾸지 않고 배율로 크기를 맞춤). zoom = 카메라 줌 (LOD 선택).
+    /// </summary>
+    public static void CellFit(LodSprite s, int frame, Rectangle r, float zoom, Color team)
+    {
+        if ((uint)frame >= (uint)s.FrameNames.Length || s.Levels.Length == 0) return;
+        var l0 = s.Levels[0];
+        float est = MathF.Min(r.Width / (l0.FrameW * 0.9f), r.Height / (l0.FrameH * 0.7f)) * zoom;   // LOD 0 1px → 화면 px (대략)
+        var lv = s.Atlas?.Resolve(s, s.LevelFor(est));
+        if (lv == null) return;
+        int ci = frame;
+        if (lv.CW[ci] == 0) { lv = s.Atlas?.FindCell(s, lv.Group, ci); if (lv == null) return; }
+        int cw = lv.CW[ci], ch = lv.CH[ci];
+        float k = MathF.Min(r.Width / cw, r.Height / ch);
+        float w = cw * k, h = ch * k;
+        var dest = new Rectangle(r.X + (r.Width - w) / 2, r.Y + r.Height - h, w, h);
+        TeamShader.Enter();
+        Raylib.DrawTexturePro(lv.CellTex[ci], new Rectangle(lv.CX[ci], lv.CY[ci], cw, ch), dest, Vector2.Zero, 0, team);
+        if (lv.Group < Drawn.Length) Drawn[lv.Group]++;
+    }
+
     static readonly bool MissLog = Environment.GetEnvironmentVariable("KD_LODMISS") == "1";
     static readonly HashSet<string> missSeen = new();
     /// <summary>[확인용] KD_LODMISS=1: 그리지 못한 칸을 (종류 · 프레임 · 행 · LOD · 이유) 별로 한 번씩 기록.</summary>

@@ -301,7 +301,7 @@ public sealed partial class MapRenderer : IDisposable
         var src = new Color[NS][][];
         for (int t = 0; t < NS; t++)
         {
-            var (name, fb) = SlotInfo(t);
+            var (name, fb) = SlotInfo(t, houseYard);
             var imgs = th?.TerrainImages(name, L.R) ?? th?.TerrainImages(fb, L.R);
             bool own = imgs == null;
             imgs ??= ProceduralTiles(fb, L.R);
@@ -333,12 +333,13 @@ public sealed partial class MapRenderer : IDisposable
     }
 
     /// <summary>슬롯의 테마 이름과 대체 지형 (테마에 그 이름이 없을 때).</summary>
-    static (string name, TerrainType fb) SlotInfo(int t)
+    /// houseYard: 가옥 그림이 있으면 가옥 칸 바닥은 마당 흙 (집은 BuildingRenderer 가 건물 단위로 덮어 그림).
+    static (string name, TerrainType fb) SlotInfo(int t, bool houseYard)
     {
         if (t < NT)
         {
             var ty = (TerrainType)t;
-            string n = ty switch { TerrainType.Forest => "forest_deep", TerrainType.Wire => "barbed_wire", TerrainType.Trench => "trench_h", _ => ty.ToString().ToLowerInvariant() };
+            string n = ty switch { TerrainType.Forest => "forest_deep", TerrainType.Wire => "barbed_wire", TerrainType.Trench => "trench_h", TerrainType.House when houseYard => "dirt", _ => ty.ToString().ToLowerInvariant() };
             return (n, ty);
         }
         if (t == SlotEdge) return ("forest_edge", TerrainType.Forest);
@@ -347,7 +348,7 @@ public sealed partial class MapRenderer : IDisposable
         return ("trench_" + TrenchPieces[t - SlotTrench], TerrainType.Trench);
     }
 
-    bool slotSplit, slotPieces, slotHg;
+    bool slotSplit, slotPieces, slotHg, houseYard;
 
     /// <summary>칸마다 그림 슬롯: 숲 = 8방향 이웃이 모두 숲이면 깊은 숲 · 아니면 가장자리, 참호 = 4방향 참호 이웃 마스크로 조각, 풀 고지 = 고지 타일.</summary>
     byte[] BuildSlots(Theme? th)
@@ -355,6 +356,7 @@ public sealed partial class MapRenderer : IDisposable
         slotSplit = th?.HasTerrain("forest_edge") == true && th.HasTerrain("forest_deep");
         slotPieces = th?.HasTerrain("trench_h") == true;
         slotHg = th?.HasTerrain("high_ground") == true;
+        houseYard = BuildingRenderer.HasHouseArt(th) && th!.HasTerrain("dirt");
         useRim = th?.HasTerrain("high_ground_rim_n") == true && th.HasTerrain("high_ground_rim_e") && th.HasTerrain("high_ground_rim_s") && th.HasTerrain("high_ground_rim_w");
         var sl = new byte[W * H];
         for (int y = 0; y < H; y++)
