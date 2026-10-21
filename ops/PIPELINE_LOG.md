@@ -45,6 +45,7 @@
 | 06:5x | T29 wip-ready (sonnet, 88k, 555초): t29-campaign-economy-json 783e7ce (gemini-import 63080df 위). D23·D24 완료, 경제 숫자 14개 JSON 이전(campaign_economy.json), missions·savecompat PASS, GOLDEN 일치. 발주: T29b 재스택(t09 위, 정산 로직 통합) — L1 기본값 이행 | 완료 14/24 |
 | 07:0x | T04 wip-ready (opus, 111k, 1498초): wip/orderq2 79ae768 (breach2 위). patch 3way 불가 → --reject + 11곳 수동 반영. FV54/Replay21, GOLDEN 일치, orderq·firectl·replay·snapshot·command PASS, uifuzz 875동작 0오류. 교훈: 옛 패치는 처음부터 --reject. 발주: T05(opus)·T24(opus)·T04 리뷰(sonnet) | 上 5 가동, 완료 15/27 |
 | 07:1x | T10 wip-ready (opus, 220k 토큰 — 한도 초과 근접, 1570초, 83회): kd/t10-comms-b 1c91c96 (breach2 위). 세부 설계 없는 카드라 '기본 끔 스위치 + 초안 수치'로 구현(fieldops.json), fieldops 16/16 + 14묶음 PASS, GOLDEN 일치. FV57/Replay22 예약(54~56 건너뜀). 신규: ops/FV_RESERVATIONS.md 예약표 작성(번호 충돌 사전 관리). 질문 N1~N4 | 개선 반영: 세부 설계 없는 카드 → 안전 기본값 규칙 |
+| 07:2x | T04 리뷰 완료(72k, 97초): 차단 0. 지적 2건 — 철조망 절단이 대기열을 취소하지 않음(돌격보병 절단 중 다음 다리 실행) · 대기열 해시에 구성원 수 누락. 후속 수정 에이전트 발주(wip/orderq2 위 1커밋). T10(FV57/R22) 와 orderq2(FV54/R21) 정면 충돌 재확인 → FV_RESERVATIONS 에 기록됨 | 리뷰 단계 3/3 에서 실제 결함 포착(T01 blocker, T03 FV, T04 2건) |
 
 ## 점검 (완료 보고마다 갱신)
 | 지표 | v1 이전 | 지금 | 비고 |
