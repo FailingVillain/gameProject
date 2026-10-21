@@ -76,7 +76,8 @@ public sealed partial class World
     /// 통과 큐: 이 깃발이 지금 서서 기다려야 하나 (StepAnchors 가 호출). 깃발이 이미 길목 안이거나 앞에 길목이 없으면 기다림 끝 (ChokeHold 0).
     /// 기다리는 조건 = 같은 편 · 같은 방향의 이동 중 깃발 Z 가 앞에 있고, Z 의 구성원이 길목 안에 있거나 Z 가 길목 입구에 더 가깝다 (같으면 중대 Id 낮은 쪽이 먼저).
     /// </summary>
-    const float ChokeQueueGap = 3f;
+    static float EnvF(string k, float d) { var v = Environment.GetEnvironmentVariable(k); return v == null ? d : float.Parse(v, System.Globalization.CultureInfo.InvariantCulture); }
+    static readonly float ChokeQueueGap = EnvF("KD_CQ_GAP", 3f), CqSlack = EnvF("KD_CQ_SLACK", 0f), CqEnter = EnvF("KD_CQ_ENTER", 0f);
 
     internal bool StepChokeQueue(Company c, CompanyAnchor a)
     {
@@ -98,7 +99,7 @@ public sealed partial class World
                 if (!m.Alive) continue;
                 if (ChokeAt(m.Pos)) { entered = true; continue; }
                 Vector2 rel = m.Pos - hit;
-                if (Vector2.Dot(rel, a.Heading) < 0f && rel.LengthSquared() < 30f * 30f && Vector2.Dot(m.Pos - a.Pos, a.Heading) > 0f) tailBehind = true;
+                if (Vector2.Dot(rel, a.Heading) < -CqSlack && rel.LengthSquared() < 30f * 30f && Vector2.Dot(m.Pos - a.Pos, a.Heading) > 0f) tailBehind = true;
             }
             bool occupying = entered && tailBehind;
             float theirs = ChokeAhead(za, out _);

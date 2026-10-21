@@ -210,7 +210,7 @@ public sealed partial class World
             bool hold = Defs.CombatRules.ChokeEnabled && StepChokeQueue(c, a);   // 길목 앞에서 앞 중대가 빠지기를 기다림 (Choke.cs)
             bool fight = engaged > n / 4;   // 공격 이동: 구성원 4분의 1 넘게 교전 중 → 대열 전체가 서서 싸운다 (기다림 상한 없음)
             if (fight) { mul = 0f; a.WaitTicks = 0; }
-            else if (hold) { mul = 0; a.WaitTicks = 0; }
+            else if (hold) { mul = MathF.Min(mul, KdHoldMul); a.WaitTicks = 0; }
             else if (mul == 0) { if (++a.WaitTicks > MaxWaitTicks) mul = 0.5f; }
             else a.WaitTicks = 0;
             // 깃발 속도 배수는 목표값 (0 · 0.5 · 1) 으로 바로 뛰지 않고 가속 제한으로 따라간다 (서고 가기 깜빡임 방지, (a)-4 · (b)-3)
@@ -221,6 +221,7 @@ public sealed partial class World
         }
     }
 
+    static readonly float KdHoldMul = Environment.GetEnvironmentVariable("KD_CQ_HOLDMUL") is { } hm ? float.Parse(hm, System.Globalization.CultureInfo.InvariantCulture) : 0f;
     void MoveFlag(Company c, CompanyAnchor a, float dt, float mul)
     {
         var f = a.Flag;
@@ -274,7 +275,7 @@ public sealed partial class World
             if (!a.Column) EnterColumn(c, a);
         }
         else if (a.Column && worst >= exit) a.ClearTicks = 0;   // 아직 덜 트임 — 종대 유지
-        else if (a.Column && Defs.CombatRules.ChokeEnabled && CompanyInChoke(c)) a.ClearTicks = 0;   // choke: 꼬리가 길목을 다 빠질 때까지 종대 유지 (대형 재배정 없음)
+        else if (a.Column && Defs.CombatRules.ChokeEnabled && Environment.GetEnvironmentVariable("KD_CQ_NOCOL") == null && CompanyInChoke(c)) a.ClearTicks = 0;   // choke: 꼬리가 길목을 다 빠질 때까지 종대 유지 (대형 재배정 없음)
         else if (a.Column && (a.ClearTicks += NarrowCheckInterval) >= Defs.CombatRules.NarrowClearTicks)
         {
             a.Column = false;

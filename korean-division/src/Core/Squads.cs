@@ -211,7 +211,7 @@ public sealed partial class World
             if (c.Holes == 0 || (Tick + c.Id * 97L) % Math.Max(ivMin, DecideInterval(c, iv)) != 0) continue;   // 경험치 많은 지휘관은 더 자주 (CommandRanks.cs) — 단 gapCheckMinSec 보다 자주는 아님 (N12)
             if (c.TA.Stage != TaStage.None) continue;               // N32 참호 돌격 중
             if (c.Anchor != null) continue;                         // 행군 · 정렬 중 — 도착한 뒤 다음 점검에서
-            if (rules.ChokeEnabled && CompanyInChoke(c)) continue;  // choke: 길목 안에서는 빈자리를 메우지 않는다 (빠져나간 뒤 다음 점검에서)
+            if (rules.ChokeEnabled && Environment.GetEnvironmentVariable("KD_CQ_NOGAP") == null && CompanyInChoke(c)) continue;  // choke: 길목 안에서는 빈자리를 메우지 않는다 (빠져나간 뒤 다음 점검에서)
             if (c.Drill.Phase != DrillPhase.Idle) continue;         // 틀 행동 중 (TacticDrill.cs) — 행동이 끝나면 정렬
             if (c.Facing == Vector2.Zero || c.Members.Count == 0) { c.Holes = 0; continue; }
             var cen = Centroid(c.Members);

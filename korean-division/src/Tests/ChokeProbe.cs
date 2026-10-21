@@ -36,6 +36,7 @@ public static class ChokeProbe
         }
         var defs = Defs.Load();
         defs.CombatRules.ChokeEnabled = !off;
+        if (Environment.GetEnvironmentVariable("KD_CQ_PUSH") is { } pv) defs.CombatRules.ChokePushScale = float.Parse(pv, System.Globalization.CultureInfo.InvariantCulture);
         Console.WriteLine($"[choke] 다리 폭 {width} · 중대 {co} x {men} · {terrain} · 길목 기능 {(off ? "끔" : "켬")}");
         for (int s = 0; s < seeds; s++)
         {
