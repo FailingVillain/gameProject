@@ -128,3 +128,9 @@ V1 연대 배속 규칙: 대대 소속 중대는 대대 단위로 함께 배속,
 - **Y1** 계속 돌릴지: A★ 지금 시트(rerender96_partial.png: infantry-regular · cavalry-default · standard-bearer-japanese · cavalry-fengtian) 검수 뒤 방향 확정 후 계속(그동안 드라이버는 유지) / B 지금 멈추고 시트 확인 뒤 재개 / C 전체 중단. 무응답 시 드라이버 유지(다른 heavy 작업과 겹치지 않게 T16 측정과 시간대 분리 필요).
 - 시트: 워크트리 `docs/art_review/rerender96_partial.png` (+ 메인 체크아웃 같은 경로 사본).
 - **J1 보강** (T06 리뷰): 리뷰어도 A(×0.7 되돌리기) 권고. 결정 전까지 wip/casualty2 는 병합 비권장. A 선택 시: ×0.7 폐기 + `bnRetreatCasMul` 기본 1(코드 보존) 또는 브랜치 폐기, golden 은 main 값 복귀. 대대전 손실 목표는 별도 카드(재투입 제한·종료 조건).
+
+## Z. T16 결과 (2026-10-22; 브랜치 kd/t16-trench 8b38b29, kd-develop/kd-t16; 기반 breach2) — 채택 기준 미달
+측정 20판(시드 101~120): 기본 5/20, boundEndDist 20 → 5, prepMinSec 20 → 6, suppFrac 0.7 → 5, 세 값 조합 → 3, N32 전역 끔 → 5, 한국 `korean+notrenchassault` → 4. **어느 값도 10/20 미달**. 진단 문서의 'N32 끔 7/10' 은 main 92ac51c5 기준이라 이 브랜치(breach 포함)에서 재현 안 됨 → 하락 원인이 N32 가 아니거나 breach 이후 달라졌을 가능성(표본 잡음 ±3). 일본 참호 peak 는 매 판 112.
+- 지휘자 기본 규칙대로 `assets/missions/trench_assault.json` 한국 세력에 `aiProfile: korean+notrenchassault` 를 넣었으나 **승수 개선 없음**(4/20) → 되돌려도 무방.
+- **Z1** A★ 그 미션 변경을 되돌림(tactics.json 은 원래 안 바뀜) + 원인 재조사 카드(上; main 에서 재현되는지·breach 가 바꾼 것 비교부터) / B 변경 유지 / C 보류. 무응답 시 변경 유지(영향은 이 미션 하나, 되돌리기 쉬움).
+- 부수 발견: **heavy gate = `tools/agent/heavy_gate.ps1`** (무거운 프로세스 전체 풀 8 초과 시 대기). T16 첫 에이전트가 1시간 50분 멈춘 원인은 T11 렌더 드라이버가 풀을 점유했기 때문으로 추정.
