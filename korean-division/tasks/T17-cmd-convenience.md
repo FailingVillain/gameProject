@@ -15,3 +15,5 @@
 KD_SELFTEST_ONLY=<command/mission 그룹>, savecompat, --uifuzz 30.
 ## 결과
 battlereport 패치 복원(ENGINE_NOTES 충돌만 수동 추가), Game.cs +22줄. 빌드 OK · command/savecompat/missions PASS · uifuzz 30 예외 0 · detcheck GOLDEN match. ⑦ 교전 알림/미니맵은 미승인이라 미구현(제안: 승인 시 별도 카드).
+
+리뷰 보강(Sonnet): BattleAutosave 판정을 SaveManager.BattleSaveDue(순수 함수, 동작 무변경)로 추출 + command 그룹에 자동 저장 테스트(트리거/2분 간격/재무장/실패 시 반복 없음) 및 LossCause 합계 단언 추가, MoveStats.cs summary 위치 수정. 빌드 OK · command PASS · uifuzz 30 예외 0 · detcheck GOLDEN match.
