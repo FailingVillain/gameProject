@@ -48,6 +48,7 @@
 | 07:2x | T04 리뷰 완료(72k, 97초): 차단 0. 지적 2건 — 철조망 절단이 대기열을 취소하지 않음(돌격보병 절단 중 다음 다리 실행) · 대기열 해시에 구성원 수 누락. 후속 수정 에이전트 발주(wip/orderq2 위 1커밋). T10(FV57/R22) 와 orderq2(FV54/R21) 정면 충돌 재확인 → FV_RESERVATIONS 에 기록됨 | 리뷰 단계 3/3 에서 실제 결함 포착(T01 blocker, T03 FV, T04 2건) |
 | 07:3x | T19a wip-ready (opus, 153k, 1047초): t19a-save-slots e511f75 (t09 위). T09 에는 자동 저장·슬롯이 없었음을 확인하고 신규 구현: 수동 슬롯 9 + 작전 직전/정산 직후 자동 저장, 실패 시 .tmp 정리·재시도 UI. 63080df 가드 최소 이식(재스택 없이). savecompat 새 시험 5, GOLDEN 일치, uifuzz 852프레임 0예외. 재도전 복귀는 GUI 수동 확인 미실시. T19b 는 T29b 재스택 완료 후 | 완료 17/28 |
 | 06:4x | T29b wip-ready (sonnet, 84k, 802초): t29b-on-t09 062dd38 (63080df 82ab015 + T29 ee810be 체리픽, 정산 충돌 통합). 재승리 = RecordRepeatVictory(D10+D23), 첫 승리 = T09 손실→Roster 유지. 이 브랜치가 T09·T29 둘을 대체(병합 시 단독). savecompat·missions PASS, GOLDEN 일치. 발주: T19b(opus, t19a 위 + t29b 체리픽) | 재스택 비용 802초·84k — 스택 간 정산 충돌 해소 성공 |
+| 06:5x | orderq2 리뷰 수정 완료(sonnet, 61k, 723초): 0377f8a — CutWireCommand 취소 목록 추가, 연막은 제외(Order 불변), 대기열 해시에 구성원 수 추가, 골든 불변(19501757040f0d62), TestWireSmoke 추가. 리뷰→수정→재검증 2번째 완주. 주의: T05·T24 는 79ae768 기반 → orderq2 0377f8a 와 병합 시 단순 합류 | 완료 변동 없음(수정 커밋) |
 
 ## 점검 (완료 보고마다 갱신)
 | 지표 | v1 이전 | 지금 | 비고 |
