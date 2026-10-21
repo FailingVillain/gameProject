@@ -122,9 +122,7 @@ public sealed partial class Game
                 if (!World.CheatsUsed)
                 {
                     // 저장 트랜잭션: 읽기 실패 (깨진 · 더 새 버전) 파일은 새 상태로 덮어쓰지 않는다. 확정 (Apply → Save) 은 결과가 정해진 이 한 곳에서만.
-                    var prev = CampaignState.Load();
-                    if (prev != null || CampaignState.LastLoadError == null)
-                        if (CampaignState.Apply(prev, missionResults) is { } cs) { campaignSaved = CampaignSaves.SaveWithAuto(cs, CampaignSaves.Auto.Settle); campaignUnsaved = campaignSaved ? null : cs; }   // 정산 직후 자동 저장 (T19a)
+                    campaignSaved = CampaignState.CommitResult(missionResults, out campaignUnsaved);   // 정산 직후 자동 저장 (T19a) · 실패하면 [다시 시도] 용으로 보관
                 }   // 캠페인 미션 승리 → 이월 저장
             }
         }

@@ -144,6 +144,43 @@ public static class SaveCompatSelfTest
         }
         finally { Environment.SetEnvironmentVariable("KD_CAMPAIGN_DIR", oldEnv); try { Directory.Delete(cdir, true); } catch (IOException) { } }
 
+        // 읽기 실패 파일 보호: 메뉴 저장 관문 · 결과 확정 (GameMission) 가 원본을 덮어쓰지 않는다 + 손상 목록 원소는 거부 + 탄약 배율 정수 계산
+        {
+            int nullBad = 0;
+            foreach (var t in new[] { "{\"Roster\":[null]}", "{\"Units\":[null]}", "{\"History\":[null]}", "{\"Completed\":[null]}", "{\"Stock\":{\"RecentLog\":[null]}}", "{\"Pending\":{\"MissionId\":\"x\",\"DeployedCompanyIds\":[null]}}" })
+            {
+                try { var r = CampaignState.Parse(t, out var er); if (r != null || string.IsNullOrEmpty(er)) nullBad++; }
+                catch (Exception) { nullBad++; }
+            }
+            check(nullBad == 0, $"캠페인 저장: 목록 안 null 원소는 크래시 없이 거부 (벗어난 경우 {nullBad})");
+
+            string gdir = TestTemp.Child("kd_compat_guard");
+            string? oldG = Environment.GetEnvironmentVariable("KD_CAMPAIGN_DIR");
+            Environment.SetEnvironmentVariable("KD_CAMPAIGN_DIR", gdir);
+            try
+            {
+                Directory.CreateDirectory(gdir);
+                string brokenText = $"{{\"Version\":{CampaignState.SchemaVersion + 1},\"Keep\":\"original\"}}";
+                File.WriteAllText(CampaignState.FilePath, brokenText);
+                var menuState = CampaignState.Load() ?? new CampaignState();
+                string? le = CampaignState.LastLoadError;
+                bool menuBlocked = le != null && !menuState.SaveUnlessLoadFailed(le) && File.ReadAllText(CampaignState.FilePath) == brokenText;
+                var won = new MissionResults { MissionId = CampaignState.FirstMission, Title = "1-1", Result = "won" };
+                bool commitBlocked = !CampaignState.CommitResult(won) && File.ReadAllText(CampaignState.FilePath) == brokenText;
+                check(menuBlocked && commitBlocked, "캠페인 저장: 읽기 실패 (더 새 버전) 동안 메뉴 저장 · 결과 확정이 원본을 덮어쓰지 않는다");
+                bool moved = CampaignState.BackupBroken() && !File.Exists(CampaignState.FilePath) && File.ReadAllText(CampaignState.FilePath + ".bak") == brokenText;
+                check(moved, "캠페인 저장: 초기화 전 원본은 campaign.json.bak 로 보존");
+                CampaignState.Load();   // 파일 없음 → 거부 아님
+                bool commitOk = CampaignState.LastLoadError == null && CampaignState.CommitResult(won) && CampaignState.Load() is { } saved && saved.Completed.Contains(CampaignState.FirstMission);
+                check(commitOk && new CampaignState().SaveUnlessLoadFailed(null), "캠페인 저장: 파일이 없으면 (정상) 결과 확정과 메뉴 저장이 동작");
+            }
+            finally { Environment.SetEnvironmentVariable("KD_CAMPAIGN_DIR", oldG); try { Directory.Delete(gdir, true); } catch (IOException) { } }
+
+            check(World.ScaleAmmo(100, 0.5f) == 50 && World.ScaleAmmo(7, 0.5f) == 4 && World.ScaleAmmo(100, 2f) == 100 && World.ScaleAmmo(100, -1f) == 0
+                && World.ScaleAmmo(100, float.NaN) == 100 && World.ScaleAmmo(100, float.PositiveInfinity) == 100 && World.ScaleAmmo(1000, 0.333f) == 333,
+                "미션 탄약 배율: 정수 천분율 (NaN · 무한대는 배율 없음, 범위 0..1)");
+        }
+
         try { Directory.Delete(dir, true); } catch (IOException) { }
     }
 
