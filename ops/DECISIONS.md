@@ -90,3 +90,7 @@ O1 자동 저장은 시도 1회당 1개만 보관(현행) vs 2개 이상 보관?
 ## P. T25 결과와 D01 불일치 (2026-10-22; 브랜치 kd/t25-bayonet-all 29695c3, kd-develop/kd-t25)
 - T25 구현: `bayonetFixOrderedOnly` true→false (D02 A 모든 돌격), balance.json·Defs.cs 기본값·Bayonet.cs 주석. 시험 수정 3(ChargeSelfTest·PursuitSelfTest 후퇴 적 2), **detcheck 골든 정당 재생성**(동작이 의도대로 바뀜): 19501757040f0d62 → 07def638b60429d7. tactics 묶음 5건 실패는 베이스(breach2)에도 있던 선재(gapfill·숲 2·카드 칸 단축키). tactics-obs 시드 8 측정·R3 리뷰는 미실시.
 - **P1 D01 불일치**: 사용자 답은 "3칸 유지"인데 **main 에는 이미 `marchChargeRange: 5`**(스냅샷 a1a35e6 이후 balance.json:135). 에이전트는 값을 건드리지 않음. 사용자 뜻대로 3칸으로 되돌릴까? A★ 3으로 변경(별도 작은 카드, 골든 재생성) / B 5 유지(제안이 이미 반영된 상태). 무응답 시 B(현행 5 유지, 변경 없음).
+
+## Q. T10 리뷰 후속 (2026-10-22; kd/t10-comms-b 1c91c96) — 리뷰 결과 차단 0
+- **Q1** D15 A 의 '쉬움 전령 사로잡힘 끔'(`difficulty.json` easy `courierCapture=false`)과 `wireCut` 은 **sim 에 소비처가 없음**(데이터만 바뀌고 동작 불변; 골든 불변이 검증이 못 됨). 소비처 구현은 난이도가 리플레이/미션 헤더에 들어가는지(결정성)부터 정해야 함 → 별도 카드 T10b 후보(上). 발주할까? 무응답 시 보류.
+- **Q2** 대포병 탐지가 사격 형태를 구분하지 않음(`SpotterIndirect` 야전포가 직사로 쏴도 탐지). 의도라면 유지 / 간접사격만 탐지로 변경. 무응답 시 유지.
