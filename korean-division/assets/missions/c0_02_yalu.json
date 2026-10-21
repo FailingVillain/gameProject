@@ -39,23 +39,27 @@
       // 남안 (아군 쪽): 숲 · 집
       { "terrain": "forest", "rect": [10, 120, 22, 18] },
       { "terrain": "forest", "rect": [190, 126, 24, 20] },
-      { "terrain": "house", "tiles": [[100, 120], [101, 120], [100, 121], [101, 121], [108, 124], [109, 124], [108, 125], [109, 125]] },
+      { "terrain": "house", "rect": [99, 119, 4, 3] },
+      { "terrain": "house", "rect": [107, 123, 4, 3] },
       // 북안: 북서 숲 · 북동 산악
       { "terrain": "forest", "rect": [8, 20, 52, 50] },
       { "terrain": "high", "rect": [170, 12, 50, 40] },
       { "terrain": "rock", "rect": [186, 24, 14, 10] },
       { "terrain": "forest", "rect": [140, 60, 20, 14] },
       // 초소 둘레 (집 · 참호 · 철조망)
-      { "terrain": "house", "tiles": [[92, 126], [93, 126], [92, 127], [93, 127]] },
+      { "terrain": "house", "rect": [93, 126, 4, 3] },
       { "terrain": "trench", "rect": [84, 124, 14, 1] },
-      { "terrain": "house", "tiles": [[152, 90], [153, 90], [152, 91], [153, 91]] },
+      { "terrain": "house", "rect": [151, 90, 4, 3] },
       { "terrain": "trench", "rect": [144, 88, 16, 1] },
-      { "terrain": "house", "tiles": [[34, 86], [35, 86], [34, 87], [35, 87]] },
+      { "terrain": "house", "rect": [33, 86, 4, 3] },
       { "terrain": "trench", "rect": [26, 84, 14, 1] },
-      { "terrain": "house", "tiles": [[62, 52], [63, 52], [62, 53], [63, 53]] },
+      { "terrain": "house", "rect": [61, 52, 4, 3] },
       { "terrain": "trench", "rect": [54, 50, 14, 1] },
       // 산채: 집 · 철조망 · 참호
-      { "terrain": "house", "tiles": [[112, 20], [113, 20], [112, 21], [113, 21], [118, 18], [119, 18], [118, 19], [119, 19], [124, 22], [125, 22], [124, 23], [125, 23], [120, 28], [121, 28], [120, 29], [121, 29]] },
+      { "terrain": "house", "rect": [111, 19, 4, 3] },
+      { "terrain": "house", "rect": [117, 15, 4, 3] },
+      { "terrain": "house", "rect": [123, 21, 4, 3] },
+      { "terrain": "house", "rect": [123, 27, 4, 3] },
       { "terrain": "wire", "rect": [104, 36, 32, 1] },
       { "terrain": "trench", "rect": [108, 33, 24, 1] }
     ],

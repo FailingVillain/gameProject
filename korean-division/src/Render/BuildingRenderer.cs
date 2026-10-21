@@ -36,27 +36,54 @@ public static class BuildingRenderer
     }
 
     static readonly string[] HouseKeys = { "building_art.house.thatch", "building_art.house.tile", "building_art.house.brick", "building_art.house.barn" };
+    // 가옥 그림 고르기 (가로/세로 비율별): 정사각에 가까운 묶음 = 초가 · 벽돌 (그림 폭/높이 ≈ 1.1~1.25), 가로로 긴 묶음 = 기와 · 헛간 (≈ 1.5~1.6)
+    static readonly int[] SquareKeys = { 0, 2, 0, 2, 1 }, WideKeys = { 1, 3 };
+
+    /// <summary>테마에 가옥 그림이 있는지 (있으면 지형 타일은 가옥 칸을 마당 흙으로 굽고 가옥은 여기서 건물 단위로 그린다 — MapRenderer.SlotInfo).</summary>
+    public static bool HasHouseArt(Theme? th) => th?.Get(HouseKeys[0])?.Lod != null;
+
+    static uint Hash(int x, int y)
+    {
+        uint h = (uint)(x * 73856093) ^ (uint)(y * 19349663);
+        h ^= h >> 13; h *= 0x5bd1e995; h ^= h >> 15;
+        return h;
+    }
 
     /// <summary>
-    /// 지형 'house' 칸 위에 집 그림 (초가 · 기와 · 벽돌 · 헛간, 칸 좌표 해시로 고름). 확대 (MapRenderer.Lod64Zoom 이상) 에서만, 테마에 그림이 없으면 아무것도 안 그림 (지형 타일 그대로).
+    /// 가옥: 'house' 칸을 건물 단위 사각형으로 묶어 (HouseBlocks) 한 채씩 그 발자국에 맞춘 집 그림 (초가 · 기와 · 벽돌 · 헛간, 비율 + 좌표 해시로 고름). 모든 줌에서 그림 (LOD 시트).
+    /// 잔해 칸은 예전처럼 3칸에 1칸 폐가 (확대에서만). 테마에 그림이 없으면 아무것도 안 그림 (지형 타일 그대로).
     /// 렌더 전용 — 시뮬 상태를 읽기만 한다. 위 줄부터 아래 줄 순서로 그려 아래 집이 위 집을 덮는다.
     /// </summary>
     static void DrawHouses(GameMap map, RtsCamera cam, Vector2 min, Vector2 max)
     {
-        if (cam.Zoom < MapRenderer.Lod64Zoom || Theme.Current == null) return;
+        if (Theme.Current == null) return;
+        foreach (var b in HouseBlocks.Of(map))
+        {
+            if (b.X + b.W < min.X - 1 || b.X > max.X + 1 || b.Y + b.H < min.Y - 1 || b.Y > max.Y + 2) continue;
+            foreach (var p in HouseBlocks.Pieces(b))
+            {
+                uint h = Hash(p.X, p.Y);
+                bool wide = p.W >= p.H * 1.4f;
+                int k = wide ? WideKeys[h % (uint)WideKeys.Length] : SquareKeys[h % (uint)SquareKeys.Length];
+                if (Theme.Current.Get(HouseKeys[k])?.Lod is not { } lod) continue;
+                const float m = 0.06f;   // 발자국 가장자리 여백 (칸) — 이웃 칸 병사와 겹치지 않게
+                var r = new Rectangle((p.X + m) * TS, (p.Y + m) * TS, (p.W - 2 * m) * TS, (p.H - 2 * m) * TS);
+                LodDraw.CellFit(lod, 0, r, cam.Zoom, Color.White);
+                TeamShader.Leave();
+            }
+        }
+        if (cam.Zoom < MapRenderer.Lod64Zoom) return;
         int x0 = Math.Max(0, (int)MathF.Floor(min.X) - 2), y0 = Math.Max(0, (int)MathF.Floor(min.Y) - 1);
         int x1 = Math.Min(map.Width - 1, (int)MathF.Ceiling(max.X) + 2), y1 = Math.Min(map.Height - 1, (int)MathF.Ceiling(max.Y) + 3);
         for (int y = y0; y <= y1; y++)
         for (int x = x0; x <= x1; x++)
         {
-            var tt = map.Get(x, y);
-            if (tt != TerrainType.House && tt != TerrainType.Rubble) continue;
-            uint h = (uint)(x * 73856093) ^ (uint)(y * 19349663);
-            h ^= h >> 13; h *= 0x5bd1e995; h ^= h >> 15;
-            if (tt == TerrainType.Rubble && (h >> 8) % 3 != 0) continue;   // 잔해 칸은 3칸에 1칸만 폐가 그림 (겹쳐서 너저분해지는 것 방지)
+            if (map.Get(x, y) != TerrainType.Rubble) continue;
+            uint h = Hash(x, y);
+            if ((h >> 8) % 3 != 0) continue;   // 잔해 칸은 3칸에 1칸만 폐가 그림 (겹쳐서 너저분해지는 것 방지)
             var sp = Theme.Current.Get(HouseKeys[h % 4]);
             if (sp?.Lod is not { } lod) continue;
-            LodDraw.Cell(lod, 0, false, tt == TerrainType.Rubble ? 1 : 0, new Vector2((x + 0.5f) * TS, (y + 0.5f) * TS), lod.Scale, lod.Scale * cam.Zoom, Color.White);
+            LodDraw.Cell(lod, 0, false, 1, new Vector2((x + 0.5f) * TS, (y + 0.5f) * TS), lod.Scale, lod.Scale * cam.Zoom, Color.White);
             TeamShader.Leave();
         }
     }
