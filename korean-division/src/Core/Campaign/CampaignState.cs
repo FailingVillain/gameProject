@@ -192,7 +192,7 @@ public sealed class CampaignState
         {
             var how = Roster.FirstOrDefault(c => c.Id == "how");
             if (how == null)
-                Roster.Add(new RosterCompany { Id = "how", BattalionNumber = 0, BattalionName = "직할", Kind = "howitzer", Name = "곡사포중대", Strength = 40, MaxStrength = 40, Available = true });
+                Roster.Add(new RosterCompany { Id = "how", BattalionNumber = 0, BattalionName = "직할", Kind = "howitzer", Name = "곡사포중대", Strength = CampaignEconomyDefs.Current.HowitzerCompanyStrength, MaxStrength = CampaignEconomyDefs.Current.HowitzerCompanyStrength, Available = true });
             else
                 how.Available = true;
         }
@@ -261,13 +261,14 @@ public sealed class CampaignState
         {
             var how = s.Roster.FirstOrDefault(c => c.Id == "how");
             if (how == null)
-                s.Roster.Add(new RosterCompany { Id = "how", BattalionNumber = 0, BattalionName = "직할", Kind = "howitzer", Name = "곡사포중대", Strength = 40, MaxStrength = 40, Available = true });
+                s.Roster.Add(new RosterCompany { Id = "how", BattalionNumber = 0, BattalionName = "직할", Kind = "howitzer", Name = "곡사포중대", Strength = CampaignEconomyDefs.Current.HowitzerCompanyStrength, MaxStrength = CampaignEconomyDefs.Current.HowitzerCompanyStrength, Available = true });
             else
                 how.Available = true;
         }
 
-        // 전투 정산 (자원 / 부상 / 노획 / 정기보급 / LastDebrief)
-        CampaignEconomy.SettleBattle(s, r, firstWin: !wasDone);   // D10 A: 정기 보급은 그 미션의 첫 승리만
+        // 전투 정산 (자원 / 부상 / 노획 / 정기보급 / LastDebrief) - 첫 승리만 (D23): 반복 승리는 결과만 기록하고 자원은 더하지 않는다
+        if (!wasDone) CampaignEconomy.SettleBattle(s, r);
+        else CampaignEconomy.RecordRepeatVictory(s, r);
 
         return s;
     }

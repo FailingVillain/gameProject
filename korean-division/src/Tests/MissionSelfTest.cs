@@ -581,14 +581,16 @@ public static class MissionSelfTest
         check(CampaignEconomy.CompanyDeployCost(cInf) == 60f && CampaignEconomy.CompanyDeployCost(cMg) == 60f, "CampaignEconomy: 중대 투입 비용");
         check(CampaignEconomy.TotalDeployCost(new[] { cInf, cMg }, 1.5f) == 180f, "CampaignEconomy: 총 투입 비용 (scaleMul 1.5)");
 
-        // 3) CampaignEconomy: 부상자 치료 (보급 0.5 차감)
+        var E = CampaignEconomyDefs.Current;   // T29: 경제 숫자는 assets/data/campaign_economy.json 에서 읽는다
+        check(E.RegularSupply == 1500f && E.RegularRecruits == 1000 && E.HealCostPerMan == 0.5f && E.HowitzerCompanyStrength == 40, "CampaignEconomyDefs: JSON 값 = 이전 코드 상수 (T29 값 불변)");
+        // 3) CampaignEconomy: 부상자 치료 (보급 HealCostPerMan 차감)
         var sEco = new CampaignState { Supply = 100f };
         var c1 = sEco.Roster.First(c => c.Id == "b1_c1");
         c1.Strength = 40;
         c1.Wounded = 20;
         c1.UnhealedOps = 2;
         int healed = CampaignEconomy.HealWounded(sEco, 15);
-        check(healed == 15 && c1.Strength == 55 && c1.Wounded == 5 && c1.UnhealedOps == 0 && MathF.Abs(sEco.Supply - (100f - 15 * 0.5f)) < 1e-3f, "CampaignEconomy: 부상자 치료 (보급 0.5 차감, Strength 복귀, UnhealedOps 리셋)");
+        check(healed == 15 && c1.Strength == 55 && c1.Wounded == 5 && c1.UnhealedOps == 0 && MathF.Abs(sEco.Supply - (100f - 15 * E.HealCostPerMan)) < 1e-3f, "CampaignEconomy: 부상자 치료 (보급 0.5 차감, Strength 복귀, UnhealedOps 리셋)");
 
         // 4) CampaignEconomy: 미치료 3회 전역 처리
         var sUnheal = new CampaignState();
@@ -607,7 +609,7 @@ public static class MissionSelfTest
         var cr = sRec.Roster.First(c => c.Id == "b1_c1");
         cr.Strength = 30; // MaxStrength=60, 여유 30
         int assigned = CampaignEconomy.AssignRecruits(sRec, "b1_c1", 20); // 소총 10정이므로 10명만 배치
-        check(assigned == 10 && cr.Strength == 40 && sRec.Stock.Rifles["ru"] == 0 && sRec.Manpower.Recruits == 40 && MathF.Abs(sRec.Supply - (100f - 5f)) < 1e-3f, "CampaignEconomy: 신병 배치 (소총 1정 + 보급 0.5 차감, 소총 한도 제한)");
+        check(assigned == 10 && cr.Strength == 40 && sRec.Stock.Rifles["ru"] == 0 && sRec.Manpower.Recruits == 40 && MathF.Abs(sRec.Supply - (100f - 10 * E.RecruitAssignCostPerMan)) < 1e-3f, "CampaignEconomy: 신병 배치 (소총 1정 + 보급 0.5 차감, 소총 한도 제한)");
         int assignedFail = CampaignEconomy.AssignRecruits(sRec, "b1_c1", 10);
         check(assignedFail == 0 && cr.Strength == 40, "CampaignEconomy: 소총 0일 때 신병 배치 불가 (0 반환)");
 
@@ -623,9 +625,10 @@ public static class MissionSelfTest
         rBat.Factions.Add(new MissionResults.FactionLine { Id = 1, Player = true, Lost = 40, Spawned = 100, Alive = 60 });
         rBat.Factions.Add(new MissionResults.FactionLine { Id = 2, Player = false, Name = "마적" });
         CampaignEconomy.SettleBattle(sBat, rBat);
-        check(sBat.Manpower.Wounded == 10 && sBat.LastDebrief?.WoundedReturned == 10 && sBat.LastDebrief?.Dead == 30, "CampaignEconomy: 사상자 25% 부상자 복귀");
-        check(MathF.Abs((sBat.LastDebrief?.LootedSupply ?? 0) - 30f) < 0.01f && sBat.LastDebrief?.LootedRifles == 50 && sBat.LastDebrief?.LootedAmmo == 2000, $"CampaignEconomy: 적 사살 노획 정산 (보급/소총/탄약: sup={sBat.LastDebrief?.LootedSupply}, rif={sBat.LastDebrief?.LootedRifles}, ammo={sBat.LastDebrief?.LootedAmmo})");
-        check(sBat.LastDebrief?.RegularSupplyAdded == 1500f && sBat.LastDebrief?.RecruitsAdded == 1000, "CampaignEconomy: 정기 보급 도착");
+        int wRet = (int)MathF.Round(40 * E.WoundReturnRatio);
+        check(sBat.Manpower.Wounded == wRet && sBat.LastDebrief?.WoundedReturned == wRet && sBat.LastDebrief?.Dead == 40 - wRet, "CampaignEconomy: 사상자 25% 부상자 복귀");
+        check(MathF.Abs((sBat.LastDebrief?.LootedSupply ?? 0) - 100 * E.LootSupplyPerKill) < 0.01f && sBat.LastDebrief?.LootedRifles == (int)(100 * E.LootRiflesPerKill) && sBat.LastDebrief?.LootedAmmo == 100 * E.LootAmmoPerKill, $"CampaignEconomy: 적 사살 노획 정산 (보급/소총/탄약: sup={sBat.LastDebrief?.LootedSupply}, rif={sBat.LastDebrief?.LootedRifles}, ammo={sBat.LastDebrief?.LootedAmmo})");
+        check(sBat.LastDebrief?.RegularSupplyAdded == E.RegularSupply && sBat.LastDebrief?.RecruitsAdded == E.RegularRecruits, "CampaignEconomy: 정기 보급 도착");
         check(sBat.Stock.RecentLog.Count > 0, "CampaignEconomy: RecentLog 정산 기록 추가");
 
         // 7) CampaignEconomy: 패널티 합산 상한 30% 제한
@@ -709,17 +712,17 @@ public static class MissionSelfTest
         var rOp = new MissionResults { MissionId = CampaignState.Hoeryong, Result = "won" };
         rOp.Factions.Add(new MissionResults.FactionLine { Id = 1, Player = true, Spawned = 120, Alive = 120 });
         CampaignEconomy.SettleBattle(sOp, rOp);
-        check(sOp.Pending == null && MathF.Abs(sOp.Supply - (supply0 - cost + 1500f)) < 0.01f && sOp.Stock.Ammo[StockKeys.Ru] == ammo0 && sOp.LastDebrief?.AmmoRefunded == loaded,
-            $"전투 정산: 비용 차감 후 정기 보급 +1500, 생존 100% 라 탄약 전량 환원 (보급 {sOp.Supply})");
+        check(sOp.Pending == null && MathF.Abs(sOp.Supply - (supply0 - cost + E.RegularSupply)) < 0.01f && sOp.Stock.Ammo[StockKeys.Ru] == ammo0 && sOp.LastDebrief?.AmmoRefunded == loaded,
+            $"전투 정산: 비용 차감 후 정기 보급, 생존 100% 라 탄약 전량 환원 (보급 {sOp.Supply})");
         var sStale = new CampaignState();
         sStale.Pending = new CampaignState.PendingOperation { MissionId = "other", SupplySpent = 999f, DeployedCompanyIds = new() { "b1_c1" } };
         CampaignEconomy.SettleBattle(sStale, rOp);
-        check(sStale.Pending == null && sStale.Supply == 3000f + 1500f, "전투 정산: 다른 미션의 묵은 Pending 은 비용 없이 버림");
+        check(sStale.Pending == null && sStale.Supply == 3000f + E.RegularSupply, "전투 정산: 다른 미션의 묵은 Pending 은 비용 없이 버림");
 
         // 14) 출격 검증 · 군수 계산 (투입 비용 · 상한 · 탄약 부족)
         var sCap = new CampaignState();
         CampaignEconomy.BeginOperation(sCap, "m", new[] { "b1_c1", "b1_c2", "b1_c3", "mg" }, maxDeploy: 2);
-        check(sCap.Pending!.SupplySpent == (180f + 60f) * 1.5f, $"출격 비용: 상한 지정 미션에서 180명 초과 = x1.5 ({sCap.Pending.SupplySpent})");
+        check(sCap.Pending!.SupplySpent == (180f + 60f) * E.LargeDeployScaleMul, $"출격 비용: 상한 지정 미션에서 180명 초과 = x1.5 ({sCap.Pending.SupplySpent})");
         var sLow = new CampaignState();
         sLow.Stock.Ammo[StockKeys.Ru] = 3600;   // 60명 x 60발 = 3600 필요 → 절반만 있으면 scale 0.5
         sLow.Stock.Ammo[StockKeys.Ru] = 1800;
@@ -732,6 +735,15 @@ public static class MissionSelfTest
         sMand.Pending.MissionId = CampaignState.Hoeryong;
         CampaignEconomy.SettleBattle(sMand, rOp);
         check(sMand.Flags["heir_mood"] == 50 && sMand.Flags["cmd_favor"] == 45, "의무 중대 제외: 결과 확정 때 심기 -10 · 총사령관 -5");
+
+        // 14b) D23: 이미 이긴 미션의 반복 승리는 결과만 기록, 자원 · 병력 불변
+        var sRep = CampaignState.Apply(null, new MissionResults { MissionId = CampaignState.FirstMission, Result = "won" })!;
+        float repSupply = sRep.Supply; int repRecruits = sRep.Manpower.Recruits; int repWounded = sRep.Manpower.Wounded;
+        var rRep = new MissionResults { MissionId = CampaignState.FirstMission, Result = "won", EnemyKills = 100 };
+        rRep.Factions.Add(new MissionResults.FactionLine { Id = 1, Player = true, Lost = 40, Spawned = 100, Alive = 60 });
+        var sRep2 = CampaignState.Apply(sRep, rRep)!;
+        check(sRep2.Supply == repSupply && sRep2.Manpower.Recruits == repRecruits && sRep2.Manpower.Wounded == repWounded && sRep2.LastDebrief?.RegularSupplyAdded == 0f && sRep2.LastDebrief?.EnemyKills == 100 && sRep2.Pending == null,
+            "D23: 반복 승리는 정산(보급 · 신병 · 노획 · 부상) 없이 결과만 기록");
 
         // 15) 저장 보정 (Sanitize) · 상수 키
         var sBad = CampaignState.FromJson("{\"Version\":2,\"Supply\":-50,\"Manpower\":{\"Recruits\":99999},\"Roster\":[{\"Id\":\"x\",\"Strength\":500,\"MaxStrength\":60}],\"Stock\":{\"Ammo\":{\"ru\":-5}}}")!;
