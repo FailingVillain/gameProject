@@ -1,0 +1,89 @@
+  [sim] AI A=tactical B=사수
+  [sim] B 사수 + 참호 (150기)
+  t=10s  A 162 @(109,68)  B 150 @(159,64)  wall 0.3s
+  t=20s  A 162 @(123,67)  B 150 @(159,64)  wall 0.5s
+  t=30s  A 161 @(127,66)  B 149 @(159,64)  wall 0.8s
+  t=40s  A 156 @(130,66)  B 140 @(159,63)  wall 1.0s
+  t=50s  A 151 @(134,66)  B 125 @(159,61)  wall 1.2s
+  t=60s  A 149 @(135,66)  B 116 @(159,60)  wall 1.4s
+  t=70s  A 146 @(136,67)  B 99 @(159,59)  wall 1.6s
+  t=80s  A 141 @(137,66)  B 87 @(159,57)  wall 1.8s
+  t=90s  A 132 @(137,66)  B 72 @(159,53)  wall 2.0s
+  t=100s  A 127 @(135,68)  B 63 @(159,51)  wall 2.2s
+  t=110s  A 126 @(133,68)  B 55 @(159,51)  wall 2.3s
+  t=120s  A 125 @(130,69)  B 52 @(159,51)  wall 2.4s
+  t=130s  A 123 @(132,69)  B 49 @(159,51)  wall 2.5s
+  t=140s  A 121 @(131,69)  B 45 @(159,50)  wall 2.7s
+  t=150s  A 121 @(139,69)  B 42 @(159,50)  wall 2.8s
+  t=160s  A 116 @(141,70)  B 39 @(159,47)  wall 2.9s
+  t=170s  A 116 @(138,71)  B 33 @(159,41)  wall 3.1s
+  t=180s  A 115 @(140,72)  B 31 @(159,39)  wall 3.2s
+  t=190s  A 115 @(142,68)  B 28 @(159,37)  wall 3.3s
+  t=200s  A 115 @(143,65)  B 24 @(159,35)  wall 3.4s
+  t=210s  A 115 @(147,62)  B 17 @(159,31)  wall 3.5s
+  t=220s  A 115 @(154,55)  B 14 @(159,30)  wall 3.6s
+  t=230s  A 115 @(155,54)  B 7 @(159,28)  wall 3.7s
+MARCH ticks=0 move=0 moveOn=0 shots=0 moveShots=0 pistol=0 gren=0 melee=0
+MEAS start=162/150 end_t=238 winner=1 lossEnd=48/150 loss120=37/98 loss300=-1/-1 t50=-/89 shots=5853 hits=745 hitpct=12.7 meanDist=20.6 hitDist=19.8
+결과: 승자 1, 237.9초, 실행 3.8초, 명령 168
+사살원인 020s infantry_guard/rifle_mauser98->veteran = 1
+사살원인 020s veteran/rifle_mosin->infantry_guard = 1
+사살원인 030s heavy_maxim/hmg->veteran = 5
+사살원인 030s infantry_guard/rifle_mauser98->veteran = 4
+사살원인 030s veteran/rifle_mosin->heavy_maxim = 1
+사살원인 030s veteran/rifle_mosin->infantry_guard = 4
+사살원인 040s heavy_maxim/hmg->veteran = 7
+사살원인 040s infantry_guard/rifle_mauser98->veteran = 8
+사살원인 040s veteran/rifle_mosin->infantry_guard = 5
+사살원인 050s heavy_maxim/hmg->veteran = 1
+사살원인 050s infantry_guard/rifle_mauser98->veteran = 8
+사살원인 050s veteran/rifle_mosin->infantry_guard = 2
+사살원인 060s heavy_maxim/hmg->veteran = 7
+사살원인 060s infantry_guard/rifle_mauser98->veteran = 10
+사살원인 060s veteran/rifle_mosin->infantry_guard = 3
+사살원인 070s infantry_guard/rifle_mauser98->veteran = 12
+사살원인 070s veteran/rifle_mosin->infantry_guard = 5
+사살원인 080s heavy_maxim/hmg->veteran = 6
+사살원인 080s infantry_guard/rifle_mauser98->veteran = 9
+사살원인 080s veteran/rifle_mosin->infantry_guard = 9
+사살원인 090s heavy_maxim/hmg->veteran = 2
+사살원인 090s infantry_guard/rifle_mauser98->veteran = 7
+사살원인 090s veteran/rifle_mosin->infantry_guard = 5
+사살원인 100s heavy_maxim/hmg->veteran = 5
+사살원인 100s infantry_guard/rifle_mauser98->veteran = 3
+사살원인 100s veteran/rifle_mosin->infantry_guard = 1
+사살원인 110s heavy_maxim/hmg->veteran = 1
+사살원인 110s infantry_guard/rifle_mauser98->veteran = 2
+사살원인 110s veteran/rifle_mosin->infantry_guard = 1
+사살원인 120s heavy_maxim/hmg->veteran = 2
+사살원인 120s infantry_guard/rifle_mauser98->veteran = 1
+사살원인 120s veteran/rifle_mosin->infantry_guard = 2
+사살원인 130s infantry_guard/rifle_mauser98->veteran = 4
+사살원인 130s veteran/rifle_mosin->heavy_maxim = 1
+사살원인 130s veteran/rifle_mosin->infantry_guard = 1
+사살원인 140s infantry_guard/rifle_mauser98->veteran = 3
+사살원인 150s infantry_guard/rifle_mauser98->veteran = 3
+사살원인 150s veteran/rifle_mosin->infantry_guard = 5
+사살원인 160s infantry_guard/rifle_mauser98->veteran = 6
+사살원인 170s infantry_guard/rifle_mauser98->veteran = 2
+사살원인 170s veteran/rifle_mosin->infantry_guard = 1
+사살원인 180s heavy_maxim/hmg->veteran = 1
+사살원인 180s infantry_guard/rifle_mauser98->veteran = 2
+사살원인 190s infantry_guard/rifle_mauser98->veteran = 4
+사살원인 200s infantry_guard/rifle_mauser98->veteran = 7
+사살원인 210s infantry_guard/rifle_mauser98->veteran = 3
+사살원인 220s infantry_guard/rifle_mauser98->veteran = 7
+사살원인 230s infantry_guard/rifle_mauser98->veteran = 7
+사살원인 230s veteran/rifle_mosin->infantry_guard = 1
+틀 행동: 시작 0 끝 0 약진 0 기동 0 돌격 0 역습 0 참호 0 연신 0 전환 0 인계멈춤 0 포병전개 0
+기병AI: 돌격 정면 0 측면 0 후방 0 측면경유 0 소규모보류 0 물러남 0 | 추격: 후퇴중 희생 사격 7 근접 0 후퇴하는 적 돌격 보병 0 기병 0 | N55 기병 무모한 정면 0 돌격 사격 전진 0 | N23 소탕 0 | S4 제압으로 꺾인 돌격 0
+F4 기병 돌격: 개시 0 무의미 정면 0 자동 막음 0 근접 사살 0 사유(후퇴/제압/승무원/고립/측면) 0/0/0/0/0 · 하마 0 승마 0
+관찰: 사격 5853발 · 명중 745발 (12.7%) · 사망 198기 → 1킬당 29.6발 (명중 3.8발)
+N61 접근: 보병(1) 첫 사격 23.6초 · 기병(2) 첫 근접 -초 · 전환 0 · 그 시점 B 생존 -1/150
+템포: 첫 사격 23.6초 · A 50% 손실 -초 · B 50% 손실 88.5초 · 사격 거리 평균 20.6 (첫 100발 18.1) 칸
+  세력:종류            시작→남음   사격    근접   포격  방열%  돌격%
+  1:heavy_maxim          12→10        886      0      0    27     0
+  1:infantry_guard      150→104      3351      0      0     0     0
+  2:veteran             150→0        1616      0      0     0     0
+AI 비용: 사고 ms/틱 avg 0.005 max 18.65 (호출 951, 호출당 0.076 ms) · 전체 Step avg 0.27 ms
+  [전술 AI 1] 프로필 default 태세 Attack/Attack 중대 5 대대 1 · 명령 136 돌격 0 기병돌격 0 참호 0 후퇴 4 포병이동 0 화력사수 15 예비투입 1 · 연대 1 준비사격 0 연신 0 분대약진 24 전초 0/철수 0 역습 0 증원편입 0 공격한계 0

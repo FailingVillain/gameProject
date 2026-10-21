@@ -1,0 +1,482 @@
+{
+  "ambient_battle": {
+    "files": [
+      "ambient_battle_distant_loop.wav"
+    ],
+    "volume": 0.4,
+    "maxVoices": 1,
+    "loop": true
+  },
+  "ambient_rain": {
+    "files": [
+      "rain_loop.wav"
+    ],
+    "volume": 0.4,
+    "maxVoices": 1,
+    "loop": true
+  },
+  "ambient_rain_heavy": {
+    "files": [
+      "rain_heavy_loop.wav"
+    ],
+    "volume": 0.45,
+    "maxVoices": 1,
+    "loop": true
+  },
+  "ambient_night": {
+    "files": [
+      "ambient_night_loop.wav"
+    ],
+    "volume": 0.35,
+    "maxVoices": 1,
+    "loop": true
+  },
+  "ambient_wind": {
+    "files": [
+      "wind_loop.wav"
+    ],
+    "volume": 0.35,
+    "maxVoices": 1,
+    "loop": true
+  },
+  "artillery_fire": {
+    "files": [
+      "field_fire_near_1.wav",
+      "field_fire_near_2.wav"
+    ],
+    "volume": 1.0,
+    "maxVoices": 2,
+    "minInterval": 0.2,
+    "farDist": 34,
+    "important": true
+  },
+  "artillery_fire_far": {
+    "files": [
+      "field_fire_far_1.wav",
+      "field_fire_far_2.wav"
+    ],
+    "volume": 0.6,
+    "maxVoices": 2,
+    "minInterval": 0.2,
+    "important": true
+  },
+  "artillery_impact": {
+    "files": [
+      "shell_impact_near_1.wav",
+      "shell_impact_near_2.wav",
+      "shell_impact_near_3.wav"
+    ],
+    "volume": 0.95,
+    "maxVoices": 4,
+    "minInterval": 0.12,
+    "farDist": 34,
+    "important": true
+  },
+  "artillery_impact_far": {
+    "files": [
+      "shell_impact_far_1.wav",
+      "shell_impact_far_2.wav",
+      "shell_impact_far_3.wav"
+    ],
+    "volume": 0.6,
+    "maxVoices": 4,
+    "minInterval": 0.12,
+    "important": true
+  },
+  "at_rifle": {
+    "files": [
+      "atrifle_shot_near_1.wav",
+      "atrifle_shot_near_2.wav"
+    ],
+    "volume": 0.95,
+    "maxVoices": 2,
+    "minInterval": 0.2,
+    "farDist": 24
+  },
+  "at_rifle_far": {
+    "files": [
+      "atrifle_shot_far_1.wav"
+    ],
+    "volume": 0.7,
+    "maxVoices": 2,
+    "minInterval": 0.2
+  },
+  "bullet_crack": {
+    "files": [
+      "bullet_crack_1.wav",
+      "bullet_crack_2.wav",
+      "bullet_crack_3.wav"
+    ],
+    "volume": 0.6,
+    "maxVoices": 4,
+    "minInterval": 0.1
+  },
+  "bullet_whiz": {
+    "files": [
+      "bullet_whiz_1.wav",
+      "bullet_whiz_2.wav",
+      "bullet_whiz_3.wav",
+      "bullet_whiz_4.wav"
+    ],
+    "volume": 0.5,
+    "maxVoices": 4,
+    "minInterval": 0.08
+  },
+  "carbine": {
+    "files": [
+      "carbine_shot_near_1.wav",
+      "carbine_shot_near_2.wav",
+      "carbine_shot_near_3.wav"
+    ],
+    "volume": 0.7,
+    "maxVoices": 4,
+    "minInterval": 0.04,
+    "farDist": 22
+  },
+  "carbine_far": {
+    "files": [
+      "carbine_shot_far_1.wav",
+      "carbine_shot_far_2.wav"
+    ],
+    "volume": 0.5,
+    "maxVoices": 4,
+    "minInterval": 0.04
+  },
+  "cavalry_charge": {
+    "files": [
+      "cavalry_charge_loop.wav"
+    ],
+    "volume": 0.8,
+    "maxVoices": 1,
+    "loop": true
+  },
+  "cavalry_move": {
+    "files": [
+      "cavalry_gallop_loop.wav"
+    ],
+    "volume": 0.3,
+    "maxVoices": 1,
+    "loop": true
+  },
+  "construct_loop": {
+    "files": [
+      "trench_digging_loop.wav"
+    ],
+    "volume": 0.6,
+    "maxVoices": 1,
+    "loop": true
+  },
+  "explosion": {
+    "files": [
+      "grenade_explosion_near_1.wav",
+      "grenade_explosion_near_2.wav",
+      "grenade_explosion_near_3.wav"
+    ],
+    "volume": 0.9,
+    "maxVoices": 3,
+    "minInterval": 0.1,
+    "farDist": 30,
+    "important": true
+  },
+  "explosion_far": {
+    "files": [
+      "grenade_explosion_far_1.wav",
+      "grenade_explosion_far_2.wav"
+    ],
+    "volume": 0.55,
+    "maxVoices": 3,
+    "minInterval": 0.1,
+    "important": true
+  },
+  "gun37_fire": {
+    "files": [
+      "gun37_fire_near_1.wav",
+      "gun37_fire_near_2.wav"
+    ],
+    "volume": 0.9,
+    "maxVoices": 2,
+    "minInterval": 0.15,
+    "farDist": 30,
+    "important": true
+  },
+  "gun37_fire_far": {
+    "files": [
+      "gun37_fire_far_1.wav",
+      "gun37_fire_far_2.wav"
+    ],
+    "volume": 0.54,
+    "maxVoices": 2,
+    "minInterval": 0.15,
+    "important": true
+  },
+  "hmg": {
+    "files": [
+      "maxim_short_burst_1.wav",
+      "maxim_short_burst_2.wav"
+    ],
+    "volume": 0.85,
+    "maxVoices": 2,
+    "minInterval": 0.3,
+    "farDist": 22
+  },
+  "hmg_loop": {
+    "files": [
+      "maxim_burst_loop.wav"
+    ],
+    "volume": 0.8,
+    "maxVoices": 1,
+    "loop": true,
+    "farDist": 22
+  },
+  "hmg_loop_far": {
+    "files": [
+      "maxim_burst_far_loop.wav"
+    ],
+    "volume": 0.55,
+    "maxVoices": 1,
+    "loop": true
+  },
+  "horse_nicker": {
+    "files": [
+      "horse_nicker_1.wav",
+      "horse_nicker_2.wav"
+    ],
+    "volume": 0.4,
+    "maxVoices": 2,
+    "minInterval": 3
+  },
+  "horse_snort": {
+    "files": [
+      "horse_snort_1.wav",
+      "horse_snort_2.wav"
+    ],
+    "volume": 0.5,
+    "maxVoices": 2,
+    "minInterval": 3
+  },
+  "horse_stomp": {
+    "files": [
+      "horse_stomp_1.wav"
+    ],
+    "volume": 0.25,
+    "maxVoices": 2,
+    "minInterval": 3
+  },
+  "howitzer_fire": {
+    "files": [
+      "howitzer_fire_near_1.wav",
+      "howitzer_fire_near_2.wav"
+    ],
+    "volume": 1.0,
+    "maxVoices": 2,
+    "minInterval": 0.2,
+    "farDist": 34,
+    "important": true
+  },
+  "howitzer_fire_far": {
+    "files": [
+      "howitzer_fire_far_1.wav",
+      "howitzer_fire_far_2.wav"
+    ],
+    "volume": 0.6,
+    "maxVoices": 2,
+    "minInterval": 0.2,
+    "important": true
+  },
+  "howitzer_impact": {
+    "files": [
+      "howitzer_impact_near_1.wav",
+      "howitzer_impact_near_2.wav"
+    ],
+    "volume": 1.0,
+    "maxVoices": 3,
+    "minInterval": 0.15,
+    "farDist": 34,
+    "important": true
+  },
+  "howitzer_impact_far": {
+    "files": [
+      "shell_impact_far_1.wav",
+      "shell_impact_far_2.wav",
+      "shell_impact_far_3.wav"
+    ],
+    "volume": 0.75,
+    "maxVoices": 3,
+    "minInterval": 0.15,
+    "important": true
+  },
+  "lmg": {
+    "files": [
+      "lmg_burst_near_1.wav",
+      "lmg_burst_near_2.wav",
+      "lmg_burst_near_3.wav"
+    ],
+    "volume": 0.8,
+    "maxVoices": 3,
+    "minInterval": 0.14,
+    "farDist": 22
+  },
+  "lmg_far": {
+    "files": [
+      "lmg_burst_far_1.wav",
+      "lmg_burst_far_2.wav"
+    ],
+    "volume": 0.55,
+    "maxVoices": 3,
+    "minInterval": 0.14
+  },
+  "melee_flesh": {
+    "files": [
+      "blade_flesh_1.wav",
+      "blade_flesh_2.wav"
+    ],
+    "volume": 0.5,
+    "maxVoices": 3,
+    "minInterval": 0.08
+  },
+  "melee_hit": {
+    "files": [
+      "melee_clash_1.wav",
+      "melee_clash_2.wav",
+      "melee_clash_3.wav",
+      "melee_clash_4.wav"
+    ],
+    "volume": 0.65,
+    "maxVoices": 4,
+    "minInterval": 0.06
+  },
+  "melee_swing": {
+    "files": [
+      "blade_swing_1.wav",
+      "blade_swing_2.wav",
+      "blade_swing_3.wav"
+    ],
+    "volume": 0.5,
+    "maxVoices": 3,
+    "minInterval": 0.06
+  },
+  "pistol": {
+    "files": [
+      "pistol_shot_near_1.wav",
+      "pistol_shot_near_2.wav",
+      "pistol_shot_near_3.wav"
+    ],
+    "volume": 0.6,
+    "maxVoices": 3,
+    "minInterval": 0.08,
+    "farDist": 22
+  },
+  "pistol_far": {
+    "files": [
+      "pistol_shot_far_1.wav",
+      "pistol_shot_far_2.wav"
+    ],
+    "volume": 0.4,
+    "maxVoices": 3,
+    "minInterval": 0.08
+  },
+  "ricochet": {
+    "files": [
+      "ricochet_1.wav",
+      "ricochet_2.wav",
+      "ricochet_3.wav",
+      "ricochet_4.wav"
+    ],
+    "volume": 0.55,
+    "maxVoices": 4,
+    "minInterval": 0.25
+  },
+  "rifle": {
+    "files": [
+      "rifle_shot_near_1.wav",
+      "rifle_shot_near_2.wav",
+      "rifle_shot_near_3.wav",
+      "rifle_shot_near_4.wav"
+    ],
+    "volume": 0.8,
+    "maxVoices": 4,
+    "minInterval": 0.04,
+    "farDist": 22
+  },
+  "rifle_far": {
+    "files": [
+      "rifle_shot_far_1.wav",
+      "rifle_shot_far_2.wav",
+      "rifle_shot_far_3.wav"
+    ],
+    "volume": 0.6,
+    "maxVoices": 4,
+    "minInterval": 0.04
+  },
+  "shell_incoming": {
+    "files": [
+      "shell_whistle_1.wav",
+      "shell_whistle_2.wav",
+      "shell_whistle_3.wav"
+    ],
+    "volume": 0.7,
+    "maxVoices": 3,
+    "minInterval": 0.25
+  },
+  "smg": {
+    "files": [
+      "smg_burst_near_1.wav",
+      "smg_burst_near_2.wav",
+      "smg_burst_near_3.wav"
+    ],
+    "volume": 0.7,
+    "maxVoices": 3,
+    "minInterval": 0.12,
+    "farDist": 22
+  },
+  "smg_far": {
+    "files": [
+      "smg_burst_far_1.wav",
+      "smg_burst_far_2.wav"
+    ],
+    "volume": 0.5,
+    "maxVoices": 3,
+    "minInterval": 0.12
+  },
+  "tank_idle": {
+    "files": [
+      "ft_engine_idle_loop.wav"
+    ],
+    "volume": 0.5,
+    "maxVoices": 1,
+    "loop": true
+  },
+  "tank_move": {
+    "files": [
+      "ft_engine_moving_loop.wav"
+    ],
+    "volume": 0.6,
+    "maxVoices": 1,
+    "loop": true
+  },
+  "tank_tracks": {
+    "files": [
+      "ft_tracks_loop.wav"
+    ],
+    "volume": 0.65,
+    "maxVoices": 1,
+    "loop": true
+  },
+  "tool_hit": {
+    "files": [
+      "shovel_hit_1.wav",
+      "shovel_hit_2.wav"
+    ],
+    "volume": 0.6,
+    "maxVoices": 3,
+    "minInterval": 0.1
+  },
+  "wagon_loop": {
+    "files": [
+      "supply_wagon_loop.wav"
+    ],
+    "volume": 0.5,
+    "maxVoices": 1,
+    "loop": true
+  }
+}

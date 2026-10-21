@@ -1,0 +1,36 @@
+{
+ "name": "cavalry-scout",
+ "_doc": "Cavalry scout: cavalry-default copy, light kit (no pouches), field binoculars on the chest + map case, carbine; sabre kept only for the charge/melee frames.",
+ "base": "cavalry",
+ "anims": "cavalry",
+ "headgear": "korean_kepi",
+ "uniform": {
+  "jacket": "fgrey_dark",
+  "trousers": "fgrey_dark_trouser",
+  "legging": "leather",
+  "boot": "leather",
+  "belt": "leather",
+  "hand": "skin",
+  "collar": true,
+  "puttees": false,
+  "piping": "acc_brass",
+  "placket": false,
+  "trouser_stripe": true,
+  "stripe_mat": "acc_brass"
+ },
+ "weapons": {
+  "carbine": "cav_carbine",
+  "sabre": "sabre"
+ },
+ "gear": [
+  "binoc_chest"
+ ],
+ "team": [
+  "helmet_band",
+  "arm_patch"
+ ],
+ "belt": true,
+ "belt_pouches": false,
+ "dirs": "all",
+ "frames": "all"
+}

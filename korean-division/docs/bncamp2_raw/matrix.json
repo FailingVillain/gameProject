@@ -1,0 +1,4893 @@
+{
+ "seeds": [
+  1,
+  2,
+  3,
+  4,
+  5
+ ],
+ "configs": [
+  {
+   "id": "MGD_T_r2_m0",
+   "kind": "mgdef",
+   "terrain": "trench",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      41
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "ratio": 2.0,
+   "mgdef": 0
+  },
+  {
+   "id": "MGD_T_r2_m1",
+   "kind": "mgdef",
+   "terrain": "trench",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      41
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_mg0",
+     "faction": 2,
+     "name": "기관총 중대",
+     "at": [
+      77,
+      35
+     ],
+     "facing": 180,
+     "units": {
+      "officer_fengtian": 1,
+      "heavy_maxim": 5,
+      "heavy_machinegunner": 8,
+      "infantry": 4
+     },
+     "company": true,
+     "formation": "line"
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 2.0,
+   "mgdef": 1
+  },
+  {
+   "id": "MGD_T_r2_m2",
+   "kind": "mgdef",
+   "terrain": "trench",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      41
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_mg0",
+     "faction": 2,
+     "name": "기관총 중대",
+     "at": [
+      77,
+      35
+     ],
+     "facing": 180,
+     "units": {
+      "officer_fengtian": 1,
+      "heavy_maxim": 5,
+      "heavy_machinegunner": 8,
+      "infantry": 4
+     },
+     "company": true,
+     "formation": "line"
+    },
+    {
+     "id": "f2_mg1",
+     "faction": 2,
+     "name": "기관총 중대",
+     "at": [
+      83,
+      35
+     ],
+     "facing": 180,
+     "units": {
+      "officer_fengtian": 1,
+      "heavy_maxim": 5,
+      "heavy_machinegunner": 8,
+      "infantry": 4
+     },
+     "company": true,
+     "formation": "line"
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "ratio": 2.0,
+   "mgdef": 2
+  },
+  {
+   "id": "MGD_T_r3_m2",
+   "kind": "mgdef",
+   "terrain": "trench",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      41
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_mg0",
+     "faction": 2,
+     "name": "기관총 중대",
+     "at": [
+      77,
+      35
+     ],
+     "facing": 180,
+     "units": {
+      "officer_fengtian": 1,
+      "heavy_maxim": 5,
+      "heavy_machinegunner": 8,
+      "infantry": 4
+     },
+     "company": true,
+     "formation": "line"
+    },
+    {
+     "id": "f2_mg1",
+     "faction": 2,
+     "name": "기관총 중대",
+     "at": [
+      83,
+      35
+     ],
+     "facing": 180,
+     "units": {
+      "officer_fengtian": 1,
+      "heavy_maxim": 5,
+      "heavy_machinegunner": 8,
+      "infantry": 4
+     },
+     "company": true,
+     "formation": "line"
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 3.0,
+   "mgdef": 2
+  },
+  {
+   "id": "MGD_O_r2_m0",
+   "kind": "mgdef",
+   "terrain": "open",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      30
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    30
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 2.0,
+   "mgdef": 0
+  },
+  {
+   "id": "MGD_O_r2_m2",
+   "kind": "mgdef",
+   "terrain": "open",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      30
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_mg0",
+     "faction": 2,
+     "name": "기관총 중대",
+     "at": [
+      77,
+      24
+     ],
+     "facing": 180,
+     "units": {
+      "officer_fengtian": 1,
+      "heavy_maxim": 5,
+      "heavy_machinegunner": 8,
+      "infantry": 4
+     },
+     "company": true,
+     "formation": "line"
+    },
+    {
+     "id": "f2_mg1",
+     "faction": 2,
+     "name": "기관총 중대",
+     "at": [
+      83,
+      24
+     ],
+     "facing": 180,
+     "units": {
+      "officer_fengtian": 1,
+      "heavy_maxim": 5,
+      "heavy_machinegunner": 8,
+      "infantry": 4
+     },
+     "company": true,
+     "formation": "line"
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    30
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 2.0,
+   "mgdef": 2
+  },
+  {
+   "id": "CAV_O_r1_none",
+   "kind": "cavflank",
+   "terrain": "open",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      30
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    30
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 1.0
+  },
+  {
+   "id": "CAV_O_r1_c12",
+   "kind": "cavflank",
+   "terrain": "open",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      30
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f1_cav",
+     "faction": 1,
+     "name": "기병 소대",
+     "at": [
+      148,
+      34
+     ],
+     "facing": 270,
+     "formation": "line",
+     "units": {
+      "officer": 1,
+      "cavalry_default": 11
+     },
+     "time": 75
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    30
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 1.0,
+   "cav": 12
+  },
+  {
+   "id": "CAV_T_r1_none",
+   "kind": "cavflank",
+   "terrain": "trench",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      41
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 1.0
+  },
+  {
+   "id": "CAV_T_r1_c12",
+   "kind": "cavflank",
+   "terrain": "trench",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      41
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f1_cav",
+     "faction": 1,
+     "name": "기병 소대",
+     "at": [
+      148,
+      45
+     ],
+     "facing": 270,
+     "formation": "line",
+     "units": {
+      "officer": 1,
+      "cavalry_default": 11
+     },
+     "time": 75
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 1.0,
+   "cav": 12
+  },
+  {
+   "id": "AMB_F_column_r1",
+   "kind": "ambush",
+   "terrain": "forest",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "column",
+     "battalion": 1,
+     "battalionForm": "column",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "column"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "column"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      30
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    30
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 1.0,
+   "form": "column"
+  },
+  {
+   "id": "AMB_F_line_r1",
+   "kind": "ambush",
+   "terrain": "forest",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      30
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    30
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 1.0,
+   "form": "line"
+  },
+  {
+   "id": "AMB_O_column_r1",
+   "kind": "ambush",
+   "terrain": "open",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "column",
+     "battalion": 1,
+     "battalionForm": "column",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "column"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "column"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      30
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    30
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 1.0,
+   "form": "column"
+  },
+  {
+   "id": "AMB_F_column_night",
+   "kind": "ambush",
+   "terrain": "forest",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "column",
+     "battalion": 1,
+     "battalionForm": "column",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "column"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "column"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      30
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    30
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 1.0,
+   "form": "column",
+   "time": "night"
+  },
+  {
+   "id": "NT_T_r2_day",
+   "kind": "night",
+   "terrain": "trench",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      41
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "ratio": 2.0,
+   "time": "day"
+  },
+  {
+   "id": "NT_T_r2_night",
+   "kind": "night",
+   "terrain": "trench",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      41
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "ratio": 2.0,
+   "time": "night"
+  },
+  {
+   "id": "CTR_front2",
+   "kind": "counter",
+   "terrain": "trench_cap",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 점령 중대",
+     "at": [
+      80,
+      41
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "봉천 반격대",
+     "at": [
+      80,
+      12
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "defend",
+   "p2": "attack",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 1.0,
+   "swap": true
+  },
+  {
+   "id": "CTR_res2",
+   "kind": "counter",
+   "terrain": "trench_cap",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 점령 중대",
+     "at": [
+      80,
+      41
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "봉천 반격대",
+     "at": [
+      80,
+      12
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_res",
+     "faction": 2,
+     "name": "봉천 반격대",
+     "at": [
+      80,
+      0
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 2,
+     "battalionForm": "reserve",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "defend",
+   "p2": "attack",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 2.0,
+   "swap": true
+  },
+  {
+   "id": "CTR_one4",
+   "kind": "counter",
+   "terrain": "trench_cap",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 점령 중대",
+     "at": [
+      80,
+      41
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "봉천 반격대",
+     "at": [
+      80,
+      12
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "defend",
+   "p2": "attack",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 2.0,
+   "swap": true
+  },
+  {
+   "id": "PIN_T_front4",
+   "kind": "pincer",
+   "terrain": "trench",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      41
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 2.0
+  },
+  {
+   "id": "PIN_T_2S2E",
+   "kind": "pincer",
+   "terrain": "trench",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f1_e",
+     "faction": 1,
+     "name": "한국군 대대",
+     "at": [
+      140,
+      66
+     ],
+     "facing": 270,
+     "formation": "line",
+     "battalion": 2,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      41
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 2.0
+  },
+  {
+   "id": "PIN_T_2S1E1W",
+   "kind": "pincer",
+   "terrain": "trench",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f1_e",
+     "faction": 1,
+     "name": "한국군 대대",
+     "at": [
+      140,
+      66
+     ],
+     "facing": 270,
+     "formation": "line",
+     "battalion": 2,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f1_w",
+     "faction": 1,
+     "name": "한국군 대대",
+     "at": [
+      20,
+      66
+     ],
+     "facing": 90,
+     "formation": "line",
+     "battalion": 3,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      41
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 2.0
+  },
+  {
+   "id": "PIN_O_front2",
+   "kind": "pincer",
+   "terrain": "open",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      30
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    30
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 1.0
+  },
+  {
+   "id": "PIN_O_1S1E",
+   "kind": "pincer",
+   "terrain": "open",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f1_e",
+     "faction": 1,
+     "name": "한국군 대대",
+     "at": [
+      140,
+      66
+     ],
+     "facing": 270,
+     "formation": "line",
+     "battalion": 2,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      30
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    30
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 1.0
+  },
+  {
+   "id": "ART_sym_full",
+   "kind": "arty",
+   "terrain": "open",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      30
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f1_ig",
+     "faction": 1,
+     "name": "포 중대",
+     "at": [
+      70,
+      110
+     ],
+     "facing": 0,
+     "units": {
+      "heavy_infantry_gun": 2,
+      "heavy_field_gun": 1
+     },
+     "company": false
+    },
+    {
+     "id": "f1_how",
+     "faction": 1,
+     "name": "곡사포",
+     "at": [
+      80,
+      114
+     ],
+     "facing": 0,
+     "units": {
+      "heavy_howitzer": 2,
+      "officer": 1
+     },
+     "company": false
+    },
+    {
+     "id": "f1_obs",
+     "faction": 1,
+     "name": "관측반",
+     "at": [
+      80,
+      111
+     ],
+     "facing": 0,
+     "units": {
+      "infantry_scout": 3
+     },
+     "company": true
+    },
+    {
+     "id": "f2_ig",
+     "faction": 2,
+     "name": "포 중대",
+     "at": [
+      70,
+      20
+     ],
+     "facing": 180,
+     "units": {
+      "heavy_infantry_gun": 2,
+      "heavy_field_gun": 1
+     },
+     "company": false
+    },
+    {
+     "id": "f2_how",
+     "faction": 2,
+     "name": "곡사포",
+     "at": [
+      80,
+      16
+     ],
+     "facing": 180,
+     "units": {
+      "heavy_howitzer": 2,
+      "officer_fengtian": 1
+     },
+     "company": false
+    },
+    {
+     "id": "f2_obs",
+     "faction": 2,
+     "name": "관측반",
+     "at": [
+      80,
+      19
+     ],
+     "facing": 180,
+     "units": {
+      "infantry_scout": 3
+     },
+     "company": true
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    30
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 1.0,
+   "arty": "full"
+  },
+  {
+   "id": "ART_sym_noobs",
+   "kind": "arty",
+   "terrain": "open",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      30
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f1_ig",
+     "faction": 1,
+     "name": "포 중대",
+     "at": [
+      70,
+      110
+     ],
+     "facing": 0,
+     "units": {
+      "heavy_infantry_gun": 2,
+      "heavy_field_gun": 1
+     },
+     "company": false
+    },
+    {
+     "id": "f1_how",
+     "faction": 1,
+     "name": "곡사포",
+     "at": [
+      80,
+      114
+     ],
+     "facing": 0,
+     "units": {
+      "heavy_howitzer": 2,
+      "officer": 1
+     },
+     "company": false
+    },
+    {
+     "id": "f2_ig",
+     "faction": 2,
+     "name": "포 중대",
+     "at": [
+      70,
+      20
+     ],
+     "facing": 180,
+     "units": {
+      "heavy_infantry_gun": 2,
+      "heavy_field_gun": 1
+     },
+     "company": false
+    },
+    {
+     "id": "f2_how",
+     "faction": 2,
+     "name": "곡사포",
+     "at": [
+      80,
+      16
+     ],
+     "facing": 180,
+     "units": {
+      "heavy_howitzer": 2,
+      "officer_fengtian": 1
+     },
+     "company": false
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    30
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 1.0,
+   "arty": "noobs"
+  },
+  {
+   "id": "ART_duel4",
+   "kind": "arty",
+   "terrain": "open",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      30
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f1_how",
+     "faction": 1,
+     "name": "곡사포",
+     "at": [
+      80,
+      114
+     ],
+     "facing": 0,
+     "units": {
+      "heavy_howitzer": 4,
+      "officer": 1
+     },
+     "company": false
+    },
+    {
+     "id": "f1_obs",
+     "faction": 1,
+     "name": "관측반",
+     "at": [
+      80,
+      111
+     ],
+     "facing": 0,
+     "units": {
+      "infantry_scout": 3
+     },
+     "company": true
+    },
+    {
+     "id": "f2_how",
+     "faction": 2,
+     "name": "곡사포",
+     "at": [
+      80,
+      16
+     ],
+     "facing": 180,
+     "units": {
+      "heavy_howitzer": 4,
+      "officer_fengtian": 1
+     },
+     "company": false
+    },
+    {
+     "id": "f2_obs",
+     "faction": 2,
+     "name": "관측반",
+     "at": [
+      80,
+      19
+     ],
+     "facing": 180,
+     "units": {
+      "infantry_scout": 3
+     },
+     "company": true
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    30
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 1.0,
+   "arty": "duel4"
+  },
+  {
+   "id": "RIV_br1_r2",
+   "kind": "river",
+   "terrain": "river1",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      46
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    46
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 2.0
+  },
+  {
+   "id": "RIV_br2_r2",
+   "kind": "river",
+   "terrain": "river2",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      46
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    46
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 2.0
+  },
+  {
+   "id": "QL_eq",
+   "kind": "quality",
+   "terrain": "meet_flat",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      20
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "attack",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    20
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 1.0,
+   "both": true
+  },
+  {
+   "id": "QL_rec_v_vet",
+   "kind": "quality",
+   "terrain": "meet_flat",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "recruit": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "recruit": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "recruit": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      20
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "veteran": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "veteran": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "veteran": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "attack",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    20
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 1.0,
+   "both": true
+  },
+  {
+   "id": "QL_rec1.5_v_vet",
+   "kind": "quality",
+   "terrain": "meet_flat",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "recruit": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "recruit": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "recruit": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      20
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "veteran": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "veteran": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "attack",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    20
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "ratio": 1.5,
+   "both": true
+  },
+  {
+   "id": "ORG_base",
+   "kind": "org",
+   "terrain": "meet_flat",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      20
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "attack",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    20
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 1.0,
+   "both": true
+  },
+  {
+   "id": "ORG_kr_nco0",
+   "kind": "org",
+   "terrain": "meet_flat",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line",
+       "squadLeaderRank": 0
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line",
+       "squadLeaderRank": 0
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line",
+       "squadLeaderRank": 0
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      20
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "attack",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    20
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 1.0,
+   "both": true
+  },
+  {
+   "id": "ORG_kr_off6",
+   "kind": "org",
+   "terrain": "meet_flat",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 6,
+        "infantry": 81,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 6,
+        "infantry": 81,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 6,
+        "infantry": 81,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      20
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "attack",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    20
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 1.0,
+   "both": true
+  },
+  {
+   "id": "ORG_kr_off6_nco0",
+   "kind": "org",
+   "terrain": "meet_flat",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 6,
+        "infantry": 81,
+        "infantry_scout": 2
+       },
+       "formation": "line",
+       "squadLeaderRank": 0
+      },
+      {
+       "units": {
+        "officer": 6,
+        "infantry": 81,
+        "infantry_scout": 2
+       },
+       "formation": "line",
+       "squadLeaderRank": 0
+      },
+      {
+       "units": {
+        "officer": 6,
+        "infantry": 81,
+        "infantry_scout": 2
+       },
+       "formation": "line",
+       "squadLeaderRank": 0
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      20
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "attack",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    20
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 1.0,
+   "both": true
+  },
+  {
+   "id": "ORG_nco_killall",
+   "kind": "org",
+   "terrain": "meet_flat",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      20
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "attack",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    20
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 1.0,
+   "env": {
+    "KD_OBS_KILL": "all",
+    "KD_OBS_KILLSIDE": "1",
+    "KD_OBS_KILLDELAY": "30"
+   },
+   "both": true
+  },
+  {
+   "id": "AGG_def_def",
+   "kind": "aggr",
+   "terrain": "meet_open",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      20
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "attack",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    20
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "prof1": "defensive",
+   "prof2": "defensive",
+   "ratio": 1.0,
+   "both": true
+  },
+  {
+   "id": "AGG_agg_agg",
+   "kind": "aggr",
+   "terrain": "meet_open",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      20
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "attack",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    20
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "prof1": "aggressive",
+   "prof2": "aggressive",
+   "ratio": 1.0,
+   "both": true
+  },
+  {
+   "id": "SYM_R_krft",
+   "kind": "sym",
+   "terrain": "meet_open",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "소총대대 1",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "소총대대 2",
+     "at": [
+      80,
+      20
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "attack",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    20
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "ratio": 1.0,
+   "both": true
+  },
+  {
+   "id": "SYM_R_ftjp",
+   "kind": "sym",
+   "terrain": "meet_open",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "소총대대 1",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "소총대대 2",
+     "at": [
+      80,
+      20
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry_regular": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry_regular": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry_regular": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "attack",
+   "fac1": "ft",
+   "fac2": "jp",
+   "def_at": [
+    80,
+    20
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 1.0,
+   "both": true
+  },
+  {
+   "id": "SYM_RM1_krft",
+   "kind": "sym",
+   "terrain": "meet_open",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "소총대대 1",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "소총대대 2",
+     "at": [
+      80,
+      20
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f1_mg0",
+     "faction": 1,
+     "name": "기관총 중대",
+     "at": [
+      77,
+      108
+     ],
+     "facing": 0,
+     "units": {
+      "officer": 1,
+      "heavy_maxim": 2,
+      "heavy_machinegunner": 4,
+      "infantry": 3
+     },
+     "company": true,
+     "formation": "line"
+    },
+    {
+     "id": "f2_mg0",
+     "faction": 2,
+     "name": "기관총 중대",
+     "at": [
+      77,
+      12
+     ],
+     "facing": 180,
+     "units": {
+      "officer_fengtian": 1,
+      "heavy_maxim": 2,
+      "heavy_machinegunner": 4,
+      "infantry": 3
+     },
+     "company": true,
+     "formation": "line"
+    }
+   ],
+   "p1": "attack",
+   "p2": "attack",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    20
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "ratio": 1.0,
+   "both": true
+  },
+  {
+   "id": "OBJ_T_r1_cap",
+   "kind": "objective",
+   "terrain": "trench",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      41
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 1.0,
+   "obj": "capture",
+   "capZone": [
+    60,
+    36,
+    40,
+    12
+   ],
+   "capSec": 30
+  },
+  {
+   "id": "OBJ_T_r2_cap",
+   "kind": "objective",
+   "terrain": "trench",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      41
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 2.0,
+   "obj": "capture",
+   "capZone": [
+    60,
+    36,
+    40,
+    12
+   ],
+   "capSec": 30
+  },
+  {
+   "id": "OBJ_T_r3_cap",
+   "kind": "objective",
+   "terrain": "trench",
+   "forces": [
+    {
+     "id": "f1_bn",
+     "faction": 1,
+     "name": "한국군 소총대대",
+     "at": [
+      80,
+      100
+     ],
+     "facing": 0,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer": 3,
+        "infantry": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    },
+    {
+     "id": "f2_bn",
+     "faction": 2,
+     "name": "적 소총대대",
+     "at": [
+      80,
+      41
+     ],
+     "facing": 180,
+     "formation": "line",
+     "battalion": 1,
+     "battalionForm": "line",
+     "companies": [
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      },
+      {
+       "units": {
+        "officer_fengtian": 3,
+        "infantry_fengtian": 84,
+        "infantry_scout": 2
+       },
+       "formation": "line"
+      }
+     ]
+    }
+   ],
+   "p1": "attack",
+   "p2": "defend",
+   "fac1": "kr",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "ratio": 3.0,
+   "obj": "capture",
+   "capZone": [
+    60,
+    36,
+    40,
+    12
+   ],
+   "capSec": 30
+  }
+ ]
+}

@@ -1,0 +1,8 @@
+[mission-run] village_defense '마을 방어': lost (-) at 226.0s, ticks 13561, 1.7s wall
+  objective hold (defend, primary): failed progress 15.0
+  objective thin (eliminate): done progress 72.6
+  faction 1 한국: spawned 60, lost 40, alive 20, trench peak 38 (now 0)
+  faction 2 봉천 군벌: spawned 124, lost 28, alive 96, trench peak 27 (now 0)
+  events fired 2/5, reinforcements 1/3, messages 2, top kills 30, promotions 2
+  results: C:\Users\seung\AppData\Local\KoreanDivision\results\village_defense_20261020_193109.json
+  checksum EC6DFEE5F27E254E tick 13561

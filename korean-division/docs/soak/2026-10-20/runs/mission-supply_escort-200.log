@@ -1,0 +1,8 @@
+[mission-run] supply_escort '보급 마차 호위': won (-) at 668.7s, ticks 40123, 3.9s wall
+  objective deliver (escort, primary): done progress 2.0
+  objective chief (eliminate): done progress 1.0
+  faction 1 한국: spawned 53, lost 6, alive 47, trench peak 0 (now 0)
+  faction 2 마적단: spawned 59, lost 45, alive 14, trench peak 0 (now 0)
+  events fired 4/4, reinforcements 1/1, messages 4, top kills 32, promotions 4
+  results: C:\Users\seung\AppData\Local\KoreanDivision\results\supply_escort_20261020_193356.json
+  checksum 55B5940F0C42C88E tick 40123

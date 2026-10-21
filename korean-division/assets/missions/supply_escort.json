@@ -1,0 +1,71 @@
+{
+  "propScatter": true,
+  "propDensity": 4.0,
+  "propCell": 6,
+  // 샘플 미션 3 — 보급 마차 호위 (escort · 매복 사건)
+  "id": "supply_escort",
+  "title": "보급 마차 호위",
+  "date": "1920년 9월 21일 오후",
+  "location": "서간도 통화 가도",
+  "briefing": "탄약을 실은 보급 마차 세 대를 동쪽 보급소까지 데려가야 한다. 숲 사이 고갯길에 마적이 숨어 있다는 첩보가 있다. 마차를 두 대 이상 살려 보급소에 넣어라. 15분 안에 끝내야 한다.",
+  "seed": 33,
+  "weather": "clear",
+  "time": "day",
+  "player": 1,
+  "factions": [
+    { "name": "한국", "en": "korean", "lang": "ko", "color": [60, 130, 235], "team": 1, "posture": "attack", "area": "depot" },
+    { "name": "마적단", "en": "fengtian", "lang": "zh", "color": [165, 95, 225], "team": 2, "posture": "hold" }
+  ],
+  "mapData": {
+    "name": "통화 가도",
+    "width": 288, "height": 96, "base": "grass",
+    "paint": [
+      { "terrain": "dirt", "rect": [0, 45, 288, 6] },
+      { "terrain": "forest", "rect": [60, 21, 30, 20] },
+      { "terrain": "forest", "rect": [60, 55, 30, 20] },
+      { "terrain": "forest", "rect": [120, 9, 24, 27] },
+      { "terrain": "high", "rect": [126, 60, 21, 15] },
+      { "terrain": "water", "rect": [105, 0, 6, 42] },
+      { "terrain": "water", "rect": [105, 54, 6, 42] },
+      { "terrain": "wire", "rect": [93, 32, 1, 9] },
+      { "terrain": "forest", "rect": [177, 51, 27, 21] },
+      { "terrain": "forest", "rect": [177, 18, 15, 24] },
+      { "terrain": "water", "rect": [210, 0, 4, 44] },
+      { "terrain": "water", "rect": [210, 52, 4, 44] },
+      { "terrain": "trench", "rect": [252, 38, 1, 20] }
+    ],
+    "starts": [ [15, 48], [75, 30] ],
+    "sites": [ { "at": [273, 48], "type": "city", "owner": 1 } ]
+  },
+  "areas": {
+    "depot": { "rect": [258, 33, 30, 30] },
+    "bridge": { "rect": [168, 36, 51, 24] },
+    "pass": { "rect": [54, 39, 42, 18] },
+    "north_edge": { "rect": [66, 0, 36, 6] }
+  },
+  "deployZones": [ { "faction": 1, "rect": [3, 30, 36, 36] } ],
+  "forces": [
+    { "id": "esc1", "faction": 1, "name": "호위 제1중대", "at": [24, 41], "facing": 90, "units": { "officer": 1, "infantry": 24 }, "formation": "column" },
+    { "id": "esc2", "faction": 1, "name": "호위 제2중대", "at": [24, 56], "facing": 90, "units": { "officer": 1, "infantry": 24 }, "formation": "column" },
+    { "id": "convoy", "faction": 1, "name": "보급 마차 대열", "at": [12, 48], "facing": 90, "units": { "supply_wagon": 3 }, "tag": "convoy", "company": false, "formation": "column" },
+    { "id": "amb_n", "faction": 2, "name": "북쪽 매복조", "at": [75, 32], "facing": 180, "units": { "infantry_fengtian": 16 }, "formation": "spread" },
+    { "id": "amb_s", "faction": 2, "name": "남쪽 매복조", "at": [75, 65], "facing": 0, "units": { "infantry_fengtian": 16 }, "formation": "spread" },
+    { "id": "amb_b", "faction": 2, "name": "다리목 매복조", "at": [191, 62], "facing": 0, "units": { "infantry_fengtian": 14, "heavy_machinegunner_fengtian": 2 }, "formation": "spread" },
+    { "id": "chief", "faction": 2, "name": "마적 두목", "at": [78, 26], "facing": 180, "units": { "officer_fengtian": 1 }, "tag": "chief", "company": false }
+  ],
+  "reinforcements": [
+    { "id": "raiders", "faction": 2, "name": "기마 마적", "area": "north_edge", "facing": 180, "posture": "attack", "aiArea": "pass",
+      "units": { "cavalry_default": 10 }, "formation": "wedge" }
+  ],
+  "objectives": [
+    { "id": "deliver", "type": "escort", "tag": "convoy", "count": 2, "area": "depot", "text": "보급 마차 2대 이상을 동쪽 보급소로" },
+    { "id": "chief", "type": "eliminate", "tag": "chief", "primary": false, "text": "마적 두목 처치" }
+  ],
+  "failures": [ { "type": "timeLimit", "seconds": 900 } ],
+  "events": [
+    { "id": "intro", "when": { "time": 1 }, "do": [ { "message": "보급 마차를 동쪽 보급소까지 무사히 데려가라." } ] },
+    { "id": "ambush", "when": { "area": "pass", "faction": 1 }, "do": [ { "spawn": "raiders" }, { "message": "매복이다! 북쪽에서 기마 마적이 달려온다!" } ] },
+    { "id": "bridge", "when": { "area": "bridge", "faction": 1 }, "do": [ { "message": "다리목이다 — 남쪽 숲을 조심하라" } ] },
+    { "id": "arrive", "when": { "objective": "deliver" }, "do": [ { "message": "보급 마차 도착!" } ] }
+  ]
+}

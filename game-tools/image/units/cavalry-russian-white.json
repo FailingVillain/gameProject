@@ -1,0 +1,33 @@
+{
+  "name": "cavalry-russian-white",
+  "_doc": "cavalry-default faction variant (russian-white): same model, furazhka + russian-white infantry uniform; cap badge from parts/badges HEAD_BADGE.",
+  "base": "cavalry",
+  "anims": "cavalry",
+  "headgear": "furazhka",
+  "uniform": {
+    "legging": "leather",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "collar": true,
+    "puttees": false,
+    "jacket": "ru_olive",
+    "trousers": "ru_olive"
+  },
+  "weapons": {
+    "carbine": "cav_carbine",
+    "sabre": "sabre"
+  },
+  "gear": [
+    "leather_pouches"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "belt": true,
+  "belt_pouches": false,
+  "dirs": "all",
+  "frames": "all",
+  "fix_as": "cavalry-default"
+}

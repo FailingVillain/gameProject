@@ -1,0 +1,23 @@
+{
+ "name": "infantry-gando",
+ "_doc": "Gando volunteer militia: infantry-reserve body/poses, 1920s Gando volunteer dress: dyed grey-brown cotton jacket, dark trousers + puttees, khaki cap with headband, bandolier, old bolt rifle, haversack + canteen only.",
+ "base": "infantry",
+ "anims": "infantry",
+ "headgear": "gando_cap",
+ "uniform": "gando",
+ "weapon": "bolt_rifle",
+ "gear": [
+  "bandolier_x_low",
+  "haversack",
+  "canteen_cloth"
+ ],
+ "team": [
+  "helmet_band",
+  "arm_patch"
+ ],
+ "belt": true,
+ "belt_pouches": false,
+ "e_pull_extra": 3.0,
+ "dirs": "all",
+ "frames": "all"
+}

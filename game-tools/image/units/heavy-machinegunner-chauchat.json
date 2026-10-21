@@ -1,0 +1,40 @@
+{
+  "name": "heavy-machinegunner-chauchat",
+  "_doc": "heavy-machinegunner with the Chauchat (FM Mle 1915) instead of the generic LMG; same body/poses/gear.",
+  "base": "infantry_heavy",
+  "anims": "heavy-machinegunner",
+  "headgear": "korean_kepi",
+  "uniform": {
+    "jacket": "fgrey_dark",
+    "trousers": "fgrey_dark_trouser",
+    "legging": "fgrey_dark_wrap",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "collar": true,
+    "puttees": true,
+    "puttee_seam": "fgrey_dark_trouser",
+    "piping": "acc_brass",
+    "placket": false,
+    "trouser_stripe": true,
+    "stripe_mat": "acc_brass"
+  },
+  "weapon": "chauchat",
+  "gear": [
+    "field_pack_grey",
+    "haversack",
+    "canteen_cloth",
+    "leather_pouches"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "belt": true,
+  "belt_pouches": false,
+  "e_pull_extra": 3.0,
+  "dirs": "16",
+  "frame_wide": 1.5,
+  "frames": "all",
+  "fix_as": "heavy-machinegunner"
+}

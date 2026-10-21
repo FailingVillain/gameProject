@@ -1,0 +1,71 @@
+[lod] L2 공유 1종: 시트 1장 칸 2 -> 페이지 1장 0.5 MB (자르기 전 0.6 MB) · LOD 0/0/0 MB
+[lod] L2 공유 1종: 시트 1장 칸 2 -> 페이지 1장 0.5 MB (자르기 전 0.6 MB) · LOD 0/0/1 MB
+[lod] L2 공유 1종: 시트 1장 칸 2 -> 페이지 1장 0.5 MB (자르기 전 0.6 MB) · LOD 0/0/1 MB
+[atlas] ww2: 2시트 -> 페이지 1장 (2048x776), 14.1 MB (점 필터본 + 밉맵본)
+테마 스프라이트 'unit.tank_ft_male.turret' 실패: units/hd/tank_turret.png
+[lod] L2 공유 54종: 시트 54장 칸 6414 -> 페이지 1장 31.1 MB (자르기 전 100.0 MB) · LOD 0/0/33 MB
+[lod] L0 unit.officer: 시트 1장 칸 150 -> 페이지 1장 5.9 MB (자르기 전 11.7 MB) · LOD 6/0/33 MB
+[lod] L1 공유 57종: 시트 61장 칸 6420 -> 페이지 2장 121.3 MB (자르기 전 406.6 MB) · LOD 6/121/33 MB
+[lod] L0 unit.infantry: 시트 2장 칸 295 -> 페이지 1장 10.7 MB (자르기 전 23.4 MB) · LOD 17/121/33 MB
+[lod] L0 building.metropolis: 시트 1장 칸 2 -> 페이지 1장 7.4 MB (자르기 전 8.9 MB) · LOD 24/121/33 MB
+[lod] L0 unit.infantry_sniper@russian-white: 시트 1장 칸 95 -> 페이지 1장 3.4 MB (자르기 전 7.4 MB) · LOD 27/121/33 MB
+[lod] L0 building.city: 시트 1장 칸 2 -> 페이지 1장 7.4 MB (자르기 전 8.9 MB) · LOD 35/121/33 MB
+[lod] L0 unit.officer_fengtian: 시트 1장 칸 150 -> 페이지 1장 5.9 MB (자르기 전 11.7 MB) · LOD 41/121/33 MB
+[lod] L0 unit.infantry_fengtian: 시트 2장 칸 180 -> 페이지 1장 6.9 MB (자르기 전 14.5 MB) · LOD 48/121/33 MB
+[lod] L0 unit.tank_ft_female.turret: 시트 1장 칸 36 -> 페이지 1장 0.9 MB (자르기 전 7.9 MB) · LOD 49/121/33 MB
+[lod] L0 unit.infantry_reserve: 시트 2장 칸 210 -> 페이지 1장 8.0 MB (자르기 전 16.8 MB) · LOD 57/121/33 MB
+[lod] L0 unit.infantry@russian-white: 시트 2장 칸 210 -> 페이지 1장 7.8 MB (자르기 전 16.8 MB) · LOD 64/121/33 MB
+[lod] L0 unit.heavy_machinegunner@japanese: 시트 1장 칸 171 -> 페이지 1장 7.3 MB (자르기 전 20.0 MB) · LOD 72/121/33 MB
+[lod] L0 unit.supply_wagon: 시트 2장 칸 90 -> 페이지 1장 8.5 MB (자르기 전 22.1 MB) · LOD 80/121/33 MB
+[lod] L0 unit.heavy_machinegunner@fengtian: 시트 1장 칸 171 -> 페이지 1장 7.1 MB (자르기 전 20.0 MB) · LOD 87/121/33 MB
+[lod] L0 unit.tank_armored_car.turret: 시트 1장 칸 36 -> 페이지 1장 0.6 MB (자르기 전 7.9 MB) · LOD 88/121/33 MB
+[lod] L0 unit.infantry_guard: 시트 2장 칸 210 -> 페이지 1장 8.7 MB (자르기 전 16.8 MB) · LOD 96/121/33 MB
+[lod] L0 unit.heavy_at_rifleman@russian-white: 시트 1장 칸 95 -> 페이지 1장 4.1 MB (자르기 전 7.4 MB) · LOD 101/121/33 MB
+[lod] L0 unit.heavy_at_rifleman@japanese: 시트 1장 칸 95 -> 페이지 1장 4.2 MB (자르기 전 7.4 MB) · LOD 105/121/33 MB
+[lod] L0 unit.tank_ft_female: 시트 1장 칸 54 -> 페이지 1장 6.0 MB (자르기 전 17.1 MB) · LOD 111/121/33 MB
+[lod] L0 unit.cavalry_default@japanese: 시트 2장 칸 130 -> 페이지 1장 9.7 MB (자르기 전 21.3 MB) · LOD 120/121/33 MB
+[lod] L0 unit.tank_armored_car: 시트 1장 칸 54 -> 페이지 1장 6.4 MB (자르기 전 17.1 MB) · LOD 127/121/33 MB
+[lod] L0 unit.infantry@japanese: 시트 2장 칸 210 -> 페이지 1장 7.8 MB (자르기 전 16.8 MB) · LOD 135/121/33 MB
+[lod] L0 unit.heavy_at_rifleman: 시트 1장 칸 95 -> 페이지 1장 4.2 MB (자르기 전 7.4 MB) · LOD 139/121/33 MB
+[lod] L0 unit.infantry_assault: 시트 2장 칸 190 -> 페이지 1장 7.1 MB (자르기 전 14.8 MB) · LOD 146/121/33 MB
+[lod] L0 unit.tank_ft_male.turret: 시트 1장 칸 36 -> 페이지 1장 0.9 MB (자르기 전 7.9 MB) · LOD 147/121/33 MB
+[lod] L0 unit.infantry@fengtian: 시트 2장 칸 180 -> 페이지 1장 6.9 MB (자르기 전 14.5 MB) · LOD 154/121/33 MB
+[lod] L0 unit.officer@fengtian: 시트 1장 칸 150 -> 페이지 1장 5.9 MB (자르기 전 11.7 MB) · LOD 160/121/33 MB
+[lod] L0 unit.officer@japanese: 시트 1장 칸 150 -> 페이지 1장 5.9 MB (자르기 전 11.7 MB) · LOD 166/121/33 MB
+[lod] L0 unit.officer@russian-white: 시트 1장 칸 150 -> 페이지 1장 5.9 MB (자르기 전 11.7 MB) · LOD 171/121/33 MB
+[lod] L0 unit.heavy_maxim: 시트 1장 칸 65 -> 페이지 1장 4.9 MB (자르기 전 9.1 MB) · LOD 176/121/33 MB
+[lod] L0 unit.infantry_regular: 시트 2장 칸 210 -> 페이지 1장 8.0 MB (자르기 전 16.8 MB) · LOD 184/121/33 MB
+[lod] L0 unit.infantry_sniper@japanese: 시트 1장 칸 95 -> 페이지 1장 3.5 MB (자르기 전 7.4 MB) · LOD 188/121/33 MB
+[lod] L0 unit.tank_ft_male: 시트 1장 칸 54 -> 페이지 1장 6.0 MB (자르기 전 17.1 MB) · LOD 194/121/33 MB
+[lod] L0 unit.infantry_sniper@fengtian: 시트 1장 칸 95 -> 페이지 1장 3.7 MB (자르기 전 7.4 MB) · LOD 197/121/33 MB
+[lod] L0 unit.infantry_scout: 시트 2장 칸 305 -> 페이지 1장 10.1 MB (자르기 전 24.2 MB) · LOD 208/121/33 MB
+[lod] L0 unit.cavalry_default@fengtian: 시트 2장 칸 130 -> 페이지 1장 9.5 MB (자르기 전 21.3 MB) · LOD 217/121/33 MB
+[lod] L0 unit.heavy_maxim@fengtian: 시트 1장 칸 65 -> 페이지 1장 4.8 MB (자르기 전 9.1 MB) · LOD 222/121/33 MB
+[lod] L0 unit.heavy_maxim@japanese: 시트 1장 칸 65 -> 페이지 1장 4.9 MB (자르기 전 9.1 MB) · LOD 227/121/33 MB
+[lod] L0 unit.heavy_field_gun@fengtian: 시트 2장 칸 70 -> 페이지 1장 13.3 MB (자르기 전 32.0 MB) · LOD 240/121/33 MB
+[lod] L0 unit.cavalry_default: 시트 2장 칸 130 -> 페이지 1장 9.6 MB (자르기 전 21.3 MB) · LOD 250/121/33 MB
+[lod] L0 unit.infantry_sniper: 시트 1장 칸 95 -> 페이지 1장 3.7 MB (자르기 전 7.4 MB) · LOD 253/121/33 MB
+[lod] L0 unit.heavy_at_rifleman@fengtian: 시트 1장 칸 95 -> 페이지 1장 4.1 MB (자르기 전 7.4 MB) · LOD 258/121/33 MB
+[lod] L0 building.village: 시트 1장 칸 2 -> 페이지 1장 7.4 MB (자르기 전 8.9 MB) · LOD 265/121/33 MB
+[lod] L0 unit.heavy_machinegunner: 시트 1장 칸 171 -> 페이지 1장 7.2 MB (자르기 전 20.0 MB) · LOD 272/121/33 MB
+[lod] L0 unit.heavy_maxim@russian-white: 시트 1장 칸 65 -> 페이지 1장 4.8 MB (자르기 전 9.1 MB) · LOD 277/121/33 MB
+[lod] L0 unit.cavalry_default@russian-white: 시트 2장 칸 130 -> 페이지 1장 9.5 MB (자르기 전 21.3 MB) · LOD 287/121/33 MB
+[lod] L0 unit.heavy_machinegunner@russian-white: 시트 1장 칸 171 -> 페이지 1장 7.1 MB (자르기 전 20.0 MB) · LOD 294/121/33 MB
+[lod] L0 unit.heavy_infantry_gun@japanese: 시트 2장 칸 70 -> 페이지 1장 9.0 MB (자르기 전 24.4 MB) · LOD 303/121/33 MB
+[lod] L0 unit.heavy_infantry_gun@russian-white: 시트 2장 칸 70 -> 페이지 1장 8.8 MB (자르기 전 24.4 MB) · LOD 311/121/33 MB
+[lod] L0 unit.heavy_infantry_gun@fengtian: 시트 2장 칸 70 -> 페이지 1장 8.9 MB (자르기 전 24.4 MB) · LOD 320/121/33 MB
+[lod] L0 unit.heavy_infantry_gun: 시트 2장 칸 70 -> 페이지 1장 9.0 MB (자르기 전 24.4 MB) · LOD 329/121/33 MB
+[lod] L0 unit.heavy_field_gun@russian-white: 시트 2장 칸 70 -> 페이지 1장 13.2 MB (자르기 전 32.0 MB) · LOD 342/121/33 MB
+[lod] L0 unit.heavy_field_gun: 시트 2장 칸 70 -> 페이지 1장 13.4 MB (자르기 전 32.0 MB) · LOD 356/121/33 MB
+[lod] L0 unit.heavy_field_gun@japanese: 시트 2장 칸 70 -> 페이지 1장 13.4 MB (자르기 전 32.0 MB) · LOD 369/121/33 MB
+[lod] L0 unit.heavy_howitzer@russian-white: 시트 4장 칸 80 -> 페이지 1장 32.0 MB (자르기 전 195.4 MB) · LOD 401/121/33 MB
+[lod] L0 unit.heavy_howitzer@japanese: 시트 4장 칸 80 -> 페이지 1장 31.9 MB (자르기 전 195.4 MB) · LOD 433/121/33 MB
+[lod] L0 unit.heavy_howitzer: 시트 4장 칸 80 -> 페이지 1장 31.9 MB (자르기 전 195.4 MB) · LOD 465/121/33 MB
+[lod] L0 unit.heavy_howitzer@fengtian: 시트 4장 칸 80 -> 페이지 1장 32.1 MB (자르기 전 195.4 MB) · LOD 497/121/33 MB
+[uifuzz] 선택 종류 22가지: B:city/foreign B:city/neutral B:city/own B:metropolis/foreign B:metropolis/own B:village/foreign B:village/neutral U:heavy_at_rifleman/own U:heavy_field_gun/foreign U:heavy_howitzer/foreign U:heavy_howitzer/own U:heavy_maxim/foreign U:heavy_maxim/own U:infantry/own U:infantry_guard/own U:officer/own U:officer_fengtian/own U:supply_wagon/own U:tank_armored_car/foreign U:tank_ft_male/own U:veteran/own multi(units)
+[uifuzz] 사건: games-started=17, tab-click=168, console-open=138, reg-list-open=530, company-cards=732, pager-click=10, multi-page>0=136, tab-combat=593, combat-click=131, right-drag-end=59, saves=21, games-loaded=15, paused=161
+[lod] 메모리: 현재 651.1 MB (최대 651.1 MB) · L0 497.2 (최대 497.2) · L1 121.3 (최대 121.3) · L2 32.6 (최대 32.6) · 비동기 58 동기 4 내림 0 · 물러서 그림 11418 · 업로드 프레임 최대 21.5ms · LOD0 예산 768 MB
+[lod]  L0: heavy_howitzer@fengtian 32.1/195.4, heavy_howitzer@russian-white 32.0/195.4, heavy_howitzer 31.9/195.4, heavy_howitzer@japanese 31.9/195.4, heavy_field_gun 13.4/32.0, heavy_field_gun@japanese 13.4/32.0, heavy_field_gun@fengtian 13.3/32.0, heavy_field_gun@russian-white 13.2/32.0, infantry 10.7/23.4, infantry_scout 10.1/24.2, cavalry_default@japanese 9.7/21.3, cavalry_default 9.6/21.3, cavalry_default@fengtian 9.5/21.3, cavalry_default@russian-white 9.5/21.3, heavy_infantry_gun@japanese 9.0/24.4, heavy_infantry_gun 9.0/24.4, heavy_infantry_gun@fengtian 8.9/24.4, heavy_infantry_gun@russian-white 8.8/24.4, infantry_guard 8.7/16.8, supply_wagon 8.5/22.1, infantry_reserve 8.0/16.8, infantry_regular 8.0/16.8, infantry@japanese 7.8/16.8, infantry@russian-white 7.8/16.8, building.metropolis 7.4/8.9, building.village 7.4/8.9, building.city 7.4/8.9, heavy_machinegunner@japanese 7.3/20.0, heavy_machinegunner 7.2/20.0, infantry_assault 7.1/14.8, heavy_machinegunner@russian-white 7.1/20.0, heavy_machinegunner@fengtian 7.1/20.0, infantry@fengtian 6.9/14.5, infantry_fengtian 6.9/14.5, tank_armored_car 6.4/17.1, tank_ft_female 6.0/17.1, tank_ft_male 6.0/17.1, officer 5.9/11.7, officer@japanese 5.9/11.7, officer@fengtian 5.9/11.7, officer@russian-white 5.9/11.7, officer_fengtian 5.9/11.7, heavy_maxim 4.9/9.1, heavy_maxim@japanese 4.9/9.1, heavy_maxim@fengtian 4.8/9.1, heavy_maxim@russian-white 4.8/9.1, heavy_at_rifleman@japanese 4.2/7.4, heavy_at_rifleman 4.2/7.4, heavy_at_rifleman@russian-white 4.1/7.4, heavy_at_rifleman@fengtian 4.1/7.4, infantry_sniper 3.7/7.4, infantry_sniper@fengtian 3.7/7.4, infantry_sniper@japanese 3.5/7.4, infantry_sniper@russian-white 3.4/7.4, tank_ft_male.turret 0.9/7.9, tank_ft_female.turret 0.9/7.9, tank_armored_car.turret 0.6/7.9
+[lod]  L1: heavy_howitzer@japanese 7.2/48.8, heavy_howitzer 7.2/48.8, heavy_howitzer@fengtian 7.2/48.8, heavy_howitzer@russian-white 7.1/48.8, heavy_field_gun@japanese 2.9/8.0, heavy_field_gun 2.9/8.0, heavy_field_gun@fengtian 2.9/8.0, heavy_field_gun@russian-white 2.9/8.0, infantry 2.7/5.9, infantry_scout 2.5/6.1, cavalry_default@japanese 2.3/5.3, cavalry_default 2.3/5.3, cavalry_default@fengtian 2.3/5.3, cavalry_default@russian-white 2.3/5.3, infantry_guard 2.1/4.2, heavy_infantry_gun@japanese 2.0/6.1, heavy_infantry_gun 2.0/6.1, heavy_infantry_gun@fengtian 2.0/6.1, heavy_infantry_gun@russian-white 2.0/6.1, supply_wagon 2.0/5.5, infantry_regular 2.0/4.2, infantry_reserve 2.0/4.2, infantry@japanese 1.9/4.2, infantry@russian-white 1.9/4.2, heavy_machinegunner@japanese 1.8/5.0, heavy_machinegunner 1.8/5.0, infantry_assault 1.7/3.7, heavy_machinegunner@russian-white 1.7/5.0, heavy_machinegunner@fengtian 1.7/5.0, infantry@fengtian 1.7/3.6, infantry_fengtian 1.7/3.6, building.metropolis 1.6/2.2, building.village 1.6/2.2, building.city 1.6/2.2, tank_armored_car 1.4/4.3, officer 1.4/2.9, officer@japanese 1.4/2.9, officer@fengtian 1.4/2.9, officer@russian-white 1.4/2.9, officer_fengtian 1.4/2.9, tank_ft_female 1.3/4.3, tank_ft_male 1.3/4.3, heavy_maxim@japanese 1.1/2.3, heavy_maxim 1.1/2.3, heavy_maxim@fengtian 1.1/2.3, heavy_maxim@russian-white 1.1/2.3, heavy_at_rifleman@japanese 1.0/1.9, heavy_at_rifleman 1.0/1.9, heavy_at_rifleman@russian-white 1.0/1.9, heavy_at_rifleman@fengtian 1.0/1.9, infantry_sniper@japanese 0.8/1.9, infantry_sniper 0.8/1.9, infantry_sniper@fengtian 0.8/1.9, infantry_sniper@russian-white 0.8/1.9, tank_ft_male.turret 0.2/2.0, tank_ft_female.turret 0.2/2.0, tank_armored_car.turret 0.1/2.0
+[lod]  L2: heavy_howitzer@japanese 1.8/12.2, heavy_howitzer 1.8/12.2, heavy_howitzer@fengtian 1.8/12.2, heavy_howitzer@russian-white 1.8/12.2, heavy_field_gun@japanese 0.8/2.0, heavy_field_gun 0.8/2.0, heavy_field_gun@fengtian 0.8/2.0, heavy_field_gun@russian-white 0.8/2.0, infantry 0.7/1.5, infantry_scout 0.7/1.5, cavalry_default@japanese 0.6/1.3, cavalry_default 0.6/1.3, cavalry_default@fengtian 0.6/1.3, cavalry_default@russian-white 0.6/1.3, infantry_guard 0.5/1.0, heavy_infantry_gun@japanese 0.5/1.5, heavy_infantry_gun 0.5/1.5, infantry_reserve 0.5/1.0, infantry_regular 0.5/1.0, heavy_infantry_gun@fengtian 0.5/1.5, heavy_infantry_gun@russian-white 0.5/1.5, supply_wagon 0.5/1.4, infantry@russian-white 0.5/1.0, infantry@japanese 0.5/1.0, heavy_machinegunner@japanese 0.5/1.3, heavy_machinegunner 0.5/1.3, heavy_machinegunner@russian-white 0.5/1.3, heavy_machinegunner@fengtian 0.5/1.3, infantry_assault 0.5/0.9, infantry@fengtian 0.4/0.9, infantry_fengtian 0.4/0.9, building.metropolis 0.4/0.6, building.village 0.4/0.6, building.city 0.4/0.6, tank_armored_car 0.4/1.1, officer 0.4/0.7, officer@japanese 0.4/0.7, officer@fengtian 0.4/0.7, officer@russian-white 0.4/0.7, officer_fengtian 0.4/0.7, tank_ft_female 0.4/1.1, tank_ft_male 0.4/1.1, heavy_maxim@japanese 0.3/0.6, heavy_maxim 0.3/0.6, heavy_maxim@fengtian 0.3/0.6, heavy_maxim@russian-white 0.3/0.6, heavy_at_rifleman@japanese 0.3/0.5, heavy_at_rifleman 0.3/0.5, heavy_at_rifleman@russian-white 0.3/0.5, heavy_at_rifleman@fengtian 0.3/0.5, infantry_sniper@japanese 0.2/0.5, infantry_sniper 0.2/0.5, infantry_sniper@fengtian 0.2/0.5, infantry_sniper@russian-white 0.2/0.5, tank_ft_male.turret 0.1/0.5, tank_ft_female.turret 0.1/0.5, tank_armored_car.turret 0.0/0.5
+[uifuzz] 2003 프레임, 예외 0건, 고유 크래시 지점 0곳

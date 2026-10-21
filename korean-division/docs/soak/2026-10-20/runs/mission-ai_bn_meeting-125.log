@@ -1,0 +1,7 @@
+[mission-run] ai_bn_meeting '대대 조우전 (AI 대 AI, 전술 관찰)': lost (losses) at 260.8s, ticks 15645, 8.0s wall
+  objective crush (eliminate, primary): active progress 45.8
+  faction 1 한국군: spawned 295, lost 207, alive 88, trench peak 0 (now 0)
+  faction 2 봉천 군벌: spawned 312, lost 143, alive 169, trench peak 0 (now 0)
+  events fired 1/1, reinforcements 0/0, messages 1, top kills 38, promotions 3
+  results: C:\Users\seung\AppData\Local\KoreanDivision\results\ai_bn_meeting_20261020_192355.json
+  checksum 0538D474B2EBA8F5 tick 15645

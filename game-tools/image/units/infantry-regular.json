@@ -1,0 +1,45 @@
+{
+  "name": "infantry-regular",
+  "_doc": "정규병 (Stahlhelm infantry, display name 정규병): infantry-default copy, German M1916 Stahlhelm (steel-grey helmet paint, team band on the lower shell, flared neck guard, short visor, side lugs) instead of the Feldkappe. Same body / uniform / pack / rifle / 35 frames.",
+  "base": "infantry",
+  "anims": "infantry",
+  "headgear": "stahlhelm",
+  "uniform": {
+    "jacket": "fgrey_dark",
+    "trousers": "fgrey_dark_trouser",
+    "legging": "fgrey_dark_wrap",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "collar": true,
+    "puttees": true,
+    "puttee_seam": "fgrey_dark_trouser",
+    "piping": "acc_brass",
+    "placket": false,
+    "trouser_stripe": true,
+    "stripe_mat": "acc_brass"
+  },
+  "weapon": "bolt_rifle",
+  "gear": [
+    "field_pack_grey",
+    "haversack",
+    "canteen_cloth",
+    "leather_pouches"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "belt": true,
+  "belt_pouches": false,
+  "e_pull_extra": 3.0,
+  "tune": {
+    "poses": {
+      "infantry": {
+        "prone_head_pitch": -47
+      }
+    }
+  },
+  "dirs": "all",
+  "frames": "all"
+}

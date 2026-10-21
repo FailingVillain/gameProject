@@ -1,0 +1,25 @@
+{
+ "name": "standard-bearer-russian-red",
+ "_doc": "Red Russian bearer: red flag.",
+ "base": "infantry",
+ "anims": "infantry-bearer",
+ "headgear": "budenovka",
+ "uniform": "ru_red",
+ "weapon": "flag_russian-red",
+ "gear": [
+  "field_pack_grey",
+  "haversack",
+  "canteen_cloth",
+  "leather_pouches"
+ ],
+ "team": [
+  "helmet_band",
+  "arm_patch"
+ ],
+ "belt": true,
+ "belt_pouches": false,
+ "e_pull_extra": 3.0,
+ "dirs": "all",
+ "frames": "all",
+ "fix_as": "standard-bearer"
+}

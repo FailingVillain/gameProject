@@ -1,0 +1,254 @@
+{
+ "frame": [
+  32,
+  40
+ ],
+ "anchor": [
+  16,
+  36
+ ],
+ "dirs": [
+  "s",
+  "se",
+  "e",
+  "ne",
+  "n"
+ ],
+ "mirror": true,
+ "columns": [
+  "at_idle",
+  "at_walk_1",
+  "at_walk_2",
+  "at_walk_3",
+  "at_walk_4",
+  "at_kneel",
+  "at_set",
+  "at_aim",
+  "at_fire_a",
+  "at_fire_b",
+  "hit",
+  "fall",
+  "dead",
+  "stagger_b",
+  "kneel_b",
+  "dead_b",
+  "stagger_c",
+  "slump_c",
+  "dead_c"
+ ],
+ "anims": {
+  "idle": {
+   "frames": [
+    "at_idle"
+   ],
+   "ms": 150,
+   "shared_fit": false
+  },
+  "walk": {
+   "frames": [
+    "at_walk_1",
+    "at_walk_2",
+    "at_walk_3",
+    "at_walk_4"
+   ],
+   "ms": 130,
+   "shared_fit": false
+  },
+  "deploy": {
+   "frames": [
+    "at_kneel",
+    "at_set",
+    "at_aim"
+   ],
+   "ms": [
+    320,
+    320,
+    500
+   ],
+   "shared_fit": false
+  },
+  "fire_kneel": {
+   "frames": [
+    "at_aim",
+    "at_fire_a",
+    "at_fire_b",
+    "at_fire_a",
+    "at_fire_b"
+   ],
+   "ms": [
+    400,
+    110,
+    260,
+    110,
+    260
+   ],
+   "shared_fit": false
+  },
+  "pack": {
+   "frames": [
+    "at_aim",
+    "at_set",
+    "at_kneel"
+   ],
+   "ms": [
+    400,
+    320,
+    320
+   ],
+   "shared_fit": false
+  },
+  "death": {
+   "frames": [
+    "hit",
+    "fall",
+    "dead"
+   ],
+   "ms": [
+    250,
+    250,
+    1000
+   ],
+   "shared_fit": false
+  },
+  "death_b": {
+   "frames": [
+    "hit",
+    "stagger_b",
+    "kneel_b",
+    "dead_b"
+   ],
+   "ms": [
+    200,
+    700,
+    300,
+    1200
+   ],
+   "shared_fit": false
+  },
+  "death_c": {
+   "frames": [
+    "hit",
+    "stagger_c",
+    "slump_c",
+    "dead_c"
+   ],
+   "ms": [
+    200,
+    700,
+    300,
+    1200
+   ],
+   "shared_fit": false
+  }
+ },
+ "sheets": [
+  {
+   "file": "heavy-at-rifleman-fengtian@32.png",
+   "team": "heavy-at-rifleman-fengtian@32_team.png",
+   "columns": [
+    "at_idle",
+    "at_walk_1",
+    "at_walk_2",
+    "at_walk_3",
+    "at_walk_4",
+    "at_kneel",
+    "at_set",
+    "at_aim",
+    "at_fire_a",
+    "at_fire_b",
+    "hit",
+    "fall",
+    "dead",
+    "stagger_b",
+    "kneel_b",
+    "dead_b",
+    "stagger_c",
+    "slump_c",
+    "dead_c"
+   ],
+   "size": [
+    608,
+    200
+   ]
+  }
+ ],
+ "cells": {
+  "at_idle": {
+   "sheet": "heavy-at-rifleman-fengtian@32.png",
+   "col": 0
+  },
+  "at_walk_1": {
+   "sheet": "heavy-at-rifleman-fengtian@32.png",
+   "col": 1
+  },
+  "at_walk_2": {
+   "sheet": "heavy-at-rifleman-fengtian@32.png",
+   "col": 2
+  },
+  "at_walk_3": {
+   "sheet": "heavy-at-rifleman-fengtian@32.png",
+   "col": 3
+  },
+  "at_walk_4": {
+   "sheet": "heavy-at-rifleman-fengtian@32.png",
+   "col": 4
+  },
+  "at_kneel": {
+   "sheet": "heavy-at-rifleman-fengtian@32.png",
+   "col": 5
+  },
+  "at_set": {
+   "sheet": "heavy-at-rifleman-fengtian@32.png",
+   "col": 6
+  },
+  "at_aim": {
+   "sheet": "heavy-at-rifleman-fengtian@32.png",
+   "col": 7
+  },
+  "at_fire_a": {
+   "sheet": "heavy-at-rifleman-fengtian@32.png",
+   "col": 8
+  },
+  "at_fire_b": {
+   "sheet": "heavy-at-rifleman-fengtian@32.png",
+   "col": 9
+  },
+  "hit": {
+   "sheet": "heavy-at-rifleman-fengtian@32.png",
+   "col": 10
+  },
+  "fall": {
+   "sheet": "heavy-at-rifleman-fengtian@32.png",
+   "col": 11
+  },
+  "dead": {
+   "sheet": "heavy-at-rifleman-fengtian@32.png",
+   "col": 12
+  },
+  "stagger_b": {
+   "sheet": "heavy-at-rifleman-fengtian@32.png",
+   "col": 13
+  },
+  "kneel_b": {
+   "sheet": "heavy-at-rifleman-fengtian@32.png",
+   "col": 14
+  },
+  "dead_b": {
+   "sheet": "heavy-at-rifleman-fengtian@32.png",
+   "col": 15
+  },
+  "stagger_c": {
+   "sheet": "heavy-at-rifleman-fengtian@32.png",
+   "col": 16
+  },
+  "slump_c": {
+   "sheet": "heavy-at-rifleman-fengtian@32.png",
+   "col": 17
+  },
+  "dead_c": {
+   "sheet": "heavy-at-rifleman-fengtian@32.png",
+   "col": 18
+  }
+ },
+ "anchors": "heavy-at-rifleman-fengtian@32_anchors.json"
+}

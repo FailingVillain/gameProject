@@ -1,0 +1,35 @@
+{
+  "name": "cavalry-officer-japanese",
+  "_doc": "cavalry-officer faction variant (japanese): jkhaki tunic/breeches (loess ochre) + japanese_officer_cap, as officer-japanese.",
+  "base": "cavalry",
+  "anims": "cavalry",
+  "headgear": "japanese_officer_cap",
+  "uniform": {
+    "legging": "leather",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "collar": true,
+    "puttees": false,
+    "trouser_stripe": true,
+    "jacket": "jkhaki",
+    "trousers": "jkhaki"
+  },
+  "weapons": {
+    "pistol": "pistol",
+    "sabre": "sabre"
+  },
+  "gear": [
+    "holster",
+    "map_case"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "belt": true,
+  "belt_pouches": false,
+  "dirs": "all",
+  "frames": "all",
+  "fix_as": "cavalry-officer"
+}

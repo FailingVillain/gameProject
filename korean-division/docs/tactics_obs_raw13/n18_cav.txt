@@ -1,0 +1,9 @@
+## CAV
+| 조합 | 모드 | X 승 / Y 승 / 시간초과 | X 손실 평균 | Y 손실 평균 | 평균 결판초 | 기병 돌격 정면/측면/후방 · 경유 · 물러남 |
+|---|---|---|---|---|---|---|
+| infantry 30 대 cavalry_default 30 | 동수 | 0 / 10 / 0 | 30.0 | 3.9 | 35 | 10/10/0 · 0 · 0 |
+| infantry 30 대 cavalry_default 17 | 동가치 | 3 / 6 / 1 | 25.0 | 8.1 | 89 | 7/14/0 · 0 · 1 |
+| cavalry_default 30 대 heavy_machinegunner 30 | 동수 | 0 / 0 / 10 | 1.2 | 0.0 | 400 | 0/0/0 · 0 · 0 |
+| cavalry_default 17 대 heavy_machinegunner 19 | 동가치 | 0 / 0 / 10 | 0.5 | 0.0 | 400 | 0/0/0 · 0 · 0 |
+| cavalry_default 30 대 heavy_maxim 30 | 동수 | 0 / 1 / 9 | 5.5 | 0.0 | 365 | 0/0/0 · 0 · 1 |
+| cavalry_default 17 대 heavy_maxim 9 | 동가치 | 0 / 0 / 10 | 0.2 | 0.0 | 400 | 0/0/0 · 0 · 0 |

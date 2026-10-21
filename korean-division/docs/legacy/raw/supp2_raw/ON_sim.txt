@@ -1,0 +1,10 @@
+ON RR1 MEAS start=100/100 end_t=400 winner=0 lossEnd=65/73 loss120=19/42 loss300=65/73 t50=233/197 shots=3608 hits=472 hitpct=13.1 meanDist=20.5 hitDist=19.9
+ON LT1 MEAS start=100/100 end_t=391 winner=1 lossEnd=62/100 loss120=32/20 loss300=59/71 t50=228/230 shots=5128 hits=518 hitpct=10.1 meanDist=19.6 hitDist=18.4
+ON RR2 MEAS start=100/100 end_t=265 winner=2 lossEnd=100/45 loss120=44/29 loss300=-1/-1 t50=130/- shots=4041 hits=481 hitpct=11.9 meanDist=20.7 hitDist=19.5
+ON LT2 MEAS start=100/100 end_t=400 winner=0 lossEnd=52/88 loss120=38/13 loss300=51/81 t50=201/216 shots=5169 hits=468 hitpct=9.1 meanDist=20.5 hitDist=19.1
+ON RR3 MEAS start=100/100 end_t=400 winner=0 lossEnd=38/87 loss120=22/44 loss300=38/82 t50=-/145 shots=4061 hits=441 hitpct=10.9 meanDist=20.9 hitDist=19.9
+ON LT3 MEAS start=100/100 end_t=400 winner=0 lossEnd=50/71 loss120=34/33 loss300=50/67 t50=186/199 shots=5001 hits=400 hitpct=8.0 meanDist=20.7 hitDist=19.2
+ON RR4 MEAS start=100/100 end_t=295 winner=2 lossEnd=100/49 loss120=37/20 loss300=-1/-1 t50=181/- shots=4287 hits=497 hitpct=11.6 meanDist=20.6 hitDist=19.6
+ON LT4 MEAS start=100/100 end_t=400 winner=0 lossEnd=67/88 loss120=43/35 loss300=65/74 t50=148/147 shots=4783 hits=510 hitpct=10.7 meanDist=19.3 hitDist=18.2
+ON RR5 MEAS start=100/100 end_t=400 winner=0 lossEnd=56/94 loss120=40/37 loss300=56/94 t50=142/127 shots=2958 hits=496 hitpct=16.8 meanDist=18.1 hitDist=17.0
+ON LT5 MEAS start=100/100 end_t=319 winner=1 lossEnd=56/100 loss120=38/43 loss300=56/89 t50=182/175 shots=4736 hits=499 hitpct=10.5 meanDist=19.6 hitDist=18.8

@@ -1,0 +1,219 @@
+{
+ "frame": [
+  288,
+  224
+ ],
+ "anchor": [
+  144,
+  179
+ ],
+ "dirs": [
+  "s",
+  "se",
+  "e",
+  "ne",
+  "n"
+ ],
+ "mirror": true,
+ "columns": [
+  "fire_1",
+  "fire_2",
+  "idle",
+  "idle_2",
+  "idle_3a",
+  "idle_3b",
+  "move_1",
+  "move_2",
+  "move_3",
+  "move_4",
+  "start_1",
+  "start_2",
+  "hit",
+  "dead",
+  "hit_b1",
+  "hit_b2"
+ ],
+ "anims": {
+  "fire": {
+   "frames": [
+    "fire_1",
+    "fire_2"
+   ],
+   "ms": [
+    450,
+    160
+   ],
+   "shared_fit": true
+  },
+  "idle": {
+   "frames": [
+    "idle",
+    "idle_2"
+   ],
+   "ms": [
+    1500,
+    900
+   ],
+   "shared_fit": true
+  },
+  "idle_3": {
+   "frames": [
+    "idle_3a",
+    "idle_3b"
+   ],
+   "ms": [
+    900,
+    700
+   ],
+   "shared_fit": true
+  },
+  "move": {
+   "frames": [
+    "move_1",
+    "move_2",
+    "move_3",
+    "move_4"
+   ],
+   "ms": 170,
+   "shared_fit": true
+  },
+  "start": {
+   "frames": [
+    "start_1",
+    "start_2"
+   ],
+   "ms": [
+    400,
+    300
+   ],
+   "shared_fit": true
+  },
+  "destroyed": {
+   "frames": [
+    "hit",
+    "dead"
+   ],
+   "ms": [
+    350,
+    1500
+   ],
+   "shared_fit": true
+  },
+  "hit_b": {
+   "frames": [
+    "hit_b1",
+    "hit_b2"
+   ],
+   "ms": [
+    200,
+    300
+   ],
+   "shared_fit": true
+  }
+ },
+ "sheets": [
+  {
+   "file": "heavy-horse-artillery_1.png",
+   "team": "heavy-horse-artillery_1_team.png",
+   "columns": [
+    "fire_1",
+    "fire_2",
+    "idle",
+    "idle_2",
+    "idle_3a",
+    "idle_3b",
+    "move_1",
+    "move_2",
+    "move_3",
+    "move_4",
+    "start_1",
+    "start_2",
+    "hit",
+    "dead"
+   ],
+   "size": [
+    4032,
+    1120
+   ]
+  },
+  {
+   "file": "heavy-horse-artillery_2.png",
+   "team": "heavy-horse-artillery_2_team.png",
+   "columns": [
+    "hit_b1",
+    "hit_b2"
+   ],
+   "size": [
+    576,
+    1120
+   ]
+  }
+ ],
+ "cells": {
+  "fire_1": {
+   "sheet": "heavy-horse-artillery_1.png",
+   "col": 0
+  },
+  "fire_2": {
+   "sheet": "heavy-horse-artillery_1.png",
+   "col": 1
+  },
+  "idle": {
+   "sheet": "heavy-horse-artillery_1.png",
+   "col": 2
+  },
+  "idle_2": {
+   "sheet": "heavy-horse-artillery_1.png",
+   "col": 3
+  },
+  "idle_3a": {
+   "sheet": "heavy-horse-artillery_1.png",
+   "col": 4
+  },
+  "idle_3b": {
+   "sheet": "heavy-horse-artillery_1.png",
+   "col": 5
+  },
+  "move_1": {
+   "sheet": "heavy-horse-artillery_1.png",
+   "col": 6
+  },
+  "move_2": {
+   "sheet": "heavy-horse-artillery_1.png",
+   "col": 7
+  },
+  "move_3": {
+   "sheet": "heavy-horse-artillery_1.png",
+   "col": 8
+  },
+  "move_4": {
+   "sheet": "heavy-horse-artillery_1.png",
+   "col": 9
+  },
+  "start_1": {
+   "sheet": "heavy-horse-artillery_1.png",
+   "col": 10
+  },
+  "start_2": {
+   "sheet": "heavy-horse-artillery_1.png",
+   "col": 11
+  },
+  "hit": {
+   "sheet": "heavy-horse-artillery_1.png",
+   "col": 12
+  },
+  "dead": {
+   "sheet": "heavy-horse-artillery_1.png",
+   "col": 13
+  },
+  "hit_b1": {
+   "sheet": "heavy-horse-artillery_2.png",
+   "col": 0
+  },
+  "hit_b2": {
+   "sheet": "heavy-horse-artillery_2.png",
+   "col": 1
+  }
+ },
+ "anchors": "heavy-horse-artillery_anchors.json"
+}

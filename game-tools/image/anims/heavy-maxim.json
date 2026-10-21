@@ -1,0 +1,71 @@
+{
+  "_doc": "heavy-maxim crew: idle (gun parked, gunner at the tow rope, loader with ammo box), move x4 (gunner tows, loader carries the box), deploy 3f (box set down / sitting down / feeding), fire loop, pack = reverse of deploy, death 3f.",
+  "anims": {
+    "idle": {
+      "frames": [
+        "hmg_idle"
+      ]
+    },
+    "move": {
+      "frames": [
+        "hmg_move_1",
+        "hmg_move_2",
+        "hmg_move_3",
+        "hmg_move_4"
+      ],
+      "ms": 140
+    },
+    "deploy": {
+      "frames": [
+        "hmg_set_1",
+        "hmg_set_2",
+        "hmg_aim"
+      ],
+      "ms": [
+        380,
+        380,
+        500
+      ]
+    },
+    "fire": {
+      "frames": [
+        "hmg_aim",
+        "hmg_fire_a",
+        "hmg_fire_b",
+        "hmg_fire_a",
+        "hmg_fire_b"
+      ],
+      "ms": [
+        400,
+        70,
+        70,
+        70,
+        70
+      ]
+    },
+    "pack": {
+      "frames": [
+        "hmg_aim",
+        "hmg_set_2",
+        "hmg_set_1"
+      ],
+      "ms": [
+        400,
+        380,
+        380
+      ]
+    },
+    "death": {
+      "frames": [
+        "hmg_hit",
+        "hmg_fall",
+        "hmg_dead"
+      ],
+      "ms": [
+        300,
+        350,
+        1500
+      ]
+    }
+  }
+}

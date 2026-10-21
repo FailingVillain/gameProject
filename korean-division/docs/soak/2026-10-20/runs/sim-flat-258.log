@@ -1,0 +1,54 @@
+  [sim] AI A=tactical B=사수
+  [sim] B 사수 (150기)
+  t=10s  A 280 @(115,64)  B 150 @(159,64)  wall 0.4s
+  t=20s  A 280 @(136,64)  B 150 @(159,64)  wall 0.7s
+  t=30s  A 264 @(136,60)  B 137 @(159,62)  wall 1.0s
+  t=40s  A 252 @(134,57)  B 130 @(159,61)  wall 1.3s
+  t=50s  A 245 @(135,54)  B 114 @(159,57)  wall 1.6s
+  t=60s  A 243 @(136,53)  B 105 @(159,55)  wall 1.9s
+  t=70s  A 243 @(136,51)  B 94 @(159,52)  wall 2.1s
+  t=80s  A 239 @(138,50)  B 81 @(159,49)  wall 2.3s
+  t=90s  A 238 @(136,51)  B 54 @(159,52)  wall 2.6s
+  t=100s  A 238 @(139,54)  B 38 @(159,52)  wall 2.8s
+  t=110s  A 238 @(144,54)  B 20 @(159,53)  wall 3.0s
+  t=120s  A 236 @(149,53)  B 8 @(159,52)  wall 3.2s
+MARCH ticks=0 move=0 moveOn=0 shots=0 moveShots=0 pistol=0 gren=0 melee=0
+MEAS start=280/150 end_t=124 winner=1 lossEnd=44/150 loss120=44/142 loss300=-1/-1 t50=-/82 shots=4435 hits=605 hitpct=13.6 meanDist=20.1 hitDist=20.0
+결과: 승자 1, 123.5초, 실행 3.3초, 명령 147
+사살원인 020s infantry_regular/rifle_mosin->infantry_reserve = 13
+사살원인 020s infantry_reserve/rifle_mosin->infantry_regular = 16
+사살원인 030s heavy_machinegunner_fengtian/lmg_chauchat->infantry_reserve = 1
+사살원인 030s infantry_regular/rifle_mosin->infantry_reserve = 6
+사살원인 030s infantry_reserve/rifle_mosin->infantry_regular = 12
+사살원인 040s heavy_machinegunner_fengtian/lmg_chauchat->infantry_reserve = 1
+사살원인 040s infantry_regular/rifle_mosin->infantry_reserve = 15
+사살원인 040s infantry_reserve/rifle_mosin->infantry_regular = 7
+사살원인 050s infantry_regular/rifle_mosin->infantry_reserve = 9
+사살원인 050s infantry_reserve/rifle_mosin->infantry_regular = 2
+사살원인 060s heavy_machinegunner_fengtian/lmg_chauchat->infantry_reserve = 1
+사살원인 060s infantry_regular/rifle_mosin->infantry_reserve = 10
+사살원인 070s infantry_regular/rifle_mosin->infantry_reserve = 13
+사살원인 070s infantry_reserve/rifle_mosin->heavy_machinegunner_fengtian = 1
+사살원인 070s infantry_reserve/rifle_mosin->infantry_regular = 3
+사살원인 080s heavy_infantry_gun/gun_infantry->infantry_reserve = 10
+사살원인 080s infantry_regular/rifle_mosin->infantry_reserve = 17
+사살원인 080s infantry_reserve/rifle_mosin->infantry_regular = 1
+사살원인 090s heavy_infantry_gun/gun_infantry->infantry_reserve = 6
+사살원인 090s infantry_regular/rifle_mosin->infantry_reserve = 10
+사살원인 100s infantry_regular/rifle_mosin->infantry_reserve = 18
+사살원인 110s infantry_regular/rifle_mosin->infantry_reserve = 12
+사살원인 110s infantry_reserve/rifle_mosin->infantry_regular = 2
+사살원인 120s infantry_regular/rifle_mosin->infantry_reserve = 8
+틀 행동: 시작 0 끝 0 약진 0 기동 0 돌격 0 역습 0 참호 0 연신 0 전환 0 인계멈춤 0 포병전개 0
+기병AI: 돌격 정면 0 측면 0 후방 0 측면경유 0 소규모보류 0 물러남 0 | 추격: 후퇴중 희생 사격 4 근접 0 후퇴하는 적 돌격 보병 0 기병 0 | N55 기병 무모한 정면 0 돌격 사격 전진 0 | N23 소탕 0 | S4 제압으로 꺾인 돌격 0
+F4 기병 돌격: 개시 0 무의미 정면 0 자동 막음 0 근접 사살 0 사유(후퇴/제압/승무원/고립/측면) 0/0/0/0/0 · 하마 0 승마 0
+관찰: 사격 4435발 · 명중 605발 (13.6%) · 사망 194기 → 1킬당 22.9발 (명중 3.1발)
+N61 접근: 보병(1) 첫 사격 19.5초 · 기병(2) 첫 근접 -초 · 전환 0 · 그 시점 B 생존 -1/150
+템포: 첫 사격 19.1초 · A 50% 손실 -초 · B 50% 손실 82.0초 · 사격 거리 평균 20.1 (첫 100발 17.2) 칸
+  세력:종류            시작→남음   사격    근접   포격  방열%  돌격%
+  1:heavy_infantry_gun    8→8          28      0     28     9     0
+  1:heavy_machinegunner_fengtian    2→1         119      0      0    60     0
+  1:infantry_regular    270→227      3189      0      0     0     0
+  2:infantry_reserve    150→0        1099      0      0     0     0
+AI 비용: 사고 ms/틱 avg 0.010 max 20.04 (호출 494, 호출당 0.153 ms) · 전체 Step avg 0.44 ms
+  [전술 AI 1] 프로필 default 태세 Attack/Attack 중대 8 대대 2 · 명령 108 돌격 0 기병돌격 0 참호 0 후퇴 3 포병이동 0 화력사수 8 예비투입 1 · 연대 1 준비사격 0 연신 0 분대약진 10 전초 0/철수 0 역습 0 증원편입 0 공격한계 0

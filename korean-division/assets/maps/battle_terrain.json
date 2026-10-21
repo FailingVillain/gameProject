@@ -1,0 +1,179 @@
+{
+ "name": "교전 테스트: 지형",
+ "width": 256,
+ "height": 128,
+ "base": "grass",
+ "paint": [
+  {
+   "terrain": "sand",
+   "circle": [
+    110,
+    30,
+    10
+   ]
+  },
+  {
+   "terrain": "sand",
+   "circle": [
+    146,
+    98,
+    10
+   ]
+  },
+  {
+   "terrain": "sand",
+   "circle": [
+    128,
+    64,
+    7
+   ]
+  },
+  {
+   "terrain": "sand",
+   "circle": [
+    100,
+    90,
+    8
+   ]
+  },
+  {
+   "terrain": "sand",
+   "circle": [
+    156,
+    38,
+    8
+   ]
+  },
+  {
+   "terrain": "water",
+   "rect": [
+    120,
+    8,
+    16,
+    34
+   ]
+  },
+  {
+   "terrain": "water",
+   "rect": [
+    120,
+    86,
+    16,
+    34
+   ]
+  },
+  {
+   "terrain": "rock",
+   "circle": [
+    112,
+    56,
+    3
+   ]
+  },
+  {
+   "terrain": "rock",
+   "circle": [
+    144,
+    72,
+    3
+   ]
+  },
+  {
+   "terrain": "rock",
+   "circle": [
+    124,
+    64,
+    2
+   ]
+  },
+  {
+   "terrain": "rock",
+   "circle": [
+    134,
+    58,
+    2
+   ]
+  },
+  {
+   "terrain": "rock",
+   "circle": [
+    118,
+    76,
+    3
+   ]
+  },
+  {
+   "terrain": "rock",
+   "circle": [
+    140,
+    50,
+    3
+   ]
+  },
+  {
+   "terrain": "rock",
+   "circle": [
+    104,
+    44,
+    2
+   ]
+  },
+  {
+   "terrain": "rock",
+   "circle": [
+    152,
+    84,
+    2
+   ]
+  },
+  {
+   "terrain": "rock",
+   "circle": [
+    128,
+    48,
+    2
+   ]
+  },
+  {
+   "terrain": "rock",
+   "circle": [
+    128,
+    80,
+    2
+   ]
+  }
+ ],
+ "starts": [
+  [
+   30,
+   64
+  ],
+  [
+   225,
+   64
+  ]
+ ],
+ "factions": [
+  {
+   "name": "아군",
+   "en": "Blue",
+   "color": [
+    60,
+    130,
+    235
+   ],
+   "lang": "en"
+  },
+  {
+   "name": "적군",
+   "en": "Red",
+   "color": [
+    215,
+    50,
+    50
+   ],
+   "lang": "en"
+  }
+ ],
+ "sites": []
+}

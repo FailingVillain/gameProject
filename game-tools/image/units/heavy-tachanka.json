@@ -1,0 +1,39 @@
+{
+ "name": "heavy-tachanka",
+ "_doc": "Tachanka: supply-wagon cart + two horses, driver in front, gunner on an ammo box facing aft behind a Maxim on a pintle post (no crates/tarp). Wagon base with tachanka=true.",
+ "base": "wagon",
+ "anims": "wagon-tachanka",
+ "headgear": "korean_kepi",
+ "uniform": {
+  "jacket": "fgrey_dark",
+  "trousers": "fgrey_dark_trouser",
+  "legging": "fgrey_dark_wrap",
+  "boot": "leather",
+  "belt": "leather",
+  "hand": "skin",
+  "collar": true,
+  "puttees": true,
+  "puttee_seam": "fgrey_dark_trouser",
+  "piping": "acc_brass",
+  "placket": false,
+  "trouser_stripe": true,
+  "stripe_mat": "acc_brass"
+ },
+ "weapon": null,
+ "gear": [],
+ "team": [
+  "helmet_band"
+ ],
+ "belt": true,
+ "belt_pouches": false,
+ "tune": {
+  "parts": {
+   "horse": {
+    "scale": 1.0
+   }
+  }
+ },
+ "dirs": "all",
+ "frames": "all",
+ "tachanka": true
+}

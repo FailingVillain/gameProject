@@ -1,0 +1,75 @@
+{
+  "propScatter": true,
+  "propDensity": 4.0,
+  "propCell": 6,
+  // 샘플 미션 2 — 마을 방어 (defend · 밤 · 증원)
+  "id": "village_defense",
+  "title": "마을 방어",
+  "date": "1920년 11월 14일 밤",
+  "location": "간도 용정 남쪽 마을",
+  "briefing": "봉천군 대대가 밤을 틈타 북쪽에서 마을로 밀려온다. 참호와 철조망에 의지해 새벽까지 8분을 버텨라. 5분 뒤 남쪽에서 구원 부대가 도착한다. 적이 마을을 15초 넘게 홀로 차지하면 실패다.",
+  "seed": 22,
+  "weather": "clear",
+  "time": "night",
+  "player": 1,
+  "factions": [
+    { "name": "한국", "en": "korean", "lang": "ko", "color": [60, 130, 235], "team": 1, "posture": "defend" },
+    { "name": "봉천 군벌", "en": "fengtian", "lang": "zh", "color": [165, 95, 225], "team": 2, "posture": "attack", "area": "village" }
+  ],
+  "mapData": {
+    "name": "용정 남쪽 마을",
+    "width": 144, "height": 144, "base": "grass",
+    "paint": [
+      { "terrain": "dirt", "rect": [69, 0, 6, 144] },
+      { "terrain": "house", "tiles": [[62, 63], [62, 64], [63, 63], [64, 63], [63, 64], [64, 64], [79, 63], [80, 63], [79, 64], [80, 64], [81, 63], [81, 64], [62, 79], [62, 80], [63, 79], [64, 79], [63, 80], [64, 80], [79, 79], [80, 79], [79, 80], [80, 80], [81, 79], [81, 80], [66, 71], [67, 71], [78, 73], [78, 74]] },
+      { "terrain": "rubble", "rect": [66, 75, 3, 3] },
+      { "terrain": "trench", "rect": [51, 53, 42, 3] },
+      { "terrain": "wire", "rect": [51, 47, 14, 1] },
+      { "terrain": "wire", "rect": [79, 47, 14, 1] },
+      { "terrain": "forest", "rect": [12, 15, 30, 24] },
+      { "terrain": "forest", "rect": [99, 21, 27, 21] },
+      { "terrain": "forest", "rect": [105, 90, 21, 24] },
+      { "terrain": "high", "circle": [30, 93, 9] }
+    ],
+    "starts": [ [72, 69], [72, 12] ]
+  },
+  "areas": {
+    "village": { "rect": [57, 56, 33, 29] },
+    "north": { "rect": [36, 2, 72, 9] },
+    "south_edge": { "rect": [60, 132, 24, 9] }
+  },
+  "deployZones": [ { "faction": 1, "rect": [48, 48, 48, 45] } ],
+  "forces": [
+    { "id": "c1", "faction": 1, "name": "제1중대", "at": [62, 54], "facing": 0, "units": { "officer": 1, "infantry": 28 }, "formation": "line" },
+    { "id": "c2", "faction": 1, "name": "제2중대", "at": [83, 54], "facing": 0, "units": { "officer": 1, "infantry": 28 }, "formation": "line" },
+    { "id": "mg", "faction": 1, "name": "기관총 소대", "at": [72, 54], "facing": 0, "units": { "heavy_maxim": 1 }, "formation": "line", "rank": 1 },
+    { "id": "wagon", "faction": 1, "name": "보급 마차", "at": [72, 78], "facing": 0, "units": { "supply_wagon": 1 } },
+    { "id": "f1", "faction": 2, "name": "봉천군 제1대대", "at": [72, 15], "facing": 180, "formation": "line",
+      "companies": [
+        { "units": { "officer_fengtian": 1, "infantry_fengtian": 30 } },
+        { "units": { "officer_fengtian": 1, "infantry_fengtian": 25 } }
+      ] }
+  ],
+  "reinforcements": [
+    { "id": "f2", "faction": 2, "name": "봉천군 제2파", "area": "north", "facing": 180, "time": 320, "formation": "line",
+      "companies": [
+        { "units": { "officer_fengtian": 1, "infantry_fengtian": 30 } },
+        { "units": { "officer_fengtian": 1, "infantry_fengtian": 30 } }
+      ] },
+    { "id": "f3", "faction": 2, "name": "봉천군 기병", "area": "north", "facing": 180, "time": 380, "units": { "cavalry_default": 12 }, "formation": "wedge" },
+    { "id": "relief", "faction": 1, "name": "구원 부대", "area": "south_edge", "facing": 0, "posture": "attack", "aiArea": "village",
+      "companies": [ { "units": { "officer": 1, "infantry": 30 } } ] }
+  ],
+  "objectives": [
+    { "id": "hold", "type": "defend", "area": "village", "seconds": 480, "loseAfter": 15, "text": "새벽까지 (8분) 마을 사수" },
+    { "id": "thin", "type": "eliminate", "percent": 50, "primary": false, "text": "적 병력 절반 섬멸" }
+  ],
+  "failures": [ { "type": "losses", "percent": 85 } ],
+  "events": [
+    { "id": "intro", "when": { "time": 1 }, "do": [ { "message": "밤이다. 봉천군이 북쪽에서 마을로 다가온다." } ] },
+    { "id": "wave2", "when": { "time": 320 }, "do": [ { "message": "적 제2파 출현!" } ] },
+    { "id": "relief", "when": { "time": 300 }, "do": [ { "spawn": "relief" }, { "message": "구원 부대가 남쪽에서 도착했다!" } ] },
+    { "id": "cav", "when": { "time": 380 }, "do": [ { "message": "봉천군 기병이 돌격해 온다!" } ] },
+    { "id": "dawn", "when": { "time": 440 }, "do": [ { "time": "dawn", "message": "동이 트기 시작한다" } ] }
+  ]
+}

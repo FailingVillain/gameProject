@@ -1,0 +1,339 @@
+{
+ "frame": [
+  64,
+  80
+ ],
+ "anchor": [
+  32,
+  72
+ ],
+ "dirs": [
+  "s",
+  "se",
+  "e",
+  "ne",
+  "n"
+ ],
+ "mirror": true,
+ "columns": [
+  "idle",
+  "walk_1",
+  "walk_2",
+  "walk_3",
+  "walk_4",
+  "aim_a",
+  "fire_a",
+  "aim_c",
+  "fire_c",
+  "idle_alt",
+  "hit",
+  "fall",
+  "dead",
+  "charge_1",
+  "charge_2",
+  "charge_3",
+  "charge_4",
+  "melee_1",
+  "melee_2",
+  "melee_3",
+  "wave_1",
+  "wave_2",
+  "wave_3",
+  "wave_4",
+  "stagger_b",
+  "kneel_b",
+  "dead_b",
+  "stagger_c",
+  "slump_c",
+  "dead_c"
+ ],
+ "anims": {
+  "idle": {
+   "frames": [
+    "idle"
+   ],
+   "ms": 150,
+   "shared_fit": false
+  },
+  "walk": {
+   "frames": [
+    "walk_1",
+    "walk_2",
+    "walk_3",
+    "walk_4"
+   ],
+   "ms": 130,
+   "shared_fit": false
+  },
+  "fire_a": {
+   "frames": [
+    "aim_a",
+    "fire_a"
+   ],
+   "ms": [
+    450,
+    160
+   ],
+   "shared_fit": false
+  },
+  "fire_c": {
+   "frames": [
+    "aim_c",
+    "fire_c"
+   ],
+   "ms": [
+    450,
+    160
+   ],
+   "shared_fit": false
+  },
+  "idle_alt": {
+   "frames": [
+    "idle_alt"
+   ],
+   "ms": 150,
+   "shared_fit": false
+  },
+  "death": {
+   "frames": [
+    "hit",
+    "fall",
+    "dead"
+   ],
+   "ms": [
+    250,
+    250,
+    1000
+   ],
+   "shared_fit": false
+  },
+  "charge": {
+   "frames": [
+    "charge_1",
+    "charge_2",
+    "charge_3",
+    "charge_4"
+   ],
+   "ms": 100,
+   "shared_fit": false
+  },
+  "melee": {
+   "frames": [
+    "melee_1",
+    "melee_2",
+    "melee_3"
+   ],
+   "ms": [
+    220,
+    140,
+    260
+   ],
+   "shared_fit": false
+  },
+  "sword_wave": {
+   "frames": [
+    "wave_1",
+    "wave_2",
+    "wave_3",
+    "wave_4"
+   ],
+   "ms": 150,
+   "shared_fit": true
+  },
+  "death_b": {
+   "frames": [
+    "hit",
+    "stagger_b",
+    "kneel_b",
+    "dead_b"
+   ],
+   "ms": [
+    200,
+    700,
+    300,
+    1200
+   ],
+   "shared_fit": false
+  },
+  "death_c": {
+   "frames": [
+    "hit",
+    "stagger_c",
+    "slump_c",
+    "dead_c"
+   ],
+   "ms": [
+    200,
+    700,
+    300,
+    1200
+   ],
+   "shared_fit": false
+  }
+ },
+ "sheets": [
+  {
+   "file": "officer-fengtian@64.png",
+   "team": "officer-fengtian@64_team.png",
+   "columns": [
+    "idle",
+    "walk_1",
+    "walk_2",
+    "walk_3",
+    "walk_4",
+    "aim_a",
+    "fire_a",
+    "aim_c",
+    "fire_c",
+    "idle_alt",
+    "hit",
+    "fall",
+    "dead",
+    "charge_1",
+    "charge_2",
+    "charge_3",
+    "charge_4",
+    "melee_1",
+    "melee_2",
+    "melee_3",
+    "wave_1",
+    "wave_2",
+    "wave_3",
+    "wave_4",
+    "stagger_b",
+    "kneel_b",
+    "dead_b",
+    "stagger_c",
+    "slump_c",
+    "dead_c"
+   ],
+   "size": [
+    1920,
+    400
+   ]
+  }
+ ],
+ "cells": {
+  "idle": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 0
+  },
+  "walk_1": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 1
+  },
+  "walk_2": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 2
+  },
+  "walk_3": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 3
+  },
+  "walk_4": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 4
+  },
+  "aim_a": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 5
+  },
+  "fire_a": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 6
+  },
+  "aim_c": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 7
+  },
+  "fire_c": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 8
+  },
+  "idle_alt": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 9
+  },
+  "hit": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 10
+  },
+  "fall": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 11
+  },
+  "dead": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 12
+  },
+  "charge_1": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 13
+  },
+  "charge_2": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 14
+  },
+  "charge_3": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 15
+  },
+  "charge_4": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 16
+  },
+  "melee_1": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 17
+  },
+  "melee_2": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 18
+  },
+  "melee_3": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 19
+  },
+  "wave_1": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 20
+  },
+  "wave_2": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 21
+  },
+  "wave_3": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 22
+  },
+  "wave_4": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 23
+  },
+  "stagger_b": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 24
+  },
+  "kneel_b": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 25
+  },
+  "dead_b": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 26
+  },
+  "stagger_c": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 27
+  },
+  "slump_c": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 28
+  },
+  "dead_c": {
+   "sheet": "officer-fengtian@64.png",
+   "col": 29
+  }
+ },
+ "anchors": "officer-fengtian@64_anchors.json"
+}

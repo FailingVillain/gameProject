@@ -1,0 +1,33 @@
+{
+ "name": "cavalry-cossack",
+ "_doc": "Cossack horseman: cavalry-default copy, tall dark papakha, dark navy coat, chest cartridge bandolier, carbine + sabre (sabre shown in the saddle scabbard and used for charge/melee).",
+ "base": "cavalry",
+ "anims": "cavalry",
+ "headgear": "papakha",
+ "uniform": {
+  "jacket": "bd_navy",
+  "trousers": "bd_black",
+  "legging": "leather",
+  "boot": "leather",
+  "belt": "canvas",
+  "hand": "skin",
+  "collar": true,
+  "puttees": false
+ },
+ "weapons": {
+  "carbine": "cav_carbine",
+  "sabre": "sabre"
+ },
+ "gear": [
+  "bandolier_x",
+  "leather_pouches"
+ ],
+ "team": [
+  "helmet_band",
+  "arm_patch"
+ ],
+ "belt": true,
+ "belt_pouches": false,
+ "dirs": "all",
+ "frames": "all"
+}

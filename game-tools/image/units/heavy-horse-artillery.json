@@ -1,0 +1,45 @@
+{
+ "name": "heavy-horse-artillery",
+ "_doc": "Horse artillery (\uae30\ub9c8 \ud3ec\ubcd1): tachanka cart + two horses, driver in front, gunner facing aft, 37 mm infantry gun towed behind. Wagon base with tachanka=true + horse_gun=true.",
+ "base": "wagon",
+ "anims": "wagon-tachanka",
+ "headgear": "korean_kepi",
+ "uniform": {
+  "jacket": "fgrey_dark",
+  "trousers": "fgrey_dark_trouser",
+  "legging": "fgrey_dark_wrap",
+  "boot": "leather",
+  "belt": "leather",
+  "hand": "skin",
+  "collar": true,
+  "puttees": true,
+  "puttee_seam": "fgrey_dark_trouser",
+  "piping": "acc_brass",
+  "placket": false,
+  "trouser_stripe": true,
+  "stripe_mat": "acc_brass"
+ },
+ "weapon": null,
+ "gear": [],
+ "team": [
+  "helmet_band"
+ ],
+ "belt": true,
+ "belt_pouches": false,
+ "tune": {
+  "parts": {
+   "horse": {
+    "scale": 0.78
+   },
+   "guns": {
+    "infantry_gun": {
+     "wheel": {"r": 11.5, "x": 17.0, "thick": 1.8}
+    }
+   }
+  }
+ },
+ "dirs": "all",
+ "frames": "all",
+ "tachanka": true,
+ "horse_gun": true
+}

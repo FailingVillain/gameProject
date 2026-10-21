@@ -1,0 +1,23 @@
+{
+  "name": "officer-russian-red",
+  "base": "officer",
+  "anims": "officer",
+  "headgear": "officer_cap_ru_greybrown",
+  "uniform": "ru_red",
+  "weapons": {
+    "pistol": "pistol",
+    "sabre": "sabre"
+  },
+  "gear": [
+    "holster",
+    "scabbard",
+    "map_case"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "belt": true,
+  "dirs": "all",
+  "frames": "all"
+}

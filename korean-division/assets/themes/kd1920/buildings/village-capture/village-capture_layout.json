@@ -1,0 +1,34 @@
+{
+ "frame": [
+  1144,
+  1016
+ ],
+ "anchor": [
+  572,
+  684
+ ],
+ "dirs": [
+  "s"
+ ],
+ "mirror": false,
+ "columns": [
+  "neutral",
+  "owned"
+ ],
+ "sheets": [
+  {
+   "file": "village-capture.png",
+   "team": "village-capture_team.png"
+  }
+ ],
+ "cells": {
+  "neutral": {
+   "sheet": "village-capture.png",
+   "col": 0
+  },
+  "owned": {
+   "sheet": "village-capture.png",
+   "col": 1
+  }
+ }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "infantry-guard",
+  "_doc": "Guard (시위대/친위대): infantry-reserve uniform (dark navy + thin red piping) with a Pickelhaube (black leather skull, visor + rear peak, brass-base steel spike, plain front plate, thin team band) and a longer bolt rifle (bolt_rifle_long, +~12%).",
+  "base": "infantry",
+  "anims": "infantry",
+  "headgear": "pickelhaube",
+  "uniform": "navy_old",
+  "weapon": "bolt_rifle_long",
+  "gear": ["field_pack", "haversack", "canteen_cloth", "leather_pouches"],
+  "team": ["helmet_band", "arm_patch"],
+  "belt": true,
+  "belt_pouches": false,
+  "e_pull_extra": 3.0,
+  "dirs": "all",
+  "frames": "all"
+}

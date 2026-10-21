@@ -1,0 +1,3 @@
+ARTYFX {"t":88.8,"winner":1,"startA":65,"startB":62,"endA":34,"endB":0,"start":{"1:heavy_field_gun":3,"1:officer":2,"1:infantry":60,"2:officer":2,"2:infantry":60},"end":{"1:heavy_field_gun":3,"1:officer":2,"1:infantry":29},"gun":{"1:heavy_field_gun":{"units":3,"shells":38,"hit":21,"inSplash":68,"suppEv":68,"suppRes":48,"meanDist":38.8,"first":14.3,"bucket":[0,24,9,5,0],"killCredit":37}}}
+MEAS start=65/62 end_t=89 winner=1 lossEnd=31/62 loss120=-1/-1 loss300=-1/-1 t50=-/47 shots=1545 hits=219 hitpct=14.2 meanDist=23.3
+결과: 승자 1, 88.8초, 실행 0.8초, 명령 84

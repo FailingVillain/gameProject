@@ -1,0 +1,7 @@
+[mission-run] trench_assault '참호 돌격 (경기관총 · 중기관총)': won (-) at 175.0s, ticks 10499, 2.4s wall
+  objective take (capture, primary): done progress 45.0
+  faction 1 한국: spawned 137, lost 46, alive 91, trench peak 7 (now 2)
+  faction 2 일본: spawned 92, lost 78, alive 14, trench peak 88 (now 0)
+  events fired 1/1, reinforcements 0/0, messages 1, top kills 36, promotions 4
+  results: C:\Users\seung\AppData\Local\KoreanDivision\results\trench_assault_20261020_194036.json
+  checksum 28ED564C006A7519 tick 10499

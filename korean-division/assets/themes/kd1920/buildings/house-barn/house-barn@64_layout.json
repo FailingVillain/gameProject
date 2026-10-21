@@ -1,0 +1,34 @@
+{
+ "frame": [
+  192,
+  178
+ ],
+ "anchor": [
+  96,
+  126
+ ],
+ "dirs": [
+  "s"
+ ],
+ "mirror": false,
+ "columns": [
+  "intact",
+  "ruined"
+ ],
+ "sheets": [
+  {
+   "file": "house-barn@64.png",
+   "team": "house-barn@64_team.png"
+  }
+ ],
+ "cells": {
+  "intact": {
+   "sheet": "house-barn@64.png",
+   "col": 0
+  },
+  "ruined": {
+   "sheet": "house-barn@64.png",
+   "col": 1
+  }
+ }
+}

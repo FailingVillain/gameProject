@@ -1,0 +1,34 @@
+{
+ "name": "standard-bearer-japanese",
+ "_doc": "Japanese standard bearer: white flag with red disc.",
+ "base": "infantry",
+ "anims": "infantry-bearer",
+ "headgear": "japanese_cap",
+ "uniform": {
+  "jacket": "jkhaki",
+  "trousers": "jkhaki",
+  "legging": "puttee",
+  "boot": "leather",
+  "belt": "leather",
+  "hand": "skin",
+  "collar": true,
+  "puttees": true
+ },
+ "weapon": "flag_japanese",
+ "gear": [
+  "pack_horseshoe",
+  "haversack",
+  "canteen_cloth",
+  "leather_pouches"
+ ],
+ "team": [
+  "helmet_band",
+  "arm_patch"
+ ],
+ "belt": true,
+ "belt_pouches": false,
+ "e_pull_extra": 3.0,
+ "dirs": "all",
+ "frames": "all",
+ "fix_as": "standard-bearer"
+}

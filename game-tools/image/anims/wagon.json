@@ -1,0 +1,85 @@
+{
+  "_doc": "supply wagon (bases/wagon.py): 256x224-class frames. Multi-frame anims use shared_fit. move = horses walk + wheels turn; idle_3 = horses graze; start = driver cracks the whip as the team sets off; supply = crate lifted, passed down, set on the ground, driver turns back; destroyed = tipping (hit) -> cart on its side, crates spilled, horses down (dead); hit_b = horses rear.",
+  "anims": {
+    "idle": {
+      "frames": [
+        "idle",
+        "idle_2"
+      ],
+      "ms": [
+        1500,
+        900
+      ],
+      "shared_fit": true
+    },
+    "idle_3": {
+      "frames": [
+        "idle_3a",
+        "idle_3b"
+      ],
+      "ms": [
+        900,
+        700
+      ],
+      "shared_fit": true
+    },
+    "move": {
+      "frames": [
+        "move_1",
+        "move_2",
+        "move_3",
+        "move_4"
+      ],
+      "ms": 170,
+      "shared_fit": true
+    },
+    "start": {
+      "frames": [
+        "start_1",
+        "start_2"
+      ],
+      "ms": [
+        400,
+        300
+      ],
+      "shared_fit": true
+    },
+    "supply": {
+      "frames": [
+        "supply_1",
+        "supply_2",
+        "supply_3",
+        "supply_4"
+      ],
+      "ms": [
+        500,
+        500,
+        500,
+        500
+      ],
+      "shared_fit": true
+    },
+    "destroyed": {
+      "frames": [
+        "hit",
+        "dead"
+      ],
+      "ms": [
+        350,
+        1500
+      ],
+      "shared_fit": true
+    },
+    "hit_b": {
+      "frames": [
+        "hit_b1",
+        "hit_b2"
+      ],
+      "ms": [
+        200,
+        300
+      ],
+      "shared_fit": true
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "heavy-maxim",
+  "kind": "crew",
+  "_doc": "WWI heavy machine gun crew: Maxim on a Sokolov-like wheeled carriage, gunner sits behind, loader kneels beside feeding the belt. One 192x192 sprite (anchor 96,128) showing both men; uniform/Feldkappe as infantry-default.",
+  "anims": "heavy-maxim",
+  "dirs": "all",
+  "frames": "all",
+  "headgear": "korean_kepi",
+  "uniform": {
+    "jacket": "fgrey_dark",
+    "trousers": "fgrey_dark_trouser",
+    "legging": "fgrey_dark_wrap",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "collar": true,
+    "puttees": true,
+    "puttee_seam": "fgrey_dark_trouser",
+    "piping": "acc_brass",
+    "placket": false,
+    "trouser_stripe": true,
+    "stripe_mat": "acc_brass"
+  }
+}

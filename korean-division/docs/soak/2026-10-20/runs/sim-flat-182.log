@@ -1,0 +1,73 @@
+  [sim] AI A=tactical B=tactical
+  t=10s  A 186 @(116,65)  B 150 @(137,64)  wall 0.4s
+  t=20s  A 164 @(115,66)  B 136 @(139,65)  wall 0.7s
+  t=30s  A 156 @(113,67)  B 132 @(145,66)  wall 1.0s
+  t=40s  A 156 @(109,67)  B 128 @(155,68)  wall 1.3s
+  t=50s  A 155 @(111,67)  B 121 @(158,69)  wall 1.5s
+  t=60s  A 154 @(118,67)  B 116 @(162,71)  wall 1.7s
+  t=70s  A 154 @(128,67)  B 104 @(166,72)  wall 1.9s
+  t=80s  A 152 @(138,71)  B 100 @(170,74)  wall 2.1s
+  t=90s  A 151 @(140,71)  B 93 @(170,73)  wall 2.3s
+  t=100s  A 150 @(145,72)  B 87 @(174,72)  wall 2.5s
+  t=110s  A 148 @(152,72)  B 76 @(178,70)  wall 2.8s
+  t=120s  A 148 @(160,71)  B 72 @(189,71)  wall 3.0s
+  t=130s  A 148 @(172,73)  B 72 @(206,72)  wall 3.2s
+  t=140s  A 148 @(179,74)  B 69 @(221,71)  wall 3.3s
+  t=150s  A 147 @(181,74)  B 65 @(227,72)  wall 3.5s
+  t=160s  A 147 @(189,73)  B 57 @(233,72)  wall 3.7s
+  t=170s  A 147 @(199,72)  B 57 @(236,71)  wall 3.9s
+  t=180s  A 146 @(207,72)  B 48 @(239,69)  wall 4.0s
+  t=190s  A 146 @(217,74)  B 40 @(245,72)  wall 4.2s
+  t=200s  A 145 @(221,74)  B 28 @(247,71)  wall 4.4s
+  t=210s  A 145 @(225,75)  B 22 @(249,73)  wall 4.6s
+  t=220s  A 145 @(229,75)  B 13 @(254,66)  wall 4.7s
+  t=230s  A 145 @(234,73)  B 4 @(254,53)  wall 4.9s
+MARCH ticks=0 move=0 moveOn=0 shots=0 moveShots=0 pistol=0 gren=0 melee=0
+MEAS start=186/150 end_t=239 winner=1 lossEnd=41/150 loss120=38/78 loss300=-1/-1 t50=-/112 shots=6087 hits=639 hitpct=10.5 meanDist=21.8 hitDist=20.6
+결과: 승자 1, 239.1초, 실행 5.0초, 명령 335
+사살원인 010s infantry_fengtian/rifle_mosin->recruit = 14
+사살원인 010s recruit/rifle_mosin->infantry_fengtian = 22
+사살원인 020s infantry_fengtian/rifle_mosin->recruit = 4
+사살원인 020s recruit/rifle_mosin->infantry_fengtian = 8
+사살원인 030s infantry_fengtian/rifle_mosin->recruit = 4
+사살원인 040s infantry_fengtian/rifle_mosin->recruit = 7
+사살원인 040s recruit/rifle_mosin->infantry_fengtian = 1
+사살원인 050s infantry_fengtian/rifle_mosin->recruit = 5
+사살원인 050s recruit/rifle_mosin->infantry_fengtian = 1
+사살원인 060s infantry_fengtian/rifle_mosin->recruit = 12
+사살원인 070s infantry_fengtian/rifle_mosin->recruit = 4
+사살원인 070s recruit/rifle_mosin->infantry_fengtian = 2
+사살원인 080s infantry_fengtian/rifle_mosin->recruit = 7
+사살원인 080s recruit/rifle_mosin->infantry_fengtian = 1
+사살원인 090s infantry_fengtian/rifle_mosin->recruit = 6
+사살원인 090s recruit/rifle_mosin->infantry_fengtian = 1
+사살원인 100s infantry_fengtian/rifle_mosin->recruit = 11
+사살원인 100s recruit/rifle_mosin->infantry_fengtian = 2
+사살원인 110s infantry_fengtian/rifle_mosin->recruit = 4
+사살원인 130s infantry_fengtian/rifle_mosin->recruit = 3
+사살원인 140s infantry_fengtian/rifle_mosin->recruit = 4
+사살원인 140s recruit/rifle_mosin->infantry_fengtian = 1
+사살원인 150s infantry_fengtian/rifle_mosin->recruit = 8
+사살원인 170s infantry_fengtian/rifle_mosin->recruit = 9
+사살원인 170s recruit/rifle_mosin->infantry_fengtian = 1
+사살원인 180s infantry_fengtian/rifle_mosin->recruit = 8
+사살원인 190s infantry_fengtian/rifle_mosin->recruit = 12
+사살원인 190s recruit/rifle_mosin->infantry_fengtian = 1
+사살원인 200s infantry_fengtian/rifle_mosin->recruit = 6
+사살원인 210s infantry_fengtian/rifle_mosin->recruit = 9
+사살원인 220s infantry_fengtian/rifle_mosin->recruit = 9
+사살원인 230s heavy_maxim/hmg->recruit = 3
+사살원인 230s infantry_fengtian/rifle_mosin->recruit = 1
+틀 행동: 시작 0 끝 0 약진 0 기동 0 돌격 0 역습 0 참호 0 연신 0 전환 0 인계멈춤 0 포병전개 0
+기병AI: 돌격 정면 0 측면 0 후방 0 측면경유 0 소규모보류 0 물러남 0 | 추격: 후퇴중 희생 사격 36 근접 0 후퇴하는 적 돌격 보병 0 기병 0 | N55 기병 무모한 정면 0 돌격 사격 전진 0 | N23 소탕 0 | S4 제압으로 꺾인 돌격 0
+F4 기병 돌격: 개시 0 무의미 정면 0 자동 막음 0 근접 사살 0 사유(후퇴/제압/승무원/고립/측면) 0/0/0/0/0 · 하마 0 승마 0
+관찰: 사격 6087발 · 명중 639발 (10.5%) · 사망 191기 → 1킬당 31.9발 (명중 3.3발)
+N61 접근: 보병(1) 첫 사격 9.4초 · 기병(2) 첫 근접 -초 · 전환 0 · 그 시점 B 생존 -1/150
+템포: 첫 사격 9.4초 · A 50% 손실 -초 · B 50% 손실 112.0초 · 사격 거리 평균 21.8 (첫 100발 17.1) 칸
+  세력:종류            시작→남음   사격    근접   포격  방열%  돌격%
+  1:heavy_maxim           6→6          39      0      0     2     0
+  1:infantry_fengtian   180→139      4399      0      0     0     0
+  2:recruit             150→0        1649      0      0     0     0
+AI 비용: 사고 ms/틱 avg 0.008 max 20.32 (호출 1913, 호출당 0.063 ms) · 전체 Step avg 0.35 ms
+  [전술 AI 1] 프로필 default 태세 Attack/Attack 중대 5 대대 1 · 명령 185 돌격 0 기병돌격 0 참호 0 후퇴 2 포병이동 0 화력사수 9 예비투입 1 · 연대 1 준비사격 0 연신 0 분대약진 17 전초 0/철수 0 역습 0 증원편입 0 공격한계 0
+  [전술 AI 2] 프로필 default 태세 Attack/Defend 중대 1 대대 1 · 명령 66 돌격 0 기병돌격 0 참호 0 후퇴 17 포병이동 0 화력사수 0 예비투입 1 · 연대 1 준비사격 0 연신 0 분대약진 0 전초 0/철수 0 역습 0 증원편입 0 공격한계 1

@@ -1,0 +1,7 @@
+[mission-run] ai_bn_assault '대대 공격 대 방어선 (AI 대 AI, 전술 관찰)': won (-) at 428.2s, ticks 25691, 11.5s wall
+  objective crush (eliminate, primary): done progress 70.2
+  faction 1 한국군: spawned 301, lost 191, alive 110, trench peak 21 (now 16)
+  faction 2 봉천 군벌: spawned 312, lost 219, alive 93, trench peak 205 (now 44)
+  events fired 1/1, reinforcements 0/0, messages 1, top kills 48, promotions 5
+  results: C:\Users\seung\AppData\Local\KoreanDivision\results\ai_bn_assault_20261020_192640.json
+  checksum 9797557AD945066C tick 25691

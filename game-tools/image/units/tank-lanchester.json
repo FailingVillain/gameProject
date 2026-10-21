@@ -1,0 +1,8 @@
+{
+  "name": "tank-lanchester",
+  "kind": "vehicle",
+  "model": "lanchester",
+  "turret": "mg",
+  "anims": "vehicle",
+  "dirs": "all"
+}

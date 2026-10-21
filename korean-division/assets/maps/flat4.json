@@ -1,0 +1,44 @@
+{
+  // 빠른 테스트용 4인 평지 맵 (192×192, 2026-10-19 128 → ×1.5). 장애물 없음, 4방향 대칭.
+  // 세력 1 = 좌하단, 2 = 우상단, 3 = 좌상단, 4 = 우하단. 점령 시설 28개 (광산 · 유전은 2026-10-19 마을로 대체): 세력마다 본진 근처 마을 3, 변 중앙 소도시 + 마을, 안쪽 마을 2 (90° 회전 대칭, 전부 중립).
+  "name": "4인 평지",
+  "width": 192,
+  "height": 192,
+  "base": "grass",
+  "paint": [
+    { "terrain": "dirt", "rect": [21, 93, 150, 6] },
+    { "terrain": "dirt", "rect": [93, 21, 6, 150] },
+    { "terrain": "dirt", "circle": [96, 96, 12] }
+  ],
+  "starts": [ [24, 168], [168, 24], [24, 24], [168, 168] ],
+  "sites": [
+    { "at": [41, 162], "type": "village" },
+    { "at": [29, 41], "type": "village" },
+    { "at": [150, 29], "type": "village" },
+    { "at": [162, 150], "type": "village" },
+    { "at": [30, 150], "type": "village" },
+    { "at": [41, 30], "type": "village" },
+    { "at": [161, 41], "type": "village" },
+    { "at": [150, 161], "type": "village" },
+    { "at": [51, 147], "type": "village" },
+    { "at": [44, 51], "type": "village" },
+    { "at": [140, 44], "type": "village" },
+    { "at": [147, 140], "type": "village" },
+    { "at": [96, 168], "type": "city" },
+    { "at": [24, 96], "type": "city" },
+    { "at": [96, 24], "type": "city" },
+    { "at": [168, 96], "type": "city" },
+    { "at": [96, 149], "type": "village" },
+    { "at": [42, 96], "type": "village" },
+    { "at": [95, 42], "type": "village" },
+    { "at": [149, 95], "type": "village" },
+    { "at": [72, 119], "type": "village" },
+    { "at": [72, 72], "type": "village" },
+    { "at": [119, 72], "type": "village" },
+    { "at": [119, 119], "type": "village" },
+    { "at": [96, 123], "type": "village" },
+    { "at": [68, 96], "type": "village" },
+    { "at": [95, 68], "type": "village" },
+    { "at": [123, 95], "type": "village" }
+  ]
+}

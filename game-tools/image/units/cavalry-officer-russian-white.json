@@ -1,0 +1,35 @@
+{
+  "name": "cavalry-officer-russian-white",
+  "_doc": "cavalry-officer variant (russian-white): khaki-olive uniform + peaked officer cap (officer_cap_ru_olive).",
+  "base": "cavalry",
+  "anims": "cavalry",
+  "headgear": "officer_cap_ru_olive",
+  "uniform": {
+    "legging": "leather",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "collar": true,
+    "puttees": false,
+    "trouser_stripe": true,
+    "jacket": "ru_olive",
+    "trousers": "ru_olive"
+  },
+  "weapons": {
+    "pistol": "pistol",
+    "sabre": "sabre"
+  },
+  "gear": [
+    "holster",
+    "map_case"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "belt": true,
+  "belt_pouches": false,
+  "dirs": "all",
+  "frames": "all",
+  "fix_as": "cavalry-officer"
+}

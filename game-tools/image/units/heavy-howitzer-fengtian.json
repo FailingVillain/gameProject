@@ -1,0 +1,45 @@
+{
+  "name": "heavy-howitzer-fengtian",
+  "_doc": "heavy-howitzer faction variant (fengtian): same model, fengtian_cap + fengtian infantry uniform; cap badge from parts/badges HEAD_BADGE.",
+  "kind": "artillery",
+  "gun": "howitzer",
+  "anims": "artillery_tow",
+  "headgear": "fengtian_cap",
+  "uniform": {
+    "jacket": "fengtian_bg",
+    "trousers": "fengtian_bg",
+    "legging": "puttee",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "collar": true,
+    "puttees": true
+  },
+  "gear": [
+    "canteen_cloth"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "frame": [
+    976,
+    656
+  ],
+  "ay_frac": 0.5884,
+  "zoom_mul": 1.0,
+  "center": [
+    0.0,
+    -6.0
+  ],
+  "dirs": "all",
+  "frames": "all",
+  "tow": true,
+  "tune": {
+    "parts": {
+      "horse": {
+        "scale": 1.4
+      }
+    }
+  }
+}

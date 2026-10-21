@@ -1,0 +1,18 @@
+{
+  "_doc": "assault trooper: SMG (idle/walk/fire/death) + sabre (charge/melee, reused from officer). 25 columns in order of first appearance.",
+  "anims": {
+    "idle":    {"frames": ["idle"]},
+    "walk":    {"frames": ["walk_1", "walk_2", "walk_3", "walk_4"], "ms": 130},
+    "walk_shoulder": {"frames": ["walk_shoulder_1", "walk_shoulder_2", "walk_shoulder_3", "walk_shoulder_4"], "ms": 130},
+    "walk_fire": {"frames": ["walk_fire_1", "walk_fire_2", "walk_fire_3", "walk_fire_4"], "ms": 130},
+    "fire_a":  {"frames": ["aim_a", "fire_a"], "ms": [450, 100]},
+    "fire_c":  {"frames": ["aim_c", "fire_c"], "ms": [450, 100]},
+    "pistol_fire": {"frames": ["pistol_aim_a", "pistol_fire_a"], "ms": [450, 100]},
+    "death":   {"frames": ["hit", "fall", "dead"], "ms": [250, 250, 1000]},
+    "charge":  {"frames": ["charge_1", "charge_2", "charge_3", "charge_4"], "ms": 100},
+    "melee":   {"frames": ["melee_1", "melee_2", "melee_3"], "ms": [220, 140, 260]},
+    "grenade_throw": {"frames": ["grenade_1", "grenade_2", "grenade_3"], "ms": [350, 120, 300]},
+    "death_b": {"frames": ["hit", "stagger_b", "kneel_b", "dead_b"], "ms": [200, 700, 300, 1200]},
+    "death_c": {"frames": ["hit", "stagger_c", "slump_c", "dead_c"], "ms": [200, 700, 300, 1200]}
+  }
+}

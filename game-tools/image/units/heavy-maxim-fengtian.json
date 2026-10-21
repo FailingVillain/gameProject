@@ -1,0 +1,10 @@
+{
+  "name": "heavy-maxim-fengtian",
+  "kind": "crew",
+  "headgear": "fengtian_cap",
+  "uniform": "fengtian",
+  "_doc": "Fengtian variant of heavy-maxim (2-man crew): same model/poses; uniform -> fengtian and headgear -> fengtian_cap..",
+  "anims": "heavy-maxim",
+  "dirs": "all",
+  "frames": "all"
+}

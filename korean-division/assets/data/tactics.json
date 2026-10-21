@@ -1,0 +1,218 @@
+{
+  // 역할군 · 중대 전술 틀 (1단계 배정 + 정지 배치, 2단계 행동 · 전환 — docs/TACTICAL_AI_STAGE3_PLAN.md '전술 대형 (역할군) 결정'). 코드: src/Core/CombatFormations.cs · TacticDrill.cs.
+  // 역할: fire = 화력조 · rifle = 사격조 · manoeuvre = 기동조 · support = 지원 · command = 지휘 · 정찰.
+  // 위치: x = 전선 폭 배수 (-0.5 = 왼쪽 끝, +0.5 = 오른쪽 끝; 폭 = 우클릭 드래그 폭, 없으면 2열 횡대 폭), y = 종심 단위 (depthUnit 칸) 배수, + 앞 · - 뒤.
+  // 역할군 안에서는 분대째로 squadGap 칸 간격으로 나란히 — 같은 줄 (종심 차 ≤ 0.5) 역할군끼리 병력 비율로 전선 폭을 나눠 갖고, 몫보다 넓으면 분대 블록을 여러 줄로 접는다.
+  // 그래도 겹치면 groupGap 칸 띄워 덜 움직이는 쪽 (옆, 또는 옆으로 폭의 ¼ 넘게 밀어야 하면 뒤) 으로 민다.
+  // squadForm = 그 역할 분대의 기본 대형 (분대에 따로 정한 대형이 있으면 그것). stance = 기본 태세 hold · fire · advance (표시).
+  // act = 2단계 행동 (src/Core/TacticDrill.cs, 중대 지휘관이 판단 — 접촉하면 실행):
+  //   hold = 서서 사격 · 제압 (기관총 거치) · bound = 분대 교대 약진 (한 분대 전진, 나머지 사격) · manoeuvre = 엄폐를 따라 angle/standoff 위치로 가서 적이 제압됐거나 가까우면 돌격
+  //   follow = 앞 역할군 뒤를 공격 이동 · support = 위협 (전차 · 기관총 · 장교) 우선 사격 · command = 화력조 뒤에 머묾 · trench = 가까운 참호 자리 점유 · reserve = 예비 (전선이 밀리면 역습)
+  //   angle = 적 기준 접근 각도 (도, 0 = 정면, + = 오른쪽, 좌우 대칭 틀은 부호 반대), standoff = 적과의 거리 (주무기 사거리 배수), chargeRange = 돌격 개시 거리 (0 = behaviour.chargeRange),
+  //   flanks = 0 보다 크면 그 역할 분대를 좌우 두 덩어리로 (±flanks × 전선 폭), wait = bound · manoeuvre 가 화력 우세 (behaviour.superiority*) 를 기다림 (기본 true).
+  "depthUnit": 6,
+  "groupGap": 2,
+  "squadGap": 1.5,
+  "roles": {
+    // 자동 배정: 장교 = officer, 정찰병 = scout, 무기 키 → byWeapon, 병과 → byCategory, 그 밖 = default.
+    "officer": "command",
+    "scout": "command",
+    "byWeapon": { "lmg": "fire", "lmg_chauchat": "fire", "hmg": "fire", "hmg_type3": "fire", "carbine_assault": "manoeuvre", "at_rifle": "support", "sniper_rifle": "support" },
+    "byCategory": { "gun": "support", "armored": "fire" },
+    "default": "rifle",
+    // 기관총 한 정마다 같은 분대 소총수 loadersPerGun 명 (Id 순) 을 화력조 (탄약수) 로.
+    "loadersPerGun": 1,
+    // 소총 분대 (분대 번호 순) 가 minRifleSquads 개 이상이면 뒤쪽 ceil(분대 수 × manoeuvreFrac) 분대의 소총수 = 기동조 (착검 돌격).
+    "rifleSplit": { "manoeuvreFrac": 0.34, "minRifleSquads": 3 }
+  },
+  // 2단계 행동 · 전환 수치. 판단 = 중대 지휘관 (장교 = 모든 틀, 부사관 대리 = 화력-기동만, 지휘 없음 = 틀 없음, 인계 중 = 판단 멈춤),
+  // 판단 간격 decideTicks 틱 × 지휘관 경험치 배수 (officers.xpDecidePerLevel).
+  "behaviour": {
+    "decideTicks": 30,
+    "contactSec": 1.5,        // 구성원이 표적을 잡았거나 이 초 안에 쐈으면 접촉
+    "disengageSec": 10,       // 접촉이 이만큼 끊기면 행동 끝 (중대 대형으로 다시 정렬)
+    "boundLength": 6,         // 사격조 한 번 약진 거리 (칸)
+    "boundMaxSec": 10,        // 약진 분대가 이 초 안에 못 닿으면 그 자리에서 교대
+    "rifleStopFrac": 0.55,    // 사격조는 적과 사거리 × 이 값까지만 다가감
+    "boundSuppression": 0.6,  // 중대 평균 제압이 이 이상이면 약진 멈춤 (전원 사격)
+    "boundCoverGain": 0.3,    // 화력 우세 (적 제압) 없이 약진하려면 약진 목표의 엄폐 점수가 지금보다 이만큼 높아야 (개활지 약진 금지)
+    "coverSearch": 3,         // 이동 목표 둘레 엄폐 칸 찾는 반경 (칸)
+    "manoeuvreCover": 0.5,    // 기동조 우회 목표 · 경유점의 엄폐 점수 하한 (지형 명중 배수 · 고지 — 숲 · 가옥 · 참호 · 고지 ≈ 0.6~1.4, 풀밭 0)
+    "manoeuvreOpenSupp": 0.8, // 엄폐 없는 우회는 적 평균 제압이 이 이상일 때만
+    "chargeRange": 6,         // 기동조 돌격 개시 거리 (적이 가까우면 무조건)
+    "chargeSuppression": 0.4, // 표적 둘레 적 평균 제압이 이 이상이면 chargeMaxDist 안에서 돌격
+    "chargeMaxDist": 12,
+    "chargeOdds": 1.6,        // 또는 기동조 돌격 가능 인원이 적 (표적 둘레 chargeStatsRadius) 의 이 배 이상이면 돌격 (둘레 chargeMgRadius 에 쏘는 기관총이 없을 때)
+    "chargeStatsRadius": 10,
+    "chargeMgRadius": 8,
+    "replanDist": 5,          // 자리 잡은 기동조: 적과의 거리가 standoff + 이 값을 넘으면 (적이 옮김) 새 위치로
+    "chargeSec": 12,          // 돌격을 이 초 넘게 끌면 그 자리에서 사수
+    "liftDist": 8,            // 기동조가 적에게 이만큼 다가가면 화력조 · 지원 · 사격조는 그 둘레 (liftRadius) 를 쏘지 않음 (연신)
+    "liftRadius": 5,
+    "counterRange": 6,        // 종심 방어 예비: 사격조 둘레 이 거리 안 적이 counterMin 명 이상이면 역습
+    "counterMin": 3,
+    "trenchSeek": 6,          // 참호 자리 찾는 반경 (칸)
+    "commandBack": 4,         // 지휘 · 정찰은 화력조 뒤 이만큼에, commandSlack 넘게 떨어지면 다시 감
+    "commandSlack": 5,
+    "followFrac": 0.35,       // follow: 적과 사거리 × 이 값까지 공격 이동
+    // 화력 우세 (wait = true 인 bound · manoeuvre 는 이것을 얻을 때까지 그 자리에서 사격): 중대 둘레 (사거리 + superiorityRadius) 의 보이는 적이
+    // 평균 제압 ≥ superioritySupp, 또는 (적이 superiorityFew 이하일 때) 중대 병력 ≥ 적 수 × superiorityOdds. 사격조 약진은 교전이 patienceSec 넘게 이어져도
+    "superioritySupp": 0.30,   // N25 제압 재설계 (2026-10-19): 0.20 → 0.30 (근접 탄착 · 느린 감소로 적 평균 제압이 올라 0.20 은 교전 중대-초 38% 우세) · N17: 0.55 → 0.20
+    "superiorityOdds": 2.0,
+    "superiorityRadius": 4,
+    "superiorityFew": 0,       // 수 우세 규칙은 보이는 적이 이 수 이하이고 교전이 superiorityDelaySec 넘었을 때만 (안개 속 첫 접촉은 일부만 보임)
+    "superiorityDelaySec": 12,
+    "patienceSec": 90,        // N17 (2026-10-19): 60 → 90 — 신호가 살아 있으니 타이머는 보조. (오래 버틴 사격전은 사격조 약진만 허용, 기동조 우회는 제압 · 수 우세가 있어야)
+    "approachFrac": 0.85,     // 화력 우세 전 사격조가 적과 사거리 × 이 값보다 멀면 사거리 × engageFrac 까지 전체 공격 이동
+    "engageFrac": 0.6,        // (참고용 — 전술 AI 프로필 engageFrac 과 맞춤, engage 2026-10-19 · tweak1 0.65 → 0.6)
+    // 결정 4 (사용자 승인 2026-10-19): 공격 돌격 (기동조 돌격 · 전술 AI 중대 돌격) 허가 — 거리 · 제압 조건에 더해
+    // 화력 우세 신호 (보이는 적 평균 제압 ≥ superioritySupp) 또는 엄호 확인 (돌격조 밖 아군 overwatchMin 명 이상이 최근 overwatchSec 초 안에 돌격 표적 둘레 overwatchRadius 칸 안을 쏨)
+    // + 병력비 (돌격 인원 ≥ 표적 둘레 chargeStatsRadius 의 보이는 적 × assaultMinOdds). 없으면 교전 assaultFallbackSec 초 뒤에만 옛 조건으로 (예비 타이머 — 옛 사실상 인내 타이머 90초보다 길게).
+    // 행진 사격 → 돌격 전환 (N47, marchChargeRange 5칸) 도 이 허가를 받는다 — 예비 타이머 시작 = marchChargeSince ("phase" = 중대 전술 틀 국면 틱, 국면 없으면 공격 이동 명령 틱 · "order" = 늘 명령 틱).
+    // 장교 자동 돌격 · 방어 역습은 그대로. assaultGate false = 옛 동작.
+    "assaultGate": true,
+    "assaultMinOdds": 1.0,
+    "overwatchSec": 4,
+    "overwatchRadius": 8,
+    "overwatchMin": 3,
+    "assaultFallbackSec": 150,
+    "marchChargeSince": "phase"
+  },
+  // 결정 12 (2026-10-19): 전술 AI 대대 역할 — 소총 중대 병력이 minStrength 미만인 대대 (1명 분견대 · 전문 병과만) 는 화력 기반 · 기동 대대로 뽑지 않는다.
+  // 전투 대대가 하나뿐이면 그 대대 안에서 중대를 화력 기반 · 기동으로 나눈다.
+  "battalionRoles": { "minStrength": 40 },
+  // 추격 · 후퇴 (사용자 결정 2026-10-19, src/Core/Pursuit.cs). 후퇴 = 속보 (가능한 병사) + 후퇴 표시 (도착 · 새 명령까지).
+  // noChargeFleeing = 보병은 후퇴하는 적에게 착검 · 자동 · 행진 사격 5칸 · 장교 돌격을 걸지 않고 사격만. cavalryChargeFleeing = 기병 추격 돌격 허용 (전통적 기병 추격, 기본 true — 소규모 기병 규칙은 그대로).
+  // 전술 AI 사격 추격: 표적 둘레 fleeingRadius 칸 적의 fleeingShare 이상이 후퇴 중이면 사거리 × rangeFrac 로 따라가며 쏨 (공격 이동),
+  // 추격 시작 위치에서 maxDist × 소총 사거리 또는 maxSec 초를 넘으면 멈춰 regroupSec 초 제자리 사수 · 재정비. enabled false = 옛 동작 (보통 교전).
+  // 후퇴 사격 (pursuit2): retreatFire = 후퇴 중 병사가 걸으며 사거리 (무기 사거리 × retreatFireRangeFrac, 근거리 시야 상한) 안 적을 쏨 — 명중 × retreatFireAccMul, 간격 × retreatFireIntervalMul. 멈춤 · 돌아섬 · 돌격 없음.
+  "pursuit": { "noChargeFleeing": true, "cavalryChargeFleeing": true, "enabled": true, "fleeingShare": 0.5, "fleeingRadius": 12, "rangeFrac": 0.75, "maxDist": 1.0, "maxSec": 40, "regroupSec": 20,
+               "retreatFire": true, "retreatFireAccMul": 0.3, "retreatFireIntervalMul": 2.0, "retreatFireRangeFrac": 0.75 },
+  // 후퇴 뒤 재정비 (pursuit2, 전술 AI 소총 중대 — Pursuit.cs RegroupDef): 스스로 후퇴 (15초) 가 끝나면 minSec 초 제자리 사수 · 재정비, 그 뒤 checkSec 초마다
+  // 병력 ≥ rejoinStrength · 평균 제압 ≤ rejoinSupp · (표적 둘레 적 대비 병력 ≥ rejoinOdds 또는 지원 = 다른 공격 중대 supportMin 개가 그 적 둘레 supportRadius × 소총 사거리 안에서 교전) 이면 재전진,
+  // 증원 (+reinforceFrac × 처음 병력) 이면 제압만 보고 재전진, 접촉 거리 안 적이 없으면 재전진. 아니면 그 자리 사수 (지원 사격). enabled false = 옛 동작 (곧바로 재전진).
+  "regroup": { "enabled": true, "minSec": 20, "checkSec": 5, "rejoinStrength": 0.5, "rejoinSupp": 0.2, "rejoinOdds": 1.0, "reinforceFrac": 0.15, "supportRadius": 1.2, "supportMin": 1 },
+  // 기병 (전술 AI CavalryThink): 돌격 = 기수 ≥ minRiders 그리고 기수 ≥ 표적 둘레 oddsRadius 칸 보이는 적 × minOdds (측면 · 후방 접근이면 × flankOddsMul). 아니면 정찰 · 차장 (카빈 사격 · 대기 · 물러남).
+  // 접근 각 = 표적 무리 평균 방향 기준: frontDeg 안 = 정면 (점수 −frontPenalty, 표적 제압 ≥ frontSuppOk · 기수 ≥ 둘레 weakRadius 칸 적 × frontWeakOdds · 대형 흐트러짐 (방향 정렬도 < formedAlign) 일 때만 바로 돌격),
+  // 그 밖 정면 표적은 옆 · 뒤 flankOffset 칸 (wayOutsideRange = 적 사거리 + 2 칸 밖) 경유점 (기관총 정면 사계 · mgAvoidRadius 칸 밖) 으로 돌아 들어간 뒤 돌격. 측면 flankScore · 후방 rearScore.
+  // flankMinSupp (pursuit2) = 후퇴하지 않는 보병 묶음 (형성된 측면 · 후방 · 걷는 대형 · 흐트러진 대형) 을 돌격 표적으로 보려면 평균 제압 ≥ 이 값 (N22 = 0 → 소총 30 대 기병 30 역전, 사용자 결정으로 조금 엄격히) — 걷는 대형 · 수로만 약한 정면에도 같은 문턱. formedMinN = 묶음에 보이는 적이 이 수 미만이면 방향만으로 흐트러졌다고 보지 않음 (안개 속 몇 명).
+  // 돌격할 곳 없이 적 사거리 + 6칸 안에 stallSec 초 넘게 머물면 적 사거리 + screenGap 칸 밖으로 물러나 차장 (N18 기관총 앞 교착 방지). 경유점 도착 wayReach 칸 · 최대 waySec 초.
+  "cavalry": { "minRiders": 10, "minOdds": 2.0, "flankOddsMul": 0.7, "flankMinSupp": 0.3, "formedMinN": 4, "oddsRadius": 6, "frontDeg": 60, "flankScore": 0.6, "rearScore": 0.8, "frontPenalty": 1.0, "frontSuppOk": 0.5, "frontWeakOdds": 3, "weakRadius": 15, "formedAlign": 0.6, "flankOffset": 14, "wayOutsideRange": true, "mgAvoidRadius": 26, "stallSec": 20, "screenGap": 10, "wayReach": 4, "waySec": 25, "officerBack": 15,
+    "strictCharge": true, "autoMinTargetSupp": 0.5, "isolatedMax": 3, "isolatedRadius": 6, "crewGuardRadius": 6, "autoFrontDeg": 60, "autoMaxOwnSupp": 250, "rechargeCooldownSec": 120 },   // officerBack (cavcmd): AI 기병 돌격 때 기병 장교는 표적 앞 이 칸에서 따라감 (지휘 유지, 0 = 함께 돌격)
+  "templates": {
+    "fire_manoeuvre": {
+      "groups": {
+        "fire":      { "x": -0.3,  "y": 0,    "stance": "fire",    "squadForm": "line",   "act": "hold" },
+        "rifle":     { "x": 0.0,   "y": 0,    "stance": "fire",    "squadForm": "line",   "act": "bound" },
+        "manoeuvre": { "x": 0.45,  "y": 0.6,  "stance": "advance", "squadForm": "wedge",  "act": "manoeuvre", "angle": 35, "standoff": 0.45 },
+        "support":   { "x": -0.3,  "y": -0.8, "stance": "fire",    "squadForm": "line",   "act": "support" },
+        "command":   { "x": 0.0,   "y": -1.0, "stance": "hold",    "squadForm": "close",  "act": "command" }
+      }
+    },
+    "flank_left": {
+      "groups": {
+        "fire":      { "x": 0.1,   "y": 0,    "stance": "fire",    "squadForm": "line",   "act": "hold" },
+        "rifle":     { "x": 0.35,  "y": 0,    "stance": "fire",    "squadForm": "line",   "act": "hold" },
+        "manoeuvre": { "x": -0.8,  "y": 0.9,  "stance": "advance", "squadForm": "column", "act": "manoeuvre", "angle": -80, "standoff": 0.45 },
+        "support":   { "x": 0.2,   "y": -0.8, "stance": "fire",    "squadForm": "line",   "act": "support" },
+        "command":   { "x": -0.25, "y": -0.6, "stance": "hold",    "squadForm": "close",  "act": "command" }
+      }
+    },
+    // 좌우 대칭 (x · angle 부호만 바꿈)
+    "flank_right": { "mirror": "flank_left" },
+    "defence_depth": {
+      "groups": {
+        "rifle":     { "x": 0.0,   "y": 0,    "stance": "hold",    "squadForm": "open",   "act": "trench" },
+        "fire":      { "x": 0.0,   "y": -0.3, "stance": "fire",    "squadForm": "line",   "act": "hold", "flanks": 0.45 },
+        "support":   { "x": -0.35, "y": -1.0, "stance": "fire",    "squadForm": "line",   "act": "support" },
+        "command":   { "x": 0.3,   "y": -1.2, "stance": "hold",    "squadForm": "close",  "act": "command" },
+        "manoeuvre": { "x": 0.0,   "y": -2.0, "stance": "hold",    "squadForm": "close",  "act": "reserve" }
+      }
+    },
+    // 포병 대형 (이동): 역할군 대신 분대마다 작은 종대를 나란히 (formations.json "artillery"), 접촉하면 deployTactic 틀로 전개 (지휘가 허용하지 않으면 횡대).
+    "artillery": { "layout": "squadColumns", "stance": "advance", "deployTactic": "fire_manoeuvre" },
+    "assault": {
+      "groups": {
+        "manoeuvre": { "x": 0.0,   "y": 0.6,  "stance": "advance", "squadForm": "line",   "act": "manoeuvre", "angle": 0, "standoff": 0.15, "chargeRange": 9, "wait": false },
+        "rifle":     { "x": 0.0,   "y": 0,    "stance": "advance", "squadForm": "line",   "act": "follow" },
+        "fire":      { "x": -0.45, "y": -0.2, "stance": "fire",    "squadForm": "line",   "act": "hold" },
+        "support":   { "x": 0.45,  "y": -0.4, "stance": "fire",    "squadForm": "line",   "act": "support" },
+        "command":   { "x": 0.0,   "y": -0.7, "stance": "advance", "squadForm": "close",  "act": "command" }
+      }
+    }
+  },
+  // 참호 돌격 교리 (N32, 사용자 승인 2026-10-20, src/Core/TrenchAssault.cs, docs/ENGINE_NOTES.md '참호 돌격'). 밸런스 수치 아님 — 순서 · 판단. 칸 = 지도 칸.
+  // 1 제압: farDist 칸 밖이면 집결, 경기관총은 사거리 × gunStandFrac 사격 진지, prepMin~prepMaxSec 동안 방어병 (suppRadius 안 보이는) 엎드림 · 고정 · 제압 ≥ suppGoal 비율 ≥ suppFrac 이면 다음. 포병은 지점 포격 (useGroundFire; 전술 AI 는 aiGroundFire).
+  // 2 접근: 분대 교대 약진 (boundLength, boundMaxSec) 참호까지 boundEndDist 칸이면 속보 돌진 (사양 "~30칸" 은 소총 사거리 24 밖이라 약진이 아무 의미 없고 돌진이 사격 구역 전체 25칸이 됨 — 측정 B 1/5 → 12칸 5/5, 그래서 12; 30 으로 되돌리려면 farDist 60 · boundEndDist 30) (수류탄 거리 × rushStandFrac). liftDist 안이면 포격을 creepLead 칸 너머로 (이동 탄막).
+  // 3 돌파: 수류탄 volleys 번 (volleyGapSec 간격) → fuseWaitSec 뒤 착검 돌격 chargeThrough 칸 너머까지. enterFrac 이 참호에 들어가면 (또는 breakMaxSec) 다음.
+  // 4 소탕: 양 끝으로 참호를 따라 쓸기, 경기관총은 양 끝 (endHoldBack 안쪽). 보이는 적이 clearConfirmSec 없으면 (또는 clearMaxSec) 다음. 5 확보: 공격 방향을 향해 점유 (holdPad · coverMaxHit), consolidateSec.
+  // smokeHook · wireCutHook = 참호 돌파 묶음 (N59 연막 · 철조망 절단) 자리 (이 묶음에서는 안 씀). ai* = 전술 AI (공격 과제 소총 중대, 프로필 tactics.trenchAssault 로 켜고 끔).
+  "trenchAssault": {
+    "enabled": true, "decideSec": 0.5, "snapRadius": 6, "minMen": 6,
+    "farDist": 40, "gunStandFrac": 0.85, "prepMinSec": 8, "prepMaxSec": 45, "suppGoal": 0.35, "suppFrac": 0.5, "suppRadius": 12, "stageMaxSec": 150,
+    "useGroundFire": true, "aiGroundFire": false, "creepLead": 10, "liftDist": 14,
+    "boundLength": 6, "boundMaxSec": 10, "boundEndDist": 12, "coverSearch": 3, "rushStandFrac": 0.8, "approachMaxSec": 150, "breakFrac": 0.5,
+    "volleys": 2, "volleyGapSec": 1.2, "fuseWaitSec": 2, "chargeThrough": 3, "breakMaxSec": 25, "enterFrac": 0.4,
+    "clearMaxSec": 60, "clearConfirmSec": 3, "clearRadius": 2.5, "endHoldBack": 1.5,
+    "holdPad": 3, "consolidateSec": 15, "coverMaxHit": 0.9,
+    "maxTotalSec": 420, "cooldownSec": 60, "spanRadius": 45,
+    "aiEnabled": true, "aiTriggerDist": 70, "aiMinDist": 10, "aiMinDefenders": 3, "aiMinMen": 20, "aiMinOdds": 0.8,
+    "smokeHook": false, "wireCutHook": false
+  },
+  // 도하 · 병목 돌파 (사용자 결정 2026-10-19, src/AI/Tactical/TacticalAi.Crossing.cs, docs/ENGINE_NOTES.md '도하 · 병목 돌파'). 밸런스 수치 아님 — AI 판단만. 칸 = 지도 칸.
+  // 연대 앞 중대 → 적 직선이 두께 minObstacle~maxObstacle 칸의 못 걷는 띠 (강) 를 지나고, 그 띠가 옆으로 minBarrier 칸 이상 이어지며, searchLateral 칸 안에 폭 maxLaneWidth 이하의
+  // 건널 곳이 있고 secondLaneRange 안에 다른 건널 곳이 없으면 (twoLanes false) 계획: 1 화력 기반 (모든 중대 = 강둑 칸 (fireBaseBack · bankWidth · bankMaxLateral · bankRowGap,
+  // 반응 거리 안 적 맞은편, reslotSec 에 한 번 다시), 바깥 fireBaseFrac = 마지막에 건넘, 기관총 = 입구 좌우, 포병 = 출구 둘레) → fireMinSec 뒤 화력전 진척 (출구 둘레 보이는 적 progressDrop 감소)
+  // 이 stallSec 동안 없거나 적 × launchOdds ≤ 도하 병력이면 (단 전체 소총 병력 ≥ 그 적 × minOdds 일 때만, 아니면 강둑에서 계속 사격) (포병은 준비사격 뒤 · prepWaitSec, 상한 fireMaxSec) 2 도하 (launchMinSec 간격 거의 동시 속보, commitSec 후퇴 미룸)
+  // → 3 교두보 (도하 병력 bridgeheadFrac 이 출구 선 넘음, 칸 = 출구 앞 bridgeheadDepth · 폭 bridgeheadWidth, 최대 bridgeheadMaxSec) → bridgeheadHoldSec → 4 보통 공격 (진지는 출구 선 farSideMargin 앞).
+  "crossing": {
+    "enabled": true,
+    "minObstacle": 3, "maxObstacle": 24, "minBarrier": 16, "searchLateral": 48, "maxLaneWidth": 10, "secondLaneRange": 60, "twoLanes": false,
+    "triggerRange": 1.5, "checkSec": 4,
+    "fireBaseFrac": 0.34, "fireBaseBack": 1, "bankWidth": 22, "bankMaxLateral": 42, "bankRowGap": 6, "reslotSec": 6,
+    "fireMinSec": 15, "fireMaxSec": 300, "prepWaitSec": 20, "progressDrop": 0.05, "stallSec": 30, "launchOdds": 3, "minOdds": 2.5,
+    "launchFrac": 0, "launchMinSec": 2, "launchMaxSec": 8, "commitSec": 40,
+    "bridgeheadDepth": 7, "bridgeheadWidth": 14, "bridgeheadFrac": 0.6, "bridgeheadMaxSec": 70, "bridgeheadHoldSec": 0,
+    "farSideMargin": 1
+  },
+  // 역습 교리 (사용자 결정 2026-10-19, src/AI/Tactical/TacticalAi.Counter.cs): 미션 posture "counter" · 방어 그룹의 세력 반격. 밸런스 수치 아님.
+  // 접촉 → (commitReserves) 예비 투입 · 1 고정 사격 fixMinSec ~ fixMaxSec (표적 둘레 적 평균 제압 ≥ assaultSupp 이면 일찍) → 연대 앞 병력 ≥ 보이는 적 × minOdds 이면
+  // 2 일제 돌격: 화력 기반 (fireBaseFrac) 을 뺀 전 중대가 돌격 거리 × closeFrac 까지 속보 → 착검 돌격 (조건 chargeSuppression · chargeOdds, 돌격 허가 예비 타이머 assaultFallbackSec,
+  // noRetreatSec 동안 스스로 후퇴 미룸) → assaultMaxSec 뒤 (또는 돌격 중대 전원 후퇴) 다시 1.
+  "counter": {
+    "enabled": true, "commitReserves": true,
+    "fixMinSec": 15, "fixMaxSec": 35, "assaultSupp": 0.15, "minOdds": 1.2,
+    "closeFrac": 0.85, "chargeSuppression": 0.2, "chargeOdds": 1.0, "assaultFallbackSec": 15,
+    "noRetreatSec": 25, "assaultMaxSec": 45, "fireBaseFrac": 0.34
+  },
+  // 포병 AI 문턱 (N20 2026-10-19, src/AI/Tactical/TacticalAi.Artillery.cs). 밸런스 수치 아님 — AI 판단만. 칸 단위는 지도 ×1.5 이후 칸.
+  "artilleryAi": {
+    "observerAhead": 8,          // 관측자 (관측반 · AI 가 부리는 정찰병): 아군 보병 앞선보다 이 칸 앞 (엄폐 · 고지 둘레 observerCoverRadius 칸)
+    "observerContactBack": 4,    // 접촉 뒤 (지점 둘레에 보이는 적) 관측자 지점 = 아군 전선 (중대 무게중심 앞선) 에서 이 칸 뒤
+    "observerStandoff": 1.5,     // 보이는 적과 최소 거리 = 소총 사거리 × 이 값 (적 소총 · 저격총 사거리 밖, 돌격을 이끌지 않음)
+    "observerCoverRadius": 3,
+    "observerRepost": 6,         // 관측 지점이 이 칸 넘게 바뀌어야 다시 보냄
+    "observerSec": 2,            // 판단 간격 (초)
+    "observerAvoidSec": 120, "observerAvoidRadius": 8, "observerAvoidStandoff": 4, "observerAvoidSearch": 10,   // tweak1: 노려져 엄폐한 관측자는 120초 동안 그 노출 지점 8칸 안 · 그때 사격자에게 (노출 거리 + 4) 칸보다 가까운 곳으로 다시 보내지 않음 — 둘레 10칸의 엄폐 · 은폐 · 사선 밖 칸으로
+    "observerRetask": 2,         // 관측자 전멸 + 관측 표적 10초 없음 → 소총 중대 정찰조에서 이 수만큼 새 관측반 (곡사포가 있을 때만, 0 = 안 함)
+    "supportRadius": 12,         // 곡사포: 아군 돌격 > 기동조 > 약진 표적 둘레 이 칸 안의 적 우선
+    "dangerClose": 5,            // 강제 표적은 아군에서 dangerClose + dangerScatterMul × (그 거리 퍼짐) 칸 밖
+    "dangerScatterMul": 0.75,
+    "redeployCooldownSec": 60,   // 포대 재배치 쿨다운 (방열 뒤), × max(1, 포대 수 / redeployBatteryRef) (N22 측정: 30 → 20)
+    "redeployBatteryRef": 4,
+    "redeployMinMove": 10,       // 이보다 작은 진지 수정은 하지 않음 (제자리 선회 N10)
+    "redeployRangeFrac": 0.75,   // (N22 측정: 0.85 → 0.75) 곡사포는 표적이 사거리 × 이 값 밖이면 전진 (쿨다운 뒤 · 쏘는 중이면 표적 지역이 사거리 0.92 밖일 때만)
+    "redeployWantFrac": 0.65,    // 옮길 때 표적과의 거리 = 사거리 × 이 값 (한 번에 깊이 — 옛 0.75)
+    "gunIdleSec": 20,            // 이 초 안에 (직사포는 유효 사거리 안 표적을) 쏜 포가 있는 포대는 옮기지 않음 (곡사포 재장전 14~17초 포함)
+    "gunEffectiveFrac": 0.8,     // 직사포 유효 사거리 비율 — 먼 표적은 가까운 표적이 있으면 버림, 가장 가까운 적이 이보다 멀면 진지 이동
+    "gunStandoffFrac": 0.65,     // 직사포 사격 진지 = max(사거리 × 이 값, 소총 사거리 × gunStandoffRifleMul) (유효 사거리 이하)
+    "gunStandoffRifleMul": 1.3,
+    "gunDeployLead": 1.5,        // 직사포 전개 시작: 보이는 적이 사거리 + 소총 사거리 × 이 값 안 (옛 1.0)
+    // N22 보병포 (사거리 closeGunMaxRange 이하 직사포 = 대대와 함께 움직이는 근접 지원포): 지원 중대 무게중심 closeGunFollow 칸 뒤를 따라가다,
+    // 접촉 (보이는 적이 중대에서 사거리 + 소총 사거리 × closeGunContactLead 안) 하면 중대 무게중심에서 적 반대쪽 closeGunBehind 칸 (가장 가까운 적이 유효 사거리 − 2 안, 아군 보병 앞선 1칸 뒤 상한) 에 방열.
+    // 표적 점수 = 기관총 closeGunMgW + 포 closeGunGunW + 엄폐한 적 closeGunCoverW + 둘레 2칸 적마다 closeGunClusterW − 거리 × closeGunDistW (closeGunRetargetSec 마다, closeGunKeep 점 넘게 좋아야 바꿈)
+    "closeGunMaxRange": 50, "closeGunBehind": 3, "closeGunFollow": 8, "closeGunContactLead": 1.0,
+    "closeGunMove": 10, "closeGunCooldownSec": 20, "closeGunIdleSec": 8,
+    "closeGunMgW": 30, "closeGunGunW": 20, "closeGunCoverW": 12, "closeGunClusterW": 4, "closeGunDistW": 0.5, "closeGunKeep": 10, "closeGunRetargetSec": 4
+  }
+}

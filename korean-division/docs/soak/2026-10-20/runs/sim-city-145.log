@@ -1,0 +1,104 @@
+  [sim] AI A=tactical B=사수
+  [sim] B 사수 (159기)
+  t=10s  A 210 @(96,65)  B 159 @(166,64)  wall 0.3s
+  t=20s  A 210 @(108,67)  B 159 @(166,64)  wall 0.6s
+  t=30s  A 210 @(108,65)  B 159 @(166,64)  wall 0.8s
+  t=40s  A 210 @(115,65)  B 159 @(166,64)  wall 1.0s
+  t=50s  A 210 @(121,65)  B 159 @(166,64)  wall 1.3s
+  t=60s  A 206 @(123,64)  B 159 @(166,64)  wall 1.5s
+  t=70s  A 189 @(130,66)  B 159 @(166,64)  wall 1.8s
+  t=80s  A 150 @(135,64)  B 159 @(166,64)  wall 2.0s
+  t=90s  A 132 @(144,64)  B 159 @(166,64)  wall 2.2s
+  t=100s  A 107 @(144,63)  B 159 @(166,64)  wall 2.4s
+  t=110s  A 96 @(144,62)  B 159 @(166,64)  wall 2.5s
+  t=120s  A 87 @(143,60)  B 159 @(166,64)  wall 2.6s
+  t=130s  A 82 @(142,59)  B 159 @(166,64)  wall 2.8s
+  t=140s  A 78 @(142,59)  B 159 @(166,64)  wall 2.9s
+  t=150s  A 63 @(144,61)  B 159 @(166,64)  wall 3.1s
+  t=160s  A 53 @(144,61)  B 159 @(166,64)  wall 3.2s
+  t=170s  A 40 @(145,63)  B 159 @(166,64)  wall 3.3s
+  t=180s  A 29 @(144,64)  B 159 @(166,64)  wall 3.4s
+  t=190s  A 27 @(143,64)  B 159 @(166,64)  wall 3.6s
+  t=200s  A 24 @(143,66)  B 159 @(166,64)  wall 3.7s
+  t=210s  A 23 @(143,66)  B 159 @(166,64)  wall 3.8s
+  t=220s  A 22 @(143,67)  B 159 @(166,64)  wall 3.9s
+  t=230s  A 22 @(143,67)  B 159 @(166,64)  wall 4.0s
+  t=240s  A 22 @(143,66)  B 159 @(166,64)  wall 4.1s
+  t=250s  A 22 @(143,66)  B 159 @(166,64)  wall 4.2s
+  t=260s  A 22 @(143,66)  B 159 @(166,64)  wall 4.2s
+  t=270s  A 22 @(143,66)  B 159 @(166,64)  wall 4.3s
+  t=280s  A 22 @(143,66)  B 159 @(166,64)  wall 4.4s
+  t=290s  A 22 @(143,66)  B 159 @(166,64)  wall 4.5s
+  t=300s  A 22 @(143,66)  B 159 @(166,64)  wall 4.6s
+  t=310s  A 22 @(143,66)  B 159 @(166,64)  wall 4.7s
+  t=320s  A 22 @(143,66)  B 159 @(166,64)  wall 4.8s
+  t=330s  A 22 @(143,66)  B 159 @(166,64)  wall 4.9s
+  t=340s  A 22 @(143,66)  B 159 @(166,64)  wall 5.0s
+  t=350s  A 22 @(143,66)  B 159 @(166,64)  wall 5.1s
+  t=360s  A 22 @(143,66)  B 159 @(166,64)  wall 5.2s
+  t=370s  A 22 @(143,66)  B 159 @(166,64)  wall 5.2s
+  t=380s  A 22 @(143,66)  B 159 @(166,64)  wall 5.3s
+  t=390s  A 22 @(143,66)  B 159 @(166,64)  wall 5.4s
+  t=400s  A 22 @(143,66)  B 159 @(166,64)  wall 5.5s
+  t=410s  A 22 @(143,66)  B 159 @(166,64)  wall 5.6s
+  t=420s  A 22 @(143,66)  B 159 @(166,64)  wall 5.7s
+  t=430s  A 22 @(143,66)  B 159 @(166,64)  wall 5.8s
+  t=440s  A 22 @(143,66)  B 159 @(166,64)  wall 5.9s
+  t=450s  A 22 @(143,66)  B 159 @(166,64)  wall 6.0s
+  t=460s  A 22 @(143,66)  B 159 @(166,64)  wall 6.0s
+  t=470s  A 22 @(143,66)  B 159 @(166,64)  wall 6.1s
+  t=480s  A 22 @(143,66)  B 159 @(166,64)  wall 6.2s
+  t=490s  A 22 @(143,66)  B 159 @(166,64)  wall 6.3s
+  t=500s  A 22 @(143,66)  B 159 @(166,64)  wall 6.7s
+  t=510s  A 22 @(143,66)  B 159 @(166,64)  wall 6.8s
+  t=520s  A 22 @(143,66)  B 159 @(166,64)  wall 6.9s
+  t=530s  A 22 @(143,66)  B 159 @(166,64)  wall 7.1s
+  t=540s  A 22 @(143,66)  B 159 @(166,64)  wall 7.1s
+  t=550s  A 22 @(143,66)  B 159 @(166,64)  wall 7.2s
+  t=560s  A 22 @(143,66)  B 159 @(166,64)  wall 7.3s
+  t=570s  A 22 @(143,66)  B 159 @(166,64)  wall 7.4s
+  t=580s  A 22 @(143,66)  B 159 @(166,64)  wall 7.5s
+  t=590s  A 22 @(143,66)  B 159 @(166,64)  wall 7.6s
+MARCH ticks=0 move=0 moveOn=0 shots=0 moveShots=0 pistol=0 gren=0 melee=0
+MEAS start=210/159 end_t=600 winner=0 lossEnd=188/0 loss120=123/0 loss300=188/0 t50=103/- shots=3791 hits=567 hitpct=15.0 meanDist=16.3 hitDist=15.6
+결과: 승자 0, 600.0초, 실행 7.7초, 명령 174
+사살원인 050s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 2
+사살원인 050s heavy_machinegunner/lmg->infantry_dadao_fengtian = 2
+사살원인 060s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 15
+사살원인 060s heavy_machinegunner/lmg->infantry_dadao_fengtian = 2
+사살원인 070s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 36
+사살원인 070s heavy_machinegunner/lmg->infantry_dadao_fengtian = 3
+사살원인 080s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 18
+사살원인 090s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 21
+사살원인 090s heavy_machinegunner/lmg->infantry_dadao_fengtian = 4
+사살원인 100s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 9
+사살원인 100s heavy_machinegunner/lmg->infantry_dadao_fengtian = 2
+사살원인 110s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 8
+사살원인 110s heavy_machinegunner/lmg->infantry_dadao_fengtian = 1
+사살원인 120s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 5
+사살원인 130s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 1
+사살원인 130s heavy_machinegunner/lmg->infantry_dadao_fengtian = 3
+사살원인 140s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 9
+사살원인 140s heavy_machinegunner/lmg->infantry_dadao_fengtian = 6
+사살원인 150s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 8
+사살원인 150s heavy_machinegunner/lmg->infantry_dadao_fengtian = 2
+사살원인 160s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 12
+사살원인 160s heavy_machinegunner/lmg->infantry_dadao_fengtian = 1
+사살원인 170s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 7
+사살원인 170s heavy_machinegunner/lmg->infantry_dadao_fengtian = 4
+사살원인 180s heavy_machinegunner/lmg->infantry_dadao_fengtian = 2
+사살원인 190s heavy_machinegunner/lmg->infantry_dadao_fengtian = 3
+사살원인 200s heavy_machinegunner/lmg->infantry_dadao_fengtian = 1
+사살원인 210s heavy_machinegunner/lmg->infantry_dadao_fengtian = 1
+틀 행동: 시작 0 끝 0 약진 0 기동 0 돌격 0 역습 0 참호 0 연신 0 전환 0 인계멈춤 0 포병전개 0
+기병AI: 돌격 정면 0 측면 0 후방 0 측면경유 0 소규모보류 0 물러남 0 | 추격: 후퇴중 희생 사격 36 근접 0 후퇴하는 적 돌격 보병 0 기병 0 | N55 기병 무모한 정면 0 돌격 사격 전진 0 | N23 소탕 0 | S4 제압으로 꺾인 돌격 0
+F4 기병 돌격: 개시 0 무의미 정면 0 자동 막음 0 근접 사살 0 사유(후퇴/제압/승무원/고립/측면) 0/0/0/0/0 · 하마 0 승마 0
+관찰: 사격 3791발 · 명중 567발 (15.0%) · 사망 188기 → 1킬당 20.2발 (명중 3.0발)
+N61 접근: 보병(1) 첫 사격 -초 · 기병(2) 첫 근접 -초 · 전환 0 · 그 시점 B 생존 -1/159
+템포: 첫 사격 56.7초 · A 50% 손실 102.5초 · B 50% 손실 -초 · 사격 거리 평균 16.3 (첫 100발 15.6) 칸
+  세력:종류            시작→남음   사격    근접   포격  방열%  돌격%
+  1:infantry_dadao_fengtian  210→22          0      0      0     0     0
+  2:bandit_rifleman     150→150      2307      0      0     0     0
+  2:heavy_machinegunner    9→9        1484      0      0    99     0
+AI 비용: 사고 ms/틱 avg 0.002 max 17.59 (호출 2400, 호출당 0.034 ms) · 전체 Step avg 0.21 ms
+  [전술 AI 1] 프로필 default 태세 Attack/Attack 중대 3 대대 2 · 명령 161 돌격 0 기병돌격 0 참호 0 후퇴 52 포병이동 0 화력사수 0 예비투입 1 · 연대 1 준비사격 0 연신 0 분대약진 0 전초 0/철수 0 역습 0 증원편입 0 공격한계 0

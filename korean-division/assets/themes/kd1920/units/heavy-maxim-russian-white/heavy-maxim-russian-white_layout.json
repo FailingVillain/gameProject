@@ -1,0 +1,188 @@
+{
+ "frame": [
+  192,
+  192
+ ],
+ "anchor": [
+  96,
+  128
+ ],
+ "dirs": [
+  "s",
+  "se",
+  "e",
+  "ne",
+  "n"
+ ],
+ "mirror": true,
+ "columns": [
+  "hmg_idle",
+  "hmg_move_1",
+  "hmg_move_2",
+  "hmg_move_3",
+  "hmg_move_4",
+  "hmg_set_1",
+  "hmg_set_2",
+  "hmg_aim",
+  "hmg_fire_a",
+  "hmg_fire_b",
+  "hmg_hit",
+  "hmg_fall",
+  "hmg_dead"
+ ],
+ "anims": {
+  "idle": {
+   "frames": [
+    "hmg_idle"
+   ],
+   "ms": 150,
+   "shared_fit": false
+  },
+  "move": {
+   "frames": [
+    "hmg_move_1",
+    "hmg_move_2",
+    "hmg_move_3",
+    "hmg_move_4"
+   ],
+   "ms": 140,
+   "shared_fit": false
+  },
+  "deploy": {
+   "frames": [
+    "hmg_set_1",
+    "hmg_set_2",
+    "hmg_aim"
+   ],
+   "ms": [
+    380,
+    380,
+    500
+   ],
+   "shared_fit": false
+  },
+  "fire": {
+   "frames": [
+    "hmg_aim",
+    "hmg_fire_a",
+    "hmg_fire_b",
+    "hmg_fire_a",
+    "hmg_fire_b"
+   ],
+   "ms": [
+    400,
+    70,
+    70,
+    70,
+    70
+   ],
+   "shared_fit": false
+  },
+  "pack": {
+   "frames": [
+    "hmg_aim",
+    "hmg_set_2",
+    "hmg_set_1"
+   ],
+   "ms": [
+    400,
+    380,
+    380
+   ],
+   "shared_fit": false
+  },
+  "death": {
+   "frames": [
+    "hmg_hit",
+    "hmg_fall",
+    "hmg_dead"
+   ],
+   "ms": [
+    300,
+    350,
+    1500
+   ],
+   "shared_fit": false
+  }
+ },
+ "sheets": [
+  {
+   "file": "heavy-maxim-russian-white.png",
+   "team": "heavy-maxim-russian-white_team.png",
+   "columns": [
+    "hmg_idle",
+    "hmg_move_1",
+    "hmg_move_2",
+    "hmg_move_3",
+    "hmg_move_4",
+    "hmg_set_1",
+    "hmg_set_2",
+    "hmg_aim",
+    "hmg_fire_a",
+    "hmg_fire_b",
+    "hmg_hit",
+    "hmg_fall",
+    "hmg_dead"
+   ],
+   "size": [
+    2496,
+    960
+   ]
+  }
+ ],
+ "cells": {
+  "hmg_idle": {
+   "sheet": "heavy-maxim-russian-white.png",
+   "col": 0
+  },
+  "hmg_move_1": {
+   "sheet": "heavy-maxim-russian-white.png",
+   "col": 1
+  },
+  "hmg_move_2": {
+   "sheet": "heavy-maxim-russian-white.png",
+   "col": 2
+  },
+  "hmg_move_3": {
+   "sheet": "heavy-maxim-russian-white.png",
+   "col": 3
+  },
+  "hmg_move_4": {
+   "sheet": "heavy-maxim-russian-white.png",
+   "col": 4
+  },
+  "hmg_set_1": {
+   "sheet": "heavy-maxim-russian-white.png",
+   "col": 5
+  },
+  "hmg_set_2": {
+   "sheet": "heavy-maxim-russian-white.png",
+   "col": 6
+  },
+  "hmg_aim": {
+   "sheet": "heavy-maxim-russian-white.png",
+   "col": 7
+  },
+  "hmg_fire_a": {
+   "sheet": "heavy-maxim-russian-white.png",
+   "col": 8
+  },
+  "hmg_fire_b": {
+   "sheet": "heavy-maxim-russian-white.png",
+   "col": 9
+  },
+  "hmg_hit": {
+   "sheet": "heavy-maxim-russian-white.png",
+   "col": 10
+  },
+  "hmg_fall": {
+   "sheet": "heavy-maxim-russian-white.png",
+   "col": 11
+  },
+  "hmg_dead": {
+   "sheet": "heavy-maxim-russian-white.png",
+   "col": 12
+  }
+ },
+ "anchors": "heavy-maxim-russian-white_anchors.json"
+}

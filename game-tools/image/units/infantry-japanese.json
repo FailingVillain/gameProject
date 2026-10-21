@@ -1,0 +1,17 @@
+{
+  "name": "infantry-japanese",
+  "_doc": "Preservation config: infantry-default with the original light khaki (tunic, cap, trousers; jkhaki = lkhaki values) and a plain Japanese-style field cap (parts/headgear japanese_cap). Everything else identical to infantry-default.",
+  "base": "infantry",
+  "anims": "infantry",
+  "headgear": "japanese_cap",
+  "uniform": {"jacket": "jkhaki", "trousers": "jkhaki", "legging": "puttee", "boot": "leather", "belt": "leather", "hand": "skin",
+              "collar": true, "puttees": true},
+  "weapon": "bolt_rifle_bayo",
+  "gear": ["pack_horseshoe", "haversack", "canteen_cloth", "leather_pouches"],
+  "team": ["helmet_band", "arm_patch"],
+  "belt": true,
+  "belt_pouches": false,
+  "e_pull_extra": 3.0,
+  "dirs": "all",
+  "frames": "all"
+}

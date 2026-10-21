@@ -1,0 +1,536 @@
+{
+ "seeds": [
+  7
+ ],
+ "configs": [
+  {
+   "id": "M_open_R",
+   "kind": "meet",
+   "terrain": "meet_open",
+   "natk": 3,
+   "ndef": 3,
+   "comp": "R",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    20
+   ]
+  },
+  {
+   "id": "M_open_RM",
+   "kind": "meet",
+   "terrain": "meet_open",
+   "natk": 3,
+   "ndef": 3,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    20
+   ]
+  },
+  {
+   "id": "M_open_RMG",
+   "kind": "meet",
+   "terrain": "meet_open",
+   "natk": 3,
+   "ndef": 3,
+   "comp": "RMG",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    20
+   ]
+  },
+  {
+   "id": "M_open_RMGC",
+   "kind": "meet",
+   "terrain": "meet_open",
+   "natk": 3,
+   "ndef": 3,
+   "comp": "RMGC",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    20
+   ]
+  },
+  {
+   "id": "M_flat_RM",
+   "kind": "meet",
+   "terrain": "meet_flat",
+   "natk": 3,
+   "ndef": 3,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    20
+   ]
+  },
+  {
+   "id": "M_forest_RM",
+   "kind": "meet",
+   "terrain": "meet_forest",
+   "natk": 3,
+   "ndef": 3,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    20
+   ]
+  },
+  {
+   "id": "M_hill_RM",
+   "kind": "meet",
+   "terrain": "meet_hill",
+   "natk": 3,
+   "ndef": 3,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    20
+   ]
+  },
+  {
+   "id": "M_open_RM_r2.0",
+   "kind": "meet",
+   "terrain": "meet_open",
+   "natk": 6,
+   "ndef": 3,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    20
+   ]
+  },
+  {
+   "id": "M_open_RM_JP",
+   "kind": "meet",
+   "terrain": "meet_open",
+   "natk": 3,
+   "ndef": 3,
+   "comp": "RM",
+   "fac2": "jp",
+   "def_at": [
+    80,
+    20
+   ]
+  },
+  {
+   "id": "M_open_RM_RU",
+   "kind": "meet",
+   "terrain": "meet_open",
+   "natk": 3,
+   "ndef": 3,
+   "comp": "RM",
+   "fac2": "ru",
+   "def_at": [
+    80,
+    20
+   ]
+  },
+  {
+   "id": "M_open_RM_fog",
+   "kind": "meet",
+   "terrain": "meet_open",
+   "natk": 3,
+   "ndef": 3,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    20
+   ],
+   "weather": "fog"
+  },
+  {
+   "id": "M_open_RM_night",
+   "kind": "meet",
+   "terrain": "meet_open",
+   "natk": 3,
+   "ndef": 3,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    20
+   ],
+   "time": "night"
+  },
+  {
+   "id": "T_r1.0_RM",
+   "kind": "assault",
+   "terrain": "trench",
+   "natk": 2,
+   "ndef": 2,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "ratio": 1.0
+  },
+  {
+   "id": "T_r1.5_RM",
+   "kind": "assault",
+   "terrain": "trench",
+   "natk": 3,
+   "ndef": 2,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "ratio": 1.5
+  },
+  {
+   "id": "T_r2.0_RM",
+   "kind": "assault",
+   "terrain": "trench",
+   "natk": 4,
+   "ndef": 2,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "ratio": 2.0
+  },
+  {
+   "id": "T_r3.0_RM",
+   "kind": "assault",
+   "terrain": "trench",
+   "natk": 6,
+   "ndef": 2,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "ratio": 3.0
+  },
+  {
+   "id": "T_r4.0_RM",
+   "kind": "assault",
+   "terrain": "trench",
+   "natk": 8,
+   "ndef": 2,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "ratio": 4.0
+  },
+  {
+   "id": "T_r2.0_R",
+   "kind": "assault",
+   "terrain": "trench",
+   "natk": 4,
+   "ndef": 2,
+   "comp": "R",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "ratio": 2.0
+  },
+  {
+   "id": "T_r2.0_RMG",
+   "kind": "assault",
+   "terrain": "trench",
+   "natk": 4,
+   "ndef": 2,
+   "comp": "RMG",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "ratio": 2.0
+  },
+  {
+   "id": "T_r2.0_RMGC",
+   "kind": "assault",
+   "terrain": "trench",
+   "natk": 4,
+   "ndef": 2,
+   "comp": "RMGC",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "ratio": 2.0
+  },
+  {
+   "id": "T_r2.0_RM_fog",
+   "kind": "assault",
+   "terrain": "trench",
+   "natk": 4,
+   "ndef": 2,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "weather": "fog",
+   "ratio": 2.0
+  },
+  {
+   "id": "T_r2.0_RM_night",
+   "kind": "assault",
+   "terrain": "trench",
+   "natk": 4,
+   "ndef": 2,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "time": "night",
+   "ratio": 2.0
+  },
+  {
+   "id": "T_r2.0_RM_rain",
+   "kind": "assault",
+   "terrain": "trench",
+   "natk": 4,
+   "ndef": 2,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "weather": "rain",
+   "ratio": 2.0
+  },
+  {
+   "id": "T_r2.0_RM_JP",
+   "kind": "assault",
+   "terrain": "trench",
+   "natk": 4,
+   "ndef": 2,
+   "comp": "RM",
+   "fac2": "jp",
+   "def_at": [
+    80,
+    41
+   ],
+   "ratio": 2.0
+  },
+  {
+   "id": "T_r2.0_RM_RU",
+   "kind": "assault",
+   "terrain": "trench",
+   "natk": 4,
+   "ndef": 2,
+   "comp": "RM",
+   "fac2": "ru",
+   "def_at": [
+    80,
+    41
+   ],
+   "ratio": 2.0
+  },
+  {
+   "id": "D_open_r1.0_RM",
+   "kind": "defence",
+   "terrain": "open",
+   "natk": 2,
+   "ndef": 2,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    30
+   ],
+   "ratio": 1.0
+  },
+  {
+   "id": "D_open_r1.5_RM",
+   "kind": "defence",
+   "terrain": "open",
+   "natk": 3,
+   "ndef": 2,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    30
+   ],
+   "ratio": 1.5
+  },
+  {
+   "id": "D_open_r2.0_RM",
+   "kind": "defence",
+   "terrain": "open",
+   "natk": 4,
+   "ndef": 2,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    30
+   ],
+   "ratio": 2.0
+  },
+  {
+   "id": "D_open_r3.0_RM",
+   "kind": "defence",
+   "terrain": "open",
+   "natk": 6,
+   "ndef": 2,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    30
+   ],
+   "ratio": 3.0
+  },
+  {
+   "id": "D_hill_r2.0_RM",
+   "kind": "defence",
+   "terrain": "hill",
+   "natk": 4,
+   "ndef": 2,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    30
+   ],
+   "ratio": 2.0
+  },
+  {
+   "id": "D_forest_r2.0_RM",
+   "kind": "defence",
+   "terrain": "forest",
+   "natk": 4,
+   "ndef": 2,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    30
+   ],
+   "ratio": 2.0
+  },
+  {
+   "id": "D_town_r2.0_RM",
+   "kind": "defence",
+   "terrain": "town",
+   "natk": 4,
+   "ndef": 2,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    28
+   ],
+   "ratio": 2.0
+  },
+  {
+   "id": "D_town_r3.0_RM",
+   "kind": "defence",
+   "terrain": "town",
+   "natk": 6,
+   "ndef": 2,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    28
+   ],
+   "ratio": 3.0
+  },
+  {
+   "id": "F_trench_r1.5_RM",
+   "kind": "flank",
+   "terrain": "trench",
+   "natk": 2,
+   "ndef": 2,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "nflank": 1,
+   "ratio": 1.5
+  },
+  {
+   "id": "F_open_r1.5_RM",
+   "kind": "flank",
+   "terrain": "open",
+   "natk": 2,
+   "ndef": 2,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    30
+   ],
+   "nflank": 1,
+   "ratio": 1.5
+  },
+  {
+   "id": "F_trench_r2.0_RM",
+   "kind": "flank",
+   "terrain": "trench",
+   "natk": 3,
+   "ndef": 2,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "nflank": 1,
+   "ratio": 2.0
+  },
+  {
+   "id": "F_open_r2.0_RM",
+   "kind": "flank",
+   "terrain": "open",
+   "natk": 3,
+   "ndef": 2,
+   "comp": "RM",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    30
+   ],
+   "nflank": 1,
+   "ratio": 2.0
+  },
+  {
+   "id": "F_trench_r1.0_RMC",
+   "kind": "flank",
+   "terrain": "trench",
+   "natk": 2,
+   "ndef": 2,
+   "comp": "RMC",
+   "fac2": "ft",
+   "def_at": [
+    80,
+    41
+   ],
+   "ratio": 1.0
+  }
+ ]
+}

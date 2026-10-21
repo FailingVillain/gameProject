@@ -1,0 +1,34 @@
+{
+ "frame": [
+  86,
+  75
+ ],
+ "anchor": [
+  43,
+  52
+ ],
+ "dirs": [
+  "s"
+ ],
+ "mirror": false,
+ "columns": [
+  "intact",
+  "ruined"
+ ],
+ "sheets": [
+  {
+   "file": "house-thatch@32.png",
+   "team": "house-thatch@32_team.png"
+  }
+ ],
+ "cells": {
+  "intact": {
+   "sheet": "house-thatch@32.png",
+   "col": 0
+  },
+  "ruined": {
+   "sheet": "house-thatch@32.png",
+   "col": 1
+  }
+ }
+}

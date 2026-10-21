@@ -1,0 +1,7 @@
+[mission-run] forest_ambush '숲길 매복': lost (losses) at 146.1s, ticks 8766, 2.6s wall
+  objective stop (eliminate, primary): active progress 32.3
+  faction 1 한국: spawned 133, lost 80, alive 53, trench peak 0 (now 0)
+  faction 2 일본: spawned 127, lost 41, alive 86, trench peak 0 (now 0)
+  events fired 2/2, reinforcements 0/0, messages 2, top kills 33, promotions 2
+  results: C:\Users\seung\AppData\Local\KoreanDivision\results\forest_ambush_20261020_193351.json
+  checksum 373E5E12429AB9E1 tick 8766

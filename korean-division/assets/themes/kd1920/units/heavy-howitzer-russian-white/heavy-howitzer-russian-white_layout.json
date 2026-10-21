@@ -1,0 +1,365 @@
+{
+ "frame": [
+  976,
+  656
+ ],
+ "anchor": [
+  488,
+  386
+ ],
+ "dirs": [
+  "s",
+  "se",
+  "e",
+  "ne",
+  "n"
+ ],
+ "mirror": true,
+ "columns": [
+  "idle",
+  "fire_0",
+  "fire_1",
+  "fire_2",
+  "load_1",
+  "load_2",
+  "move_1",
+  "unhitch_1",
+  "unhitch_2",
+  "unpack_1",
+  "unpack_2",
+  "move_2",
+  "move_3",
+  "move_4",
+  "hit",
+  "dead"
+ ],
+ "anims": {
+  "idle": {
+   "frames": [
+    "idle"
+   ],
+   "ms": 150,
+   "shared_fit": true
+  },
+  "fire": {
+   "frames": [
+    "fire_0",
+    "fire_1",
+    "fire_2",
+    "load_1",
+    "load_2"
+   ],
+   "ms": [
+    450,
+    130,
+    200,
+    450,
+    350
+   ],
+   "shared_fit": true
+  },
+  "unpack": {
+   "frames": [
+    "move_1",
+    "unhitch_1",
+    "unhitch_2",
+    "unpack_1",
+    "unpack_2",
+    "idle"
+   ],
+   "ms": [
+    250,
+    400,
+    400,
+    350,
+    350,
+    300
+   ],
+   "shared_fit": true
+  },
+  "pack": {
+   "frames": [
+    "idle",
+    "unpack_2",
+    "unpack_1",
+    "unhitch_2",
+    "unhitch_1",
+    "move_1"
+   ],
+   "ms": [
+    300,
+    350,
+    350,
+    400,
+    400,
+    250
+   ],
+   "shared_fit": true
+  },
+  "move": {
+   "frames": [
+    "move_1",
+    "move_2",
+    "move_3",
+    "move_4"
+   ],
+   "ms": 140,
+   "shared_fit": true
+  },
+  "death": {
+   "frames": [
+    "hit",
+    "dead"
+   ],
+   "ms": [
+    350,
+    1200
+   ],
+   "shared_fit": true
+  },
+  "unhitch": {
+   "frames": [
+    "move_1",
+    "unhitch_1",
+    "unhitch_2"
+   ],
+   "ms": [
+    250,
+    400,
+    400
+   ],
+   "shared_fit": true
+  },
+  "hitch": {
+   "frames": [
+    "unhitch_2",
+    "unhitch_1",
+    "move_1"
+   ],
+   "ms": [
+    400,
+    400,
+    250
+   ],
+   "shared_fit": true
+  }
+ },
+ "sheets": [
+  {
+   "file": "heavy-howitzer-russian-white_1.png",
+   "team": "heavy-howitzer-russian-white_1_team.png",
+   "columns": [
+    "idle",
+    "fire_0",
+    "fire_1",
+    "fire_2"
+   ],
+   "size": [
+    3904,
+    3280
+   ]
+  },
+  {
+   "file": "heavy-howitzer-russian-white_2.png",
+   "team": "heavy-howitzer-russian-white_2_team.png",
+   "columns": [
+    "load_1",
+    "load_2",
+    "move_1",
+    "unhitch_1"
+   ],
+   "size": [
+    3904,
+    3280
+   ]
+  },
+  {
+   "file": "heavy-howitzer-russian-white_3.png",
+   "team": "heavy-howitzer-russian-white_3_team.png",
+   "columns": [
+    "unhitch_2",
+    "unpack_1",
+    "unpack_2",
+    "move_2"
+   ],
+   "size": [
+    3904,
+    3280
+   ]
+  },
+  {
+   "file": "heavy-howitzer-russian-white_4.png",
+   "team": "heavy-howitzer-russian-white_4_team.png",
+   "columns": [
+    "move_3",
+    "move_4",
+    "hit",
+    "dead"
+   ],
+   "size": [
+    3904,
+    3280
+   ]
+  }
+ ],
+ "cells": {
+  "idle": {
+   "sheet": "heavy-howitzer-russian-white_1.png",
+   "col": 0
+  },
+  "fire_0": {
+   "sheet": "heavy-howitzer-russian-white_1.png",
+   "col": 1
+  },
+  "fire_1": {
+   "sheet": "heavy-howitzer-russian-white_1.png",
+   "col": 2
+  },
+  "fire_2": {
+   "sheet": "heavy-howitzer-russian-white_1.png",
+   "col": 3
+  },
+  "load_1": {
+   "sheet": "heavy-howitzer-russian-white_2.png",
+   "col": 0
+  },
+  "load_2": {
+   "sheet": "heavy-howitzer-russian-white_2.png",
+   "col": 1
+  },
+  "move_1": {
+   "sheet": "heavy-howitzer-russian-white_2.png",
+   "col": 2
+  },
+  "unhitch_1": {
+   "sheet": "heavy-howitzer-russian-white_2.png",
+   "col": 3
+  },
+  "unhitch_2": {
+   "sheet": "heavy-howitzer-russian-white_3.png",
+   "col": 0
+  },
+  "unpack_1": {
+   "sheet": "heavy-howitzer-russian-white_3.png",
+   "col": 1
+  },
+  "unpack_2": {
+   "sheet": "heavy-howitzer-russian-white_3.png",
+   "col": 2
+  },
+  "move_2": {
+   "sheet": "heavy-howitzer-russian-white_3.png",
+   "col": 3
+  },
+  "move_3": {
+   "sheet": "heavy-howitzer-russian-white_4.png",
+   "col": 0
+  },
+  "move_4": {
+   "sheet": "heavy-howitzer-russian-white_4.png",
+   "col": 1
+  },
+  "hit": {
+   "sheet": "heavy-howitzer-russian-white_4.png",
+   "col": 2
+  },
+  "dead": {
+   "sheet": "heavy-howitzer-russian-white_4.png",
+   "col": 3
+  }
+ },
+ "anchors": "heavy-howitzer-russian-white_anchors.json",
+ "kind": "artillery",
+ "gun": "howitzer",
+ "anchor_meaning": "ground point under the footprint centre; same in every cell",
+ "hitch_px": {
+  "move_1": {
+   "s": [
+    488.0,
+    456.9
+   ],
+   "se": [
+    604.0,
+    428.6
+   ],
+   "e": [
+    652.1,
+    360.4
+   ],
+   "ne": [
+    604.0,
+    292.2
+   ],
+   "n": [
+    488.0,
+    264.0
+   ]
+  },
+  "move_2": {
+   "s": [
+    488.0,
+    455.8
+   ],
+   "se": [
+    604.0,
+    427.6
+   ],
+   "e": [
+    652.1,
+    359.4
+   ],
+   "ne": [
+    604.0,
+    291.2
+   ],
+   "n": [
+    488.0,
+    262.9
+   ]
+  },
+  "move_3": {
+   "s": [
+    488.0,
+    456.9
+   ],
+   "se": [
+    604.0,
+    428.6
+   ],
+   "e": [
+    652.1,
+    360.4
+   ],
+   "ne": [
+    604.0,
+    292.2
+   ],
+   "n": [
+    488.0,
+    264.0
+   ]
+  },
+  "move_4": {
+   "s": [
+    488.0,
+    455.8
+   ],
+   "se": [
+    604.0,
+    427.6
+   ],
+   "e": [
+    652.1,
+    359.4
+   ],
+   "ne": [
+    604.0,
+    291.2
+   ],
+   "n": [
+    488.0,
+    262.9
+   ]
+  }
+ }
+}

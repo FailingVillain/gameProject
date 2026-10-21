@@ -1,0 +1,97 @@
+  [sim] AI A=tactical B=사수
+  [sim] B 사수 + 참호 (292기)
+  t=10s  A 221 @(94,66)  B 292 @(168,64)  wall 0.4s
+  t=20s  A 221 @(103,69)  B 292 @(168,64)  wall 0.7s
+  t=30s  A 221 @(103,69)  B 292 @(168,64)  wall 1.0s
+  t=40s  A 221 @(113,70)  B 292 @(168,64)  wall 1.3s
+  t=50s  A 221 @(120,71)  B 292 @(168,64)  wall 1.6s
+  t=60s  A 221 @(122,70)  B 292 @(168,64)  wall 1.8s
+  t=70s  A 221 @(123,70)  B 292 @(168,64)  wall 2.1s
+  t=80s  A 221 @(123,69)  B 292 @(168,64)  wall 2.4s
+  t=90s  A 209 @(124,68)  B 292 @(168,64)  wall 2.7s
+  t=100s  A 205 @(128,67)  B 292 @(168,64)  wall 3.0s
+  t=110s  A 190 @(132,66)  B 292 @(168,64)  wall 3.3s
+  t=120s  A 173 @(133,67)  B 292 @(168,64)  wall 3.5s
+  t=130s  A 161 @(134,66)  B 292 @(168,64)  wall 3.8s
+  t=140s  A 159 @(130,66)  B 292 @(168,64)  wall 4.0s
+  t=150s  A 151 @(130,67)  B 292 @(168,64)  wall 4.3s
+  t=160s  A 144 @(130,68)  B 292 @(168,64)  wall 4.5s
+  t=170s  A 137 @(128,68)  B 292 @(168,64)  wall 4.7s
+  t=180s  A 125 @(127,67)  B 292 @(168,64)  wall 4.9s
+  t=190s  A 105 @(124,61)  B 292 @(168,64)  wall 5.1s
+  t=200s  A 101 @(111,49)  B 292 @(168,64)  wall 5.3s
+  t=210s  A 101 @(105,46)  B 292 @(168,64)  wall 5.5s
+  t=220s  A 100 @(115,52)  B 292 @(168,64)  wall 5.7s
+  t=230s  A 88 @(126,59)  B 292 @(168,64)  wall 5.9s
+  t=240s  A 71 @(125,60)  B 292 @(168,64)  wall 6.0s
+  t=250s  A 69 @(125,60)  B 292 @(168,64)  wall 6.2s
+  t=260s  A 68 @(126,60)  B 292 @(168,64)  wall 6.3s
+  t=270s  A 63 @(126,60)  B 292 @(168,64)  wall 6.5s
+  t=280s  A 55 @(125,61)  B 292 @(168,64)  wall 6.6s
+  t=290s  A 55 @(128,61)  B 292 @(168,64)  wall 6.8s
+  t=300s  A 55 @(127,61)  B 292 @(168,64)  wall 6.9s
+  t=310s  A 55 @(127,61)  B 292 @(168,64)  wall 7.0s
+  t=320s  A 55 @(128,61)  B 292 @(168,64)  wall 7.2s
+  t=330s  A 55 @(128,61)  B 292 @(168,64)  wall 7.3s
+  t=340s  A 55 @(127,61)  B 292 @(168,64)  wall 7.4s
+  t=350s  A 55 @(128,61)  B 292 @(168,64)  wall 7.5s
+  t=360s  A 55 @(128,61)  B 292 @(168,64)  wall 7.7s
+  t=370s  A 55 @(127,61)  B 292 @(168,64)  wall 7.8s
+  t=380s  A 55 @(127,61)  B 292 @(168,64)  wall 7.9s
+  t=390s  A 55 @(128,61)  B 292 @(168,64)  wall 8.1s
+  t=400s  A 55 @(128,61)  B 292 @(168,64)  wall 8.2s
+  t=410s  A 55 @(127,61)  B 292 @(168,64)  wall 8.3s
+  t=420s  A 55 @(128,61)  B 292 @(168,64)  wall 8.5s
+  t=430s  A 55 @(128,61)  B 292 @(168,64)  wall 8.6s
+  t=440s  A 55 @(127,61)  B 292 @(168,64)  wall 8.7s
+  t=450s  A 55 @(127,61)  B 292 @(168,64)  wall 8.8s
+  t=460s  A 55 @(127,61)  B 292 @(168,64)  wall 9.0s
+  t=470s  A 55 @(127,61)  B 292 @(168,64)  wall 9.1s
+  t=480s  A 55 @(127,61)  B 292 @(168,64)  wall 9.2s
+  t=490s  A 55 @(128,61)  B 292 @(168,64)  wall 9.4s
+  t=500s  A 55 @(127,61)  B 292 @(168,64)  wall 9.5s
+  t=510s  A 55 @(127,61)  B 292 @(168,64)  wall 9.6s
+  t=520s  A 55 @(127,61)  B 292 @(168,64)  wall 9.7s
+  t=530s  A 55 @(127,61)  B 292 @(168,64)  wall 9.9s
+  t=540s  A 55 @(127,61)  B 292 @(168,64)  wall 10.0s
+  t=550s  A 55 @(127,61)  B 292 @(168,64)  wall 10.1s
+  t=560s  A 55 @(128,61)  B 292 @(168,64)  wall 10.3s
+  t=570s  A 55 @(127,61)  B 292 @(168,64)  wall 10.4s
+  t=580s  A 55 @(127,61)  B 292 @(168,64)  wall 10.5s
+  t=590s  A 55 @(127,61)  B 292 @(168,64)  wall 10.7s
+MARCH ticks=3255709 move=1777603 moveOn=1777603 shots=49 moveShots=45 pistol=0 gren=0 melee=0
+MEAS start=221/292 end_t=600 winner=0 lossEnd=166/0 loss120=48/0 loss300=166/0 t50=188/- shots=2819 hits=690 hitpct=24.5 meanDist=20.8 hitDist=20.6
+결과: 승자 0, 600.0초, 실행 10.8초, 명령 325
+사살원인 080s heavy_maxim/hmg->infantry_assault = 12
+사살원인 090s heavy_maxim/hmg->infantry_assault = 4
+사살원인 100s heavy_maxim/hmg->infantry_assault = 15
+사살원인 110s heavy_maxim/hmg->infantry_assault = 17
+사살원인 120s heavy_maxim/hmg->infantry_assault = 12
+사살원인 130s heavy_maxim/hmg->infantry_assault = 2
+사살원인 140s heavy_maxim/hmg->infantry_assault = 8
+사살원인 150s heavy_maxim/hmg->infantry_assault = 7
+사살원인 160s heavy_maxim/hmg->infantry_assault = 7
+사살원인 170s heavy_maxim/hmg->infantry_assault = 12
+사살원인 180s heavy_maxim/hmg->infantry_assault = 20
+사살원인 190s heavy_maxim/hmg->infantry_assault = 4
+사살원인 210s heavy_maxim/hmg->infantry_assault = 1
+사살원인 220s heavy_maxim/hmg->infantry_assault = 12
+사살원인 230s heavy_maxim/hmg->infantry_assault = 17
+사살원인 240s heavy_maxim/hmg->infantry_assault = 2
+사살원인 250s heavy_maxim/hmg->infantry_assault = 1
+사살원인 260s heavy_maxim/hmg->infantry_assault = 5
+사살원인 270s heavy_maxim/hmg->infantry_assault = 8
+틀 행동: 시작 0 끝 0 약진 0 기동 0 돌격 0 역습 0 참호 0 연신 0 전환 0 인계멈춤 0 포병전개 0
+기병AI: 돌격 정면 0 측면 0 후방 0 측면경유 3 소규모보류 0 물러남 0 | 추격: 후퇴중 희생 사격 33 근접 0 후퇴하는 적 돌격 보병 0 기병 0 | N55 기병 무모한 정면 0 돌격 사격 전진 0 | N23 소탕 11 | S4 제압으로 꺾인 돌격 0
+F4 기병 돌격: 개시 0 무의미 정면 0 자동 막음 0 근접 사살 0 사유(후퇴/제압/승무원/고립/측면) 0/0/0/0/0 · 하마 8 승마 8
+관찰: 사격 2819발 · 명중 690발 (24.5%) · 사망 166기 → 1킬당 17.0발 (명중 4.2발)
+N61 접근: 보병(1) 첫 사격 100.6초 · 기병(2) 첫 근접 -초 · 전환 0 · 그 시점 B 생존 -1/292
+템포: 첫 사격 84.1초 · A 50% 손실 188.0초 · B 50% 손실 -초 · 사격 거리 평균 20.8 (첫 100발 19.2) 칸
+  세력:종류            시작→남음   사격    근접   포격  방열%  돌격%
+  1:bandit_horseman      11→11          0      0      0     0     0
+  1:infantry_assault    210→44         49      0      0     0     0
+  2:bandit_horseman       6→6           0      0      0     0     0
+  2:heavy_maxim          16→16       2770      0      0    98     0
+  2:infantry_dadao_fengtian  270→270         0      0      0     0     0
+AI 비용: 사고 ms/틱 avg 0.006 max 22.32 (호출 2400, 호출당 0.094 ms) · 전체 Step avg 0.30 ms
+  [전술 AI 1] 프로필 default 태세 Attack/Defend 중대 6 대대 2 · 명령 293 돌격 0 기병돌격 0 참호 0 후퇴 43 포병이동 0 화력사수 0 예비투입 1 · 연대 1 준비사격 0 연신 0 분대약진 0 전초 0/철수 0 역습 0 증원편입 0 공격한계 1

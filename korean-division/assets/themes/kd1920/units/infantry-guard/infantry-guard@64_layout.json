@@ -1,0 +1,539 @@
+{
+ "frame": [
+  64,
+  80
+ ],
+ "anchor": [
+  32,
+  72
+ ],
+ "dirs": [
+  "s",
+  "se",
+  "e",
+  "ne",
+  "n"
+ ],
+ "mirror": true,
+ "columns": [
+  "idle",
+  "walk_1",
+  "walk_2",
+  "walk_3",
+  "walk_4",
+  "walk_shoulder_1",
+  "walk_shoulder_2",
+  "walk_shoulder_3",
+  "walk_shoulder_4",
+  "walk_fire_1",
+  "walk_fire_2",
+  "walk_fire_3",
+  "walk_fire_4",
+  "aim_a",
+  "fire_a",
+  "aim_b",
+  "fire_b",
+  "aim_c",
+  "fire_c",
+  "idle_alt",
+  "hit",
+  "fall",
+  "dead",
+  "spare",
+  "charge_1",
+  "charge_2",
+  "charge_3",
+  "charge_4",
+  "melee_1",
+  "melee_2",
+  "melee_3",
+  "meleeb_1",
+  "meleeb_2",
+  "idle_lean",
+  "go_prone",
+  "aim_prone",
+  "fire_prone",
+  "fixb_1",
+  "fixb_2",
+  "fixb_3",
+  "surrender_1",
+  "surrender_2",
+  "stagger_b",
+  "kneel_b",
+  "dead_b",
+  "stagger_c",
+  "slump_c",
+  "dead_c"
+ ],
+ "anims": {
+  "idle": {
+   "frames": [
+    "idle"
+   ],
+   "ms": 150,
+   "shared_fit": false
+  },
+  "walk": {
+   "frames": [
+    "walk_1",
+    "walk_2",
+    "walk_3",
+    "walk_4"
+   ],
+   "ms": 130,
+   "shared_fit": false
+  },
+  "walk_shoulder": {
+   "frames": [
+    "walk_shoulder_1",
+    "walk_shoulder_2",
+    "walk_shoulder_3",
+    "walk_shoulder_4"
+   ],
+   "ms": 130,
+   "shared_fit": false
+  },
+  "walk_fire": {
+   "frames": [
+    "walk_fire_1",
+    "walk_fire_2",
+    "walk_fire_3",
+    "walk_fire_4"
+   ],
+   "ms": 130,
+   "shared_fit": false
+  },
+  "fire_a": {
+   "frames": [
+    "aim_a",
+    "fire_a"
+   ],
+   "ms": [
+    450,
+    160
+   ],
+   "shared_fit": false
+  },
+  "fire_b": {
+   "frames": [
+    "aim_b",
+    "fire_b"
+   ],
+   "ms": [
+    450,
+    160
+   ],
+   "shared_fit": false
+  },
+  "fire_c": {
+   "frames": [
+    "aim_c",
+    "fire_c"
+   ],
+   "ms": [
+    450,
+    160
+   ],
+   "shared_fit": false
+  },
+  "idle_alt": {
+   "frames": [
+    "idle_alt"
+   ],
+   "ms": 150,
+   "shared_fit": false
+  },
+  "death": {
+   "frames": [
+    "hit",
+    "fall",
+    "dead"
+   ],
+   "ms": [
+    250,
+    250,
+    1000
+   ],
+   "shared_fit": false
+  },
+  "spare": {
+   "frames": [
+    "spare"
+   ],
+   "ms": 150,
+   "shared_fit": false
+  },
+  "charge": {
+   "frames": [
+    "charge_1",
+    "charge_2",
+    "charge_3",
+    "charge_4"
+   ],
+   "ms": 100,
+   "shared_fit": false
+  },
+  "melee": {
+   "frames": [
+    "melee_1",
+    "melee_2",
+    "melee_3"
+   ],
+   "ms": [
+    220,
+    140,
+    260
+   ],
+   "shared_fit": false
+  },
+  "melee_b": {
+   "frames": [
+    "meleeb_1",
+    "meleeb_2"
+   ],
+   "ms": [
+    240,
+    180
+   ],
+   "shared_fit": false
+  },
+  "idle_lean": {
+   "frames": [
+    "idle_lean"
+   ],
+   "ms": 150,
+   "shared_fit": false
+  },
+  "go_prone": {
+   "frames": [
+    "go_prone"
+   ],
+   "ms": 150,
+   "shared_fit": false
+  },
+  "fire_prone": {
+   "frames": [
+    "go_prone",
+    "aim_prone",
+    "fire_prone",
+    "aim_prone"
+   ],
+   "ms": [
+    260,
+    450,
+    160,
+    400
+   ],
+   "shared_fit": false
+  },
+  "fix_bayonet": {
+   "frames": [
+    "fixb_1",
+    "fixb_2",
+    "fixb_3"
+   ],
+   "ms": [
+    260,
+    320,
+    220
+   ],
+   "shared_fit": false
+  },
+  "surrender": {
+   "frames": [
+    "surrender_1",
+    "surrender_2"
+   ],
+   "ms": [
+    600,
+    600
+   ],
+   "shared_fit": false
+  },
+  "death_b": {
+   "frames": [
+    "hit",
+    "stagger_b",
+    "kneel_b",
+    "dead_b"
+   ],
+   "ms": [
+    200,
+    700,
+    300,
+    1200
+   ],
+   "shared_fit": false
+  },
+  "death_c": {
+   "frames": [
+    "hit",
+    "stagger_c",
+    "slump_c",
+    "dead_c"
+   ],
+   "ms": [
+    200,
+    700,
+    300,
+    1200
+   ],
+   "shared_fit": false
+  }
+ },
+ "sheets": [
+  {
+   "file": "infantry-guard@64.png",
+   "team": "infantry-guard@64_team.png",
+   "columns": [
+    "idle",
+    "walk_1",
+    "walk_2",
+    "walk_3",
+    "walk_4",
+    "walk_shoulder_1",
+    "walk_shoulder_2",
+    "walk_shoulder_3",
+    "walk_shoulder_4",
+    "walk_fire_1",
+    "walk_fire_2",
+    "walk_fire_3",
+    "walk_fire_4",
+    "aim_a",
+    "fire_a",
+    "aim_b",
+    "fire_b",
+    "aim_c",
+    "fire_c",
+    "idle_alt",
+    "hit",
+    "fall",
+    "dead",
+    "spare",
+    "charge_1",
+    "charge_2",
+    "charge_3",
+    "charge_4",
+    "melee_1",
+    "melee_2",
+    "melee_3",
+    "meleeb_1",
+    "meleeb_2",
+    "idle_lean",
+    "go_prone",
+    "aim_prone",
+    "fire_prone",
+    "fixb_1",
+    "fixb_2",
+    "fixb_3",
+    "surrender_1",
+    "surrender_2",
+    "stagger_b",
+    "kneel_b",
+    "dead_b",
+    "stagger_c",
+    "slump_c",
+    "dead_c"
+   ],
+   "size": [
+    3072,
+    400
+   ]
+  }
+ ],
+ "cells": {
+  "idle": {
+   "sheet": "infantry-guard@64.png",
+   "col": 0
+  },
+  "walk_1": {
+   "sheet": "infantry-guard@64.png",
+   "col": 1
+  },
+  "walk_2": {
+   "sheet": "infantry-guard@64.png",
+   "col": 2
+  },
+  "walk_3": {
+   "sheet": "infantry-guard@64.png",
+   "col": 3
+  },
+  "walk_4": {
+   "sheet": "infantry-guard@64.png",
+   "col": 4
+  },
+  "walk_shoulder_1": {
+   "sheet": "infantry-guard@64.png",
+   "col": 5
+  },
+  "walk_shoulder_2": {
+   "sheet": "infantry-guard@64.png",
+   "col": 6
+  },
+  "walk_shoulder_3": {
+   "sheet": "infantry-guard@64.png",
+   "col": 7
+  },
+  "walk_shoulder_4": {
+   "sheet": "infantry-guard@64.png",
+   "col": 8
+  },
+  "walk_fire_1": {
+   "sheet": "infantry-guard@64.png",
+   "col": 9
+  },
+  "walk_fire_2": {
+   "sheet": "infantry-guard@64.png",
+   "col": 10
+  },
+  "walk_fire_3": {
+   "sheet": "infantry-guard@64.png",
+   "col": 11
+  },
+  "walk_fire_4": {
+   "sheet": "infantry-guard@64.png",
+   "col": 12
+  },
+  "aim_a": {
+   "sheet": "infantry-guard@64.png",
+   "col": 13
+  },
+  "fire_a": {
+   "sheet": "infantry-guard@64.png",
+   "col": 14
+  },
+  "aim_b": {
+   "sheet": "infantry-guard@64.png",
+   "col": 15
+  },
+  "fire_b": {
+   "sheet": "infantry-guard@64.png",
+   "col": 16
+  },
+  "aim_c": {
+   "sheet": "infantry-guard@64.png",
+   "col": 17
+  },
+  "fire_c": {
+   "sheet": "infantry-guard@64.png",
+   "col": 18
+  },
+  "idle_alt": {
+   "sheet": "infantry-guard@64.png",
+   "col": 19
+  },
+  "hit": {
+   "sheet": "infantry-guard@64.png",
+   "col": 20
+  },
+  "fall": {
+   "sheet": "infantry-guard@64.png",
+   "col": 21
+  },
+  "dead": {
+   "sheet": "infantry-guard@64.png",
+   "col": 22
+  },
+  "spare": {
+   "sheet": "infantry-guard@64.png",
+   "col": 23
+  },
+  "charge_1": {
+   "sheet": "infantry-guard@64.png",
+   "col": 24
+  },
+  "charge_2": {
+   "sheet": "infantry-guard@64.png",
+   "col": 25
+  },
+  "charge_3": {
+   "sheet": "infantry-guard@64.png",
+   "col": 26
+  },
+  "charge_4": {
+   "sheet": "infantry-guard@64.png",
+   "col": 27
+  },
+  "melee_1": {
+   "sheet": "infantry-guard@64.png",
+   "col": 28
+  },
+  "melee_2": {
+   "sheet": "infantry-guard@64.png",
+   "col": 29
+  },
+  "melee_3": {
+   "sheet": "infantry-guard@64.png",
+   "col": 30
+  },
+  "meleeb_1": {
+   "sheet": "infantry-guard@64.png",
+   "col": 31
+  },
+  "meleeb_2": {
+   "sheet": "infantry-guard@64.png",
+   "col": 32
+  },
+  "idle_lean": {
+   "sheet": "infantry-guard@64.png",
+   "col": 33
+  },
+  "go_prone": {
+   "sheet": "infantry-guard@64.png",
+   "col": 34
+  },
+  "aim_prone": {
+   "sheet": "infantry-guard@64.png",
+   "col": 35
+  },
+  "fire_prone": {
+   "sheet": "infantry-guard@64.png",
+   "col": 36
+  },
+  "fixb_1": {
+   "sheet": "infantry-guard@64.png",
+   "col": 37
+  },
+  "fixb_2": {
+   "sheet": "infantry-guard@64.png",
+   "col": 38
+  },
+  "fixb_3": {
+   "sheet": "infantry-guard@64.png",
+   "col": 39
+  },
+  "surrender_1": {
+   "sheet": "infantry-guard@64.png",
+   "col": 40
+  },
+  "surrender_2": {
+   "sheet": "infantry-guard@64.png",
+   "col": 41
+  },
+  "stagger_b": {
+   "sheet": "infantry-guard@64.png",
+   "col": 42
+  },
+  "kneel_b": {
+   "sheet": "infantry-guard@64.png",
+   "col": 43
+  },
+  "dead_b": {
+   "sheet": "infantry-guard@64.png",
+   "col": 44
+  },
+  "stagger_c": {
+   "sheet": "infantry-guard@64.png",
+   "col": 45
+  },
+  "slump_c": {
+   "sheet": "infantry-guard@64.png",
+   "col": 46
+  },
+  "dead_c": {
+   "sheet": "infantry-guard@64.png",
+   "col": 47
+  }
+ },
+ "anchors": "infantry-guard@64_anchors.json"
+}

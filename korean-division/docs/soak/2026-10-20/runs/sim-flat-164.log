@@ -1,0 +1,29 @@
+  [sim] AI A=tactical B=tactical
+  t=10s  A 32 @(117,64)  B 253 @(141,65)  wall 0.3s
+  t=20s  A 15 @(125,59)  B 252 @(141,60)  wall 0.6s
+  t=30s  A 2 @(123,56)  B 250 @(134,58)  wall 0.8s
+MARCH ticks=0 move=0 moveOn=0 shots=0 moveShots=0 pistol=0 gren=0 melee=0
+MEAS start=32/253 end_t=31 winner=2 lossEnd=32/3 loss120=-1/-1 loss300=-1/-1 t50=20/- shots=680 hits=114 hitpct=16.8 meanDist=16.7 hitDist=16.5
+결과: 승자 2, 31.5초, 실행 0.8초, 명령 102
+사살원인 010s heavy_maxim/hmg->infantry_reserve = 1
+사살원인 010s infantry_reserve/rifle_mosin->infantry_dadao_fengtian = 17
+사살원인 020s heavy_maxim/hmg->infantry_reserve = 2
+사살원인 020s infantry_reserve/rifle_mosin->heavy_maxim = 1
+사살원인 020s infantry_reserve/rifle_mosin->infantry_dadao_fengtian = 12
+사살원인 030s infantry_reserve/rifle_mosin->heavy_maxim = 1
+사살원인 030s infantry_reserve/rifle_mosin->infantry_dadao_fengtian = 1
+틀 행동: 시작 2 끝 0 약진 1 기동 0 돌격 0 역습 0 참호 0 연신 0 전환 3 인계멈춤 0 포병전개 0
+기병AI: 돌격 정면 0 측면 0 후방 0 측면경유 0 소규모보류 0 물러남 0 | 추격: 후퇴중 희생 사격 2 근접 0 후퇴하는 적 돌격 보병 0 기병 0 | N55 기병 무모한 정면 0 돌격 사격 전진 1 | N23 소탕 0 | S4 제압으로 꺾인 돌격 0
+F4 기병 돌격: 개시 0 무의미 정면 0 자동 막음 0 근접 사살 0 사유(후퇴/제압/승무원/고립/측면) 0/0/0/0/0 · 하마 0 승마 0
+관찰: 사격 680발 · 명중 114발 (16.8%) · 사망 35기 → 1킬당 19.4발 (명중 3.3발)
+N61 접근: 보병(1) 첫 사격 18.9초 · 기병(2) 첫 근접 -초 · 전환 0 · 그 시점 B 생존 -1/253
+템포: 첫 사격 11.5초 · A 50% 손실 19.5초 · B 50% 손실 -초 · 사격 거리 평균 16.7 (첫 100발 14.5) 칸
+  세력:종류            시작→남음   사격    근접   포격  방열%  돌격%
+  1:heavy_maxim           2→0          23      0      0    10     0
+  1:infantry_dadao_fengtian   30→0           0      0      0     0     1
+  2:infantry_reserve    240→237       657      0      0     0     0
+  2:officer               9→9           0      0      0     0     0
+  2:scout                 4→4           0      0      0     0     0
+AI 비용: 사고 ms/틱 avg 0.028 max 20.61 (호출 252, 호출당 0.211 ms) · 전체 Step avg 0.42 ms
+  [전술 AI 1] 프로필 default 태세 Attack/Attack 중대 2 대대 1 · 명령 10 돌격 0 기병돌격 0 참호 0 후퇴 3 포병이동 0 화력사수 1 예비투입 0 · 연대 1 준비사격 0 연신 0 분대약진 0 전초 0/철수 0 역습 0 증원편입 0 공격한계 0
+  [전술 AI 2] 프로필 default 태세 Attack/Attack 중대 6 대대 2 · 명령 43 돌격 0 기병돌격 0 참호 0 후퇴 0 포병이동 0 화력사수 0 예비투입 0 · 연대 1 준비사격 0 연신 0 분대약진 0 전초 0/철수 0 역습 0 증원편입 0 공격한계 0

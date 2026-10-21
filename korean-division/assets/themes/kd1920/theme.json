@@ -1,0 +1,1833 @@
+{
+  "name": "1920 (복셀 128 · LOD)",
+  "inherit": "ww2",
+  "names": {},
+  "sprites": {
+    "unit.common_hunter": {
+      "layouts": [
+        "units/infantry-hunter/infantry-hunter_layout.json",
+        "units/infantry-hunter/infantry-hunter@64_layout.json",
+        "units/infantry-hunter/infantry-hunter@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.bandit_shotgunner": {
+      "layouts": [
+        "units/infantry-shotgunner-bandit/infantry-shotgunner-bandit_layout.json",
+        "units/infantry-shotgunner-bandit/infantry-shotgunner-bandit@64_layout.json",
+        "units/infantry-shotgunner-bandit/infantry-shotgunner-bandit@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.common_draft_bandit": {
+      "layouts": [
+        "units/infantry-draft-bandit/infantry-draft-bandit_layout.json",
+        "units/infantry-draft-bandit/infantry-draft-bandit@64_layout.json",
+        "units/infantry-draft-bandit/infantry-draft-bandit@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.common_village_militia": {
+      "layouts": [
+        "units/infantry-militia/infantry-militia_layout.json",
+        "units/infantry-militia/infantry-militia@64_layout.json",
+        "units/infantry-militia/infantry-militia@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.recruit": {
+      "alias": "unit.infantry"
+    },
+    "unit.veteran": {
+      "alias": "unit.infantry"
+    },
+    "unit.scout": {
+      "alias": "unit.infantry"
+    },
+    "unit.infantry_default_old": {
+      "alias": "unit.infantry_reserve"
+    },
+    "unit.standard_bearer": {
+      "layouts": [
+        "units/standard-bearer/standard-bearer_layout.json",
+        "units/standard-bearer/standard-bearer@64_layout.json",
+        "units/standard-bearer/standard-bearer@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.standard_bearer@japanese": {
+      "layouts": [
+        "units/standard-bearer-japanese/standard-bearer-japanese_layout.json",
+        "units/standard-bearer-japanese/standard-bearer-japanese@64_layout.json",
+        "units/standard-bearer-japanese/standard-bearer-japanese@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.standard_bearer@fengtian": {
+      "layouts": [
+        "units/standard-bearer-fengtian/standard-bearer-fengtian_layout.json",
+        "units/standard-bearer-fengtian/standard-bearer-fengtian@64_layout.json",
+        "units/standard-bearer-fengtian/standard-bearer-fengtian@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.standard_bearer@russian-white": {
+      "layouts": [
+        "units/standard-bearer-russian-white/standard-bearer-russian-white_layout.json",
+        "units/standard-bearer-russian-white/standard-bearer-russian-white@64_layout.json",
+        "units/standard-bearer-russian-white/standard-bearer-russian-white@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.standard_bearer@russian-red": {
+      "layouts": [
+        "units/standard-bearer-russian-red/standard-bearer-russian-red_layout.json",
+        "units/standard-bearer-russian-red/standard-bearer-russian-red@64_layout.json",
+        "units/standard-bearer-russian-red/standard-bearer-russian-red@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.infantry": {
+      "layouts": [
+        "units/infantry-default/infantry-default_layout.json",
+        "units/infantry-default/infantry-default@64_layout.json",
+        "units/infantry-default/infantry-default@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.officer": {
+      "layouts": [
+        "units/officer/officer_layout.json",
+        "units/officer/officer@64_layout.json",
+        "units/officer/officer@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.infantry_scout": {
+      "layouts": [
+        "units/infantry-scout/infantry-scout_layout.json",
+        "units/infantry-scout/infantry-scout@64_layout.json",
+        "units/infantry-scout/infantry-scout@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.infantry_regular": {
+      "layouts": [
+        "units/infantry-regular/infantry-regular_layout.json",
+        "units/infantry-regular/infantry-regular@64_layout.json",
+        "units/infantry-regular/infantry-regular@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.infantry_assault": {
+      "layouts": [
+        "units/infantry-assault/infantry-assault_layout.json",
+        "units/infantry-assault/infantry-assault@64_layout.json",
+        "units/infantry-assault/infantry-assault@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.infantry_guard": {
+      "layouts": [
+        "units/infantry-guard/infantry-guard_layout.json",
+        "units/infantry-guard/infantry-guard@64_layout.json",
+        "units/infantry-guard/infantry-guard@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.infantry_reserve": {
+      "layouts": [
+        "units/infantry-reserve/infantry-reserve_layout.json",
+        "units/infantry-reserve/infantry-reserve@64_layout.json",
+        "units/infantry-reserve/infantry-reserve@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.infantry_sniper": {
+      "layouts": [
+        "units/infantry-sniper/infantry-sniper_layout.json",
+        "units/infantry-sniper/infantry-sniper@64_layout.json",
+        "units/infantry-sniper/infantry-sniper@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.infantry_fengtian": {
+      "layouts": [
+        "units/infantry-fengtian/infantry-fengtian_layout.json",
+        "units/infantry-fengtian/infantry-fengtian@64_layout.json",
+        "units/infantry-fengtian/infantry-fengtian@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.officer_fengtian": {
+      "layouts": [
+        "units/officer-fengtian/officer-fengtian_layout.json",
+        "units/officer-fengtian/officer-fengtian@64_layout.json",
+        "units/officer-fengtian/officer-fengtian@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.infantry_dadao_fengtian": {
+      "layouts": [
+        "units/infantry-dadao-fengtian/infantry-dadao-fengtian_layout.json",
+        "units/infantry-dadao-fengtian/infantry-dadao-fengtian@64_layout.json",
+        "units/infantry-dadao-fengtian/infantry-dadao-fengtian@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.bandit_thug": {
+      "layouts": [
+        "units/infantry-thug-bandit/infantry-thug-bandit_layout.json",
+        "units/infantry-thug-bandit/infantry-thug-bandit@64_layout.json",
+        "units/infantry-thug-bandit/infantry-thug-bandit@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.bandit_rifleman": {
+      "layouts": [
+        "units/infantry-bandit/infantry-bandit_layout.json",
+        "units/infantry-bandit/infantry-bandit@64_layout.json",
+        "units/infantry-bandit/infantry-bandit@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.bandit_horseman": {
+      "layouts": [
+        "units/cavalry-bandit/cavalry-bandit_layout.json",
+        "units/cavalry-bandit/cavalry-bandit@96_layout.json",
+        "units/cavalry-bandit/cavalry-bandit@48_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.bandit_leader": {
+      "layouts": [
+        "units/officer-bandit/officer-bandit_layout.json",
+        "units/officer-bandit/officer-bandit@64_layout.json",
+        "units/officer-bandit/officer-bandit@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_machinegunner_chauchat": {
+      "layouts": [
+        "units/heavy-machinegunner-chauchat/heavy-machinegunner-chauchat_layout.json",
+        "units/heavy-machinegunner-chauchat/heavy-machinegunner-chauchat@64_layout.json",
+        "units/heavy-machinegunner-chauchat/heavy-machinegunner-chauchat@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_machinegunner": {
+      "layouts": [
+        "units/heavy-machinegunner/heavy-machinegunner_layout.json",
+        "units/heavy-machinegunner/heavy-machinegunner@64_layout.json",
+        "units/heavy-machinegunner/heavy-machinegunner@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_at_rifleman": {
+      "layouts": [
+        "units/heavy-at-rifleman/heavy-at-rifleman_layout.json",
+        "units/heavy-at-rifleman/heavy-at-rifleman@64_layout.json",
+        "units/heavy-at-rifleman/heavy-at-rifleman@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_maxim": {
+      "layouts": [
+        "units/heavy-maxim/heavy-maxim_layout.json",
+        "units/heavy-maxim/heavy-maxim@96_layout.json",
+        "units/heavy-maxim/heavy-maxim@48_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_type3": {
+      "layouts": [
+        "units/heavy-type3-japanese/heavy-type3-japanese_layout.json",
+        "units/heavy-type3-japanese/heavy-type3-japanese@96_layout.json",
+        "units/heavy-type3-japanese/heavy-type3-japanese@48_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_infantry_gun": {
+      "layouts": [
+        "units/heavy-infantry-gun/heavy-infantry-gun_layout.json",
+        "units/heavy-infantry-gun/heavy-infantry-gun@168_layout.json",
+        "units/heavy-infantry-gun/heavy-infantry-gun@84_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_field_gun": {
+      "layouts": [
+        "units/heavy-field-gun/heavy-field-gun_layout.json",
+        "units/heavy-field-gun/heavy-field-gun@192_layout.json",
+        "units/heavy-field-gun/heavy-field-gun@96_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_howitzer": {
+      "layouts": [
+        "units/heavy-howitzer/heavy-howitzer_layout.json",
+        "units/heavy-howitzer/heavy-howitzer@488_layout.json",
+        "units/heavy-howitzer/heavy-howitzer@244_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.cavalry_default": {
+      "layouts": [
+        "units/cavalry-default/cavalry-default_layout.json",
+        "units/cavalry-default/cavalry-default@96_layout.json",
+        "units/cavalry-default/cavalry-default@48_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.officer_cavalry": {
+      "layouts": [
+        "units/cavalry-officer/cavalry-officer_layout.json",
+        "units/cavalry-officer/cavalry-officer@96_layout.json",
+        "units/cavalry-officer/cavalry-officer@48_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.supply_wagon": {
+      "layouts": [
+        "units/supply-wagon/supply-wagon_layout.json",
+        "units/supply-wagon/supply-wagon@144_layout.json",
+        "units/supply-wagon/supply-wagon@72_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.cavalry_mongol": {
+      "layouts": [
+        "units/cavalry-mongol/cavalry-mongol_layout.json",
+        "units/cavalry-mongol/cavalry-mongol@96_layout.json",
+        "units/cavalry-mongol/cavalry-mongol@48_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.cavalry_cossack": {
+      "layouts": [
+        "units/cavalry-cossack/cavalry-cossack_layout.json",
+        "units/cavalry-cossack/cavalry-cossack@96_layout.json",
+        "units/cavalry-cossack/cavalry-cossack@48_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.cavalry_scout": {
+      "layouts": [
+        "units/cavalry-scout/cavalry-scout_layout.json",
+        "units/cavalry-scout/cavalry-scout@96_layout.json",
+        "units/cavalry-scout/cavalry-scout@48_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.common_gando_volunteer": {
+      "layouts": [
+        "units/infantry-gando/infantry-gando_layout.json",
+        "units/infantry-gando/infantry-gando@64_layout.json",
+        "units/infantry-gando/infantry-gando@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.infantry_guard_fengtian": {
+      "layouts": [
+        "units/infantry-guard-fengtian/infantry-guard-fengtian_layout.json",
+        "units/infantry-guard-fengtian/infantry-guard-fengtian@64_layout.json",
+        "units/infantry-guard-fengtian/infantry-guard-fengtian@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_tachanka": {
+      "layouts": [
+        "units/heavy-tachanka/heavy-tachanka_layout.json",
+        "units/heavy-tachanka/heavy-tachanka@144_layout.json",
+        "units/heavy-tachanka/heavy-tachanka@72_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_horse_artillery": {
+      "layouts": [
+        "units/heavy-horse-artillery/heavy-horse-artillery_layout.json",
+        "units/heavy-horse-artillery/heavy-horse-artillery@144_layout.json",
+        "units/heavy-horse-artillery/heavy-horse-artillery@72_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.tank_ft_male": {
+      "layouts": [
+        "units/tank-ft-male/tank-ft-male_hull@144_layout.json",
+        "units/tank-ft-male/tank-ft-male_hull@72_layout.json",
+        "units/tank-ft-male/tank-ft-male_hull_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.tank_ft_male.turret": {
+      "layouts": [
+        "units/tank-ft-male/tank-ft-male_turret@120_layout.json",
+        "units/tank-ft-male/tank-ft-male_turret@60_layout.json",
+        "units/tank-ft-male/tank-ft-male_turret_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.tank_ft_female": {
+      "layouts": [
+        "units/tank-ft-female/tank-ft-female_hull@144_layout.json",
+        "units/tank-ft-female/tank-ft-female_hull@72_layout.json",
+        "units/tank-ft-female/tank-ft-female_hull_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.tank_ft_female.turret": {
+      "layouts": [
+        "units/tank-ft-female/tank-ft-female_turret@120_layout.json",
+        "units/tank-ft-female/tank-ft-female_turret@60_layout.json",
+        "units/tank-ft-female/tank-ft-female_turret_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.tank_armored_car": {
+      "layouts": [
+        "units/tank-armored_car/tank-armored_car_hull@144_layout.json",
+        "units/tank-armored_car/tank-armored_car_hull@72_layout.json",
+        "units/tank-armored_car/tank-armored_car_hull_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.tank_armored_car.turret": {
+      "layouts": [
+        "units/tank-armored_car/tank-armored_car_turret@120_layout.json",
+        "units/tank-armored_car/tank-armored_car_turret@60_layout.json",
+        "units/tank-armored_car/tank-armored_car_turret_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.tank_mark_v": {
+      "layouts": [
+        "units/tank-mark_v/tank-mark_v_hull@144_layout.json",
+        "units/tank-mark_v/tank-mark_v_hull@72_layout.json",
+        "units/tank-mark_v/tank-mark_v_hull_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.tank_mark_v.turret": {
+      "layouts": [
+        "units/tank-mark_v/tank-mark_v_turret@120_layout.json",
+        "units/tank-mark_v/tank-mark_v_turret@60_layout.json",
+        "units/tank-mark_v/tank-mark_v_turret_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.tank_lanchester": {
+      "layouts": [
+        "units/tank-lanchester/tank-lanchester_hull@144_layout.json",
+        "units/tank-lanchester/tank-lanchester_hull@72_layout.json",
+        "units/tank-lanchester/tank-lanchester_hull_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.tank_lanchester.turret": {
+      "layouts": [
+        "units/tank-lanchester/tank-lanchester_turret@120_layout.json",
+        "units/tank-lanchester/tank-lanchester_turret@60_layout.json",
+        "units/tank-lanchester/tank-lanchester_turret_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.tank_fengtian_truck": {
+      "layouts": [
+        "units/tank-fengtian_truck/tank-fengtian_truck_hull@144_layout.json",
+        "units/tank-fengtian_truck/tank-fengtian_truck_hull@72_layout.json",
+        "units/tank-fengtian_truck/tank-fengtian_truck_hull_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.tank_fengtian_truck.turret": {
+      "layouts": [
+        "units/tank-fengtian_truck/tank-fengtian_truck_turret@120_layout.json",
+        "units/tank-fengtian_truck/tank-fengtian_truck_turret@60_layout.json",
+        "units/tank-fengtian_truck/tank-fengtian_truck_turret_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.infantry@japanese": {
+      "layouts": [
+        "units/infantry-japanese/infantry-japanese_layout.json",
+        "units/infantry-japanese/infantry-japanese@64_layout.json",
+        "units/infantry-japanese/infantry-japanese@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.infantry@fengtian": {
+      "layouts": [
+        "units/infantry-fengtian/infantry-fengtian_layout.json",
+        "units/infantry-fengtian/infantry-fengtian@64_layout.json",
+        "units/infantry-fengtian/infantry-fengtian@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.infantry@russian-white": {
+      "layouts": [
+        "units/infantry-russian-white/infantry-russian-white_layout.json",
+        "units/infantry-russian-white/infantry-russian-white@64_layout.json",
+        "units/infantry-russian-white/infantry-russian-white@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.infantry@russian-red": {
+      "layouts": [
+        "units/infantry-russian-red/infantry-russian-red_layout.json",
+        "units/infantry-russian-red/infantry-russian-red@64_layout.json",
+        "units/infantry-russian-red/infantry-russian-red@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.officer@japanese": {
+      "layouts": [
+        "units/officer-japanese/officer-japanese_layout.json",
+        "units/officer-japanese/officer-japanese@64_layout.json",
+        "units/officer-japanese/officer-japanese@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.officer@fengtian": {
+      "layouts": [
+        "units/officer-fengtian/officer-fengtian_layout.json",
+        "units/officer-fengtian/officer-fengtian@64_layout.json",
+        "units/officer-fengtian/officer-fengtian@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.officer@russian-white": {
+      "layouts": [
+        "units/officer-russian-white/officer-russian-white_layout.json",
+        "units/officer-russian-white/officer-russian-white@64_layout.json",
+        "units/officer-russian-white/officer-russian-white@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.officer@russian-red": {
+      "layouts": [
+        "units/officer-russian-red/officer-russian-red_layout.json",
+        "units/officer-russian-red/officer-russian-red@64_layout.json",
+        "units/officer-russian-red/officer-russian-red@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_machinegunner@japanese": {
+      "layouts": [
+        "units/heavy-machinegunner-japanese/heavy-machinegunner-japanese_layout.json",
+        "units/heavy-machinegunner-japanese/heavy-machinegunner-japanese@64_layout.json",
+        "units/heavy-machinegunner-japanese/heavy-machinegunner-japanese@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_machinegunner@fengtian": {
+      "layouts": [
+        "units/heavy-machinegunner-chauchat-fengtian/heavy-machinegunner-chauchat-fengtian_layout.json",
+        "units/heavy-machinegunner-chauchat-fengtian/heavy-machinegunner-chauchat-fengtian@64_layout.json",
+        "units/heavy-machinegunner-chauchat-fengtian/heavy-machinegunner-chauchat-fengtian@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_machinegunner@russian-white": {
+      "layouts": [
+        "units/heavy-machinegunner-russian-white/heavy-machinegunner-russian-white_layout.json",
+        "units/heavy-machinegunner-russian-white/heavy-machinegunner-russian-white@64_layout.json",
+        "units/heavy-machinegunner-russian-white/heavy-machinegunner-russian-white@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_machinegunner@russian-red": {
+      "layouts": [
+        "units/heavy-machinegunner-russian-red/heavy-machinegunner-russian-red_layout.json",
+        "units/heavy-machinegunner-russian-red/heavy-machinegunner-russian-red@64_layout.json",
+        "units/heavy-machinegunner-russian-red/heavy-machinegunner-russian-red@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_at_rifleman@japanese": {
+      "layouts": [
+        "units/heavy-at-rifleman-japanese/heavy-at-rifleman-japanese_layout.json",
+        "units/heavy-at-rifleman-japanese/heavy-at-rifleman-japanese@64_layout.json",
+        "units/heavy-at-rifleman-japanese/heavy-at-rifleman-japanese@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_at_rifleman@fengtian": {
+      "layouts": [
+        "units/heavy-at-rifleman-fengtian/heavy-at-rifleman-fengtian_layout.json",
+        "units/heavy-at-rifleman-fengtian/heavy-at-rifleman-fengtian@64_layout.json",
+        "units/heavy-at-rifleman-fengtian/heavy-at-rifleman-fengtian@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_at_rifleman@russian-white": {
+      "layouts": [
+        "units/heavy-at-rifleman-russian-white/heavy-at-rifleman-russian-white_layout.json",
+        "units/heavy-at-rifleman-russian-white/heavy-at-rifleman-russian-white@64_layout.json",
+        "units/heavy-at-rifleman-russian-white/heavy-at-rifleman-russian-white@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_at_rifleman@russian-red": {
+      "layouts": [
+        "units/heavy-at-rifleman-russian-red/heavy-at-rifleman-russian-red_layout.json",
+        "units/heavy-at-rifleman-russian-red/heavy-at-rifleman-russian-red@64_layout.json",
+        "units/heavy-at-rifleman-russian-red/heavy-at-rifleman-russian-red@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_maxim@japanese": {
+      "layouts": [
+        "units/heavy-maxim-japanese/heavy-maxim-japanese_layout.json",
+        "units/heavy-maxim-japanese/heavy-maxim-japanese@96_layout.json",
+        "units/heavy-maxim-japanese/heavy-maxim-japanese@48_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_maxim@fengtian": {
+      "layouts": [
+        "units/heavy-maxim-fengtian/heavy-maxim-fengtian_layout.json",
+        "units/heavy-maxim-fengtian/heavy-maxim-fengtian@96_layout.json",
+        "units/heavy-maxim-fengtian/heavy-maxim-fengtian@48_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_maxim@russian-white": {
+      "layouts": [
+        "units/heavy-maxim-russian-white/heavy-maxim-russian-white_layout.json",
+        "units/heavy-maxim-russian-white/heavy-maxim-russian-white@96_layout.json",
+        "units/heavy-maxim-russian-white/heavy-maxim-russian-white@48_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_maxim@russian-red": {
+      "layouts": [
+        "units/heavy-maxim-russian-red/heavy-maxim-russian-red_layout.json",
+        "units/heavy-maxim-russian-red/heavy-maxim-russian-red@96_layout.json",
+        "units/heavy-maxim-russian-red/heavy-maxim-russian-red@48_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.cavalry_default@japanese": {
+      "layouts": [
+        "units/cavalry-japanese/cavalry-japanese_layout.json",
+        "units/cavalry-japanese/cavalry-japanese@96_layout.json",
+        "units/cavalry-japanese/cavalry-japanese@48_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.cavalry_default@fengtian": {
+      "layouts": [
+        "units/cavalry-fengtian/cavalry-fengtian_layout.json",
+        "units/cavalry-fengtian/cavalry-fengtian@96_layout.json",
+        "units/cavalry-fengtian/cavalry-fengtian@48_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.cavalry_default@russian-white": {
+      "layouts": [
+        "units/cavalry-russian-white/cavalry-russian-white_layout.json",
+        "units/cavalry-russian-white/cavalry-russian-white@96_layout.json",
+        "units/cavalry-russian-white/cavalry-russian-white@48_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.cavalry_default@russian-red": {
+      "layouts": [
+        "units/cavalry-russian-red/cavalry-russian-red_layout.json",
+        "units/cavalry-russian-red/cavalry-russian-red@96_layout.json",
+        "units/cavalry-russian-red/cavalry-russian-red@48_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.infantry_sniper@japanese": {
+      "layouts": [
+        "units/infantry-sniper-japanese/infantry-sniper-japanese_layout.json",
+        "units/infantry-sniper-japanese/infantry-sniper-japanese@64_layout.json",
+        "units/infantry-sniper-japanese/infantry-sniper-japanese@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.infantry_sniper@fengtian": {
+      "layouts": [
+        "units/infantry-sniper-fengtian/infantry-sniper-fengtian_layout.json",
+        "units/infantry-sniper-fengtian/infantry-sniper-fengtian@64_layout.json",
+        "units/infantry-sniper-fengtian/infantry-sniper-fengtian@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.infantry_sniper@russian-white": {
+      "layouts": [
+        "units/infantry-sniper-russian-white/infantry-sniper-russian-white_layout.json",
+        "units/infantry-sniper-russian-white/infantry-sniper-russian-white@64_layout.json",
+        "units/infantry-sniper-russian-white/infantry-sniper-russian-white@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.infantry_sniper@russian-red": {
+      "layouts": [
+        "units/infantry-sniper-russian-red/infantry-sniper-russian-red_layout.json",
+        "units/infantry-sniper-russian-red/infantry-sniper-russian-red@64_layout.json",
+        "units/infantry-sniper-russian-red/infantry-sniper-russian-red@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_infantry_gun@japanese": {
+      "layouts": [
+        "units/heavy-infantry-gun-japanese/heavy-infantry-gun-japanese_layout.json",
+        "units/heavy-infantry-gun-japanese/heavy-infantry-gun-japanese@168_layout.json",
+        "units/heavy-infantry-gun-japanese/heavy-infantry-gun-japanese@84_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_infantry_gun@fengtian": {
+      "layouts": [
+        "units/heavy-infantry-gun-fengtian/heavy-infantry-gun-fengtian_layout.json",
+        "units/heavy-infantry-gun-fengtian/heavy-infantry-gun-fengtian@168_layout.json",
+        "units/heavy-infantry-gun-fengtian/heavy-infantry-gun-fengtian@84_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_infantry_gun@russian-white": {
+      "layouts": [
+        "units/heavy-infantry-gun-russian-white/heavy-infantry-gun-russian-white_layout.json",
+        "units/heavy-infantry-gun-russian-white/heavy-infantry-gun-russian-white@168_layout.json",
+        "units/heavy-infantry-gun-russian-white/heavy-infantry-gun-russian-white@84_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_infantry_gun@russian-red": {
+      "layouts": [
+        "units/heavy-infantry-gun-russian-red/heavy-infantry-gun-russian-red_layout.json",
+        "units/heavy-infantry-gun-russian-red/heavy-infantry-gun-russian-red@168_layout.json",
+        "units/heavy-infantry-gun-russian-red/heavy-infantry-gun-russian-red@84_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_field_gun@japanese": {
+      "layouts": [
+        "units/heavy-field-gun-japanese/heavy-field-gun-japanese_layout.json",
+        "units/heavy-field-gun-japanese/heavy-field-gun-japanese@192_layout.json",
+        "units/heavy-field-gun-japanese/heavy-field-gun-japanese@96_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_field_gun@fengtian": {
+      "layouts": [
+        "units/heavy-field-gun-fengtian/heavy-field-gun-fengtian_layout.json",
+        "units/heavy-field-gun-fengtian/heavy-field-gun-fengtian@192_layout.json",
+        "units/heavy-field-gun-fengtian/heavy-field-gun-fengtian@96_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_field_gun@russian-white": {
+      "layouts": [
+        "units/heavy-field-gun-russian-white/heavy-field-gun-russian-white_layout.json",
+        "units/heavy-field-gun-russian-white/heavy-field-gun-russian-white@192_layout.json",
+        "units/heavy-field-gun-russian-white/heavy-field-gun-russian-white@96_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_field_gun@russian-red": {
+      "layouts": [
+        "units/heavy-field-gun-russian-red/heavy-field-gun-russian-red_layout.json",
+        "units/heavy-field-gun-russian-red/heavy-field-gun-russian-red@192_layout.json",
+        "units/heavy-field-gun-russian-red/heavy-field-gun-russian-red@96_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_howitzer@japanese": {
+      "layouts": [
+        "units/heavy-howitzer-japanese/heavy-howitzer-japanese_layout.json",
+        "units/heavy-howitzer-japanese/heavy-howitzer-japanese@488_layout.json",
+        "units/heavy-howitzer-japanese/heavy-howitzer-japanese@244_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_howitzer@fengtian": {
+      "layouts": [
+        "units/heavy-howitzer-fengtian/heavy-howitzer-fengtian_layout.json",
+        "units/heavy-howitzer-fengtian/heavy-howitzer-fengtian@488_layout.json",
+        "units/heavy-howitzer-fengtian/heavy-howitzer-fengtian@244_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_howitzer@russian-white": {
+      "layouts": [
+        "units/heavy-howitzer-russian-white/heavy-howitzer-russian-white_layout.json",
+        "units/heavy-howitzer-russian-white/heavy-howitzer-russian-white@488_layout.json",
+        "units/heavy-howitzer-russian-white/heavy-howitzer-russian-white@244_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_howitzer@russian-red": {
+      "layouts": [
+        "units/heavy-howitzer-russian-red/heavy-howitzer-russian-red_layout.json",
+        "units/heavy-howitzer-russian-red/heavy-howitzer-russian-red@488_layout.json",
+        "units/heavy-howitzer-russian-red/heavy-howitzer-russian-red@244_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.officer_cavalry@japanese": {
+      "layouts": [
+        "units/cavalry-officer-japanese/cavalry-officer-japanese_layout.json",
+        "units/cavalry-officer-japanese/cavalry-officer-japanese@96_layout.json",
+        "units/cavalry-officer-japanese/cavalry-officer-japanese@48_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.officer_cavalry@fengtian": {
+      "layouts": [
+        "units/cavalry-officer-fengtian/cavalry-officer-fengtian_layout.json",
+        "units/cavalry-officer-fengtian/cavalry-officer-fengtian@96_layout.json",
+        "units/cavalry-officer-fengtian/cavalry-officer-fengtian@48_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.officer_cavalry@russian-white": {
+      "layouts": [
+        "units/cavalry-officer-russian-white/cavalry-officer-russian-white_layout.json",
+        "units/cavalry-officer-russian-white/cavalry-officer-russian-white@96_layout.json",
+        "units/cavalry-officer-russian-white/cavalry-officer-russian-white@48_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.officer_cavalry@russian-red": {
+      "layouts": [
+        "units/cavalry-officer-russian-red/cavalry-officer-russian-red_layout.json",
+        "units/cavalry-officer-russian-red/cavalry-officer-russian-red@96_layout.json",
+        "units/cavalry-officer-russian-red/cavalry-officer-russian-red@48_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.heavy_machinegunner_chauchat@fengtian": {
+      "layouts": [
+        "units/heavy-machinegunner-chauchat-fengtian/heavy-machinegunner-chauchat-fengtian_layout.json",
+        "units/heavy-machinegunner-chauchat-fengtian/heavy-machinegunner-chauchat-fengtian@64_layout.json",
+        "units/heavy-machinegunner-chauchat-fengtian/heavy-machinegunner-chauchat-fengtian@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "unit.recruit@japanese": {
+      "alias": "unit.infantry@japanese"
+    },
+    "unit.recruit@fengtian": {
+      "alias": "unit.infantry@fengtian"
+    },
+    "unit.recruit@russian-white": {
+      "alias": "unit.infantry@russian-white"
+    },
+    "unit.recruit@russian-red": {
+      "alias": "unit.infantry@russian-red"
+    },
+    "unit.veteran@japanese": {
+      "alias": "unit.infantry@japanese"
+    },
+    "unit.veteran@fengtian": {
+      "alias": "unit.infantry@fengtian"
+    },
+    "unit.veteran@russian-white": {
+      "alias": "unit.infantry@russian-white"
+    },
+    "unit.veteran@russian-red": {
+      "alias": "unit.infantry@russian-red"
+    },
+    "unit.scout@japanese": {
+      "alias": "unit.infantry@japanese"
+    },
+    "unit.scout@fengtian": {
+      "alias": "unit.infantry@fengtian"
+    },
+    "unit.scout@russian-white": {
+      "alias": "unit.infantry@russian-white"
+    },
+    "unit.scout@russian-red": {
+      "alias": "unit.infantry@russian-red"
+    },
+    "unit.infantry_scout@japanese": {
+      "alias": "unit.infantry@japanese"
+    },
+    "unit.infantry_scout@fengtian": {
+      "alias": "unit.infantry@fengtian"
+    },
+    "unit.infantry_scout@russian-white": {
+      "alias": "unit.infantry@russian-white"
+    },
+    "unit.infantry_scout@russian-red": {
+      "alias": "unit.infantry@russian-red"
+    },
+    "terrain.sand": {
+      "variants": [
+        "terrain/sand_v0.png",
+        "terrain/sand_v1.png",
+        "terrain/sand_v2.png",
+        "terrain/sand_v3.png",
+        "terrain/sand_v4.png",
+        "terrain/sand_v5.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.water": {
+      "variants": [
+        "terrain/water_v0.png",
+        "terrain/water_v1.png",
+        "terrain/water_v2.png",
+        "terrain/water_v3.png",
+        "terrain/water_v4.png",
+        "terrain/water_v5.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.rock": {
+      "variants": [
+        "terrain/rock_v0.png",
+        "terrain/rock_v1.png",
+        "terrain/rock_v2.png",
+        "terrain/rock_v3.png",
+        "terrain/rock_v4.png",
+        "terrain/rock_v5.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "building.village": {
+      "layouts": [
+        "buildings/village-capture/village-capture_layout.json",
+        "buildings/village-capture/village-capture@64_layout.json",
+        "buildings/village-capture/village-capture@32_layout.json"
+      ],
+      "scale": 0.1875
+    },
+    "building.city": {
+      "layouts": [
+        "buildings/village-capture/village-capture_layout.json",
+        "buildings/village-capture/village-capture@64_layout.json",
+        "buildings/village-capture/village-capture@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "building.metropolis": {
+      "layouts": [
+        "buildings/village-capture/village-capture_layout.json",
+        "buildings/village-capture/village-capture@64_layout.json",
+        "buildings/village-capture/village-capture@32_layout.json"
+      ],
+      "scale": 0.25
+    },
+    "terrain.rubble": {
+      "variants": [
+        "terrain/rubble_v0.png",
+        "terrain/rubble_v1.png",
+        "terrain/rubble_v2.png",
+        "terrain/rubble_v3.png",
+        "terrain/rubble_v4.png",
+        "terrain/rubble_v5.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.forest_edge": {
+      "variants": [
+        "terrain/forest_edge_v0.png",
+        "terrain/forest_edge_v1.png",
+        "terrain/forest_edge_v2.png",
+        "terrain/forest_edge_v3.png",
+        "terrain/forest_edge_v4.png",
+        "terrain/forest_edge_v5.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.forest_deep": {
+      "variants": [
+        "terrain/forest_deep_v0.png",
+        "terrain/forest_deep_v1.png",
+        "terrain/forest_deep_v2.png",
+        "terrain/forest_deep_v3.png",
+        "terrain/forest_deep_v4.png",
+        "terrain/forest_deep_v5.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.house": {
+      "variants": [
+        "terrain/house_v0.png",
+        "terrain/house_v1.png",
+        "terrain/house_v2.png",
+        "terrain/house_v3.png",
+        "terrain/house_v4.png",
+        "terrain/house_v5.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.barbed_wire": {
+      "variants": [
+        "terrain/barbed_wire_v0.png",
+        "terrain/barbed_wire_v1.png",
+        "terrain/barbed_wire_v2.png",
+        "terrain/barbed_wire_v3.png",
+        "terrain/barbed_wire_v4.png",
+        "terrain/barbed_wire_v5.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.high_ground": {
+      "variants": [
+        "terrain/high_ground_v0.png",
+        "terrain/high_ground_v1.png",
+        "terrain/high_ground_v2.png",
+        "terrain/high_ground_v3.png",
+        "terrain/high_ground_v4.png",
+        "terrain/high_ground_v5.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.high_ground_rim_n": {
+      "variants": [
+        "terrain/high_ground_rim_n_v0.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.high_ground_rim_e": {
+      "variants": [
+        "terrain/high_ground_rim_e_v0.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.high_ground_rim_s": {
+      "variants": [
+        "terrain/high_ground_rim_s_v0.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.high_ground_rim_w": {
+      "variants": [
+        "terrain/high_ground_rim_w_v0.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.high_ground_rim_ne": {
+      "variants": [
+        "terrain/high_ground_rim_ne_v0.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.high_ground_rim_se": {
+      "variants": [
+        "terrain/high_ground_rim_se_v0.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.high_ground_rim_sw": {
+      "variants": [
+        "terrain/high_ground_rim_sw_v0.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.high_ground_rim_nw": {
+      "variants": [
+        "terrain/high_ground_rim_nw_v0.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.trench_h": {
+      "variants": [
+        "terrain/trench_h_v0.png",
+        "terrain/trench_h_v1.png",
+        "terrain/trench_h_v2.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.trench_v": {
+      "variants": [
+        "terrain/trench_v_v0.png",
+        "terrain/trench_v_v1.png",
+        "terrain/trench_v_v2.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.trench_ne": {
+      "variants": [
+        "terrain/trench_ne_v0.png",
+        "terrain/trench_ne_v1.png",
+        "terrain/trench_ne_v2.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.trench_nw": {
+      "variants": [
+        "terrain/trench_nw_v0.png",
+        "terrain/trench_nw_v1.png",
+        "terrain/trench_nw_v2.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.trench_se": {
+      "variants": [
+        "terrain/trench_se_v0.png",
+        "terrain/trench_se_v1.png",
+        "terrain/trench_se_v2.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.trench_sw": {
+      "variants": [
+        "terrain/trench_sw_v0.png",
+        "terrain/trench_sw_v1.png",
+        "terrain/trench_sw_v2.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.trench_end_n": {
+      "variants": [
+        "terrain/trench_end_n_v0.png",
+        "terrain/trench_end_n_v1.png",
+        "terrain/trench_end_n_v2.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.trench_end_e": {
+      "variants": [
+        "terrain/trench_end_e_v0.png",
+        "terrain/trench_end_e_v1.png",
+        "terrain/trench_end_e_v2.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.trench_end_s": {
+      "variants": [
+        "terrain/trench_end_s_v0.png",
+        "terrain/trench_end_s_v1.png",
+        "terrain/trench_end_s_v2.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.trench_end_w": {
+      "variants": [
+        "terrain/trench_end_w_v0.png",
+        "terrain/trench_end_w_v1.png",
+        "terrain/trench_end_w_v2.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "building_art.house.thatch": {
+      "layouts": [
+        "buildings/house-thatch/house-thatch_layout.json",
+        "buildings/house-thatch/house-thatch@64_layout.json",
+        "buildings/house-thatch/house-thatch@32_layout.json"
+      ],
+      "scale": 0.125
+    },
+    "building_art.house.tile": {
+      "layouts": [
+        "buildings/house-tile/house-tile_layout.json",
+        "buildings/house-tile/house-tile@64_layout.json",
+        "buildings/house-tile/house-tile@32_layout.json"
+      ],
+      "scale": 0.08333
+    },
+    "building_art.house.brick": {
+      "layouts": [
+        "buildings/house-brick/house-brick_layout.json",
+        "buildings/house-brick/house-brick@64_layout.json",
+        "buildings/house-brick/house-brick@32_layout.json"
+      ],
+      "scale": 0.08333
+    },
+    "building_art.house.barn": {
+      "layouts": [
+        "buildings/house-barn/house-barn_layout.json",
+        "buildings/house-barn/house-barn@64_layout.json",
+        "buildings/house-barn/house-barn@32_layout.json"
+      ],
+      "scale": 0.125
+    },
+    "terrain.crater": {
+      "variants": [
+        "terrain/crater_v0.png",
+        "terrain/crater_v1.png",
+        "terrain/crater_v2.png",
+        "terrain/crater_v3.png",
+        "terrain/crater_v4.png",
+        "terrain/crater_v5.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "icon.badge.korean@16": {
+      "base": "icons/badge-korean_16.png",
+      "size": [
+        16,
+        16
+      ]
+    },
+    "icon.badge.korean@24": {
+      "base": "icons/badge-korean_24.png",
+      "size": [
+        24,
+        24
+      ]
+    },
+    "icon.badge.korean@32": {
+      "base": "icons/badge-korean_32.png",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "icon.badge.korean@48": {
+      "base": "icons/badge-korean_48.png",
+      "size": [
+        48,
+        48
+      ]
+    },
+    "icon.badge.korean@64": {
+      "base": "icons/badge-korean_64.png",
+      "size": [
+        64,
+        64
+      ]
+    },
+    "icon.badge.japanese@16": {
+      "base": "icons/badge-japanese_16.png",
+      "size": [
+        16,
+        16
+      ]
+    },
+    "icon.badge.japanese@24": {
+      "base": "icons/badge-japanese_24.png",
+      "size": [
+        24,
+        24
+      ]
+    },
+    "icon.badge.japanese@32": {
+      "base": "icons/badge-japanese_32.png",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "icon.badge.japanese@48": {
+      "base": "icons/badge-japanese_48.png",
+      "size": [
+        48,
+        48
+      ]
+    },
+    "icon.badge.japanese@64": {
+      "base": "icons/badge-japanese_64.png",
+      "size": [
+        64,
+        64
+      ]
+    },
+    "icon.badge.fengtian@16": {
+      "base": "icons/badge-fengtian_16.png",
+      "size": [
+        16,
+        16
+      ]
+    },
+    "icon.badge.fengtian@24": {
+      "base": "icons/badge-fengtian_24.png",
+      "size": [
+        24,
+        24
+      ]
+    },
+    "icon.badge.fengtian@32": {
+      "base": "icons/badge-fengtian_32.png",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "icon.badge.fengtian@48": {
+      "base": "icons/badge-fengtian_48.png",
+      "size": [
+        48,
+        48
+      ]
+    },
+    "icon.badge.fengtian@64": {
+      "base": "icons/badge-fengtian_64.png",
+      "size": [
+        64,
+        64
+      ]
+    },
+    "icon.badge.russian@16": {
+      "base": "icons/badge-russian_16.png",
+      "size": [
+        16,
+        16
+      ]
+    },
+    "icon.badge.russian@24": {
+      "base": "icons/badge-russian_24.png",
+      "size": [
+        24,
+        24
+      ]
+    },
+    "icon.badge.russian@32": {
+      "base": "icons/badge-russian_32.png",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "icon.badge.russian@48": {
+      "base": "icons/badge-russian_48.png",
+      "size": [
+        48,
+        48
+      ]
+    },
+    "icon.badge.russian@64": {
+      "base": "icons/badge-russian_64.png",
+      "size": [
+        64,
+        64
+      ]
+    },
+    "icon.badge.soviet@16": {
+      "base": "icons/badge-soviet_16.png",
+      "size": [
+        16,
+        16
+      ]
+    },
+    "icon.badge.soviet@24": {
+      "base": "icons/badge-soviet_24.png",
+      "size": [
+        24,
+        24
+      ]
+    },
+    "icon.badge.soviet@32": {
+      "base": "icons/badge-soviet_32.png",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "icon.badge.soviet@48": {
+      "base": "icons/badge-soviet_48.png",
+      "size": [
+        48,
+        48
+      ]
+    },
+    "icon.badge.soviet@64": {
+      "base": "icons/badge-soviet_64.png",
+      "size": [
+        64,
+        64
+      ]
+    },
+    "icon.branch.infantry@12": {
+      "base": "icons/branch-infantry_12.png",
+      "size": [
+        12,
+        12
+      ]
+    },
+    "icon.branch.infantry@16": {
+      "base": "icons/branch-infantry_16.png",
+      "size": [
+        16,
+        16
+      ]
+    },
+    "icon.branch.infantry@20": {
+      "base": "icons/branch-infantry_20.png",
+      "size": [
+        20,
+        20
+      ]
+    },
+    "icon.branch.infantry@24": {
+      "base": "icons/branch-infantry_24.png",
+      "size": [
+        24,
+        24
+      ]
+    },
+    "icon.branch.infantry@32": {
+      "base": "icons/branch-infantry_32.png",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "icon.branch.mg@12": {
+      "base": "icons/branch-mg_12.png",
+      "size": [
+        12,
+        12
+      ]
+    },
+    "icon.branch.mg@16": {
+      "base": "icons/branch-mg_16.png",
+      "size": [
+        16,
+        16
+      ]
+    },
+    "icon.branch.mg@20": {
+      "base": "icons/branch-mg_20.png",
+      "size": [
+        20,
+        20
+      ]
+    },
+    "icon.branch.mg@24": {
+      "base": "icons/branch-mg_24.png",
+      "size": [
+        24,
+        24
+      ]
+    },
+    "icon.branch.mg@32": {
+      "base": "icons/branch-mg_32.png",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "icon.branch.at@12": {
+      "base": "icons/branch-at_12.png",
+      "size": [
+        12,
+        12
+      ]
+    },
+    "icon.branch.at@16": {
+      "base": "icons/branch-at_16.png",
+      "size": [
+        16,
+        16
+      ]
+    },
+    "icon.branch.at@20": {
+      "base": "icons/branch-at_20.png",
+      "size": [
+        20,
+        20
+      ]
+    },
+    "icon.branch.at@24": {
+      "base": "icons/branch-at_24.png",
+      "size": [
+        24,
+        24
+      ]
+    },
+    "icon.branch.at@32": {
+      "base": "icons/branch-at_32.png",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "icon.branch.artillery@12": {
+      "base": "icons/branch-artillery_12.png",
+      "size": [
+        12,
+        12
+      ]
+    },
+    "icon.branch.artillery@16": {
+      "base": "icons/branch-artillery_16.png",
+      "size": [
+        16,
+        16
+      ]
+    },
+    "icon.branch.artillery@20": {
+      "base": "icons/branch-artillery_20.png",
+      "size": [
+        20,
+        20
+      ]
+    },
+    "icon.branch.artillery@24": {
+      "base": "icons/branch-artillery_24.png",
+      "size": [
+        24,
+        24
+      ]
+    },
+    "icon.branch.artillery@32": {
+      "base": "icons/branch-artillery_32.png",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "icon.branch.howitzer@12": {
+      "base": "icons/branch-howitzer_12.png",
+      "size": [
+        12,
+        12
+      ]
+    },
+    "icon.branch.howitzer@16": {
+      "base": "icons/branch-howitzer_16.png",
+      "size": [
+        16,
+        16
+      ]
+    },
+    "icon.branch.howitzer@20": {
+      "base": "icons/branch-howitzer_20.png",
+      "size": [
+        20,
+        20
+      ]
+    },
+    "icon.branch.howitzer@24": {
+      "base": "icons/branch-howitzer_24.png",
+      "size": [
+        24,
+        24
+      ]
+    },
+    "icon.branch.howitzer@32": {
+      "base": "icons/branch-howitzer_32.png",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "icon.branch.cavalry@12": {
+      "base": "icons/branch-cavalry_12.png",
+      "size": [
+        12,
+        12
+      ]
+    },
+    "icon.branch.cavalry@16": {
+      "base": "icons/branch-cavalry_16.png",
+      "size": [
+        16,
+        16
+      ]
+    },
+    "icon.branch.cavalry@20": {
+      "base": "icons/branch-cavalry_20.png",
+      "size": [
+        20,
+        20
+      ]
+    },
+    "icon.branch.cavalry@24": {
+      "base": "icons/branch-cavalry_24.png",
+      "size": [
+        24,
+        24
+      ]
+    },
+    "icon.branch.cavalry@32": {
+      "base": "icons/branch-cavalry_32.png",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "icon.branch.armour@12": {
+      "base": "icons/branch-armour_12.png",
+      "size": [
+        12,
+        12
+      ]
+    },
+    "icon.branch.armour@16": {
+      "base": "icons/branch-armour_16.png",
+      "size": [
+        16,
+        16
+      ]
+    },
+    "icon.branch.armour@20": {
+      "base": "icons/branch-armour_20.png",
+      "size": [
+        20,
+        20
+      ]
+    },
+    "icon.branch.armour@24": {
+      "base": "icons/branch-armour_24.png",
+      "size": [
+        24,
+        24
+      ]
+    },
+    "icon.branch.armour@32": {
+      "base": "icons/branch-armour_32.png",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "icon.branch.supply@12": {
+      "base": "icons/branch-supply_12.png",
+      "size": [
+        12,
+        12
+      ]
+    },
+    "icon.branch.supply@16": {
+      "base": "icons/branch-supply_16.png",
+      "size": [
+        16,
+        16
+      ]
+    },
+    "icon.branch.supply@20": {
+      "base": "icons/branch-supply_20.png",
+      "size": [
+        20,
+        20
+      ]
+    },
+    "icon.branch.supply@24": {
+      "base": "icons/branch-supply_24.png",
+      "size": [
+        24,
+        24
+      ]
+    },
+    "icon.branch.supply@32": {
+      "base": "icons/branch-supply_32.png",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "icon.branch.scout@12": {
+      "base": "icons/branch-scout_12.png",
+      "size": [
+        12,
+        12
+      ]
+    },
+    "icon.branch.scout@16": {
+      "base": "icons/branch-scout_16.png",
+      "size": [
+        16,
+        16
+      ]
+    },
+    "icon.branch.scout@20": {
+      "base": "icons/branch-scout_20.png",
+      "size": [
+        20,
+        20
+      ]
+    },
+    "icon.branch.scout@24": {
+      "base": "icons/branch-scout_24.png",
+      "size": [
+        24,
+        24
+      ]
+    },
+    "icon.branch.scout@32": {
+      "base": "icons/branch-scout_32.png",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "icon.branch.assault@12": {
+      "base": "icons/branch-assault_12.png",
+      "size": [
+        12,
+        12
+      ]
+    },
+    "icon.branch.assault@16": {
+      "base": "icons/branch-assault_16.png",
+      "size": [
+        16,
+        16
+      ]
+    },
+    "icon.branch.assault@20": {
+      "base": "icons/branch-assault_20.png",
+      "size": [
+        20,
+        20
+      ]
+    },
+    "icon.branch.assault@24": {
+      "base": "icons/branch-assault_24.png",
+      "size": [
+        24,
+        24
+      ]
+    },
+    "icon.branch.assault@32": {
+      "base": "icons/branch-assault_32.png",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "icon.branch.sniper@12": {
+      "base": "icons/branch-sniper_12.png",
+      "size": [
+        12,
+        12
+      ]
+    },
+    "icon.branch.sniper@16": {
+      "base": "icons/branch-sniper_16.png",
+      "size": [
+        16,
+        16
+      ]
+    },
+    "icon.branch.sniper@20": {
+      "base": "icons/branch-sniper_20.png",
+      "size": [
+        20,
+        20
+      ]
+    },
+    "icon.branch.sniper@24": {
+      "base": "icons/branch-sniper_24.png",
+      "size": [
+        24,
+        24
+      ]
+    },
+    "icon.branch.sniper@32": {
+      "base": "icons/branch-sniper_32.png",
+      "size": [
+        32,
+        32
+      ]
+    },
+    "icon.branch.officer@12": {
+      "base": "icons/branch-officer_12.png",
+      "size": [
+        12,
+        12
+      ]
+    },
+    "icon.branch.officer@16": {
+      "base": "icons/branch-officer_16.png",
+      "size": [
+        16,
+        16
+      ]
+    },
+    "icon.branch.officer@20": {
+      "base": "icons/branch-officer_20.png",
+      "size": [
+        20,
+        20
+      ]
+    },
+    "icon.branch.officer@24": {
+      "base": "icons/branch-officer_24.png",
+      "size": [
+        24,
+        24
+      ]
+    },
+    "icon.branch.officer@32": {
+      "base": "icons/branch-officer_32.png",
+      "size": [
+        32,
+        32
+      ]
+    }
+  },
+  "_doc_terrain_extra": "terrain.forest_edge/forest_deep (숲 가장자리/깊은 숲, 8방향 이웃이 모두 숲이면 deep), rubble, crater (포탄 구덩이 0-2 오래된 · 3-5 갓 생긴), house, barbed_wire, high_ground (풀 고지 칸), high_ground_rim_<n|e|s|w> (고지 칸 위 오버레이: 그 방향 이웃이 평지일 때; ne/se/sw/nw 는 두 변 합성본, 미사용), trench_<h|v|ne|nw|se|sw|end_n|end_e|end_s|end_w> (4방향 참호 이웃 마스크로 선택). 생성: tools/make_kd1920_terrain2.py --install. 변형 수: 일반 6, rim 1, trench 3."
+}

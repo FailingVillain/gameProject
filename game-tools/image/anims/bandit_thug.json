@@ -1,0 +1,85 @@
+{
+ "_doc": "bandit thug: officer poses, no aim/fire/wave.",
+ "anims": {
+  "idle": {
+   "frames": [
+    "idle"
+   ]
+  },
+  "walk": {
+   "frames": [
+    "walk_1",
+    "walk_2",
+    "walk_3",
+    "walk_4"
+   ],
+   "ms": 130
+  },
+  "death": {
+   "frames": [
+    "hit",
+    "fall",
+    "dead"
+   ],
+   "ms": [
+    250,
+    250,
+    1000
+   ]
+  },
+  "charge": {
+   "frames": [
+    "charge_1",
+    "charge_2",
+    "charge_3",
+    "charge_4"
+   ],
+   "ms": 100
+  },
+  "melee": {
+   "frames": [
+    "melee_1",
+    "melee_2",
+    "melee_3"
+   ],
+   "ms": [
+    220,
+    140,
+    260
+   ]
+  },
+  "death_b": {
+   "frames": [
+    "hit",
+    "stagger_b",
+    "kneel_b",
+    "dead_b"
+   ],
+   "ms": [
+    200,
+    700,
+    300,
+    1200
+   ]
+  },
+  "death_c": {
+   "frames": [
+    "hit",
+    "stagger_c",
+    "slump_c",
+    "dead_c"
+   ],
+   "ms": [
+    200,
+    700,
+    300,
+    1200
+   ]
+  },
+  "hit": {
+   "frames": [
+    "hit"
+   ]
+  }
+ }
+}

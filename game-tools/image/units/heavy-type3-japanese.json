@@ -1,0 +1,20 @@
+{
+  "name": "heavy-type3-japanese",
+  "kind": "crew",
+  "_doc": "Type 3 (Hotchkiss-style) heavy MG crew, Japanese: copy of heavy-maxim-japanese, only the gun is changed (air-cooled finned barrel, side strip feed, tripod).",
+  "anims": "heavy-maxim",
+  "headgear": "japanese_cap",
+  "uniform": {
+    "jacket": "jkhaki",
+    "trousers": "jkhaki",
+    "legging": "puttee",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "collar": true,
+    "puttees": true
+  },
+  "dirs": "all",
+  "frames": "all",
+  "gun": "type3"
+}

@@ -1,0 +1,37 @@
+{
+  "name": "heavy-field-gun-japanese",
+  "_doc": "heavy-field-gun faction variant (japanese): same model, japanese_cap + japanese infantry uniform; cap badge from parts/badges HEAD_BADGE.",
+  "kind": "artillery",
+  "gun": "field_gun",
+  "anims": "artillery",
+  "headgear": "japanese_cap",
+  "uniform": {
+    "jacket": "jkhaki",
+    "trousers": "jkhaki",
+    "legging": "puttee",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "collar": true,
+    "puttees": true
+  },
+  "gear": [
+    "canteen_cloth"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "frame": [
+    384,
+    312
+  ],
+  "ay_frac": 0.641,
+  "zoom_mul": 1.0,
+  "center": [
+    0.0,
+    -8.0
+  ],
+  "dirs": "all",
+  "frames": "all"
+}

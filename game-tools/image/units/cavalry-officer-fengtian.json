@@ -1,0 +1,35 @@
+{
+  "name": "cavalry-officer-fengtian",
+  "_doc": "cavalry-officer faction variant (fengtian): same model, fengtian_officer_cap + fengtian officer uniform (as officer-fengtian), pistol + normal sabre, holster + map case.",
+  "base": "cavalry",
+  "anims": "cavalry",
+  "headgear": "fengtian_officer_cap",
+  "uniform": {
+    "jacket": "fengtian_bg",
+    "trousers": "fengtian_bg",
+    "legging": "leather",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "collar": true,
+    "puttees": false,
+    "trouser_stripe": true
+  },
+  "weapons": {
+    "pistol": "pistol",
+    "sabre": "sabre"
+  },
+  "gear": [
+    "holster",
+    "map_case"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "belt": true,
+  "belt_pouches": false,
+  "dirs": "all",
+  "frames": "all",
+  "fix_as": "cavalry-officer"
+}

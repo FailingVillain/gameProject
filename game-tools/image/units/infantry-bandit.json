@@ -1,0 +1,38 @@
+{
+ "name": "infantry-bandit",
+ "_doc": "bandit rifleman: fengtian infantry copy, fur cap, tan-brown padded jacket, bandolier X.",
+ "base": "fengtian",
+ "anims": "fengtian",
+ "headgear": "bandit_towel",
+ "uniform": "bandit_tan",
+ "weapons": {
+  "rifle": "bolt_rifle",
+  "dadao": "dadao"
+ },
+ "gear": [
+  "bandolier_x",
+  "haversack",
+  "canteen_cloth",
+  "leather_pouches",
+  "dadao_sheath"
+ ],
+ "team": [
+  "helmet_band",
+  "arm_patch"
+ ],
+ "belt": true,
+ "belt_pouches": false,
+ "e_pull_extra": 3.0,
+ "tune": {
+  "poses": {
+   "infantry": {
+    "prone_weapon": {
+     "x": -7.5
+    }
+   }
+  }
+ },
+ "dirs": "all",
+ "frames": "all",
+ "fix_as": "infantry-fengtian"
+}

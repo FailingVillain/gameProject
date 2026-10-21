@@ -1,0 +1,428 @@
+{
+ "frame": [
+  64,
+  80
+ ],
+ "anchor": [
+  32,
+  72
+ ],
+ "dirs": [
+  "s",
+  "se",
+  "e",
+  "ne",
+  "n"
+ ],
+ "mirror": true,
+ "columns": [
+  "idle",
+  "walk_1",
+  "walk_2",
+  "walk_3",
+  "walk_4",
+  "walk_fire_1",
+  "walk_fire_2",
+  "walk_fire_3",
+  "walk_fire_4",
+  "aim_a",
+  "fire_a",
+  "aim_b",
+  "fire_b",
+  "aim_c",
+  "fire_c",
+  "idle_alt",
+  "hit",
+  "fall",
+  "dead",
+  "spare",
+  "charge_1",
+  "charge_2",
+  "charge_3",
+  "charge_4",
+  "melee_1",
+  "melee_2",
+  "melee_3",
+  "idle_lean",
+  "go_prone",
+  "aim_prone",
+  "fire_prone",
+  "stagger_b",
+  "kneel_b",
+  "dead_b",
+  "stagger_c",
+  "slump_c",
+  "dead_c"
+ ],
+ "anims": {
+  "idle": {
+   "frames": [
+    "idle"
+   ],
+   "ms": 150,
+   "shared_fit": false
+  },
+  "walk": {
+   "frames": [
+    "walk_1",
+    "walk_2",
+    "walk_3",
+    "walk_4"
+   ],
+   "ms": 130,
+   "shared_fit": false
+  },
+  "walk_fire": {
+   "frames": [
+    "walk_fire_1",
+    "walk_fire_2",
+    "walk_fire_3",
+    "walk_fire_4"
+   ],
+   "ms": 130,
+   "shared_fit": false
+  },
+  "fire_a": {
+   "frames": [
+    "aim_a",
+    "fire_a"
+   ],
+   "ms": [
+    450,
+    160
+   ],
+   "shared_fit": false
+  },
+  "fire_b": {
+   "frames": [
+    "aim_b",
+    "fire_b"
+   ],
+   "ms": [
+    450,
+    160
+   ],
+   "shared_fit": false
+  },
+  "fire_c": {
+   "frames": [
+    "aim_c",
+    "fire_c"
+   ],
+   "ms": [
+    450,
+    160
+   ],
+   "shared_fit": false
+  },
+  "idle_alt": {
+   "frames": [
+    "idle_alt"
+   ],
+   "ms": 150,
+   "shared_fit": false
+  },
+  "death": {
+   "frames": [
+    "hit",
+    "fall",
+    "dead"
+   ],
+   "ms": [
+    250,
+    250,
+    1000
+   ],
+   "shared_fit": false
+  },
+  "spare": {
+   "frames": [
+    "spare"
+   ],
+   "ms": 150,
+   "shared_fit": false
+  },
+  "charge": {
+   "frames": [
+    "charge_1",
+    "charge_2",
+    "charge_3",
+    "charge_4"
+   ],
+   "ms": 100,
+   "shared_fit": false
+  },
+  "melee": {
+   "frames": [
+    "melee_1",
+    "melee_2",
+    "melee_3"
+   ],
+   "ms": [
+    220,
+    140,
+    260
+   ],
+   "shared_fit": false
+  },
+  "idle_lean": {
+   "frames": [
+    "idle_lean"
+   ],
+   "ms": 150,
+   "shared_fit": false
+  },
+  "go_prone": {
+   "frames": [
+    "go_prone"
+   ],
+   "ms": 150,
+   "shared_fit": false
+  },
+  "fire_prone": {
+   "frames": [
+    "go_prone",
+    "aim_prone",
+    "fire_prone",
+    "aim_prone"
+   ],
+   "ms": [
+    260,
+    450,
+    160,
+    400
+   ],
+   "shared_fit": false
+  },
+  "death_b": {
+   "frames": [
+    "hit",
+    "stagger_b",
+    "kneel_b",
+    "dead_b"
+   ],
+   "ms": [
+    200,
+    700,
+    300,
+    1200
+   ],
+   "shared_fit": false
+  },
+  "death_c": {
+   "frames": [
+    "hit",
+    "stagger_c",
+    "slump_c",
+    "dead_c"
+   ],
+   "ms": [
+    200,
+    700,
+    300,
+    1200
+   ],
+   "shared_fit": false
+  }
+ },
+ "sheets": [
+  {
+   "file": "infantry-shotgunner-bandit@64.png",
+   "team": "infantry-shotgunner-bandit@64_team.png",
+   "columns": [
+    "idle",
+    "walk_1",
+    "walk_2",
+    "walk_3",
+    "walk_4",
+    "walk_fire_1",
+    "walk_fire_2",
+    "walk_fire_3",
+    "walk_fire_4",
+    "aim_a",
+    "fire_a",
+    "aim_b",
+    "fire_b",
+    "aim_c",
+    "fire_c",
+    "idle_alt",
+    "hit",
+    "fall",
+    "dead",
+    "spare",
+    "charge_1",
+    "charge_2",
+    "charge_3",
+    "charge_4",
+    "melee_1",
+    "melee_2",
+    "melee_3",
+    "idle_lean",
+    "go_prone",
+    "aim_prone",
+    "fire_prone",
+    "stagger_b",
+    "kneel_b",
+    "dead_b",
+    "stagger_c",
+    "slump_c",
+    "dead_c"
+   ],
+   "size": [
+    2368,
+    400
+   ]
+  }
+ ],
+ "cells": {
+  "idle": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 0
+  },
+  "walk_1": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 1
+  },
+  "walk_2": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 2
+  },
+  "walk_3": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 3
+  },
+  "walk_4": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 4
+  },
+  "walk_fire_1": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 5
+  },
+  "walk_fire_2": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 6
+  },
+  "walk_fire_3": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 7
+  },
+  "walk_fire_4": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 8
+  },
+  "aim_a": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 9
+  },
+  "fire_a": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 10
+  },
+  "aim_b": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 11
+  },
+  "fire_b": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 12
+  },
+  "aim_c": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 13
+  },
+  "fire_c": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 14
+  },
+  "idle_alt": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 15
+  },
+  "hit": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 16
+  },
+  "fall": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 17
+  },
+  "dead": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 18
+  },
+  "spare": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 19
+  },
+  "charge_1": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 20
+  },
+  "charge_2": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 21
+  },
+  "charge_3": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 22
+  },
+  "charge_4": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 23
+  },
+  "melee_1": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 24
+  },
+  "melee_2": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 25
+  },
+  "melee_3": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 26
+  },
+  "idle_lean": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 27
+  },
+  "go_prone": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 28
+  },
+  "aim_prone": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 29
+  },
+  "fire_prone": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 30
+  },
+  "stagger_b": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 31
+  },
+  "kneel_b": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 32
+  },
+  "dead_b": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 33
+  },
+  "stagger_c": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 34
+  },
+  "slump_c": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 35
+  },
+  "dead_c": {
+   "sheet": "infantry-shotgunner-bandit@64.png",
+   "col": 36
+  }
+ },
+ "anchors": "infantry-shotgunner-bandit@64_anchors.json"
+}

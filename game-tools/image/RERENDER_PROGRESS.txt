@@ -1,0 +1,25 @@
+N56/N56b/N57 re-render batch (2026-10-20). Output: game-tools/korean-division-image-out/<faction>/<unit>/
+DONE (interpenetration 0 hits > 1.5 for all):
+ infantry-default, infantry-japanese, infantry-regular, infantry-guard, infantry-reserve, infantry-russian-red, infantry-russian-white,
+ infantry-fengtian, infantry-bandit, infantry-sniper, infantry-sniper-fengtian, infantry-sniper-japanese, infantry-sniper-russian-red,
+ infantry-sniper-russian-white, heavy-machinegunner, heavy-machinegunner-chauchat, heavy-machinegunner-chauchat-fengtian,
+ heavy-machinegunner-fengtian, heavy-machinegunner-japanese, heavy-machinegunner-russian-red, heavy-machinegunner-russian-white (see below)
+REMAINING: none (N56 batch complete 2026-10-20; contact sheet updated; import_kd1920 not yet run)
+NOT RENDERED (not in scope / legacy): infantry-default-kepi, infantry-default-darkgrey, infantry-ww2, badge-* (would get the new prone/fix_bayonet if re-rendered)
+Note: fix_bayonet anim only in anims/infantry.json (infantry + infantry-motions units); fengtian/sniper bases have none.
+Render: python -u make_unit.py <unit> (run heavy_gate first). Contact sheet: korean-division/docs/art_review/rerender_batch.png
+
+## 2026-10-20 prone short rifle
+- Re-rendered (rc=0) all 21 units: infantry-default, -japanese, -regular, -guard, -reserve, -russian-red, -russian-white, -fengtian, -bandit, -sniper, -sniper-fengtian, -sniper-japanese, -sniper-russian-red, -sniper-russian-white, heavy-machinegunner (+ -chauchat, -chauchat-fengtian, -fengtian, -japanese, -russian-red, -russian-white).
+- Collisions (collide.py, depth > 1.5):
+  - infantry-default: 2 hits, both crawl frames (crawl_2/e, crawl_3/e), weapon>arm 1.6. Not prone-named (aim_prone / fire_prone clean).
+  - infantry-fengtian: 10 hits, aim_prone and fire_prone in all 5 dirs, weapon>torso 2.4-2.6.
+  - infantry-bandit: 10 hits, same as fengtian (aim_prone / fire_prone, weapon>torso 2.4-2.6).
+  - All other units: clean.
+- Import (tools/import_kd1920.py) held: fengtian/bandit hits are in prone frames. User decides.
+- Contact sheet: docs/art_review/prone_batch.png (korean-division). Heavy-machinegunner rows are blank (no prone anims).
+- Fix: fengtian/bandit unit tune prone_weapon dy -4.0 (stale override) removed -> inherits dy 17.4; collide aim/fire_prone 0 hits; re-rendered both; prone_batch.png regenerated.
+
+## 2026-10-20 missing theme units
+- New (copy of cavalry-officer-fengtian, swap cap + uniform): cavalry-officer-japanese (japanese_officer_cap, jkhaki), cavalry-officer-russian-white (officer_cap_ru_olive, ru_olive), cavalry-officer-russian-red (officer_cap_ru_greybrown, ru_greybrown). Rendered rc=0, collide 0 hits > 1.5.
+- Contact sheet: korean-division/docs/art_review/missing_theme_units.png

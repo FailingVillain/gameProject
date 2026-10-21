@@ -1,0 +1,23 @@
+{
+ "name": "standard-bearer-fengtian",
+ "_doc": "Fengtian standard bearer: five-colour flag.",
+ "base": "infantry",
+ "anims": "infantry-bearer",
+ "headgear": "fengtian_cap",
+ "uniform": "fengtian",
+ "gear": [
+  "haversack",
+  "canteen_cloth",
+  "leather_pouches"
+ ],
+ "team": [
+  "helmet_band",
+  "arm_patch"
+ ],
+ "belt": true,
+ "belt_pouches": false,
+ "e_pull_extra": 3.0,
+ "dirs": "all",
+ "frames": "all",
+ "weapon": "flag_fengtian"
+}

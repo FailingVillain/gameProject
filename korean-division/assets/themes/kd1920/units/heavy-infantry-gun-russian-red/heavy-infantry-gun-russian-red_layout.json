@@ -1,0 +1,299 @@
+{
+ "frame": [
+  336,
+  272
+ ],
+ "anchor": [
+  168,
+  190
+ ],
+ "dirs": [
+  "s",
+  "se",
+  "e",
+  "ne",
+  "n"
+ ],
+ "mirror": true,
+ "columns": [
+  "idle",
+  "fire_0",
+  "fire_1",
+  "fire_2",
+  "load_1",
+  "load_2",
+  "move_1",
+  "unpack_1",
+  "unpack_2",
+  "move_2",
+  "move_3",
+  "move_4",
+  "hit",
+  "dead"
+ ],
+ "anims": {
+  "idle": {
+   "frames": [
+    "idle"
+   ],
+   "ms": 150,
+   "shared_fit": true
+  },
+  "fire": {
+   "frames": [
+    "fire_0",
+    "fire_1",
+    "fire_2",
+    "load_1",
+    "load_2"
+   ],
+   "ms": [
+    450,
+    130,
+    200,
+    450,
+    350
+   ],
+   "shared_fit": true
+  },
+  "unpack": {
+   "frames": [
+    "move_1",
+    "unpack_1",
+    "unpack_2",
+    "idle"
+   ],
+   "ms": [
+    250,
+    350,
+    350,
+    300
+   ],
+   "shared_fit": true
+  },
+  "pack": {
+   "frames": [
+    "idle",
+    "unpack_2",
+    "unpack_1",
+    "move_1"
+   ],
+   "ms": [
+    300,
+    350,
+    350,
+    250
+   ],
+   "shared_fit": true
+  },
+  "move": {
+   "frames": [
+    "move_1",
+    "move_2",
+    "move_3",
+    "move_4"
+   ],
+   "ms": 140,
+   "shared_fit": true
+  },
+  "death": {
+   "frames": [
+    "hit",
+    "dead"
+   ],
+   "ms": [
+    350,
+    1200
+   ],
+   "shared_fit": true
+  }
+ },
+ "sheets": [
+  {
+   "file": "heavy-infantry-gun-russian-red_1.png",
+   "team": "heavy-infantry-gun-russian-red_1_team.png",
+   "columns": [
+    "idle",
+    "fire_0",
+    "fire_1",
+    "fire_2",
+    "load_1",
+    "load_2",
+    "move_1",
+    "unpack_1",
+    "unpack_2",
+    "move_2",
+    "move_3",
+    "move_4"
+   ],
+   "size": [
+    4032,
+    1360
+   ]
+  },
+  {
+   "file": "heavy-infantry-gun-russian-red_2.png",
+   "team": "heavy-infantry-gun-russian-red_2_team.png",
+   "columns": [
+    "hit",
+    "dead"
+   ],
+   "size": [
+    672,
+    1360
+   ]
+  }
+ ],
+ "cells": {
+  "idle": {
+   "sheet": "heavy-infantry-gun-russian-red_1.png",
+   "col": 0
+  },
+  "fire_0": {
+   "sheet": "heavy-infantry-gun-russian-red_1.png",
+   "col": 1
+  },
+  "fire_1": {
+   "sheet": "heavy-infantry-gun-russian-red_1.png",
+   "col": 2
+  },
+  "fire_2": {
+   "sheet": "heavy-infantry-gun-russian-red_1.png",
+   "col": 3
+  },
+  "load_1": {
+   "sheet": "heavy-infantry-gun-russian-red_1.png",
+   "col": 4
+  },
+  "load_2": {
+   "sheet": "heavy-infantry-gun-russian-red_1.png",
+   "col": 5
+  },
+  "move_1": {
+   "sheet": "heavy-infantry-gun-russian-red_1.png",
+   "col": 6
+  },
+  "unpack_1": {
+   "sheet": "heavy-infantry-gun-russian-red_1.png",
+   "col": 7
+  },
+  "unpack_2": {
+   "sheet": "heavy-infantry-gun-russian-red_1.png",
+   "col": 8
+  },
+  "move_2": {
+   "sheet": "heavy-infantry-gun-russian-red_1.png",
+   "col": 9
+  },
+  "move_3": {
+   "sheet": "heavy-infantry-gun-russian-red_1.png",
+   "col": 10
+  },
+  "move_4": {
+   "sheet": "heavy-infantry-gun-russian-red_1.png",
+   "col": 11
+  },
+  "hit": {
+   "sheet": "heavy-infantry-gun-russian-red_2.png",
+   "col": 0
+  },
+  "dead": {
+   "sheet": "heavy-infantry-gun-russian-red_2.png",
+   "col": 1
+  }
+ },
+ "anchors": "heavy-infantry-gun-russian-red_anchors.json",
+ "kind": "artillery",
+ "gun": "infantry_gun",
+ "anchor_meaning": "ground point under the footprint centre; same in every cell",
+ "hitch_px": {
+  "move_1": {
+   "s": [
+    168.0,
+    229.7
+   ],
+   "se": [
+    219.4,
+    217.2
+   ],
+   "e": [
+    240.7,
+    187.0
+   ],
+   "ne": [
+    219.4,
+    156.8
+   ],
+   "n": [
+    168.0,
+    144.2
+   ]
+  },
+  "move_2": {
+   "s": [
+    168.0,
+    228.7
+   ],
+   "se": [
+    219.4,
+    216.2
+   ],
+   "e": [
+    240.7,
+    185.9
+   ],
+   "ne": [
+    219.4,
+    155.7
+   ],
+   "n": [
+    168.0,
+    143.2
+   ]
+  },
+  "move_3": {
+   "s": [
+    168.0,
+    229.7
+   ],
+   "se": [
+    219.4,
+    217.2
+   ],
+   "e": [
+    240.7,
+    187.0
+   ],
+   "ne": [
+    219.4,
+    156.8
+   ],
+   "n": [
+    168.0,
+    144.2
+   ]
+  },
+  "move_4": {
+   "s": [
+    168.0,
+    228.7
+   ],
+   "se": [
+    219.4,
+    216.2
+   ],
+   "e": [
+    240.7,
+    185.9
+   ],
+   "ne": [
+    219.4,
+    155.7
+   ],
+   "n": [
+    168.0,
+    143.2
+   ]
+  }
+ }
+}

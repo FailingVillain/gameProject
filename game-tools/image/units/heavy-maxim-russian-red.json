@@ -1,0 +1,28 @@
+{
+  "name": "heavy-maxim-russian-red",
+  "kind": "crew",
+  "_doc": "heavy-maxim faction variant (russian-red): same model, budenovka + russian-red infantry uniform; cap badge from parts/badges HEAD_BADGE.",
+  "anims": "heavy-maxim",
+  "dirs": "all",
+  "frames": "all",
+  "headgear": "budenovka",
+  "uniform": {
+    "legging": "puttee",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "collar": true,
+    "puttees": true,
+    "jacket": "ru_greybrown",
+    "trousers": "ru_greybrown"
+  },
+  "tune": {
+    "parts": {
+      "headgear": {
+        "budenovka": {
+          "spire_top": 14.6
+        }
+      }
+    }
+  }
+}

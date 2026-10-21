@@ -1,0 +1,40 @@
+{
+ "name": "교전 테스트: 평지",
+ "width": 256,
+ "height": 128,
+ "base": "grass",
+ "paint": [],
+ "starts": [
+  [
+   30,
+   64
+  ],
+  [
+   225,
+   64
+  ]
+ ],
+ "factions": [
+  {
+   "name": "아군",
+   "en": "Blue",
+   "color": [
+    60,
+    130,
+    235
+   ],
+   "lang": "en"
+  },
+  {
+   "name": "적군",
+   "en": "Red",
+   "color": [
+    215,
+    50,
+    50
+   ],
+   "lang": "en"
+  }
+ ],
+ "sites": []
+}

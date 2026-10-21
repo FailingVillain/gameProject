@@ -1,0 +1,604 @@
+{
+  // 밸런스 데이터. 게임을 다시 빌드하지 않고 수치를 조정할 수 있다. (주석 · 끝 쉼표 허용)
+  // 시간 단위: 초, 거리 단위: 타일, 속도: 타일/초
+  // 방향 변경 (ROADMAP §0-1, 2026-10-19): 자원 · 생산 · 건설 · 공병 없음. 주어진 병력만으로 싸운다.
+  "start": {
+    "revealDelay": 30,          // 대도시를 모두 잃은 뒤 위치가 드러나기까지 (초)
+    // 지도에 유닛 배치(units)가 없을 때 세력마다 대도시 앞에 주는 기본 병력. company: 중대로 편성, battalion: 대대 번호 (0 = 없음)
+    "force": [
+      { "units": { "officer": 1, "infantry": 24, "infantry_scout": 2 }, "company": true, "battalion": 1 },
+      { "units": { "officer": 1, "infantry": 24, "infantry_scout": 2 }, "company": true, "battalion": 1 },
+      { "units": { "officer": 1, "heavy_machinegunner": 4, "heavy_at_rifleman": 4, "infantry_scout": 2 }, "company": true, "battalion": 1 },
+      { "units": { "tank_ft_male": 2, "tank_ft_female": 1 } },
+      { "units": { "supply_wagon": 2 } }
+    ]
+  },
+  // 탄약 회복: 마지막 사격 · 피격(빗나감 포함) 뒤 regenDelay 초가 지나면 한도의 regenPct/초 (interval 초마다 판정, 유닛 Id 로 분산).
+  // 자기 · 동맹 도시(city) 가장자리 cityRadius 칸 안 ×cityMul, 보급 마차 wagonRadius 칸 안 ×wagonMul (중첩 없음, 큰 쪽). 차량 · 포도 같은 규칙 (연료 없음)
+  "supply": {
+    "regenDelay": 30, "regenPct": 0.0015, "interval": 1.0,
+    "cityRadius": 8, "cityMul": 3,
+    "wagonRadius": 6, "wagonMul": 4,
+    "wagonRefill": 1.0          // 보급 마차: 아군 도시 cityRadius 칸 안에서 초당 다시 싣는 짐 (짐 = 병사 1명의 탄약 한도 전체)
+  },
+  // 지형 (ROADMAP '지형 · 높이', 2026-10-19): 이동 ×, 엄폐 = 맞을 확률 × · 받는 제압 × (지형 · 가옥 옆 중 가장 좋은 값 하나, 겹치지 않음)
+  "terrain": {
+    "forestMove": 0.7, "forestHit": 0.8, "forestSuppress": 0.85,   // forest 2026-10-19: 맞을 확률 0.7 → 0.8, 제압 0.8 → 0.85 (은폐 약화, 측정 후 결정)
+    "forestSeeDepth": 3,        // 숲 가장자리에서 3칸 깊이까지만 보이고 쏠 수 있다 (forest 2026-10-19: 2 → 3, 교착 완화). 더 깊은 숲은 시야 · 사선을 막는다
+    "rubbleMove": 0.6, "rubbleHit": 0.5, "rubbleSuppress": 0.6,
+    "houseAdjHit": 0.8, "houseAdjSuppress": 0.8,   // 민간 가옥 (진입 불가 · 시야 · 사선 막음) 에 붙은 칸의 엄폐
+    "wireMove": 0.3,            // 철조망 = 통과 불가 장애물 (임시, 2026-10-19; 아래 이동 · 멈칫 값은 현재 쓰이지 않음, 되돌릴 때용): 이동 ×0.3 + 1초마다 35% 확률로 0.3~0.8초 멈칫 (장갑 차량 제외)
+    "wireHesitateChance": 0.35, "wireHesitateMin": 0.3, "wireHesitateMax": 0.8, "wireHesitateInterval": 1.0,
+    "trenchMove": 1.0, "trenchHit": 0.5, "trenchSuppress": 0.5,   // 참호 지형 (지도 · 미션에 그려진 참호선만 — 건설 제거 2026-10-19). 명중 배수 0.6 → 0.5 (tweak1 2026-10-19 사용자 결정 — 방어 우위 회복), trenchPerTile 2 그대로
+    // 참호 자동 점유: 이동 중 참호 칸을 밟은 보병은 trenchCaptureRadius 칸 안의 빈 자리에 들어가 사수, 이동 명령의 대형 슬롯은 trenchSnapRadius 칸 안의 빈 자리로 붙는다. 칸당 trenchPerTile 명
+    "trenchPerTile": 2, "trenchSnapRadius": 2.0, "trenchCaptureRadius": 1.5,
+    "craterMove": 0.85, "craterHit": 0.8, "craterSuppress": 0.8,  // 포탄 구덩이 (포격 착탄으로 생김, 무기 craterChance)
+    "highSightMul": 1.25,       // 고지: 시야 +25%
+    "highToLowHit": 1.15, "lowToHighHit": 0.85,   // 고지 → 평지 사격 명중 ×1.15, 반대 ×0.85
+    "slopeMove": 0.8            // 경사 (평지와 맞닿은 고지 칸) 이동 ×0.8
+  },
+  // 지형 시야: 굵은 칸 묶음 (blockSize 타일) 위 shadowcasting. 숲 깊은 곳 · 가옥 · 바위가 막고, 평지에서는 고지 너머를 못 본다
+  "vision": {
+    "blockSize": 2, "terrainBlocking": true,
+    "officerSightMul": 1.25,    // 장교 쌍안경: 시야 ×1.25
+    "scoutSightMul": 1.5        // 정찰병 (유닛 "scout": true) 시야 ×
+  },
+  // 정찰병 자율 행동 (Core/Scouts.cs): 중대가 움직이거나 싸우면 진행 방향 aheadMin~aheadMax 칸 앞의 관측 지점 (고지 · 숲 가장자리 우선) 으로 나가 선다.
+  // 제압 >= returnSuppression · HP <= returnHpFrac · 적을 처음 본 뒤 reportSec 초 · 중대에서 maxDist 칸 초과 중 하나면 장교에게 돌아온다 (resumeSuppression 미만 · HP 회복 불가 · cooldownSec 초 뒤에 다시 나감).
+  // perCompany: 중대당 정찰병 수 상한 (중대 편성 · 자동 편입), attachRadius: 소속 없는 정찰병이 자동으로 붙는 중대 거리 (칸), followDist: 중대와 이 이상 떨어지면 따라붙는다
+  "scoutAi": {
+    "aheadMin": 9, "aheadMax": 15, "marchLead": 3, "spread": 7.5, "searchRadius": 4,
+    "returnSuppression": 400, "resumeSuppression": 200, "returnHpFrac": 0.5, "reportSec": 5, "maxDist": 22,
+    "cooldownSec": 30, "followDist": 12, "arriveDist": 6, "perCompany": 2, "attachRadius": 60,
+    // N22 피격 엄폐 (2026-10-19 사용자 결정): 노려지면 (명중 · 빗나감 · 폭발 · 흩뿌림) 곧바로 coverRadius 칸 안 엄폐 · 사격자 사선 밖 칸으로 물러나고,
+    // coverCalmSec 초 조용하면 (coverMinSec 이상 머문 뒤) 다시 관측. 중대 정찰조 · 관측반 (정찰병만의 중대) 모두. 제압 복귀 (returnSuppression) 와 별개.
+    "coverOnFire": true, "coverRadius": 6, "coverCalmSec": 8, "coverMinSec": 3, "coverRepickSec": 2, "coverThreatRadius": 60,
+    // 숲 탐색 (forest, 2026-10-19 사용자 결정): 앞 forestProbeLook 칸 안에 숲이 있고 적이 안 보이면 정찰조가 깊은 숲도 들어가 (점수 +forestProbeDeepBonus) 가로지른다.
+    // 전 구성원이 forestProbeQuietSec 초 조용하면 중대가 서 있어도 내보낸다 (교착). 기준점 · 복귀 거리 +forestProbeExtra 칸. 피격 엄폐 (N22) 는 그대로 우선.
+    "forestProbe": true, "forestProbeLook": 24, "forestProbeQuietSec": 25, "forestProbeExtra": 8, "forestProbeDeepBonus": 25
+  },
+  "weather": {
+    // 날씨 · 시간대 (지도 json "weather" · "time" · "schedule", 시험 --weather/--time). 최종 배수 = 날씨 × 시간대. 제압은 영향 없음.
+    // sight = 시야 반경 ×, hit = 명중률 ×, move = 이동 속도 ×, binocular (시간대) = 장교 쌍안경 보너스가 남는 비율
+    "states": {
+      "clear":    { "sight": 1.0,  "hit": 1.0,  "move": 1.0 },
+      "overcast": { "sight": 0.9,  "hit": 1.0,  "move": 1.0 },
+      "fog":      { "sight": 0.45, "hit": 0.9,  "move": 1.0 },
+      "rain":     { "sight": 0.7,  "hit": 0.9,  "move": 1.0 },
+      "snow":     { "sight": 0.8,  "hit": 0.95, "move": 0.85 }   // 만주 겨울 (진창은 나중)
+    },
+    "times": {
+      "dawn":  { "sight": 0.8,  "hit": 0.95, "binocular": 0.7 },
+      "day":   { "sight": 1.0,  "hit": 1.0,  "binocular": 1.0 },
+      "dusk":  { "sight": 0.75, "hit": 0.95, "binocular": 0.6 },
+      "night": { "sight": 0.45, "hit": 0.85, "binocular": 0.3 }
+    },
+    "minSight": 8,              // 줄어든 시야 하한 (칸, 2026-10-19 사용자 승인: 날씨 최저 시야 8칸)
+    "minSightMul": 0.3          // 날씨 × 시간대 시야 배수 하한 (안개 0.45 × 밤 0.45 = 0.2 → 0.3)
+  },
+  "capture": {
+    "radius": 4,                // 시설 가장자리에서의 점령 반경
+    "time": 10,                 // 유닛 1기 기준 중립→점령 시간 (건물별 captureTime 으로 덮어씀)
+    "maxMultiplier": 3          // 유닛 수에 따른 최대 배속
+  },
+  // ---- 교전 규칙 (교전 개편 2차, ROADMAP §2-4b~e · 2차 추가 A · C). 초기값 — 관찰 후 조정.
+  "combat": {
+    "chargeOrderDelayMul": 0.5,
+    "targetSpreadJitter": 5,            // 표적 분산: 보병 자동 표적 점수 = 거리 + [0, 5) 칸 결정적 흔들림 (사격자 · 표적 쌍 해시)
+    "suppressMax": 1000, "suppressDecay": 25, "suppressDecayProp": 0, "suppressGainSat": 1.0, "suppressRankDecayBonus": 0.05, "suppressDecayInterval": 15,   // 제압 0~1000, 초당 −25 (N39 2026-10-19 사용자 결정: 옛 80 → 너무 빨리 빠짐; 사병 계급 단계당 +5%), 가산 × (1 − 제압비) 포화 (상한에 붙지 않음), 0.25초마다 판정
+    "suppressCalmSec": 4, "suppressFireDecayMul": 0.25,   // N39: 최근 4초 안 노려진 병사는 감소 ×0.25 (지속 사격 중 고정 유지, 사격이 그치면 0.6 → 0.4 약 10초)
+    "suppressFireSlow": 1.0, "suppressMoveSlow": 0.5,   // 제압 1000 일 때 사격 간격 ×2 · 이동 −50% (선형)
+    "suppressAccMul": 0.5,                              // N25: 사격자 명중률 × (1 − 0.5 × 제압비)
+    "nearMissFrac": 0.5, "nearMissRadius": 1.5, "nearMissPathLen": 6, "nearMissOvershoot": 3,   // N25 근접 탄착: 빗나간 탄의 사선 (착탄점 앞 6칸 + 너머 3칸) · 폭발 반경 바깥 1.5칸 안 적 = 무기 제압 × 0.5 × (1 − 거리/1.5)
+    "pinAt": 0.6, "pinRelease": 0.4, "pinnedAccMul": 0.75, "proneHitMul": 0.6,   // N25 고정 (엎드림): 제압 ≥ 0.6 고정 · < 0.4 풀림, 고정 중 후퇴 명령 외 이동 없음 · 명중률 ×0.75, 엎드린 표적 피격 = min(지형 엄폐, 0.6)
+    "proneAt": 0.35, "proneRelease": 0.2, "proneSettleSec": 0.5, "proneHoldInFormation": true, "crawlSpeedMul": 0.3, "proneStandSec": 0.8, "proneHoldMaxSec": 8, "proneHoldMaxAssaultSec": 3, "proneCrossExempt": true, "coverDecayMul": 1.25,   // supp 2026-10-20 · supp2 기본 켬 (2026-10-20 사용자 승인): proneAt > 0 이면 서서 사격받는 병사가 그 제압 이상에서 엎드림 (피격 = min(지형, proneHitMul)), 0.2 미만 · 움직이면 일어남. coverDecayMul 1.25 = 엄폐 안 제압 감소 배수 (1 = 끔)
+    "breakAt": 0.85, "breakChance": 0, "bearerRadius": 10, "bearerBreakMul": 0.7, "bearerRetreatMul": 0.85, "bearerFellSec": 20, "bearerFellMul": 1.3, "breakInterval": 1, "breakRankFactor": 0.08, "breakOfficerMul": 0.4, "breakNcoMul": 0.6, "breakCoverMul": 0.5, "breakCasualtyWeight": 2,   // supp · supp2 (사용자 결정 10-20: 기본 끔, 휴면): breakChance > 0 이면 고정 + 제압 0.85 이상에서 1초마다 붕괴 굴림 (0 = 끔) (사기 배수 — 계급 · 장교 · 부사관 · 엄폐 · 중대 사상률)
+    "surrenderChance": 0.05, "surrenderPlayerMul": 0.3, "surrenderCasualty": 0.8, "surrenderMaxLeft": 10, "surrenderSuppAt": 0.85, "surrenderSuppSec": 10, "surrenderInterval": 2, "surrenderThreatRadius": 20, "surrenderProbeLen": 10, "surrenderProbeDeg": 60, "surrenderBlockRadius": 4,   // N79b 항복: 중대 사상 80%+ & 남은 10명 이하 & 퇴각 불가 & 제압 0.85+ 10초 연속 → 2초마다 5% (플레이어 x0.3)
+    "breakDistance": 10, "breakCorneredMul": 0.5, "breakMinSec": 8, "breakMaxSec": 40, "breakRallyAt": 0.3,   // 붕괴 = 적 반대쪽 10칸 도주 (명령 무시, 후퇴 명령은 따름), 8초 뒤 제압 0.3 미만이면 회복, 40초면 무조건 회복. supp2: 도주 길이 물 (강 · 다리) 에 막히면 물가 앞에서 끊고 붕괴 확률 × breakCorneredMul (교두보 · 배수진)
+    "officerDecayMul": 1.25, "officerFireMul": 0.9,      // 장교 지휘 범위(유닛 commandRadius) 안 병사: 제압 감소 ×1.25 (N25: 옛 ×3, N39 1.5 → 1.25) · 사격 간격 ×0.9 (중첩 없음)
+    "rankKills": [2, 5, 10, 18, 30, 48, 75, 110], "killsCap": 128,   // 사병 9단계 (누적 사살 0/2/5/10/18/30/48/75/110, 사살 수 상한 128). 이름 = assets/data/ranks.json (세력별)
+    "squadMax": 12, "squadMergeBelow": 6,               // 분대: 최대 12명 고정 편성, 6명 미만이 되면 같은 중대 분대와 자동 합치기 (자리가 없으면 나눠 넣기)
+    "ncoRank": 5, "ncoHesitateMul": 0.7, "ncoDecayMul": 1.25, "ncoRadius": 12,   // 공식 부사관 = 계급 5 (하사) 이상. 분대장이 부사관이면 분대원 (12칸 안): 멍칫 -30% · 제압 감소 x1.25, 장교 효과와 중첩 안 함
+    "squadLeaderRank": 5,   // 부사관 기본 편성 (2026-10-19 사용자 승인, 관찰 7차 §35): 미션 보병 분대장 = 이 계급 (5 하사, 0 = 끔). 미션 병력 squadLeaderRank 로 덮어씀, 병력 rank 를 정한 미션은 적용 안 함
+    "gapCheckSec": 25, "gapMoveMin": 2.75, "swordWaveChance": 0.33,   // 장교 빈자리 점검 (N12 2026-10-19: 10 → 25초, 1 → 2.75칸): 25초마다 빈자리가 있으면 느슨하게 다시 채움 (2.75칸 넘게 벗어난 병사만 이동), 교전 중이면 장교 33% 칼 흔들기
+    "gapCheckMinSec": 20, "gapCombatSec": 10, "regroupFireSec": 5,   // N12: 점검 간격 하한 20초 (지휘관 경험치로 짧아져도), 구성원이 표적을 잡았거나 10초 안에 쐈으면 점검 안 함, 5초 안에 쏜 병사 · 엄폐 (참호 · 숲 · 가옥) 중인 병사는 대형으로 돌려보내지 않음
+    "formArriveSlack": 0.6, "formMoveTolerance": 0.5,   // N12: 깃발 대형 도착 = 최종 슬롯 0.6칸 안 (옛 0.3), 행군 중 슬롯 오차 0.5칸 이하는 고치려 걷지 않고 깃발과 나란히 (서서히만 줄임)
+    "formRelax": true, "shortMoveDist": 18, "shortMoveFaceDeg": 20, "relaxMoveTolerance": 1.5, "formDeadband": 0.25, "formArriveZone": 1.5, "restAlignSec": 8, "narrowExitFrac": 0.12,   // 대형 완화 (formation 2026-10-21, src/Core/FormRelax.cs): 짧은 이동 18칸 안 = 평행이동 · 즉시 출발, 행군 오차 1.5칸 허용 · 0.25칸 데드밴드, 구역 도착 1.5칸, 8초 휴식 뒤 비접적 정렬, 종대 복귀 문턱 12% (formRelax false = 옛 동작)
+    "chokeEnabled": false, "chokeWidth": 4, "chokeLookahead": 14, "chokeHoldMaxTicks": 1200, "chokePushScale": 0.5,   // choke (2026-10-21): 좁은 길목 (폭 4칸 이하) 통과 큐 · 종대 유지 · 밀림 약화
+    "narrowBlockFrac": 0.25, "narrowClearTicks": 120,   // bunchfix (2026-10-19): 행군 중 깃발 폭 선 (지금 · 3칸 앞 · 8칸 앞) 중 하나라도 25% 이상 막히면 2열 종대 (옛: 한 칸이라도 막히면), 셋 다 트인 채 120틱 (옛 60) 이면 원래 대형
+    "officerAvoid": true, "officerChargeWithFrac": 0.3, "officerChargeLeadTol": 0, "officerDefendRange": 4, "officerMeleeRadius": 6,   // N35 장교 교전 회피 (2026-10-19 사용자 결정): 장교는 혼자 돌격 안 함 — 중대 보병 30% 이상이 돌격 중일 때만 함께, 돌격하는 병사 앞줄을 넘지 않음. 자위 사격만 = 적 4칸 안, 또는 장교 6칸 안에서 중대가 근접전 중이면 권총 사거리까지. 표적 찾아 다가가기 · 추격 없음
+    "scoutAvoid": true, "scoutDefendRange": 4, "scoutRetaliateRange": 10,   // 정찰병 자위 사격 (2026-10-19 사용자 추가 결정): 먼저 쏘지 않음 — 적 4칸 안만 표적 (찾기 · 추격 없음), 멈춰 있는데 (엄폐 · 관측 자리) 계속 맞으면 10칸 안 사격자에게만 반격
+    "officerBack": 1, "officerSpread": 3, "officerLeadTol": 0,   // N12 장교 위치: 틀 없는 중대 대형에서 장교 = 대열 중앙 뒤 1칸 (실제로는 맨 뒷줄 뒤 한 간격이 하한) (여럿이면 옆 3칸 간격), 돌격 중이 아닌 장교는 중대 보병 앞선을 넘어 걷지 않음
+    "closeCheckSec": 6, "closeDispTiles": 2, "closeFrontTol": 0.75, "closeOnFrac": 0.9, "closeHysteresis": 0.6, "closeCooldownSec": 20,   // 대열 정비 (gapfill 2026-10-19): 교전 중 장교가 6초마다 (경험치 판단 간격) 대열을 보고 앞줄에 구멍이 나면 정비 명령, 모든 지표가 x0.6 아래로 내려가야 경보 해제, 경보 중 재명령 20초 간격. closeOnFrac = 보조 문턱 (2칸 넘게 벗어난 병사 비율 — 교전 중 원래 0.6 안팎이라 0.9), closeFrontTol = 측정용 옛 앞줄 빈 슬롯 반경
+    "closeHoleLat": 0.6, "closeHoleDepth": 2, "closeHoles": 5, "closeHoleFrac": 0.5, "closeHoleGap": 6, "closeBehindTiles": 3, "closeBehindMen": 0,   // gapfill2 (2026-10-19 사용자 승인) 앞줄 구멍: 앞줄 슬롯마다 옆 0.6 x 간격 안 · 2칸 넘게 뒤가 아닌 곳에 병사가 없으면 구멍. 구멍 >= max(5, 앞줄 슬롯 x 50%) 또는 연속 구멍 >= 6 이면 경보 (교전 중 1초 표본 분포 p75 근처 — 10차 NOCLOSE 재측정: 구멍 p50 0~8 · p75 3~13, 연속 p50 0~6 · p75 2~10) (3칸 넘게 뒤처진 앞줄 병사 수 문턱 0 = 끔)
+    "closeChargeRange": 12, "closeChargePollSec": 0.25, "closeChargeThrMul": 0.5, "closeAssaultAutoFrac": 0.25,   // gapfill2 돌격 대응: 0.25초마다 중대 병사 12칸 안에서 다가오는 적 돌격 (대도 · 착검 · 기병) 을 보면 점검 간격 없이 바로 판단 (문턱 x0.5, 재명령 20초 간격은 지킴). tweak1: 자기 중대 돌격 중 (틀 돌격 · 명령 돌격 병사 · 자동 돌격 병사 25% 이상) 에는 정비 명령 · 정비를 미루고, 화력조 · 지원 역할 병사는 정비 대상 아님
+    "closeWindowSec": 20, "closePassSec": 1, "closeSlack": 1, "closeRegularRank": 2, "closeVeteranRank": 4, "closeObey": [1.0, 0.5, 0.15], "closeDelaySec": [0, 6, 12],   // 정비 명령 20초 유효 (1초마다 늦은 병사 확인), 슬롯 1칸 넘게 벗어난 병사만. 숙련 = 사병 계급 0~1 신병 · 2~3 정규 · 4+ 노병: 교전 중 (표적 · 5초 안 사격) 이면 곧장 따를 확률 100/50/15%, 아니면 0/6/12초 뒤 (교전이 끝나면 바로). 대열 정비 단축키 L
+    "chargeSpeedMul": 1.3, "chargeAutoRange": 1, "groundScatterMul": 1.5, "prepRounds": 8, "barrageStepTiles": 2.5, "barrageStepSec": 5, "barrageMaxTiles": 40, "meleeRange": 0.3, "chargeAutoMaxSuppress": 400, "chargeBreakSuppress": 0, "chargeBreakSuppressCav": 450, "chargeBreakGraceSec": 0.5,   // 돌격 속도 +30%, 적이 1칸 이내면 자동 돌격 (2026-10-18: 1.5 → 1) (제압 400 이상이면 자동 돌격 안 함), 근접 판정 = 가장자리 0.3칸.
+    "scatterNearFrac": 0.15, "scatterQuad": 0.5,   // N11 거리별 착탄 퍼짐: 오차 반경 = 무기 scatter × (0.15 + 0.85 × (0.5·f + 0.5·f²)), f = 거리/사거리 — 곡사포 (scatter 9) 30칸 2.1 · 60칸 4.2 · 120칸 9칸, 야전포 (4) 20칸 0.9 · 80칸 4칸
+    "artilleryFriendlyFire": true, "crewDangerMargin": 1, "crewDangerScatterMul": 0.5,   // pursuit2 (2026-10-19 사용자 결정): 포탄 파편 (보병포 · 야전포 · 곡사포 착탄 폭발) 은 아군 · 동맹도 피해 · 제압 (쏜 포 자신 제외). 소총 · 기관총 · 수류탄 · 근접은 그대로 같은 팀 제외. false = 옛 동작. 포수 규율: 명시 공격 명령이 아닌 (자동) 표적 둘레 splash × 1.8 + 거리 퍼짐 × crewDangerScatterMul (0.5 — 1 이면 crossing 다리 교두보 지원 사격을 못 함) + crewDangerMargin 칸 안에 아군이 있으면 쏘지 않고 표적을 놓음 (< 0 = 끔; 공격 명령 · 지점 포격은 그대로 쏨)
+    "traverseRedeployDeg": 90, "traverseShiftMul": 0.5,   // N10 재조준 (2026-10-19): 방열한 포의 표적이 사계 밖이면 사계 중심을 옮길 각 < 90° 는 방열한 채 포가 회전 (turnRate × 0.5 — 보병포 22.5 · 야전포 15 · 곡사포 10 °/s, 그동안 사격 없음), 90° 이상이면 철수 → 회전 → 재방열 (공격 명령 · 지점 포격만)
+    // 역돌격 (돌격해 오는 적에게 자동 돌격으로 맞받기) = 돌격 보너스 없음 (속도 +30% · 기병 충격 없이 근접전, 2026-10-19)
+    "staminaMax": 100, "staminaChargeDrain": 8, "staminaQuickDrain": 3, "staminaRegenMove": 2, "staminaRegenIdle": 5,   // 스태미나 (보병 · 장교): 최대 100, 돌격 이동 −8/초 · 속보 이동 −3/초, 걸을 때 +2/초 · 정지 +5/초
+    "staminaFullSpeed": 50, "staminaLow": 25, "staminaLowMoveMul": 0.85, "quickStepSpeedMul": 1.15,   // 돌격(+30%)/속보(+15%) 보너스는 스태미나 50 이상 전부 → 0 에서 +0% (선형), 25 미만이면 모든 이동 ×0.85
+    "reactDelayMaxTicks": 2,                            // 명령 → 출발 0~2틱 (2026-10-19 ×0.7) (유닛 · 명령마다 결정적)
+    "firstShotMin": 0.2, "firstShotMax": 1.2, "firstShotIdleSec": 5, "firstShotSkillMul": [1.0, 0.85, 0.7],   // N34 첫 사격 반응 (2026-10-19 승인): 5초 넘게 쏘지 않은 보병이 새 표적을 잡으면 조준 = max(무기 조준, 0.2~1.2초 x 숙련 [신병 1 · 정규 0.85 · 노병 0.7]) (유닛 · 틱 해시) — 첫 일제 사격이 약 1.5초에 흩어진다 (표적 탐색 분산 0.7초 포함, 1.5 는 1.7초라 1.2)
+    // arty3 (사용자 2026-10-21, ROADMAP_LONG 3): 대포 방렬 시작 0~3초 지연 + 방렬 시간 ±15% (포마다 고정, 상태 없음) · 방렬 자리 유지 (사거리 밖 자동 표적 8초 대기 · 방렬 뒤 20초 재방렬 냉각 — 두 초 값은 추측) · heavy 간격 최소 3 / 가능하면 5칸 · 최후 저지선 띠 2칸 (추측)
+    "gunDeployDelayMax": 3, "gunDeployTimeVar": 0.15, "gunOutOfRangeHoldSec": 8, "gunRepackCooldownSec": 20, "heavyGapMin": 3, "heavyGapWant": 5, "heavyGapSpeedMul": 0.5, "finalLineBand": 2,
+    "artyRateMin": 0.93, "artyRateMax": 1.07,   // N34 포마다 고정 발사 간격 배수 0.93~1.07 (유닛 Id · 지도 시드 해시) — 포대가 일제히 쏘지 않게
+    "hesitateMinSuppress": 400, "hesitateChance": 0.15, "hesitateMin": 0.2, "hesitateMax": 0.6, "hesitateInterval": 1.0,   // 멍칫: 제압 400 이상, 1초마다 최대 15% (제압 비례), 0.2~0.6초
+    "hesitateRankFactor": 0.1, "hesitateOfficerMul": 0.5, "hesitateMaxLoss": 0.05, "hesitateGraceSec": 3,                 // 사병 계급 단계당 −10% (8단계 = −80%), 장교 근처 ×0.5, 평균 속도 손실 ≤5%, 이동 명령 뒤 3초 · 돌격 중 없음
+    "engageRangeFrac": 0.7,                            // 반응 거리 (engage, 2026-10-19): 자동 · 사수 · 공격 이동 대형의 표적 탐색과 추격 접근 = 사거리 × 이 값 (무기 engageFrac 이 있으면 그 값 — 기관총 · 저격총 · 권총 · 기관단총 1.0). 곡사 · 대포 제외. 그 밖에서 총격을 받으면 쏜 적에게 반격
+    "fireControlReturnSec": 6, "fireControlCloseRange": 6,   // N73 사격 통제 응사만: 6초 안 피격 (자기 · 분대원) 또는 적이 6칸 안이면 사격
+    "underFireSec": 2.5,                               // 피격 중 = 최근 2.5초 안 총격 (빗나감 포함) — 대기 유닛은 다가가지 않고 반격, 엄폐 찾기 조건
+    "coverSeekRadius": 3, "coverSeekGain": 0.15, "coverSeekTicks": 30, "coverSeekPerTile": 2,   // 엄폐 찾기: 피격 중인 대기 · 사수 보병이 0.5초마다 3칸 안 빈 참호 자리 → 명중 배수 0.15 이상 좋은 엄폐 칸 (칸당 2명) 으로
+    "contactTriggerSec": 3, "contactDisengageSec": 10, "contactReformSec": 15, "contactLoose": true, "contactZoneRadius": 5, "spotSearchRadius": 2.5, "spotDwellSec": 12, "spotMoveMin": 1.5, "spotReleaseSupp": 0.5, "spotHeightGain": 0.1, "contactHoldChase": true, "contactArriveZone": false, "spotEnabled": true, "spotAttackCover": false, "rotateInPlace": true, "rotateInPlaceDist": 6, "rotateMinDeg": 20, "rotateStayRadius": 1.5, "looseAdvance": true, "looseDepth": 3, "looseAdvanceAi": false, "aiContactReorderDist": 8, "aiContactReorderSec": 10,   // F1 접적 (Contact.cs): 표적 · 3초 안 사격 · 피격 = 접적, 10초 조용 = 이탈, 15초 더 = 비접적. 접적 · 이탈 중 대열 정비 · 슬롯 복귀 끔, 슬롯 둘레 5칸 구역 · 2.5칸 안 사격 위치 (엄폐 · 고지), 12초 고정 · 1.5칸 문턱 · 제압 0.5 이상 해제. contactArriveZone (도착 깃발을 구역 안에서 끝냄) 은 측정상 나빠서 끔. F1 2차 (ContactF2.cs): rotate* = 제자리 방향 전환 (6칸 안 · 20도 넘게, 새 슬롯 1.5칸 안은 제자리), looseAdvance = 접적 중 이동 = 선까지 전진 (앞뒤 3칸), aiContactReorder* = 접적 중대 AI 재명령 8칸 · 10초
+    "marchArcDeg": 45, "marchSightFrac": 0.7, "marchIntervalMul": 1.5, "marchAccMul": 0.4, "marchSmgIntervalMul": 1.2, "marchSmgAccMul": 0.7, "marchMaxSuppress": 400, "marchMoveMul": 0.5, "marchDecideTicks": 10, "marchHoldSec": 1, "marchNcoRangeFrac": 0.6, "marchNcoMinMembers": 3, "marchChargeRange": 5, "squadFollowFireSec": 2, "squadFollowFireAttackMove": true,   // N46 분대 따라 쏘기: 분대원이 2초 안에 쐈으면 반응 거리 밖 · 사거리 안 적도 쏨 (사수만; true = 대형 공격 이동도 (기본) — 반응 거리 밖 표적은 분대가 총격을 받을 때만 서서 쏨, 아니면 전진 + 행진 사격 (N46b))
+    "bayonetFixSec": [1.0, 1.5], "bladeDrawSec": [0.3, 0.5], "cavalryDrawSec": 0.5, "fixVeteranMul": 0.7, "fixRecruitMul": 1.3, "autoDismount": true, "dismountSec": 3.0, "mountSec": 4.0, "dismountedSpeedMul": 0.67, "mountedFireAccMul": 0.4, "cavReactOn": true, "cavReactAimSec": 0.6, "cavFastSpeed": 6, "cavReactInterval": 5, /* n61 보병 대기병 조기 사격 */ "mountRangeFrac": 1.5, /* N61 기병 하마 사격 */ "bayonetFixOrderedOnly": true,   // N57 착검 (소총 1~1.5초, 노병 x0.7 · 신병 x1.3) · 칼 뽑기 0.3~0.5초 · 기병 군도 0.5초 — 한 번 꽂으면 유지. bayonetFixOrderedOnly true = 돌격 명령에만 멈춤 (false = 자동 · 행진 돌격도). N37 선택 규모 지연 단축 제외
+    // 행진 사격 (교전 4차): 이동 중 앞 +-45도 / 유효 시야 절반 이내 / 사거리 안 적에게 간격 x1.5, 명중 x0.4 (기관단총 x1.2, x0.7), 행진 사격 중 이동 속도 x0.5. 속보 / 돌격 / 제압 400 이상 / 철수 중 불가
+    "chargeImpactSeconds": 2, "chargeStunMin": 1.5, "chargeStunMax": 1.5, "cavMeleeMaxTargets": 0, "chargeCooldownMin": 30, "chargeCooldownMax": 45, "chargeSuppress": 300, "chargeSuppressRange": 2,   // 기병 돌격 충격 (2026-10-19 개정): 피해 보너스 없음. 2초 이상 돌격 뒤 첫 적중 (보병) = 이벤트 — 기병 마비 0.6초 (고정), 기병마다 쿨다운 10~15초 (결정적), 충격 지점 2칸 안 적 보병 제압 +300 (저항 · 엄폐 적용)
+    "acquireInterval": 45, "acquireStagger": 15, "acquireRadiusCap": 32   // 표적 재탐색 0.75초 + Id 분산(0~14틱), 탐색 반경 상한 32칸 (= 보병 최대 시야 · 저격총 사거리)
+  },
+  // 지휘 계통 지연 (2026-10-19 승인): 이동 · 공격 · 돌격 명령 → 출발 지연 (0~3틱) + 장교 지휘 범위 안 0 · 분대에 부사관(하사 이상) 생존 0.2~0.4초 ·
+  // 임시 분대장만 0.5~1.0초 · 분대 없음/혼자 1.0~1.5초 (유닛 해시). 후퇴(이동 명령) x0.5. 보병만 (차량 · 장교 자신 0).
+  // N37 (2026-10-19 승인): 플레이어 직접 명령은 선택 인원 playerSelSizes[i] → 지연 배수 playerSelMul[i] (구간 선형, 반응 지연 · 지휘 계통 지연 둘 다). 분대 ×0.3, 대대 이상 ×1 (지금 수준). AI 명령 ×1.
+  // N34 formReactMaxSec: 대형 · 방향 변경 (중대 명령 · 재배치 · 대열 정비 · 전개) 병사마다 0~0.05초 (0~3틱) 뒤 반응 — 중대 명령에서는 출발 지연 0~2틱 대신
+  "command": { "ncoMin": 0.14, "ncoMax": 0.28, "actingMin": 0.35, "actingMax": 0.7, "isolatedMin": 0.7, "isolatedMax": 1.05, "retreatMul": 0.5, "infantryOnly": true, "formReactMaxSec": 0.05,
+    "playerSelSizes": [1, 12, 40, 150, 500], "playerSelMul": [0.25, 0.3, 0.5, 0.8, 1.0] },
+  // 장교 직책 계급 · 임시 진급 · 승계 · 경험치 (N3, 2026-10-19, CommandRanks.cs). 계급 번호 = ranks.json officer 색인 (1 소위 2 중위 3 대위 4 소령 5 중령 6 대령).
+  // 편성 때 계급 미정 장교: 중대 첫 장교 companyRank · 둘째 secondRank · 나머지 juniorRank. 대대장 = 대대 최고 서열 (중대 battalionSeniorCompanies 개 이상이면 battalionSeniorRank, 아니면 battalionRank) — 배치 단계는 정식, 전투 중은 임시 진급 (최대 maxTempPromotion).
+  // 지휘관 전사 → 다음 서열 장교가 handoverSec 뒤 지휘 (장교 없으면 부사관 대리 ncoHandoverSec 뒤, 단순 틀만). 경험치: 교전 1초 xpCombatPerSec · 중대 사살 xpPerKill (대대장 xpPerKillBattalion). 목표 달성 경험치 없음.
+  // 경험치 단계 (xpLevels 문턱) 마다 판단 간격 ×(1 − xpDecidePerLevel) · 지휘 지연 ×(1 − xpDelayPerLevel) · 인계 시간 ×(1 − xpHandoverPerLevel), 하한 0.5
+  "officers": {
+    "companyRank": 3, "secondRank": 2, "juniorRank": 1, "battalionRank": 4, "battalionSeniorRank": 5, "battalionSeniorCompanies": 3, "maxRank": 6, "maxPromotionRank": 5,
+    "maxTempPromotion": 3, "handoverSec": 5, "ncoHandoverSec": 8,
+    "xpLevels": [60, 180, 420, 900], "xpCombatPerSec": 1, "xpPerKill": 2, "xpPerKillBattalion": 1, "combatWindowSec": 3,
+    "xpDecidePerLevel": 0.05, "xpDelayPerLevel": 0.06, "xpHandoverPerLevel": 0.1, "xpMax": 1000000,
+    // 장교 경험 성향 (N55, src/Core/OfficerStyle.cs): 확률 = 표[계급 (0 = 지휘 장교 없음, 1 소위 … 6 대령)] − 경험치 단계 × perLevel, [min, max].
+    // march = 돌격 사격 (걸으며 쏘기) 전진을 고를 확률 (아니면 분대 교대 약진), 굴림은 지휘관 · 중대 · 시드 고정. cavFront = 기병이 형성된 보병 정면에도 우회 없이 돌격할 확률 (windowSec 마다 다시 굴림).
+    "style": { "marchByRank": [0.7, 0.7, 0.7, 0.5, 0.4, 0.35, 0.3], "marchXpPerLevel": 0.08, "marchMin": 0.15, "marchMax": 0.85,
+               "cavFrontByRank": [0.5, 0.5, 0.45, 0.3, 0.2, 0.15, 0.1], "cavFrontXpPerLevel": 0.08, "cavFrontMin": 0.03, "cavFrontMax": 0.8, "cavFrontWindowSec": 20 }
+  },
+  // 수류탄 (교전 4차): unit.grenades 개 보유 (돌격보병 1). 사거리 5칸, 신관 1.5초, 반경 1.5칸, 피해 60 -> 20 (엄폐 무시), 제압 +300.
+  // 자동 투척: 엄폐 중(참호) 적 보병 4칸 이내, 전차 3칸 이내. 전차에는 묶음 수류탄 고정 피해 tankDamage. 회복: 비전투 중 regenSeconds 초에 1개
+  "grenade": { "range": 5, "fuse": 1.5, "radius": 1.5, "damage": 60, "edgeDamage": 20, "suppress": 300, "tankDamage": 40, "autoCoverRange": 4, "autoTankRange": 3, "regenSeconds": 180, "scatter": 0.5 },
+  // [N54] 세력별 소총 분배 (map factions[].en → {무기 → 가중치 %}). 소총 칸 (weapon = rifle_mosin) 보병이 생성될 때 유닛 id · 지도 시드의 해시로 결정적으로 고른다. 없는 세력 = 모신나강. 공용 유닛은 분배 안 함 (모신나강).
+  "factionRifles": {
+    "fengtian": { "rifle_arisaka38": 60, "rifle_hanyang88": 30, "rifle_lebel86": 10 },
+    "japanese": { "rifle_arisaka38": 100 },
+    "bandit": { "rifle_murata": 40, "rifle_mosin": 30, "rifle_arisaka38": 20, "rifle_hanyang88": 10 }
+  },
+  "weapons": {
+    // accuracy: 명중률 (곡선이 없을 때 · 표시용 평균). accNear/accFar: 밀착 / 최대 사거리 명중률 (정규군 기준) — 거리 제곱에 비례해 연속 감소 (ROADMAP §2-3)
+    // 최종 명중률 = 곡선 × 유닛 accuracy × 엄폐 (cover — 참호 0.5), 상한 0.95. bonus: 대상 카테고리별 피해 배수
+    // cooldown: 고정 발사 간격(초). cooldownMin/cooldownMax: 사격마다 이 사이의 결정적 난수 (있으면 cooldown 대신)
+    // fire: "direct"(직사, 단일 표적) | "indirect"(곡사, 범위 포격 · 장애물 무시; 생략 시 splash 가 있으면 indirect). los: 직사 사선 검사 (지형 · 건물이 막으면 사격 불가, 유닛은 막지 않음 — 보병 직사 무기 전부 켬, 2차 추가)
+    // aimTime: 첫 발까지 조준(초) · holdTime: 교전 후 정지(초) · ammo: 탄약 칸(0 = 무한, 비전투 중 회복 — "supply")
+    // splash: 범위 피해 반경(칸) · splashEdge: 가장자리 피해 비율 · scatter: 최대 사거리 착탄 오차(칸) · minRange · spotterDelay: 아군 관측 표적 추가 조준(초)
+    // shellSpeed · flightBase · flightMin · flightMax: 포탄 비행 시간(초) = clamp(flightBase + 거리/shellSpeed, flightMin, flightMax), shellSpeed 0 = 즉발 (ShellFlight.cs). N11 (2026-10-19): 곡사포 1.5 + d/22 (30칸 2.9초 · 60칸 4.2초 · 120칸 7.0초, 상한 8), 보병포 d/60 (40칸 0.67초), 야전포 d/80 (80칸 1.0초)
+    // N11 사거리 (2026-10-19 사용자): 보병포 40 · 야전포 80 · 곡사포 120. scatter = 최대 사거리 착탄 오차 (칸), 거리별 곡선 = combat.scatterNearFrac · scatterQuad (직사포는 빗나간 탄 · 지점 포격에, 곡사는 모든 탄에). 곡사포 = 연사 14~17초 · scatter 9 (관측 필수는 그대로)
+    // traverseArc: 방열 사계 (도, 전체 폭) — 방열한 대포는 방열 때 중심 ±절반 안만 쏜다, 밖이면 포가를 돌린다 (combat.traverseRedeployDeg 미만 = 방열한 채 회전, 이상 = 철수 → 회전 → 재방열 — 공격 명령 · 지점 포격만; 자동 표적은 사계 안 우선 · 문턱 미만까지). 0 = 제한 없음
+    // suppress: 공격 1회당 표적 제압 증가 (명중 무관; 포격 · 흩뿌림은 반경 안 전원) · spray: 흩뿌림 반경(칸, 기관총 — 적만 맞음)
+    "rifle":       { "name": "소총",        "damage": 40, "range": 24,  "cooldown": 2.1, "cooldownMin": 1.8, "cooldownMax": 2.4, "accuracy": 0.25, "accNear": 0.35, "accFar": 0.08, "fire": "direct", "los": true, "ammo": 60, "suppress": 60, "bonus": { "armored": 0 } },
+    // [N54] 소총 7종 (사용자 2026-10-19). rifle 과 같은 값 = 억제 60 · 탄약 100 · 간격 ±0.3. ammoType = 탄약 종류 (자료만, 보급 규칙은 나중). "rifle" 은 별칭으로 유지. 세력별 분배 = "factionRifles".
+    "rifle_mosin": { "name": "모신나강 소총", "damage": 40, "range": 24, "cooldown": 2.1, "cooldownMin": 1.8, "cooldownMax": 2.4, "accuracy": 0.25, "accNear": 0.35, "accFar": 0.08, "fire": "direct", "los": true, "ammo": 60, "suppress": 60, "ammoType": "노식 소총탄", "bonus": { "armored": 0 } },
+    "rifle_berdan2": { "name": "베르단 II 소총", "damage": 40, "range": 24, "cooldown": 3.0, "cooldownMin": 2.7, "cooldownMax": 3.3, "accuracy": 0.25, "accNear": 0.35, "accFar": 0.07, "fire": "direct", "los": true, "ammo": 60, "suppress": 60, "ammoType": "노식 소총탄", "bonus": { "armored": 0 } },
+    "rifle_arisaka38": { "name": "38식 아리사카 소총", "damage": 35, "range": 23, "cooldown": 2.0, "cooldownMin": 1.7, "cooldownMax": 2.3, "accuracy": 0.27, "accNear": 0.38, "accFar": 0.09, "fire": "direct", "los": true, "ammo": 60, "suppress": 60, "ammoType": "일식 소총탄", "bonus": { "armored": 0 } },
+    "rifle_murata": { "name": "무라타 소총", "damage": 40, "range": 20, "cooldown": 3.3, "cooldownMin": 3.0, "cooldownMax": 3.6, "accuracy": 0.22, "accNear": 0.33, "accFar": 0.06, "fire": "direct", "los": true, "ammo": 60, "suppress": 60, "ammoType": "구식 일본 소총탄", "bonus": { "armored": 0 } },
+    "rifle_hanyang88": { "name": "한양 88식 소총", "damage": 45, "range": 25, "cooldown": 2.3, "cooldownMin": 2.0, "cooldownMax": 2.6, "accuracy": 0.25, "accNear": 0.37, "accFar": 0.08, "fire": "direct", "los": true, "ammo": 60, "suppress": 60, "ammoType": "독식 소총탄", "bonus": { "armored": 0 } },
+    "rifle_mauser98": { "name": "98식 마우저 소총", "damage": 45, "range": 25, "cooldown": 2.3, "cooldownMin": 2.0, "cooldownMax": 2.6, "accuracy": 0.28, "accNear": 0.4, "accFar": 0.1, "fire": "direct", "los": true, "ammo": 60, "suppress": 60, "ammoType": "독식 소총탄", "bonus": { "armored": 0 } },
+    "rifle_lebel86": { "name": "86식 르벨 소총", "damage": 45, "range": 22, "cooldown": 2.3, "cooldownMin": 2.0, "cooldownMax": 2.6, "accuracy": 0.24, "accNear": 0.35, "accFar": 0.07, "fire": "direct", "los": true, "ammo": 60, "suppress": 60, "ammoType": "불식 소총탄", "bonus": { "armored": 0 } },
+    "carbine":     { "name": "카빈",        "damage": 35, "range": 22,  "cooldown": 1.9, "cooldownMin": 1.6, "cooldownMax": 2.2, "accuracy": 0.23, "accNear": 0.33, "accFar": 0.08, "fire": "direct", "los": true, "ammo": 45, "suppress": 50, "bonus": { "armored": 0 } },
+    // 대전차소총 (옛 바주카 — 수치 · 로직 그대로, 이름만. ROADMAP §2-4b)
+    "at_rifle":    { "name": "대전차소총",  "damage": 10, "range": 20,  "cooldown": 3.0, "accuracy": 0.6, "accNear": 0.8, "accFar": 0.35, "fire": "direct", "los": true, "aimTime": 0.35, "holdTime": 0.3, "ammo": 8, "bonus": { "armored": 3.5 }, "preferCategory": "armored", "suppress": 80 },
+    // 기관총 (§2-4e): 소총 수치 + 연사 5배, 흩뿌림 1.5칸, 탄약 500
+    "mg":          { "name": "경기관총",    "damage": 40, "range": 24, "engageFrac": 1.0,  "cooldown": 0.42, "cooldownMin": 0.36, "cooldownMax": 0.48, "accuracy": 0.25, "accNear": 0.35, "accFar": 0.06, "fire": "direct", "los": true, "ammo": 140, "suppress": 150, "spray": 1.5, "bonus": { "armored": 0 } },
+    // 장교 권총 (§2-4c)
+    "pistol":      { "name": "권총",        "damage": 40, "range": 6, "engageFrac": 1.0,   "cooldown": 1.4, "cooldownMin": 1.2, "cooldownMax": 1.6, "accuracy": 0.25, "accNear": 0.35, "accFar": 0.05, "fire": "direct", "los": true, "ammo": 24, "suppress": 40, "bonus": { "armored": 0 } },
+    // 근접 무기 (§2-4b): range = 접촉 거리, accuracy = 근접 명중률 (유닛 배수 없음), 사격 간격 난수
+    "bayonet":     { "name": "착검",        "damage": 60, "range": 0.3, "cooldown": 1.75, "cooldownMin": 1.5, "cooldownMax": 2.0, "accuracy": 0.6, "fire": "direct", "aimTime": 0, "holdTime": 0.2, "bonus": { "armored": 0 } },
+    "sabre":       { "name": "곡도",        "damage": 40, "range": 0.3, "cooldown": 1.4, "cooldownMin": 1.2, "cooldownMax": 1.6, "accuracy": 0.6, "fire": "direct", "aimTime": 0, "holdTime": 0.2, "bonus": { "armored": 0 } },
+    // ---- 소형화기 면역 · 신규 무기 (§2-4f): bonus.armored 0 = 전차 · 장갑차(category armored)에 피해 0. 대전차소총 · 포만 장갑을 깬다. preferCategory: 이 병과가 사거리 안에 있으면 먼저 노린다 (대전차소총)
+    // 돌격 카빈 (돌격보병, 2026-10-19 N21): 단축 소총. 사거리 16 (소총 24의 2/3), 간격 1.7 (±0.2), 피해 35 (보병 3발 사망), 명중 근 0.38 / 원 0.06, 제압 45. 기존 carbine (정찰병 · 기병) 과 별개
+    // 돌격보병 근접 보조 권총 (N21): 장교 권총 (사거리 6) 을 바탕으로 연사가 빠르고 약함
+    "pistol_assault": { "name": "돌격 권총", "damage": 20, "range": 6, "engageFrac": 1.0, "cooldown": 0.9, "cooldownMin": 0.8, "cooldownMax": 1.0, "accuracy": 0.25, "accNear": 0.4, "accFar": 0.05, "fire": "direct", "los": true, "ammo": 24, "suppress": 25, "bonus": { "armored": 0 } },
+    "carbine_assault": { "name": "돌격 카빈", "damage": 35, "range": 16, "engageFrac": 1.0, "cooldown": 1.1, "cooldownMin": 1.0, "cooldownMax": 1.2, "accuracy": 0.17, "accNear": 0.25, "accFar": 0.04, "fire": "direct", "los": true, "aimTime": 0.15, "ammo": 60, "suppress": 50, "bonus": { "armored": 0 } },   // N23 난사: 간격 1.7 -> 1.1, 명중 0.38/0.06 -> 0.25/0.04, 제압 45 -> 50, 탄 120 -> 160
+    // 엽총 (N68 마적 엽총수, newunits): 쌍열 산탄 엽총. 산탄 퍼짐은 아직 없는 메카닉이라 단일 표적 직사로 환산 — 사거리 9 (소총 24 의 3/8), 피해 55 (보병 2발 사망), 명중 근 0.50 / 원 0.06 (곡선), 간격 3.2초 (쌍열 장전), 제압 70. 근거리 DPS ≈ 소총의 1.3배, 사거리 절반 밖에서는 급감.
+    "shotgun":     { "name": "엽총", "damage": 55, "range": 9, "engageFrac": 1.0, "cooldown": 3.2, "cooldownMin": 2.9, "cooldownMax": 3.5, "accuracy": 0.2, "accNear": 0.50, "accFar": 0.06, "fire": "direct", "los": true, "ammo": 24, "suppress": 70, "ammoType": "산탄", "bonus": { "armored": 0 } },
+    // 돌격보병 단도 (장교 곡도와 같은 수치, 이름만)
+    "sabre_short": { "name": "단검",        "damage": 60, "range": 0.3, "cooldown": 1.4, "cooldownMin": 1.2, "cooldownMax": 1.6, "accuracy": 0.6, "fire": "direct", "aimTime": 0, "holdTime": 0.2, "bonus": { "armored": 0 } },
+    // 르노 FT 수컷형 37mm 단포신 (전차포보다 약하고 짧음)
+    "ft_gun":      { "name": "37mm 단포",   "damage": 25, "range": 27,  "cooldown": 2.6, "accuracy": 0.6, "accNear": 0.8, "accFar": 0.35, "fire": "direct", "los": true, "aimTime": 0.3, "holdTime": 0.3, "ammo": 40 },
+    // 6파운더 (57mm, Mark V 수컷 스폰슨 2문 합산): 피해 40 (FT 37mm 25 → 장갑 3 뚫고 보병 1발 사살), 사거리 27 (FT 와 같음), 간격 1.8 (2문 교대 사격, FT 2.6), 명중 곡선 FT 와 같음, 탄 60
+    "gun_6pdr":    { "name": "6파운더 포",  "damage": 40, "range": 27,  "cooldown": 1.8, "accuracy": 0.6, "accNear": 0.8, "accFar": 0.35, "fire": "direct", "los": true, "aimTime": 0.3, "holdTime": 0.3, "ammo": 60 },
+    // ---- 교전 4차 무기
+    // 기관총 (교전 4차 결정): 경기관총 0.2초(5발/초) / 중기관총 0.125초(8발/초), 발당 명중 = 소총 곡선 x0.5, 발당 제압 40 / 30, 탄약 600 / 1200. 흩뿌림 그대로. (mg = 전차 기관총, 그대로)
+    "lmg":         { "name": "경기관총",    "damage": 40, "range": 24, "engageFrac": 1.0,  "cooldown": 0.26, "burstMin": 5, "burstMax": 10, "burstPauseMin": 2.5, "burstPauseMax": 4.5, "accuracy": 0.03, "accNear": 0.09, "accFar": 0.04, "fire": "direct", "los": true, "ammo": 300, "suppress": 24, "spray": 1.5, "bonus": { "armored": 0 } },
+    // N58: 쇼샤 = 경기관총과 같고 연사 속도 x0.7 (간격 / 0.7)
+    "lmg_chauchat": { "name": "쇼샤 경기관총",    "damage": 40, "range": 24, "engageFrac": 1.0,  "cooldown": 0.3714, "burstMin": 5, "burstMax": 10, "burstPauseMin": 2.5, "burstPauseMax": 4.5, "accuracy": 0.03, "accNear": 0.09, "accFar": 0.04, "fire": "direct", "los": true, "ammo": 240, "suppress": 24, "spray": 1.5, "bonus": { "armored": 0 } },
+    "hmg":         { "name": "중기관총",    "damage": 40, "range": 32, "finalLine": true, "engageFrac": 1.0,  "cooldown": 0.125, "accuracy": 0.125, "accNear": 0.3, "accFar": 0.12, "fire": "direct", "los": true, "ammo": 600, "suppress": 36, "spray": 1.5, "bonus": { "armored": 0 } },
+    // 3년식 중기관총 (사용자 2026-10-21): 맥심 기반, 30발 보탄판 -> 30발 쏘고 1.2초 교체. 발사 간격 0.15, 명중 0.34/0.15.
+    "hmg_type3":   { "name": "3년식 중기관총", "damage": 40, "range": 32, "finalLine": true, "engageFrac": 1.0,  "cooldown": 0.15, "burstMin": 30, "burstMax": 30, "burstPauseMin": 1.2, "burstPauseMax": 1.2, "accuracy": 0.125, "accNear": 0.34, "accFar": 0.15, "fire": "direct", "los": true, "ammo": 600, "suppress": 36, "spray": 1.5, "bonus": { "armored": 0 } },
+    "rifle_long":  { "name": "장총",        "damage": 40, "range": 24,  "cooldown": 2.1, "cooldownMin": 1.8, "cooldownMax": 2.4, "accuracy": 0.25, "accNear": 0.35, "accFar": 0.09, "fire": "direct", "los": true, "ammo": 60, "suppress": 60, "bonus": { "armored": 0 } },
+    "sniper_rifle": { "name": "저격총",     "damage": 40, "range": 32, "engageFrac": 1.0,  "cooldown": 8, "cooldownMin": 7, "cooldownMax": 9, "accuracy": 0.4, "accNear": 0.45, "accFar": 0.35, "fire": "direct", "los": true, "aimTime": 0.8, "holdTime": 0.4, "ammo": 40, "suppress": 60, "preferOfficer": true, "bonus": { "armored": 0 } },
+    "dadao":       { "name": "대도",        "damage": 60, "range": 0.3, "cooldown": 1.4, "cooldownMin": 1.2, "cooldownMax": 1.6, "accuracy": 0.6, "fire": "direct", "aimTime": 0, "holdTime": 0.2, "bonus": { "armored": 0 } },
+    "gun_infantry": { "name": "보병포",     "damage": 70, "range": 40,  "cooldown": 3.3, "cooldownMin": 3.0, "cooldownMax": 3.6, "accuracy": 0.6, "accNear": 0.8, "accFar": 0.35, "fire": "direct", "los": true, "aimTime": 0.3, "holdTime": 0.3, "splash": 1.5, "splashEdge": 0.3, "scatter": 2.0, "ammo": 60, "suppress": 250, "craterChance": 0.08, "shellSpeed": 60, "flightMax": 1.0, "traverseArc": 45 },   // tweak1 (2026-10-19 사용자 결정 4): 피해 45 → 70 · 반경 0.8 → 1.5 · 제압 150 → 250 (야전포 피해 · 반경 상한, C 10+10판 감도 시험 — ARTILLERY_EFFECT N44)
+    "gun_field":   { "name": "야전포",      "damage": 100, "spotterIndirect": true, "range": 80,  "cooldown": 5.5, "cooldownMin": 5.0, "cooldownMax": 6.0, "accuracy": 0.6, "accNear": 0.8, "accFar": 0.35, "fire": "direct", "los": true, "aimTime": 0.4, "holdTime": 0.4, "splash": 1.5, "splashEdge": 0.3, "scatter": 4.0, "ammo": 40, "suppress": 250, "craterChance": 0.2, "shellSpeed": 80, "flightMax": 1.2, "traverseArc": 45 },
+    "howitzer_heavy": { "name": "곡사포",   "damage": 100, "range": 120, "minRange": 6, "cooldown": 15.5, "cooldownMin": 14.0, "cooldownMax": 17.0, "accuracy": 1.0, "fire": "indirect", "spotterOnly": true, "aimTime": 2.0, "holdTime": 1.0, "spotterDelay": 0, "splash": 3, "adjustFireShots": 5, "adjustFireMinMul": 0.3333, "adjustFireZone": 5, "splashEdge": 0.3, "scatter": 9.0, "ammo": 32, "suppress": 400, "craterChance": 0.5, "shellSpeed": 22, "flightBase": 1.5, "flightMin": 1.5, "flightMax": 8.0, "traverseArc": 60 }
+  },
+  "armors": {
+    "none":      { "name": "없음",      "armor": 0 },   // 보병 전원 (2차 추가 D): 피해 전액
+    "basic":     { "name": "기본 장갑", "armor": 1 },
+    "heavy":     { "name": "중장갑",    "armor": 3 },
+    "structure": { "name": "건물 장갑", "armor": 1 }
+  },
+  "units": {
+    // category: infantry | armored | gun | wagon (무기 bonus 판정, 보병만 참호를 판다)
+    // accuracy: 유닛 명중률 배수(정규군 1.0) · sightNear/sightFar: 유효/최대 시야 (sight = 최대, 구 코드 호환; 2026-10-18 전부 2배, 2026-10-19 사거리 개편 = 최대 ×4/3 · 유효 ×10/7 → 정규 보병 32/20) · setupTime/packTime: 대포 · 기관총 방열 · 철수(초, 명령에 따라 자동) · concealment: 은폐 0~100 · turretTurnRate: 포탑 회전(도/초) · turnRate: 차체 회전(도/초, 생략 = 즉시; 견인포만 — 이동 · 조준 회전 공통, 크게 어긋나면 cos(오차) 만큼 감속) · traverseRate: 거치(방열 중 · 완료) 상태의 조준 회전(도/초, 생략 = turnRate; 경기관총 90)
+    // melee: 근접 무기 (돌격 가능) · suppressResist: 제압 증가 배수 (0 = 면역) · commandRadius: 장교 지휘 범위(칸, 0 = 장교 아님). 보병 장갑은 "none" (2차 추가 D)
+    "recruit": {
+      "name": "징집병", "description": "가장 낮은 수준의 보병. 사기와 사격술이 낮습니다.",
+      "hp": 100, "speed": 3.1, "radius": 0.35, "sight": 27, "sightNear": 17, "sightFar": 27, "accuracy": 0.9,
+      "weapon": "rifle_mosin", "melee": "bayonet", "armor": "none", "category": "infantry", "suppressResist": 1.0,
+      "marchFire": true, "canCapture": true, "autoAttack": true,
+    },
+    "infantry": {
+      "name": "진위대", "description": "한국군 정규 보병 (옛 징집병 · 정규병 단계를 합친 기본 보병). 모신나강 소총. 시설을 점령할 수 있습니다.",
+      "hp": 100, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "rifle_mosin", "melee": "bayonet", "armor": "none", "category": "infantry", "suppressResist": 0.75,
+      "marchFire": true, "canCapture": true, "autoAttack": true,
+    },
+    "veteran": {
+      "name": "정예 보병", "description": "가장 높은 수준의 보병. 튼튼하고 정확합니다.",
+      "hp": 100, "speed": 3.3, "radius": 0.35, "sight": 35, "sightNear": 23, "sightFar": 35, "accuracy": 1.1,
+      "weapon": "rifle_mosin", "melee": "bayonet", "armor": "none", "category": "infantry", "suppressResist": 0.5,
+      "marchFire": true, "canCapture": true, "autoAttack": true,
+    },
+    "scout": {
+      "name": "정찰병", "description": "빠르고 시야가 넓지만 전투력이 낮습니다.",
+      "hp": 100, "speed": 4.4, "radius": 0.33, "sight": 48, "sightNear": 31, "sightFar": 48, "accuracy": 0.9,
+      "weapon": "carbine", "armor": "none", "category": "infantry", "suppressResist": 0.75,
+      "marchFire": true, "spotter": true, "canCapture": true, "autoAttack": true,
+    },
+    // 정찰병 (ROADMAP '정찰병 유닛'): 중대 소속 정찰조 (중대당 2명, 분대 밖). 자율 행동 수치는 아래 "scoutAi". 시야는 vision.scoutSightMul (× 1.5)
+    "infantry_scout": {
+      "name": "정찰병", "description": "카빈으로 무장한 정찰병. 보병보다 20% 빠르고 시야가 1.5배입니다. 중대가 움직이면 스스로 9~15칸 앞서 가 관측하고 (곡사포 관측 포함), 제압 · 부상 · 적 발견 5초 뒤 · 너무 멀어지면 장교에게 돌아옵니다.",
+      "hp": 100, "speed": 3.84, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "carbine", "armor": "none", "category": "infantry", "suppressResist": 0.75,
+      "marchFire": true, "spotter": true, "scout": true, "canCapture": true, "autoAttack": true,
+    },
+    "heavy_at_rifleman": {
+      "name": "대전차소총병", "description": "대전차소총으로 기갑(Armored) 병력에게 큰 피해를 줍니다. 장갑 표적을 먼저 노립니다. 거치(3초) 후 사격하고 이동하려면 해제(2초)합니다 (자동). 보병에는 약합니다.",
+      "hp": 100, "speed": 3.0, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "at_rifle", "armor": "none", "category": "infantry", "suppressResist": 0.75, "setupTime": 3, "packTime": 2,
+      "canCapture": true, "autoAttack": true,
+    },
+    // ---- 교전 개편 2차 (ROADMAP §2-4c · §2-4e). 그림은 아직 보병 별칭 (theme.json alias)
+    "officer": {
+      "name": "장교", "description": "권총과 곡도로 무장한 지휘관. 제압을 받지 않고, 주변 8칸 병사의 제압 회복을 빠르게 하며 사격 속도를 조금 높입니다. 적이 가까우면 검을 들고 돌격합니다.",
+      "hp": 200, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "pistol", "melee": "sabre", "armor": "none", "category": "infantry", "suppressResist": 0, "commandRadius": 8,
+      "marchFire": true, "spotter": true, "canCapture": true, "autoAttack": true,
+    },
+    "heavy_machinegunner": {
+      "name": "기관총병", "description": "경기관총을 메고 다니다 거치(3초)한 뒤 사격합니다. 연사가 빠르고 탄이 표적 주변 1.5칸에 흩뿌려져 근처의 적도 맞고 제압됩니다. 이동하려면 해제(2초)합니다 (자동).",
+      "hp": 160, "speed": 3.0, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "lmg", "armor": "none", "category": "infantry", "suppressResist": 0.4, "setupTime": 3, "packTime": 2, "traverseRate": 90,
+      "factions": ["korean"], "canCapture": true, "autoAttack": true,
+    },
+    // N58: 봉천 쇼샤 경기관총병 (한국 경기관총의 0.7배 연사)
+    "heavy_machinegunner_fengtian": {
+      "name": "쇼샤 기관총병", "description": "쇼샤 경기관총을 메고 다니다 거치(3초)한 뒤 사격합니다. 연사가 빠르고 탄이 표적 주변 1.5칸에 흩뿌려져 근처의 적도 맞고 제압됩니다. 이동하려면 해제(2초)합니다 (자동).",
+      "hp": 160, "speed": 3.0, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "lmg_chauchat", "armor": "none", "category": "infantry", "suppressResist": 0.4, "setupTime": 3, "packTime": 2, "traverseRate": 90,
+      "factions": ["fengtian", "russian"], "artAs": "heavy_machinegunner", "artVariant": "fengtian", "canCapture": true, "autoAttack": true,
+    },
+    // ---- 신규 유닛 (ROADMAP §2-4f, 2026-10-19). 그림은 임시 별칭 (theme.json)
+    // N23 (2026-10-19): 난사로 누르고 근접 무기로 쓸어버리기 — 행진 명중 x0.8 · 간격 x1.0 · 속도 x0.5 (행진 표적 있을 때만), 지휘자 없이도 걸으며 쏨, 3칸 수류탄 (marchGrenadeFrac 비율 병사, 0.5) -> 단검 돌격. 측정 docs/EXCHANGE_TABLE_2026-10-19.md N23
+    "infantry_assault": {
+      "name": "돌격대", "description": "단축 카빈 + 수류탄 2발 + 근접 권총 + 단검의 한국군 전용 돌격 병과. 돌격 사격(행진 사격)을 기본으로 걸으며 쏘고, 6칸 안에서는 권총으로 바꿔 쏘며, 돌격 때는 단검을 듭니다.",
+      "hp": 130, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "carbine_assault", "melee": "sabre_short", "armor": "none", "category": "infantry", "suppressResist": 0.5,
+      "suppressRecoverMul": 1.5, "movingHitMul": 0.75, "shellCenterKillRadius": 0.5, "chargeHopRange": 6, "chargeHopMaxHit": 0.85, "chargeHopMinDist": 9, "chargeHopMaxSec": 4,   // assaultinf (2026-10-22): A 제압 저항 (받는 제압 suppressResist 0.5 는 N23 부터 ×0.6 보다 강해 유지) + 회복 ×1.5 · B 이동 중 피격 ×0.75 · 포탄 착탄 중심 0.5칸 즉사 · C 돌격 접근 6칸 안 엄폐 약진 (체력 130 은 이미 반영)
+      "marchFire": true, "grenades": 2, "koreaOnly": true, "marchFireDefault": true, "marchAccMul": 0.8, "marchIntervalMul": 1.0, "marchMoveMul": 0.5, "marchGrenadeFrac": 0.5, "sidearm": "pistol_assault", "sidearmRange": 6, "canCapture": true, "autoAttack": true,
+    },
+    // ---- 교전 4차 (ROADMAP 추가 병종 / 이름 규칙). 그림은 기존 별칭 (theme.json)
+    "infantry_regular": {
+      "name": "친위대", "description": "철모(슈탈헬름)를 쓴 한국군 정예 보병. 성능은 진위대와 같고, 철모 덕에 포격 · 수류탄 피해를 15% 덜 받습니다.",
+      "hp": 100, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "rifle_mosin", "melee": "bayonet", "armor": "none", "category": "infantry", "suppressResist": 0.75, "marchFire": true,
+      "shellDamageMul": 0.85, "canCapture": true, "autoAttack": true,
+    },
+    "infantry_reserve": {
+      "name": "예비군", "description": "기본 보병과 같은 성능의 예비군 (옛 군복). 시설을 점령할 수 있습니다.",
+      "hp": 100, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "rifle_mosin", "melee": "bayonet", "armor": "none", "category": "infantry", "suppressResist": 0.75, "marchFire": true,
+      "canCapture": true, "autoAttack": true,
+    },
+    // [N54] 한국군 구식 보병 (사용자 2026-10-19, 스프라이트 id infantry-default-old): 신설 17사단이 낡은 무기로 시작 — 초반 미션용. 수치 = 정규군 보병, 소총 = 베르단 II, 한국군 전용 (factions), 그림이 없으면 한국 보병.
+    "infantry_default_old": {
+      "name": "지방대", "description": "한국군 최하위 보병. 검은 옛 군복에 낡은 베르단 II 소총 (간격 3.0초). 성능은 진위대와 같습니다.",
+      "hp": 100, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "rifle_berdan2", "melee": "bayonet", "armor": "none", "category": "infantry", "suppressResist": 0.75, "marchFire": true,
+      "factions": ["korean"], "artAs": "infantry_reserve", "canCapture": true, "autoAttack": true,
+    },
+    "infantry_guard": {
+      "name": "시위대", "description": "황실 친위 고급 보병. 체력 125, 98식 마우저 소총, 검은 의장복에 피켈하우베.",
+      "hp": 125, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "rifle_mauser98", "melee": "bayonet", "armor": "none", "category": "infantry", "suppressResist": 0.75, "marchFire": true,
+      "canCapture": true, "autoAttack": true,
+    },
+    // [N80] 일본 보병 (사용자 2026-10-20): 일본군 미션이 한국 친위대를 쓰던 것을 교체. 수치 = 기본 보병, 소총 슬롯 rifle_mosin → factionRifles 로 아리사카 38. 스프라이트 id infantry-japanese.
+    "infantry_japanese": {
+      "name": "일본 보병", "description": "일본 제국군 보병. 성능은 일반 보병과 같고 아리사카 38식 소총에 착검으로 싸웁니다.",
+      "hp": 100, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "rifle_mosin", "melee": "bayonet", "armor": "none", "category": "infantry", "suppressResist": 0.75, "marchFire": true, "bayonetPreFixed": true,
+      "factions": ["japanese"], "artAs": "infantry", "artVariant": "japanese", "canCapture": true, "autoAttack": true,
+    },
+    "infantry_fengtian": {
+      "name": "봉천 보병", "description": "봉천 군벌 보병. 성능은 일반 보병과 같지만 착검 대신 대도로 돌격합니다.",
+      "hp": 100, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "rifle_mosin", "melee": "dadao", "armor": "none", "category": "infantry", "suppressResist": 0.75, "marchFire": true,
+      "canCapture": true, "autoAttack": true,
+    },
+    // [N54] 봉천 대도병 (사용자 2026-10-19): 봉천 하급 보병 = 한국 지방대에 해당. 대도뿐 · 사격 불가 (마적 잡병과 같은 규칙), 체력 · 속도 = 봉천 보병, 봉천 전용. 스프라이트 id infantry-dadao-fengtian (그림이 오기 전까지 봉천 보병 그림).
+    "infantry_dadao_fengtian": {
+      "name": "봉천 대도병", "description": "대도 한 자루뿐인 봉천 군벌의 하급 보병 (한국군 지방대에 해당). 총이 없어 사격하지 못하고 근접 돌격만 합니다 (체력 · 속도는 봉천 보병과 같음).",
+      "hp": 100, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "dadao", "melee": "dadao", "meleeOnly": true, "armor": "none", "category": "infantry", "suppressResist": 0.75,
+      "factions": ["fengtian"], "artAs": "infantry_fengtian", "canCapture": true, "autoAttack": true,
+    },
+    "officer_fengtian": {
+      "name": "봉천 장교", "description": "봉천 군벌 장교. 일반 장교와 같습니다 (권총과 곡도).",
+      "hp": 200, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "pistol", "melee": "sabre", "armor": "none", "category": "infantry", "suppressResist": 0, "commandRadius": 8, "marchFire": true, "spotter": true,
+      "canCapture": true, "autoAttack": true,
+    },
+    "infantry_sniper": {
+      "name": "저격수", "description": "사거리 32칸의 저격총. 먼 거리에서도 잘 맞지만 4~5초에 한 발. 장교를 먼저 노리고, 숲 / 고지에서는 잘 안 보입니다.",
+      "hp": 100, "speed": 3.0, "radius": 0.35, "sight": 37, "sightNear": 29, "sightFar": 37, "accuracy": 1.0, "concealment": 30,
+      "weapon": "sniper_rifle", "armor": "none", "category": "infantry", "suppressResist": 0.75,
+      "canCapture": true, "autoAttack": true,
+    },
+    "heavy_maxim": {
+      "name": "중기관총병", "description": "2인이 운용하는 맥심 기관총. 성능은 경기관총과 같고 체력 250. 무거워서 거치(7초)한 뒤 사격하고 이동하려면 해제(5초)합니다 (자동).",
+      "hp": 250, "speed": 2.0, "radius": 0.5, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "hmg", "armor": "none", "category": "infantry", "suppressResist": 0.3, "setupTime": 7, "packTime": 5, "minDeployStay": 30, "stayLeaveDist": 14,
+      "canCapture": true, "autoAttack": true,
+    },
+    // 3년식 중기관총 팀 (사용자 2026-10-21): 일본 전용. 수치 = 맥심 팀, 무기만 hmg_type3. 스프라이트 heavy-type3.
+    "heavy_type3": {
+      "name": "3년식 중기관총병", "description": "2인이 운용하는 일본군 3년식 중기관총. 30발 보탄판을 쏘고 1.2초 걸려 교체합니다. 거치(7초) 후 사격, 이동하려면 해제(5초)합니다 (자동).",
+      "hp": 250, "speed": 2.0, "radius": 0.5, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "hmg_type3", "armor": "none", "category": "infantry", "suppressResist": 0.3, "setupTime": 7, "packTime": 5, "minDeployStay": 30, "stayLeaveDist": 14,
+      "factions": ["japanese"], "canCapture": true, "autoAttack": true,
+    },
+    "heavy_infantry_gun": {
+      "name": "보병포", "description": "2인 운용 37mm 보병포 (포방패). 직사: 사선이 트여야 쏩니다. 연사가 가장 빠르고 사거리는 가장 짧습니다 (한 발 위력은 야전포와 같음). 방열(9초) 후 사격, 이동하려면 철수(7초).",
+      "hp": 200, "speed": 2.2, "radius": 0.5, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "gun_infantry", "armor": "basic", "category": "gun", "suppressResist": 0.75, "setupTime": 9, "packTime": 7, "turnRate": 45,
+      "canCapture": false, "autoAttack": true,
+    },
+    "heavy_field_gun": {
+      "name": "야전포", "description": "말이 끄는 3인 운용 야전포 (포방패). 직사, 보병포보다 멀리 강하게 쏘지만 느립니다. 방열(15초) 후 사격, 철수(12초).",
+      "hp": 300, "speed": 1.8, "radius": 0.6, "sight": 37, "sightNear": 23, "sightFar": 37, "accuracy": 1.0,
+      "weapon": "gun_field", "armor": "basic", "category": "gun", "suppressResist": 0.75, "setupTime": 15, "packTime": 12, "turnRate": 30,
+      "canCapture": false, "autoAttack": true,
+    },
+    "heavy_howitzer": {
+      "name": "곡사포", "description": "말이 끄는 4인 운용 곡사포. 장교 또는 정찰병이 지금 보고 있는 곳에만 쏩니다 (사선 무시, 범위 피해). 방열(20초) 후 사격, 철수(15초).",
+      "hp": 350, "speed": 1.4, "radius": 0.7, "sight": 21, "sightNear": 9, "sightFar": 21, "accuracy": 1.0,
+      "weapon": "howitzer_heavy", "armor": "basic", "category": "gun", "suppressResist": 0.75, "setupTime": 20, "packTime": 15, "turnRate": 20,
+      "canCapture": false, "autoAttack": true,
+    },
+    // ---- [N26] 마적 (bandit, 2026-10-19 사용자 결정). 세력 제한 factions:["bandit"]. 그림은 봉천 그림 대용 (artAs · artVariant) — 전용 그림이 오면 unit.bandit_* 로 바뀐다.
+    "bandit_thug": {
+      "name": "마적 잡병", "description": "대도 한 자루뿐인 마적 졸개. 총이 없어 사격하지 못하고 근접 돌격만 합니다 (체력 · 속도는 정규군 보병과 같음).",
+      "hp": 100, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "dadao", "melee": "dadao", "meleeOnly": true, "armor": "none", "category": "infantry", "suppressResist": 0.75,
+      "factions": ["bandit"], "artAs": "infantry_fengtian", "canCapture": true, "autoAttack": true,
+    },
+    "bandit_rifleman": {
+      "name": "마적 소총병", "description": "소총을 든 마적. 성능은 정규군 보병과 같고 대도로 돌격합니다 (모션도 봉천 보병과 같음).",
+      "hp": 100, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "rifle_mosin", "melee": "dadao", "armor": "none", "category": "infantry", "suppressResist": 0.75, "marchFire": true,
+      "factions": ["bandit"], "artAs": "infantry_fengtian", "canCapture": true, "autoAttack": true,
+    },
+    "bandit_horseman": {
+      "name": "마적 기병", "description": "말 탄 마적. 성능은 기병과 같습니다 (카빈과 군도, 속도 보병의 1.5배, 돌격 1.8배).",
+      "hp": 180, "speed": 4.8, "radius": 0.45, "sight": 35, "sightNear": 23, "sightFar": 35, "accuracy": 1.0,
+      "weapon": "carbine", "melee": "sabre", "armor": "none", "category": "infantry", "suppressResist": 0.75,
+      "mounted": true, "chargeSpeedMul": 1.6, "staminaMul": 3,
+      "factions": ["bandit"], "artAs": "cavalry_default", "artVariant": "fengtian", "canCapture": true, "autoAttack": true,
+    },
+    "bandit_leader": {
+      "name": "마적 두목", "description": "마적 무리의 지휘관. 성능은 장교와 같습니다 (권총과 곡도, 제압을 받지 않고 주변 8칸 병사의 제압 회복을 빠르게 합니다).",
+      "hp": 200, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "pistol", "melee": "sabre", "armor": "none", "category": "infantry", "suppressResist": 0, "commandRadius": 8, "marchFire": true, "spotter": true,
+      "factions": ["bandit"], "artAs": "officer_fengtian", "canCapture": true, "autoAttack": true,
+    },
+    // ---- [N53] 공용(무소속) 유닛 틀 — "common": true 이면 어떤 세력도 편성 가능. 아래는 시험용 자리표시자 (사용자가 실제 사양을 줄 때까지 정규군 보병 수치).
+    "common_volunteer_tmp": {
+      "name": "의용병 (임시)", "description": "[자리표시자 · 시험용] 공용 유닛 틀 확인용 임시 유닛. 어느 세력이든 편성할 수 있고 수치는 정규군 보병과 같습니다.",
+      "hp": 100, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "rifle_mosin", "melee": "bayonet", "armor": "none", "category": "infantry", "suppressResist": 0.75, "marchFire": true,
+      "common": true, "artAs": "infantry", "canCapture": true, "autoAttack": true,
+    },
+    "cavalry_default": {
+      "name": "기병", "description": "카빈을 든 기병. 이동 속도 보병의 1.5배, 돌격 1.8배, 스태미나 3배. 돌격 충격 (피해 보너스 없음): 2초 이상 돌격 뒤 첫 적중 시 0.6초 마비 · 10~15초 쿨다운 · 충격 지점 2칸 안 적 보병 제압. 돌격만 을 켜면 사격하지 않고 돌격합니다. 전차에는 근접 공격 불가.",
+      "hp": 180, "speed": 4.8, "radius": 0.45, "sight": 35, "sightNear": 23, "sightFar": 35, "accuracy": 1.0,
+      "weapon": "carbine", "melee": "sabre", "armor": "none", "category": "infantry", "suppressResist": 0.75,
+      "mounted": true, "chargeSpeedMul": 1.6, "staminaMul": 3,
+      "canCapture": true, "autoAttack": true,
+    },
+    // 기병 장교 (cavcmd, 2026-10-19 사용자 결정 1): 기병 중대 지휘관. 장교 규칙 (계급 · 경험치 · 승계 · 임시 진급 · 지휘 범위) 그대로, 말 위에서 권총 · 군도.
+    // 수치 = 장교 (hp 200 · 권총 · 군도 · 지휘 범위 8 · 제압 안 받음) + 기병 이동 (속도 · 돌격 배수 · 스태미나 · 반경 · 시야). 세력 그림은 테마 변형 (unit.officer_cavalry@fengtian).
+    "officer_cavalry": {
+      "name": "기병 장교", "description": "말을 탄 기병 중대 지휘관. 권총과 군도로 무장하고, 제압을 받지 않으며 주변 8칸 병사의 제압 회복을 빠르게 하고 사격 속도를 조금 높입니다. 기병처럼 빠르게 움직이고 말 위에서 군도로 돌격합니다.",
+      "hp": 200, "speed": 4.8, "radius": 0.45, "sight": 35, "sightNear": 23, "sightFar": 35, "accuracy": 1.0,
+      "weapon": "pistol", "melee": "sabre", "armor": "none", "category": "infantry", "suppressResist": 0, "commandRadius": 8,
+      "mounted": true, "chargeSpeedMul": 1.6, "staminaMul": 3,
+      "marchFire": true, "spotter": true, "canCapture": true, "autoAttack": true,
+    },
+    "tank_ft_female": {
+      "name": "르노 FT (암컷형)", "description": "경전차. 회전 포탑의 기관총 (흩뿌림 · 제압). 소총탄에 면역입니다. 느립니다.",
+      "hp": 300, "speed": 1.8, "radius": 0.5, "sight": 27, "sightNear": 14, "sightFar": 27, "accuracy": 1.0, "turretTurnRate": 70,
+      "weapon": "mg", "armor": "basic", "category": "armored", "suppressResist": 0.25,
+      "marchFire": true, "canCapture": true, "autoAttack": true,
+    },
+    "tank_ft_male": {
+      "name": "르노 FT (수컷형)", "description": "경전차. 회전 포탑의 37mm 단포. 소총탄에 면역입니다. 느립니다.",
+      "hp": 300, "speed": 1.8, "radius": 0.5, "sight": 27, "sightNear": 14, "sightFar": 27, "accuracy": 1.0, "turretTurnRate": 70,
+      "weapon": "ft_gun", "armor": "basic", "category": "armored", "suppressResist": 0.25,
+      "canCapture": true, "autoAttack": true,
+    },
+    "tank_armored_car": {
+      "name": "장갑차", "description": "4륜 장갑차. 회전 포탑의 기관총 (흩뿌림 · 제압). 소총탄에 면역이고 빠릅니다.",
+      "hp": 220, "speed": 4.0, "radius": 0.5, "sight": 32, "sightNear": 17, "sightFar": 32, "accuracy": 1.0, "turretTurnRate": 100,
+      "weapon": "mg", "armor": "basic", "category": "armored", "suppressResist": 0.25,
+      "marchFire": true, "canCapture": true, "autoAttack": true,
+    },
+    // ---- [N63 · N68 · N72 · N78] 새 유닛 (사용자 승인 2026-10-20). 사양에 없는 수치는 보수적으로 (units 브랜치 보고에 목록). 그림은 artAs 가 임시, 전용 그림이 오면 자동 우선.
+    // N63 몽골 기병: 기병 기본 + 승마 사격 명중 배수 0.7 (기본 0.4 — 말 위 사격 능숙). 공용.
+    "cavalry_mongol": {
+      "name": "몽골 기병", "description": "말 위에서도 정확하게 쏘는 몽골 기병 (공용). 기병과 같지만 승마 사격 명중 감소가 적습니다 (×0.7, 기병 ×0.4). 하마 사격 규칙은 기병과 같습니다.",
+      "hp": 180, "speed": 4.8, "radius": 0.45, "sight": 35, "sightNear": 23, "sightFar": 35, "accuracy": 1.0,
+      "weapon": "carbine", "melee": "sabre", "armor": "none", "category": "infantry", "suppressResist": 0.75,
+      "mounted": true, "chargeSpeedMul": 1.6, "staminaMul": 3, "mountedFireAccMul": 0.7,
+      "common": true, "artAs": "cavalry_default", "canCapture": true, "autoAttack": true,
+    },
+    // N63 카자크 기병: 돌격 속도 배수 1.9 (기병 1.6). 러시아 계열 전용 + 한국군 (사용자 2026-10-21), 검은 털모자.
+    "cavalry_cossack": {
+      "name": "카자크 기병", "description": "돌격에 능한 카자크 기병 (러시아 계열 · 한국군). 기병과 같지만 돌격 속도가 더 빠릅니다 (×1.9, 기병 ×1.6).",
+      "hp": 180, "speed": 4.8, "radius": 0.45, "sight": 35, "sightNear": 23, "sightFar": 35, "accuracy": 1.0,
+      "weapon": "carbine", "melee": "sabre", "armor": "none", "category": "infantry", "suppressResist": 0.75,
+      "mounted": true, "chargeSpeedMul": 1.9, "staminaMul": 3,
+      "factions": ["korean", "russian", "soviet"], "artAs": "cavalry_default", "canCapture": true, "autoAttack": true,
+    },
+    // N63 간도 한인 의용병: 지방대 수준 (베르단 II · 정확도 0.9), 제압에 약함 (suppressResist 1.25 = 징집병 1.0 보다 약함), 추가 이점 없음. 공용.
+    "common_gando_volunteer": {
+      "name": "서간도 의용군", "description": "서간도의 한인 의용군 (공용). 지방대 수준의 무장 (베르단 II 소총)에 제압에 약합니다 (제압 1.25배). 추가 이점은 없습니다.",
+      "hp": 100, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 0.9,
+      "weapon": "rifle_berdan2", "melee": "bayonet", "armor": "none", "category": "infantry", "suppressResist": 1.25, "marchFire": true,
+      "common": true, "artAs": "infantry_reserve", "canCapture": true, "autoAttack": true,
+    },
+    // N72 기병 정찰병: 빠름 (5.4 = 기병 ×1.125), 시야 = 정찰병 규칙 (scout: ×1.5 → 48) + 하마 관측 ×1.2 (dismountSightMul), 카빈, 군도 없음 (근접 약함 hp 150), 자위 사격 N35 (scout 플래그: 먼저 쏘지 않음).
+    "cavalry_scout": {
+      "name": "기병 정찰병", "description": "빠르고 시야가 넓은 기병 정찰병. 먼저 쏘지 않고 자위 사격만 하며, 멈춰 서서 관측할 때는 말에서 내려 더 멀리 봅니다 (시야 ×1.2). 소규모 정찰 · 차장 임무용.",
+      "hp": 150, "speed": 5.4, "radius": 0.45, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 0.9,
+      "weapon": "carbine", "armor": "none", "category": "infantry", "suppressResist": 0.75,
+      "mounted": true, "chargeSpeedMul": 1.6, "staminaMul": 3, "scout": true, "spotter": true, "dismountSightMul": 1.2,
+      "artAs": "cavalry_default", "canCapture": true, "autoAttack": true,
+    },
+    // N68 봉천 위대: 시위대 대응 (hp 125, 마우저 98), 착검 돌격 (사용자 2026-10-21: 대도 아님), 제압 0.6 (정예 0.5 와 정규 0.75 사이).
+    "infantry_guard_fengtian": {
+      "name": "봉천 위대", "description": "장쭤린 직속 근위 정예 보병 (봉천 전용, 한국 시위대에 해당). 체력 125, 98식 마우저 소총, 착검 돌격. 제압을 조금 덜 받습니다.",
+      "hp": 125, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "rifle_mauser98", "melee": "bayonet", "armor": "none", "category": "infantry", "suppressResist": 0.6, "marchFire": true,
+      "factions": ["fengtian"], "artAs": "infantry_fengtian", "canCapture": true, "autoAttack": true,
+    },
+    // ---- newunits (N68 · N71, 2026-10-22). 수치는 모두 기존 유닛 기준 보수값 (근거는 각 줄). 새 메카닉은 구현하지 않음 (보고 참고).
+    // N68 만주 사냥꾼 (공용): 숲에 강한 명사수 산병. 현재 구현 가능한 부분만 = 정확도 1.15 (정규 1.0) · 시야 +2 (34). 숲 시야 / 명중 보너스는 메카닉이 없어 미구현 (사용자 승인 대기). 모피 · 사냥복 그림 infantry-hunter.
+    "common_hunter": {
+      "name": "만주 사냥꾼", "description": "만주 숲에서 자란 사냥꾼 (공용). 정확한 사격과 조금 넓은 시야를 가진 산병이지만 체력과 제압 저항은 보통 보병과 같습니다.",
+      "hp": 100, "speed": 3.2, "radius": 0.35, "sight": 34, "sightNear": 22, "sightFar": 34, "accuracy": 1.15,
+      "weapon": "rifle_mosin", "melee": "bayonet", "armor": "none", "category": "infantry", "suppressResist": 0.75, "marchFire": true,
+      "common": true, "artAs": "infantry", "canCapture": true, "autoAttack": true,
+    },
+    // N68 마적 엽총수 (마적 전용): 산탄 엽총 근거리 화력. 체력 · 속도 = 마적 소총병, 무기 shotgun (위 무기 표). 근접 = 대도.
+    "bandit_shotgunner": {
+      "name": "마적 엽총수", "description": "쌍열 엽총을 든 마적. 사거리 9칸 안에서만 위협적이지만 한 방이 강합니다 (피해 55, 보병 2발 사망). 대도로 돌격합니다.",
+      "hp": 100, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "shotgun", "melee": "dadao", "armor": "none", "category": "infantry", "suppressResist": 0.75,
+      "factions": ["bandit"], "artAs": "infantry_fengtian", "canCapture": true, "autoAttack": true,
+    },
+    // N71 초안 마적 (공용 외인 부대): 매수된 마적 소총병, 규율 약함 = 제압 저항 1.0 (징집병과 같은 값, 마적 소총병 0.75 보다 약함) · 정확도 0.9. 이점 없음. (기병형은 이번 범위 밖)
+    "common_draft_bandit": {
+      "name": "초안 마적", "description": "봉천 · 한국 등에 매수되어 돈으로 싸우는 마적 소총병 (공용). 규율이 약해 제압에 쉽게 무너집니다 (제압 1.0배, 정규군 0.75배). 대도로 돌격합니다.",
+      "hp": 100, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 0.9,
+      "weapon": "rifle_mosin", "melee": "dadao", "armor": "none", "category": "infantry", "suppressResist": 1.0, "marchFire": true,
+      "common": true, "artAs": "infantry_fengtian", "canCapture": true, "autoAttack": true,
+    },
+    // N71 민단 자위대 (공용 외인 부대): 향촌 자위대, 지방대 수준 (서간도 의용군과 같은 베르단 II · 정확도 0.9) + 제압에 약함 (1.25, 의용군과 같음 · 징집 1.0 보다 약함). 이점 없음.
+    "common_village_militia": {
+      "name": "민단 자위대", "description": "향촌을 지키는 민단 자위대 (공용). 지방대 수준의 무장 (베르단 II 소총)에 제압에 약합니다 (제압 1.25배). 추가 이점은 없습니다.",
+      "hp": 100, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 0.9,
+      "weapon": "rifle_berdan2", "melee": "bayonet", "armor": "none", "category": "infantry", "suppressResist": 1.25, "marchFire": true,
+      "common": true, "artAs": "infantry_reserve", "canCapture": true, "autoAttack": true,
+    },
+    // N68 기수: 전 세력 공용 (그림은 세력 국가 깃발 N70). 권총, hp 100. 효과 = combat.bearer* (Bearer.cs).
+    "standard_bearer": {
+      "name": "기수", "description": "연대기를 든 기수 (전 세력 공용, 사격하지 않고 깃발을 흔듭니다). 근처 10칸 병사가 제압에 무너지거나 후퇴할 확률이 줄어듭니다. 기수가 쓰러지면 20초 동안 오히려 늘어납니다.",
+      "hp": 100, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 0.9,
+      "armor": "none", "category": "infantry", "suppressResist": 0.75, "marchFire": true, "bearer": true,
+      "common": true, "artAs": "infantry", "canCapture": true, "autoAttack": false,
+    },
+    // N78 타찬카 (기관총 마차): 한국군도 사용 (러시아 계열 + 한국). 맥심과 같은 hmg · 체력 220, 마차라 빠름 (4.0) · 방열 3초 / 철수 2초 (맥심 7 / 5). 중화기 (heavy_ 접두사).
+    "heavy_tachanka": {
+      "name": "타찬카", "description": "말이 끄는 맥심 기관총 마차. 맥심과 같은 화기에 이동이 빠르고 (4.0) 거치(3초) · 해제(2초)가 빠릅니다. 체력 220, 마차라 마부와 말이 함께 맞습니다.",
+      "hp": 220, "speed": 4.0, "radius": 0.6, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "hmg", "armor": "none", "category": "infantry", "suppressResist": 0.35, "setupTime": 3, "packTime": 2, "traverseRate": 90,
+      "factions": ["korean", "russian", "soviet"], "artAs": "heavy_maxim", "canCapture": false, "autoAttack": true,
+    },
+    // 기마 포병 (QUEUE 12, 사용자 2026-10-21): 보병포 (gun_infantry) 를 말 두 필이 끄는 마차. 세력 = 보병포와 같음 (제한 없음). 속도 3.6 (타찬카 4.0 보다 포 무게만큼 느림, 보병포 2.2 보다 훨씬 빠름), 방열 5초 / 철수 4초 (보병포 9/7, 타찬카 3/2 사이).
+    "heavy_horse_artillery": {
+      "name": "기마 포병", "description": "말이 끄는 37mm 보병포. 보병포와 같은 화기에 이동이 빠르고 (3.6) 방열(5초) · 철수(4초)가 빠릅니다. 직사: 사선이 트여야 쏩니다. 체력 220, 마부와 말이 함께 맞습니다.",
+      "hp": 220, "speed": 3.6, "radius": 0.6, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "gun_infantry", "armor": "basic", "category": "gun", "suppressResist": 0.6, "setupTime": 5, "packTime": 4, "turnRate": 45,
+      "artAs": "heavy_infantry_gun", "canCapture": false, "autoAttack": true,
+    },
+    // 장갑 차량 3종 (armour 2026-10-21, 사용자 확정 — 수치는 보수적 초안, 승인 후 조정).
+    // Mark V 수컷 (6파운더 2문 + 기관총, 승무원 8, 약 7.4 km/h): 포탑 없음 (차체 전체가 조준, 스폰슨 포), 근거리 (10칸 안) 는 기관총 (sidearm mg), 참호 횡단 = 참호 칸 이동 1.0 이라 별도 처리 없이 통과 (철조망은 FT 와 같이 불가).
+    "tank_mark_v": {
+      "name": "Mark V 중전차 (수컷)", "description": "마름모꼴 중전차. 양쪽 스폰슨의 6파운더 포 2문과 기관총으로 무장하고 참호를 넘어 돌파합니다. 소총탄에 면역이고 매우 튼튼하지만 느립니다.",
+      "hp": 600, "speed": 1.7, "radius": 0.9, "sight": 24, "sightNear": 12, "sightFar": 24, "accuracy": 1.0,
+      "weapon": "gun_6pdr", "sidearm": "mg", "sidearmRange": 10, "armor": "heavy", "category": "armored", "suppressResist": 0.4,
+      "factions": ["korean", "russian", "soviet"], "canCapture": true, "autoAttack": true,
+    },
+    // Lanchester 장갑차 (범용): 회전 포탑 기관총 (Vickers), Austin (tank_armored_car, 모든 세력) 과 같은 틀 — hp 200, 속도 4.4 (약간 빠름)
+    "tank_lanchester": {
+      "name": "랜체스터 장갑차", "description": "회전 포탑 기관총을 단 4륜 장갑차. 소총탄에 면역이고 빠릅니다.",
+      "hp": 200, "speed": 4.4, "radius": 0.5, "sight": 32, "sightNear": 17, "sightFar": 32, "accuracy": 1.0, "turretTurnRate": 100,
+      "weapon": "mg", "armor": "basic", "category": "armored", "suppressResist": 0.25,
+      "factions": ["korean", "russian", "soviet"], "marchFire": true, "canCapture": true, "autoAttack": true,
+    },
+    // 봉천 급조 장갑차 (트럭 개조): Austin 보다 약하고 느림 — hp 160, 속도 3.2, 장갑 basic (판재 덧댐), 포탑 100
+    "tank_fengtian_truck": {
+      "name": "봉천 급조 장갑차", "description": "트럭에 철판을 덧댄 급조 장갑차. 지붕의 기관총으로 쏩니다. 소총탄은 막지만 정규 장갑차보다 약하고 느립니다.",
+      "hp": 160, "speed": 3.2, "radius": 0.55, "sight": 28, "sightNear": 15, "sightFar": 28, "accuracy": 1.0, "turretTurnRate": 80,
+      "weapon": "mg", "armor": "basic", "category": "armored", "suppressResist": 0.2,
+      "factions": ["fengtian"], "marchFire": true, "canCapture": true, "autoAttack": true,
+    },
+    // 보급 마차 (ROADMAP §0-1, 2026-10-19): 비무장. 주변 6칸 아군의 탄약 회복 ×3 (적재량 소모), 아군 도시 근처에서 다시 싣는다. 그림은 차량 별칭 (theme.json)
+    "supply_wagon": {
+      "name": "보급 마차", "description": "탄약을 싣고 다니는 비무장 마차. 주변 6칸 아군의 탄약 회복을 3배로 빠르게 하고 그만큼 적재량이 줄어듭니다. 아군 도시 근처에서 다시 싣습니다.",
+      "hp": 150, "speed": 2.6, "radius": 0.5, "sight": 21, "sightNear": 11, "sightFar": 21, "accuracy": 1.0,
+      "armor": "none", "category": "wagon", "suppressResist": 1.0, "cargo": 40,
+      "canCapture": false, "autoAttack": false
+    }
+  },
+  "buildings": {
+    // 점령 대상 (점령 가능 · 파괴 불가, 방향 변경 §0-1: 수입 · 생산 없음). 지도에 흩어져 있고 주변에 전투 유닛을 두면 점령된다.
+    // city: true = 도시 (살아남는 근거 · 근처 탄약 회복 ×3). headquarters: true = 시작 거점 (세력마다 하나씩 소유하고 시작)
+    "metropolis": {
+      "name": "대도시", "description": "세력의 근거지. 도시를 모두 잃으면 패배합니다. 대도시를 모두 잃으면 30초 뒤 위치가 드러납니다. 근처 아군의 탄약 회복이 빠릅니다.",
+      "hp": 1, "armor": "structure",
+      "size": 4, "sight": 27,
+      "captureTime": 40,
+      "capturable": true, "indestructible": true, "city": true, "headquarters": true
+    },
+    "city": {
+      "name": "소도시", "description": "도시. 하나라도 가지고 있으면 패배하지 않습니다. 근처 아군의 탄약 회복이 빠릅니다.",
+      "hp": 1, "armor": "structure",
+      "size": 4, "sight": 21,
+      "captureTime": 20,
+      "capturable": true, "indestructible": true, "city": true
+    },
+    "village": {
+      "name": "마을", "description": "점령 목표.",
+      "hp": 1, "armor": "structure",
+      "size": 3, "sight": 16,
+      "captureTime": 10,
+      "capturable": true, "indestructible": true
+    },
+  }
+}

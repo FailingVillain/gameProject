@@ -1,0 +1,64 @@
+head flat  infantry vs infantry|30v30|X승 5/10 Y승 5 무 0|생존 X 7.1 Y 7.1|교환비(Y손실/X손실) 1.00|135s|명중거리 19.9|명중% 17
+value flat  infantry vs infantry|30v30|X승 5/10 Y승 5 무 0|생존 X 7.1 Y 7.1|교환비(Y손실/X손실) 1.00|135s|명중거리 19.9|명중% 17
+head flat  infantry vs recruit|30v30|X승 9/10 Y승 1 무 0|생존 X 13.6 Y 0.5|교환비(Y손실/X손실) 1.80|93s|명중거리 19.1|명중% 17
+value flat  infantry vs recruit|30v30|X승 9/10 Y승 1 무 0|생존 X 13.6 Y 0.5|교환비(Y손실/X손실) 1.80|93s|명중거리 19.1|명중% 17
+head flat  infantry vs veteran|30v30|X승 2/10 Y승 8 무 0|생존 X 3.9 Y 11.8|교환비(Y손실/X손실) 0.70|94s|명중거리 21.0|명중% 16
+value flat  infantry vs veteran|30v30|X승 2/10 Y승 8 무 0|생존 X 3.9 Y 11.8|교환비(Y손실/X손실) 0.70|94s|명중거리 21.0|명중% 16
+head flat  infantry vs infantry_scout|30v30|X승 10/10 Y승 0 무 0|생존 X 13.3 Y 0.0|교환비(Y손실/X손실) 1.80|89s|명중거리 21.1|명중% 13
+value flat  infantry vs infantry_scout|30v30|X승 10/10 Y승 0 무 0|생존 X 13.3 Y 0.0|교환비(Y손실/X손실) 1.80|89s|명중거리 21.1|명중% 13
+head flat  infantry vs infantry_assault|30v30|X승 10/10 Y승 0 무 0|생존 X 23.4 Y 0.0|교환비(Y손실/X손실) 4.55|33s|명중거리 7.2|명중% 24
+value flat  infantry vs infantry_assault|30v23|X승 10/10 Y승 0 무 0|생존 X 26.7 Y 0.0|교환비(Y손실/X손실) 6.97|25s|명중거리 7.4|명중% 28
+head flat  infantry vs infantry_guard|30v30|X승 0/10 Y승 10 무 0|생존 X 0.0 Y 20.3|교환비(Y손실/X손실) 0.32|68s|명중거리 19.6|명중% 18
+value flat  infantry vs infantry_guard|30v24|X승 6/10 Y승 4 무 0|생존 X 6.8 Y 3.8|교환비(Y손실/X손실) 0.87|120s|명중거리 20.1|명중% 17
+head flat  infantry vs cavalry_default|30v30|X승 9/10 Y승 1 무 0|생존 X 17.8 Y 2.0|교환비(Y손실/X손실) 2.30|66s|명중거리 14.4|명중% 22
+value flat  infantry vs cavalry_default|30v17|X승 9/10 Y승 1 무 0|생존 X 19.1 Y 0.8|교환비(Y손실/X손실) 1.49|41s|명중거리 15.4|명중% 20
+head flat  infantry vs heavy_machinegunner|30v30|X승 0/10 Y승 10 무 0|생존 X 0.0 Y 28.4|교환비(Y손실/X손실) 0.05|35s|명중거리 22.3|명중% 28
+value flat  infantry vs heavy_machinegunner|30v19|X승 0/10 Y승 10 무 0|생존 X 0.0 Y 17.3|교환비(Y손실/X손실) 0.06|31s|명중거리 22.1|명중% 29
+head flat  infantry vs heavy_maxim|30v30|X승 0/10 Y승 10 무 0|생존 X 0.0 Y 29.8|교환비(Y손실/X손실) 0.01|28s|명중거리 22.3|명중% 24
+value flat  infantry vs heavy_maxim|30v9|X승 0/10 Y승 10 무 0|생존 X 0.0 Y 8.6|교환비(Y손실/X손실) 0.01|34s|명중거리 21.4|명중% 25
+head flat  infantry vs infantry_sniper|30v30|X승 0/10 Y승 10 무 0|생존 X 0.0 Y 25.4|교환비(Y손실/X손실) 0.15|76s|명중거리 26.8|명중% 25
+value flat  infantry vs infantry_sniper|30v30|X승 0/10 Y승 10 무 0|생존 X 0.0 Y 25.4|교환비(Y손실/X손실) 0.15|76s|명중거리 26.8|명중% 25
+head flat  infantry vs heavy_infantry_gun|30v30|X승 0/10 Y승 10 무 0|생존 X 0.0 Y 28.5|교환비(Y손실/X손실) 0.05|42s|명중거리 25.4|명중% 65
+value flat  infantry vs heavy_infantry_gun|30v15|X승 0/10 Y승 10 무 0|생존 X 0.0 Y 11.8|교환비(Y손실/X손실) 0.11|59s|명중거리 24.1|명중% 46
+head flat  infantry vs heavy_field_gun|30v30|X승 0/10 Y승 10 무 0|생존 X 0.0 Y 29.8|교환비(Y손실/X손실) 0.01|21s|명중거리 27.5|명중% 46
+value flat  infantry vs heavy_field_gun|30v10|X승 0/10 Y승 10 무 0|생존 X 0.0 Y 8.3|교환비(Y손실/X손실) 0.06|59s|명중거리 24.0|명중% 30
+head flat  cavalry_default vs infantry_assault|30v30|X승 9/10 Y승 1 무 0|생존 X 14.2 Y 0.2|교환비(Y손실/X손실) 1.89|49s|명중거리 4.9|명중% 27
+value flat  cavalry_default vs infantry_assault|17v23|X승 4/10 Y승 6 무 0|생존 X 2.7 Y 7.8|교환비(Y손실/X손실) 1.06|46s|명중거리 5.3|명중% 24
+head flat  heavy_machinegunner vs infantry_assault|30v30|X승 10/10 Y승 0 무 0|생존 X 30.0 Y 0.0|교환비(Y손실/X손실) 300.00|16s|명중거리 12.2|명중% 49
+value flat  heavy_machinegunner vs infantry_assault|19v23|X승 10/10 Y승 0 무 0|생존 X 19.0 Y 0.0|교환비(Y손실/X손실) 230.00|16s|명중거리 11.4|명중% 52
+head flat  heavy_maxim vs infantry_assault|30v30|X승 10/10 Y승 0 무 0|생존 X 30.0 Y 0.0|교환비(Y손실/X손실) 300.00|15s|명중거리 12.5|명중% 40
+value flat  heavy_maxim vs infantry_assault|9v23|X승 10/10 Y승 0 무 0|생존 X 9.0 Y 0.0|교환비(Y손실/X손실) 230.00|16s|명중거리 10.4|명중% 44
+head flat  infantry_guard vs infantry_assault|30v30|X승 10/10 Y승 0 무 0|생존 X 24.7 Y 0.0|교환비(Y손실/X손실) 5.66|32s|명중거리 7.2|명중% 24
+value flat  infantry_guard vs infantry_assault|24v23|X승 10/10 Y승 0 무 0|생존 X 21.9 Y 0.0|교환비(Y손실/X손실) 10.95|29s|명중거리 7.2|명중% 28
+head flat  heavy_maxim vs heavy_machinegunner|30v30|X승 9/10 Y승 1 무 0|생존 X 20.1 Y 0.9|교환비(Y손실/X손실) 2.94|53s|명중거리 23.5|명중% 25
+value flat  heavy_maxim vs heavy_machinegunner|9v19|X승 0/10 Y승 10 무 0|생존 X 0.0 Y 10.5|교환비(Y손실/X손실) 0.94|40s|명중거리 23.2|명중% 28
+head flat  cavalry_default vs heavy_machinegunner|30v30|X승 0/10 Y승 0 무 10|생존 X 28.8 Y 30.0|교환비(Y손실/X손실) 0.00|400s|명중거리 23.4|명중% 16
+value flat  cavalry_default vs heavy_machinegunner|17v19|X승 0/10 Y승 0 무 10|생존 X 16.5 Y 19.0|교환비(Y손실/X손실) 0.00|400s|명중거리 23.0|명중% 20
+head flat  cavalry_default vs heavy_maxim|30v30|X승 0/10 Y승 0 무 10|생존 X 26.1 Y 30.0|교환비(Y손실/X손실) 0.00|400s|명중거리 23.2|명중% 16
+value flat  cavalry_default vs heavy_maxim|17v9|X승 0/10 Y승 0 무 10|생존 X 16.8 Y 9.0|교환비(Y손실/X손실) 0.00|400s|명중거리 13.6|명중% 13
+head flat  infantry_assault vs infantry_assault|30v30|X승 5/10 Y승 5 무 0|생존 X 5.4 Y 5.4|교환비(Y손실/X손실) 1.00|67s|명중거리 5.2|명중% 18
+value flat  infantry_assault vs infantry_assault|23v23|X승 5/10 Y승 5 무 0|생존 X 5.2 Y 5.2|교환비(Y손실/X손실) 1.00|63s|명중거리 5.3|명중% 16
+head trench Y infantry vs infantry|30v30|X승 3/5 Y승 2 무 0|생존 X 7.4 Y 6.2|교환비(Y손실/X손실) 1.05|110s|명중거리 19.8|명중% 17
+head trench X infantry vs infantry|30v30|X승 2/5 Y승 3 무 0|생존 X 6.2 Y 7.4|교환비(Y손실/X손실) 0.95|110s|명중거리 19.8|명중% 17
+head trench Y infantry vs heavy_machinegunner|30v30|X승 0/5 Y승 5 무 0|생존 X 0.0 Y 28.2|교환비(Y손실/X손실) 0.06|36s|명중거리 22.3|명중% 28
+head trench X infantry vs heavy_machinegunner|30v30|X승 0/5 Y승 5 무 0|생존 X 0.0 Y 28.6|교환비(Y손실/X손실) 0.05|40s|명중거리 22.3|명중% 27
+head trench Y infantry vs heavy_maxim|30v30|X승 0/5 Y승 5 무 0|생존 X 0.0 Y 29.8|교환비(Y손실/X손실) 0.01|29s|명중거리 22.4|명중% 25
+head trench X infantry vs heavy_maxim|30v30|X승 0/5 Y승 5 무 0|생존 X 0.0 Y 29.8|교환비(Y손실/X손실) 0.01|25s|명중거리 22.2|명중% 23
+head trench Y infantry vs infantry_assault|30v30|X승 5/5 Y승 0 무 0|생존 X 24.8 Y 0.0|교환비(Y손실/X손실) 5.77|32s|명중거리 7.1|명중% 24
+head trench X infantry vs infantry_assault|30v30|X승 5/5 Y승 0 무 0|생존 X 22.0 Y 0.0|교환비(Y손실/X손실) 3.75|34s|명중거리 7.3|명중% 23
+head trench Y infantry vs cavalry_default|30v30|X승 4/5 Y승 1 무 0|생존 X 15.4 Y 4.0|교환비(Y손실/X손실) 1.78|65s|명중거리 13.9|명중% 22
+head trench X infantry vs cavalry_default|30v30|X승 5/5 Y승 0 무 0|생존 X 22.0 Y 0.0|교환비(Y손실/X손실) 3.75|83s|명중거리 15.6|명중% 20
+head trench Y infantry vs infantry_guard|30v30|X승 0/5 Y승 5 무 0|생존 X 0.0 Y 20.8|교환비(Y손실/X손실) 0.31|67s|명중거리 19.7|명중% 18
+head trench X infantry vs infantry_guard|30v30|X승 0/5 Y승 5 무 0|생존 X 0.0 Y 18.4|교환비(Y손실/X손실) 0.39|84s|명중거리 19.7|명중% 18
+head forest Y infantry vs infantry|30v30|X승 0/5 Y승 3 무 2|생존 X 7.6 Y 13.0|교환비(Y손실/X손실) 0.76|221s|명중거리 20.4|명중% 17
+head forest X infantry vs infantry|30v30|X승 3/5 Y승 0 무 2|생존 X 13.0 Y 7.6|교환비(Y손실/X손실) 1.32|221s|명중거리 20.4|명중% 17
+head forest Y infantry vs heavy_machinegunner|30v30|X승 0/5 Y승 5 무 0|생존 X 0.0 Y 28.4|교환비(Y손실/X손실) 0.05|36s|명중거리 22.4|명중% 27
+head forest X infantry vs heavy_machinegunner|30v30|X승 0/5 Y승 5 무 0|생존 X 0.0 Y 29.2|교환비(Y손실/X손실) 0.03|51s|명중거리 22.3|명중% 26
+head forest Y infantry vs heavy_maxim|30v30|X승 0/5 Y승 5 무 0|생존 X 0.0 Y 29.8|교환비(Y손실/X손실) 0.01|20s|명중거리 21.9|명중% 24
+head forest X infantry vs heavy_maxim|30v30|X승 0/5 Y승 5 무 0|생존 X 0.0 Y 29.8|교환비(Y손실/X손실) 0.01|42s|명중거리 21.9|명중% 22
+head forest Y infantry vs infantry_assault|30v30|X승 5/5 Y승 0 무 0|생존 X 22.2 Y 0.0|교환비(Y손실/X손실) 3.85|36s|명중거리 7.3|명중% 23
+head forest X infantry vs infantry_assault|30v30|X승 5/5 Y승 0 무 0|생존 X 21.2 Y 0.0|교환비(Y손실/X손실) 3.41|33s|명중거리 6.7|명중% 26
+head forest Y infantry vs cavalry_default|30v30|X승 4/5 Y승 0 무 1|생존 X 13.2 Y 2.8|교환비(Y손실/X손실) 1.62|135s|명중거리 12.7|명중% 24
+head forest X infantry vs cavalry_default|30v30|X승 5/5 Y승 0 무 0|생존 X 19.6 Y 0.0|교환비(Y손실/X손실) 2.88|66s|명중거리 14.5|명중% 23
+head forest Y infantry vs infantry_guard|30v30|X승 0/5 Y승 5 무 0|생존 X 0.0 Y 20.6|교환비(Y손실/X손실) 0.31|82s|명중거리 20.5|명중% 16
+head forest X infantry vs infantry_guard|30v30|X승 1/5 Y승 2 무 2|생존 X 5.0 Y 10.2|교환비(Y손실/X손실) 0.79|313s|명중거리 19.1|명중% 18

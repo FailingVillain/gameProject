@@ -1,0 +1,47 @@
+// 계급 이름 (표시 전용 — 시뮬레이션 · 체크섬과 무관). 원문 docs/RANKS_BY_FACTION.txt (사용자 승인 2026-10-19).
+// 키 = 지도 파일 factions[].en (korean · japanese · fengtian · bandit · russian-white · russian-red), 없으면 "default" (= 대한제국). 별칭: russian = russian-white, soviet = russian-red (RankNames.Aliases).
+// 통합 색인 0..16: 0-4 사병 · 5-8 부사관 · 9-11 위관 · 12-14 영관 · 15 미사용 · 16 장성 (표시 전용).
+// 게임 색인: 사병 enlisted[0..8] = 통합 0..8, 장교 officer[1..6] = 통합 9..14 (officer[0] = 기본 '장교'). general = 통합 16 (전투 유닛 미사용, 표시 · 브리핑용).
+// null = 미사용 계급 (승진은 건너뛴다, 미션 지정 계급은 한 칸 아래로 내려 맞춘다 — RankNames.Next / Snap).
+// enlistedEn / officerEn / generalEn = 문서의 영문 이름 (한국군만 문서에 있음, 표시 안 씀).
+// 한글 이름은 폰트 아틀라스에 자동으로 들어간다 (Defs.AllText).
+{
+  "default": {
+    "enlisted": ["훈련병", "이등병", "일등병", "상등병", null, "참교", "부교", "정교", "특무정교"],
+    "officer": ["장교", "참위", "부위", "정위", "참령", "부령", "정령"],
+    "general": ["참장", "부장", "대장"]
+  },
+  "korean": {
+    "enlisted": ["훈련병", "이등병", "일등병", "상등병", null, "참교", "부교", "정교", "특무정교"],
+    "officer": ["장교", "참위", "부위", "정위", "참령", "부령", "정령"],
+    "general": ["참장", "부장", "대장"],
+    "enlistedEn": ["Recruit", "Private 2nd Class", "Private 1st Class", "Corporal", null, "Staff Sergeant", "Sergeant 1st Class", "Master Sergeant", "Command Sergeant Major"],
+    "officerEn": ["Officer", "2nd Lieutenant", "1st Lieutenant", "Captain", "Major", "Lieutenant Colonel", "Colonel"],
+    "generalEn": ["Major General", "Lieutenant General", "General"]
+  },
+  "japanese": {
+    "enlisted": ["훈련병", "이등병", "일등병", "상등병", null, "오장", "군조", "조장", "특무조장"],
+    "officer": ["장교", "소위", "중위", "대위", "소좌", "중좌", "대좌"],
+    "general": []
+  },
+  "fengtian": {
+    "enlisted": ["훈련병", "이등병", "일등병", "상등병", null, "하사", "중사", "상사", "준위"],
+    "officer": ["장교", "소위", "중위", "상위", "소교", "중교", "상교"],
+    "general": []
+  },
+  "bandit": {
+    "enlisted": [null, "척자", "노비", "노비 (숙련)", null, "차포 (신참)", "차포 (일반)", "차포 (숙련)", null],
+    "officer": ["장교", "포대 (신참)", "포대 (일반)", "포대 (숙련)", "이당가", "대당가 (일반)", "대당가 (숙련)"],
+    "general": []
+  },
+  "russian-white": {
+    "enlisted": ["훈련병", "열병", "열병 (숙련)", "상등병", null, "하사", "중사", "상사", "준위"],
+    "officer": ["장교", "소위", "중위", "주임대위", "대위", "중령", "대령"],
+    "general": []
+  },
+  "russian-red": {
+    "enlisted": [null, "전사", "전사", "분대 지휘관", null, "부소대 지휘관 (초임)", "부소대 지휘관 (일반)", "부소대 지휘관 (숙련)", null],
+    "officer": ["장교", "소대 지휘관", "중대 지휘관 (초임)", "중대 지휘관 (숙련)", "대대 지휘관 (초임)", "대대 지휘관 (숙련)", "연대 지휘관"],
+    "general": []
+  }
+}

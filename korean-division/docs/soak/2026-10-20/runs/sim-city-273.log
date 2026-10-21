@@ -1,0 +1,104 @@
+  [sim] AI A=tactical B=tactical
+  t=10s  A 41 @(103,68)  B 231 @(164,61)  wall 0.3s
+  t=20s  A 41 @(106,70)  B 231 @(151,59)  wall 0.6s
+  t=30s  A 40 @(109,70)  B 229 @(146,61)  wall 0.9s
+  t=40s  A 35 @(108,71)  B 224 @(143,62)  wall 1.2s
+  t=50s  A 20 @(105,72)  B 222 @(141,63)  wall 1.5s
+  t=60s  A 14 @(80,74)  B 222 @(140,62)  wall 1.7s
+  t=70s  A 14 @(78,74)  B 221 @(140,63)  wall 1.9s
+  t=80s  A 14 @(78,73)  B 221 @(138,63)  wall 2.1s
+  t=90s  A 12 @(76,74)  B 221 @(125,65)  wall 2.4s
+  t=100s  A 9 @(69,76)  B 220 @(118,67)  wall 2.6s
+  t=110s  A 5 @(60,76)  B 219 @(115,68)  wall 2.8s
+  t=120s  A 3 @(51,73)  B 218 @(108,69)  wall 3.0s
+  t=130s  A 3 @(41,60)  B 218 @(91,70)  wall 3.3s
+  t=140s  A 2 @(7,41)  B 218 @(71,66)  wall 3.5s
+  t=150s  A 2 @(1,10)  B 218 @(49,62)  wall 3.7s
+  t=160s  A 2 @(1,1)  B 218 @(38,61)  wall 3.8s
+  t=170s  A 2 @(1,1)  B 218 @(34,61)  wall 4.0s
+  t=180s  A 2 @(1,1)  B 218 @(33,60)  wall 4.1s
+  t=190s  A 2 @(1,1)  B 218 @(33,60)  wall 4.2s
+  t=200s  A 2 @(1,1)  B 218 @(39,66)  wall 4.4s
+  t=210s  A 2 @(1,1)  B 218 @(59,73)  wall 4.6s
+  t=220s  A 2 @(1,1)  B 218 @(81,80)  wall 4.8s
+  t=230s  A 2 @(1,1)  B 218 @(75,80)  wall 5.0s
+  t=240s  A 2 @(1,1)  B 218 @(50,73)  wall 5.2s
+  t=250s  A 2 @(1,1)  B 218 @(38,69)  wall 5.4s
+  t=260s  A 2 @(1,1)  B 218 @(36,66)  wall 5.5s
+  t=270s  A 2 @(1,1)  B 218 @(35,65)  wall 5.7s
+  t=280s  A 2 @(1,1)  B 218 @(34,66)  wall 5.8s
+  t=290s  A 2 @(1,1)  B 218 @(34,66)  wall 5.9s
+  t=300s  A 2 @(1,1)  B 218 @(34,66)  wall 6.1s
+  t=310s  A 2 @(1,1)  B 218 @(34,66)  wall 6.2s
+  t=320s  A 2 @(1,1)  B 218 @(34,66)  wall 6.3s
+  t=330s  A 2 @(1,1)  B 218 @(34,66)  wall 6.4s
+  t=340s  A 2 @(1,1)  B 218 @(34,66)  wall 6.6s
+  t=350s  A 2 @(1,1)  B 218 @(34,66)  wall 6.7s
+  t=360s  A 2 @(1,1)  B 218 @(34,66)  wall 6.8s
+  t=370s  A 2 @(1,1)  B 218 @(34,66)  wall 6.9s
+  t=380s  A 2 @(1,1)  B 218 @(34,66)  wall 7.0s
+  t=390s  A 2 @(1,1)  B 218 @(34,66)  wall 7.2s
+  t=400s  A 2 @(1,1)  B 218 @(34,66)  wall 7.3s
+  t=410s  A 2 @(1,1)  B 218 @(34,66)  wall 7.4s
+  t=420s  A 2 @(1,1)  B 218 @(34,66)  wall 7.5s
+  t=430s  A 2 @(1,1)  B 218 @(34,66)  wall 7.6s
+  t=440s  A 2 @(1,1)  B 218 @(34,66)  wall 7.8s
+  t=450s  A 2 @(1,1)  B 218 @(34,66)  wall 7.9s
+  t=460s  A 2 @(1,1)  B 218 @(34,66)  wall 8.0s
+  t=470s  A 2 @(1,1)  B 218 @(34,66)  wall 8.1s
+  t=480s  A 2 @(1,1)  B 218 @(34,66)  wall 8.3s
+  t=490s  A 2 @(1,1)  B 218 @(34,66)  wall 8.4s
+  t=500s  A 2 @(1,1)  B 218 @(34,66)  wall 8.5s
+  t=510s  A 2 @(1,1)  B 218 @(34,66)  wall 8.6s
+  t=520s  A 2 @(1,1)  B 218 @(34,66)  wall 8.8s
+  t=530s  A 2 @(1,1)  B 218 @(34,66)  wall 8.9s
+  t=540s  A 2 @(1,1)  B 218 @(34,66)  wall 9.0s
+  t=550s  A 2 @(1,1)  B 218 @(34,66)  wall 9.1s
+  t=560s  A 2 @(1,1)  B 218 @(34,66)  wall 9.3s
+  t=570s  A 2 @(1,1)  B 218 @(34,66)  wall 9.4s
+  t=580s  A 2 @(1,1)  B 218 @(34,66)  wall 9.5s
+  t=590s  A 2 @(1,1)  B 218 @(34,66)  wall 9.6s
+MARCH ticks=0 move=0 moveOn=0 shots=0 moveShots=0 pistol=0 gren=0 melee=0
+MEAS start=41/231 end_t=600 winner=0 lossEnd=39/13 loss120=38/13 loss300=39/13 t50=50/- shots=715 hits=141 hitpct=19.7 meanDist=18.6 hitDist=19.2
+결과: 승자 0, 600.0초, 실행 9.8초, 명령 504
+사살원인 020s bandit_rifleman/rifle_mosin->infantry_fengtian = 1
+사살원인 020s infantry_fengtian/rifle_mosin->bandit_rifleman = 1
+사살원인 020s infantry_sniper/sniper_rifle->bandit_rifleman = 1
+사살원인 030s bandit_rifleman/rifle_mosin->infantry_fengtian = 4
+사살원인 030s cavalry_default/melee->infantry_sniper = 1
+사살원인 030s infantry_fengtian/rifle_mosin->bandit_rifleman = 5
+사살원인 040s bandit_rifleman/rifle_mosin->infantry_fengtian = 1
+사살원인 040s bandit_rifleman/rifle_mosin->infantry_sniper = 1
+사살원인 040s cavalry_default/melee->infantry_sniper = 2
+사살원인 040s heavy_infantry_gun/gun_infantry->infantry_fengtian = 11
+사살원인 040s infantry_fengtian/rifle_mosin->bandit_rifleman = 2
+사살원인 050s heavy_infantry_gun/gun_infantry->infantry_fengtian = 6
+사살원인 060s infantry_fengtian/rifle_mosin->bandit_rifleman = 1
+사살원인 080s bandit_rifleman/rifle_mosin->infantry_fengtian = 2
+사살원인 090s bandit_rifleman/rifle_mosin->infantry_fengtian = 1
+사살원인 090s bandit_rifleman/rifle_mosin->infantry_sniper = 2
+사살원인 090s infantry_sniper/sniper_rifle->bandit_rifleman = 1
+사살원인 100s bandit_rifleman/rifle_mosin->infantry_fengtian = 3
+사살원인 100s bandit_rifleman/rifle_mosin->infantry_sniper = 1
+사살원인 100s infantry_fengtian/rifle_mosin->bandit_rifleman = 1
+사살원인 110s bandit_rifleman/rifle_mosin->infantry_fengtian = 1
+사살원인 110s bandit_rifleman/rifle_mosin->infantry_sniper = 1
+사살원인 110s infantry_fengtian/rifle_mosin->bandit_rifleman = 1
+사살원인 130s bandit_rifleman/rifle_mosin->infantry_sniper = 1
+틀 행동: 시작 0 끝 0 약진 0 기동 0 돌격 0 역습 0 참호 0 연신 0 전환 0 인계멈춤 0 포병전개 0
+기병AI: 돌격 정면 0 측면 0 후방 1 측면경유 1 소규모보류 0 물러남 0 | 추격: 후퇴중 희생 사격 16 근접 2 후퇴하는 적 돌격 보병 0 기병 0 | N55 기병 무모한 정면 0 돌격 사격 전진 0 | N23 소탕 0 | S4 제압으로 꺾인 돌격 1
+F4 기병 돌격: 개시 1 무의미 정면 0 자동 막음 0 근접 사살 3 사유(후퇴/제압/승무원/고립/측면) 0/0/0/1/0 · 하마 7 승마 7
+관찰: 사격 715발 · 명중 141발 (19.7%) · 사망 52기 → 1킬당 13.8발 (명중 2.7발)
+N61 접근: 보병(1) 첫 사격 17.2초 · 기병(2) 첫 근접 38.3초 · 전환 56 · 그 시점 B 생존 224/231
+템포: 첫 사격 17.2초 · A 50% 손실 49.5초 · B 50% 손실 -초 · 사격 거리 평균 18.6 (첫 100발 19.5) 칸
+  세력:종류            시작→남음   사격    근접   포격  방열%  돌격%
+  1:infantry_fengtian    30→0         308      0      0     0     0
+  1:infantry_sniper       9→0          49      0      0     0     0
+  1:scout                 2→2           0      0      0     0     0
+  2:bandit_rifleman     210→197       341      0      0     0     0
+  2:cavalry_default      11→11          0     12      0     0     2
+  2:heavy_infantry_gun    8→8          17      0     17    54     0
+  2:scout                 2→2           0      0      0     0     0
+AI 비용: 사고 ms/틱 avg 0.004 max 23.39 (호출 4800, 호출당 0.033 ms) · 전체 Step avg 0.27 ms
+  [전술 AI 1] 프로필 default 태세 Attack/Defend 중대 1 대대 0 · 명령 70 돌격 0 기병돌격 0 참호 0 후퇴 8 포병이동 0 화력사수 5 예비투입 0 · 연대 0 준비사격 0 연신 0 분대약진 0 전초 0/철수 0 역습 0 증원편입 0 공격한계 1
+  [전술 AI 2] 프로필 default 태세 Attack/Attack 중대 8 대대 2 · 명령 309 돌격 0 기병돌격 1 참호 0 후퇴 0 포병이동 0 화력사수 8 예비투입 0 · 연대 1 준비사격 0 연신 0 분대약진 0 전초 0/철수 0 역습 0 증원편입 0 공격한계 0

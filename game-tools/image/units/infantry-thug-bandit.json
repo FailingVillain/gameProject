@@ -1,0 +1,21 @@
+{
+ "name": "infantry-thug-bandit",
+ "_doc": "bandit thug: dadao slung on back (drawn for charge/melee), tan-brown jacket, brown fur cap.",
+ "base": "bandit_thug",
+ "anims": "bandit_thug",
+ "headgear": "bandit_towel",
+ "uniform": "bandit_tan",
+ "weapons": {
+  "dadao": "dadao"
+ },
+ "gear": [],
+ "team": [
+  "helmet_band",
+  "arm_patch"
+ ],
+ "belt": true,
+ "belt_pouches": false,
+ "dirs": "all",
+ "frames": "all",
+ "fix_as": "infantry-fengtian"
+}

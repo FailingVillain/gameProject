@@ -1,0 +1,8 @@
+{
+  "name": "tank-ft-female",
+  "kind": "vehicle",
+  "model": "renault_ft",
+  "turret": "mg",
+  "anims": "vehicle",
+  "dirs": "all"
+}

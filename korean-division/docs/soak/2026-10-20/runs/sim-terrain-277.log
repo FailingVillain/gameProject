@@ -1,0 +1,118 @@
+  [sim] AI A=tactical B=tactical
+  t=10s  A 290 @(103,66)  B 150 @(149,63)  wall 0.5s
+  t=20s  A 290 @(109,68)  B 150 @(148,64)  wall 1.0s
+  t=30s  A 283 @(115,68)  B 145 @(144,68)  wall 1.4s
+  t=40s  A 277 @(117,68)  B 139 @(143,70)  wall 1.8s
+  t=50s  A 270 @(116,66)  B 130 @(143,70)  wall 2.2s
+  t=60s  A 270 @(115,66)  B 119 @(144,67)  wall 2.5s
+  t=70s  A 270 @(118,65)  B 116 @(146,68)  wall 2.8s
+  t=80s  A 269 @(119,64)  B 109 @(146,66)  wall 3.1s
+  t=90s  A 266 @(118,63)  B 103 @(146,65)  wall 3.4s
+  t=100s  A 262 @(119,62)  B 99 @(147,64)  wall 3.7s
+  t=110s  A 260 @(119,62)  B 99 @(150,64)  wall 4.0s
+  t=120s  A 256 @(119,61)  B 97 @(154,64)  wall 4.3s
+  t=130s  A 256 @(121,59)  B 91 @(156,64)  wall 4.5s
+  t=140s  A 256 @(123,56)  B 85 @(161,64)  wall 4.9s
+  t=150s  A 256 @(128,58)  B 84 @(168,65)  wall 5.2s
+  t=160s  A 256 @(130,59)  B 84 @(172,64)  wall 5.4s
+  t=170s  A 251 @(132,59)  B 83 @(172,64)  wall 5.7s
+  t=180s  A 251 @(133,59)  B 79 @(174,63)  wall 6.0s
+  t=190s  A 249 @(136,59)  B 74 @(175,62)  wall 6.3s
+  t=200s  A 249 @(143,58)  B 74 @(193,54)  wall 6.5s
+  t=210s  A 249 @(143,57)  B 74 @(206,48)  wall 6.7s
+  t=220s  A 249 @(143,58)  B 74 @(184,51)  wall 6.9s
+  t=230s  A 243 @(147,54)  B 71 @(179,51)  wall 7.2s
+  t=240s  A 241 @(150,55)  B 63 @(193,53)  wall 7.5s
+  t=250s  A 241 @(154,56)  B 63 @(204,55)  wall 7.7s
+  t=260s  A 237 @(157,57)  B 59 @(204,56)  wall 8.0s
+  t=270s  A 236 @(159,53)  B 46 @(209,56)  wall 8.2s
+  t=280s  A 236 @(164,52)  B 43 @(224,59)  wall 8.4s
+  t=290s  A 234 @(168,52)  B 38 @(219,58)  wall 8.7s
+  t=300s  A 232 @(168,52)  B 33 @(220,58)  wall 8.9s
+  t=310s  A 231 @(170,52)  B 24 @(229,61)  wall 9.1s
+  t=320s  A 228 @(172,52)  B 19 @(230,60)  wall 9.3s
+  t=330s  A 227 @(173,53)  B 17 @(230,61)  wall 9.5s
+  t=340s  A 226 @(174,53)  B 8 @(232,56)  wall 9.6s
+MARCH ticks=0 move=0 moveOn=0 shots=0 moveShots=0 pistol=0 gren=0 melee=0
+MEAS start=290/150 end_t=345 winner=1 lossEnd=64/150 loss120=34/53 loss300=58/117 t50=-/190 shots=6559 hits=657 hitpct=10.0 meanDist=22.8 hitDist=22.9
+결과: 승자 1, 344.5초, 실행 9.7초, 명령 505
+사살원인 020s bandit_rifleman/rifle_mosin->heavy_machinegunner_fengtian = 3
+사살원인 020s bandit_rifleman/rifle_mosin->infantry = 4
+사살원인 020s heavy_machinegunner_fengtian/lmg_chauchat->bandit_rifleman = 1
+사살원인 020s infantry/rifle_mosin->bandit_rifleman = 4
+사살원인 030s bandit_rifleman/rifle_mosin->heavy_machinegunner_fengtian = 3
+사살원인 030s bandit_rifleman/rifle_mosin->infantry = 3
+사살원인 030s infantry/rifle_mosin->bandit_rifleman = 6
+사살원인 040s bandit_rifleman/rifle_mosin->infantry = 7
+사살원인 040s heavy_infantry_gun/gun_infantry->bandit_rifleman = 2
+사살원인 040s infantry/rifle_mosin->bandit_rifleman = 7
+사살원인 050s heavy_infantry_gun/gun_infantry->bandit_rifleman = 9
+사살원인 050s infantry/rifle_mosin->bandit_rifleman = 2
+사살원인 060s infantry/rifle_mosin->bandit_rifleman = 3
+사살원인 070s bandit_rifleman/rifle_mosin->infantry = 1
+사살원인 070s heavy_machinegunner_fengtian/lmg_chauchat->bandit_rifleman = 1
+사살원인 070s infantry/rifle_mosin->bandit_rifleman = 6
+사살원인 080s bandit_rifleman/rifle_mosin->infantry = 3
+사살원인 080s heavy_infantry_gun/gun_infantry->bandit_rifleman = 2
+사살원인 080s infantry/rifle_mosin->bandit_rifleman = 4
+사살원인 090s bandit_rifleman/rifle_mosin->infantry = 4
+사살원인 090s heavy_machinegunner_fengtian/lmg_chauchat->bandit_rifleman = 1
+사살원인 090s infantry/rifle_mosin->bandit_rifleman = 3
+사살원인 100s bandit_rifleman/rifle_mosin->infantry = 2
+사살원인 110s bandit_rifleman/rifle_mosin->infantry = 4
+사살원인 110s heavy_machinegunner_fengtian/lmg_chauchat->bandit_rifleman = 1
+사살원인 110s infantry/rifle_mosin->bandit_rifleman = 1
+사살원인 120s heavy_infantry_gun/gun_infantry->bandit_rifleman = 5
+사살원인 120s infantry/rifle_mosin->bandit_rifleman = 1
+사살원인 130s heavy_infantry_gun/gun_infantry->bandit_rifleman = 3
+사살원인 130s infantry/rifle_mosin->bandit_rifleman = 3
+사살원인 140s infantry/rifle_mosin->bandit_rifleman = 1
+사살원인 160s bandit_rifleman/rifle_mosin->infantry = 5
+사살원인 160s infantry/rifle_mosin->bandit_rifleman = 1
+사살원인 170s heavy_infantry_gun/gun_infantry->bandit_rifleman = 1
+사살원인 170s heavy_machinegunner_fengtian/lmg_chauchat->bandit_rifleman = 1
+사살원인 170s infantry/rifle_mosin->bandit_rifleman = 2
+사살원인 180s bandit_rifleman/rifle_mosin->infantry = 2
+사살원인 180s infantry/rifle_mosin->bandit_rifleman = 5
+사살원인 220s bandit_rifleman/rifle_mosin->infantry = 6
+사살원인 220s infantry/rifle_mosin->bandit_rifleman = 3
+사살원인 230s bandit_rifleman/rifle_mosin->infantry = 2
+사살원인 230s infantry/rifle_mosin->bandit_rifleman = 8
+사살원인 250s bandit_rifleman/rifle_mosin->infantry = 4
+사살원인 250s infantry/rifle_mosin->bandit_rifleman = 4
+사살원인 260s bandit_rifleman/rifle_mosin->infantry = 1
+사살원인 260s heavy_infantry_gun/gun_infantry->bandit_rifleman = 10
+사살원인 260s infantry/rifle_mosin->bandit_rifleman = 3
+사살원인 270s heavy_infantry_gun/gun_infantry->bandit_rifleman = 3
+사살원인 280s bandit_rifleman/rifle_mosin->infantry = 2
+사살원인 280s infantry/rifle_mosin->bandit_rifleman = 5
+사살원인 290s bandit_rifleman/rifle_mosin->infantry = 2
+사살원인 290s infantry/rifle_mosin->bandit_rifleman = 5
+사살원인 300s bandit_rifleman/rifle_mosin->infantry = 1
+사살원인 300s heavy_infantry_gun/gun_infantry->bandit_rifleman = 6
+사살원인 300s infantry/rifle_mosin->bandit_rifleman = 3
+사살원인 310s bandit_rifleman/rifle_mosin->infantry = 3
+사살원인 310s infantry/rifle_mosin->bandit_rifleman = 5
+사살원인 320s bandit_rifleman/rifle_mosin->infantry = 1
+사살원인 320s heavy_machinegunner_fengtian/lmg_chauchat->bandit_rifleman = 1
+사살원인 320s infantry/rifle_mosin->bandit_rifleman = 1
+사살원인 330s bandit_rifleman/rifle_mosin->infantry = 1
+사살원인 330s heavy_infantry_gun/gun_infantry->bandit_rifleman = 3
+사살원인 330s infantry/rifle_mosin->bandit_rifleman = 6
+사살원인 340s heavy_infantry_gun/gun_infantry->bandit_rifleman = 1
+사살원인 340s infantry/rifle_mosin->bandit_rifleman = 7
+틀 행동: 시작 0 끝 0 약진 0 기동 0 돌격 0 역습 0 참호 0 연신 0 전환 0 인계멈춤 0 포병전개 0
+기병AI: 돌격 정면 0 측면 0 후방 0 측면경유 0 소규모보류 0 물러남 0 | 추격: 후퇴중 희생 사격 26 근접 0 후퇴하는 적 돌격 보병 0 기병 0 | N55 기병 무모한 정면 0 돌격 사격 전진 0 | N23 소탕 0 | S4 제압으로 꺾인 돌격 0
+F4 기병 돌격: 개시 0 무의미 정면 0 자동 막음 0 근접 사살 0 사유(후퇴/제압/승무원/고립/측면) 0/0/0/0/0 · 하마 0 승마 0
+관찰: 사격 6559발 · 명중 657발 (10.0%) · 사망 214기 → 1킬당 30.6발 (명중 3.1발)
+N61 접근: 보병(1) 첫 사격 14.1초 · 기병(2) 첫 근접 -초 · 전환 0 · 그 시점 B 생존 -1/150
+템포: 첫 사격 14.1초 · A 50% 손실 -초 · B 50% 손실 189.5초 · 사격 거리 평균 22.8 (첫 100발 22.8) 칸
+  세력:종류            시작→남음   사격    근접   포격  방열%  돌격%
+  1:heavy_howitzer        6→6           0      0      0    42     0
+  1:heavy_infantry_gun    2→2          45      0     44    21     0
+  1:heavy_machinegunner_fengtian   12→6         415      0      0    38     0
+  1:infantry            270→212      3571      0      0     0     0
+  2:bandit_rifleman     150→0        2528      0      0     0     0
+AI 비용: 사고 ms/틱 avg 0.010 max 17.93 (호출 2757, 호출당 0.071 ms) · 전체 Step avg 0.47 ms
+  [전술 AI 1] 프로필 default 태세 Attack/Attack 중대 10 대대 2 · 명령 305 돌격 0 기병돌격 0 참호 0 후퇴 5 포병이동 9 화력사수 38 예비투입 1 · 연대 1 준비사격 2 연신 0 분대약진 0 전초 0/철수 0 역습 0 증원편입 0 공격한계 0
+  [전술 AI 2] 프로필 default 태세 Attack/Defend 중대 1 대대 1 · 명령 83 돌격 0 기병돌격 0 참호 0 후퇴 18 포병이동 0 화력사수 0 예비투입 1 · 연대 1 준비사격 0 연신 0 분대약진 0 전초 0/철수 0 역습 0 증원편입 0 공격한계 1

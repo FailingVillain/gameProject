@@ -1,0 +1,58 @@
+{
+  "propScatter": true,
+  "propDensity": 4.0,
+  "propCell": 6,
+  // 챕터 0 튜토리얼 0-1 (c0_e1_small_1, game-tools/campaign/EPISODES.md): 한국 1개 중대 90 vs 마적 30 (소총 10 · 잡병 20).
+  // 마적은 병력이 절반 밑으로 떨어지면 퇴각 (aiWithdrawAt 0.5), 마적 50% 격퇴 = 승리. 패배 = 아군 사상 50% (공통 규칙).
+  // 이 판에서 가르치는 것: 선택 · 이동 · 공격 이동 · 엄폐 (사수). 사격 통제 K 안내는 사격 통제 개편 뒤에 추가. 안내문 = 아래 events 의 message.
+  "id": "c0_01_bandits",
+  "title": "마적떼!",
+  "date": "1920년 봄 낮",
+  "location": "압록강 하구 · 강변 마을",
+  "briefing": "압록강을 넘어온 마적떼가 강변 마을 북쪽에 눌러앉았다. 1개 중대 (90명) 로 마적 30여 명을 쫓아내라. 마적은 절반이 쓰러지면 달아난다. 이 판은 기본 조작을 익히는 연습이다.",
+  "seed": 1920,
+  "weather": "clear",
+  "time": "day",
+  "player": 1,
+  "factions": [
+    { "name": "한국군", "en": "korean", "lang": "ko", "color": [60, 130, 235], "team": 1, "posture": "attack", "area": "river" },
+    { "name": "마적", "en": "bandit", "lang": "zh", "color": [200, 120, 40], "team": 2, "posture": "hold", "area": "camp", "aiWithdrawAt": 0.5 }
+  ],
+  "mapData": {
+    "name": "강변 마을",
+    "width": 120, "height": 96, "base": "grass",
+    "paint": [
+      { "terrain": "water", "rect": [0, 0, 120, 8] },
+      { "terrain": "sand", "rect": [0, 8, 120, 3] },
+      { "terrain": "dirt", "rect": [57, 11, 6, 85] },
+      { "terrain": "forest", "rect": [8, 30, 18, 14] },
+      { "terrain": "forest", "rect": [92, 52, 16, 14] },
+      { "terrain": "house", "tiles": [[40, 50], [41, 50], [40, 51], [41, 51], [46, 56], [47, 56], [46, 57], [47, 57], [70, 52], [71, 52], [70, 53], [71, 53], [76, 58], [77, 58], [76, 59], [77, 59]] },
+      { "terrain": "house", "tiles": [[52, 22], [53, 22], [52, 23], [53, 23], [66, 20], [67, 20], [66, 21], [67, 21], [60, 28], [61, 28]] },
+      { "terrain": "rubble", "rect": [56, 40, 3, 2] }
+    ],
+    "starts": [ [60, 86], [60, 24] ]
+  },
+  "areas": {
+    "river": { "rect": [40, 12, 40, 20] },
+    "camp": { "circle": [60, 24, 14] },
+    "village": { "rect": [36, 46, 48, 18] }
+  },
+  "forces": [
+    { "id": "kr", "faction": 1, "name": "한국군 제1중대", "at": [60, 84], "facing": 0, "formation": "line",
+      "companies": [ { "units": { "officer": 1, "infantry": 89 } } ] },
+    { "id": "bd", "faction": 2, "name": "마적 무리", "at": [60, 24], "facing": 180, "formation": "line", "posture": "hold", "aiArea": "camp",
+      "companies": [ { "units": { "bandit_rifleman": 10, "bandit_thug": 20 } } ] }
+  ],
+  "objectives": [
+    { "id": "rout", "type": "eliminate", "percent": 50, "faction": 2, "text": "마적 절반 격퇴 (달아나게 하라)" }
+  ],
+  "failures": [ { "type": "losses", "percent": 50, "text": "아군 절반이 쓰러졌다" } ],
+  "events": [
+    { "id": "intro", "when": { "time": 1 }, "do": [ { "message": "마적이 마을 북쪽에 있다. 병력을 마우스로 끌어 선택하고, 우클릭으로 이동시켜라" } ] },
+    { "id": "t_move", "when": { "time": 20 }, "do": [ { "message": "A 를 누르고 적 쪽을 클릭하면 공격 이동 — 가다가 적이 보이면 멈춰서 쏜다" } ] },
+    { "id": "t_cover", "when": { "area": "village", "faction": 1 }, "do": [ { "message": "집 · 숲 · 잔해 뒤는 엄폐. 거기서 H (사수) 로 자리를 잡고 쏘면 덜 맞는다" } ] },
+    { "id": "t_near", "when": { "area": "river", "faction": 1 }, "do": [ { "message": "마적 진지에 가까워졌다 — 마적은 절반이 쓰러지면 달아난다" } ] },
+    { "id": "t_rout", "when": { "objective": "rout" }, "do": [ { "message": "마적이 달아난다!" } ] }
+  ]
+}

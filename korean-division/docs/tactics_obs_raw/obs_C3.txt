@@ -1,0 +1,169 @@
+# ai_kr_vs_ft_1000 seed 3: won at 258.9s (wall 10s)
+faction 1 한국군: spawned 978, lost 535, alive 443
+faction 2 봉천 군벌: spawned 999, lost 700, alive 299
+
+## 세력 1
+중대 상태 시간(중대-초): Approach 1059 (41 %), Engage 911 (35 %), Advance 445 (17 %), Fallback 113 (4 %), Reserve 32 (1 %), Assault 30 (1 %), Idle 1 (0 %)
+역할 시간: BaseOfFire 1419, Manoeuvre 737, Line 435
+중대 전술 틀 시간: None 2590
+상태 전환: Approach->Engage x37, Engage->Approach x28, Advance->Approach x17, Advance->Reserve x9, Reserve->Advance x9, Fallback->Approach x5, Approach->Advance x5, Engage->Fallback x4, Approach->Fallback x4, Engage->Assault x2, Assault->Engage x2, Fallback->Advance x2, Advance->Engage x1, Engage->Idle x1, Idle->Advance x1
+트리거 누계(횟수 / 시각): Orders 484 [1,1,1,1,1,1,1,1,1,1,1,1,...] | Charges 3 [52,62,110] | CavCharges 3 [62,80,102] | Fallbacks 11 [43,73,74,120,138,145,152,195,204,229,239] | ArtMoves 13 [26,34,42,51,62,83,157,172,189,197,208,216,...] | FireHolds 42 [22,22,28,29,31,39,41,43,49,53,63,66,...] | ReserveCommits 1 [71] | Preps 1 [22] | Lifts 5 [141,151,229,239,245] | SquadBounds 18 [200,241,242,244,244,245,246,247,247,248,248,249,...]
+상태 체류(초, 평균/중앙/횟수): Advance 16.4/18.0/27, Approach 18.3/12.0/46, Engage 18.3/9.0/35, Idle 1.0/1.0/1, Assault 15.0/20.0/2, Fallback 16.0/15.0/7, Reserve 3.6/2.0/9
+교대 약진 한 번(다리) 길이: 횟수 4, 중앙 3.0s, 3초 미만 2회
+자군 보병 제압(30초): 30:0.00/0 % 60:0.00/0 % 90:0.00/0 % 120:0.00/0 % 150:0.00/0 % 180:0.00/0 % 210:0.00/0 % 240:0.00/0 %
+자군 보병 제압 요약: 시간 평균 0.001, 평균 최고 0.006 (t=91), 제압>0.3 비율 최고 0.6 % (t=111), 개인 최고 1.00, 제압>0.3 기-초 139
+Engage->Approach 되돌림 예:
+  t=32 L10 Engage(2s)->Approach (역할 Manoeuvre, 병력 87/87, 적과 거리 22)
+  t=54 L6 Engage(11s)->Approach (역할 BaseOfFire, 병력 87/87, 적과 거리 26)
+  t=55 L1 Engage(6s)->Approach (역할 BaseOfFire, 병력 85/87, 적과 거리 27)
+  t=57 L10 Engage(7s)->Approach (역할 Manoeuvre, 병력 78/87, 적과 거리 26)
+  t=59 L7 Engage(22s)->Approach (역할 BaseOfFire, 병력 66/87, 적과 거리 25)
+  t=69 L6 Engage(5s)->Approach (역할 BaseOfFire, 병력 87/87, 적과 거리 27)
+  t=71 L10 Engage(2s)->Approach (역할 Manoeuvre, 병력 77/87, 적과 거리 26)
+  t=81 L10 Engage(6s)->Approach (역할 Manoeuvre, 병력 71/87, 적과 거리 25)
+  t=91 L5 Engage(2s)->Approach (역할 BaseOfFire, 병력 87/87, 적과 거리 22)
+  t=93 L7 Engage(28s)->Approach (역할 BaseOfFire, 병력 39/87, 적과 거리 25)
+  t=96 L1 Engage(22s)->Approach (역할 BaseOfFire, 병력 78/87, 적과 거리 27)
+  t=99 L6 Engage(2s)->Approach (역할 BaseOfFire, 병력 81/87, 적과 거리 27)
+첫 교전 t=30, 첫 기동(약진/돌격) t=52
+교대 약진 엄호 비율(엄호조 사격 중 / 중대원) 평균 0.26 (표본 13초)
+기동 개시 2회, 평균 적 제압 0.00, 화력 기반 존재 2회
+  기동 t=52 L11:Assault 적제압 0.01 (적 267) 화력기반 O 첫교전 후 22s
+  기동 t=110 L11:Assault 적제압 0.00 (적 221) 화력기반 O 첫교전 후 80s
+행진 사격 발동 31, 지휘관 교체 6, 지휘 능력(중대-초): 장교 2481 / 부사관 대리 0 / 없음 109, 인계 중 28
+포병 258 포대-초, 강제 표적 지정 중 0 (0 %), 최근 3초 안 사격한 포대-초 60, 연대 화력표적 있음 215초, 연신 상태 22초
+중화기 앞섬(소총 전선+3칸, 거치형 중화기 기-초): 0 / 13475 (0 %), 한 시점 최대 0기
+유휴 중대(30초+ 명령 · 사격 · 이동 없음): 95 중대-초, 그중 적 45칸 안 95
+  L9 유휴 시작 t=203 (적 45칸 안, 상태 Engage/Manoeuvre/Attack)
+  L11 유휴 시작 t=209 (적 45칸 안, 상태 Engage/Manoeuvre/Attack)
+  L11 유휴 종료 t=248
+기병: 
+  t=62s 기병 돌격 #15: 적 평균 제압 0.00 -> 5초 뒤 0.02 (둘레 적 50기)
+  t=80s 기병 돌격 #15: 적 평균 제압 0.00 -> 5초 뒤 0.00 (둘레 적 75기)
+  t=102s 기병 돌격 #15: 적 평균 제압 0.00 -> 5초 뒤 0.00 (둘레 적 57기)
+생존 곡선(30초): 30:977 60:890 90:804 120:656 150:547 180:507 210:475 240:449
+사건 로그:
+  t=1 연대 R1 국면 None->Approach (Attack, 병력 304/304)
+  t=1 연대 R2 국면 None->Approach (Attack, 병력 522/522)
+  t=21 연대 R1 국면 Approach->Assault (Attack, 병력 304/304)
+  t=21 대대 B1 역할 BaseOfFire (병력 261/261)
+  t=21 대대 B4 역할 Manoeuvre (병력 43/43)
+  t=22 연대 R2 국면 Approach->Prep (Attack, 병력 522/522)
+  t=22 대대 B2 역할 BaseOfFire (병력 261/261)
+  t=22 대대 B3 역할 Manoeuvre (병력 261/261)
+  t=39 중대 L14 지휘관 교체 928->929
+  t=43 L14 Engage->Fallback (병력 1/3, 역할 Manoeuvre)
+  t=52 L11 Engage->Assault (병력 87/87, 역할 Manoeuvre)
+  t=52 연대 R2 국면 Prep->Assault (Attack, 병력 500/522)
+  t=71 대대 B3 역할 Manoeuvre/측면연장/예비투입 (병력 238/261)
+  t=73 L13 Approach->Fallback (병력 13/40, 역할 Manoeuvre)
+  t=74 대대 B4 역할 Line (병력 10/43)
+  t=106 중대 L6 지휘관 교체 461->462
+  t=110 L11 Engage->Assault (병력 71/87, 역할 Manoeuvre)
+  t=120 L7 Engage->Fallback (병력 34/87, 역할 BaseOfFire)
+  t=138 L6 Approach->Fallback (병력 32/87, 역할 BaseOfFire)
+  t=141 중대 L1 지휘관 교체 88->89
+  t=145 L3 Approach->Fallback (병력 22/87, 역할 BaseOfFire)
+  t=152 L10 Engage->Fallback (병력 34/87, 역할 Manoeuvre)
+  t=170 중대 L2 지휘관 교체 176->0
+  t=200 L10 교대 약진 0->1
+  t=204 중대 L3 지휘관 교체 265->266
+  t=204 L3 Engage->Fallback (병력 16/87, 역할 BaseOfFire)
+  t=224 중대 L13 지휘관 교체 895->0
+  t=239 L3 Approach->Fallback (병력 16/87, 역할 BaseOfFire)
+  t=241 L10 교대 약진 0->1
+  t=242 L10 교대 약진 1->2
+  t=245 L10 교대 약진 2->1
+  t=246 L10 교대 약진 1->2
+
+## 세력 2
+중대 상태 시간(중대-초): Engage 1074 (46 %), Approach 536 (23 %), Advance 470 (20 %), Fallback 235 (10 %), Reserve 27 (1 %), Bound 6 (0 %)
+역할 시간: BaseOfFire 1153, Line 667, Manoeuvre 528
+중대 전술 틀 시간: None 2345
+상태 전환: Approach->Engage x25, Advance->Approach x14, Engage->Approach x12, Engage->Fallback x9, Fallback->Approach x9, Approach->Fallback x8, Advance->Engage x4, Fallback->Reserve x3, Fallback->Advance x3, Reserve->Advance x3, Approach->Advance x2, Engage->Bound x1, Bound->Engage x1
+트리거 누계(횟수 / 시각): Orders 302 [1,1,1,1,1,1,1,1,1,1,1,1,...] | CavCharges 4 [53,94,142,171] | Fallbacks 23 [53,55,70,77,79,80,97,107,110,129,137,139,...] | ArtMoves 12 [27,35,43,55,70,78,173,190,215,231,246,254] | FireHolds 23 [20,21,26,27,27,41,43,46,48,63,65,67,...] | ReserveCommits 1 [66] | Preps 1 [26]
+상태 체류(초, 평균/중앙/횟수): Advance 22.6/25.0/18, Approach 15.3/12.0/35, Engage 19.6/10.0/22, Bound 6.0/6.0/1, Fallback 14.9/15.0/15, Reserve 9.0/8.0/3
+교대 약진 한 번(다리) 길이: 횟수 0, 중앙 0.0s, 3초 미만 0회
+자군 보병 제압(30초): 30:0.00/0 % 60:0.00/0 % 90:0.00/0 % 120:0.00/0 % 150:0.00/0 % 180:0.00/0 % 210:0.00/1 % 240:0.00/0 %
+자군 보병 제압 요약: 시간 평균 0.002, 평균 최고 0.012 (t=78), 제압>0.3 비율 최고 1.0 % (t=208), 개인 최고 1.00, 제압>0.3 기-초 235
+Engage->Approach 되돌림 예:
+  t=32 L2 Engage(5s)->Approach (역할 BaseOfFire, 병력 95/95, 적과 거리 26)
+  t=44 L14 Engage(12s)->Approach (역할 Manoeuvre, 병력 2/2, 적과 거리 10)
+  t=48 L14 Engage(3s)->Approach (역할 Manoeuvre, 병력 2/2, 적과 거리 15)
+  t=54 L7 Engage(15s)->Approach (역할 Manoeuvre, 병력 72/95, 적과 거리 26)
+  t=59 L11 Engage(8s)->Approach (역할 BaseOfFire, 병력 93/95, 적과 거리 26)
+  t=75 L3 Engage(35s)->Approach (역할 BaseOfFire, 병력 49/95, 적과 거리 26)
+  t=116 L5 Engage(9s)->Approach (역할 Manoeuvre, 병력 46/95, 적과 거리 27)
+  t=119 L1 Engage(14s)->Approach (역할 BaseOfFire, 병력 59/95, 적과 거리 25)
+  t=119 L6 Engage(3s)->Approach (역할 Manoeuvre, 병력 29/95, 적과 거리 26)
+  t=125 L11 Engage(56s)->Approach (역할 BaseOfFire, 병력 49/95, 적과 거리 27)
+  t=128 L5 Engage(2s)->Approach (역할 Manoeuvre, 병력 46/95, 적과 거리 26)
+  t=161 L11 Engage(7s)->Approach (역할 BaseOfFire, 병력 23/95, 적과 거리 27)
+첫 교전 t=27, 첫 기동(약진/돌격) t=68
+교대 약진 엄호 비율(엄호조 사격 중 / 중대원) 평균 0.00 (표본 0초)
+기동 개시 1회, 평균 적 제압 0.00, 화력 기반 존재 1회
+  기동 t=68 L6:Bound 적제압 0.00 (적 104) 화력기반 O 첫교전 후 41s
+행진 사격 발동 22, 지휘관 교체 15, 지휘 능력(중대-초): 장교 1996 / 부사관 대리 0 / 없음 349, 인계 중 83
+포병 258 포대-초, 강제 표적 지정 중 0 (0 %), 최근 3초 안 사격한 포대-초 49, 연대 화력표적 있음 233초, 연신 상태 0초
+중화기 앞섬(소총 전선+3칸, 거치형 중화기 기-초): 4 / 4611 (0 %), 한 시점 최대 1기
+유휴 중대(30초+ 명령 · 사격 · 이동 없음): 90 중대-초, 그중 적 45칸 안 90
+  L10 유휴 시작 t=62 (적 45칸 안, 상태 Engage/BaseOfFire/Attack)
+  L10 유휴 종료 t=65
+  L9 유휴 시작 t=224 (적 45칸 안, 상태 Engage/BaseOfFire/Attack)
+  L10 유휴 시작 t=226 (적 45칸 안, 상태 Engage/BaseOfFire/Attack)
+  L6 유휴 시작 t=240 (적 45칸 안, 상태 Engage/Line/Reserve)
+기병: 
+  t=53s 기병 돌격 #15: 적 평균 제압 0.00 -> 5초 뒤 0.00 (둘레 적 65기)
+  t=94s 기병 돌격 #15: 적 평균 제압 0.00 -> 5초 뒤 0.00 (둘레 적 31기)
+  t=142s 기병 돌격 #15: 적 평균 제압 0.00 -> 5초 뒤 0.00 (둘레 적 58기)
+  t=171s 기병 돌격 #15: 적 평균 제압 0.00 -> 5초 뒤 0.01 (둘레 적 50기)
+생존 곡선(30초): 30:998 60:850 90:677 120:535 150:439 180:415 210:391 240:331
+사건 로그:
+  t=1 연대 R1 국면 None->Approach (Attack, 병력 570/570)
+  t=1 연대 R2 국면 None->Approach (Attack, 병력 307/307)
+  t=23 연대 R2 국면 Approach->Assault (Attack, 병력 307/307)
+  t=23 대대 B1 역할 BaseOfFire (병력 285/285)
+  t=23 대대 B4 역할 Manoeuvre (병력 22/22)
+  t=26 연대 R1 국면 Approach->Prep (Attack, 병력 570/570)
+  t=26 대대 B2 역할 Manoeuvre (병력 285/285)
+  t=26 대대 B3 역할 BaseOfFire (병력 285/285)
+  t=46 중대 L7 지휘관 교체 1568->1569
+  t=46 연대 R1 국면 Prep->Assault (Attack, 병력 537/570)
+  t=51 중대 L13 지휘관 교체 1901->0
+  t=51 중대 L14 지휘관 교체 1916->1917
+  t=53 L13 Approach->Fallback (병력 8/20, 역할 Manoeuvre)
+  t=55 대대 B4 역할 Line (병력 7/22)
+  t=66 대대 B2 역할 Manoeuvre/측면연장/예비투입 (병력 213/285)
+  t=68 L6 Engage->Bound (병력 83/95, 역할 Manoeuvre)
+  t=77 L3 Approach->Fallback (병력 45/95, 역할 BaseOfFire)
+  t=79 L6 Engage->Fallback (병력 38/95, 역할 Manoeuvre)
+  t=80 L5 Approach->Fallback (병력 46/95, 역할 Manoeuvre)
+  t=107 L7 Approach->Fallback (병력 46/95, 역할 Manoeuvre)
+  t=108 중대 L11 지휘관 교체 1869->1870
+  t=117 중대 L3 지휘관 교체 1267->1268
+  t=118 중대 L6 지휘관 교체 1471->0
+  t=119 중대 L3 지휘관 교체 1268->1269
+  t=127 중대 L1 지휘관 교체 1074->1075
+  t=129 L11 Approach->Fallback (병력 39/95, 역할 BaseOfFire)
+  t=137 L1 Engage->Fallback (병력 41/95, 역할 BaseOfFire)
+  t=139 중대 L1 지휘관 교체 1075->0
+  t=139 L6 Engage->Fallback (병력 23/95, 역할 Manoeuvre)
+  t=142 중대 L3 지휘관 교체 1269->1268
+  t=149 중대 L11 지휘관 교체 1870->1871
+  t=162 대대 B2 역할 Line/측면연장/예비투입 (병력 106/285)
+  t=163 L5 Engage->Fallback (병력 46/95, 역할 Manoeuvre)
+  t=163 L6 Approach->Fallback (병력 20/95, 역할 Line)
+  t=163 L7 Approach->Fallback (병력 40/95, 역할 Line)
+  t=164 L11 Approach->Fallback (병력 23/95, 역할 BaseOfFire)
+  t=172 L1 Engage->Fallback (병력 9/95, 역할 BaseOfFire)
+  t=175 연대 R2 국면 Assault->None (Fallback, 병력 107/307)
+  t=175 대대 B1 역할 Line (병력 107/285)
+  t=176 L2 Engage->Fallback (병력 81/95, 역할 Line)
+  t=176 L3 Engage->Fallback (병력 26/95, 역할 Line)
+  t=195 중대 L7 지휘관 교체 1569->0
+  t=199 L11 Engage->Fallback (병력 23/95, 역할 BaseOfFire)
+  t=213 중대 L2 지휘관 교체 1170->1171
+  t=222 중대 L2 지휘관 교체 1171->0
+  t=227 중대 L3 지휘관 교체 1268->0
+  t=234 L11 Engage->Fallback (병력 21/95, 역할 BaseOfFire)
+checksum A904B7B8F6F86B77 tick 15532

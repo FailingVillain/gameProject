@@ -1,0 +1,17 @@
+{
+  "_doc": "infantry + motion drafts batches 1+2 (extends anims/infantry.json): idle variants, ceremony poses, crawl, drag_wounded (two-figure scene), trench_fire; poses in tools/bases/infantry_motions.py.",
+  "extends": "infantry",
+  "anims": {
+    "idle_rest":    {"frames": ["idle_rest_1", "idle_rest_2"], "ms": [1400, 1100]},
+    "idle_look":    {"frames": ["idle_look_1", "idle_look_2"], "ms": [1000, 1000]},
+    "idle_adjust":  {"frames": ["idle_adjust_1", "idle_adjust_2"], "ms": [500, 700]},
+    "idle_stretch": {"frames": ["idle_stretch_1", "idle_stretch_2"], "ms": [600, 1200]},
+    "salute":       {"frames": ["salute"], "ms": 1500},
+    "present_arms": {"frames": ["present_arms"], "ms": 1500},
+    "crawl":        {"frames": ["crawl_1", "crawl_2", "crawl_3", "crawl_2"], "ms": [260, 200, 260, 200]},
+    "drag_wounded": {"frames": ["drag_1", "drag_2"], "ms": [320, 320]},
+    "wave_flag":    {"frames": ["wave_flag_1", "wave_flag_2", "wave_flag_3", "wave_flag_4"], "ms": [260, 180, 260, 180]},
+    "surrender":  {"frames": ["surrender_1", "surrender_2"], "ms": [600, 600]},
+    "trench_fire":  {"frames": ["trench_fire_1", "trench_fire_2"], "ms": [450, 100]}
+  }
+}

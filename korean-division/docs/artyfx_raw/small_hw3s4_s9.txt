@@ -1,0 +1,3 @@
+ARTYFX {"t":300,"winner":0,"startA":69,"startB":62,"endA":14,"endB":25,"start":{"1:heavy_howitzer":3,"1:officer":2,"1:infantry":60,"1:infantry_scout":4,"2:officer":2,"2:infantry":60},"end":{"1:officer":1,"1:infantry":13,"2:officer":1,"2:infantry":24},"gun":{"1:heavy_howitzer":{"units":3,"shells":6,"hit":4,"inSplash":10,"suppEv":10,"suppRes":6,"meanDist":47,"first":25.2,"bucket":[0,0,6,0,0],"killCredit":9}}}
+MEAS start=69/62 end_t=300 winner=0 lossEnd=55/37 loss120=55/37 loss300=-1/-1 t50=41/41 shots=1881 hits=307 hitpct=16.3 meanDist=21.0
+결과: 승자 0, 300.0초, 실행 1.6초, 명령 128

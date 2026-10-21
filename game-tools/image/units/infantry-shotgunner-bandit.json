@@ -1,0 +1,36 @@
+{
+ "name": "infantry-shotgunner-bandit",
+ "_doc": "bandit shotgunner: infantry-bandit copy, double-barrel shotgun instead of rifle, head towel, tan jacket, shell bandolier X, no haversack.",
+ "base": "fengtian",
+ "anims": "fengtian",
+ "headgear": "bandit_towel",
+ "uniform": "bandit_tan",
+ "weapons": {
+  "rifle": "shotgun",
+  "dadao": "dadao"
+ },
+ "gear": [
+  "bandolier_x",
+  "canteen_cloth",
+  "dadao_sheath"
+ ],
+ "team": [
+  "helmet_band",
+  "arm_patch"
+ ],
+ "belt": true,
+ "belt_pouches": false,
+ "e_pull_extra": 3.0,
+ "tune": {
+  "poses": {
+   "infantry": {
+    "prone_weapon": {
+     "x": -7.5
+    }
+   }
+  }
+ },
+ "dirs": "all",
+ "frames": "all",
+ "fix_as": "infantry-fengtian"
+}

@@ -1,0 +1,128 @@
+{
+  "propScatter": true,
+  "propDensity": 4.0,
+  "propCell": 6,
+  // 챕터 0 튜토리얼 0-2 (c0_e1_mid_1, game-tools/campaign/EPISODES.md): 약 600명 대대급 통제 작전.
+  // 아군 = 1대대 (진위대 3중대 + 맥심 2) · 2대대 (진위대 1중대 + 구식 지방대 2중대 + 맥심 2) · 보병포 2 · 기병 40 · 정찰 6 x 2. 경기관총은 중대 편성이 자동으로 넣는다.
+  // 적 = 마적 250 (소총 150 · 잡병 70 · 기병 30[이벤트]) — 초소 4곳 (o1 만 처음부터 보임) + 산채. 강에 다리 4개 (dirt 띠), 다리마다 초소가 지킴.
+  // 이벤트 (1) 초소 o1 · o2 (중대 태그 front) 격파 → 마적 기병 30 출몰 (2) 둘째 초소 o2 구역 진입 → 서간도 의용군 40 합류.
+  // 승리 = 산채 (태그 sanchae) 파괴, 패배 = 아군 사상 50% (이 엔진은 사망만 셈 — 부상 상태 없음).
+  "id": "c0_02_yalu",
+  "title": "압록강을 건너서",
+  "date": "1920년 봄 새벽",
+  "location": "압록강 북안 · 마적 산채",
+  "briefing": "마적 본대가 압록강 북쪽 산채에 자리잡고 초소로 길목을 지킨다. 강에는 다리가 여럿이라 어디로 건널지부터 정해야 한다. 아군 약 600명을 이끌고 초소를 하나씩 깨뜨린 뒤 산채를 부숴라. 처음에는 초소 하나만 보이고 나머지는 안개 속에 있다.",
+  "seed": 1920,
+  "weather": "clear",
+  "time": "dawn",
+  "player": 1,
+  "factions": [
+    { "name": "한국군", "en": "korean", "lang": "ko", "color": [60, 130, 235], "team": 1, "posture": "attack", "area": "sanchae_zone" },
+    { "name": "마적", "en": "bandit", "lang": "zh", "color": [200, 120, 40], "team": 2, "posture": "hold", "area": "sanchae_zone" }
+  ],
+  "mapData": {
+    "name": "압록강 북안",
+    "width": 240, "height": 168, "base": "grass",
+    "paint": [
+      { "terrain": "water", "rect": [0, 100, 240, 8] },
+      { "terrain": "sand", "rect": [0, 108, 240, 2] },
+      { "terrain": "sand", "rect": [0, 98, 240, 2] },
+      // 다리 4개 (물 위를 덮는 흙 띠) — 다리 1 (서) · 2 (중앙 왼쪽) · 3 (중앙 오른쪽) · 4 (동)
+      { "terrain": "dirt", "rect": [27, 98, 6, 12] },
+      { "terrain": "dirt", "rect": [87, 98, 6, 12] },
+      { "terrain": "dirt", "rect": [147, 98, 6, 12] },
+      { "terrain": "dirt", "rect": [207, 98, 6, 12] },
+      { "terrain": "dirt", "rect": [88, 110, 4, 58] },
+      { "terrain": "dirt", "rect": [148, 110, 4, 58] },
+      { "terrain": "dirt", "rect": [88, 30, 4, 68] },
+      { "terrain": "dirt", "rect": [118, 20, 4, 78] },
+      // 남안 (아군 쪽): 숲 · 집
+      { "terrain": "forest", "rect": [10, 120, 22, 18] },
+      { "terrain": "forest", "rect": [190, 126, 24, 20] },
+      { "terrain": "house", "tiles": [[100, 120], [101, 120], [100, 121], [101, 121], [108, 124], [109, 124], [108, 125], [109, 125]] },
+      // 북안: 북서 숲 · 북동 산악
+      { "terrain": "forest", "rect": [8, 20, 52, 50] },
+      { "terrain": "high", "rect": [170, 12, 50, 40] },
+      { "terrain": "rock", "rect": [186, 24, 14, 10] },
+      { "terrain": "forest", "rect": [140, 60, 20, 14] },
+      // 초소 둘레 (집 · 참호 · 철조망)
+      { "terrain": "house", "tiles": [[92, 126], [93, 126], [92, 127], [93, 127]] },
+      { "terrain": "trench", "rect": [84, 124, 14, 1] },
+      { "terrain": "house", "tiles": [[152, 90], [153, 90], [152, 91], [153, 91]] },
+      { "terrain": "trench", "rect": [144, 88, 16, 1] },
+      { "terrain": "house", "tiles": [[34, 86], [35, 86], [34, 87], [35, 87]] },
+      { "terrain": "trench", "rect": [26, 84, 14, 1] },
+      { "terrain": "house", "tiles": [[62, 52], [63, 52], [62, 53], [63, 53]] },
+      { "terrain": "trench", "rect": [54, 50, 14, 1] },
+      // 산채: 집 · 철조망 · 참호
+      { "terrain": "house", "tiles": [[112, 20], [113, 20], [112, 21], [113, 21], [118, 18], [119, 18], [118, 19], [119, 19], [124, 22], [125, 22], [124, 23], [125, 23], [120, 28], [121, 28], [120, 29], [121, 29]] },
+      { "terrain": "wire", "rect": [104, 36, 32, 1] },
+      { "terrain": "trench", "rect": [108, 33, 24, 1] }
+    ],
+    "starts": [ [120, 150], [120, 22] ]
+  },
+  "areas": {
+    "o1_zone": { "circle": [92, 124, 10] },
+    "o2_zone": { "circle": [150, 90, 11] },
+    "o3_zone": { "circle": [32, 86, 11] },
+    "o4_zone": { "circle": [62, 52, 11] },
+    "sanchae_zone": { "circle": [120, 24, 16] },
+    "river_mid": { "rect": [60, 96, 100, 18] },
+    "bank_south": { "rect": [60, 110, 120, 24] },
+    "east_edge": { "rect": [228, 70, 10, 24] },
+    "west_edge": { "rect": [2, 90, 10, 20] }
+  },
+  "deployZones": [ { "faction": 1, "rect": [60, 134, 120, 28] } ],
+  "forces": [
+    { "id": "b1", "faction": 1, "name": "제1대대", "at": [100, 150], "facing": 0, "battalion": 1, "battalionForm": "line", "formation": "line",
+      "companies": [
+        { "units": { "officer": 1, "infantry": 84 } },
+        { "units": { "officer": 1, "infantry": 84 } },
+        { "units": { "officer": 1, "infantry": 84 } }
+      ] },
+    { "id": "b1_mg", "faction": 1, "name": "제1대대 기관총", "at": [100, 158], "facing": 0, "units": { "heavy_maxim": 2 }, "formation": "line" },
+    { "id": "b1_scout", "faction": 1, "name": "제1대대 정찰 분대", "at": [100, 142], "facing": 0, "units": { "scout": 6 }, "company": false, "formation": "spread" },
+    { "id": "b2", "faction": 1, "name": "제2대대", "at": [140, 150], "facing": 0, "battalion": 2, "battalionForm": "line", "formation": "line",
+      "companies": [
+        { "units": { "officer": 1, "infantry": 84 } },
+        { "units": { "officer": 1, "infantry_default_old": 84 } },
+        { "units": { "officer": 1, "infantry_default_old": 84 } }
+      ] },
+    { "id": "b2_mg", "faction": 1, "name": "제2대대 기관총", "at": [140, 158], "facing": 0, "units": { "heavy_maxim": 2 }, "formation": "line" },
+    { "id": "b2_scout", "faction": 1, "name": "제2대대 정찰 분대", "at": [140, 142], "facing": 0, "units": { "scout": 6 }, "company": false, "formation": "spread" },
+    { "id": "guns", "faction": 1, "name": "보병포", "at": [120, 158], "facing": 0, "units": { "heavy_infantry_gun": 2 }, "formation": "line" },
+    { "id": "cav", "faction": 1, "name": "기병대", "at": [120, 146], "facing": 0, "units": { "officer_cavalry": 1, "cavalry_default": 40 }, "formation": "line" },
+
+    { "id": "o1", "faction": 2, "name": "마적 초소 1", "at": [92, 122], "facing": 180, "formation": "line", "posture": "hold", "aiArea": "o1_zone",
+      "companies": [ { "tag": "front", "units": { "bandit_rifleman": 20, "bandit_thug": 8 } } ] },
+    { "id": "o2", "faction": 2, "name": "마적 초소 2", "at": [150, 88], "facing": 180, "formation": "line", "posture": "hold", "aiArea": "o2_zone",
+      "companies": [ { "tag": "front", "units": { "bandit_rifleman": 25, "bandit_thug": 10 } } ] },
+    { "id": "o3", "faction": 2, "name": "마적 초소 3", "at": [32, 84], "facing": 180, "formation": "line", "posture": "hold", "aiArea": "o3_zone",
+      "companies": [ { "units": { "bandit_rifleman": 20, "bandit_thug": 8 } } ] },
+    { "id": "o4", "faction": 2, "name": "마적 초소 4", "at": [62, 50], "facing": 180, "formation": "line", "posture": "hold", "aiArea": "o4_zone",
+      "companies": [ { "units": { "bandit_rifleman": 25, "bandit_thug": 10 } } ] },
+    { "id": "sanchae", "faction": 2, "name": "마적 산채", "at": [120, 24], "facing": 180, "formation": "line", "posture": "hold", "aiArea": "sanchae_zone",
+      "companies": [ { "tag": "sanchae", "units": { "bandit_leader": 1, "bandit_rifleman": 60, "bandit_thug": 34 } } ] }
+  ],
+  "reinforcements": [
+    { "id": "bandit_cav", "faction": 2, "name": "마적 기병대", "area": "east_edge", "facing": 270, "posture": "attack", "aiArea": "bank_south",
+      "companies": [ { "units": { "bandit_horseman": 30 } } ] },
+    { "id": "volunteers", "faction": 1, "name": "서간도 의용군", "area": "west_edge", "facing": 90,
+      "companies": [ { "units": { "common_gando_volunteer": 40 } } ] }
+  ],
+  "objectives": [
+    { "id": "destroy", "type": "eliminate", "tag": "sanchae", "text": "마적 산채 파괴" },
+    { "id": "front", "type": "eliminate", "tag": "front", "primary": false, "hidden": true, "text": "초소 1 · 2 격파" }
+  ],
+  "failures": [ { "type": "losses", "percent": 50, "text": "아군 절반이 쓰러졌다" } ],
+  "events": [
+    { "id": "intro", "when": { "time": 1 }, "do": [ { "message": "참모장 김주현: 다리가 넷이다. 안개 속에 초소가 더 있다 — 정찰 분대와 기병을 먼저 보내 찾아라" } ] },
+    { "id": "t_sel", "when": { "time": 25 }, "do": [ { "message": "참모장: Alt + 숫자로 대대를 고른다. 1대대는 정면 제압, 2대대는 우회로 보내라" } ] },
+    { "id": "t_o1", "when": { "area": "o1_zone", "faction": 1 }, "do": [ { "message": "참모장: 초소가 코앞이다 — 중대를 횡대로 펴고 공격 이동. '교전!' 이 뜨면 H (사수) 로 자리를 잡아라" } ] },
+    { "id": "t_o2", "when": { "area": "o2_zone", "faction": 1 }, "do": [ { "spawn": "volunteers" }, { "message": "서간도 의용군 40명이 합류했다! 맥심을 거치해 초소를 제압하고, 한 대대는 옆으로 돌아라" } ] },
+    { "id": "t_cav", "when": { "objective": "front" }, "do": [ { "spawn": "bandit_cav" }, { "message": "마적 기병 30여 기가 동쪽에서 달려든다! 기관총을 돌리고 보병은 총검으로 막아라" } ] },
+    { "id": "t_o4", "when": { "area": "o4_zone", "faction": 1 }, "do": [ { "message": "참모장: 참호 속 적은 보병포 직사로 깨뜨려라" } ] },
+    { "id": "t_base", "when": { "area": "sanchae_zone", "faction": 1 }, "do": [ { "message": "산채다 — 기관총으로 제압한 뒤 착검 돌격!" } ] },
+    { "id": "t_done", "when": { "objective": "destroy" }, "do": [ { "message": "산채를 부쉈다!" } ] }
+  ]
+}

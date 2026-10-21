@@ -1,0 +1,122 @@
+{
+  "rifle": {
+    "files": [
+      "rifle_1.wav",
+      "rifle_2.wav",
+      "rifle_3.wav"
+    ],
+    "volume": 0.8,
+    "maxVoices": 4,
+    "minInterval": 0.05
+  },
+  "carbine": {
+    "files": [
+      "carbine_1.wav",
+      "carbine_2.wav",
+      "carbine_3.wav"
+    ],
+    "volume": 0.7,
+    "maxVoices": 4,
+    "minInterval": 0.05
+  },
+  "tank_cannon": {
+    "files": [
+      "tank_cannon.wav"
+    ],
+    "volume": 1.0,
+    "maxVoices": 2,
+    "minInterval": 0.2
+  },
+  "turret_gun": {
+    "files": [
+      "turret_gun.wav"
+    ],
+    "volume": 0.8,
+    "maxVoices": 2,
+    "minInterval": 0.2
+  },
+  "impact": {
+    "files": [
+      "impact_1.wav",
+      "impact_2.wav",
+      "impact_3.wav"
+    ],
+    "volume": 0.5,
+    "maxVoices": 4,
+    "minInterval": 0.04
+  },
+  "death": {
+    "files": [
+      "death_1.wav",
+      "death_2.wav"
+    ],
+    "volume": 0.7,
+    "maxVoices": 3,
+    "minInterval": 0.1
+  },
+  "explosion": {
+    "files": [
+      "explosion.wav"
+    ],
+    "volume": 1.0,
+    "maxVoices": 3,
+    "minInterval": 0.15
+  },
+  "artillery_fire": {
+    "files": [
+      "artillery_fire.wav"
+    ],
+    "volume": 1.0,
+    "maxVoices": 2,
+    "minInterval": 0.25
+  },
+  "artillery_impact": {
+    "files": [
+      "artillery_impact_1.wav",
+      "artillery_impact_2.wav"
+    ],
+    "volume": 0.9,
+    "maxVoices": 4,
+    "minInterval": 0.08
+  },
+  "unit_ready": {
+    "files": [
+      "unit_ready.wav"
+    ],
+    "volume": 0.8,
+    "maxVoices": 1,
+    "minInterval": 0.5
+  },
+  "ui_click": {
+    "files": [
+      "ui_click.wav"
+    ],
+    "volume": 0.5,
+    "maxVoices": 1,
+    "minInterval": 0.03
+  },
+  "alert": {
+    "files": [
+      "alert.wav"
+    ],
+    "volume": 0.9,
+    "maxVoices": 1,
+    "minInterval": 3.0
+  },
+  "victory": {
+    "files": [
+      "victory.wav"
+    ],
+    "volume": 0.9,
+    "maxVoices": 1,
+    "minInterval": 1.0
+  },
+  "defeat": {
+    "files": [
+      "defeat.wav"
+    ],
+    "volume": 0.9,
+    "maxVoices": 1,
+    "minInterval": 1.0
+  }
+}

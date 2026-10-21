@@ -1,0 +1,37 @@
+{
+  "name": "heavy-field-gun-russian-white",
+  "_doc": "heavy-field-gun faction variant (russian-white): same model, furazhka + russian-white infantry uniform; cap badge from parts/badges HEAD_BADGE.",
+  "kind": "artillery",
+  "gun": "field_gun",
+  "anims": "artillery",
+  "headgear": "furazhka",
+  "uniform": {
+    "legging": "puttee",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "collar": true,
+    "puttees": true,
+    "jacket": "ru_olive",
+    "trousers": "ru_olive"
+  },
+  "gear": [
+    "canteen_cloth"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "frame": [
+    384,
+    312
+  ],
+  "ay_frac": 0.641,
+  "zoom_mul": 1.0,
+  "center": [
+    0.0,
+    -8.0
+  ],
+  "dirs": "all",
+  "frames": "all"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "officer-japanese",
+  "_doc": "Japanese variant of officer: jkhaki tunic and trousers (officer trouser stripe kept). Headgear is japanese_officer_cap (officer_cap geometry in jkhaki, parts/headgear.py), so the cap matches the tunic.",
+  "base": "officer",
+  "anims": "officer",
+  "headgear": "japanese_officer_cap",
+  "uniform": {"jacket": "jkhaki", "trousers": "jkhaki", "legging": "jkhaki", "boot": "leather", "belt": "leather", "hand": "skin",
+              "trouser_stripe": true},
+  "weapons": {"pistol": "pistol", "sabre": "sabre"},
+  "gear": ["holster", "scabbard", "map_case"],
+  "team": ["helmet_band", "arm_patch"],
+  "belt": true,
+  "dirs": "all",
+  "frames": "all"
+}

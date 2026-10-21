@@ -1,0 +1,54 @@
+{
+  "name": "infantry-assault",
+  "_doc": "Assault trooper (돌격보병): field-grey WWI body like infantry-default, Adrian helmet (team-colour band), Mosin-type short carbine (cav_carbine part) + 2 belt stick grenades + short sabre. Carbine for idle/walk/fire/death, sabre for charge/melee (officer poses, carbine slung on the back). No pack, no bayonet.",
+  "base": "assault",
+  "anims": "assault",
+  "headgear": "adrian",
+  "uniform": {
+    "jacket": "fgrey_dark",
+    "trousers": "fgrey_dark_trouser",
+    "legging": "fgrey_dark_wrap",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "collar": true,
+    "puttees": true,
+    "puttee_seam": "fgrey_dark_trouser",
+    "piping": "acc_brass",
+    "placket": false,
+    "trouser_stripe": true,
+    "stripe_mat": "acc_brass"
+  },
+  "weapons": {
+    "carbine": "cav_carbine",
+    "pistol": "pistol",
+    "sabre": "sabre_short",
+    "grenade": "stick_grenade"
+  },
+  "gear": [
+    "scabbard_short",
+    "holster",
+    "belt_grenades"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "belt": true,
+  "belt_pouches": true,
+  "dirs": "all",
+  "frames": "all",
+  "tune": {
+    "parts": {
+      "gear": {
+        "scabbard": {
+          "a": [
+            10.9,
+            -4.5,
+            -1.8
+          ]
+        }
+      }
+    }
+  }
+}

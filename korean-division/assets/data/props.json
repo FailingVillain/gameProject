@@ -1,0 +1,29 @@
+{
+  "rules": {
+    "enabled": true,
+    "coverReach": 0.9,
+    "coverConeDeg": 60,
+    "losMargin": 0.2,
+    "losEndClear": 0.8,
+    "losMaxBlock": 0.6,
+    "minShellDamage": 40,
+    "spotCoverWeight": 1.0,
+    "scatter": { "cell": 12, "clusterPct": 55, "forestEdgePct": 85, "fieldPct": 30, "clusterMin": 2, "clusterMax": 5, "clusterRadius": 3.0, "spacing": 1.1, "startClear": 12, "rockPct": 30, "bigRockPct": 25 }
+  },
+  "types": {
+    "rock_s":         { "cover": 0.70, "losBlock": 0.15, "radius": 0.40, "blocksMove": false, "hp": 120, "destroyed": "rock_s_cracked" },
+    "rock_m":         { "cover": 0.55, "losBlock": 0.35, "radius": 0.60, "blocksMove": true,  "hp": 250, "destroyed": "rock_m_cracked" },
+    "rock_l":         { "cover": 0.45, "losBlock": 0.60, "radius": 0.90, "blocksMove": true,  "hp": 500, "destroyed": "rock_l_cracked" },
+    "rock_s_cracked": { "cover": 0.80, "losBlock": 0.08, "radius": 0.40, "blocksMove": false, "hp": 0,   "destroyed": "" },
+    "rock_m_cracked": { "cover": 0.70, "losBlock": 0.20, "radius": 0.60, "blocksMove": true,  "hp": 0,   "destroyed": "" },
+    "rock_l_cracked": { "cover": 0.60, "losBlock": 0.35, "radius": 0.90, "blocksMove": true,  "hp": 0,   "destroyed": "" },
+    "tree_birch":     { "cover": 0.88, "losBlock": 0.06, "radius": 0.25, "blocksMove": false, "hp": 60,  "destroyed": "tree_birch_fallen" },
+    "tree_larch":     { "cover": 0.85, "losBlock": 0.08, "radius": 0.30, "blocksMove": false, "hp": 80,  "destroyed": "tree_larch_fallen" },
+    "tree_pine":      { "cover": 0.82, "losBlock": 0.10, "radius": 0.35, "blocksMove": false, "hp": 100, "destroyed": "tree_pine_fallen" },
+    "tree_oak":       { "cover": 0.78, "losBlock": 0.14, "radius": 0.45, "blocksMove": false, "hp": 140, "destroyed": "tree_oak_fallen" },
+    "tree_birch_fallen": { "cover": 0.92, "losBlock": 0.04, "radius": 0.40, "blocksMove": false, "hp": 0, "destroyed": "" },
+    "tree_larch_fallen": { "cover": 0.90, "losBlock": 0.05, "radius": 0.45, "blocksMove": false, "hp": 0, "destroyed": "" },
+    "tree_pine_fallen":  { "cover": 0.88, "losBlock": 0.06, "radius": 0.50, "blocksMove": false, "hp": 0, "destroyed": "" },
+    "tree_oak_fallen":   { "cover": 0.85, "losBlock": 0.08, "radius": 0.55, "blocksMove": false, "hp": 0, "destroyed": "" }
+  }
+}

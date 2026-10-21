@@ -1,0 +1,37 @@
+{
+ "name": "infantry-draft-bandit",
+ "_doc": "drafted (bribed) bandit rifleman, common: Fengtian blue-grey jacket + bandit trousers/wraps with the bandit head towel; bolt rifle, dadao for melee, single bandolier.",
+ "base": "fengtian",
+ "anims": "fengtian",
+ "headgear": "bandit_towel",
+ "uniform": "draft_bandit",
+ "weapons": {
+  "rifle": "bolt_rifle",
+  "dadao": "dadao"
+ },
+ "gear": [
+  "bandolier_x_low",
+  "haversack",
+  "canteen_cloth",
+  "dadao_sheath"
+ ],
+ "team": [
+  "helmet_band",
+  "arm_patch"
+ ],
+ "belt": true,
+ "belt_pouches": false,
+ "e_pull_extra": 3.0,
+ "tune": {
+  "poses": {
+   "infantry": {
+    "prone_weapon": {
+     "x": -7.5
+    }
+   }
+  }
+ },
+ "dirs": "all",
+ "frames": "all",
+ "fix_as": "infantry-fengtian"
+}

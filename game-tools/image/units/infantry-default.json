@@ -1,0 +1,30 @@
+{
+  "name": "infantry-default",
+  "_doc": "Korean Empire (대한제국군) rifleman: near-black dark field grey uniform with red accents (collar edge, placket, cuffs, thin red trouser side stripe), flat-top kepi with team-colour band and brass plum-blossom badge. Uniform/headgear copied from infantry-default-kepi. Same body / 35 frames as the WWII variant (units/infantry-ww2.json).",
+  "base": "infantry",
+  "anims": "infantry-motions",
+  "headgear": "korean_kepi",
+  "uniform": {
+    "jacket": "fgrey_dark",
+    "trousers": "fgrey_dark_trouser",
+    "legging": "fgrey_dark_wrap",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "collar": true,
+    "puttees": true,
+    "puttee_seam": "fgrey_dark_trouser",
+    "piping": "acc_brass",
+    "placket": false,
+    "trouser_stripe": true,
+    "stripe_mat": "acc_brass"
+  },
+  "weapon": "bolt_rifle",
+  "gear": ["field_pack_grey", "haversack", "canteen_cloth", "leather_pouches"],
+  "team": ["helmet_band", "arm_patch"],
+  "belt": true,
+  "belt_pouches": false,
+  "e_pull_extra": 3.0,
+  "dirs": "all",
+  "frames": "all"
+}

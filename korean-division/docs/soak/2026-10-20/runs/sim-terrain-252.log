@@ -1,0 +1,56 @@
+  [sim] AI A=tactical B=tactical
+  t=10s  A 53 @(108,64)  B 180 @(149,61)  wall 0.3s
+  t=20s  A 52 @(118,64)  B 179 @(150,62)  wall 0.6s
+  t=30s  A 36 @(111,68)  B 177 @(145,64)  wall 0.8s
+  t=40s  A 33 @(98,69)  B 168 @(143,61)  wall 1.0s
+  t=50s  A 32 @(91,70)  B 168 @(137,60)  wall 1.2s
+  t=60s  A 30 @(91,71)  B 168 @(133,60)  wall 1.4s
+  t=70s  A 27 @(85,71)  B 166 @(127,62)  wall 1.5s
+  t=80s  A 25 @(69,72)  B 166 @(119,63)  wall 1.7s
+  t=90s  A 24 @(60,74)  B 166 @(106,65)  wall 1.8s
+  t=100s  A 20 @(57,75)  B 166 @(100,69)  wall 2.0s
+  t=110s  A 11 @(45,79)  B 166 @(87,70)  wall 2.2s
+  t=120s  A 11 @(30,83)  B 166 @(71,74)  wall 2.3s
+  t=130s  A 11 @(16,99)  B 166 @(48,83)  wall 2.5s
+  t=140s  A 11 @(5,100)  B 166 @(28,92)  wall 2.6s
+  t=150s  A 10 @(2,119)  B 166 @(28,105)  wall 2.8s
+  t=160s  A 2 @(3,124)  B 166 @(22,110)  wall 2.9s
+MARCH ticks=0 move=0 moveOn=0 shots=0 moveShots=0 pistol=0 gren=0 melee=0
+MEAS start=53/180 end_t=161 winner=2 lossEnd=53/14 loss120=42/14 loss300=-1/-1 t50=72/- shots=1544 hits=227 hitpct=14.7 meanDist=19.7 hitDist=16.4
+결과: 승자 2, 161.0초, 실행 2.9초, 명령 536
+사살원인 010s cavalry_default/melee->veteran = 1
+사살원인 010s veteran/rifle_mosin->cavalry_default = 1
+사살원인 020s infantry_fengtian/rifle_mosin->veteran = 2
+사살원인 020s veteran/melee->cavalry_default = 3
+사살원인 020s veteran/melee->infantry_fengtian = 7
+사살원인 020s veteran/rifle_mosin->cavalry_default = 4
+사살원인 020s veteran/rifle_mosin->infantry_fengtian = 2
+사살원인 030s heavy_maxim/hmg->veteran = 9
+사살원인 030s veteran/rifle_mosin->heavy_maxim = 1
+사살원인 030s veteran/rifle_mosin->infantry_fengtian = 2
+사살원인 040s veteran/rifle_mosin->heavy_maxim = 1
+사살원인 050s veteran/rifle_mosin->heavy_maxim = 2
+사살원인 060s infantry_fengtian/rifle_mosin->veteran = 2
+사살원인 060s veteran/rifle_mosin->infantry_fengtian = 3
+사살원인 070s veteran/rifle_mosin->infantry_fengtian = 2
+사살원인 080s veteran/rifle_mosin->infantry_fengtian = 1
+사살원인 090s veteran/rifle_mosin->infantry_fengtian = 4
+사살원인 100s veteran/rifle_mosin->infantry_fengtian = 9
+사살원인 140s veteran/rifle_mosin->scout = 1
+사살원인 150s veteran/rifle_mosin->scout = 8
+사살원인 160s veteran/rifle_mosin->scout = 2
+틀 행동: 시작 0 끝 0 약진 0 기동 0 돌격 0 역습 0 참호 0 연신 0 전환 0 인계멈춤 0 포병전개 0
+기병AI: 돌격 정면 0 측면 1 후방 0 측면경유 1 소규모보류 0 물러남 0 | 추격: 후퇴중 희생 사격 7 근접 3 후퇴하는 적 돌격 보병 0 기병 0 | N55 기병 무모한 정면 0 돌격 사격 전진 0 | N23 소탕 0 | S4 제압으로 꺾인 돌격 7
+F4 기병 돌격: 개시 1 무의미 정면 0 자동 막음 0 근접 사살 1 사유(후퇴/제압/승무원/고립/측면) 0/0/0/0/1 · 하마 6 승마 0
+관찰: 사격 1544발 · 명중 227발 (14.7%) · 사망 67기 → 1킬당 23.0발 (명중 3.4발)
+N61 접근: 보병(1) 첫 사격 22.6초 · 기병(2) 첫 근접 22.7초 · 전환 583 · 그 시점 B 생존 179/180
+템포: 첫 사격 15.6초 · A 50% 손실 71.5초 · B 50% 손실 -초 · 사격 거리 평균 19.7 (첫 100발 14.6) 칸
+  세력:종류            시작→남음   사격    근접   포격  방열%  돌격%
+  1:cavalry_default       8→0           0      4      0     0    18
+  1:heavy_maxim           4→0          76      0      0     9     0
+  1:infantry_fengtian    30→0         206      0      0     0     0
+  1:scout                11→0           5      0      0     0     0
+  2:veteran             180→166      1257     19      0     0     1
+AI 비용: 사고 ms/틱 avg 0.010 max 17.29 (호출 1288, 호출당 0.073 ms) · 전체 Step avg 0.30 ms
+  [전술 AI 1] 프로필 default 태세 Attack/Defend 중대 2 대대 0 · 명령 116 돌격 0 기병돌격 1 참호 0 후퇴 6 포병이동 0 화력사수 2 예비투입 0 · 연대 0 준비사격 0 연신 0 분대약진 0 전초 0/철수 0 역습 0 증원편입 0 공격한계 2
+  [전술 AI 2] 프로필 default 태세 Attack/Attack 중대 4 대대 1 · 명령 103 돌격 1 기병돌격 0 참호 0 후퇴 0 포병이동 0 화력사수 0 예비투입 1 · 연대 1 준비사격 0 연신 0 분대약진 10 전초 0/철수 0 역습 0 증원편입 0 공격한계 0

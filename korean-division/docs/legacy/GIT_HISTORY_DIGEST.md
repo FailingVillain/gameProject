@@ -1,0 +1,183 @@
+# korean-division — git history digest
+
+Snapshot of the old standalone repository before the move into the `gameProject` monorepo (2026-10-22).
+Commits on main: 982 (2026-10-18 .. 2026-10-22); merges total 278, merges onto main 135.
+Authors, e-mails and hashes are intentionally omitted. Full old history stays only in the archived local repo.
+
+## Merges onto main (newest first)
+
+- 2026-10-22 Merge comms ①: 난이도 구조 + 대대장 앞 명령 전달 지연 기반 (FormatVersion 52, Replay 19)
+- 2026-10-22 merge trenchdiag: trench_assault 원인 조사 문서
+- 2026-10-22 Merge formation: 대형 완화 (평행이동 · 즉시 출발 · 오차 1.5 · 데드밴드 · 구역 도착 · 휴식 정렬 · 종대 히스테리시스 · 정지 중 제자리 서기), choke · 산개 파상 횡대 (기본 끔), FormatVersion 51
+- 2026-10-22 Merge lookfix: mongol deel/pointed hat, bandit head towel
+- 2026-10-22 Merge tutorial: chapter 0 missions 0-1, 0-2 + tests
+- 2026-10-22 Merge newunits: hunter, bandit shotgunner, draft bandit, village militia (N68/N71 data + art)
+- 2026-10-22 Merge arty3: 포병 · 중화기 묶음 (FormatVersion 50, Replay 18)
+- 2026-10-22 merge savecompat: 저장 형식 호환 정책
+- 2026-10-22 Merge horseart: 기마 포병 (타찬카 마차 + 보병포) 시트 · 테스트
+- 2026-10-22 Merge assaultinf: 돌격보병 강화 (FormatVersion 49)
+- 2026-10-21 Merge flagimport: standard-bearer art
+- 2026-10-21 Merge importfix: import_kd1920 --prune/--only
+- 2026-10-21 Merge pronemove (prone soldiers not dragged by formation, hold caps 8/3 s, crossing exemption, bridgehead tally fix, Snapshot 48)
+- 2026-10-21 merge cossack: papakha fur tufts black (no grey)
+- 2026-10-21 Merge type3: Japanese Type 3 HMG
+- 2026-10-21 Merge colours: 서간도 의용군 name + Korea/Fengtian uniform colours
+- 2026-10-21 Merge units (N63/N68/N72/N78 new units, cossack/Gando art fix, Snapshot 47)
+- 2026-10-21 Merge armour: Mark V, Lanchester, Fengtian armoured cars, Austin re-art, armour_test, ArmourSelfTest
+- 2026-10-21 Merge chauchat: Chauchat half-moon magazine art
+- 2026-10-21 Merge propdens: cover prop density up in all missions
+- 2026-10-21 Merge progbar: progress bar, blade-draw pose, Japanese pre-fixed bayonet
+- 2026-10-21 Merge nobreak: break rule off (breakChance 0), ammo-less tank blocked-by-infantry give-up
+- 2026-10-21 Merge ai3b: tactical AI stage 3B
+- 2026-10-21 Merge n32: N32 참호 돌격 교리 (Snapshot 45 · Replay 17)
+- 2026-10-21 Merge n79a: N79a 집결 지점 · 포격 종류 (Snapshot 44 · Replay 16)
+- 2026-10-21 Merge mflash
+- 2026-10-21 Merge surr: N79b 항복 (사용자 사양)
+- 2026-10-20 Merge props2: 미션 엄폐물 배치 + 소품 엄폐 제압 반영
+- 2026-10-20 Merge supp2: 제압 재설계 2차 — 엎드림 · 엄폐 회복 · 붕괴 기본 켬 + 원인 수정
+- 2026-10-20 Merge props: F6 cover prop layer (Snapshot 42)
+- 2026-10-20 Merge c102: campaign 1-2 Tumen crossing + carry-over
+- 2026-10-20 Merge bal2: mission fixes, maxim heat tuning, rarer cavalry charges
+- 2026-10-20 Merge supp: suppression redesign (3 features behind JSON switches, default off)
+- 2026-10-20 Merge vs1: vertical slice, campaign mission 1-1 playable
+- 2026-10-20 Merge f2: F1 phase 2 + tank-stuck fix
+- 2026-10-20 Merge n73: fire control orders (K)
+- 2026-10-20 Merge n61: cavalry charge rules, dismount, sabre, infantry early fire
+- 2026-10-20 Merge hmg: Maxim tuning, artillery deploy, redeploy cooldown
+- 2026-10-20 Merge rank1: default rank 1 for infantry; golden regen, selftest PASS
+- 2026-10-20 Merge los: N75 line-of-sight display (key B), charge order delay x0.5
+- 2026-10-20 Merge prog: progress rings
+- 2026-10-20 Merge bal1: shell caps, chauchat 240, cavalry officerBack
+- 2026-10-20 Merge f1: per-company contact state, loose zones, firing-spot commitment (Snapshot 37)
+- 2026-10-20 Merge stale (④ stalemate resolution)
+- 2026-10-20 Merge ammo2 (ammo plan A)
+- 2026-10-20 Merge n46
+- 2026-10-20 Merge f5
+- 2026-10-20 Merge s2
+- 2026-10-20 Merge jpinf
+- 2026-10-20 Merge ammo (LMG ammo 80), regenerate golden, crossing test infinite ammo
+- 2026-10-20 Merge charge (bayonet fix, FormatVersion 36), regenerate golden
+- 2026-10-20 Merge branch 'n78'
+- 2026-10-20 Merge branch 'n77'
+- 2026-10-20 Merge branch 'lmg'
+- 2026-10-20 Merge pursuit2: TACTICS_OBS 13차 최종 재측정 (문서만)
+- 2026-10-20 Merge artimp: bandit/dadao/chauchat sprites, reserve sprite for 지방대
+- 2026-10-19 Merge pursuit2 (N45 후퇴 사격 · 재전진 · 포병 오사): FormatVersion 35, golden abe05bdb, selftest 1515
+- 2026-10-19 Merge n23: N23 assault spray-and-close, N55 officer experience tendencies
+- 2026-10-19 Merge austin: Austin armoured car art, twin turret mounts (render only)
+- 2026-10-19 Merge tweak1: N44 전투 조정 묶음 (대열 정비 화력조 제외 · 돌격 중 보류, 방어 유닛만 피격 엄폐, 참호 0.5, engageFrac 0.6, 관측자 노출 회피, 야전포 도착 방열, 보병포 70/1.5/250), Snapshot v34 · 리플레이 
+- 2026-10-19 Merge factions: N26 bandit units, N53 common units, N54 rifles x7 + faction distribution, Korean infantry tiers, Fengtian dadao infantry
+- 2026-10-19 Merge officer (N35 장교 교전 회피 · 정찰병 자위 사격)
+- 2026-10-19 Merge branch 'artyfix'
+- 2026-10-19 Merge branch 'playercmd': N36/N37/N38
+- 2026-10-19 Merge branch 'crossing': 도하 · 병목 돌파 + 역습 교리 (N40), FormatVersion 33, golden 20320fb6
+- 2026-10-19 Merge supp: N39 제압 재설계 (근접 탄착 · 명중률 · 고정/엎드림 · 장교 제압 후퇴 굴림 · 분대 아이콘 고정 · 감소 25/s + 피격 직후 x0.25), FormatVersion 32, golden regenerated
+- 2026-10-19 Merge offnco: officerBack 1, NCO mul 0.7/1.25 (N49), golden regenerated
+- 2026-10-19 Merge branch 'snrain': 저격수 간격 8초, 비 이동 패널티 제거 (golden regenerated)
+- 2026-10-19 Merge human (N34 덜 기계적인 전투): golden regenerated
+- 2026-10-19 Merge branch 'forest': 숲 전투
+- 2026-10-19 Merge s3a: 전술 AI 3단계 3A (S1 기동 계획 · 미션 목표 연결 · 미션별 철수 문턱), FormatVersion 31, golden ecb10d9e
+- 2026-10-19 Merge branch 'ranks': 세력별 계급 표 (미사용 계급 건너뜀)
+- 2026-10-19 Merge icons2: 병과 그림 실루엣 초안 · 분대 상태 아이콘 축소
+- 2026-10-19 Merge nofire: NOFIRE diagnosis probe + report
+- 2026-10-19 Merge cavcmd: 기병 장교 officer_cavalry · 기병 분대 부사관 대리 · AI 기병 돌격 장교 뒤 10칸 (selftest 1293)
+- 2026-10-19 Merge branch 'arty2': 보병포 동행 근접 지원 · 직사포 사선 막힘 재배치 · 곡사포 재배치 20초/0.75 · 정찰병 시야 48 · 피격 엄폐 (지시서 N22, HANDOFF N29)
+- 2026-10-19 Merge rankui: promotion cap (lt. colonel) + branch image markers
+- 2026-10-19 Merge branch 'engage': N25 교전 거리 · 엄폐 (반응 거리 0.7 · 반격 · 진지 점유 · 방어 지형 활용 · 엄폐 찾기 · 엄폐 경유 · 방어 정면, Snapshot v30)
+- 2026-10-19 Merge pursuit: 추격 (후퇴하는 적 보병 돌격 금지 · 사격 추격 한계 · 후퇴 속보) · 기병 측면 · 소규모 기병 차장 (Snapshot v29)
+- 2026-10-19 Merge gapfill2: 대열 정비 2 — 사수 · 공격 이동 대상, 앞줄 구멍 판단, 적 돌격 감지 즉시 판단 (Snapshot v28)
+- 2026-10-19 Merge branch 'uiicons': 수류탄 X · 카드 칸 충돌 해소 · 아군 오사 계수 · 분대 상태 아이콘
+- 2026-10-19 Merge branch 'bunchfix': 행군 종대 뭉침 수정 (자취 외삽 · 좁은 길 25%/120틱 · 막힌 슬롯 흩뿌림 · 배치 지도 안)
+- 2026-10-19 Merge assaultart
+- 2026-10-19 Merge carbine: 돌격보병 = 카빈 + 수류탄 2 · 한국군 전용 (N21)
+- 2026-10-19 Merge main into bncamp2
+- 2026-10-19 Merge bncamp: battalion campaign observer + 304-run report
+- 2026-10-19 Merge ai412: 결정 4 돌격 허가 · 결정 12 대대 역할 · 부사관 기본 편성
+- 2026-10-19 Merge n19: LMG max-zoom audit + LOD fallback hardening
+- 2026-10-19 Merge ring
+- 2026-10-19 Merge branch 'n12': 대형 강박 줄이기 · 장교 위치 · 정찰병 묶음 + N17 수치
+- 2026-10-19 Merge n16: spatial hash per-unit cost + crater spike fix
+- 2026-10-19 Merge artyfx: artillery effect measurement
+- 2026-10-19 Merge small1: funds leftover removal, CA2014 hoist, pose contact sheet
+- 2026-10-19 Merge tobs5: tactics observation cycle 5
+- 2026-10-19 Merge n13: N13 map size load test
+- 2026-10-19 Merge artillery2: N10 in-place gun traverse (<90 deg), N11 ranges 40/80/120 + distance scatter + longer flights + weaker howitzer, map size tiers 200
+- 2026-10-19 Merge tactics-obs: read-only tactics telemetry + battalion scenarios + report (detcheck unchanged)
+- 2026-10-19 Merge templates2: tactic templates stage 2 (role behaviours, commander transitions, fire superiority, lift, defence depth), heavy weapons never lead 
+- 2026-10-19 Merge render-fixes: N8 LOD 가운데 단계 폴백 · 장교 조준 유지 · N9 확인
+- 2026-10-19 Merge cav-nocharge: 기병 돌격 충격 개정 (피해 보너스 제거 · 쿨다운 · 제압 2칸)
+- 2026-10-19 Merge lmg-burst: light machine gun burst fire
+- 2026-10-19 Merge scen-kr-ft: AI-vs-AI Korean vs Fengtian 1000 scenario
+- 2026-10-19 Merge officer-tweaks: assistant major, XP command priority, no objective XP, march fire 0.7x
+- 2026-10-19 Merge command-ranks: officer ranks by post, temporary promotion (max +3), succession with handover, NCO fallback, officer XP (N3); Snapshot v23, gold
+- 2026-10-19 Merge auto-company: battle tests auto-form player companies (N7)
+- 2026-10-19 Merge lmg-aim: LMG aim direction matches the sprite (N2/4o); golden regenerated, selftest 1019 OK
+- 2026-10-19 Merge formations: combat formations (squad 5 · cavalry echelon · artillery formation · battalion waves) + role templates stage 1; Snapshot v22
+- 2026-10-19 Merge ground-target: player ground-target artillery order (N1); snapshot v21, golden regenerated
+- 2026-10-19 Merge bundle3: march-fire toggle, no in-battle promotion, non-combat attack-move, cleanup (golden regenerated)
+- 2026-10-18 Merge collision: large-battle collision + formation redesign, jitter fixes, officer-commanded company marching fire
+- 2026-10-18 Merge cleanup2: cleanup batch 2 (construction removal, trench auto-occupy, uniform data removal, jitter 5, passive officers, N-key sound, render ring
+- 2026-10-18 Merge tactical-ai-2: tactical AI stage 2 (faction strategy + regiment tactics)
+- 2026-10-18 Merge scout: infantry_scout, autonomous scouting (FormatVersion 17, distances x1.5)
+- 2026-10-18 Merge rank-names
+- 2026-10-18 Merge crater-art
+- 2026-10-18 Merge art-memory
+- 2026-10-18 Merge shell-flight (FormatVersion 16); tactical AI InGunArc uses World.CanTraverseTo; shell tests ported to heavy_howitzer
+- 2026-10-18 Merge cleanup (Snapshot FormatVersion 15, detcheck golden updated)
+- 2026-10-18 Merge tactical-ai
+- 2026-10-18 Merge test-tmp
+- 2026-10-18 Merge sfx-wire
+- 2026-10-18 Merge missions (Format 14, replay 7, Battalion naming, mission weather via Weather.cs)
+- 2026-10-18 Merge trench-lines (FormatVersion 13: trench lines + craters on top of squads and weather)
+- 2026-10-18 Merge weather
+- 2026-10-18 Merge squads
+- 2026-10-18 Merge branch 'city-art' (city/house art, building import, KD_CAMZOOM)
+- 2026-10-18 Merge art-import into main
+- 2026-10-18 Merge branch 'terrain-tiles2'
+- 2026-10-18 Merge branch 'unit-symbols'
+- 2026-10-18 Merge branch 'terrain-art'
+- 2026-10-18 Merge branch 'terrain-blend'
+- 2026-10-18 Merge branch 'main' into wip/direction-change
+- 2026-10-18 Merge theme kd1920 (new LOD sprite format)
+- 2026-10-18 Merge companies/regiments + flag formations
+- 2026-10-18 Merge stamina + quick step (patrol removed)
+
+## Direct commits on main with N-numbers
+
+- 2026-10-22 tachanka: 한국군 타찬카 확인 + 접촉 시트 (정의는 N78 에서 이미 한국 허용)
+- 2026-10-20 HANDOFF: short-term fix list S1-S5, N79 approved counter-proposals
+- 2026-10-20 HANDOFF: N78 rename cavalry, tachanka for Russia + Korea
+- 2026-10-20 HANDOFF: N73 fire control, N74 order queue, N75 blocked-LOS indicator; beta roster frozen
+- 2026-10-20 HANDOFF: N72 cavalry scout
+- 2026-10-19 HANDOFF: N71 foreign units (co-opted bandits, local militia)
+- 2026-10-19 HANDOFF: N70 faction flags for standard bearer, simple arty comm delay
+- 2026-10-19 HANDOFF: N68 Fengtian guard, standard bearer, Manchurian hunter, bandit shotgunner; N69 river gunboat (roadmap)
+- 2026-10-19 HANDOFF: N65 assault smoke grenades, N66 mountain gun (roadmap), N67 Japanese Type 3 HMG (roadmap)
+- 2026-10-19 HANDOFF: N59-N64 smoke, wire cutting by assault troops, arty comm delay, light mortar, dismounted cavalry fire, armoured train (roadmap), common unit
+- 2026-10-19 HANDOFF: N56b LMG carry muzzle-back, N57 fix-bayonet delay (once fixed stays)
+- 2026-10-19 HANDOFF: N56 prone aim pose fix (roadmap) + N52-54 decisions
+- 2026-10-19 HANDOFF N35 officer
+- 2026-10-19 ReplaySelfTest: move-target tamper tries 6 mid candidates (orders to pinned soldiers may not change state, N39); selftest 1396
+- 2026-10-19 HANDOFF: N46 squad follow-fire, N47 march-fire to charge, N48 SFX review (roadmap)
+- 2026-10-19 HANDOFF: N30 Chauchat slower fire rate (inferior to Korean LMG)
+- 2026-10-19 HANDOFF: N30 LMG by faction (Fengtian Chauchat, Japan none, Russia low share) - roadmap
+- 2026-10-19 HANDOFF: N27 chapter 0 tutorial (bandits), N28 chapter 1 structure (roadmap)
+- 2026-10-19 HANDOFF: N26 bandit faction (roadmap) + confirmed world-setting decisions
+- 2026-10-19 HANDOFF: N23 assault redesign direction (spray-suppress + pistol/grenade/dagger), after suppression redesign
+- 2026-10-19 HANDOFF: N23 assault infantry improvement (roadmap)
+- 2026-10-19 N21: selftest 수 1178 (병합 후)
+- 2026-10-19 N18: 병종별 1:1 교환비 표 (측정만, 수치 변경 없음)
+- 2026-10-19 HANDOFF: N19 LMG gunner sprite vanishes at max zoom (investigate)
+- 2026-10-19 HANDOFF: N18 unit-type 1:1 exchange table (roadmap only)
+- 2026-10-19 N5: 포 새 그림 가져오기 (보병포·야전포·곡사포 변형, 갱신 시트)
+- 2026-10-19 Tactics obs cycle 6: artillery role metrics after N11, 2000v2000 scale, V0 trend
+- 2026-10-19 HANDOFF: N16 RebuildHash perf + N17 superiority value (held for user)
+- 2026-10-19 HANDOFF: N15 control conflicts found by CONTROLS.md
+- 2026-10-19 ROADMAP/HANDOFF: map sizes 200/400/800/1200/1500; per-size load test (N13)
+- 2026-10-19 HANDOFF: N12 formation relaxation, officer position (no solo advance), scouts without officers
+- 2026-10-19 ROADMAP/HANDOFF: artillery ranges 50/100/200 with distance-scaled scatter (N11)
+- 2026-10-19 ROADMAP/HANDOFF: artillery retarget by small traverse, no redeploy (N10)
+- 2026-10-19 ROADMAP/HANDOFF: missing LOD0 art for some units (N8)
+- 2026-10-19 HANDOFF: N7 auto-company for player in battle tests; N1/N2 running
+- 2026-10-19 HANDOFF: overnight run plan (N1-N6, AI tests last)
+

@@ -1,0 +1,279 @@
+{
+ "id": "OBJ_T_r1_cap",
+ "title": "OBJ_T_r1_cap",
+ "date": "1920년 가을",
+ "location": "간도",
+ "briefing": "bncamp2 OBJ_T_r1_cap",
+ "seed": 1920,
+ "weather": "clear",
+ "time": "day",
+ "player": 1,
+ "spectate": true,
+ "factions": [
+  {
+   "name": "한국군",
+   "en": "korean",
+   "lang": "ko",
+   "color": [
+    60,
+    130,
+    235
+   ],
+   "team": 1,
+   "posture": "attack",
+   "area": "zone"
+  },
+  {
+   "name": "봉천 군벌",
+   "en": "fengtian",
+   "lang": "zh",
+   "color": [
+    165,
+    95,
+    225
+   ],
+   "team": 2,
+   "posture": "defend",
+   "area": "zone"
+  }
+ ],
+ "areas": {
+  "zone": {
+   "rect": [
+    56,
+    16,
+    48,
+    30
+   ]
+  },
+  "cap": {
+   "rect": [
+    60,
+    36,
+    40,
+    12
+   ]
+  }
+ },
+ "mapData": {
+  "name": "OBJ_T_r1_cap",
+  "width": 160,
+  "height": 120,
+  "base": "grass",
+  "paint": [
+   {
+    "terrain": "dirt",
+    "rect": [
+     78,
+     0,
+     4,
+     120
+    ]
+   },
+   {
+    "terrain": "forest",
+    "rect": [
+     16,
+     50,
+     24,
+     18
+    ]
+   },
+   {
+    "terrain": "forest",
+    "rect": [
+     120,
+     50,
+     24,
+     18
+    ]
+   },
+   {
+    "terrain": "forest",
+    "rect": [
+     26,
+     76,
+     18,
+     12
+    ]
+   },
+   {
+    "terrain": "house",
+    "tiles": [
+     [
+      70,
+      22
+     ],
+     [
+      70,
+      28
+     ],
+     [
+      77,
+      22
+     ],
+     [
+      77,
+      28
+     ],
+     [
+      84,
+      22
+     ],
+     [
+      84,
+      28
+     ]
+    ]
+   },
+   {
+    "terrain": "trench",
+    "rect": [
+     52,
+     40,
+     24,
+     2
+    ]
+   },
+   {
+    "terrain": "trench",
+    "rect": [
+     84,
+     40,
+     24,
+     2
+    ]
+   },
+   {
+    "terrain": "trench",
+    "rect": [
+     52,
+     40,
+     2,
+     8
+    ]
+   },
+   {
+    "terrain": "trench",
+    "rect": [
+     106,
+     40,
+     2,
+     8
+    ]
+   },
+   {
+    "terrain": "wire",
+    "rect": [
+     48,
+     50,
+     28,
+     1
+    ]
+   },
+   {
+    "terrain": "wire",
+    "rect": [
+     84,
+     50,
+     28,
+     1
+    ]
+   }
+  ],
+  "starts": [
+   [
+    80,
+    100
+   ],
+   [
+    80,
+    30
+   ]
+  ]
+ },
+ "objectives": [
+  {
+   "id": "take",
+   "type": "capture",
+   "area": "cap",
+   "seconds": 30,
+   "text": "진지 점령"
+  }
+ ],
+ "failures": [
+  {
+   "type": "losses",
+   "percent": 97
+  },
+  {
+   "type": "timeLimit",
+   "seconds": 900
+  }
+ ],
+ "events": [],
+ "forces": [
+  {
+   "id": "f1_bn",
+   "faction": 1,
+   "name": "한국군 소총대대",
+   "at": [
+    80,
+    100
+   ],
+   "facing": 0,
+   "formation": "line",
+   "battalion": 1,
+   "battalionForm": "line",
+   "companies": [
+    {
+     "units": {
+      "officer": 3,
+      "infantry": 84,
+      "infantry_scout": 2
+     },
+     "formation": "line"
+    },
+    {
+     "units": {
+      "officer": 3,
+      "infantry": 84,
+      "infantry_scout": 2
+     },
+     "formation": "line"
+    }
+   ]
+  },
+  {
+   "id": "f2_bn",
+   "faction": 2,
+   "name": "적 소총대대",
+   "at": [
+    80,
+    41
+   ],
+   "facing": 180,
+   "formation": "line",
+   "battalion": 1,
+   "battalionForm": "line",
+   "companies": [
+    {
+     "units": {
+      "officer_fengtian": 3,
+      "infantry_fengtian": 84,
+      "infantry_scout": 2
+     },
+     "formation": "line"
+    },
+    {
+     "units": {
+      "officer_fengtian": 3,
+      "infantry_fengtian": 84,
+      "infantry_scout": 2
+     },
+     "formation": "line"
+    }
+   ]
+  }
+ ]
+}

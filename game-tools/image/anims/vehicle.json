@@ -1,0 +1,13 @@
+{
+  "_doc": "vehicle animations: hull sheet and turret sheet each have their own columns (frames in order of first appearance). ms = GIF frame duration(s).",
+  "hull": {
+    "idle": {"frames": ["idle"]},
+    "move": {"frames": ["move_1", "move_2", "move_3", "move_4"], "ms": 110},
+    "dead": {"frames": ["dead"]}
+  },
+  "turret": {
+    "idle": {"frames": ["idle"]},
+    "fire": {"frames": ["fire", "fire_2", "idle"], "ms": [110, 140, 500]},
+    "dead": {"frames": ["dead"]}
+  }
+}

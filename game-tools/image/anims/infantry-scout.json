@@ -1,0 +1,8 @@
+{
+  "_doc": "scout anims = infantry-motions (inherited, so frame changes on the rifleman set carry over) + binoculars (stand) / binoculars_kneel (observing through field glasses).",
+  "extends": "infantry-motions",
+  "anims": {
+    "binoculars":       {"frames": ["binoc_stand"], "ms": 1500},
+    "binoculars_kneel": {"frames": ["binoc_kneel"], "ms": 1500}
+  }
+}

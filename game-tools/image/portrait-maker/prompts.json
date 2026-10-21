@@ -1,0 +1,63 @@
+{
+  "defaultFaction": "republic",
+  "style": {
+    "prompt": "1990s PC strategy game unit portrait, retro pixel art, 16-bit era game art style, hand-painted cartoon look, bold outlines, cel shading, limited color palette, head and shoulders, three-quarter view facing slightly left, dark plain background, crisp sprite-like rendering, like Command and Conquer / Commandos / Close Combat era portraits",
+    "negative": "photo, photorealistic, realistic skin, film grain, 3d render, octane, modern, text, watermark, logo, signature, frame, border, multiple people, deformed, extra fingers, blurry, sunglasses",
+    "generation": {
+      "width": 1024,
+      "height": 1024,
+      "steps": 25,
+      "cfg": 6,
+      "sampler": ""
+    },
+    "pixel": {
+      "grid": 96,
+      "colors": 32
+    },
+    "_note": "기본 화풍 = 게임 · 카툰 · 1990년대 도트풍 (2026-10-18). 현실풍이 필요하면 prompt/negative 를 바꾼다."
+  },
+  "factions": {
+    "republic": {
+      "uniform": "US Army 1944 uniform, olive drab M1941 field jacket"
+    },
+    "union": {
+      "uniform": "British Army 1944 battledress, khaki wool uniform"
+    },
+    "kingdom": {
+      "uniform": "German Wehrmacht 1944 field-grey uniform"
+    },
+    "soviet": {
+      "uniform": "Soviet Red Army 1944 gymnastyorka tunic"
+    }
+  },
+  "units": {
+    "recruit": {
+      "prompt": "young nervous conscript soldier, 18 years old, wearing a Soviet-style pilotka side cap (soft folded boat-shaped garrison cap, no visor, no helmet) tilted on the head, hair visible at the sides, ill-fitting uniform, clean face"
+    },
+    "infantry": {
+      "prompt": "regular infantry rifleman, 25 years old, plain steel helmet without netting, determined expression, rifle sling on shoulder"
+    },
+    "veteran": {
+      "prompt": "battle-hardened veteran sergeant, 35 years old, steel helmet covered with camouflage netting and foliage, stubble, scar, tired eyes, weathered dirty face"
+    },
+    "scout": {
+      "prompt": "reconnaissance scout soldier, binoculars around the neck, radio headset, alert eyes"
+    },
+    "at_infantry": {
+      "prompt": "anti-tank soldier holding an M1 bazooka rocket launcher (long olive-green tube) resting on his shoulder, the bazooka clearly visible next to his head, no rifle, no anti-tank rifle, plain steel helmet, focused expression, upper body portrait from chest up, head and shoulders fill the frame, centered",
+      "negative": "rifle, anti-tank rifle, long rifle, sniper rifle, full body, legs, wide shot"
+    },
+    "worker": {
+      "prompt": "combat engineer soldier, shovel and tool belt, rolled sleeves, sweaty dusty face"
+    },
+    "tank": {
+      "prompt": "tank commander in a tank crew helmet with goggles, headphones, leaning out of a tank hatch"
+    },
+    "artillery": {
+      "prompt": "self-propelled artillery gun crew commander, headphones, standing in an open-topped howitzer vehicle, binoculars"
+    },
+    "towed_artillery": {
+      "prompt": "towed howitzer gun crew chief, plain steel helmet, shouting fire command, hand raised, artillery shell crate behind"
+    }
+  }
+}

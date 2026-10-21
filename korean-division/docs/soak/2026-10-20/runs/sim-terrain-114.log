@@ -1,0 +1,98 @@
+  [sim] AI A=tactical B=tactical
+  t=10s  A 150 @(109,63)  B 164 @(148,63)  wall 0.4s
+  t=20s  A 150 @(110,64)  B 163 @(144,64)  wall 0.7s
+  t=30s  A 124 @(112,65)  B 163 @(143,70)  wall 1.0s
+  t=40s  A 110 @(112,65)  B 162 @(146,73)  wall 1.3s
+  t=50s  A 109 @(114,63)  B 158 @(142,75)  wall 1.6s
+  t=60s  A 109 @(114,63)  B 155 @(142,76)  wall 1.8s
+  t=70s  A 108 @(114,65)  B 154 @(146,76)  wall 2.0s
+  t=80s  A 105 @(114,67)  B 154 @(142,77)  wall 2.3s
+  t=90s  A 103 @(115,66)  B 149 @(140,79)  wall 2.5s
+  t=100s  A 98 @(117,67)  B 142 @(134,80)  wall 2.7s
+  t=110s  A 90 @(113,65)  B 141 @(136,77)  wall 2.9s
+  t=120s  A 79 @(106,60)  B 141 @(132,75)  wall 3.1s
+  t=130s  A 74 @(106,59)  B 141 @(130,75)  wall 3.4s
+  t=140s  A 74 @(94,44)  B 140 @(127,72)  wall 3.6s
+  t=150s  A 74 @(86,34)  B 140 @(127,72)  wall 3.7s
+  t=160s  A 74 @(84,32)  B 140 @(127,72)  wall 3.9s
+  t=170s  A 74 @(83,30)  B 139 @(124,71)  wall 4.1s
+  t=180s  A 74 @(78,22)  B 137 @(115,68)  wall 4.3s
+  t=190s  A 70 @(76,20)  B 137 @(111,60)  wall 4.4s
+  t=200s  A 69 @(81,26)  B 137 @(106,55)  wall 4.6s
+  t=210s  A 65 @(77,22)  B 137 @(105,54)  wall 4.8s
+  t=220s  A 58 @(73,19)  B 137 @(101,51)  wall 5.0s
+  t=230s  A 52 @(70,18)  B 136 @(97,44)  wall 5.1s
+  t=240s  A 46 @(69,18)  B 135 @(96,38)  wall 5.3s
+  t=250s  A 41 @(67,16)  B 135 @(95,38)  wall 5.5s
+  t=260s  A 37 @(62,13)  B 135 @(92,35)  wall 5.6s
+  t=270s  A 34 @(62,13)  B 135 @(93,32)  wall 5.8s
+  t=280s  A 25 @(57,14)  B 135 @(88,32)  wall 6.0s
+  t=290s  A 19 @(54,15)  B 135 @(80,27)  wall 6.1s
+  t=300s  A 14 @(45,14)  B 135 @(73,17)  wall 6.3s
+  t=310s  A 8 @(42,14)  B 135 @(64,17)  wall 6.4s
+MARCH ticks=0 move=0 moveOn=0 shots=0 moveShots=0 pistol=0 gren=0 melee=0
+MEAS start=150/164 end_t=319 winner=2 lossEnd=150/29 loss120=71/23 loss300=136/29 t50=130/- shots=6691 hits=621 hitpct=9.3 meanDist=22.2 hitDist=21.3
+결과: 승자 2, 319.1초, 실행 6.5초, 명령 385
+사살원인 010s infantry_fengtian/rifle_mosin->infantry_reserve = 1
+사살원인 020s heavy_maxim/hmg->infantry_fengtian = 23
+사살원인 020s infantry_reserve/rifle_mosin->infantry_fengtian = 3
+사살원인 030s heavy_maxim/hmg->infantry_fengtian = 12
+사살원인 030s infantry_fengtian/rifle_mosin->infantry_reserve = 1
+사살원인 030s infantry_reserve/rifle_mosin->infantry_fengtian = 2
+사살원인 040s infantry_fengtian/rifle_mosin->heavy_machinegunner_fengtian = 1
+사살원인 040s infantry_fengtian/rifle_mosin->heavy_maxim = 2
+사살원인 040s infantry_fengtian/rifle_mosin->infantry_reserve = 1
+사살원인 040s infantry_reserve/rifle_mosin->infantry_fengtian = 1
+사살원인 050s infantry_fengtian/rifle_mosin->infantry_reserve = 3
+사살원인 060s heavy_maxim/hmg->infantry_fengtian = 1
+사살원인 060s infantry_fengtian/rifle_mosin->infantry_reserve = 1
+사살원인 070s heavy_maxim/hmg->infantry_fengtian = 3
+사살원인 080s heavy_maxim/hmg->infantry_fengtian = 1
+사살원인 080s infantry_fengtian/rifle_mosin->infantry_reserve = 5
+사살원인 080s infantry_reserve/rifle_mosin->infantry_fengtian = 1
+사살원인 090s heavy_machinegunner_fengtian/lmg_chauchat->infantry_fengtian = 1
+사살원인 090s heavy_maxim/hmg->infantry_fengtian = 1
+사살원인 090s infantry_fengtian/rifle_mosin->heavy_machinegunner_fengtian = 2
+사살원인 090s infantry_fengtian/rifle_mosin->infantry_reserve = 5
+사살원인 090s infantry_reserve/rifle_mosin->infantry_fengtian = 3
+사살원인 100s heavy_maxim/hmg->infantry_fengtian = 4
+사살원인 100s infantry_fengtian/rifle_mosin->heavy_machinegunner_fengtian = 1
+사살원인 100s infantry_reserve/rifle_mosin->infantry_fengtian = 4
+사살원인 110s infantry_reserve/rifle_mosin->infantry_fengtian = 11
+사살원인 120s heavy_maxim/hmg->infantry_fengtian = 1
+사살원인 120s infantry_reserve/rifle_mosin->infantry_fengtian = 4
+사살원인 130s infantry_fengtian/rifle_mosin->infantry_reserve = 1
+사살원인 160s infantry_fengtian/rifle_mosin->heavy_maxim = 1
+사살원인 170s infantry_fengtian/rifle_mosin->infantry_reserve = 2
+사살원인 180s heavy_maxim/hmg->infantry_fengtian = 2
+사살원인 180s infantry_reserve/rifle_mosin->infantry_fengtian = 2
+사살원인 190s infantry_reserve/rifle_mosin->infantry_fengtian = 1
+사살원인 200s infantry_reserve/rifle_mosin->infantry_fengtian = 4
+사살원인 210s infantry_reserve/rifle_mosin->infantry_fengtian = 7
+사살원인 220s infantry_fengtian/rifle_mosin->infantry_reserve = 1
+사살원인 220s infantry_reserve/rifle_mosin->infantry_fengtian = 6
+사살원인 230s infantry_fengtian/rifle_mosin->infantry_reserve = 1
+사살원인 230s infantry_reserve/rifle_mosin->infantry_fengtian = 6
+사살원인 240s infantry_reserve/rifle_mosin->infantry_fengtian = 5
+사살원인 250s infantry_reserve/rifle_mosin->infantry_fengtian = 4
+사살원인 260s heavy_maxim/hmg->infantry_fengtian = 1
+사살원인 260s infantry_reserve/rifle_mosin->infantry_fengtian = 2
+사살원인 270s infantry_reserve/rifle_mosin->infantry_fengtian = 9
+사살원인 280s infantry_reserve/rifle_mosin->infantry_fengtian = 6
+사살원인 290s infantry_reserve/rifle_mosin->infantry_fengtian = 5
+사살원인 300s infantry_reserve/rifle_mosin->infantry_fengtian = 6
+사살원인 310s infantry_reserve/rifle_mosin->infantry_fengtian = 8
+틀 행동: 시작 0 끝 0 약진 0 기동 0 돌격 0 역습 0 참호 0 연신 0 전환 0 인계멈춤 0 포병전개 0
+기병AI: 돌격 정면 0 측면 0 후방 0 측면경유 0 소규모보류 0 물러남 0 | 추격: 후퇴중 희생 사격 51 근접 0 후퇴하는 적 돌격 보병 0 기병 0 | N55 기병 무모한 정면 0 돌격 사격 전진 0 | N23 소탕 0 | S4 제압으로 꺾인 돌격 0
+F4 기병 돌격: 개시 0 무의미 정면 0 자동 막음 0 근접 사살 0 사유(후퇴/제압/승무원/고립/측면) 0/0/0/0/0 · 하마 0 승마 0
+관찰: 사격 6691발 · 명중 621발 (9.3%) · 사망 179기 → 1킬당 37.4발 (명중 3.5발)
+N61 접근: 보병(1) 첫 사격 13.9초 · 기병(2) 첫 근접 -초 · 전환 0 · 그 시점 B 생존 -1/164
+템포: 첫 사격 13.9초 · A 50% 손실 130.0초 · B 50% 손실 -초 · 사격 거리 평균 22.2 (첫 100발 20.0) 칸
+  세력:종류            시작→남음   사격    근접   포격  방열%  돌격%
+  1:infantry_fengtian   150→0        2048      0      0     0     0
+  2:heavy_machinegunner_fengtian    7→3         320      0      0    33     0
+  2:heavy_maxim           7→4         878      0      0    17     0
+  2:infantry_reserve    150→128      3445      0      0     0     0
+AI 비용: 사고 ms/틱 avg 0.008 max 19.20 (호출 2553, 호출당 0.058 ms) · 전체 Step avg 0.34 ms
+  [전술 AI 1] 프로필 default 태세 Attack/Defend 중대 1 대대 1 · 명령 92 돌격 0 기병돌격 0 참호 0 후퇴 16 포병이동 0 화력사수 0 예비투입 1 · 연대 1 준비사격 0 연신 0 분대약진 5 전초 0/철수 0 역습 0 증원편입 0 공격한계 1
+  [전술 AI 2] 프로필 default 태세 Attack/Attack 중대 5 대대 1 · 명령 207 돌격 0 기병돌격 0 참호 0 후퇴 4 포병이동 0 화력사수 21 예비투입 1 · 연대 1 준비사격 0 연신 0 분대약진 13 전초 0/철수 0 역습 0 증원편입 0 공격한계 0

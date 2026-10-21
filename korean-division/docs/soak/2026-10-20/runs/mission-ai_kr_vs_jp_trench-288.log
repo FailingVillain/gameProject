@@ -1,0 +1,7 @@
+[mission-run] ai_kr_vs_jp_trench '참호전 관전 (AI 대 AI)': won (-) at 279.3s, ticks 16760, 3.1s wall
+  objective take (capture, primary): done progress 45.0
+  faction 1 한국: spawned 137, lost 79, alive 58, trench peak 7 (now 0)
+  faction 2 일본: spawned 92, lost 68, alive 24, trench peak 88 (now 0)
+  events fired 0/0, reinforcements 0/0, messages 0, top kills 37, promotions 1
+  results: C:\Users\seung\AppData\Local\KoreanDivision\results\ai_kr_vs_jp_trench_20261020_194610.json
+  checksum 9EC9FE1B5DEA2BFE tick 16760

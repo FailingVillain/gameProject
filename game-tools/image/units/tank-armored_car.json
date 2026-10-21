@@ -1,0 +1,8 @@
+{
+  "name": "tank-armored_car",
+  "kind": "vehicle",
+  "model": "austin",
+  "turret": "mg",
+  "anims": "vehicle",
+  "dirs": "all"
+}

@@ -1,0 +1,9 @@
+SURR A1 # ai_bn_meeting seed 1: lost at 292.5s (wall 14s) faction 1 한국군: spawned 295, lost 207, alive 88 faction 2 봉천 군벌: spawned 312, lost 181, alive 131
+SURR A2 # ai_bn_meeting seed 2: lost at 163.8s (wall 10s) faction 1 한국군: spawned 295, lost 207, alive 88 faction 2 봉천 군벌: spawned 312, lost 90, alive 222 
+SURR A3 # ai_bn_meeting seed 3: running at 600.0s (wall 21s) faction 1 한국군: spawned 295, lost 206, alive 89 faction 2 봉천 군벌: spawned 312, lost 208, alive 
+SURR B1 # ai_bn_assault seed 1: running at 600.0s (wall 24s) faction 1 한국군: spawned 301, lost 210, alive 91 faction 2 봉천 군벌: spawned 312, lost 134, alive 
+SURR B2 # ai_bn_assault seed 2: won at 492.6s (wall 21s) faction 1 한국군: spawned 301, lost 200, alive 101 faction 2 봉천 군벌: spawned 312, lost 227, alive 85 
+SURR B3 # ai_bn_assault seed 3: won at 346.0s (wall 17s) faction 1 한국군: spawned 301, lost 182, alive 119 faction 2 봉천 군벌: spawned 312, lost 221, alive 91 
+SURR C1 # ai_kr_vs_ft_1000 seed 1: won at 260.4s (wall 51s) faction 1 한국군: spawned 971, lost 347, alive 624 faction 2 봉천 군벌: spawned 996, lost 698, alive 
+SURR C2 # ai_kr_vs_ft_1000 seed 2: running at 600.0s (wall 82s) faction 1 한국군: spawned 971, lost 320, alive 651 faction 2 봉천 군벌: spawned 996, lost 692, al
+SURR C3 # ai_kr_vs_ft_1000 seed 3: won at 259.8s (wall 49s) faction 1 한국군: spawned 971, lost 317, alive 654 faction 2 봉천 군벌: spawned 996, lost 698, alive 

@@ -1,0 +1,92 @@
+{
+  "_doc": "Pose / render tuning (model units, degrees). Per-unit override: units/<name>.json \"tune\": {\"poses\": {...}}. 'render' constants are global only.",
+  "render": {
+    "_doc": "BASE_ZOOM = model units -> pixels at 64x80 (bigger = bigger figure); STRIPE_K = officer trouser seam stripe width (cos of half-angle: 0.93 wide .. 0.985 thin); RBOX_ROUND = default rounded-box corner radius (limbs / pelvis roundness).",
+    "BASE_ZOOM": 0.93,
+    "STRIPE_K": 0.985,
+    "RBOX_ROUND": 3.4,
+    "LINE_K": 0.40,
+    "LINE_THR": 3.0
+  },
+  "body": {"_doc": "slimming factors applied in voxel.build_figure (1.0 = old chunky body): leg / arm radii, torso+pelvis width (x) and depth (z), shoulder joint x, hip joint x. Global only (read at import).", "leg": 0.80, "arm": 0.80, "torso_w": 0.82, "torso_d": 0.90, "shoulder_x": 0.95, "hip_x": 0.80},
+  "infantry": {
+    "_doc": "Rifleman poses (all values chosen so collide.py reports 0 hits > 1.5). weapon = {pos [x,y,z] in torso frame (x + = left, y up, z forward), yaw (+ = toward left), pitch (+ = muzzle up)}. e_pull = model units the weapon is pulled back toward the body in the E view (group keys: shoot = aim/fire a-c, charge, melee_2, go_prone); e_yaw = extra weapon yaw toward the camera in the E view (prone). shoot.pitch = extra muzzle-up degrees on top of the stance lean. e_swing = [deg, pivot_z, pitch]: E-view yaw (+ muzzle-up pitch, the elevated camera makes a swung muzzle read as pointing down) about the butt (weapon-local z) so the muzzle swings toward the camera instead of sliding the stock into the chest (shoot / melee_2 use it instead of e_pull). Unit-level extra pull for long rifles: units/<name>.json e_pull_extra.",
+    "port_arms": {"pos": [-2.3, 10.0, 11.5], "yaw": 45.5, "pitch": 42.5},
+    "idle_alt_weapon": {"pos": [-8.6, 27.1, 5.9], "yaw": -5.9, "pitch": 88},
+    "walk_weapon": {
+      "pos": [-8.2, 7.7, 9.4],
+      "yaw": 15.9,
+      "pitch": 38.5,
+      "pitch_first": 30.5,
+      "pitch_passing": 42.5,
+      "passing_dy": 1.0
+    },
+    "shoot": {"x": -5.3, "y_aim": 14.4, "y_fire": 14.8, "z_aim": 27.5, "z_fire": 25.3, "yaw": -5.8, "pitch": 3.4},
+    "charge_weapon": {"pos": [-9.6, 8.9, 10.0], "yaw": 10.4, "pitch": 24, "bob": 1.0},
+    "e_pull": {"shoot": 0.0, "charge": 2.0, "melee_2": 0.0, "go_prone": 2.0},
+    "e_yaw": {"prone": 0},
+    "e_slide": {"prone": 0},
+    "ne_slide": {"prone": 0},
+    "ne_swing": {"prone": [0, -4, 0]},
+    "e_view_yaw": {"prone": 0},
+    "prone_head_pitch": -70,
+    "prone_head_roll": -10,
+    "prone_weapon": {"x": -7.5, "z": 3.5, "dy": 17.4, "scale": 1.0},
+    "e_long": {"_doc": "prone / long-rifle E-view compensation (infantry-guard bolt_rifle_long): std = standard rifle e_pull_extra, slide = model units slid back along the body per extra unit, yaw = extra E yaw deg per extra unit", "std": 3.0, "slide": 1.0, "yaw": 2.0},
+    "e_swing": {"prone": [0, 0, 0], "shoot": [-40, -15, 16], "melee_2": [-50, -15, 10]}
+  },
+  "officer": {
+    "_doc": "Officer sabre / pistol poses. Arms are [arm_elev, arm_azim, blade_elev, blade_azim] (degrees; azim 0 = forward, +90 = right, 180 = back). wave_* = sword_wave anim: front views use wave (arm, blade_elev, az0), back views (ne/n) use wave_side; az advances step_deg per frame; twist per frame.",
+    "charge_arm": [65, 30, 60, 170],
+    "melee_arms": {"melee_1": [10, 180, 45, 180], "melee_2": [-15, -35, -30, -45], "melee_3": [-55, 15, -45, 5]},
+    "wave": {"arm": [70, 172], "blade_elev": 24, "az0": 80, "step_deg": 60, "twist": [-6, 0, 6, 0]},
+    "wave_side": {"arm": [60, 110], "blade_elev": 42, "az0": -40},
+    "idle_alt_sword": {"pos": [-9.0, 1.0, 8.0], "yaw": 4, "pitch": -72},
+    "pistol": {"x": -7.5, "y_stand": 15.5, "y_kneel": 13.5, "fire_dy": 0.6, "z_aim": 18.0, "z_fire": 16.5, "yaw": 2},
+    "hilt_hand": [9.6, -1.8, -0.4],
+    "e_pull": {"pistol": 3.0, "charge": 2.0, "melee_2": 3.0}
+  },
+  "cavalry": {
+    "_doc": "Mounted rifleman (bases/cavalry.py). Horse legs per frame: [swing, knee/hock, fetlock] deg (swing + = forward; front knee + = folds back; hind hock + = cannon forward; fetlock + = hoof folds back). neck = deg above horizontal, head = deg below horizontal, pitch = body nose-up deg, air = lift above ground. Rider: seat = seated leg angles; reins = left hand target (torso frame); arms like officer [arm_elev, arm_azim, blade_elev, blade_azim].",
+    "stand": {"FL": [2, 0, 0], "FR": [2, 0, 0], "HL": [-20, 22, 0], "HR": [-20, 22, 0], "neck": 48, "head": 52, "tail": 72},
+    "idle_2": {"neck": 30, "head": 62, "tail": 76},
+    "walk": {"amp_front": 15, "amp_hind": 13, "lift_knee": 70, "lift_hock": 38, "lift_fet": 60, "duty": 0.75,
+             "offsets": {"HL": 0.0, "FL": 0.25, "HR": 0.5, "FR": 0.75}, "neck": 44, "head": 54, "nod": 3, "tail": 72},
+    "gallop": {
+      "_doc": "4 keys: 1 gathered (airborne), 2 hinds land, 3 fronts land / hinds push, 4 leading fore alone, stretched.",
+      "1": {"FL": [-18, 100, 40], "FR": [-8, 86, 36], "HL": [8, 62, 30], "HR": [2, 54, 26], "pitch": 0, "air": 2.5, "neck": 40, "head": 40, "tail": 34},
+      "2": {"FL": [30, 64, 40], "FR": [16, 80, 40], "HL": [-2, 30, 0], "HR": [-12, 30, 0], "pitch": 6, "air": 0, "neck": 44, "head": 44, "tail": 30},
+      "3": {"FL": [34, 24, 10], "FR": [6, 4, 0], "HL": [-34, 26, 10], "HR": [-24, 24, 0], "pitch": 1, "air": 0, "neck": 36, "head": 46, "tail": 28},
+      "4": {"FL": [-6, 0, 0], "FR": [-24, 40, 50], "HL": [-44, 18, 30], "HR": [-38, 22, 20], "pitch": -5, "air": 0, "neck": 32, "head": 42, "tail": 26}
+    },
+    "seat": {"hip": 58, "knee": 82, "spread": 24, "lean": 4},
+    "slung": {"pos": [-1.0, 8.0, -8.6], "yaw": -90, "pitch": 55},
+    "reins": [3.0, 3.0, 11.0],
+    "rest_right": [-5.5, 1.5, 10.0],
+    "gallop_rider": {"lean": 18, "head_pitch": -12, "reins": [2.5, 1.0, 13.0], "bob": [0, 1.0, 0, -0.5]},
+    "shoot": {"x": -6.2, "y_aim": 15.5, "y_fire": 15.9, "z_aim": 23.4, "z_fire": 21.6, "yaw": 1.5},
+    "pistol": {"_doc": "mounted officer (cavalry-officer*): one-handed pistol aim/fire, torso frame like officer.pistol", "x": -7.5, "y_aim": 15.5, "y_fire": 16.1, "z_aim": 18.0, "z_fire": 16.5, "yaw": 2},
+    "charge_arm": [28, 14, 18, 4],
+    "melee_arms": {"melee_1": [35, 115, 30, 130], "melee_2": [-15, 60, -40, 75], "melee_3": [-40, 20, -45, 10]}
+  },
+  "artillery": {
+    "_doc": "Gun crews (bases/artillery.py). Per gun: elev_idle / elev_fire = barrel elevation deg; recoil = barrel slide (model units) at the flash frame; car_back = carriage roll-back; stations = role -> [x, z, yaw deg] in the gun frame (x = gun's left, z = firing direction, yaw + turns the crewman toward his left). dead = lying poses per role. travel = move cycle: pull_z = how far in front of the trail eye the pullers walk, push_x = side offset of pushers.",
+    "howitzer": {
+      "elev_idle": 30.0, "elev_fire": 42.0, "recoil": 9.0, "car_back": 1.8, "crew": ["gunner", "loader", "trail", "ammo"],
+      "stations": {"gunner": [38.0, -18.0, -79.0], "loader": [-1.0, -39.0, 2.0], "trail": [24.0, -56.0, -62.0], "ammo": [-41.0, -40.0, 68.0]},
+      "travel": {"pull_z": 20.0, "pull_x": 7.5, "push_x": 50.0, "push_z": -8.0, "shield_xk": 0.6, "unpack_t": [1.0, 0.7]},
+      "unhitch": {"sep": [14.0, 34.0], "drop": [0.6, 1.0], "gait": [2, 4]},
+      "tow": {"horse_x": 16.0, "horse_dz": 57.0, "walk_x": 50.0, "walk_z1": 16.0, "walk_z2": -22.0}
+    },
+    "infantry_gun": {
+      "elev_idle": 4.0, "elev_fire": 5.0, "recoil": 4.0, "car_back": 1.0, "crew": ["gunner", "loader"],
+      "stations": {"gunner": [-1.0, -28.0, -8.0], "loader": [-30.0, -14.0, 68.0]},
+      "travel": {"pull_z": 11.0, "pull_x": 4.5, "push_x": 26.0, "push_z": -26.0, "shield_xk": 1.1}
+    },
+    "field_gun": {
+      "elev_idle": 7.0, "elev_fire": 9.0, "recoil": 7.0, "car_back": 1.4, "crew": ["gunner", "loader", "ammo"],
+      "stations": {"gunner": [13.0, -26.0, -86.0], "loader": [-2.0, -29.0, 6.0], "ammo": [-18.0, -56.0, 40.0]},
+      "travel": {"pull_z": 18.0, "pull_x": 6.5, "push_x": 32.0, "push_z": -20.0, "shield_xk": 1.1, "unpack_t": [0.05, 0.6]}
+    }
+  }
+}

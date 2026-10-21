@@ -1,0 +1,299 @@
+{
+  "propScatter": true,
+  "propDensity": 4.0,
+  "propCell": 6,
+ "id": "artillery_spotters",
+ "title": "포병 + 관측반",
+ "date": "1920년 가을",
+ "location": "간도 고지",
+ "briefing": "곡사포는 멀리서 쏘지만 관측해야 맞는다. 정찰병 · 장교로 표적을 보고 포병이 일본군 진지를 두들긴 뒤 보병이 들어가라. 포는 고지 뒤에 둔다.",
+ "seed": 41,
+ "weather": "clear",
+ "time": "day",
+ "player": 1,
+ "factions": [
+  {
+   "name": "한국",
+   "en": "korean",
+   "lang": "ko",
+   "color": [
+    60,
+    130,
+    235
+   ],
+   "team": 1,
+   "posture": "attack",
+   "area": "jp_line"
+  },
+  {
+   "name": "일본",
+   "en": "japanese",
+   "lang": "ja",
+   "color": [
+    235,
+    195,
+    50
+   ],
+   "team": 2,
+   "posture": "hold",
+   "area": "jp_line",
+   "aiProfile": "japan_garrison"
+  }
+ ],
+ "mapData": {
+  "name": "포병 관측",
+  "width": 160,
+  "height": 100,
+  "base": "grass",
+  "paint": [
+   {
+    "terrain": "high",
+    "rect": [
+     30,
+     35,
+     12,
+     30
+    ]
+   },
+   {
+    "terrain": "forest",
+    "rect": [
+     80,
+     10,
+     14,
+     20
+    ]
+   },
+   {
+    "terrain": "trench",
+    "rect": [
+     120,
+     30,
+     1,
+     40
+    ]
+   },
+   {
+    "terrain": "wire",
+    "rect": [
+     112,
+     30,
+     1,
+     40
+    ]
+   },
+   {
+    "terrain": "house",
+    "tiles": [
+     [
+      132,
+      48
+     ],
+     [
+      133,
+      48
+     ],
+     [
+      134,
+      48
+     ],
+     [
+      132,
+      52
+     ],
+     [
+      133,
+      52
+     ],
+     [
+      134,
+      52
+     ]
+    ]
+   }
+  ],
+  "starts": [
+   [
+    20,
+    50
+   ],
+   [
+    130,
+    50
+   ]
+  ]
+ },
+ "areas": {
+  "jp_line": {
+   "rect": [
+    116,
+    28,
+    24,
+    44
+   ]
+  }
+ },
+ "deployZones": [
+  {
+   "faction": 1,
+   "rect": [
+    6,
+    15,
+    70,
+    70
+   ]
+  }
+ ],
+ "forces": [
+  {
+   "id": "k1",
+   "faction": 1,
+   "name": "제1대대",
+   "at": [
+    60,
+    50
+   ],
+   "facing": 90,
+   "battalion": 1,
+   "battalionForm": "line",
+   "formation": "line",
+   "companies": [
+    {
+     "units": {
+      "officer": 1,
+      "infantry": 40
+     }
+    },
+    {
+     "units": {
+      "officer": 1,
+      "infantry": 40
+     }
+    },
+    {
+     "units": {
+      "officer": 1,
+      "infantry": 40
+     }
+    }
+   ]
+  },
+  {
+   "id": "arty",
+   "faction": 1,
+   "name": "곡사포 중대",
+   "at": [
+    26,
+    50
+   ],
+   "facing": 90,
+   "formation": "line",
+   "units": {
+    "officer": 1,
+    "heavy_howitzer": 4
+   }
+  },
+  {
+   "id": "k_sc",
+   "faction": 1,
+   "name": "관측반",
+   "at": [
+    85,
+    45
+   ],
+   "facing": 90,
+   "company": false,
+   "formation": "spread",
+   "units": {
+    "scout": 4
+   }
+  },
+  {
+   "id": "k_lmg",
+   "faction": 1,
+   "name": "경기관총반",
+   "at": [
+    55,
+    50
+   ],
+   "facing": 90,
+   "formation": "line",
+   "units": {
+    "officer": 1,
+    "heavy_machinegunner": 6
+   }
+  },
+  {
+   "id": "j1",
+   "faction": 2,
+   "name": "일본군 수비대",
+   "at": [
+    124,
+    50
+   ],
+   "facing": 270,
+   "formation": "line",
+   "companies": [
+    {
+     "units": {
+      "officer": 1,
+      "infantry_japanese": 40
+     }
+    },
+    {
+     "units": {
+      "officer": 1,
+      "infantry_japanese": 40
+     }
+    }
+   ]
+  },
+  {
+   "id": "j_hmg",
+   "faction": 2,
+   "name": "중기관총 진지",
+   "at": [
+    121,
+    50
+   ],
+   "facing": 270,
+   "formation": "line",
+   "units": {
+    "officer": 1,
+    "heavy_type3": 2
+   }
+  }
+ ],
+ "objectives": [
+  {
+   "id": "take",
+   "type": "capture",
+   "area": "jp_line",
+   "seconds": 45,
+   "text": "일본군 진지 점령 후 45초 유지"
+  }
+ ],
+ "failures": [
+  {
+   "type": "losses",
+   "percent": 70
+  },
+  {
+   "type": "timeLimit",
+   "seconds": 2400
+  }
+ ],
+ "events": [
+  {
+   "id": "intro",
+   "when": {
+    "time": 1
+   },
+   "do": [
+    {
+     "message": "관측반이 표적을 보면 곡사포가 사격한다"
+    }
+   ]
+  }
+ ]
+}

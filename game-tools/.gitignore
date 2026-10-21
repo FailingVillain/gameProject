@@ -1,0 +1,9 @@
+__pycache__/
+image/out/
+image/portrait-maker/candidates/
+audio-voice/outputs/
+*.m4a
+korean-division-image-out/
+outline-test/
+
+audio-voice/out_tts_test/

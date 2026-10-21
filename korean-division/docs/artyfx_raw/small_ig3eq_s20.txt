@@ -1,0 +1,3 @@
+ARTYFX {"t":219.9,"winner":1,"startA":68,"startB":62,"endA":18,"endB":0,"start":{"1:officer":2,"1:infantry":66,"2:officer":2,"2:infantry":60},"end":{"1:officer":1,"1:infantry":17},"gun":{}}
+MEAS start=68/62 end_t=220 winner=1 lossEnd=50/62 loss120=41/44 loss300=-1/-1 t50=67/78 shots=2932 hits=358 hitpct=12.2 meanDist=22.4
+결과: 승자 1, 219.9초, 실행 1.3초, 명령 118

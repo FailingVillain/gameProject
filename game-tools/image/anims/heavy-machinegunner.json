@@ -1,0 +1,99 @@
+{
+  "_doc": "machinegunner: idle/walk carry on shoulder, deploy 3f (kneel, down, aim=bipod set), fire_prone loop, pack = reverse of deploy, deaths reused from infantry.",
+  "anims": {
+    "idle": {
+      "frames": [
+        "mg_idle"
+      ]
+    },
+    "walk": {
+      "frames": [
+        "mg_walk_1",
+        "mg_walk_2",
+        "mg_walk_3",
+        "mg_walk_4"
+      ],
+      "ms": 130
+    },
+    "deploy": {
+      "frames": [
+        "mg_kneel",
+        "mg_down",
+        "mg_aim"
+      ],
+      "ms": [
+        320,
+        320,
+        500
+      ]
+    },
+    "fire_prone": {
+      "frames": [
+        "mg_aim",
+        "mg_fire_a",
+        "mg_fire_b",
+        "mg_fire_a",
+        "mg_fire_b"
+      ],
+      "ms": [
+        400,
+        60,
+        60,
+        60,
+        60
+      ]
+    },
+    "pack": {
+      "frames": [
+        "mg_aim",
+        "mg_down",
+        "mg_kneel"
+      ],
+      "ms": [
+        400,
+        320,
+        320
+      ]
+    },
+    "death": {
+      "frames": [
+        "hit",
+        "fall",
+        "dead"
+      ],
+      "ms": [
+        250,
+        250,
+        1000
+      ]
+    },
+    "death_b": {
+      "frames": [
+        "hit",
+        "stagger_b",
+        "kneel_b",
+        "dead_b"
+      ],
+      "ms": [
+        200,
+        700,
+        300,
+        1200
+      ]
+    },
+    "death_c": {
+      "frames": [
+        "hit",
+        "stagger_c",
+        "slump_c",
+        "dead_c"
+      ],
+      "ms": [
+        200,
+        700,
+        300,
+        1200
+      ]
+    }
+  }
+}

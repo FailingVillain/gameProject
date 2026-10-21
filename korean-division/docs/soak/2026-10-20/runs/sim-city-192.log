@@ -1,0 +1,82 @@
+  [sim] AI A=tactical B=tactical
+  t=10s  A 200 @(92,66)  B 270 @(161,62)  wall 0.5s
+  t=20s  A 200 @(96,68)  B 270 @(154,62)  wall 1.0s
+  t=30s  A 200 @(94,69)  B 270 @(151,62)  wall 1.5s
+  t=40s  A 199 @(93,68)  B 269 @(144,58)  wall 2.0s
+  t=50s  A 199 @(94,66)  B 269 @(136,60)  wall 2.4s
+  t=60s  A 199 @(95,60)  B 258 @(126,61)  wall 2.7s
+  t=70s  A 198 @(97,59)  B 252 @(120,65)  wall 3.2s
+  t=80s  A 197 @(97,58)  B 242 @(116,66)  wall 3.6s
+  t=90s  A 191 @(101,57)  B 233 @(115,65)  wall 4.0s
+  t=100s  A 191 @(102,56)  B 229 @(112,67)  wall 4.4s
+  t=110s  A 181 @(103,56)  B 189 @(112,69)  wall 4.8s
+  t=120s  A 175 @(99,56)  B 170 @(111,69)  wall 5.1s
+  t=130s  A 175 @(97,54)  B 150 @(112,68)  wall 5.4s
+  t=140s  A 175 @(97,52)  B 133 @(111,67)  wall 5.6s
+  t=150s  A 175 @(98,53)  B 123 @(113,66)  wall 5.9s
+  t=160s  A 175 @(99,53)  B 114 @(112,66)  wall 6.1s
+  t=170s  A 175 @(99,56)  B 95 @(112,65)  wall 6.3s
+  t=180s  A 175 @(100,57)  B 81 @(112,65)  wall 6.5s
+  t=190s  A 175 @(101,57)  B 70 @(111,66)  wall 6.7s
+  t=200s  A 174 @(104,58)  B 41 @(110,66)  wall 6.8s
+  t=210s  A 160 @(104,59)  B 11 @(106,67)  wall 7.0s
+  t=220s  A 159 @(105,58)  B 3 @(108,70)  wall 7.1s
+  t=230s  A 159 @(105,60)  B 1 @(108,70)  wall 7.3s
+MARCH ticks=0 move=0 moveOn=0 shots=0 moveShots=0 pistol=0 gren=0 melee=0
+MEAS start=200/270 end_t=232 winner=1 lossEnd=41/270 loss120=25/100 loss300=-1/-1 t50=-/139 shots=3847 hits=640 hitpct=16.6 meanDist=16.5 hitDist=15.3
+결과: 승자 1, 232.4초, 실행 7.3초, 명령 412
+사살원인 030s infantry_dadao_fengtian/melee->infantry_fengtian = 1
+사살원인 030s infantry_fengtian/rifle_mosin->infantry_dadao_fengtian = 1
+사살원인 050s heavy_machinegunner_fengtian/lmg_chauchat->infantry_dadao_fengtian = 1
+사살원인 050s infantry_fengtian/rifle_mosin->infantry_dadao_fengtian = 10
+사살원인 060s infantry_dadao_fengtian/melee->heavy_machinegunner_fengtian = 1
+사살원인 060s infantry_fengtian/rifle_mosin->infantry_dadao_fengtian = 6
+사살원인 070s infantry_dadao_fengtian/melee->infantry_fengtian = 1
+사살원인 070s infantry_fengtian/melee->infantry_dadao_fengtian = 3
+사살원인 070s infantry_fengtian/rifle_mosin->infantry_dadao_fengtian = 7
+사살원인 080s infantry_dadao_fengtian/melee->infantry_fengtian = 6
+사살원인 080s infantry_fengtian/rifle_mosin->infantry_dadao_fengtian = 9
+사살원인 090s heavy_machinegunner_fengtian/lmg_chauchat->infantry_dadao_fengtian = 2
+사살원인 090s infantry_fengtian/rifle_mosin->infantry_dadao_fengtian = 2
+사살원인 100s heavy_machinegunner_fengtian/lmg_chauchat->infantry_dadao_fengtian = 1
+사살원인 100s infantry_dadao_fengtian/melee->infantry_fengtian = 10
+사살원인 100s infantry_fengtian/melee->infantry_dadao_fengtian = 17
+사살원인 100s infantry_fengtian/rifle_mosin->infantry_dadao_fengtian = 22
+사살원인 110s infantry_dadao_fengtian/melee->infantry_fengtian = 6
+사살원인 110s infantry_fengtian/melee->infantry_dadao_fengtian = 4
+사살원인 110s infantry_fengtian/rifle_mosin->infantry_dadao_fengtian = 15
+사살원인 120s infantry_fengtian/rifle_mosin->infantry_dadao_fengtian = 20
+사살원인 130s infantry_fengtian/rifle_mosin->infantry_dadao_fengtian = 17
+사살원인 140s infantry_fengtian/rifle_mosin->infantry_dadao_fengtian = 10
+사살원인 150s infantry_fengtian/rifle_mosin->infantry_dadao_fengtian = 9
+사살원인 160s infantry_fengtian/rifle_mosin->infantry_dadao_fengtian = 19
+사살원인 170s infantry_fengtian/rifle_mosin->infantry_dadao_fengtian = 14
+사살원인 180s heavy_machinegunner_fengtian/lmg_chauchat->infantry_dadao_fengtian = 1
+사살원인 180s infantry_fengtian/rifle_mosin->infantry_dadao_fengtian = 10
+사살원인 190s infantry_dadao_fengtian/melee->infantry_fengtian = 1
+사살원인 190s infantry_fengtian/melee->infantry_dadao_fengtian = 16
+사살원인 190s infantry_fengtian/rifle_mosin->infantry_dadao_fengtian = 13
+사살원인 200s infantry_dadao_fengtian/melee->infantry_fengtian = 13
+사살원인 200s infantry_dadao_fengtian/melee->officer = 1
+사살원인 200s infantry_fengtian/melee->infantry_dadao_fengtian = 23
+사살원인 200s infantry_fengtian/rifle_mosin->infantry_dadao_fengtian = 7
+사살원인 210s infantry_dadao_fengtian/melee->infantry_fengtian = 1
+사살원인 210s infantry_fengtian/melee->infantry_dadao_fengtian = 2
+사살원인 210s infantry_fengtian/rifle_mosin->infantry_dadao_fengtian = 6
+사살원인 220s infantry_fengtian/rifle_mosin->infantry_dadao_fengtian = 2
+사살원인 230s infantry_fengtian/rifle_mosin->infantry_dadao_fengtian = 1
+틀 행동: 시작 7 끝 4 약진 8 기동 0 돌격 3 역습 0 참호 0 연신 3 전환 7 인계멈춤 0 포병전개 0
+기병AI: 돌격 정면 0 측면 0 후방 0 측면경유 0 소규모보류 265 물러남 0 | 추격: 후퇴중 희생 사격 37 근접 9 후퇴하는 적 돌격 보병 0 기병 0 | N55 기병 무모한 정면 0 돌격 사격 전진 6 | N23 소탕 0 | S4 제압으로 꺾인 돌격 0
+F4 기병 돌격: 개시 0 무의미 정면 0 자동 막음 0 근접 사살 0 사유(후퇴/제압/승무원/고립/측면) 0/0/0/0/0 · 하마 0 승마 0
+관찰: 사격 3847발 · 명중 640발 (16.6%) · 사망 311기 → 1킬당 12.4발 (명중 2.1발)
+N61 접근: 보병(1) 첫 사격 24.0초 · 기병(2) 첫 근접 25.3초 · 전환 0 · 그 시점 B 생존 270/270
+템포: 첫 사격 24.0초 · A 50% 손실 -초 · B 50% 손실 139.0초 · 사격 거리 평균 16.5 (첫 100발 16.0) 칸
+  세력:종류            시작→남음   사격    근접   포격  방열%  돌격%
+  1:bandit_horseman       6→6           0      0      0     0     0
+  1:heavy_machinegunner_fengtian    2→1         177      0      0    75     0
+  1:infantry_fengtian   180→141      3639    167      0     0     2
+  1:officer              12→11         29      4      0     0     2
+  2:infantry_dadao_fengtian  270→0           2    160      0     0     1
+AI 비용: 사고 ms/틱 avg 0.010 max 17.90 (호출 1859, 호출당 0.079 ms) · 전체 Step avg 0.52 ms
+  [전술 AI 1] 프로필 default 태세 Attack/Attack 중대 6 대대 1 · 명령 191 돌격 1 기병돌격 0 참호 0 후퇴 3 포병이동 0 화력사수 6 예비투입 1 · 연대 1 준비사격 0 연신 0 분대약진 12 전초 0/철수 0 역습 0 증원편입 0 공격한계 0
+  [전술 AI 2] 프로필 default 태세 Attack/Attack 중대 1 대대 1 · 명령 142 돌격 0 기병돌격 0 참호 0 후퇴 17 포병이동 0 화력사수 0 예비투입 2 · 연대 1 준비사격 0 연신 0 분대약진 0 전초 0/철수 0 역습 0 증원편입 0 공격한계 0

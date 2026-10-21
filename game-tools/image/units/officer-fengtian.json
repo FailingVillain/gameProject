@@ -1,0 +1,14 @@
+{
+  "name": "officer-fengtian",
+  "_doc": "Palette swap of units/officer.json in the Fengtian cloth colour (fengtian_bg): same body, poses, cap shape, pistol, holster, scabbard, normal sabre",
+  "base": "officer",
+  "anims": "officer",
+  "headgear": "fengtian_officer_cap",
+  "uniform": "fengtian_officer",
+  "weapons": {"pistol": "pistol", "sabre": "sabre"},
+  "gear": ["holster", "scabbard", "map_case"],
+  "team": ["helmet_band", "arm_patch"],
+  "belt": true,
+  "dirs": "all",
+  "frames": "all"
+}

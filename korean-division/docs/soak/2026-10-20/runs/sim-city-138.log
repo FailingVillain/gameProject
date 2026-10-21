@@ -1,0 +1,157 @@
+  [sim] AI A=tactical B=tactical
+  t=10s  A 131 @(95,67)  B 281 @(164,62)  wall 0.5s
+  t=20s  A 131 @(105,68)  B 281 @(151,62)  wall 0.8s
+  t=30s  A 131 @(105,66)  B 281 @(149,61)  wall 1.2s
+  t=40s  A 131 @(110,67)  B 277 @(147,60)  wall 1.5s
+  t=50s  A 126 @(112,67)  B 265 @(136,59)  wall 1.9s
+  t=60s  A 121 @(113,68)  B 247 @(131,60)  wall 2.1s
+  t=70s  A 117 @(112,68)  B 239 @(131,61)  wall 2.4s
+  t=80s  A 112 @(110,67)  B 227 @(130,62)  wall 2.7s
+  t=90s  A 106 @(109,66)  B 214 @(130,66)  wall 3.1s
+  t=100s  A 101 @(108,66)  B 205 @(131,67)  wall 3.4s
+  t=110s  A 97 @(103,67)  B 198 @(131,67)  wall 3.7s
+  t=120s  A 97 @(104,66)  B 197 @(130,65)  wall 4.0s
+  t=130s  A 96 @(104,65)  B 196 @(129,65)  wall 4.3s
+  t=140s  A 96 @(104,65)  B 193 @(129,65)  wall 4.6s
+  t=150s  A 94 @(104,66)  B 192 @(130,65)  wall 4.8s
+  t=160s  A 92 @(103,64)  B 190 @(128,64)  wall 5.2s
+  t=170s  A 87 @(102,72)  B 187 @(129,64)  wall 5.4s
+  t=180s  A 78 @(99,68)  B 186 @(129,63)  wall 5.7s
+  t=190s  A 76 @(104,64)  B 182 @(129,62)  wall 6.0s
+  t=200s  A 76 @(104,64)  B 180 @(127,62)  wall 6.2s
+  t=210s  A 75 @(104,64)  B 179 @(127,62)  wall 6.4s
+  t=220s  A 74 @(104,64)  B 178 @(128,62)  wall 6.7s
+  t=230s  A 74 @(104,64)  B 178 @(127,63)  wall 6.9s
+  t=240s  A 73 @(103,64)  B 177 @(127,63)  wall 7.1s
+  t=250s  A 73 @(103,65)  B 177 @(127,63)  wall 7.4s
+  t=260s  A 72 @(103,65)  B 177 @(127,63)  wall 7.6s
+  t=270s  A 72 @(103,65)  B 177 @(127,63)  wall 7.7s
+  t=280s  A 71 @(103,65)  B 175 @(128,63)  wall 7.9s
+  t=290s  A 70 @(102,65)  B 175 @(128,63)  wall 8.2s
+  t=300s  A 68 @(101,65)  B 175 @(127,62)  wall 8.4s
+  t=310s  A 68 @(101,65)  B 173 @(128,62)  wall 8.6s
+  t=320s  A 67 @(101,65)  B 173 @(129,62)  wall 8.8s
+  t=330s  A 67 @(97,65)  B 173 @(129,62)  wall 9.0s
+  t=340s  A 65 @(90,66)  B 173 @(130,63)  wall 9.3s
+  t=350s  A 65 @(71,66)  B 173 @(127,63)  wall 9.5s
+  t=360s  A 65 @(63,66)  B 173 @(127,62)  wall 9.7s
+  t=370s  A 64 @(66,65)  B 173 @(128,63)  wall 9.9s
+  t=380s  A 64 @(69,67)  B 170 @(127,64)  wall 10.2s
+  t=390s  A 60 @(74,67)  B 162 @(123,66)  wall 10.5s
+  t=400s  A 59 @(67,68)  B 156 @(121,68)  wall 10.7s
+  t=410s  A 59 @(65,68)  B 153 @(124,67)  wall 10.9s
+  t=420s  A 57 @(63,68)  B 151 @(122,67)  wall 11.2s
+  t=430s  A 56 @(49,70)  B 151 @(118,68)  wall 11.4s
+  t=440s  A 56 @(43,71)  B 151 @(113,68)  wall 11.7s
+  t=450s  A 56 @(43,71)  B 151 @(109,70)  wall 11.9s
+  t=460s  A 56 @(43,71)  B 151 @(104,68)  wall 12.1s
+  t=470s  A 56 @(37,71)  B 144 @(105,68)  wall 12.3s
+  t=480s  A 56 @(35,72)  B 129 @(113,69)  wall 12.5s
+  t=490s  A 56 @(24,73)  B 129 @(119,72)  wall 12.7s
+  t=500s  A 56 @(21,73)  B 129 @(120,72)  wall 12.8s
+  t=510s  A 56 @(20,73)  B 129 @(116,72)  wall 13.0s
+  t=520s  A 56 @(28,74)  B 129 @(110,73)  wall 13.2s
+  t=530s  A 56 @(35,75)  B 126 @(102,71)  wall 13.4s
+  t=540s  A 53 @(31,76)  B 125 @(113,74)  wall 13.6s
+  t=550s  A 53 @(23,76)  B 125 @(114,73)  wall 13.8s
+  t=560s  A 51 @(21,77)  B 122 @(106,73)  wall 14.0s
+  t=570s  A 48 @(20,78)  B 117 @(102,74)  wall 14.2s
+  t=580s  A 48 @(14,82)  B 117 @(97,75)  wall 14.3s
+  t=590s  A 48 @(9,84)  B 117 @(87,75)  wall 14.5s
+MARCH ticks=0 move=0 moveOn=0 shots=0 moveShots=0 pistol=0 gren=0 melee=0
+MEAS start=131/281 end_t=600 winner=0 lossEnd=84/164 loss120=34/84 loss300=63/106 t50=337/473 shots=5782 hits=733 hitpct=12.7 meanDist=20.0 hitDist=17.8
+결과: 승자 0, 600.0초, 실행 14.6초, 명령 680
+사살원인 030s infantry_regular/rifle_mosin->bandit_horseman = 1
+사살원인 030s infantry_regular/rifle_mosin->heavy_field_gun = 1
+사살원인 030s infantry_regular/rifle_mosin->infantry_reserve = 2
+사살원인 040s infantry_regular/melee->bandit_horseman = 5
+사살원인 040s infantry_regular/rifle_mosin->bandit_horseman = 2
+사살원인 040s infantry_regular/rifle_mosin->infantry_reserve = 4
+사살원인 040s infantry_reserve/rifle_mosin->infantry_regular = 5
+사살원인 040s officer/pistol->bandit_horseman = 1
+사살원인 050s infantry_regular/melee->infantry_reserve = 10
+사살원인 050s infantry_regular/rifle_mosin->heavy_field_gun = 1
+사살원인 050s infantry_regular/rifle_mosin->infantry_reserve = 7
+사살원인 050s infantry_reserve/melee->infantry_regular = 1
+사살원인 050s infantry_reserve/rifle_mosin->heavy_infantry_gun = 1
+사살원인 050s infantry_reserve/rifle_mosin->infantry_regular = 2
+사살원인 050s infantry_reserve/rifle_mosin->officer = 1
+사살원인 060s infantry_regular/rifle_mosin->infantry_reserve = 8
+사살원인 060s infantry_reserve/rifle_mosin->infantry_regular = 4
+사살원인 070s infantry_regular/rifle_mosin->infantry_reserve = 12
+사살원인 070s infantry_reserve/rifle_mosin->infantry_regular = 5
+사살원인 080s infantry_regular/rifle_mosin->infantry_reserve = 13
+사살원인 080s infantry_reserve/rifle_mosin->infantry_regular = 6
+사살원인 090s heavy_infantry_gun/gun_infantry->infantry_reserve = 3
+사살원인 090s infantry_regular/rifle_mosin->infantry_reserve = 6
+사살원인 090s infantry_reserve/rifle_mosin->infantry_regular = 5
+사살원인 100s heavy_infantry_gun/gun_infantry->infantry_reserve = 5
+사살원인 100s infantry_regular/rifle_mosin->infantry_reserve = 2
+사살원인 100s infantry_reserve/rifle_mosin->infantry_regular = 4
+사살원인 110s infantry_regular/rifle_mosin->infantry_reserve = 1
+사살원인 120s infantry_regular/rifle_mosin->infantry_reserve = 1
+사살원인 120s infantry_reserve/rifle_mosin->infantry_regular = 1
+사살원인 130s infantry_regular/rifle_mosin->infantry_reserve = 3
+사살원인 140s infantry_regular/rifle_mosin->infantry_reserve = 1
+사살원인 140s infantry_reserve/rifle_mosin->infantry_regular = 2
+사살원인 150s infantry_regular/rifle_mosin->infantry_reserve = 2
+사살원인 150s infantry_reserve/rifle_mosin->infantry_regular = 2
+사살원인 160s infantry_regular/rifle_mosin->infantry_reserve = 3
+사살원인 160s infantry_reserve/rifle_mosin->infantry_regular = 4
+사살원인 160s infantry_reserve/rifle_mosin->officer = 1
+사살원인 170s infantry_regular/rifle_mosin->infantry_reserve = 1
+사살원인 170s infantry_reserve/rifle_mosin->infantry_regular = 9
+사살원인 180s infantry_regular/rifle_mosin->infantry_reserve = 4
+사살원인 180s infantry_reserve/rifle_mosin->infantry_regular = 1
+사살원인 180s infantry_reserve/rifle_mosin->officer = 1
+사살원인 190s infantry_regular/rifle_mosin->infantry_reserve = 2
+사살원인 200s infantry_regular/rifle_mosin->infantry_reserve = 1
+사살원인 200s infantry_reserve/rifle_mosin->infantry_regular = 1
+사살원인 210s infantry_regular/rifle_mosin->infantry_reserve = 1
+사살원인 210s infantry_reserve/rifle_mosin->infantry_regular = 1
+사살원인 230s infantry_regular/rifle_mosin->infantry_reserve = 1
+사살원인 230s infantry_reserve/rifle_mosin->infantry_regular = 1
+사살원인 250s infantry_reserve/rifle_mosin->infantry_regular = 1
+사살원인 270s infantry_regular/rifle_mosin->infantry_reserve = 2
+사살원인 270s infantry_reserve/rifle_mosin->infantry_regular = 1
+사살원인 280s infantry_reserve/rifle_mosin->infantry_regular = 1
+사살원인 290s infantry_reserve/rifle_mosin->infantry_regular = 2
+사살원인 300s infantry_regular/rifle_mosin->infantry_reserve = 2
+사살원인 310s infantry_reserve/rifle_mosin->infantry_regular = 1
+사살원인 330s infantry_reserve/rifle_mosin->infantry_regular = 2
+사살원인 360s infantry_reserve/rifle_mosin->infantry_regular = 1
+사살원인 370s infantry_regular/rifle_mosin->infantry_reserve = 3
+사살원인 380s infantry_regular/rifle_mosin->infantry_reserve = 8
+사살원인 380s infantry_reserve/rifle_mosin->infantry_regular = 4
+사살원인 390s infantry_regular/rifle_mosin->infantry_reserve = 6
+사살원인 390s infantry_reserve/rifle_mosin->infantry_regular = 1
+사살원인 400s infantry_regular/rifle_mosin->infantry_reserve = 3
+사살원인 410s infantry_regular/rifle_mosin->infantry_reserve = 2
+사살원인 410s infantry_reserve/rifle_mosin->infantry_regular = 2
+사살원인 420s infantry_reserve/rifle_mosin->infantry_regular = 1
+사살원인 460s heavy_infantry_gun/gun_infantry->infantry_reserve = 7
+사살원인 470s heavy_infantry_gun/gun_infantry->infantry_reserve = 15
+사살원인 520s infantry_regular/rifle_mosin->infantry_reserve = 3
+사살원인 530s infantry_regular/rifle_mosin->infantry_reserve = 1
+사살원인 530s infantry_reserve/rifle_mosin->infantry_regular = 3
+사살원인 550s infantry_regular/rifle_mosin->infantry_reserve = 3
+사살원인 550s infantry_reserve/rifle_mosin->heavy_infantry_gun = 2
+사살원인 560s infantry_regular/rifle_mosin->infantry_reserve = 5
+사살원인 560s infantry_reserve/rifle_mosin->infantry_regular = 3
+사살원인 590s infantry_reserve/rifle_mosin->infantry_regular = 1
+틀 행동: 시작 8 끝 3 약진 4 기동 0 돌격 1 역습 0 참호 0 연신 3 전환 14 인계멈춤 0 포병전개 0
+기병AI: 돌격 정면 0 측면 1 후방 0 측면경유 1 소규모보류 0 물러남 0 | 추격: 후퇴중 희생 사격 42 근접 4 후퇴하는 적 돌격 보병 0 기병 0 | N55 기병 무모한 정면 0 돌격 사격 전진 5 | N23 소탕 0 | S4 제압으로 꺾인 돌격 2
+F4 기병 돌격: 개시 1 무의미 정면 0 자동 막음 0 근접 사살 0 사유(후퇴/제압/승무원/고립/측면) 0/0/0/0/1 · 하마 2 승마 0
+관찰: 사격 5782발 · 명중 733발 (12.7%) · 사망 248기 → 1킬당 23.3발 (명중 3.0발)
+N61 접근: 보병(1) 첫 사격 27.2초 · 기병(2) 첫 근접 38.6초 · 전환 535 · 그 시점 B 생존 278/281
+템포: 첫 사격 27.2초 · A 50% 손실 336.5초 · B 50% 손실 472.5초 · 사격 거리 평균 20.0 (첫 100발 18.8) 칸
+  세력:종류            시작→남음   사격    근접   포격  방열%  돌격%
+  1:heavy_infantry_gun    3→0          21      0     21    34     0
+  1:infantry_regular    120→42       3004     65      0     0     1
+  1:officer               8→5           6      0      0     0     0
+  2:bandit_horseman       9→0           0      9      0     0    18
+  2:heavy_field_gun       2→0           0      0      0     0     0
+  2:infantry_reserve    270→117      2751      2      0     0     0
+AI 비용: 사고 ms/틱 avg 0.007 max 20.38 (호출 4800, 호출당 0.052 ms) · 전체 Step avg 0.40 ms
+  [전술 AI 1] 프로필 default 태세 Attack/Attack 중대 3 대대 1 · 명령 200 돌격 0 기병돌격 0 참호 0 후퇴 26 포병이동 0 화력사수 14 예비투입 1 · 연대 1 준비사격 0 연신 0 분대약진 13 전초 0/철수 0 역습 0 증원편입 0 공격한계 0
+  [전술 AI 2] 프로필 default 태세 Attack/Attack 중대 6 대대 2 · 명령 327 돌격 0 기병돌격 1 참호 0 후퇴 25 포병이동 0 화력사수 2 예비투입 2 · 연대 1 준비사격 0 연신 0 분대약진 11 전초 0/철수 0 역습 0 증원편입 0 공격한계 0

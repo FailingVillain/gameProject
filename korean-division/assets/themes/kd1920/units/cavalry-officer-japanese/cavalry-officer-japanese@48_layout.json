@@ -1,0 +1,286 @@
+{
+ "frame": [
+  48,
+  56
+ ],
+ "anchor": [
+  24,
+  48
+ ],
+ "dirs": [
+  "s",
+  "se",
+  "e",
+  "ne",
+  "n"
+ ],
+ "mirror": true,
+ "columns": [
+  "idle",
+  "idle_2",
+  "walk_1",
+  "walk_2",
+  "walk_3",
+  "walk_4",
+  "gallop_1",
+  "gallop_2",
+  "gallop_3",
+  "gallop_4",
+  "aim",
+  "fire",
+  "charge_1",
+  "charge_2",
+  "charge_3",
+  "charge_4",
+  "melee_1",
+  "melee_2",
+  "melee_3",
+  "hit",
+  "fall",
+  "dead",
+  "hit_b",
+  "slip_b",
+  "fall_b",
+  "dead_b"
+ ],
+ "anims": {
+  "idle": {
+   "frames": [
+    "idle",
+    "idle_2"
+   ],
+   "ms": [
+    1400,
+    900
+   ],
+   "shared_fit": true
+  },
+  "walk": {
+   "frames": [
+    "walk_1",
+    "walk_2",
+    "walk_3",
+    "walk_4"
+   ],
+   "ms": 170,
+   "shared_fit": true
+  },
+  "gallop": {
+   "frames": [
+    "gallop_1",
+    "gallop_2",
+    "gallop_3",
+    "gallop_4"
+   ],
+   "ms": 95,
+   "shared_fit": true
+  },
+  "fire": {
+   "frames": [
+    "aim",
+    "fire"
+   ],
+   "ms": [
+    450,
+    160
+   ],
+   "shared_fit": true
+  },
+  "charge": {
+   "frames": [
+    "charge_1",
+    "charge_2",
+    "charge_3",
+    "charge_4"
+   ],
+   "ms": 95,
+   "shared_fit": true
+  },
+  "melee": {
+   "frames": [
+    "melee_1",
+    "melee_2",
+    "melee_3"
+   ],
+   "ms": [
+    240,
+    140,
+    260
+   ],
+   "shared_fit": true
+  },
+  "death": {
+   "frames": [
+    "hit",
+    "fall",
+    "dead"
+   ],
+   "ms": [
+    250,
+    300,
+    1200
+   ],
+   "shared_fit": true
+  },
+  "death_b": {
+   "frames": [
+    "hit_b",
+    "slip_b",
+    "fall_b",
+    "dead_b"
+   ],
+   "ms": [
+    200,
+    350,
+    300,
+    1200
+   ],
+   "shared_fit": true
+  }
+ },
+ "sheets": [
+  {
+   "file": "cavalry-officer-japanese@48.png",
+   "team": "cavalry-officer-japanese@48_team.png",
+   "columns": [
+    "idle",
+    "idle_2",
+    "walk_1",
+    "walk_2",
+    "walk_3",
+    "walk_4",
+    "gallop_1",
+    "gallop_2",
+    "gallop_3",
+    "gallop_4",
+    "aim",
+    "fire",
+    "charge_1",
+    "charge_2",
+    "charge_3",
+    "charge_4",
+    "melee_1",
+    "melee_2",
+    "melee_3",
+    "hit",
+    "fall",
+    "dead",
+    "hit_b",
+    "slip_b",
+    "fall_b",
+    "dead_b"
+   ],
+   "size": [
+    1248,
+    280
+   ]
+  }
+ ],
+ "cells": {
+  "idle": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 0
+  },
+  "idle_2": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 1
+  },
+  "walk_1": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 2
+  },
+  "walk_2": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 3
+  },
+  "walk_3": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 4
+  },
+  "walk_4": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 5
+  },
+  "gallop_1": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 6
+  },
+  "gallop_2": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 7
+  },
+  "gallop_3": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 8
+  },
+  "gallop_4": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 9
+  },
+  "aim": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 10
+  },
+  "fire": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 11
+  },
+  "charge_1": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 12
+  },
+  "charge_2": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 13
+  },
+  "charge_3": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 14
+  },
+  "charge_4": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 15
+  },
+  "melee_1": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 16
+  },
+  "melee_2": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 17
+  },
+  "melee_3": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 18
+  },
+  "hit": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 19
+  },
+  "fall": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 20
+  },
+  "dead": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 21
+  },
+  "hit_b": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 22
+  },
+  "slip_b": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 23
+  },
+  "fall_b": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 24
+  },
+  "dead_b": {
+   "sheet": "cavalry-officer-japanese@48.png",
+   "col": 25
+  }
+ },
+ "anchors": "cavalry-officer-japanese@48_anchors.json"
+}

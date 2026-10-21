@@ -1,0 +1,50 @@
+{
+  "name": "heavy-howitzer",
+  "_doc": "heavy field howitzer (곡사포): large 15 cm class piece, no shield, box trail, big spoked wheels, 4 crew (gunner, loader, trail man, ammo man). Deployed = crew-served gun. Travel (move_1..4) = horse-drawn: limber hitched to the trail, 2 draught horses, 2 men seated on the limber (driver + 1), 2 walking beside. Frame 976x656, anchor = ground under the GUN footprint centre in EVERY cell (deploy / march / unhitch frames do not jump); the horse team extends forward.",
+  "kind": "artillery",
+  "gun": "howitzer",
+  "anims": "artillery_tow",
+  "headgear": "korean_kepi",
+  "uniform": {
+    "jacket": "fgrey_dark",
+    "trousers": "fgrey_dark_trouser",
+    "legging": "fgrey_dark_wrap",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "collar": true,
+    "puttees": true,
+    "puttee_seam": "fgrey_dark_trouser",
+    "piping": "acc_brass",
+    "placket": false,
+    "trouser_stripe": true,
+    "stripe_mat": "acc_brass"
+  },
+  "gear": [
+    "canteen_cloth"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "frame": [
+    976,
+    656
+  ],
+  "ay_frac": 0.5884,
+  "zoom_mul": 1.0,
+  "center": [
+    0.0,
+    -6.0
+  ],
+  "dirs": "all",
+  "frames": "all",
+  "tow": true,
+  "tune": {
+    "parts": {
+      "horse": {
+        "scale": 1.4
+      }
+    }
+  }
+}

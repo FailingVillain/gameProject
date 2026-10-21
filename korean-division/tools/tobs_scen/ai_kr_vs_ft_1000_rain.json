@@ -1,0 +1,1069 @@
+{
+ "_doc": "편성표 (탱크 · 보급 마차 · 대전차소총 제외 — 2026-10-19 사용자 지시: 대전차소총병은 같은 중대의 소총병으로 대체). 한국군 연대: 소총대대 3 x (소총중대 3 x [장교 3 + 소총병 84(분대 12 x 7) + 정찰병 2] + 기관총 중대[장교 1 + 맥심 5 + 경기관총 8 + 소총병 4]) + 연대 돌격중대(장교 1 + 돌격보병 39) + 저격 8 + 보병포 6 + 야전포 8 + 곡사포 6 + 포병 관측반(정찰병 4 — N12: 관측 장교 3 은 곡사포 중대와 함께) + 기병대(기병 장교 1 + 47). 봉천군: 소총대대 3 x (소총중대 3 x [장교 3 + 봉천 보병(대도) 92 + 정찰병 2] + 기관총 중대[장교 1 + 맥심 2 + 경기관총 4 + 소총병 3]) + 돌격중대(장교 1 + 19) + 저격 4 + 보병포 3 + 야전포 3 + 곡사포 2 + 관측반(정찰병 2 — 관측 장교 2 는 곡사포 중대와 함께) + 기병대(기병 장교 1 + 59). 합계 한국군: officer 34, officer_cavalry 1, infantry 768, infantry_scout 22, heavy_maxim 15, heavy_machinegunner 24, infantry_assault 39, infantry_sniper 8, heavy_infantry_gun 6, heavy_field_gun 8, heavy_howitzer 6, cavalry_default 47 = 978 | 봉천군: officer_fengtian 33, officer_cavalry 1, infantry_fengtian 837, infantry_scout 20, heavy_maxim 6, heavy_machinegunner 12, infantry_assault 19, infantry_sniper 4, heavy_infantry_gun 3, heavy_field_gun 3, heavy_howitzer 2, cavalry_default 59 = 999",
+ "id": "ai_kr_vs_ft_1000_rain",
+ "title": "한국군 1000 대 봉천군 1000 (AI 대 AI)",
+ "date": "1920년 가을 낮",
+ "location": "간도 · 중앙 마을 일대",
+ "briefing": "AI 대 AI 관전 미션. 한국군 보병연대(약 1000명)와 봉천군 보병연대(약 1000명)가 중앙의 마을을 두고 조우전을 벌인다. 한국군은 기관총 · 포병이 많고, 봉천군은 소총병 · 기병이 많으며 대도로 돌격한다. 탱크와 보급 마차는 없다. 한쪽이 70% 손실을 입으면 끝난다 (25분 제한).",
+ "seed": 1920,
+ "weather": "rain",
+ "time": "day",
+ "player": 1,
+ "spectate": true,
+ "factions": [
+  {
+   "name": "한국군",
+   "en": "korean",
+   "lang": "ko",
+   "color": [
+    60,
+    130,
+    235
+   ],
+   "team": 1,
+   "posture": "attack",
+   "area": "village"
+  },
+  {
+   "name": "봉천 군벌",
+   "en": "fengtian",
+   "lang": "zh",
+   "color": [
+    165,
+    95,
+    225
+   ],
+   "team": 2,
+   "posture": "attack",
+   "area": "village"
+  }
+ ],
+ "mapData": {
+  "name": "중앙 마을 (조우전)",
+  "width": 216,
+  "height": 160,
+  "base": "grass",
+  "paint": [
+   {
+    "terrain": "dirt",
+    "rect": [
+     105,
+     0,
+     6,
+     160
+    ]
+   },
+   {
+    "terrain": "dirt",
+    "rect": [
+     0,
+     79,
+     216,
+     3
+    ]
+   },
+   {
+    "terrain": "house",
+    "tiles": [
+     [
+      92,
+      68
+     ],
+     [
+      92,
+      71
+     ],
+     [
+      95,
+      68
+     ],
+     [
+      95,
+      71
+     ],
+     [
+      98,
+      68
+     ],
+     [
+      98,
+      71
+     ],
+     [
+      92,
+      76
+     ],
+     [
+      92,
+      79
+     ],
+     [
+      95,
+      76
+     ],
+     [
+      95,
+      79
+     ],
+     [
+      98,
+      76
+     ],
+     [
+      98,
+      79
+     ],
+     [
+      92,
+      86
+     ],
+     [
+      92,
+      89
+     ],
+     [
+      95,
+      86
+     ],
+     [
+      95,
+      89
+     ],
+     [
+      98,
+      86
+     ],
+     [
+      98,
+      89
+     ],
+     [
+      113,
+      68
+     ],
+     [
+      113,
+      71
+     ],
+     [
+      116,
+      68
+     ],
+     [
+      116,
+      71
+     ],
+     [
+      119,
+      68
+     ],
+     [
+      119,
+      71
+     ],
+     [
+      113,
+      76
+     ],
+     [
+      113,
+      79
+     ],
+     [
+      116,
+      76
+     ],
+     [
+      116,
+      79
+     ],
+     [
+      119,
+      76
+     ],
+     [
+      119,
+      79
+     ],
+     [
+      113,
+      86
+     ],
+     [
+      113,
+      89
+     ],
+     [
+      116,
+      86
+     ],
+     [
+      116,
+      89
+     ],
+     [
+      119,
+      86
+     ],
+     [
+      119,
+      89
+     ],
+     [
+      100,
+      80
+     ],
+     [
+      101,
+      80
+     ],
+     [
+      116,
+      81
+     ],
+     [
+      117,
+      81
+     ]
+    ]
+   },
+   {
+    "terrain": "rubble",
+    "rect": [
+     102,
+     83,
+     3,
+     3
+    ]
+   },
+   {
+    "terrain": "forest",
+    "rect": [
+     14,
+     38,
+     40,
+     28
+    ]
+   },
+   {
+    "terrain": "forest",
+    "rect": [
+     160,
+     50,
+     40,
+     28
+    ]
+   },
+   {
+    "terrain": "forest",
+    "rect": [
+     26,
+     98,
+     34,
+     24
+    ]
+   },
+   {
+    "terrain": "forest",
+    "rect": [
+     156,
+     104,
+     34,
+     26
+    ]
+   },
+   {
+    "terrain": "forest",
+    "rect": [
+     56,
+     70,
+     16,
+     14
+    ]
+   },
+   {
+    "terrain": "forest",
+    "rect": [
+     142,
+     76,
+     16,
+     14
+    ]
+   },
+   {
+    "terrain": "high",
+    "circle": [
+     70,
+     112,
+     10
+    ]
+   },
+   {
+    "terrain": "high",
+    "circle": [
+     150,
+     44,
+     10
+    ]
+   },
+   {
+    "terrain": "high",
+    "circle": [
+     108,
+     52,
+     8
+    ]
+   },
+   {
+    "terrain": "high",
+    "circle": [
+     108,
+     108,
+     8
+    ]
+   },
+   {
+    "terrain": "high",
+    "circle": [
+     40,
+     80,
+     9
+    ]
+   },
+   {
+    "terrain": "high",
+    "circle": [
+     176,
+     82,
+     9
+    ]
+   },
+   {
+    "terrain": "trench",
+    "rect": [
+     84,
+     60,
+     18,
+     2
+    ]
+   },
+   {
+    "terrain": "trench",
+    "rect": [
+     114,
+     60,
+     18,
+     2
+    ]
+   },
+   {
+    "terrain": "trench",
+    "rect": [
+     84,
+     98,
+     18,
+     2
+    ]
+   },
+   {
+    "terrain": "trench",
+    "rect": [
+     114,
+     98,
+     18,
+     2
+    ]
+   },
+   {
+    "terrain": "trench",
+    "rect": [
+     84,
+     60,
+     2,
+     10
+    ]
+   },
+   {
+    "terrain": "trench",
+    "rect": [
+     130,
+     60,
+     2,
+     10
+    ]
+   },
+   {
+    "terrain": "trench",
+    "rect": [
+     84,
+     90,
+     2,
+     10
+    ]
+   },
+   {
+    "terrain": "trench",
+    "rect": [
+     130,
+     90,
+     2,
+     10
+    ]
+   },
+   {
+    "terrain": "wire",
+    "rect": [
+     80,
+     55,
+     24,
+     1
+    ]
+   },
+   {
+    "terrain": "wire",
+    "rect": [
+     112,
+     55,
+     24,
+     1
+    ]
+   },
+   {
+    "terrain": "wire",
+    "rect": [
+     80,
+     104,
+     24,
+     1
+    ]
+   },
+   {
+    "terrain": "wire",
+    "rect": [
+     112,
+     104,
+     24,
+     1
+    ]
+   }
+  ],
+  "starts": [
+   [
+    108,
+    134
+   ],
+   [
+    108,
+    26
+   ]
+  ]
+ },
+ "areas": {
+  "village": {
+   "rect": [
+    88,
+    62,
+    40,
+    36
+   ]
+  }
+ },
+ "forces": [
+  {
+   "id": "f1_bn1",
+   "faction": 1,
+   "name": "한국군 제1대대 소총중대",
+   "at": [
+    54,
+    134
+   ],
+   "facing": 0,
+   "formation": "line",
+   "battalion": 1,
+   "battalionForm": "column",
+   "companies": [
+    {
+     "units": {
+      "officer": 3,
+      "infantry": 81,
+      "infantry_scout": 2,
+      "heavy_machinegunner": 3
+     },
+     "formation": "line"
+    },
+    {
+     "units": {
+      "officer": 3,
+      "infantry": 81,
+      "infantry_scout": 2,
+      "heavy_machinegunner": 3
+     },
+     "formation": "line"
+    },
+    {
+     "units": {
+      "officer": 3,
+      "infantry": 81,
+      "infantry_scout": 2,
+      "heavy_machinegunner": 3
+     },
+     "formation": "line"
+    }
+   ]
+  },
+  {
+   "id": "f1_mg1",
+   "faction": 1,
+   "name": "한국군 제1대대 기관총 · 대전차",
+   "at": [
+    54,
+    142
+   ],
+   "facing": 0,
+   "units": {
+    "officer": 1,
+    "heavy_maxim": 5,
+    "infantry": 12
+   },
+   "company": true,
+   "formation": "line"
+  },
+  {
+   "id": "f1_bn2",
+   "faction": 1,
+   "name": "한국군 제2대대 소총중대",
+   "at": [
+    108,
+    134
+   ],
+   "facing": 0,
+   "formation": "line",
+   "battalion": 2,
+   "battalionForm": "column",
+   "companies": [
+    {
+     "units": {
+      "officer": 3,
+      "infantry": 81,
+      "infantry_scout": 2,
+      "heavy_machinegunner": 3
+     },
+     "formation": "line"
+    },
+    {
+     "units": {
+      "officer": 3,
+      "infantry": 81,
+      "infantry_scout": 2,
+      "heavy_machinegunner": 3
+     },
+     "formation": "line"
+    },
+    {
+     "units": {
+      "officer": 3,
+      "infantry": 81,
+      "infantry_scout": 2,
+      "heavy_machinegunner": 3
+     },
+     "formation": "line"
+    }
+   ]
+  },
+  {
+   "id": "f1_mg2",
+   "faction": 1,
+   "name": "한국군 제2대대 기관총 · 대전차",
+   "at": [
+    108,
+    142
+   ],
+   "facing": 0,
+   "units": {
+    "officer": 1,
+    "heavy_maxim": 5,
+    "infantry": 12
+   },
+   "company": true,
+   "formation": "line"
+  },
+  {
+   "id": "f1_bn3",
+   "faction": 1,
+   "name": "한국군 제3대대 소총중대",
+   "at": [
+    162,
+    134
+   ],
+   "facing": 0,
+   "formation": "line",
+   "battalion": 3,
+   "battalionForm": "column",
+   "companies": [
+    {
+     "units": {
+      "officer": 3,
+      "infantry": 81,
+      "infantry_scout": 2,
+      "heavy_machinegunner": 3
+     },
+     "formation": "line"
+    },
+    {
+     "units": {
+      "officer": 3,
+      "infantry": 81,
+      "infantry_scout": 2,
+      "heavy_machinegunner": 3
+     },
+     "formation": "line"
+    },
+    {
+     "units": {
+      "officer": 3,
+      "infantry": 81,
+      "infantry_scout": 2,
+      "heavy_machinegunner": 3
+     },
+     "formation": "line"
+    }
+   ]
+  },
+  {
+   "id": "f1_mg3",
+   "faction": 1,
+   "name": "한국군 제3대대 기관총 · 대전차",
+   "at": [
+    162,
+    142
+   ],
+   "facing": 0,
+   "units": {
+    "officer": 1,
+    "heavy_maxim": 5,
+    "infantry": 12
+   },
+   "company": true,
+   "formation": "line"
+  },
+  {
+   "id": "f1_assault",
+   "faction": 1,
+   "name": "한국군 연대 돌격중대",
+   "at": [
+    108,
+    150
+   ],
+   "facing": 0,
+   "formation": "line",
+   "units": {
+    "officer": 1,
+    "infantry_assault": 39
+   }
+  },
+  {
+   "id": "f1_sniper",
+   "faction": 1,
+   "name": "한국군 저격조",
+   "at": [
+    88,
+    150
+   ],
+   "facing": 0,
+   "units": {
+    "infantry_sniper": 8
+   },
+   "company": false
+  },
+  {
+   "id": "f1_ig",
+   "faction": 1,
+   "name": "한국군 보병포 중대",
+   "at": [
+    72,
+    150
+   ],
+   "facing": 0,
+   "units": {
+    "heavy_infantry_gun": 6
+   },
+   "company": false
+  },
+  {
+   "id": "f1_fg",
+   "faction": 1,
+   "name": "한국군 야전포 중대",
+   "at": [
+    144,
+    150
+   ],
+   "facing": 0,
+   "units": {
+    "heavy_field_gun": 8
+   },
+   "company": false
+  },
+  {
+   "id": "f1_how",
+   "faction": 1,
+   "name": "한국군 곡사포 중대",
+   "at": [
+    108,
+    158
+   ],
+   "facing": 0,
+   "units": {
+    "heavy_howitzer": 6,
+    "officer": 3
+   },
+   "company": false
+  },
+  {
+   "id": "f1_obs",
+   "faction": 1,
+   "name": "한국군 포병 관측반",
+   "at": [
+    108,
+    153
+   ],
+   "facing": 0,
+   "units": {
+    "infantry_scout": 4
+   },
+   "company": true
+  },
+  {
+   "id": "f1_cav",
+   "faction": 1,
+   "name": "한국군 기병대",
+   "at": [
+    196,
+    138
+   ],
+   "facing": 0,
+   "formation": "line",
+   "units": {
+    "officer_cavalry": 1,
+    "cavalry_default": 47
+   }
+  },
+  {
+   "id": "f2_bn1",
+   "faction": 2,
+   "name": "봉천군 제1대대 소총중대",
+   "at": [
+    54,
+    26
+   ],
+   "facing": 180,
+   "formation": "line",
+   "battalion": 1,
+   "battalionForm": "column",
+   "companies": [
+    {
+     "units": {
+      "officer_fengtian": 3,
+      "infantry_fengtian": 90,
+      "infantry_scout": 2,
+      "heavy_machinegunner_fengtian": 2
+     },
+     "formation": "line"
+    },
+    {
+     "units": {
+      "officer_fengtian": 3,
+      "infantry_fengtian": 90,
+      "infantry_scout": 2,
+      "heavy_machinegunner_fengtian": 2
+     },
+     "formation": "line"
+    },
+    {
+     "units": {
+      "officer_fengtian": 3,
+      "infantry_fengtian": 90,
+      "infantry_scout": 2,
+      "heavy_machinegunner_fengtian": 2
+     },
+     "formation": "line"
+    }
+   ]
+  },
+  {
+   "id": "f2_mg1",
+   "faction": 2,
+   "name": "봉천군 제1대대 기관총 · 대전차",
+   "at": [
+    54,
+    18
+   ],
+   "facing": 180,
+   "units": {
+    "officer_fengtian": 1,
+    "heavy_maxim": 2,
+    "infantry": 7
+   },
+   "company": true,
+   "formation": "line"
+  },
+  {
+   "id": "f2_bn2",
+   "faction": 2,
+   "name": "봉천군 제2대대 소총중대",
+   "at": [
+    108,
+    26
+   ],
+   "facing": 180,
+   "formation": "line",
+   "battalion": 2,
+   "battalionForm": "column",
+   "companies": [
+    {
+     "units": {
+      "officer_fengtian": 3,
+      "infantry_fengtian": 90,
+      "infantry_scout": 2,
+      "heavy_machinegunner_fengtian": 2
+     },
+     "formation": "line"
+    },
+    {
+     "units": {
+      "officer_fengtian": 3,
+      "infantry_fengtian": 90,
+      "infantry_scout": 2,
+      "heavy_machinegunner_fengtian": 2
+     },
+     "formation": "line"
+    },
+    {
+     "units": {
+      "officer_fengtian": 3,
+      "infantry_fengtian": 90,
+      "infantry_scout": 2,
+      "heavy_machinegunner_fengtian": 2
+     },
+     "formation": "line"
+    }
+   ]
+  },
+  {
+   "id": "f2_mg2",
+   "faction": 2,
+   "name": "봉천군 제2대대 기관총 · 대전차",
+   "at": [
+    108,
+    18
+   ],
+   "facing": 180,
+   "units": {
+    "officer_fengtian": 1,
+    "heavy_maxim": 2,
+    "infantry": 7
+   },
+   "company": true,
+   "formation": "line"
+  },
+  {
+   "id": "f2_bn3",
+   "faction": 2,
+   "name": "봉천군 제3대대 소총중대",
+   "at": [
+    162,
+    26
+   ],
+   "facing": 180,
+   "formation": "line",
+   "battalion": 3,
+   "battalionForm": "column",
+   "companies": [
+    {
+     "units": {
+      "officer_fengtian": 3,
+      "infantry_fengtian": 90,
+      "infantry_scout": 2,
+      "heavy_machinegunner_fengtian": 2
+     },
+     "formation": "line"
+    },
+    {
+     "units": {
+      "officer_fengtian": 3,
+      "infantry_fengtian": 90,
+      "infantry_scout": 2,
+      "heavy_machinegunner_fengtian": 2
+     },
+     "formation": "line"
+    },
+    {
+     "units": {
+      "officer_fengtian": 3,
+      "infantry_fengtian": 90,
+      "infantry_scout": 2,
+      "heavy_machinegunner_fengtian": 2
+     },
+     "formation": "line"
+    }
+   ]
+  },
+  {
+   "id": "f2_mg3",
+   "faction": 2,
+   "name": "봉천군 제3대대 기관총 · 대전차",
+   "at": [
+    162,
+    18
+   ],
+   "facing": 180,
+   "units": {
+    "officer_fengtian": 1,
+    "heavy_maxim": 2,
+    "infantry": 7
+   },
+   "company": true,
+   "formation": "line"
+  },
+  {
+   "id": "f2_assault",
+   "faction": 2,
+   "name": "봉천군 연대 돌격중대",
+   "at": [
+    108,
+    10
+   ],
+   "facing": 180,
+   "formation": "line",
+   "units": {
+    "officer_fengtian": 1,
+    "infantry_fengtian": 19
+   }
+  },
+  {
+   "id": "f2_sniper",
+   "faction": 2,
+   "name": "봉천군 저격조",
+   "at": [
+    88,
+    10
+   ],
+   "facing": 180,
+   "units": {
+    "infantry_sniper": 4
+   },
+   "company": false
+  },
+  {
+   "id": "f2_ig",
+   "faction": 2,
+   "name": "봉천군 보병포 중대",
+   "at": [
+    72,
+    10
+   ],
+   "facing": 180,
+   "units": {
+    "heavy_infantry_gun": 3
+   },
+   "company": false
+  },
+  {
+   "id": "f2_fg",
+   "faction": 2,
+   "name": "봉천군 야전포 중대",
+   "at": [
+    144,
+    10
+   ],
+   "facing": 180,
+   "units": {
+    "heavy_field_gun": 3
+   },
+   "company": false
+  },
+  {
+   "id": "f2_how",
+   "faction": 2,
+   "name": "봉천군 곡사포 중대",
+   "at": [
+    108,
+    2
+   ],
+   "facing": 180,
+   "units": {
+    "heavy_howitzer": 2,
+    "officer_fengtian": 2
+   },
+   "company": false
+  },
+  {
+   "id": "f2_obs",
+   "faction": 2,
+   "name": "봉천군 포병 관측반",
+   "at": [
+    108,
+    7
+   ],
+   "facing": 180,
+   "units": {
+    "infantry_scout": 2
+   },
+   "company": true
+  },
+  {
+   "id": "f2_cav",
+   "faction": 2,
+   "name": "봉천군 기병대",
+   "at": [
+    196,
+    22
+   ],
+   "facing": 180,
+   "formation": "line",
+   "units": {
+    "officer_cavalry": 1,
+    "cavalry_default": 59
+   }
+  }
+ ],
+ "objectives": [
+  {
+   "id": "crush",
+   "type": "eliminate",
+   "percent": 70,
+   "faction": 2,
+   "text": "봉천군 70% 격멸"
+  },
+  {
+   "id": "village",
+   "type": "capture",
+   "area": "village",
+   "seconds": 60,
+   "primary": false,
+   "text": "마을 60초 확보"
+  }
+ ],
+ "failures": [
+  {
+   "type": "losses",
+   "percent": 70
+  },
+  {
+   "type": "timeLimit",
+   "seconds": 1500
+  }
+ ],
+ "events": [
+  {
+   "id": "intro",
+   "when": {
+    "time": 1
+   },
+   "do": [
+    {
+     "message": "조우전 시작 - 한국군 대 봉천군"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,113 @@
+{
+ "_doc": "artillery with horse-drawn travel (howitzer, units with tow=true). unhitch = move_1 -> unhitch_1 -> unhitch_2 (limber + horses pull away forward, trail lowered); hitch = same frames reversed (horses arriving). unpack / pack include them. All anchors = the GUN footprint centre.",
+ "anims": {
+  "idle": {
+   "frames": [
+    "idle"
+   ],
+   "shared_fit": true
+  },
+  "fire": {
+   "frames": [
+    "fire_0",
+    "fire_1",
+    "fire_2",
+    "load_1",
+    "load_2"
+   ],
+   "ms": [
+    450,
+    130,
+    200,
+    450,
+    350
+   ],
+   "shared_fit": true
+  },
+  "unpack": {
+   "frames": [
+    "move_1",
+    "unhitch_1",
+    "unhitch_2",
+    "unpack_1",
+    "unpack_2",
+    "idle"
+   ],
+   "ms": [
+    250,
+    400,
+    400,
+    350,
+    350,
+    300
+   ],
+   "shared_fit": true
+  },
+  "pack": {
+   "frames": [
+    "idle",
+    "unpack_2",
+    "unpack_1",
+    "unhitch_2",
+    "unhitch_1",
+    "move_1"
+   ],
+   "ms": [
+    300,
+    350,
+    350,
+    400,
+    400,
+    250
+   ],
+   "shared_fit": true
+  },
+  "move": {
+   "frames": [
+    "move_1",
+    "move_2",
+    "move_3",
+    "move_4"
+   ],
+   "ms": 140,
+   "shared_fit": true
+  },
+  "death": {
+   "frames": [
+    "hit",
+    "dead"
+   ],
+   "ms": [
+    350,
+    1200
+   ],
+   "shared_fit": true
+  },
+  "unhitch": {
+   "frames": [
+    "move_1",
+    "unhitch_1",
+    "unhitch_2"
+   ],
+   "ms": [
+    250,
+    400,
+    400
+   ],
+   "shared_fit": true
+  },
+  "hitch": {
+   "frames": [
+    "unhitch_2",
+    "unhitch_1",
+    "move_1"
+   ],
+   "ms": [
+    400,
+    400,
+    250
+   ],
+   "shared_fit": true
+  }
+ }
+}

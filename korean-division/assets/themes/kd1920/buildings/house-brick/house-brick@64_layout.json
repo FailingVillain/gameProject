@@ -1,0 +1,34 @@
+{
+ "frame": [
+  214,
+  216
+ ],
+ "anchor": [
+  107,
+  152
+ ],
+ "dirs": [
+  "s"
+ ],
+ "mirror": false,
+ "columns": [
+  "intact",
+  "ruined"
+ ],
+ "sheets": [
+  {
+   "file": "house-brick@64.png",
+   "team": "house-brick@64_team.png"
+  }
+ ],
+ "cells": {
+  "intact": {
+   "sheet": "house-brick@64.png",
+   "col": 0
+  },
+  "ruined": {
+   "sheet": "house-brick@64.png",
+   "col": 1
+  }
+ }
+}

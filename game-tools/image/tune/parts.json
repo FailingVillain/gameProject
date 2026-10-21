@@ -1,0 +1,304 @@
+{
+  "_doc": "Part dimensions (model units, 64x80 design scale). Edit numbers; no code change needed.",
+  "headgear": {
+    "_doc": "Headgear dimensions in head-frame model units (origin at the neck, y up, z forward; 64x80 design scale). Each element: pos [x,y,z], size [rx,ry,rz] (ellipsoid / rounded box half-sizes), r+h for cylinders, tilt = degrees about x (+ = front edge down). To enlarge a cap raise size/r; to move it up raise pos y.",
+    "budenovka": {
+      "_doc": "Red Army cloth helmet (caps_ru.budenovka). spire_top = tip height y (head frame, neck origin); spire cone base stays at y 9.6. spire_r = cone base radius.",
+      "spire_top": 17.5,
+      "spire_r": 3.7
+    },
+    "feldkappe": {
+      "_doc": "WWI field cap: crown cylinder, flat top (sloped), buttoned flap band (team colour), two buttons, peak.",
+      "crown": {"pos": [0, 7.0, 0.3], "r": 5.75, "h": 1.9},
+      "top": {"pos": [0, 8.7, 0.3], "tilt": 8, "size": [5.7, 0.75, 6.0]},
+      "band": {"pos": [0, 5.6, 0.3], "r": 6.05, "h": 1.15},
+      "button": {"x": 1.2, "y": 5.9, "z": 6.25, "size": [0.45, 0.45, 0.3]},
+      "visor": {"pos": [0, 4.5, 7.35], "tilt": 14, "size": [4.6, 0.5, 1.95], "round": 0.4}
+    },
+    "korean_kepi": {
+      "_doc": "accent materials: band, rim (top edge piping), petal/centre (plum badge), stripe (officer band stripe).",
+      "band": "acc_brass_d", "rim": "acc_brass", "petal": "acc_brass", "centre": "acc_brass_d", "stripe": "badge_gold"
+    },
+    "officer_cap": {
+      "_doc": "Peaked service cap: band (team), crown sides, wide saucer top, visor, badge.",
+      "band": {"pos": [0, 5.9, 0.6], "size": [6.4, 1.6, 6.8]},
+      "crown": {"pos": [0, 7.9, 0.4], "size": [6.3, 2.4, 6.7]},
+      "saucer": {"pos": [0, 9.7, 0.0], "size": [8.2, 1.3, 8.6]},
+      "visor": {"pos": [0, 5.2, 7.2], "size": [5.0, 0.6, 3.2]},
+      "badge": {"pos": [0, 7.9, 7.0], "size": [0.9, 1.0, 0.5]}
+    },
+    "sniper_cap": {
+      "_doc": "sniper soft cap = feldkappe + hessian cover strips draped over the crown (strips: pos in head frame, size half-extents, tilt).",
+      "strips": [
+        {"pos": [-2.6, 9.0, 1.0], "size": [1.1, 0.5, 4.2], "tilt": -6, "mat": "hessian"},
+        {"pos": [1.2, 9.2, -0.4], "size": [1.2, 0.5, 4.6], "tilt": 5, "mat": "leafgrn"},
+        {"pos": [5.5, 8.0, 1.5], "size": [0.9, 0.6, 3.6], "tilt": 10, "mat": "hessian"},
+        {"pos": [-6.0, 6.6, -3.2], "size": [0.9, 2.2, 0.7], "tilt": 0, "mat": "leafgrn"}
+      ]
+    },
+    "japanese_cap": {
+      "_doc": "WWI Japanese Type 45 cap: straight cylinder sides, flat round top that overhangs, team band, small stiff dark visor (centre + 2 curved wings, wing = +-x mirrored), thin chin strap (polyline, r).",
+      "crown": {"pos": [0, 6.9, 0.3], "r": 5.6, "h": 1.2},
+      "top": {"pos": [0, 8.3, 0.3], "r": 6.9, "h": 0.5},
+      "band": {"pos": [0, 5.3, 0.3], "r": 5.75, "h": 0.95},
+      "visor": {"pos": [0, 4.7, 6.9], "tilt": 24, "size": [3.4, 0.35, 1.4], "round": 0.3},
+      "wing": {"x": 4.5, "y": 4.7, "z": 6.1, "yaw": 30, "tilt": 24, "size": [2.4, 0.35, 1.4], "round": 0.3},
+      "strap": {"points": [[-5.9, 7.0, 0.4], [-4.6, 7.0, 3.8], [-1.8, 7.0, 5.6], [1.8, 7.0, 5.6], [4.6, 7.0, 3.8], [5.9, 7.0, 0.4]], "r": 0.4}
+    },
+    "stahlhelm": {
+      "_doc": "German M1916 coal-scuttle: tilted skull frame (y,z = frame origin, tilt deg), skull (clip_y flat cut) + fuller crown, rim, rolled rim edge, neck guard (frame at y,z,tilt) with ridge + rear edge, ear flaps (x,y,z,tilt,roll,size,lip,step), front peak + lit edge, temple lugs. team_below_y = skull-local height under which the team band is painted.",
+      "frame": {"pos": [0, 4.9, -1.7], "tilt": -23},
+      "skull": {"size": [6.9, 6.3, 7.8], "clip_y": -2.8},
+      "team_below_y": 0.2,
+      "crown": {"pos": [0, 1.6, -0.4], "size": [5.6, 5.0, 6.4]},
+      "rim": {"pos": [0, -2.7, 0], "size": [7.5, 0.55, 8.5]},
+      "rim_edge": {"pos": [0, -3.2, 0], "size": [7.7, 0.3, 8.7]},
+      "guard": {"pos": [0, -2.7, -8.8], "tilt": -24, "size": [7.0, 1.2, 5.6], "edge": {"pos": [0, -0.4, -5.3], "size": [6.0, 0.5, 0.65]}},
+      "ridge": {"pos": [0, -2.2, -6.9], "size": [6.9, 0.45, 0.9]},
+      "flap": {"x": 6.3, "y": 1.0, "z": -2.2, "tilt": -10, "roll": 12, "size": [1.7, 3.9, 5.0],
+               "lip": {"x": 0.35, "y": -3.5, "size": [1.4, 0.35, 4.4]}, "step": {"x": 6.4, "y": 0.2, "z": -6.0, "size": [1.3, 1.3, 1.6]}},
+      "visor": {"pos": [0, 7.0, 6.9], "tilt": 14, "size": [4.2, 0.35, 1.0], "round": 0.35},
+      "visor_edge": {"pos": [0, 6.65, 7.9], "tilt": 14, "size": [4.2, 0.2, 0.3], "round": 0.25},
+      "lug": {"x": 6.5, "y": 5.7, "z": 1.8, "size": [0.8, 1.0, 1.1], "cap_x": 7.0, "cap_r": 0.7, "cap_h": 0.45}
+    },
+    "m1_helmet": {
+      "_doc": "US M1 steel helmet: shell (clip_y cuts the bottom) + brim. team_below_y = shell height under which the team band is painted.",
+      "shell": {"pos": [0, 6.8, -0.6], "size": [8.0, 6.6, 8.4], "clip_y": -1.3},
+      "team_below_y": 2.4,
+      "brim": {"pos": [0, 5.4, -0.5], "size": [9.3, 1.5, 9.7]}
+    }
+  },
+  "gear": {
+    "_doc": "Torso-frame gear (origin at the belt line, y up, z forward, -z = back). pos [x,y,z], size = half-sizes, round = corner radius.",
+    "field_pack": {
+      "_doc": "Pack body + rolled blanket capsule + 2 shoulder straps (x mirrored).",
+      "body": {"pos": [0, 10.5, -8.6], "size": [7.9, 6.6, 3.7]},
+      "roll": {"p0": [-6.8, 15.5, -9.5], "p1": [6.8, 15.5, -9.5], "r": 1.9},
+      "strap": {"x": 5.2, "y": 10.5, "z": -4.6, "size": [1.1, 5.4, 0.8]}
+    },
+    "haversack": {
+      "bag": {"pos": [7.9, -0.6, -3.0], "size": [3.0, 3.4, 1.8], "round": 1.4, "frac": 0.9},
+      "flap": {"pos": [7.9, 2.2, -3.0], "size": [3.1, 1.0, 1.9], "round": 0.6}
+    },
+    "canteen_cloth": {
+      "body": {"pos": [-8.4, -1.0, -4.3], "r": 3.0, "h": 1.6},
+      "cap": {"pos": [-8.4, 2.3, -4.3], "r": 0.9, "h": 0.7}
+    },
+    "leather_pouches": {
+      "_doc": "two boxes each side of the buckle at x = +-xs[i]",
+      "xs": [3.4, 7.6],
+      "y": 0.6,
+      "z": 6.1,
+      "size": [1.9, 2.1, 1.4],
+      "round": 0.6
+    },
+    "sniper_scrim": {
+      "_doc": "hessian / leaf strips on the shoulders (torso frame): pos, size half-extents, tilt deg about x.",
+      "strips": [
+        {"pos": [8.5, 21.8, -2.5], "size": [1.2, 0.7, 2], "tilt": 0, "mat": "hessian"},
+        {"pos": [-8.5, 21.8, -2.5], "size": [1.2, 0.7, 2], "tilt": 0, "mat": "leafgrn"},
+        {"pos": [5, 16, -6.8], "size": [0.9, 3.0, 0.6], "tilt": 0, "mat": "leafgrn"},
+        {"pos": [-5, 16, -6.8], "size": [0.9, 3.4, 0.6], "tilt": 0, "mat": "hessian"},
+        {"pos": [9.0, 17.0, -5.8], "size": [1.0, 3.6, 0.6], "tilt": 0, "mat": "hessian"},
+        {"pos": [-8.0, 17.0, -5.8], "size": [1.0, 3.2, 0.6], "tilt": 0, "mat": "leafgrn"}
+      ]
+    },
+    "sniper_satchel": {
+      "_doc": "small flat haversack on the back (replaces the field pack): body + flap + two thin shoulder straps",
+      "body": {"pos": [0, 8.0, -7.6], "size": [5.2, 4.4, 1.8], "round": 1.2, "frac": 0.9},
+      "flap": {"pos": [0, 11.4, -8.2], "size": [5.3, 1.3, 1.9], "round": 0.6},
+      "strap": {"x": 4.2, "y": 12.2, "z": -5.2, "size": [0.8, 5.6, 0.6]}
+    },
+    "holster": {
+      "body": {"pos": [-8.7, -1.3, 3.7], "size": [1.5, 3.4, 2.1], "round": 1.0},
+      "flap": {"pos": [-8.8, 1.3, 3.7], "size": [1.7, 1.0, 2.4], "round": 0.8},
+      "stud": {"pos": [-8.3, -0.7, 6.0], "size": [0.4, 1.4, 0.3], "round": 0.2}
+    },
+    "scabbard": {
+      "_doc": "steel scabbard: throat point a, chape point b (hangs tip back/down), sheath_guard_up = how far the sheathed guard sits above the throat.",
+      "a": [10.4, -4.5, -1.8],
+      "b": [12.4, -25.4, -12.0],
+      "r": 1.05,
+      "sheath_guard_up": 2.2,
+      "throat_size": [1.5, 1.0, 1.5],
+      "chape_r": 1.2,
+      "strap_from": [10.0, 0.4, -2.0],
+      "strap_r": 0.5
+    },
+    "map_case": {
+      "case": {"pos": [8.6, 0.0, -5.6], "size": [2.6, 3.0, 1.0], "round": 0.8},
+      "flap": {"pos": [8.6, 2.4, -5.6], "size": [2.7, 0.9, 1.1], "round": 0.5}
+    }
+  },
+  "weapons": {
+    "_doc": "Weapon dimensions in weapon-local coordinates (origin at the receiver, z = muzzle direction, y up). barrel.z1 = muzzle position = weapon length; flash_z / bayonet muzzle follow it.",
+    "bolt_rifle": {
+      "butt_stock": {"pos": [0, -0.6, -12.5], "size": [1.6, 2.5, 6.8]},
+      "butt_plate": {"pos": [0, -1.4, -19.3], "size": [1.5, 3.2, 1.0]},
+      "wrist": {"pos": [0, -0.5, -6.6], "size": [1.7, 2.2, 2.2]},
+      "receiver": {"pos": [0, 0.5, -1.4], "size": [1.7, 1.8, 4.4]},
+      "fore": {"pos": [0, -0.2, 9.0], "size": [1.6, 1.6, 8.0]},
+      "magazine": {"pos": [0, -2.4, -0.4], "size": [0.7, 1.2, 1.6]},
+      "barrel": {"r": 0.95, "z0": 3.0, "z1": 23.0},
+      "front_sight_z": 22.0,
+      "flash_z": 24.0,
+      "bayonet_muzzle": 23.0,
+      "grip_right": [0, -2.4, -6.4],
+      "grip_left": [0, -1.9, 9.5]
+    },
+    "scoped_rifle": {
+      "_doc": "bolt rifle + telescopic sight (weapon frame: z = muzzle, y up) + sling. Stock / barrel as bolt_rifle; scope: tube along z at height y, objective bell in front, eyepiece behind, two mount rings.",
+      "butt_stock": {"pos": [0, -0.6, -12.5], "size": [1.6, 2.5, 6.8]},
+      "butt_plate": {"pos": [0, -1.4, -19.3], "size": [1.5, 3.2, 1.0]},
+      "wrist": {"pos": [0, -0.5, -6.6], "size": [1.7, 2.2, 2.2]},
+      "receiver": {"pos": [0, 0.5, -1.4], "size": [1.7, 1.8, 4.4]},
+      "fore": {"pos": [0, -0.2, 9.0], "size": [1.6, 1.6, 8.0]},
+      "magazine": {"pos": [0, -2.4, -0.4], "size": [0.7, 1.2, 1.6]},
+      "barrel": {"r": 0.95, "z0": 3.0, "z1": 23.0},
+      "front_sight_z": 22.0, "flash_z": 24.0,
+      "grip_right": [0, -2.4, -6.4], "grip_left": [0, -1.9, 9.5],
+      "scope": {"y": 5.0, "z0": -4.6, "z1": 8.6, "r": 1.55, "obj_r": 2.2, "obj_z": 8.2, "obj_len": 3.4, "eye_r": 1.9, "eye_z": -5.2,
+                "ring_zs": [-1.4, 4.6], "ring_size": [1.5, 2.6, 0.9], "knob_r": 0.8},
+      "sling": {"butt": [0.9, -3.4, -17.0], "fore": [0.9, -2.6, 13.0], "sag": 3.2, "r": 0.4}
+    },
+    "garand": {
+      "stock": {"pos": [0, -0.6, -11.5], "size": [1.6, 2.5, 6.6]},
+      "butt": {"pos": [0, -1.4, -18.0], "size": [1.5, 3.2, 1.0]},
+      "wrist": {"pos": [0, -0.5, -6.2], "size": [1.7, 2.2, 2.2]},
+      "receiver": {"pos": [0, 0.6, -1.0], "size": [1.7, 1.9, 4.0]},
+      "handguard": {"pos": [0, -0.3, 7.0], "size": [1.7, 1.7, 5.0]},
+      "barrel": {"r": 1.05, "z0": 3.0, "z1": 18.0},
+      "front_sight_z": 17.0,
+      "flash_z": 19.0,
+      "bayonet_muzzle": 18.0,
+      "grip_right": [0, -2.4, -6.0],
+      "grip_left": [0, -2.0, 7.5]
+    },
+    "bayonet": {"handle_dz": 0.6, "handle_size": [0.7, 0.8, 1.0], "blade_dz": 5.2, "blade_size": [0.35, 0.9, 4.2]},
+    "sabre": {
+      "_doc": "blade = polyline of [segment length, pitch deg] (curve toward +y; sum of lengths = blade length); half_width tapers to tip_half_width on the last segment; quillon_half_width = guard crossbar half length.",
+      "blade": [[7.0, 2.0], [6.0, 6.0], [5.0, 11.0], [4.0, 17.0]],
+      "half_width": 0.9,
+      "tip_half_width": 0.6,
+      "thickness": 0.3,
+      "start_z": 0.6,
+      "quillon_half_width": 3.6
+    },
+    "pistol": {
+      "slide": {"pos": [0, 0.6, 1.6], "size": [0.65, 0.9, 3.6]},
+      "frame": {"pos": [0, -0.4, 1.2], "size": [0.6, 0.5, 2.6]},
+      "grip": {"pos": [0, -2.1, -0.9], "size": [0.7, 1.9, 0.95], "tilt": -14},
+      "trigger_guard": {"pos": [0, -1.3, 0.9], "size": [0.3, 0.7, 0.9]},
+      "flash_z": 5.4
+    },
+    "cav_carbine": {
+      "_doc": "WWI cavalry bolt-action carbine (short barrel, turned-down bolt). Same frame convention as bolt_rifle; barrel.z1 = muzzle.",
+      "butt_stock": {"pos": [0, -0.6, -10.6], "size": [1.5, 2.4, 5.8]},
+      "butt_plate": {"pos": [0, -1.4, -16.6], "size": [1.4, 3.0, 0.9]},
+      "wrist": {"pos": [0, -0.5, -5.6], "size": [1.6, 2.1, 2.0]},
+      "receiver": {"pos": [0, 0.5, -1.2], "size": [1.6, 1.7, 3.8]},
+      "fore": {"pos": [0, -0.2, 6.6], "size": [1.5, 1.5, 5.4]},
+      "magazine": {"pos": [0, -2.3, -0.4], "size": [0.7, 1.1, 1.5]},
+      "barrel": {"r": 0.95, "z0": 3.0, "z1": 15.0},
+      "front_sight_z": 14.2,
+      "flash_z": 16.0,
+      "grip_right": [0, -2.4, -5.4],
+      "grip_left": [0, -1.9, 6.8]
+    }
+  },
+  "horse": {
+    "_doc": "Cavalry horse (parts/horse.py). Body frame: origin = barrel centre, y up, z forward (x = horse's left). Ellipsoids: pos + size (radii). Legs: top = hip/shoulder joint in the body frame, lengths of each segment, radii. neck/head: base point, length, radii (pose angles in tune/poses.json cavalry). The whole horse is grounded on its lowest point; the anchor is the ground point under the barrel centre.",
+    "scale": 1.2,
+    "_scale": "uniform horse scale (all horse dims below are multiplied); carbine_carry = slung (rider's back) | boot (saddle boot, horse's right)",
+    "carbine_carry": "slung",
+    "body_y": 30.0,
+    "body": {
+      "barrel": {"pos": [0, 0, 0], "size": [9.2, 9.0, 16.0]},
+      "chest": {"pos": [0, 0.6, 12.5], "size": [8.4, 9.3, 8.0]},
+      "breast": {"pos": [0, -1.2, 17.6], "size": [6.8, 7.2, 3.8]},
+      "withers": {"pos": [0, 7.4, 8.5], "size": [4.4, 3.6, 7.0]},
+      "rump": {"pos": [0, 2.0, -12.5], "size": [9.4, 9.0, 8.5]},
+      "croup": {"pos": [0, 7.0, -13.0], "size": [6.6, 3.8, 7.8]},
+      "buttock": {"pos": [0, 0.4, -19.0], "size": [7.2, 7.4, 3.6]}
+    },
+    "shoulder": {"pos": [4.6, -0.6, 12.6], "size": [4.6, 8.4, 5.8]},
+    "haunch": {"pos": [4.3, -1.0, -13.6], "size": [4.9, 8.0, 7.2]},
+    "front_leg": {"top": [4.4, -5.2, 12.8], "upper": 11.0, "cannon": 8.6, "pastern": 3.2,
+                  "r_upper": [3.1, 2.0], "r_knee": 2.2, "r_cannon": 1.45, "r_fetlock": 1.75, "r_pastern": 1.35},
+    "hind_leg": {"top": [5.0, -5.0, -12.0], "upper": 11.5, "cannon": 9.0, "pastern": 3.2,
+                 "r_upper": [3.6, 2.0], "r_hock": 2.3, "r_cannon": 1.5, "r_fetlock": 1.75, "r_pastern": 1.35},
+    "pastern_slope": 28,
+    "hoof": {"len": 1.7, "r_top": 1.45, "r_bottom": 1.8},
+    "neck": {"base": [0, 4.6, 15.0], "len": 15.0, "r": [6.4, 4.0]},
+    "mane": {"r": 1.7, "lift": [5.8, 4.0]},
+    "head": {"len": 13.2, "r": [3.5, 2.6], "jowl": {"pos": [0, -1.7, 2.8], "size": [3.4, 4.0, 4.2]},
+             "muzzle": {"pos": [0, -0.7, 13.1], "size": [2.6, 2.8, 2.7]}, "eye": {"pos": [3.0, 0.8, 3.6], "r": 0.75},
+             "ear": {"pos": [1.7, 2.3, 0.6], "len": 3.4, "r": 1.05}},
+    "tail": {"dock": [0, 7.0, -20.5], "len": [4.0, 10.0], "r": [1.8, 2.3, 3.2]},
+    "saddle": {"seat": {"pos": [0, 9.7, 0.0], "size": [6.2, 1.6, 7.4], "round": 1.2},
+               "pommel": {"pos": [0, 11.2, 6.5], "size": [3.8, 2.1, 2.0]},
+               "cantle": {"pos": [0, 11.8, -6.8], "size": [4.8, 2.5, 1.8]},
+               "skirt": {"pos": [8.7, 4.4, 0.4], "size": [0.8, 3.8, 5.0], "round": 0.6, "tilt_z": 14},
+               "cloth_z": [-9.0, 10.0], "cloth_y": 3.4, "girth_z": 5.0, "girth_w": 0.9},
+    "seat_root": [0, 13.2, -0.6],
+    "stirrup_from": [8.6, 8.0, 0.6],
+    "saddle_bag": {"pos": [9.0, 5.6, -13.0], "size": [2.0, 2.9, 3.0], "round": 1.0},
+    "bedroll": {"pos": [0, 12.2, -9.0], "r": 1.9, "h": 6.2},
+    "carbine_boot": {"butt": [-11.4, 9.0, -5.0], "muzzle": [-11.6, -8.0, -11.0], "r": 1.5, "cover_from": 0.42},
+    "sabre_scabbard": {"throat": [11.0, 4.0, -2.5], "chape": [11.5, -4.0, -22.0], "r": 1.05},
+    "bridle": {"nose": {"pos": [0, -0.4, 10.4], "size": [3.0, 3.0, 0.7]}, "brow": {"pos": [0, 1.0, 1.3], "size": [3.6, 3.4, 0.6]},
+               "bit": [2.6, -1.6, 11.6], "r": 0.4, "rein_r": 0.45}
+  },
+  "wagon": {"_doc": "Supply wagon dimensions (model units, 64x80 design scale). bed_z = [rear, front] of the floor; rows = crate rows along z; layers = stacked crates; crate = half sizes.", "wheel_r": 13.0, "axle_y": 13.0, "axle_z": -4.0, "track": 16.5, "bed_y": 17.0, "bed_z": [-34.0, 14.0], "bed_hw": 14.2, "side_h": 4.4, "seat_y": 33.0, "seat_z": 5.0, "foot_y": 15.6, "hitch": [0.0, 14.0, 12.0], "crate": [5.6, 3.2, 4.2], "crate_x": 6.4, "rows": 4, "layers": 3, "spokes": 8, "tarp_y": 14.5, "tarp_hy": 8.6, "staff_h": 34.0},
+  "guns": {
+    "_doc": "Artillery pieces (parts/guns.py), model units like the infantry figure (~34 units per metre, rifleman ~60 tall); scale multiplies every length of that gun (drawn larger than true scale next to the crew). Gun frame: origin = ground under the axle centre, x = gun's left, y up, z = firing direction. wheel: r radius, x = half track, style spoked|disc, spokes/rim/hub = ring+spoke dimensions. trunnion = barrel pivot. cheek = upper carriage plate (pos, size, plate x = pos.x +- cheek.x). trail: type box (two parallel legs) | mono (one beam) | split (two spread legs), start/end = leg points (x mirrored for box/split), hw/hh half width/height, braces = z of cross members. shield = null or {y,z,hw,hh,tilt,flap_hh}. barrel: [z0, z1, r] lists in barrel frame (z along the tube); tube + breech recoil, sleeve/recup stay. shell: r, len, case = fraction of the length that is brass case (fixed ammunition). box = ammo crate [x,y,z] + half size. flash = muzzle flash scale.",
+    "howitzer": {
+      "_doc": "heavy field howitzer (15 cm class): no shield, box trail, big spoked wheels.",
+      "scale": 1.25,
+      "wheel": {"r": 22.0, "x": 20.5, "style": "spoked", "spokes": 14, "rim": 2.1, "hub": 4.4, "hub_w": 4.6},
+      "axle_r": 2.5,
+      "axle_box": [10.5, 4.0, 7.0],
+      "trunnion": [0.0, 35.0, 2.0],
+      "cheek": {"pos": [0.0, 30.0, 1.0], "x": 9.6, "size": [1.5, 9.5, 12.0]},
+      "trail": {"type": "box", "start": [8.4, 26.0, -6.0], "end": [6.2, 3.6, -74.0], "hw": 2.4, "hh": 4.4, "braces": [-24.0, -48.0]},
+      "shield": null,
+      "barrel": {"breech": [-14.0, -3.0, 4.0], "sleeve": [-3.0, 26.0, 5.4], "tube": [-4.0, 76.0, 4.0], "swell": [68.0, 76.0, 4.7], "recup": [-1.0, 22.0, 1.8]},
+      "handwheel": [14.4, 31.0, -8.0],
+      "shell": {"r": 2.7, "len": 17.0, "case": 0.0},
+      "box": {"pos": [-40.0, 3.2, -18.0], "size": [4.2, 3.2, 6.2]},
+      "flash": 1.2
+    },
+    "infantry_gun": {
+      "_doc": "37 mm infantry gun: low light carriage, small disc wheels, split tubular trail, small shield.",
+      "scale": 1.2,
+      "wheel": {"r": 9.0, "x": 14.0, "style": "disc", "thick": 1.3},
+      "axle_r": 1.2,
+      "axle_box": [6.0, 2.2, 4.0],
+      "trunnion": [0.0, 15.5, 1.0],
+      "cheek": {"pos": [0.0, 14.0, 0.0], "x": 4.6, "size": [1.0, 4.2, 6.0]},
+      "trail": {"type": "split", "start": [3.6, 12.0, -4.0], "end": [17.0, 1.8, -38.0], "hw": 1.3, "hh": 1.4, "braces": []},
+      "shield": {"y": 24.0, "z": 6.5, "hw": 11.0, "hh": 7.5, "tilt": 6.0, "flap_hh": 2.8},
+      "barrel": {"breech": [-9.0, -2.0, 1.7], "sleeve": [-2.0, 10.0, 2.5], "tube": [-2.0, 55.0, 1.25], "swell": [47.0, 55.0, 1.6], "recup": [0.0, 0.0, 0.0]},
+      "handwheel": [6.8, 16.0, -5.0],
+      "shell": {"r": 1.1, "len": 9.0, "case": 0.5},
+      "box": {"pos": [-27.0, 2.2, -12.0], "size": [3.0, 2.2, 4.4]},
+      "flash": 0.7
+    },
+    "field_gun": {
+      "_doc": "77 mm field gun: shield, mono (single beam) trail, large spoked wheels, long flat tube.",
+      "scale": 1.1,
+      "wheel": {"r": 19.0, "x": 21.0, "style": "spoked", "spokes": 12, "rim": 1.8, "hub": 3.8, "hub_w": 4.2},
+      "axle_r": 2.1,
+      "axle_box": [10.0, 3.6, 6.0],
+      "trunnion": [0.0, 28.0, 2.0],
+      "cheek": {"pos": [0.0, 25.0, 0.5], "x": 7.4, "size": [1.3, 7.5, 9.0]},
+      "trail": {"type": "mono", "start": [0.0, 25.0, -4.0], "end": [0.0, 3.4, -68.0], "hw": 2.8, "hh": 3.8, "braces": []},
+      "shield": {"y": 38.0, "z": 9.0, "hw": 14.0, "hh": 10.5, "tilt": 8.0, "flap_hh": 4.0},
+      "barrel": {"breech": [-11.0, -2.0, 3.0], "sleeve": [-2.0, 22.0, 4.0], "tube": [-2.0, 72.0, 2.6], "swell": [64.0, 72.0, 3.1], "recup": [0.0, 20.0, 1.5]},
+      "handwheel": [11.0, 27.0, -7.0],
+      "shell": {"r": 1.9, "len": 16.0, "case": 0.5},
+      "box": {"pos": [-30.0, 2.8, -40.0], "size": [3.6, 2.8, 5.4]},
+      "flash": 0.95
+    }
+  }
+}

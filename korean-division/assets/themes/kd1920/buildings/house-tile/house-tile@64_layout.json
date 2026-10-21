@@ -1,0 +1,34 @@
+{
+ "frame": [
+  240,
+  192
+ ],
+ "anchor": [
+  120,
+  134
+ ],
+ "dirs": [
+  "s"
+ ],
+ "mirror": false,
+ "columns": [
+  "intact",
+  "ruined"
+ ],
+ "sheets": [
+  {
+   "file": "house-tile@64.png",
+   "team": "house-tile@64_team.png"
+  }
+ ],
+ "cells": {
+  "intact": {
+   "sheet": "house-tile@64.png",
+   "col": 0
+  },
+  "ruined": {
+   "sheet": "house-tile@64.png",
+   "col": 1
+  }
+ }
+}

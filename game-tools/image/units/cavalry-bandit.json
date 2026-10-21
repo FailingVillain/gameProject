@@ -1,0 +1,34 @@
+{
+ "name": "cavalry-bandit",
+ "_doc": "bandit horseman: mixed civilian navy jacket, head towel.",
+ "base": "cavalry",
+ "anims": "cavalry",
+ "headgear": "bandit_towel",
+ "uniform": {
+  "jacket": "bd_navy",
+  "trousers": "bd_choc",
+  "legging": "bd_wrap",
+  "boot": "leather",
+  "belt": "canvas",
+  "hand": "skin",
+  "collar": false,
+  "puttees": false
+ },
+ "weapons": {
+  "carbine": "cav_carbine",
+  "sabre": "sabre"
+ },
+ "gear": [
+  "bandolier_x",
+  "leather_pouches"
+ ],
+ "team": [
+  "helmet_band",
+  "arm_patch"
+ ],
+ "belt": true,
+ "belt_pouches": false,
+ "dirs": "all",
+ "frames": "all",
+ "fix_as": "cavalry-default"
+}

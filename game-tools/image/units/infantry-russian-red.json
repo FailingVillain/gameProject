@@ -1,0 +1,24 @@
+{
+  "name": "infantry-russian-red",
+  "_doc": "Russian Reds preview: infantry-default body/poses/kit, grey-brown tunic+greatcoat colour, budenovka.",
+  "base": "infantry",
+  "anims": "infantry",
+  "headgear": "budenovka",
+  "uniform": "ru_red",
+  "weapon": "bolt_rifle",
+  "gear": [
+    "field_pack_grey",
+    "haversack",
+    "canteen_cloth",
+    "leather_pouches"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "belt": true,
+  "belt_pouches": false,
+  "e_pull_extra": 3.0,
+  "dirs": "all",
+  "frames": "all"
+}

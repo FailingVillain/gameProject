@@ -1,0 +1,533 @@
+{
+ "_doc": "N21 측정 전용: 장교 1 + 돌격보병 N 대 장교 1 + 봉천 보병 N (같은 편성 규모). tools/n21_exchange.py 가 사용.",
+ "id": "n21_assault_vs_rifle_v",
+ "title": "N21 돌격보병 대 소총병 (측정용)",
+ "date": "1920년 가을 낮",
+ "location": "간도 · 중앙 마을 일대",
+ "briefing": "AI 대 AI 관전 미션. 한국군 보병연대(약 1000명)와 봉천군 보병연대(약 1000명)가 중앙의 마을을 두고 조우전을 벌인다. 한국군은 기관총 · 포병이 많고, 봉천군은 소총병 · 기병이 많으며 대도로 돌격한다. 탱크와 보급 마차는 없다. 한쪽이 70% 손실을 입으면 끝난다 (25분 제한).",
+ "seed": 1920,
+ "weather": "clear",
+ "time": "day",
+ "player": 1,
+ "spectate": true,
+ "factions": [
+  {
+   "name": "한국군",
+   "en": "korean",
+   "lang": "ko",
+   "color": [
+    60,
+    130,
+    235
+   ],
+   "team": 1,
+   "posture": "attack",
+   "area": "village"
+  },
+  {
+   "name": "봉천 군벌",
+   "en": "fengtian",
+   "lang": "zh",
+   "color": [
+    165,
+    95,
+    225
+   ],
+   "team": 2,
+   "posture": "attack",
+   "area": "village"
+  }
+ ],
+ "mapData": {
+  "name": "중앙 마을 (조우전)",
+  "width": 216,
+  "height": 160,
+  "base": "grass",
+  "paint": [
+   {
+    "terrain": "dirt",
+    "rect": [
+     105,
+     0,
+     6,
+     160
+    ]
+   },
+   {
+    "terrain": "dirt",
+    "rect": [
+     0,
+     79,
+     216,
+     3
+    ]
+   },
+   {
+    "terrain": "house",
+    "tiles": [
+     [
+      92,
+      68
+     ],
+     [
+      92,
+      71
+     ],
+     [
+      95,
+      68
+     ],
+     [
+      95,
+      71
+     ],
+     [
+      98,
+      68
+     ],
+     [
+      98,
+      71
+     ],
+     [
+      92,
+      76
+     ],
+     [
+      92,
+      79
+     ],
+     [
+      95,
+      76
+     ],
+     [
+      95,
+      79
+     ],
+     [
+      98,
+      76
+     ],
+     [
+      98,
+      79
+     ],
+     [
+      92,
+      86
+     ],
+     [
+      92,
+      89
+     ],
+     [
+      95,
+      86
+     ],
+     [
+      95,
+      89
+     ],
+     [
+      98,
+      86
+     ],
+     [
+      98,
+      89
+     ],
+     [
+      113,
+      68
+     ],
+     [
+      113,
+      71
+     ],
+     [
+      116,
+      68
+     ],
+     [
+      116,
+      71
+     ],
+     [
+      119,
+      68
+     ],
+     [
+      119,
+      71
+     ],
+     [
+      113,
+      76
+     ],
+     [
+      113,
+      79
+     ],
+     [
+      116,
+      76
+     ],
+     [
+      116,
+      79
+     ],
+     [
+      119,
+      76
+     ],
+     [
+      119,
+      79
+     ],
+     [
+      113,
+      86
+     ],
+     [
+      113,
+      89
+     ],
+     [
+      116,
+      86
+     ],
+     [
+      116,
+      89
+     ],
+     [
+      119,
+      86
+     ],
+     [
+      119,
+      89
+     ],
+     [
+      100,
+      80
+     ],
+     [
+      101,
+      80
+     ],
+     [
+      116,
+      81
+     ],
+     [
+      117,
+      81
+     ]
+    ]
+   },
+   {
+    "terrain": "rubble",
+    "rect": [
+     102,
+     83,
+     3,
+     3
+    ]
+   },
+   {
+    "terrain": "forest",
+    "rect": [
+     14,
+     38,
+     40,
+     28
+    ]
+   },
+   {
+    "terrain": "forest",
+    "rect": [
+     160,
+     50,
+     40,
+     28
+    ]
+   },
+   {
+    "terrain": "forest",
+    "rect": [
+     26,
+     98,
+     34,
+     24
+    ]
+   },
+   {
+    "terrain": "forest",
+    "rect": [
+     156,
+     104,
+     34,
+     26
+    ]
+   },
+   {
+    "terrain": "forest",
+    "rect": [
+     56,
+     70,
+     16,
+     14
+    ]
+   },
+   {
+    "terrain": "forest",
+    "rect": [
+     142,
+     76,
+     16,
+     14
+    ]
+   },
+   {
+    "terrain": "high",
+    "circle": [
+     70,
+     112,
+     10
+    ]
+   },
+   {
+    "terrain": "high",
+    "circle": [
+     150,
+     44,
+     10
+    ]
+   },
+   {
+    "terrain": "high",
+    "circle": [
+     108,
+     52,
+     8
+    ]
+   },
+   {
+    "terrain": "high",
+    "circle": [
+     108,
+     108,
+     8
+    ]
+   },
+   {
+    "terrain": "high",
+    "circle": [
+     40,
+     80,
+     9
+    ]
+   },
+   {
+    "terrain": "high",
+    "circle": [
+     176,
+     82,
+     9
+    ]
+   },
+   {
+    "terrain": "trench",
+    "rect": [
+     84,
+     60,
+     18,
+     2
+    ]
+   },
+   {
+    "terrain": "trench",
+    "rect": [
+     114,
+     60,
+     18,
+     2
+    ]
+   },
+   {
+    "terrain": "trench",
+    "rect": [
+     84,
+     98,
+     18,
+     2
+    ]
+   },
+   {
+    "terrain": "trench",
+    "rect": [
+     114,
+     98,
+     18,
+     2
+    ]
+   },
+   {
+    "terrain": "trench",
+    "rect": [
+     84,
+     60,
+     2,
+     10
+    ]
+   },
+   {
+    "terrain": "trench",
+    "rect": [
+     130,
+     60,
+     2,
+     10
+    ]
+   },
+   {
+    "terrain": "trench",
+    "rect": [
+     84,
+     90,
+     2,
+     10
+    ]
+   },
+   {
+    "terrain": "trench",
+    "rect": [
+     130,
+     90,
+     2,
+     10
+    ]
+   },
+   {
+    "terrain": "wire",
+    "rect": [
+     80,
+     55,
+     24,
+     1
+    ]
+   },
+   {
+    "terrain": "wire",
+    "rect": [
+     112,
+     55,
+     24,
+     1
+    ]
+   },
+   {
+    "terrain": "wire",
+    "rect": [
+     80,
+     104,
+     24,
+     1
+    ]
+   },
+   {
+    "terrain": "wire",
+    "rect": [
+     112,
+     104,
+     24,
+     1
+    ]
+   }
+  ],
+  "starts": [
+   [
+    108,
+    134
+   ],
+   [
+    108,
+    26
+   ]
+  ]
+ },
+ "areas": {
+  "village": {
+   "rect": [
+    88,
+    62,
+    40,
+    36
+   ]
+  }
+ },
+ "forces": [
+  {
+   "id": "f1_a",
+   "faction": 1,
+   "name": "f1_a",
+   "at": [
+    100,
+    120
+   ],
+   "facing": 0,
+   "formation": "line",
+   "companies": [
+    {
+     "units": {
+      "officer": 1,
+      "infantry_assault": 23
+     },
+     "formation": "line"
+    }
+   ]
+  },
+  {
+   "id": "f2_a",
+   "faction": 2,
+   "name": "f2_a",
+   "at": [
+    100,
+    40
+   ],
+   "facing": 0,
+   "formation": "line",
+   "companies": [
+    {
+     "units": {
+      "officer_fengtian": 1,
+      "infantry_fengtian": 30
+     },
+     "formation": "line"
+    }
+   ]
+  }
+ ],
+ "objectives": [
+  {
+   "id": "crush",
+   "type": "eliminate",
+   "percent": 70,
+   "faction": 2,
+   "text": "x"
+  }
+ ],
+ "failures": [
+  {
+   "type": "losses",
+   "percent": 70
+  },
+  {
+   "type": "timeLimit",
+   "seconds": 1500
+  }
+ ],
+ "events": []
+}

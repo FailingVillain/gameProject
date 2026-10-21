@@ -1,0 +1,18 @@
+{
+  "name": "infantry-default-darkgrey",
+  "_doc": "Palette-swap preview of infantry-default: uniform colours changed to a very dark field grey (near-black grey with a faint green-grey tint) for tunic, Feldkappe, trousers and puttees. Pack / leather / metal / skin unchanged. Same parts, poses, weapon and 35 frames.",
+  "base": "infantry",
+  "anims": "infantry-motions",
+  "headgear": "feldkappe",
+  "uniform": {"jacket": "fgrey_dark", "trousers": "fgrey_dark_trouser", "legging": "fgrey_dark_wrap", "boot": "leather", "belt": "leather", "hand": "skin",
+              "collar": true, "puttees": true, "puttee_seam": "fgrey_dark_trouser"},
+  "tune": {"parts": {"headgear": {"feldkappe": {"cap_mat": "fgrey_dark"}}}},
+  "weapon": "bolt_rifle",
+  "gear": ["field_pack_grey", "haversack", "canteen_cloth", "leather_pouches"],
+  "team": ["helmet_band", "arm_patch"],
+  "belt": true,
+  "belt_pouches": false,
+  "e_pull_extra": 3.0,
+  "dirs": "all",
+  "frames": "all"
+}

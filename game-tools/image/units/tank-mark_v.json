@@ -1,0 +1,8 @@
+{
+  "name": "tank-mark_v",
+  "kind": "vehicle",
+  "model": "mark_v",
+  "turret": "cupola",
+  "anims": "vehicle",
+  "dirs": "all"
+}

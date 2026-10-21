@@ -1,0 +1,210 @@
+{
+ "part": "hull",
+ "frame": [
+  288,
+  288
+ ],
+ "anchor": [
+  144,
+  192
+ ],
+ "dirs": [
+  "s",
+  "sse",
+  "se",
+  "ese",
+  "e",
+  "ene",
+  "ne",
+  "nne",
+  "n"
+ ],
+ "yaw_step": 22.5,
+ "mirror": true,
+ "mirror_map": {
+  "ssw": "sse",
+  "sw": "se",
+  "wsw": "ese",
+  "w": "e",
+  "wnw": "ene",
+  "nw": "ne",
+  "nnw": "nne"
+ },
+ "columns": [
+  "idle",
+  "move_1",
+  "move_2",
+  "move_3",
+  "move_4",
+  "dead"
+ ],
+ "anims": {
+  "idle": {
+   "frames": [
+    "idle"
+   ],
+   "ms": 150
+  },
+  "move": {
+   "frames": [
+    "move_1",
+    "move_2",
+    "move_3",
+    "move_4"
+   ],
+   "ms": 110
+  },
+  "dead": {
+   "frames": [
+    "dead"
+   ],
+   "ms": 150
+  }
+ },
+ "sheets": [
+  {
+   "file": "tank-lanchester_hull.png",
+   "team": "tank-lanchester_hull_team.png",
+   "columns": [
+    "idle",
+    "move_1",
+    "move_2",
+    "move_3",
+    "move_4",
+    "dead"
+   ],
+   "size": [
+    1728,
+    2592
+   ]
+  }
+ ],
+ "cells": {
+  "idle": {
+   "sheet": "tank-lanchester_hull.png",
+   "col": 0
+  },
+  "move_1": {
+   "sheet": "tank-lanchester_hull.png",
+   "col": 1
+  },
+  "move_2": {
+   "sheet": "tank-lanchester_hull.png",
+   "col": 2
+  },
+  "move_3": {
+   "sheet": "tank-lanchester_hull.png",
+   "col": 3
+  },
+  "move_4": {
+   "sheet": "tank-lanchester_hull.png",
+   "col": 4
+  },
+  "dead": {
+   "sheet": "tank-lanchester_hull.png",
+   "col": 5
+  }
+ },
+ "anchors": "tank-lanchester_hull_anchors.json",
+ "turret": {
+  "layout": "tank-lanchester_turret_layout.json",
+  "mount": {
+   "s": [
+    0.0,
+    -63.67
+   ],
+   "sse": [
+    -5.12,
+    -63.07
+   ],
+   "se": [
+    -9.47,
+    -61.36
+   ],
+   "ese": [
+    -12.37,
+    -58.81
+   ],
+   "e": [
+    -13.39,
+    -55.8
+   ],
+   "ene": [
+    -12.37,
+    -52.78
+   ],
+   "ne": [
+    -9.47,
+    -50.23
+   ],
+   "nne": [
+    -5.12,
+    -48.52
+   ],
+   "n": [
+    -0.0,
+    -47.93
+   ]
+  },
+  "ring_model": [
+   0.0,
+   20.6,
+   -4.0
+  ],
+  "mounts": [
+   {
+    "s": [
+     0.0,
+     -63.67
+    ],
+    "sse": [
+     -5.12,
+     -63.07
+    ],
+    "se": [
+     -9.47,
+     -61.36
+    ],
+    "ese": [
+     -12.37,
+     -58.81
+    ],
+    "e": [
+     -13.39,
+     -55.8
+    ],
+    "ene": [
+     -12.37,
+     -52.78
+    ],
+    "ne": [
+     -9.47,
+     -50.23
+    ],
+    "nne": [
+     -5.12,
+     -48.52
+    ],
+    "n": [
+     -0.0,
+     -47.93
+    ]
+   }
+  ],
+  "rings_model": [
+   [
+    0.0,
+    20.6,
+    -4.0
+   ]
+  ],
+  "pivot": [
+   120,
+   132
+  ],
+  "frame": [
+   240,
+   240
+  ]
+ }
+}

@@ -1,0 +1,87 @@
+  [sim] AI A=tactical B=tactical
+  t=10s  A 270 @(107,68)  B 168 @(151,60)  wall 0.5s
+  t=20s  A 270 @(109,68)  B 168 @(148,61)  wall 1.0s
+  t=30s  A 265 @(112,68)  B 167 @(147,60)  wall 1.4s
+  t=40s  A 261 @(113,66)  B 152 @(146,63)  wall 1.9s
+  t=50s  A 257 @(112,65)  B 146 @(144,63)  wall 2.2s
+  t=60s  A 252 @(113,65)  B 128 @(143,64)  wall 2.6s
+  t=70s  A 251 @(114,66)  B 118 @(150,63)  wall 2.9s
+  t=80s  A 250 @(116,66)  B 107 @(150,63)  wall 3.2s
+  t=90s  A 250 @(116,66)  B 95 @(150,60)  wall 3.5s
+  t=100s  A 241 @(116,67)  B 88 @(159,59)  wall 3.7s
+  t=110s  A 222 @(117,68)  B 88 @(168,59)  wall 4.0s
+  t=120s  A 222 @(116,68)  B 88 @(169,59)  wall 4.3s
+  t=130s  A 222 @(122,69)  B 86 @(168,59)  wall 4.5s
+  t=140s  A 219 @(126,68)  B 86 @(158,62)  wall 4.8s
+  t=150s  A 206 @(131,70)  B 81 @(159,62)  wall 5.2s
+  t=160s  A 206 @(136,69)  B 79 @(176,57)  wall 5.4s
+  t=170s  A 206 @(139,68)  B 79 @(178,56)  wall 5.7s
+  t=180s  A 201 @(145,67)  B 62 @(176,58)  wall 5.9s
+  t=190s  A 201 @(152,64)  B 56 @(185,54)  wall 6.2s
+  t=200s  A 200 @(157,67)  B 40 @(183,54)  wall 6.4s
+  t=210s  A 175 @(157,67)  B 26 @(183,54)  wall 6.6s
+  t=220s  A 165 @(155,68)  B 19 @(188,49)  wall 6.8s
+  t=230s  A 165 @(155,67)  B 12 @(187,49)  wall 6.9s
+MARCH ticks=1195495 move=801511 moveOn=801511 shots=1040 moveShots=624 pistol=2 gren=0 melee=0
+MEAS start=270/168 end_t=237 winner=1 lossEnd=105/168 loss120=48/80 loss300=-1/-1 t50=-/147 shots=6352 hits=843 hitpct=13.3 meanDist=19.5 hitDist=19.6
+결과: 승자 1, 237.4초, 실행 7.0초, 명령 455
+사살원인 020s heavy_field_gun/gun_field->infantry_regular = 3
+사살원인 020s heavy_machinegunner_fengtian/lmg_chauchat->infantry_regular = 2
+사살원인 020s infantry_regular/rifle_mosin->heavy_machinegunner_fengtian = 1
+사살원인 030s heavy_field_gun/gun_field->infantry_regular = 3
+사살원인 030s infantry_assault/carbine_assault->infantry_regular = 1
+사살원인 030s infantry_regular/rifle_mosin->heavy_machinegunner_fengtian = 4
+사살원인 030s infantry_regular/rifle_mosin->infantry_assault = 11
+사살원인 040s heavy_field_gun/gun_field->infantry_regular = 4
+사살원인 040s infantry_regular/rifle_mosin->infantry_assault = 6
+사살원인 050s heavy_field_gun/gun_field->infantry_regular = 3
+사살원인 050s infantry_assault/carbine_assault->infantry_regular = 2
+사살원인 050s infantry_regular/rifle_mosin->heavy_field_gun = 1
+사살원인 050s infantry_regular/rifle_mosin->infantry_assault = 17
+사살원인 060s infantry_assault/carbine_assault->infantry_regular = 1
+사살원인 060s infantry_regular/rifle_mosin->heavy_field_gun = 1
+사살원인 060s infantry_regular/rifle_mosin->heavy_machinegunner_fengtian = 1
+사살원인 060s infantry_regular/rifle_mosin->infantry_assault = 8
+사살원인 070s infantry_assault/carbine_assault->infantry_regular = 1
+사살원인 070s infantry_regular/rifle_mosin->infantry_assault = 11
+사살원인 080s infantry_regular/rifle_mosin->infantry_assault = 12
+사살원인 090s heavy_infantry_gun/gun_infantry->infantry_regular = 9
+사살원인 090s infantry_regular/rifle_mosin->heavy_field_gun = 1
+사살원인 090s infantry_regular/rifle_mosin->infantry_assault = 6
+사살원인 100s heavy_infantry_gun/gun_infantry->infantry_regular = 19
+사살원인 120s infantry_regular/rifle_mosin->infantry_assault = 2
+사살원인 130s infantry_assault/carbine_assault->infantry_regular = 3
+사살원인 140s heavy_infantry_gun/gun_infantry->infantry_regular = 5
+사살원인 140s infantry_assault/carbine_assault->infantry_regular = 8
+사살원인 140s infantry_regular/rifle_mosin->infantry_assault = 5
+사살원인 150s infantry_regular/rifle_mosin->infantry_assault = 2
+사살원인 170s infantry_assault/carbine_assault->infantry_regular = 5
+사살원인 170s infantry_regular/rifle_mosin->infantry_assault = 17
+사살원인 180s infantry_regular/rifle_mosin->heavy_infantry_gun = 1
+사살원인 180s infantry_regular/rifle_mosin->infantry_assault = 5
+사살원인 190s infantry_assault/carbine_assault->infantry_regular = 1
+사살원인 190s infantry_regular/rifle_mosin->infantry_assault = 16
+사살원인 200s heavy_infantry_gun/gun_infantry->infantry_regular = 25
+사살원인 200s infantry_regular/rifle_mosin->heavy_infantry_gun = 2
+사살원인 200s infantry_regular/rifle_mosin->infantry_assault = 12
+사살원인 210s heavy_infantry_gun/gun_infantry->infantry_regular = 3
+사살원인 210s infantry_regular/rifle_mosin->heavy_infantry_gun = 4
+사살원인 210s infantry_regular/rifle_mosin->infantry_assault = 3
+사살원인 220s infantry_regular/rifle_mosin->infantry_assault = 7
+사살원인 230s infantry_regular/rifle_mosin->heavy_machinegunner_fengtian = 2
+사살원인 230s infantry_regular/rifle_mosin->infantry_assault = 10
+틀 행동: 시작 0 끝 0 약진 0 기동 0 돌격 0 역습 0 참호 0 연신 0 전환 0 인계멈춤 0 포병전개 0
+기병AI: 돌격 정면 0 측면 0 후방 0 측면경유 0 소규모보류 0 물러남 0 | 추격: 후퇴중 희생 사격 55 근접 0 후퇴하는 적 돌격 보병 0 기병 0 | N55 기병 무모한 정면 0 돌격 사격 전진 0 | N23 소탕 19 | S4 제압으로 꺾인 돌격 0
+F4 기병 돌격: 개시 0 무의미 정면 0 자동 막음 0 근접 사살 0 사유(후퇴/제압/승무원/고립/측면) 0/0/0/0/0 · 하마 0 승마 0
+관찰: 사격 6352발 · 명중 843발 (13.3%) · 사망 273기 → 1킬당 23.3발 (명중 3.1발)
+N61 접근: 보병(1) 첫 사격 15.3초 · 기병(2) 첫 근접 -초 · 전환 0 · 그 시점 B 생존 -1/168
+템포: 첫 사격 15.0초 · A 50% 손실 -초 · B 50% 손실 147.0초 · 사격 거리 평균 19.5 (첫 100발 19.7) 칸
+  세력:종류            시작→남음   사격    근접   포격  방열%  돌격%
+  1:infantry_regular    270→165      5003      0      0     0     0
+  2:heavy_field_gun       3→0          16      0     16    42     0
+  2:heavy_infantry_gun    7→0          47      0     47    10     0
+  2:heavy_machinegunner_fengtian    8→0         245      0      0    39     0
+  2:infantry_assault    150→0        1041      0      0     0     0
+AI 비용: 사고 ms/틱 avg 0.010 max 19.18 (호출 1899, 호출당 0.075 ms) · 전체 Step avg 0.49 ms
+  [전술 AI 1] 프로필 default 태세 Attack/Attack 중대 6 대대 2 · 명령 192 돌격 0 기병돌격 0 참호 0 후퇴 5 포병이동 0 화력사수 0 예비투입 1 · 연대 1 준비사격 0 연신 0 분대약진 23 전초 0/철수 0 역습 0 증원편입 0 공격한계 0
+  [전술 AI 2] 프로필 default 태세 Attack/Defend 중대 2 대대 1 · 명령 176 돌격 0 기병돌격 0 참호 0 후퇴 23 포병이동 0 화력사수 24 예비투입 1 · 연대 1 준비사격 0 연신 0 분대약진 0 전초 0/철수 0 역습 0 증원편입 0 공격한계 1

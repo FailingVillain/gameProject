@@ -1,0 +1,36 @@
+{
+  "name": "cavalry-default",
+  "_doc": "총기병 (default cavalry): WWI mounted rifleman on a bay horse. Shared infantry body: field-grey stand-collar tunic, khaki breeches, tall riding boots, Feldkappe (team band) + arm patch. Carbine (saddle boot, horse's right) and sabre (saddle scabbard, horse's left). Frame 192x224, anchor (96,190) = ground under the horse's centre. No dismount.",
+  "base": "cavalry",
+  "anims": "cavalry",
+  "headgear": "korean_kepi",
+  "uniform": {
+    "jacket": "fgrey_dark",
+    "trousers": "fgrey_dark_trouser",
+    "legging": "leather",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "collar": true,
+    "puttees": false,
+    "piping": "acc_brass",
+    "placket": false,
+    "trouser_stripe": true,
+    "stripe_mat": "acc_brass"
+  },
+  "weapons": {
+    "carbine": "cav_carbine",
+    "sabre": "sabre"
+  },
+  "gear": [
+    "leather_pouches"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "belt": true,
+  "belt_pouches": false,
+  "dirs": "all",
+  "frames": "all"
+}

@@ -1,0 +1,23 @@
+{
+ "name": "officer-bandit",
+ "_doc": "bandit leader: officer copy, tall fur hat, darker brown coat tones.",
+ "base": "officer",
+ "anims": "officer",
+ "headgear": "bandit_fur_hat",
+ "uniform": "bandit_leader",
+ "weapons": {
+  "pistol": "pistol",
+  "sabre": "sabre"
+ },
+ "gear": [
+  "holster",
+  "scabbard"
+ ],
+ "team": [
+  "helmet_band",
+  "arm_patch"
+ ],
+ "belt": true,
+ "dirs": "all",
+ "frames": "all"
+}

@@ -1,0 +1,297 @@
+{
+  "propScatter": true,
+  "propDensity": 4.0,
+  "propCell": 6,
+ "id": "trench_assault",
+ "title": "참호 돌격 (경기관총 · 중기관총)",
+ "date": "1920년 가을",
+ "location": "간도 전선",
+ "briefing": "일본군이 두 겹 참호와 철조망 뒤에서 경기관총 · 중기관총을 걸고 버틴다. 기관총반으로 제압하고 보병으로 참호를 점령하라 (20~40분).",
+ "seed": 21,
+ "weather": "clear",
+ "time": "day",
+ "player": 1,
+ "factions": [
+  {
+   "name": "한국",
+   "en": "korean",
+   "lang": "ko",
+   "color": [
+    60,
+    130,
+    235
+   ],
+   "team": 1,
+   "posture": "attack",
+   "area": "trench"
+  },
+  {
+   "name": "일본",
+   "en": "japanese",
+   "lang": "ja",
+   "color": [
+    235,
+    195,
+    50
+   ],
+   "team": 2,
+   "posture": "hold",
+   "area": "trench",
+   "aiProfile": "japan_garrison"
+  }
+ ],
+ "mapData": {
+  "name": "참호 지대",
+  "width": 150,
+  "height": 90,
+  "base": "grass",
+  "paint": [
+   {
+    "terrain": "trench",
+    "rect": [
+     100,
+     20,
+     1,
+     50
+    ]
+   },
+   {
+    "terrain": "trench",
+    "rect": [
+     108,
+     20,
+     1,
+     50
+    ]
+   },
+   {
+    "terrain": "wire",
+    "rect": [
+     90,
+     20,
+     1,
+     50
+    ]
+   },
+   {
+    "terrain": "rubble",
+    "rect": [
+     70,
+     30,
+     6,
+     5
+    ]
+   },
+   {
+    "terrain": "rubble",
+    "rect": [
+     72,
+     55,
+     6,
+     5
+    ]
+   },
+   {
+    "terrain": "forest",
+    "rect": [
+     40,
+     5,
+     16,
+     14
+    ]
+   },
+   {
+    "terrain": "high",
+    "circle": [
+     125,
+     45,
+     7
+    ]
+   }
+  ],
+  "starts": [
+   [
+    20,
+    45
+   ],
+   [
+    110,
+    45
+   ]
+  ]
+ },
+ "areas": {
+  "trench": {
+   "rect": [
+    98,
+    18,
+    14,
+    54
+   ]
+  }
+ },
+ "deployZones": [
+  {
+   "faction": 1,
+   "rect": [
+    6,
+    15,
+    40,
+    60
+   ]
+  }
+ ],
+ "forces": [
+  {
+   "id": "b1",
+   "faction": 1,
+   "name": "제1대대",
+   "at": [
+    30,
+    45
+   ],
+   "facing": 90,
+   "battalion": 1,
+   "battalionForm": "line",
+   "formation": "line",
+   "companies": [
+    {
+     "units": {
+      "officer": 1,
+      "infantry": 40
+     },
+     "rank": 1
+    },
+    {
+     "units": {
+      "officer": 1,
+      "infantry": 40
+     }
+    },
+    {
+     "units": {
+      "officer": 1,
+      "infantry": 40
+     }
+    }
+   ]
+  },
+  {
+   "id": "lmg",
+   "faction": 1,
+   "name": "경기관총반",
+   "at": [
+    22,
+    45
+   ],
+   "facing": 90,
+   "formation": "line",
+   "units": {
+    "officer": 1,
+    "heavy_machinegunner": 10
+   }
+  },
+  {
+   "id": "hmg",
+   "faction": 1,
+   "name": "중기관총반",
+   "at": [
+    18,
+    40
+   ],
+   "facing": 90,
+   "formation": "line",
+   "units": {
+    "officer": 1,
+    "heavy_maxim": 2
+   }
+  },
+  {
+   "id": "j1",
+   "faction": 2,
+   "name": "일본군 수비대",
+   "at": [
+    104,
+    45
+   ],
+   "facing": 270,
+   "formation": "line",
+   "companies": [
+    {
+     "units": {
+      "officer": 1,
+      "infantry_japanese": 50
+     }
+    },
+    {
+     "units": {
+      "officer": 1,
+      "infantry_japanese": 50
+     }
+    }
+   ]
+  },
+  {
+   "id": "j_lmg",
+   "faction": 2,
+   "name": "경기관총 진지",
+   "at": [
+    102,
+    45
+   ],
+   "facing": 270,
+   "formation": "line",
+   "units": {
+    "officer": 1,
+    "infantry_japanese": 10
+   }
+  },
+  {
+   "id": "j_hmg",
+   "faction": 2,
+   "name": "중기관총 진지",
+   "at": [
+    109,
+    45
+   ],
+   "facing": 270,
+   "formation": "line",
+   "units": {
+    "officer": 1,
+    "heavy_type3": 2
+   }
+  }
+ ],
+ "objectives": [
+  {
+   "id": "take",
+   "type": "capture",
+   "area": "trench",
+   "seconds": 45,
+   "text": "참호선 점령 후 45초 유지"
+  }
+ ],
+ "failures": [
+  {
+   "type": "losses",
+   "percent": 70
+  },
+  {
+   "type": "timeLimit",
+   "seconds": 2400
+  }
+ ],
+ "events": [
+  {
+   "id": "intro",
+   "when": {
+    "time": 1
+   },
+   "do": [
+    {
+     "message": "기관총으로 제압 사격 후 돌격하라"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,25 @@
+{
+  "name": "badge-russian-white",
+  "_doc": "WWI-era rifleman (1914-1920 look): Austro-Hungarian style Feldkappe and stand-collar tunic in field grey (feldgrau), field-grey pack, khaki trousers with puttees, long bolt-action rifle. Same body / 35 frames as the WWII variant (units/infantry-ww2.json). Preview: cap badge = russian-white (badge key).",
+  "base": "infantry",
+  "anims": "infantry",
+  "headgear": "feldkappe",
+  "uniform": "ww1_khaki",
+  "weapon": "bolt_rifle",
+  "gear": [
+    "field_pack_grey",
+    "haversack",
+    "canteen_cloth",
+    "leather_pouches"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "belt": true,
+  "belt_pouches": false,
+  "e_pull_extra": 3.0,
+  "dirs": "all",
+  "frames": "all",
+  "badge": "russian-white"
+}

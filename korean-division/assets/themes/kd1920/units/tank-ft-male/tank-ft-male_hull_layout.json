@@ -1,0 +1,163 @@
+{
+ "part": "hull",
+ "frame": [
+  288,
+  288
+ ],
+ "anchor": [
+  144,
+  192
+ ],
+ "dirs": [
+  "s",
+  "sse",
+  "se",
+  "ese",
+  "e",
+  "ene",
+  "ne",
+  "nne",
+  "n"
+ ],
+ "yaw_step": 22.5,
+ "mirror": true,
+ "mirror_map": {
+  "ssw": "sse",
+  "sw": "se",
+  "wsw": "ese",
+  "w": "e",
+  "wnw": "ene",
+  "nw": "ne",
+  "nnw": "nne"
+ },
+ "columns": [
+  "idle",
+  "move_1",
+  "move_2",
+  "move_3",
+  "move_4",
+  "dead"
+ ],
+ "anims": {
+  "idle": {
+   "frames": [
+    "idle"
+   ],
+   "ms": 150
+  },
+  "move": {
+   "frames": [
+    "move_1",
+    "move_2",
+    "move_3",
+    "move_4"
+   ],
+   "ms": 110
+  },
+  "dead": {
+   "frames": [
+    "dead"
+   ],
+   "ms": 150
+  }
+ },
+ "sheets": [
+  {
+   "file": "tank-ft-male_hull.png",
+   "team": "tank-ft-male_hull_team.png",
+   "columns": [
+    "idle",
+    "move_1",
+    "move_2",
+    "move_3",
+    "move_4",
+    "dead"
+   ],
+   "size": [
+    1728,
+    2592
+   ]
+  }
+ ],
+ "cells": {
+  "idle": {
+   "sheet": "tank-ft-male_hull.png",
+   "col": 0
+  },
+  "move_1": {
+   "sheet": "tank-ft-male_hull.png",
+   "col": 1
+  },
+  "move_2": {
+   "sheet": "tank-ft-male_hull.png",
+   "col": 2
+  },
+  "move_3": {
+   "sheet": "tank-ft-male_hull.png",
+   "col": 3
+  },
+  "move_4": {
+   "sheet": "tank-ft-male_hull.png",
+   "col": 4
+  },
+  "dead": {
+   "sheet": "tank-ft-male_hull.png",
+   "col": 5
+  }
+ },
+ "anchors": "tank-ft-male_hull_anchors.json",
+ "turret": {
+  "layout": "tank-ft-male_turret_layout.json",
+  "mount": {
+   "s": [
+    0.0,
+    -46.89
+   ],
+   "sse": [
+    1.92,
+    -47.11
+   ],
+   "se": [
+    3.55,
+    -47.75
+   ],
+   "ese": [
+    4.64,
+    -48.71
+   ],
+   "e": [
+    5.02,
+    -49.84
+   ],
+   "ene": [
+    4.64,
+    -50.97
+   ],
+   "ne": [
+    3.55,
+    -51.93
+   ],
+   "nne": [
+    1.92,
+    -52.57
+   ],
+   "n": [
+    0.0,
+    -52.79
+   ]
+  },
+  "ring_model": [
+   0.0,
+   18.4,
+   1.5
+  ],
+  "pivot": [
+   120,
+   132
+  ],
+  "frame": [
+   240,
+   240
+  ]
+ }
+}

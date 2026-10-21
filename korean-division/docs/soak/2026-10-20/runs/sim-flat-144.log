@@ -1,0 +1,87 @@
+  [sim] AI A=tactical B=tactical
+  t=10s  A 49 @(115,64)  B 192 @(138,64)  wall 0.3s
+  t=20s  A 47 @(116,64)  B 175 @(125,67)  wall 0.5s
+  t=30s  A 32 @(115,65)  B 167 @(122,67)  wall 0.7s
+  t=40s  A 30 @(91,58)  B 167 @(116,63)  wall 0.9s
+  t=50s  A 30 @(91,57)  B 158 @(112,62)  wall 1.0s
+  t=60s  A 29 @(91,58)  B 144 @(109,62)  wall 1.2s
+  t=70s  A 26 @(91,58)  B 131 @(102,60)  wall 1.3s
+  t=80s  A 23 @(71,56)  B 128 @(94,58)  wall 1.4s
+  t=90s  A 21 @(56,54)  B 126 @(84,56)  wall 1.5s
+  t=100s  A 21 @(56,54)  B 114 @(81,55)  wall 1.6s
+  t=110s  A 17 @(50,55)  B 107 @(78,55)  wall 1.7s
+  t=120s  A 17 @(35,56)  B 107 @(74,57)  wall 1.8s
+  t=130s  A 15 @(33,56)  B 107 @(63,55)  wall 1.9s
+  t=140s  A 15 @(33,56)  B 101 @(53,53)  wall 2.0s
+  t=150s  A 11 @(27,64)  B 99 @(52,53)  wall 2.1s
+  t=160s  A 11 @(27,64)  B 95 @(52,52)  wall 2.2s
+  t=170s  A 9 @(27,64)  B 89 @(39,60)  wall 2.3s
+MARCH ticks=0 move=0 moveOn=0 shots=0 moveShots=0 pistol=0 gren=0 melee=0
+MEAS start=49/192 end_t=178 winner=2 lossEnd=49/104 loss120=32/85 loss300=-1/-1 t50=72/158 shots=1808 hits=436 hitpct=24.1 meanDist=11.1 hitDist=11.8
+결과: 승자 2, 178.1초, 실행 2.3초, 명령 232
+사살원인 010s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 14
+사살원인 010s heavy_machinegunner_fengtian/lmg_chauchat->infantry_dadao_fengtian = 2
+사살원인 010s infantry_dadao_fengtian/dadao->bandit_rifleman = 1
+사살원인 010s infantry_sniper/sniper_rifle->heavy_machinegunner_fengtian = 1
+사살원인 010s officer/pistol->infantry_dadao_fengtian = 1
+사살원인 020s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 5
+사살원인 020s infantry_dadao_fengtian/dadao->bandit_rifleman = 2
+사살원인 020s infantry_dadao_fengtian/dadao->heavy_machinegunner_fengtian = 1
+사살원인 020s infantry_dadao_fengtian/melee->bandit_rifleman = 7
+사살원인 020s infantry_dadao_fengtian/melee->heavy_machinegunner_fengtian = 1
+사살원인 020s infantry_dadao_fengtian/melee->officer = 3
+사살원인 020s infantry_sniper/sniper_rifle->bandit_rifleman = 1
+사살원인 020s officer/pistol->infantry_dadao_fengtian = 3
+사살원인 030s infantry_dadao_fengtian/melee->bandit_rifleman = 1
+사살원인 030s infantry_dadao_fengtian/melee->officer = 1
+사살원인 040s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 9
+사살원인 050s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 6
+사살원인 050s heavy_machinegunner_fengtian/lmg_chauchat->infantry_dadao_fengtian = 6
+사살원인 050s infantry_dadao_fengtian/dadao->bandit_rifleman = 1
+사살원인 050s officer/pistol->infantry_dadao_fengtian = 2
+사살원인 060s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 5
+사살원인 060s heavy_machinegunner_fengtian/lmg_chauchat->infantry_dadao_fengtian = 3
+사살원인 060s infantry_sniper/sniper_rifle->bandit_rifleman = 2
+사살원인 060s infantry_sniper/sniper_rifle->officer = 1
+사살원인 060s officer/pistol->infantry_dadao_fengtian = 5
+사살원인 070s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 2
+사살원인 070s infantry_dadao_fengtian/melee->bandit_rifleman = 2
+사살원인 070s infantry_sniper/sniper_rifle->officer = 1
+사살원인 070s officer/pistol->infantry_dadao_fengtian = 1
+사살원인 080s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 2
+사살원인 080s infantry_sniper/sniper_rifle->officer = 2
+사살원인 090s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 9
+사살원인 090s heavy_machinegunner_fengtian/lmg_chauchat->infantry_dadao_fengtian = 3
+사살원인 100s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 5
+사살원인 100s heavy_machinegunner_fengtian/lmg_chauchat->infantry_dadao_fengtian = 2
+사살원인 100s infantry_dadao_fengtian/melee->bandit_rifleman = 1
+사살원인 100s infantry_dadao_fengtian/melee->heavy_machinegunner_fengtian = 1
+사살원인 100s infantry_sniper/sniper_rifle->officer = 2
+사살원인 120s infantry_dadao_fengtian/melee->heavy_machinegunner_fengtian = 2
+사살원인 130s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 6
+사살원인 140s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 1
+사살원인 140s heavy_machinegunner_fengtian/lmg_chauchat->infantry_dadao_fengtian = 1
+사살원인 140s infantry_sniper/sniper_rifle->bandit_rifleman = 1
+사살원인 140s infantry_sniper/sniper_rifle->heavy_machinegunner_fengtian = 2
+사살원인 140s infantry_sniper/sniper_rifle->officer = 1
+사살원인 150s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 4
+사살원인 160s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 6
+사살원인 160s infantry_sniper/sniper_rifle->bandit_rifleman = 2
+사살원인 170s bandit_rifleman/rifle_mosin->infantry_dadao_fengtian = 1
+사살원인 170s infantry_dadao_fengtian/melee->bandit_rifleman = 8
+사살원인 170s infantry_sniper/sniper_rifle->bandit_rifleman = 1
+틀 행동: 시작 4 끝 2 약진 0 기동 0 돌격 0 역습 0 참호 0 연신 0 전환 4 인계멈춤 29 포병전개 0
+기병AI: 돌격 정면 0 측면 0 후방 0 측면경유 0 소규모보류 0 물러남 0 | 추격: 후퇴중 희생 사격 7 근접 0 후퇴하는 적 돌격 보병 0 기병 0 | N55 기병 무모한 정면 0 돌격 사격 전진 0 | N23 소탕 0 | S4 제압으로 꺾인 돌격 0
+F4 기병 돌격: 개시 0 무의미 정면 0 자동 막음 0 근접 사살 0 사유(후퇴/제압/승무원/고립/측면) 0/0/0/0/0 · 하마 0 승마 0
+관찰: 사격 1808발 · 명중 436발 (24.1%) · 사망 153기 → 1킬당 11.8발 (명중 2.8발)
+N61 접근: 보병(1) 첫 사격 11.1초 · 기병(2) 첫 근접 17.7초 · 전환 0 · 그 시점 B 생존 185/192
+템포: 첫 사격 7.9초 · A 50% 손실 71.5초 · B 50% 손실 158.0초 · 사격 거리 평균 11.1 (첫 100발 16.0) 칸
+  세력:종류            시작→남음   사격    근접   포격  방열%  돌격%
+  1:bandit_rifleman      30→0         966      0      0     0     0
+  1:heavy_machinegunner_fengtian    8→0         471      0      0    59     0
+  1:officer              11→0         173      0      0     0     0
+  2:infantry_dadao_fengtian  180→76         18    109      0     0     1
+  2:infantry_sniper      12→12        180      0      0     0     0
+AI 비용: 사고 ms/틱 avg 0.008 max 18.07 (호출 1425, 호출당 0.060 ms) · 전체 Step avg 0.22 ms
+  [전술 AI 1] 프로필 default 태세 Attack/Defend 중대 1 대대 1 · 명령 29 돌격 0 기병돌격 0 참호 0 후퇴 8 포병이동 0 화력사수 4 예비투입 0 · 연대 1 준비사격 0 연신 0 분대약진 0 전초 0/철수 0 역습 0 증원편입 0 공격한계 1
+  [전술 AI 2] 프로필 default 태세 Attack/Attack 중대 6 대대 1 · 명령 175 돌격 0 기병돌격 0 참호 0 후퇴 11 포병이동 0 화력사수 23 예비투입 1 · 연대 1 준비사격 0 연신 0 분대약진 0 전초 0/철수 0 역습 0 증원편입 0 공격한계 0

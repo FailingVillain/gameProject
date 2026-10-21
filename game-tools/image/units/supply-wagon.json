@@ -1,0 +1,17 @@
+{
+  "name": "supply-wagon",
+  "_doc": "보급 마차 (supply wagon): WWI two-wheel limber cart, two draught horses (cavalry horse model, bridle + collar, no saddle), canvas-covered ammo crates, seated driver (shared infantry body, field-grey tunic, Feldkappe with team band). Team colour: Feldkappe band, canvas band and pennant. 5 directions + mirror like cavalry; frame 256x224, anchor = ground under the assembly centre.",
+  "base": "wagon",
+  "anims": "wagon",
+  "headgear": "feldkappe",
+  "uniform": {"jacket": "feldgrau", "trousers": "lkhaki", "legging": "leather", "boot": "leather", "belt": "leather", "hand": "skin",
+              "collar": true, "puttees": false},
+  "weapon": null,
+  "gear": [],
+  "team": ["helmet_band"],
+  "belt": true,
+  "belt_pouches": false,
+  "tune": {"parts": {"horse": {"scale": 1.0}}},
+  "dirs": "all",
+  "frames": "all"
+}

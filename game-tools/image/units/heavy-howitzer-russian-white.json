@@ -1,0 +1,45 @@
+{
+  "name": "heavy-howitzer-russian-white",
+  "_doc": "heavy-howitzer faction variant (russian-white): same model, furazhka + russian-white infantry uniform; cap badge from parts/badges HEAD_BADGE.",
+  "kind": "artillery",
+  "gun": "howitzer",
+  "anims": "artillery_tow",
+  "headgear": "furazhka",
+  "uniform": {
+    "legging": "puttee",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "collar": true,
+    "puttees": true,
+    "jacket": "ru_olive",
+    "trousers": "ru_olive"
+  },
+  "gear": [
+    "canteen_cloth"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "frame": [
+    976,
+    656
+  ],
+  "ay_frac": 0.5884,
+  "zoom_mul": 1.0,
+  "center": [
+    0.0,
+    -6.0
+  ],
+  "dirs": "all",
+  "frames": "all",
+  "tow": true,
+  "tune": {
+    "parts": {
+      "horse": {
+        "scale": 1.4
+      }
+    }
+  }
+}

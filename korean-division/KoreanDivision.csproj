@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>KoreanDivision</RootNamespace>
+    <AssemblyName>KoreanDivision</AssemblyName>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <TieredPGO>true</TieredPGO>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>   <!-- src/Render/LodSprite.cs: 시트 픽셀 직접 합치기 -->
+  </PropertyGroup>
+
+  <!-- 배포 빌드: 콘솔 창 없음, 단일 exe (publish.ps1 참고) -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <OutputType>WinExe</OutputType>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Raylib-cs" Version="8.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="assets\**\*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

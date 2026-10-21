@@ -1,0 +1,23 @@
+{
+  "name": "officer-russian-white",
+  "base": "officer",
+  "anims": "officer",
+  "headgear": "officer_cap_ru_olive",
+  "uniform": "ru_white",
+  "weapons": {
+    "pistol": "pistol",
+    "sabre": "sabre"
+  },
+  "gear": [
+    "holster",
+    "scabbard",
+    "map_case"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "belt": true,
+  "dirs": "all",
+  "frames": "all"
+}

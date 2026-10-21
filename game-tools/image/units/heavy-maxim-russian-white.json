@@ -1,0 +1,19 @@
+{
+  "name": "heavy-maxim-russian-white",
+  "kind": "crew",
+  "_doc": "heavy-maxim faction variant (russian-white): same model, furazhka + russian-white infantry uniform; cap badge from parts/badges HEAD_BADGE.",
+  "anims": "heavy-maxim",
+  "dirs": "all",
+  "frames": "all",
+  "headgear": "furazhka",
+  "uniform": {
+    "legging": "puttee",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "collar": true,
+    "puttees": true,
+    "jacket": "ru_olive",
+    "trousers": "ru_olive"
+  }
+}

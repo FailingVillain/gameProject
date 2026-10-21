@@ -1,0 +1,106 @@
+  [sim] AI A=tactical B=tactical
+  t=10s  A 97 @(94,66)  B 46 @(159,61)  wall 0.2s
+  t=20s  A 97 @(104,67)  B 46 @(153,60)  wall 0.4s
+  t=30s  A 97 @(110,67)  B 46 @(155,60)  wall 0.5s
+  t=40s  A 97 @(108,67)  B 46 @(151,60)  wall 0.6s
+  t=50s  A 93 @(107,66)  B 45 @(151,58)  wall 0.8s
+  t=60s  A 78 @(111,71)  B 44 @(151,58)  wall 1.0s
+  t=70s  A 78 @(116,73)  B 43 @(153,58)  wall 1.1s
+  t=80s  A 78 @(116,72)  B 43 @(153,58)  wall 1.2s
+  t=90s  A 78 @(117,71)  B 43 @(152,59)  wall 1.3s
+  t=100s  A 78 @(121,69)  B 42 @(151,58)  wall 1.4s
+  t=110s  A 78 @(123,69)  B 41 @(151,58)  wall 1.6s
+  t=120s  A 66 @(128,65)  B 41 @(151,58)  wall 1.7s
+  t=130s  A 52 @(131,68)  B 40 @(151,58)  wall 1.8s
+  t=140s  A 51 @(123,76)  B 40 @(151,58)  wall 1.8s
+  t=150s  A 49 @(108,90)  B 40 @(150,59)  wall 1.9s
+  t=160s  A 49 @(108,90)  B 40 @(132,59)  wall 2.0s
+  t=170s  A 49 @(109,90)  B 40 @(126,59)  wall 2.1s
+  t=180s  A 48 @(109,93)  B 38 @(124,59)  wall 2.2s
+  t=190s  A 46 @(108,93)  B 37 @(123,59)  wall 2.3s
+  t=200s  A 45 @(108,92)  B 35 @(122,59)  wall 2.4s
+  t=210s  A 45 @(108,93)  B 33 @(122,58)  wall 2.4s
+  t=220s  A 34 @(106,86)  B 33 @(122,57)  wall 2.5s
+  t=230s  A 32 @(104,92)  B 33 @(122,57)  wall 2.6s
+  t=240s  A 32 @(103,93)  B 33 @(123,57)  wall 2.6s
+  t=250s  A 32 @(102,93)  B 33 @(123,57)  wall 2.7s
+  t=260s  A 32 @(101,92)  B 33 @(123,57)  wall 2.7s
+  t=270s  A 31 @(103,93)  B 33 @(124,58)  wall 2.8s
+  t=280s  A 29 @(105,90)  B 33 @(124,59)  wall 2.8s
+  t=290s  A 24 @(104,91)  B 33 @(124,59)  wall 2.9s
+  t=300s  A 23 @(97,97)  B 33 @(125,59)  wall 2.9s
+  t=310s  A 23 @(92,104)  B 33 @(125,59)  wall 3.0s
+  t=320s  A 23 @(90,105)  B 33 @(124,60)  wall 3.0s
+  t=330s  A 23 @(90,104)  B 33 @(122,61)  wall 3.0s
+  t=340s  A 23 @(79,117)  B 33 @(121,61)  wall 3.1s
+  t=350s  A 23 @(75,121)  B 33 @(120,64)  wall 3.1s
+  t=360s  A 23 @(75,121)  B 33 @(120,70)  wall 3.2s
+  t=370s  A 23 @(64,124)  B 33 @(116,75)  wall 3.2s
+  t=380s  A 23 @(60,124)  B 33 @(114,84)  wall 3.2s
+  t=390s  A 23 @(57,125)  B 33 @(113,97)  wall 3.3s
+  t=400s  A 23 @(57,124)  B 33 @(112,97)  wall 3.3s
+  t=410s  A 23 @(42,124)  B 33 @(115,94)  wall 3.4s
+  t=420s  A 23 @(42,124)  B 33 @(118,87)  wall 3.4s
+  t=430s  A 23 @(42,124)  B 33 @(122,82)  wall 3.5s
+  t=440s  A 23 @(30,124)  B 33 @(118,82)  wall 3.5s
+  t=450s  A 23 @(25,124)  B 33 @(99,80)  wall 3.6s
+  t=460s  A 23 @(25,124)  B 33 @(75,74)  wall 3.6s
+  t=470s  A 23 @(24,124)  B 33 @(51,69)  wall 3.6s
+  t=480s  A 23 @(7,123)  B 33 @(42,67)  wall 3.7s
+  t=490s  A 23 @(7,123)  B 33 @(36,66)  wall 3.7s
+  t=500s  A 23 @(7,123)  B 33 @(36,66)  wall 3.7s
+  t=510s  A 23 @(3,123)  B 33 @(36,66)  wall 3.8s
+  t=520s  A 23 @(3,123)  B 33 @(36,66)  wall 3.8s
+  t=530s  A 23 @(3,123)  B 33 @(36,66)  wall 3.8s
+  t=540s  A 23 @(3,123)  B 33 @(36,66)  wall 3.9s
+  t=550s  A 23 @(3,123)  B 33 @(36,66)  wall 3.9s
+  t=560s  A 23 @(3,123)  B 33 @(36,66)  wall 3.9s
+  t=570s  A 23 @(3,123)  B 33 @(36,66)  wall 4.0s
+  t=580s  A 23 @(3,123)  B 33 @(36,66)  wall 4.0s
+  t=590s  A 23 @(3,123)  B 33 @(36,66)  wall 4.0s
+MARCH ticks=0 move=0 moveOn=0 shots=0 moveShots=0 pistol=0 gren=0 melee=0
+MEAS start=97/46 end_t=600 winner=0 lossEnd=74/13 loss120=31/5 loss300=74/13 t50=176/- shots=566 hits=156 hitpct=27.6 meanDist=20.7 hitDist=23.6
+결과: 승자 0, 600.0초, 실행 4.1초, 명령 370
+사살원인 040s heavy_field_gun/gun_field->infantry_fengtian = 4
+사살원인 040s infantry_fengtian/rifle_mosin->heavy_field_gun = 1
+사살원인 050s heavy_field_gun/gun_field->infantry_fengtian = 15
+사살원인 050s infantry_fengtian/rifle_mosin->heavy_field_gun = 1
+사살원인 060s infantry_fengtian/rifle_mosin->infantry_reserve = 1
+사살원인 090s infantry_fengtian/rifle_mosin->infantry_reserve = 1
+사살원인 100s infantry_fengtian/rifle_mosin->infantry_reserve = 1
+사살원인 110s heavy_field_gun/gun_field->infantry_fengtian = 8
+사살원인 110s heavy_infantry_gun/gun_infantry->infantry_fengtian = 4
+사살원인 120s heavy_field_gun/gun_field->infantry_fengtian = 5
+사살원인 120s heavy_infantry_gun/gun_infantry->infantry_fengtian = 9
+사살원인 120s infantry_fengtian/rifle_mosin->infantry_reserve = 1
+사살원인 130s heavy_infantry_gun/gun_infantry->cavalry_default = 1
+사살원인 140s heavy_infantry_gun/gun_infantry->cavalry_default = 2
+사살원인 170s infantry_fengtian/rifle_mosin->infantry_reserve = 2
+사살원인 170s infantry_reserve/rifle_mosin->infantry_fengtian = 1
+사살원인 180s infantry_fengtian/rifle_mosin->infantry_reserve = 1
+사살원인 180s infantry_reserve/rifle_mosin->infantry_fengtian = 2
+사살원인 190s infantry_fengtian/rifle_mosin->infantry_reserve = 2
+사살원인 190s infantry_reserve/rifle_mosin->infantry_fengtian = 1
+사살원인 200s infantry_fengtian/rifle_mosin->infantry_reserve = 2
+사살원인 210s heavy_infantry_gun/gun_infantry->infantry_fengtian = 11
+사살원인 220s heavy_infantry_gun/gun_infantry->infantry_fengtian = 2
+사살원인 260s heavy_field_gun/gun_field->infantry_fengtian = 1
+사살원인 270s infantry_reserve/rifle_mosin->infantry_fengtian = 2
+사살원인 280s heavy_field_gun/gun_field->infantry_fengtian = 4
+사살원인 280s infantry_reserve/rifle_mosin->infantry_fengtian = 1
+사살원인 290s infantry_reserve/rifle_mosin->infantry_fengtian = 1
+틀 행동: 시작 0 끝 0 약진 0 기동 0 돌격 0 역습 0 참호 0 연신 0 전환 0 인계멈춤 0 포병전개 0
+기병AI: 돌격 정면 0 측면 0 후방 0 측면경유 0 소규모보류 303 물러남 5 | 추격: 후퇴중 희생 사격 12 근접 0 후퇴하는 적 돌격 보병 0 기병 0 | N55 기병 무모한 정면 0 돌격 사격 전진 0 | N23 소탕 0 | S4 제압으로 꺾인 돌격 0
+F4 기병 돌격: 개시 0 무의미 정면 0 자동 막음 0 근접 사살 0 사유(후퇴/제압/승무원/고립/측면) 0/0/0/0/0 · 하마 1 승마 0
+관찰: 사격 566발 · 명중 156발 (27.6%) · 사망 87기 → 1킬당 6.5발 (명중 1.8발)
+N61 접근: 보병(1) 첫 사격 41.5초 · 기병(2) 첫 근접 -초 · 전환 0 · 그 시점 B 생존 -1/46
+템포: 첫 사격 41.5초 · A 50% 손실 175.5초 · B 50% 손실 -초 · 사격 거리 평균 20.7 (첫 100발 19.5) 칸
+  세력:종류            시작→남음   사격    근접   포격  방열%  돌격%
+  1:cavalry_default       7→4           0      0      0     0     0
+  1:infantry_fengtian    90→19        361      0      0     0     0
+  2:heavy_field_gun      11→9          38      0     38    38     0
+  2:heavy_infantry_gun    5→5          34      0     34    30     0
+  2:infantry_reserve     30→19        133      0      0     0     0
+AI 비용: 사고 ms/틱 avg 0.004 max 18.73 (호출 4800, 호출당 0.033 ms) · 전체 Step avg 0.11 ms
+  [전술 AI 1] 프로필 default 태세 Attack/Attack 중대 3 대대 1 · 명령 171 돌격 0 기병돌격 0 참호 0 후퇴 28 포병이동 0 화력사수 0 예비투입 0 · 연대 1 준비사격 0 연신 0 분대약진 2 전초 0/철수 0 역습 0 증원편입 0 공격한계 0
+  [전술 AI 2] 프로필 default 태세 Attack/Attack 중대 4 대대 1 · 명령 158 돌격 0 기병돌격 0 참호 0 후퇴 2 포병이동 0 화력사수 34 예비투입 0 · 연대 1 준비사격 0 연신 0 분대약진 8 전초 0/철수 0 역습 0 증원편입 0 공격한계 0

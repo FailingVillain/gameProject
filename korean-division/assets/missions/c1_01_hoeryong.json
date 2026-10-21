@@ -1,0 +1,90 @@
+{
+  "propScatter": true,
+  "propDensity": 4.0,
+  "propCell": 6,
+  // 캠페인 1-1 회령 초소 (수직 슬라이스): 밤 → 새벽 방어. 캠페인-초안 [1-1]. village_defense 의 확장 (새 파일).
+  // 마적 400 = 1파 100 + 2파 90 + 3파 90 + 4파 80 + 5파 40.
+  "id": "c1_01_hoeryong",
+  "title": "1-1 회령 초소",
+  "date": "1920년 4월 · 밤",
+  "location": "함경북도 회령 · 두만강변 국경 마을",
+  "briefing": "1920년 4월, 제1사단 선두 부대가 회령에 막 도착했다. 그날 밤 두만강을 건넌 마적 400여 명이 국경 마을을 덮친다. 참장 (사단장) 은 소총 2개 중대로 마을을 지키고, 초소의 기관총 진지를 유지하라. 한 시간 가까이 버티면 날이 밝고 마적은 물러간다. 중간에 증원 1개 중대가 남쪽에서 온다. 병력은 생산되지 않는다. 가진 병력으로 버텨라. 탄약은 마을 근처에서 천천히 회복된다. 마적이 마을 중심을 홀로 차지하면 패배.",
+  "seed": 1920,
+  "weather": "clear",
+  "time": "night",
+  "player": 1,
+  "factions": [
+    { "name": "한국", "en": "korean", "lang": "ko", "color": [60, 130, 235], "team": 1, "posture": "defend", "area": "center" },
+    { "name": "마적", "en": "bandit", "lang": "zh", "color": [200, 120, 40], "team": 2, "posture": "attack", "area": "center" }
+  ],
+  "mapData": {
+    "name": "회령 국경 마을",
+    "width": 160, "height": 140, "base": "grass",
+    "paint": [
+      { "terrain": "water", "rect": [0, 8, 160, 8] },
+      { "terrain": "dirt", "rect": [77, 8, 6, 8] },
+      { "terrain": "dirt", "rect": [77, 16, 6, 124] },
+      { "terrain": "dirt", "rect": [50, 78, 60, 3] },
+      { "terrain": "house", "tiles": [[66, 70], [67, 70], [66, 71], [67, 71], [70, 85], [71, 85], [70, 86], [71, 86], [88, 70], [89, 70], [88, 71], [89, 71], [90, 71], [92, 86], [93, 86], [92, 87], [93, 87], [60, 80], [61, 80], [60, 81], [61, 81], [99, 80], [100, 80], [99, 81], [100, 81]] },
+      { "terrain": "rubble", "rect": [84, 76, 3, 3] },
+      { "terrain": "trench", "rect": [64, 56, 14, 2] },
+      { "terrain": "trench", "rect": [83, 56, 14, 2] },
+      { "terrain": "wire", "rect": [60, 48, 14, 1] },
+      { "terrain": "wire", "rect": [86, 48, 14, 1] },
+      { "terrain": "forest", "rect": [8, 30, 30, 26] },
+      { "terrain": "forest", "rect": [120, 28, 28, 24] },
+      { "terrain": "forest", "rect": [118, 96, 26, 24] },
+      { "terrain": "high", "circle": [38, 100, 8] }
+    ],
+    "starts": [ [80, 76], [80, 22] ]
+  },
+  "areas": {
+    "center": { "rect": [66, 66, 28, 24] },
+    "post": { "rect": [74, 54, 12, 6] },
+    "trenchline": { "rect": [62, 54, 36, 6] },
+    "north": { "rect": [60, 18, 40, 6] },
+    "northwest": { "rect": [20, 58, 14, 14] },
+    "northeast": { "rect": [126, 58, 14, 14] },
+    "south_edge": { "rect": [66, 130, 28, 6] }
+  },
+  "deployZones": [ { "faction": 1, "rect": [52, 50, 56, 44] } ],
+  "forces": [
+    { "id": "c1", "faction": 1, "name": "제1중대", "at": [68, 60], "facing": 0, "units": { "officer": 1, "infantry": 54 }, "formation": "line" },
+    { "id": "c2", "faction": 1, "name": "제2중대", "at": [92, 60], "facing": 0, "units": { "officer": 1, "infantry": 54 }, "formation": "line" },
+    { "id": "mg", "faction": 1, "name": "초소 기관총", "at": [80, 56], "facing": 0, "units": { "heavy_maxim": 2 }, "formation": "line", "rank": 1, "tag": "mgnest" },
+    { "id": "b1", "faction": 2, "name": "마적 1파", "at": [80, 26], "facing": 180, "formation": "line",
+      "companies": [ { "units": { "bandit_leader": 1, "bandit_rifleman": 55, "bandit_thug": 44 } } ] }
+  ],
+  "reinforcements": [
+    { "id": "b2", "faction": 2, "name": "마적 2파", "area": "northwest", "facing": 135, "time": 420, "formation": "line",
+      "companies": [ { "units": { "bandit_leader": 1, "bandit_rifleman": 55, "bandit_thug": 34 } } ] },
+    { "id": "b3", "faction": 2, "name": "마적 3파", "area": "northeast", "facing": 225, "time": 900, "formation": "line",
+      "companies": [ { "units": { "bandit_leader": 1, "bandit_rifleman": 55, "bandit_thug": 34 } } ] },
+    { "id": "b4", "faction": 2, "name": "마적 기병대", "area": "north", "facing": 180, "time": 1500, "formation": "line",
+      "companies": [ { "units": { "bandit_leader": 1, "bandit_rifleman": 39, "bandit_horseman": 40 } } ] },
+    { "id": "b5", "faction": 2, "name": "마적 5파", "area": "north", "facing": 180, "time": 2000, "formation": "line",
+      "companies": [ { "units": { "bandit_leader": 1, "bandit_rifleman": 24, "bandit_thug": 15 } } ] },
+    { "id": "c3", "faction": 1, "name": "증원 제3중대", "area": "south_edge", "facing": 0, "posture": "attack", "aiArea": "center", "formation": "line",
+      "companies": [ { "units": { "officer": 1, "infantry": 54 } } ] }
+  ],
+  "objectives": [
+    { "id": "hold", "type": "defend", "area": "center", "seconds": 2700, "loseAfter": 15, "text": "새벽까지 (45분) 마을 중심 사수" },
+    { "id": "mgnest", "type": "defend", "area": "post", "seconds": 2700, "loseAfter": 40, "primary": false, "text": "초소 기관총 진지 유지" }
+  ],
+  "failures": [ { "type": "losses", "percent": 90 } ],
+  "events": [
+    { "id": "intro", "when": { "time": 1 }, "do": [ { "message": "밤이다. 두만강 건너편에서 횃불이 보인다. 마적이 온다." } ] },
+    { "id": "t_select", "when": { "time": 6 }, "do": [ { "message": "[선택] 부대를 좌클릭 (드래그로 여러 개 선택)" } ] },
+    { "id": "t_move", "when": { "time": 30 }, "do": [ { "message": "[이동] 선택 후 우클릭 = 이동. 우클릭 드래그 = 횡대 전개" } ] },
+    { "id": "t_trench", "when": { "area": "trenchline" }, "do": [ { "message": "[참호] 참호 칸에 멈추면 자동으로 들어간다. 엄폐 효과가 크다" } ] },
+    { "id": "t_cover", "when": { "time": 75 }, "do": [ { "message": "[엄폐] 가옥 · 숲 · 잔해 뒤가 맨땅보다 훨씬 안전하다" } ] },
+    { "id": "t_ammo", "when": { "time": 240 }, "do": [ { "message": "[탄약] 전투가 멎고 마을 근처에 있으면 탄약이 천천히 회복된다" } ] },
+    { "id": "wave2", "when": { "time": 420 }, "do": [ { "message": "마적 제2파가 서쪽 숲에서 나타났다!" } ] },
+    { "id": "wave3", "when": { "time": 900 }, "do": [ { "message": "마적 제3파가 동쪽에서 접근한다!" } ] },
+    { "id": "relief", "when": { "time": 1200 }, "do": [ { "spawn": "c3" }, { "message": "증원 제3중대가 남쪽에서 도착했다." } ] },
+    { "id": "cav", "when": { "time": 1500 }, "do": [ { "message": "마적 기병대가 북쪽 나루로 건너온다!" } ] },
+    { "id": "last", "when": { "time": 2000 }, "do": [ { "message": "마지막 무리가 온다. 날이 밝을 때까지 버텨라." } ] },
+    { "id": "dawn", "when": { "time": 2400 }, "do": [ { "time": "dawn", "message": "동이 트기 시작한다." } ] },
+    { "id": "mgwarn", "when": { "objective": "mgnest", "state": "failed" }, "do": [ { "message": "초소 기관총 진지를 빼앗겼다!" } ] }
+  ]
+}

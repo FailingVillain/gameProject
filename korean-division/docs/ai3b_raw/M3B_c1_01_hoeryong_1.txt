@@ -1,0 +1,10 @@
+[mission-run] c1_01_hoeryong '1-1 회령 초소': lost (-) at 1048.1s, ticks 62888, 13.1s wall
+  objective hold (defend, primary): failed progress 15.0
+  objective mgnest (defend): active progress 0.0
+  faction 1 한국: spawned 112, lost 55, alive 57, trench peak 79 (now 4)
+  faction 2 마적: spawned 280, lost 205, alive 75, trench peak 0 (now 0)
+  tac 1: reserve 0 counter 0 fallbacks 4 ammoRot 0 plug 0/0/0 redesig 0 fixPush 0
+  tac 2: reserve 0 counter 0 fallbacks 39 ammoRot 0 plug 0/0/0 redesig 0 fixPush 0
+  events fired 8/13, reinforcements 2/5, messages 8, top kills 34, promotions 17
+  results: C:\Users\seung\AppData\Local\KoreanDivision\results\c1_01_hoeryong_20261020_233421.json
+  checksum F85BDE939FD8CE7D tick 62888

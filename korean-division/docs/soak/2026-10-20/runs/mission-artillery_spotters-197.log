@@ -1,0 +1,7 @@
+[mission-run] artillery_spotters '포병 + 관측반': won (-) at 212.9s, ticks 12776, 2.7s wall
+  objective take (capture, primary): done progress 45.0
+  faction 1 한국: spawned 139, lost 62, alive 77, trench peak 5 (now 1)
+  faction 2 일본: spawned 85, lost 63, alive 22, trench peak 80 (now 0)
+  events fired 1/1, reinforcements 0/0, messages 1, top kills 32, promotions 4
+  results: C:\Users\seung\AppData\Local\KoreanDivision\results\artillery_spotters_20261020_193347.json
+  checksum 2E78C6D5F761467D tick 12776

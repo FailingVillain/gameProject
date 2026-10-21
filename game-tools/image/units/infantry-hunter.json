@@ -1,0 +1,16 @@
+{
+ "name": "infantry-hunter",
+ "_doc": "Manchurian hunter (common): infantry body/poses, brown fur cap with ear flaps + green crown, moss-brown hide coat with fur collar, leg wraps, long hunting bolt rifle (no bayonet), game bag + powder horn, leather pouches.",
+ "base": "infantry",
+ "anims": "infantry",
+ "headgear": "hunter_cap",
+ "uniform": "hunter",
+ "weapon": "bolt_rifle_long",
+ "gear": ["fur_collar", "game_pouch", "leather_pouches", "canteen_cloth"],
+ "team": ["helmet_band", "arm_patch"],
+ "belt": true,
+ "belt_pouches": false,
+ "e_pull_extra": 3.0,
+ "dirs": "all",
+ "frames": "all"
+}

@@ -1,0 +1,42 @@
+{
+  "name": "cavalry-russian-red",
+  "_doc": "cavalry-default faction variant (russian-red): same model, budenovka + russian-red infantry uniform; cap badge from parts/badges HEAD_BADGE.",
+  "base": "cavalry",
+  "anims": "cavalry",
+  "headgear": "budenovka",
+  "uniform": {
+    "legging": "leather",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "collar": true,
+    "puttees": false,
+    "jacket": "ru_greybrown",
+    "trousers": "ru_greybrown"
+  },
+  "weapons": {
+    "carbine": "cav_carbine",
+    "sabre": "sabre"
+  },
+  "gear": [
+    "leather_pouches"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "belt": true,
+  "belt_pouches": false,
+  "dirs": "all",
+  "frames": "all",
+  "fix_as": "cavalry-default",
+  "tune": {
+    "parts": {
+      "headgear": {
+        "budenovka": {
+          "spire_top": 14.6
+        }
+      }
+    }
+  }
+}

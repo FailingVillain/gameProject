@@ -1,0 +1,102 @@
+{
+ "part": "turret",
+ "frame": [
+  240,
+  240
+ ],
+ "anchor": [
+  120,
+  132
+ ],
+ "dirs": [
+  "s",
+  "sse",
+  "se",
+  "ese",
+  "e",
+  "ene",
+  "ne",
+  "nne",
+  "n"
+ ],
+ "yaw_step": 22.5,
+ "mirror": true,
+ "mirror_map": {
+  "ssw": "sse",
+  "sw": "se",
+  "wsw": "ese",
+  "w": "e",
+  "wnw": "ene",
+  "nw": "ne",
+  "nnw": "nne"
+ },
+ "columns": [
+  "idle",
+  "fire",
+  "fire_2",
+  "dead"
+ ],
+ "anims": {
+  "idle": {
+   "frames": [
+    "idle"
+   ],
+   "ms": 150
+  },
+  "fire": {
+   "frames": [
+    "fire",
+    "fire_2",
+    "idle"
+   ],
+   "ms": [
+    110,
+    140,
+    500
+   ]
+  },
+  "dead": {
+   "frames": [
+    "dead"
+   ],
+   "ms": 150
+  }
+ },
+ "sheets": [
+  {
+   "file": "tank-armored_car_turret.png",
+   "team": "tank-armored_car_turret_team.png",
+   "columns": [
+    "idle",
+    "fire",
+    "fire_2",
+    "dead"
+   ],
+   "size": [
+    960,
+    2160
+   ]
+  }
+ ],
+ "cells": {
+  "idle": {
+   "sheet": "tank-armored_car_turret.png",
+   "col": 0
+  },
+  "fire": {
+   "sheet": "tank-armored_car_turret.png",
+   "col": 1
+  },
+  "fire_2": {
+   "sheet": "tank-armored_car_turret.png",
+   "col": 2
+  },
+  "dead": {
+   "sheet": "tank-armored_car_turret.png",
+   "col": 3
+  }
+ },
+ "anchors": "tank-armored_car_turret_anchors.json",
+ "hull": "tank-armored_car_hull_layout.json",
+ "pivot_is_ring_centre": true
+}

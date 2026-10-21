@@ -1,0 +1,16 @@
+{
+  "name": "officer",
+  "_doc": "Korean Empire officer, dark field grey look: tunic, service cap and trousers in the very dark field grey of officer-darkgrey (no kepi). Keeps the team-colour trouser seam stripe, pistol, sabre, holster, scabbard and map case.",
+  "base": "officer",
+  "anims": "officer",
+  "headgear": "officer_cap",
+  "uniform": {"jacket": "fgrey_dark", "trousers": "fgrey_dark_trouser", "legging": "fgrey_dark_trouser", "boot": "leather", "belt": "leather", "hand": "skin",
+              "trouser_stripe": true, "piping": "acc_brass", "stripe_mat": "acc_brass"},
+  "tune": {"parts": {"headgear": {"officer_cap": {"cap_mat": "fgrey_dark"}}}},
+  "weapons": {"pistol": "pistol", "sabre": "sabre"},
+  "gear": ["holster", "scabbard", "map_case"],
+  "team": ["helmet_band", "arm_patch"],
+  "belt": true,
+  "dirs": "all",
+  "frames": "all"
+}

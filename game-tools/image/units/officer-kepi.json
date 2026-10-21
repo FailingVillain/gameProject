@@ -1,0 +1,34 @@
+{
+  "name": "officer-kepi",
+  "_doc": "Korean Empire (대한제국군) kepi preview: near-black dark field grey uniform with red accents (collar edge, placket, cuffs, thin red trouser side stripe), flat-top kepi with red band and brass plum-blossom badge. Based on officer-darkgrey.",
+  "base": "officer",
+  "anims": "officer",
+  "headgear": "korean_kepi_officer",
+  "uniform": {
+    "jacket": "fgrey_dark",
+    "trousers": "fgrey_dark_trouser",
+    "legging": "fgrey_dark_trouser",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "trouser_stripe": true,
+    "piping": "piping_red",
+    "stripe_mat": "piping_red"
+  },
+  "weapons": {
+    "pistol": "pistol",
+    "sabre": "sabre"
+  },
+  "gear": [
+    "holster",
+    "scabbard",
+    "map_case"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "belt": true,
+  "dirs": "all",
+  "frames": "all"
+}

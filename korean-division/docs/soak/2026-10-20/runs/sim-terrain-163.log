@@ -1,0 +1,101 @@
+  [sim] AI A=tactical B=사수
+  [sim] B 사수 + 참호 (180기)
+  t=10s  A 138 @(103,67)  B 180 @(159,64)  wall 0.3s
+  t=20s  A 138 @(114,68)  B 180 @(159,64)  wall 0.4s
+  t=30s  A 138 @(118,68)  B 180 @(159,64)  wall 0.6s
+  t=40s  A 131 @(125,74)  B 180 @(159,64)  wall 0.8s
+  t=50s  A 122 @(131,74)  B 178 @(159,64)  wall 1.0s
+  t=60s  A 111 @(134,71)  B 178 @(159,64)  wall 1.2s
+  t=70s  A 98 @(136,72)  B 178 @(159,64)  wall 1.4s
+  t=80s  A 82 @(134,72)  B 178 @(159,64)  wall 1.5s
+  t=90s  A 67 @(130,73)  B 178 @(159,64)  wall 1.7s
+  t=100s  A 63 @(125,74)  B 178 @(159,64)  wall 1.8s
+  t=110s  A 62 @(106,79)  B 178 @(159,64)  wall 1.9s
+  t=120s  A 62 @(96,82)  B 178 @(159,64)  wall 2.0s
+  t=130s  A 62 @(94,82)  B 178 @(159,64)  wall 2.1s
+  t=140s  A 62 @(98,82)  B 178 @(159,64)  wall 2.2s
+  t=150s  A 62 @(105,80)  B 178 @(159,64)  wall 2.3s
+  t=160s  A 59 @(119,78)  B 178 @(159,64)  wall 2.4s
+  t=170s  A 53 @(121,78)  B 178 @(159,64)  wall 2.5s
+  t=180s  A 51 @(111,75)  B 178 @(159,64)  wall 2.6s
+  t=190s  A 51 @(111,75)  B 178 @(159,64)  wall 2.7s
+  t=200s  A 51 @(122,73)  B 178 @(159,64)  wall 2.8s
+  t=210s  A 48 @(111,71)  B 177 @(159,64)  wall 2.9s
+  t=220s  A 46 @(104,69)  B 176 @(159,64)  wall 3.1s
+  t=230s  A 46 @(115,72)  B 171 @(159,63)  wall 3.2s
+  t=240s  A 44 @(117,73)  B 171 @(159,63)  wall 3.4s
+  t=250s  A 44 @(110,71)  B 171 @(159,63)  wall 3.5s
+  t=260s  A 44 @(109,71)  B 171 @(159,63)  wall 3.6s
+  t=270s  A 44 @(111,71)  B 171 @(159,63)  wall 3.7s
+  t=280s  A 43 @(102,68)  B 171 @(159,63)  wall 3.8s
+  t=290s  A 41 @(93,66)  B 171 @(159,63)  wall 3.9s
+  t=300s  A 41 @(93,66)  B 171 @(159,63)  wall 4.0s
+  t=310s  A 41 @(90,65)  B 171 @(159,63)  wall 4.1s
+  t=320s  A 41 @(70,62)  B 171 @(159,63)  wall 4.2s
+  t=330s  A 41 @(66,61)  B 171 @(159,63)  wall 4.3s
+  t=340s  A 41 @(66,61)  B 171 @(159,63)  wall 4.5s
+  t=350s  A 41 @(51,59)  B 171 @(159,63)  wall 4.6s
+  t=360s  A 41 @(40,57)  B 171 @(159,63)  wall 4.6s
+  t=370s  A 41 @(40,57)  B 171 @(159,63)  wall 4.7s
+  t=380s  A 41 @(37,56)  B 171 @(159,63)  wall 4.8s
+  t=390s  A 41 @(18,53)  B 171 @(159,63)  wall 5.0s
+  t=400s  A 41 @(17,53)  B 171 @(159,63)  wall 5.1s
+  t=410s  A 41 @(18,53)  B 171 @(159,63)  wall 5.2s
+  t=420s  A 41 @(15,52)  B 171 @(159,63)  wall 5.2s
+  t=430s  A 41 @(9,51)  B 171 @(159,63)  wall 5.3s
+  t=440s  A 41 @(9,51)  B 171 @(159,63)  wall 5.4s
+  t=450s  A 41 @(9,52)  B 171 @(159,63)  wall 5.5s
+  t=460s  A 41 @(3,50)  B 171 @(159,63)  wall 5.7s
+  t=470s  A 41 @(2,50)  B 171 @(159,63)  wall 5.8s
+  t=480s  A 41 @(2,50)  B 171 @(159,63)  wall 5.9s
+  t=490s  A 41 @(2,48)  B 171 @(159,63)  wall 6.0s
+  t=500s  A 41 @(2,48)  B 171 @(159,63)  wall 6.1s
+  t=510s  A 41 @(2,48)  B 171 @(159,63)  wall 6.2s
+  t=520s  A 41 @(2,48)  B 171 @(159,63)  wall 6.3s
+  t=530s  A 41 @(2,46)  B 171 @(159,63)  wall 6.4s
+  t=540s  A 41 @(2,46)  B 171 @(159,63)  wall 6.6s
+  t=550s  A 41 @(2,46)  B 171 @(159,63)  wall 6.7s
+  t=560s  A 41 @(2,45)  B 171 @(159,63)  wall 6.8s
+  t=570s  A 41 @(2,44)  B 171 @(159,63)  wall 6.9s
+  t=580s  A 41 @(2,44)  B 171 @(159,63)  wall 7.0s
+  t=590s  A 41 @(2,44)  B 171 @(159,63)  wall 7.1s
+MARCH ticks=0 move=0 moveOn=0 shots=0 moveShots=0 pistol=0 gren=0 melee=0
+MEAS start=138/180 end_t=600 winner=0 lossEnd=97/9 loss120=76/2 loss300=97/9 t50=87/- shots=2650 hits=403 hitpct=15.2 meanDist=17.4 hitDist=16.6
+결과: 승자 0, 600.0초, 실행 7.2초, 명령 265
+사살원인 030s bandit_rifleman/rifle_mosin->recruit = 7
+사살원인 040s bandit_rifleman/rifle_mosin->recruit = 9
+사살원인 040s recruit/rifle_mosin->bandit_rifleman = 2
+사살원인 050s bandit_rifleman/rifle_mosin->recruit = 11
+사살원인 060s bandit_rifleman/rifle_mosin->cavalry_default = 1
+사살원인 060s bandit_rifleman/rifle_mosin->officer = 2
+사살원인 060s bandit_rifleman/rifle_mosin->recruit = 10
+사살원인 070s bandit_rifleman/rifle_mosin->cavalry_default = 6
+사살원인 070s bandit_rifleman/rifle_mosin->recruit = 10
+사살원인 080s bandit_rifleman/rifle_mosin->cavalry_default = 3
+사살원인 080s bandit_rifleman/rifle_mosin->recruit = 12
+사살원인 090s bandit_rifleman/rifle_mosin->recruit = 4
+사살원인 100s bandit_rifleman/rifle_mosin->recruit = 1
+사살원인 150s bandit_rifleman/rifle_mosin->recruit = 3
+사살원인 160s bandit_rifleman/rifle_mosin->recruit = 6
+사살원인 170s bandit_rifleman/rifle_mosin->recruit = 2
+사살원인 200s bandit_rifleman/rifle_mosin->recruit = 3
+사살원인 200s recruit/rifle_mosin->bandit_rifleman = 1
+사살원인 210s bandit_rifleman/rifle_mosin->recruit = 2
+사살원인 210s recruit/rifle_mosin->bandit_rifleman = 1
+사살원인 220s recruit/rifle_mosin->bandit_rifleman = 5
+사살원인 230s bandit_rifleman/rifle_mosin->recruit = 2
+사살원인 270s bandit_rifleman/rifle_mosin->recruit = 1
+사살원인 280s bandit_rifleman/rifle_mosin->recruit = 2
+틀 행동: 시작 9 끝 3 약진 0 기동 0 돌격 0 역습 0 참호 0 연신 0 전환 12 인계멈춤 16 포병전개 0
+기병AI: 돌격 정면 0 측면 1 후방 0 측면경유 0 소규모보류 0 물러남 0 | 추격: 후퇴중 희생 사격 45 근접 0 후퇴하는 적 돌격 보병 0 기병 0 | N55 기병 무모한 정면 0 돌격 사격 전진 0 | N23 소탕 0 | S4 제압으로 꺾인 돌격 4
+F4 기병 돌격: 개시 1 무의미 정면 0 자동 막음 0 근접 사살 0 사유(후퇴/제압/승무원/고립/측면) 0/0/0/0/1 · 하마 9 승마 6
+관찰: 사격 2650발 · 명중 403발 (15.2%) · 사망 106기 → 1킬당 25.0발 (명중 3.8발)
+N61 접근: 보병(1) 첫 사격 38.0초 · 기병(2) 첫 근접 -초 · 전환 228 · 그 시점 B 생존 -1/180
+템포: 첫 사격 34.9초 · A 50% 손실 87.0초 · B 50% 손실 -초 · 사격 거리 평균 17.4 (첫 100발 15.6) 칸
+  세력:종류            시작→남음   사격    근접   포격  방열%  돌격%
+  1:cavalry_default      12→2          10      1      0     0     3
+  1:officer               6→4           0      0      0     0     0
+  1:recruit             120→35        591      0      0     0     0
+  2:bandit_rifleman     180→171      2049      0      0     0     0
+AI 비용: 사고 ms/틱 avg 0.004 max 19.36 (호출 2400, 호출당 0.058 ms) · 전체 Step avg 0.20 ms
+  [전술 AI 1] 프로필 default 태세 Attack/Attack 중대 4 대대 1 · 명령 220 돌격 0 기병돌격 1 참호 0 후퇴 61 포병이동 0 화력사수 0 예비투입 1 · 연대 1 준비사격 0 연신 0 분대약진 0 전초 0/철수 0 역습 0 증원편입 0 공격한계 2

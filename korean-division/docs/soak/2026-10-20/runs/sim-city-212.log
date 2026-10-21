@@ -1,0 +1,163 @@
+  [sim] AI A=tactical B=tactical
+  t=10s  A 192 @(94,65)  B 102 @(161,63)  wall 0.3s
+  t=20s  A 192 @(96,66)  B 102 @(157,63)  wall 0.6s
+  t=30s  A 192 @(96,67)  B 102 @(153,60)  wall 0.9s
+  t=40s  A 188 @(106,61)  B 102 @(145,56)  wall 1.2s
+  t=50s  A 177 @(107,61)  B 101 @(143,52)  wall 1.5s
+  t=60s  A 172 @(108,60)  B 100 @(143,52)  wall 1.7s
+  t=70s  A 164 @(106,59)  B 99 @(143,53)  wall 2.0s
+  t=80s  A 161 @(106,58)  B 99 @(143,53)  wall 2.2s
+  t=90s  A 159 @(108,60)  B 99 @(143,53)  wall 2.4s
+  t=100s  A 154 @(108,60)  B 97 @(143,53)  wall 2.6s
+  t=110s  A 153 @(109,59)  B 96 @(143,53)  wall 2.8s
+  t=120s  A 149 @(111,59)  B 95 @(143,53)  wall 3.0s
+  t=130s  A 138 @(114,58)  B 93 @(143,53)  wall 3.2s
+  t=140s  A 134 @(115,57)  B 92 @(143,53)  wall 3.4s
+  t=150s  A 129 @(115,58)  B 89 @(144,52)  wall 3.5s
+  t=160s  A 126 @(113,58)  B 88 @(144,52)  wall 3.7s
+  t=170s  A 121 @(112,58)  B 87 @(145,52)  wall 3.8s
+  t=180s  A 118 @(110,59)  B 86 @(146,52)  wall 4.0s
+  t=190s  A 117 @(110,59)  B 84 @(145,52)  wall 4.1s
+  t=200s  A 109 @(114,57)  B 84 @(145,53)  wall 4.3s
+  t=210s  A 105 @(111,57)  B 83 @(143,57)  wall 4.5s
+  t=220s  A 100 @(111,58)  B 83 @(143,57)  wall 4.6s
+  t=230s  A 96 @(111,60)  B 82 @(143,57)  wall 4.7s
+  t=240s  A 96 @(100,62)  B 81 @(142,57)  wall 4.9s
+  t=250s  A 96 @(86,61)  B 81 @(141,57)  wall 5.0s
+  t=260s  A 95 @(88,63)  B 81 @(140,58)  wall 5.1s
+  t=270s  A 95 @(94,62)  B 81 @(140,58)  wall 5.2s
+  t=280s  A 93 @(93,66)  B 78 @(138,59)  wall 5.4s
+  t=290s  A 89 @(91,67)  B 77 @(137,59)  wall 5.6s
+  t=300s  A 86 @(88,67)  B 76 @(138,58)  wall 5.7s
+  t=310s  A 86 @(87,67)  B 76 @(135,58)  wall 5.8s
+  t=320s  A 86 @(94,63)  B 76 @(130,59)  wall 6.0s
+  t=330s  A 82 @(96,60)  B 76 @(129,60)  wall 6.1s
+  t=340s  A 72 @(94,60)  B 76 @(129,60)  wall 6.3s
+  t=350s  A 57 @(83,61)  B 76 @(130,60)  wall 6.4s
+  t=360s  A 56 @(81,61)  B 76 @(128,59)  wall 6.5s
+  t=370s  A 54 @(76,61)  B 75 @(124,59)  wall 6.6s
+  t=380s  A 52 @(61,62)  B 75 @(122,59)  wall 6.7s
+  t=390s  A 52 @(55,62)  B 75 @(122,58)  wall 6.8s
+  t=400s  A 52 @(55,62)  B 75 @(121,58)  wall 6.9s
+  t=410s  A 52 @(41,63)  B 75 @(123,58)  wall 7.0s
+  t=420s  A 52 @(30,64)  B 75 @(122,58)  wall 7.1s
+  t=430s  A 51 @(28,64)  B 75 @(118,58)  wall 7.2s
+  t=440s  A 51 @(24,64)  B 75 @(110,59)  wall 7.3s
+  t=450s  A 51 @(14,65)  B 75 @(88,59)  wall 7.4s
+  t=460s  A 51 @(9,66)  B 75 @(78,58)  wall 7.5s
+  t=470s  A 51 @(9,65)  B 75 @(77,58)  wall 7.6s
+  t=480s  A 50 @(7,67)  B 75 @(64,60)  wall 7.7s
+  t=490s  A 49 @(2,68)  B 75 @(43,59)  wall 7.8s
+  t=500s  A 49 @(2,68)  B 75 @(38,49)  wall 7.9s
+  t=510s  A 49 @(2,70)  B 75 @(32,52)  wall 8.0s
+  t=520s  A 44 @(2,71)  B 75 @(24,54)  wall 8.1s
+  t=530s  A 37 @(2,72)  B 71 @(23,56)  wall 8.2s
+  t=540s  A 32 @(2,72)  B 71 @(31,50)  wall 8.3s
+  t=550s  A 30 @(2,75)  B 71 @(30,51)  wall 8.4s
+  t=560s  A 28 @(2,77)  B 71 @(30,51)  wall 8.4s
+  t=570s  A 24 @(3,75)  B 71 @(21,57)  wall 8.5s
+  t=580s  A 18 @(2,77)  B 71 @(18,60)  wall 8.6s
+  t=590s  A 13 @(2,80)  B 71 @(17,62)  wall 8.7s
+MARCH ticks=0 move=0 moveOn=0 shots=0 moveShots=0 pistol=0 gren=0 melee=0
+MEAS start=192/102 end_t=600 winner=0 lossEnd=189/31 loss120=43/7 loss300=106/26 t50=230/- shots=6026 hits=765 hitpct=12.7 meanDist=21.4 hitDist=20.5
+결과: 승자 0, 600.0초, 실행 8.8초, 명령 546
+사살원인 030s infantry_guard/rifle_mauser98->recruit = 3
+사살원인 030s infantry_sniper/sniper_rifle->officer = 1
+사살원인 040s infantry_guard/rifle_mauser98->officer = 1
+사살원인 040s infantry_guard/rifle_mauser98->recruit = 10
+사살원인 040s recruit/rifle_mosin->infantry_guard = 1
+사살원인 050s infantry_guard/rifle_mauser98->officer = 1
+사살원인 050s infantry_guard/rifle_mauser98->recruit = 4
+사살원인 050s recruit/rifle_mosin->infantry_guard = 1
+사살원인 060s infantry_guard/rifle_mauser98->recruit = 7
+사살원인 060s infantry_sniper/sniper_rifle->recruit = 1
+사살원인 060s recruit/rifle_mosin->infantry_guard = 1
+사살원인 070s infantry_guard/rifle_mauser98->recruit = 3
+사살원인 080s infantry_sniper/sniper_rifle->recruit = 2
+사살원인 090s infantry_guard/rifle_mauser98->officer = 1
+사살원인 090s infantry_guard/rifle_mauser98->recruit = 4
+사살원인 090s recruit/rifle_mosin->infantry_guard = 2
+사살원인 100s infantry_guard/rifle_mauser98->recruit = 1
+사살원인 100s recruit/rifle_mosin->infantry_guard = 1
+사살원인 110s infantry_guard/rifle_mauser98->recruit = 2
+사살원인 110s infantry_sniper/sniper_rifle->recruit = 2
+사살원인 110s recruit/rifle_mosin->infantry_guard = 1
+사살원인 120s infantry_guard/rifle_mauser98->officer = 1
+사살원인 120s infantry_guard/rifle_mauser98->recruit = 8
+사살원인 120s infantry_sniper/sniper_rifle->recruit = 2
+사살원인 120s recruit/rifle_mosin->infantry_guard = 1
+사살원인 120s recruit/rifle_mosin->infantry_sniper = 1
+사살원인 130s infantry_guard/rifle_mauser98->recruit = 4
+사살원인 130s recruit/rifle_mosin->infantry_guard = 1
+사살원인 140s infantry_guard/rifle_mauser98->officer = 1
+사살원인 140s infantry_guard/rifle_mauser98->recruit = 4
+사살원인 140s recruit/rifle_mosin->infantry_guard = 1
+사살원인 140s recruit/rifle_mosin->infantry_sniper = 2
+사살원인 150s infantry_guard/rifle_mauser98->recruit = 3
+사살원인 150s recruit/rifle_mosin->infantry_guard = 1
+사살원인 160s infantry_guard/rifle_mauser98->recruit = 4
+사살원인 160s infantry_sniper/sniper_rifle->recruit = 1
+사살원인 160s recruit/rifle_mosin->infantry_guard = 1
+사살원인 170s infantry_guard/rifle_mauser98->recruit = 3
+사살원인 170s recruit/rifle_mosin->infantry_guard = 1
+사살원인 180s infantry_sniper/sniper_rifle->recruit = 1
+사살원인 180s recruit/rifle_mosin->infantry_guard = 2
+사살원인 190s infantry_guard/rifle_mauser98->recruit = 8
+사살원인 200s infantry_guard/rifle_mauser98->recruit = 3
+사살원인 200s infantry_sniper/sniper_rifle->recruit = 1
+사살원인 200s recruit/rifle_mosin->infantry_guard = 1
+사살원인 210s infantry_guard/rifle_mauser98->recruit = 3
+사살원인 210s infantry_sniper/sniper_rifle->recruit = 2
+사살원인 220s infantry_guard/rifle_mauser98->officer = 1
+사살원인 220s infantry_guard/rifle_mauser98->recruit = 1
+사살원인 220s infantry_sniper/sniper_rifle->recruit = 2
+사살원인 220s recruit/rifle_mosin->infantry_guard = 1
+사살원인 230s recruit/rifle_mosin->infantry_guard = 1
+사살원인 250s infantry_sniper/sniper_rifle->recruit = 1
+사살원인 270s infantry_guard/rifle_mauser98->recruit = 2
+사살원인 270s recruit/rifle_mosin->infantry_guard = 1
+사살원인 270s recruit/rifle_mosin->infantry_sniper = 2
+사살원인 280s infantry_guard/rifle_mauser98->recruit = 4
+사살원인 280s recruit/rifle_mosin->infantry_guard = 1
+사살원인 290s infantry_guard/rifle_mauser98->recruit = 3
+사살원인 290s recruit/rifle_mosin->infantry_guard = 1
+사살원인 320s infantry_guard/rifle_mauser98->recruit = 4
+사살원인 330s infantry_guard/rifle_mauser98->recruit = 10
+사살원인 340s infantry_guard/rifle_mauser98->officer = 3
+사살원인 340s infantry_guard/rifle_mauser98->recruit = 12
+사살원인 350s infantry_guard/rifle_mauser98->recruit = 1
+사살원인 360s infantry_guard/rifle_mauser98->recruit = 1
+사살원인 360s infantry_sniper/sniper_rifle->recruit = 1
+사살원인 360s recruit/rifle_mosin->infantry_guard = 1
+사살원인 370s infantry_guard/rifle_mauser98->recruit = 2
+사살원인 420s infantry_sniper/sniper_rifle->recruit = 1
+사살원인 470s infantry_sniper/sniper_rifle->recruit = 1
+사살원인 480s infantry_sniper/sniper_rifle->recruit = 1
+사살원인 510s infantry_guard/rifle_mauser98->recruit = 5
+사살원인 520s infantry_guard/rifle_mauser98->recruit = 7
+사살원인 520s recruit/rifle_mosin->infantry_guard = 4
+사살원인 530s infantry_guard/rifle_mauser98->recruit = 4
+사살원인 530s infantry_sniper/sniper_rifle->recruit = 1
+사살원인 540s infantry_guard/rifle_mauser98->officer = 1
+사살원인 540s infantry_guard/rifle_mauser98->recruit = 1
+사살원인 550s infantry_guard/rifle_mauser98->recruit = 2
+사살원인 560s infantry_guard/rifle_mauser98->recruit = 4
+사살원인 570s infantry_guard/rifle_mauser98->recruit = 5
+사살원인 570s infantry_sniper/sniper_rifle->recruit = 1
+사살원인 580s infantry_guard/rifle_mauser98->recruit = 5
+사살원인 590s infantry_guard/rifle_mauser98->recruit = 9
+사살원인 590s infantry_sniper/sniper_rifle->officer = 1
+틀 행동: 시작 12 끝 3 약진 11 기동 0 돌격 0 역습 0 참호 0 연신 0 전환 15 인계멈춤 83 포병전개 0
+기병AI: 돌격 정면 0 측면 0 후방 0 측면경유 0 소규모보류 0 물러남 0 | 추격: 후퇴중 희생 사격 48 근접 0 후퇴하는 적 돌격 보병 0 기병 0 | N55 기병 무모한 정면 0 돌격 사격 전진 3 | N23 소탕 0 | S4 제압으로 꺾인 돌격 0
+F4 기병 돌격: 개시 0 무의미 정면 0 자동 막음 0 근접 사살 0 사유(후퇴/제압/승무원/고립/측면) 0/0/0/0/0 · 하마 0 승마 0
+관찰: 사격 6026발 · 명중 765발 (12.7%) · 사망 220기 → 1킬당 27.4발 (명중 3.5발)
+N61 접근: 보병(1) 첫 사격 34.8초 · 기병(2) 첫 근접 -초 · 전환 0 · 그 시점 B 생존 -1/102
+템포: 첫 사격 13.6초 · A 50% 손실 230.0초 · B 50% 손실 -초 · 사격 거리 평균 21.4 (첫 100발 18.0) 칸
+  세력:종류            시작→남음   사격    근접   포격  방열%  돌격%
+  1:officer              12→0           0      0      0     0     0
+  1:recruit             180→3        1923      0      0     0     0
+  2:infantry_guard       90→64       3812      0      0     0     0
+  2:infantry_sniper      12→7         291      0      0     0     0
+AI 비용: 사고 ms/틱 avg 0.005 max 19.07 (호출 4800, 호출당 0.038 ms) · 전체 Step avg 0.24 ms
+  [전술 AI 1] 프로필 default 태세 Attack/Defend 중대 2 대대 1 · 명령 195 돌격 0 기병돌격 0 참호 0 후퇴 42 포병이동 0 화력사수 0 예비투입 1 · 연대 1 준비사격 0 연신 0 분대약진 6 전초 0/철수 0 역습 0 증원편입 0 공격한계 1
+  [전술 AI 2] 프로필 default 태세 Attack/Attack 중대 4 대대 1 · 명령 225 돌격 0 기병돌격 0 참호 0 후퇴 3 포병이동 0 화력사수 41 예비투입 0 · 연대 1 준비사격 0 연신 0 분대약진 11 전초 0/철수 0 역습 0 증원편입 0 공격한계 0

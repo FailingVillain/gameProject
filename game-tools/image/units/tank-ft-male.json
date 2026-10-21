@@ -1,0 +1,8 @@
+{
+  "name": "tank-ft-male",
+  "kind": "vehicle",
+  "model": "renault_ft",
+  "turret": "37mm",
+  "anims": "vehicle",
+  "dirs": "all"
+}

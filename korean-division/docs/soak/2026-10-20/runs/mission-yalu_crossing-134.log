@@ -1,0 +1,8 @@
+[mission-run] yalu_crossing '압록강 도하 거점 점령': lost (losses) at 220.8s, ticks 13247, 2.4s wall
+  objective take (capture, primary): active progress 0.0
+  objective cmd (eliminate): done progress 1.0
+  faction 1 한국: spawned 101, lost 76, alive 25, trench peak 0 (now 0)
+  faction 2 일본: spawned 83, lost 19, alive 64, trench peak 24 (now 21)
+  events fired 4/5, reinforcements 1/1, messages 4, top kills 34, promotions 1
+  results: C:\Users\seung\AppData\Local\KoreanDivision\results\yalu_crossing_20261020_192500.json
+  checksum 4182892CD3221785 tick 13247

@@ -1,0 +1,42 @@
+{
+  "propScatter": true,
+  "propDensity": 4.0,
+  "propCell": 6,
+  // [N26] 마적 시험 미션 (2026-10-19): 마적 무리 vs 한국군 1개 중대. AI 대 AI 관전. 마적 = 두목 1 · 소총병 14 · 잡병 14 (대도만, 사격 불가) · 기병 6.
+  "id": "bandit_raid",
+  "title": "마적 습격 (시험)",
+  "date": "1920년 가을 낮",
+  "location": "간도 · 국경 마을",
+  "briefing": "마적 무리가 국경 마을을 습격한다. 한국군 1개 중대가 막는다. 마적 잡병은 총이 없어 근접 돌격만 한다 (AI 대 AI 관전 시험 미션).",
+  "seed": 1920,
+  "weather": "clear",
+  "time": "day",
+  "player": 1,
+  "spectate": true,
+  "factions": [
+    { "name": "한국군", "en": "korean", "lang": "ko", "color": [60, 130, 235], "team": 1, "posture": "defend", "area": "village" },
+    { "name": "마적", "en": "bandit", "lang": "zh", "color": [200, 120, 40], "team": 2, "posture": "attack", "area": "village" }
+  ],
+  "mapData": {
+    "name": "국경 마을",
+    "width": 120, "height": 120, "base": "grass",
+    "paint": [
+      { "terrain": "dirt", "rect": [57, 0, 6, 120] },
+      { "terrain": "house", "tiles": [[52, 56], [53, 56], [52, 57], [53, 57], [66, 62], [67, 62], [66, 63], [67, 63]] },
+      { "terrain": "forest", "rect": [10, 20, 24, 18] }
+    ],
+    "starts": [ [60, 100], [60, 20] ]
+  },
+  "areas": { "village": { "rect": [46, 48, 28, 24] } },
+  "forces": [
+    { "id": "kr", "faction": 1, "name": "한국군 제1중대", "at": [60, 88], "facing": 0, "formation": "line",
+      "companies": [ { "units": { "officer": 1, "infantry": 28, "infantry_scout": 2 } } ] },
+    { "id": "bd", "faction": 2, "name": "마적 무리", "at": [60, 30], "facing": 180, "formation": "line",
+      "companies": [ { "units": { "bandit_leader": 1, "bandit_rifleman": 14, "bandit_thug": 14, "bandit_horseman": 6 } } ] }
+  ],
+  "objectives": [
+    { "id": "crush", "type": "eliminate", "percent": 60, "faction": 2, "text": "마적 60% 격멸" }
+  ],
+  "failures": [ { "type": "losses", "percent": 80 }, { "type": "timeLimit", "seconds": 600 } ],
+  "events": [ { "id": "intro", "when": { "time": 1 }, "do": [ { "message": "마적이 몰려온다" } ] } ]
+}

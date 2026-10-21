@@ -1,0 +1,17 @@
+{
+  "name": "infantry-fengtian",
+  "_doc": "Fengtian (봉천) rifleman: infantry-default body/poses/rifle/pack, but a plain low round cloth cap (team-colour band), light blue-grey tunic AND trousers (fengtian_bg), puttees. No bayonet: charge/melee use a dadao (officer sword poses, rifle slung on the back); dadao sheathed at the left hip otherwise.",
+  "base": "fengtian",
+  "anims": "fengtian",
+  "headgear": "fengtian_cap",
+  "uniform": "fengtian",
+  "weapons": {"rifle": "bolt_rifle", "dadao": "dadao"},
+  "gear": ["bandolier_x", "haversack", "canteen_cloth", "leather_pouches", "dadao_sheath"],
+  "team": ["helmet_band", "arm_patch"],
+  "belt": true,
+  "belt_pouches": false,
+  "e_pull_extra": 3.0,
+  "tune": {"poses": {"infantry": {"prone_weapon": {"x": -7.5}}}},
+  "dirs": "all",
+  "frames": "all"
+}

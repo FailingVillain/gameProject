@@ -1,0 +1,8 @@
+[mission-run] ai_kr_vs_ft_1000 '한국군 1000 대 봉천군 1000 (AI 대 AI)': won (-) at 447.4s, ticks 26846, 40.6s wall
+  objective crush (eliminate, primary): done progress 70.1
+  objective village (capture): done progress 60.0
+  faction 1 한국군: spawned 971, lost 613, alive 358, trench peak 36 (now 0)
+  faction 2 봉천 군벌: spawned 996, lost 698, alive 298, trench peak 62 (now 14)
+  events fired 1/1, reinforcements 0/0, messages 1, top kills 61, promotions 28
+  results: C:\Users\seung\AppData\Local\KoreanDivision\results\ai_kr_vs_ft_1000_20261020_194017.json
+  checksum FA144B1888AFA43E tick 26846

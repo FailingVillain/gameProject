@@ -1,0 +1,12 @@
+{
+  "name": "infantry-ww2",
+  "base": "infantry",
+  "headgear": "m1_helmet",
+  "uniform": "us_od",
+  "weapon": "garand",
+  "gear": ["field_pack", "canteen"],
+  "team": ["helmet_band", "arm_patch"],
+  "belt": true,
+  "dirs": "all",
+  "frames": "all"
+}

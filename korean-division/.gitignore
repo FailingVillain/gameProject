@@ -1,0 +1,14 @@
+bin/
+obj/
+dist/
+*.user
+.vs/
+replays/
+saves/
+reports/
+# 루트의 스크린샷 (--shot). assets/ 의 테마 그림은 저장소에 포함한다.
+/*.png
+.claude/
+tools/__pycache__/
+
+__pycache__/

@@ -1,0 +1,54 @@
+  [sim] AI A=tactical B=tactical
+  t=10s  A 231 @(112,64)  B 156 @(139,64)  wall 0.5s
+  t=20s  A 219 @(112,64)  B 142 @(133,65)  wall 0.9s
+  t=30s  A 213 @(112,63)  B 86 @(138,64)  wall 1.2s
+  t=40s  A 212 @(112,63)  B 76 @(148,66)  wall 1.5s
+  t=50s  A 212 @(118,64)  B 70 @(150,67)  wall 1.7s
+  t=60s  A 210 @(121,65)  B 47 @(152,66)  wall 1.9s
+  t=70s  A 210 @(126,65)  B 30 @(152,65)  wall 2.2s
+  t=80s  A 210 @(134,62)  B 7 @(158,62)  wall 2.4s
+MARCH ticks=389984 move=227637 moveOn=227637 shots=1272 moveShots=239 pistol=2 gren=2 melee=5
+MEAS start=231/156 end_t=89 winner=1 lossEnd=21/156 loss120=-1/-1 loss300=-1/-1 t50=-/40 shots=4865 hits=684 hitpct=14.1 meanDist=18.9 hitDist=20.4
+결과: 승자 1, 89.1초, 실행 2.5초, 명령 197
+사살원인 010s infantry_assault/carbine_assault->infantry_regular = 8
+사살원인 010s infantry_assault/grenade->infantry_regular = 2
+사살원인 010s infantry_regular/rifle_mosin->infantry_assault = 14
+사살원인 020s heavy_field_gun/gun_field->infantry_assault = 8
+사살원인 020s heavy_maxim/hmg->infantry_assault = 19
+사살원인 020s infantry_assault/carbine_assault->infantry_regular = 6
+사살원인 020s infantry_regular/rifle_mosin->infantry_assault = 29
+사살원인 030s heavy_field_gun/gun_field->heavy_field_gun = 2
+사살원인 030s heavy_field_gun/gun_field->infantry_assault = 5
+사살원인 030s infantry_regular/rifle_mosin->heavy_field_gun = 1
+사살원인 030s infantry_regular/rifle_mosin->infantry_assault = 3
+사살원인 040s heavy_field_gun/gun_field->infantry_assault = 4
+사살원인 040s infantry_regular/rifle_mosin->infantry_assault = 2
+사살원인 050s heavy_field_gun/gun_field->heavy_field_gun = 1
+사살원인 050s heavy_field_gun/gun_field->infantry_assault = 5
+사살원인 050s infantry_assault/carbine_assault->infantry_regular = 2
+사살원인 050s infantry_regular/rifle_mosin->infantry_assault = 17
+사살원인 060s heavy_field_gun/gun_field->heavy_howitzer = 1
+사살원인 060s heavy_field_gun/gun_field->infantry_assault = 2
+사살원인 060s infantry_regular/rifle_mosin->infantry_assault = 14
+사살원인 070s heavy_field_gun/gun_field->infantry_assault = 8
+사살원인 070s heavy_maxim/hmg->infantry_assault = 5
+사살원인 070s infantry_regular/rifle_mosin->infantry_assault = 10
+사살원인 080s infantry_regular/rifle_mosin->heavy_howitzer = 2
+사살원인 080s infantry_regular/rifle_mosin->infantry_assault = 5
+틀 행동: 시작 0 끝 0 약진 0 기동 0 돌격 0 역습 0 참호 0 연신 0 전환 0 인계멈춤 0 포병전개 0
+기병AI: 돌격 정면 0 측면 0 후방 0 측면경유 0 소규모보류 129 물러남 0 | 추격: 후퇴중 희생 사격 46 근접 0 후퇴하는 적 돌격 보병 0 기병 0 | N55 기병 무모한 정면 0 돌격 사격 전진 0 | N23 소탕 2 | S4 제압으로 꺾인 돌격 0
+F4 기병 돌격: 개시 0 무의미 정면 0 자동 막음 0 근접 사살 0 사유(후퇴/제압/승무원/고립/측면) 0/0/0/0/0 · 하마 0 승마 0
+관찰: 사격 4865발 · 명중 684발 (14.1%) · 사망 177기 → 1킬당 27.5발 (명중 3.9발)
+N61 접근: 보병(1) 첫 사격 11.7초 · 기병(2) 첫 근접 17.1초 · 전환 0 · 그 시점 B 생존 150/156
+템포: 첫 사격 11.7초 · A 50% 손실 -초 · B 50% 손실 39.5초 · 사격 거리 평균 18.9 (첫 100발 15.1) 칸
+  세력:종류            시작→남음   사격    근접   포격  방열%  돌격%
+  1:bandit_horseman       7→7           0      0      0     0     0
+  1:heavy_field_gun       8→7          84      0     83    69     0
+  1:heavy_maxim           6→6         338      0      0    12     0
+  1:infantry_regular    210→190      3165      0      0     0     0
+  2:heavy_field_gun       3→0           6      0      6    21     0
+  2:heavy_howitzer        3→0           0      0      0    49     0
+  2:infantry_assault    150→0        1272      5      4     0     0
+AI 비용: 사고 ms/틱 avg 0.017 max 20.36 (호출 713, 호출당 0.131 ms) · 전체 Step avg 0.47 ms
+  [전술 AI 1] 프로필 default 태세 Attack/Attack 중대 8 대대 2 · 명령 98 돌격 0 기병돌격 0 참호 0 후퇴 1 포병이동 0 화력사수 4 예비투입 0 · 연대 1 준비사격 0 연신 0 분대약진 1 전초 0/철수 0 역습 0 증원편입 0 공격한계 0
+  [전술 AI 2] 프로필 default 태세 Attack/Defend 중대 1 대대 0 · 명령 40 돌격 0 기병돌격 0 참호 2 후퇴 7 포병이동 1 화력사수 1 예비투입 1 · 연대 0 준비사격 2 연신 0 분대약진 0 전초 0/철수 0 역습 0 증원편입 0 공격한계 1

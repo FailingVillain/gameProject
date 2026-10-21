@@ -1,0 +1,20 @@
+{
+  // 난이도 구조 (사용자 2026-10-22 승인, docs/COMMS_ALPHA_PLAN.md). 미션 · 캠페인은 키 (easy|normal|hard) 만 받는다.
+  // comms: 통신 현실성 (사용자 2026-10-21 확정 — 유선 1~3초 · 전령 통상 10~20초 · 쉬움 = 유선 안 끊김).
+  // ai: AI 정확도 · 탄약 · 증원 배수 — 값은 사용자 승인 뒤 (지금은 모두 1.0 = 현재 동작).
+  "default": "easy",
+  "levels": {
+    "easy": {
+      "comms": { "wireMinSec": 1, "wireMaxSec": 3, "courierMinSec": 10, "courierMaxSec": 20, "wireCut": false, "courierCapture": true, "keepSec": 10 },
+      "ai": { "accuracyMul": 1.0, "ammoMul": 1.0, "reinforceMul": 1.0 }
+    },
+    "normal": {
+      "comms": { "wireMinSec": 1, "wireMaxSec": 3, "courierMinSec": 10, "courierMaxSec": 20, "wireCut": true, "courierCapture": true, "keepSec": 10 },
+      "ai": { "accuracyMul": 1.0, "ammoMul": 1.0, "reinforceMul": 1.0 }
+    },
+    "hard": {
+      "comms": { "wireMinSec": 1, "wireMaxSec": 3, "courierMinSec": 10, "courierMaxSec": 20, "wireCut": true, "courierCapture": true, "keepSec": 10 },
+      "ai": { "accuracyMul": 1.0, "ammoMul": 1.0, "reinforceMul": 1.0 }
+    }
+  }
+}

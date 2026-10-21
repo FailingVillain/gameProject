@@ -1,0 +1,350 @@
+{
+ "name": "교전 테스트: 도시",
+ "width": 256,
+ "height": 128,
+ "base": "grass",
+ "paint": [
+  {
+   "terrain": "rock",
+   "rect": [
+    102,
+    18,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    102,
+    32,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    102,
+    46,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    102,
+    60,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    102,
+    74,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    102,
+    88,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    102,
+    102,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    116,
+    18,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    116,
+    32,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    116,
+    46,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    116,
+    60,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    116,
+    74,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    116,
+    88,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    116,
+    102,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    130,
+    18,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    130,
+    32,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    130,
+    46,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    130,
+    60,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    130,
+    74,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    130,
+    88,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    130,
+    102,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    144,
+    18,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    144,
+    32,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    144,
+    46,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    144,
+    60,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    144,
+    74,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    144,
+    88,
+    9,
+    9
+   ]
+  },
+  {
+   "terrain": "rock",
+   "rect": [
+    144,
+    102,
+    9,
+    9
+   ]
+  }
+ ],
+ "starts": [
+  [
+   30,
+   64
+  ],
+  [
+   225,
+   64
+  ]
+ ],
+ "factions": [
+  {
+   "name": "아군",
+   "en": "Blue",
+   "color": [
+    60,
+    130,
+    235
+   ],
+   "lang": "en"
+  },
+  {
+   "name": "적군",
+   "en": "Red",
+   "color": [
+    215,
+    50,
+    50
+   ],
+   "lang": "en"
+  }
+ ],
+ "sites": [
+  {
+   "at": [
+    128,
+    58
+   ],
+   "type": "city"
+  },
+  {
+   "at": [
+    128,
+    70
+   ],
+   "type": "city"
+  },
+  {
+   "at": [
+    113,
+    71
+   ],
+   "type": "city"
+  },
+  {
+   "at": [
+    141,
+    57
+   ],
+   "type": "city"
+  },
+  {
+   "at": [
+    113,
+    43
+   ],
+   "type": "village"
+  },
+  {
+   "at": [
+    141,
+    85
+   ],
+   "type": "village"
+  },
+  {
+   "at": [
+    113,
+    99
+   ],
+   "type": "village"
+  },
+  {
+   "at": [
+    141,
+    29
+   ],
+   "type": "village"
+  }
+ ]
+}

@@ -1,0 +1,139 @@
+{
+  // 전술 AI 프로필 (ROADMAP ⑤ 전술 AI 1 · 2단계, docs/TACTICAL_AI_DESIGN.md). TacticalAi (--ai tactical) 가 읽는다. (주석 · 끝 쉼표 허용)
+  // 고르는 순서: 미션 지시 (IAiDirectable.SetDirective) > 지도 json factions[].aiProfile > 세력 영문 id (factions[].en → aliases) > "default".
+  // 모든 프로필은 "default" 를 바탕으로 절 (strategy · tactics) 마다 적힌 값만 덮어쓴다 (빠진 값 = default 값).
+  // ---- strategy (세력 전략 층: 지시 그룹 · 연대 정면 배분 · 주공 · 예비 연대 · 포병/기병 배정 · 태세 변경)
+  //   posture            기본 태세: attack | defend | hold (지역 고수 — 미션 구역 둘레, 없으면 시작 위치)
+  //   aggressiveness     0~1: 예비 연대 투입 속도 · 방어 → 반격 결심
+  //   reserve            연대 · 대대 · 중대가 3개 이상이면 예비를 남긴다
+  //   defendPatience     방어 태세에서 이 초 동안 적을 못 보면 (지킬 구역이 없을 때) 접촉까지 전진. 0 = 끝까지 대기
+  //   artillery          포병 사용 0~1: 0.2 미만이면 제자리 방열만, 이상이면 주공 연대 지원 (진지 이동 · 준비사격)
+  //   cavalry            기병 사용 0~1: 0.15 미만이면 예비. 높을수록 덜 제압된 적에게도 돌격
+  //   scheme             기동 방식: frontal (정면) | flank (기동 제대 · 바깥 연대를 측면 쪽으로) | defensive (방어 태세 기본)
+  //   mainEffort         주공 집중 0~1: 주공 연대 정면을 (1 − 0.4×값) 배로 좁힌다
+  //   regimentSize       연대당 대대 수 (2~4)
+  //   counterattackOdds  방어 · 고수 그룹: 진지 앞 (구역 + 소총 사거리 ×1.25) 의 보이는 적보다 이 배수 이상 많으면 반격 (두 번 연속 판단 → 20초 유지, 적이 우리 이상이면 중지).
+  //                      미션이 방어 · 고수를 지시한 그룹은 세력 단위 반격을 하지 않는다 (국지 역습은 연대 예비 대대)
+  //   culminate          공격 한계: 그룹 병력 비율이 이 아래이고 보이는 적이 우리보다 많으면 그 자리 방어로 바꾼다
+  // ---- tactics (연대 전술 · 대대 · 중대 실행 층)
+  //   aggressiveness     0~1: 돌격 결심 · 사격선 전진 주기
+  //   retreatStrength    중대 · 대대 병력 비율 (남은 / 처음) 이 이보다 낮으면 후퇴  (2026-10-19: 중대 후퇴 = 사상률 30~40%, 값 0.60~0.70)
+  //   retreatSuppression 제압 후퇴 판단 (N25, 2026-10-19): 중대 평균 제압이 retreatSuppStart (0.3) 를 넘으면 장교 판단 (≈0.5초) 마다 확률 굴림, 이 값에서 '높음' (sf = 1).
+  //                      위험률/초 = retreatSuppRate × sf × (1 + retreatCasualtyWeight × 사상률 / (1 − retreatStrength)); 장교 경험 · 계급은 낮추고 부사관 대리 · 지휘 없음은 높임 (AiProfile.cs)
+  //   trench             참호 성향 0~1: 방어 위치 6칸 안에 (지도의) 참호가 있으면 중대가 그 참호로 들어갈 확률 (중대마다 결정적 해시; 참호 파기는 2026-10-19 제거) — engage (2026-10-19): 0 보다 크면 방어 과제는 늘 참호 진지 점유 (확률은 참호 · 엄폐 진지가 없을 때의 옛 경로만), 0 = 참호 안 씀
+  //   chargeRange        착검 돌격 최대 거리 (칸, 소총 사거리 16 기준 — 실제 = 값 × 소총 사거리 / 16)
+  //   chargeSuppression  돌격 조건: 표적 둘레 적 평균 제압 비율이 이 이상 ...
+  //   chargeOdds         ... 또는 우리 병력이 표적 둘레 적의 이 배수 이상
+  //   engageFrac         사격 진지 = 소총 사거리 × 이 비율 거리 (engage 2026-10-19: 반응 거리 combat.engageRangeFrac 0.7 보다 조금 안 — 0.60~0.68; tweak1 2026-10-19: 공격 기본 0.65 → 0.6 (aggressive 는 이미 0.6, 방어 프로필 0.68 그대로))
+  //   fireAndMovement    사격선 전진 (화력 우세 뒤 bound) 을 분대 교대 약진으로 (화력 분대 사수 ↔ 기동 분대 이동)
+  //   boundLength        약진 한 번의 길이 (소총 사거리 배수)
+  //   prepSeconds        지원 포병이 있으면 돌격 전 준비사격 시간 (초, 0 = 없음)
+  //   liftDistance       아군 기동 중대가 포병 표적에서 이 칸 안이면 (또는 돌격 중 2배 안) 사격을 적 후방으로 연신 (칸, 소총 사거리 16 기준 — 실제 = 값 × 사거리 / 16)
+  //   outposts           방어 중대가 첫 분대를 전초로 내보낸다 (접촉하면 철수)
+  //   outpostDistance    전초 거리 (소총 사거리 배수)
+  //   depth              주저항선 → 예비 거리 (소총 사거리 배수)
+  //   coverWeight · highWeight · losWeight · threatWeight   위치 점수 가중치 (엄폐 · 고지 · 적 사선 · 위협 회피)
+  //   trenchSearch       방어 과제: 과제 위치 둘레 이 반경 (소총 사거리 배수) 안 참호선 (적이 다가올 쪽 우선) 을 진지 점유 명령으로 병사마다 참호 자리에 배정 (engage, 2026-10-19 — trench > 0 이면 기본)
+  //   defendCover        참호가 없으면 엄폐 칸 거점 (가옥 옆 · 숲 가장자리 · 잔해 · 포탄 구덩이) 점유, 방어 기관총도 진지로, 후퇴는 다음 참호 · 엄폐선, 역습 예비는 엄폐 뒤
+  //   coverMaxHit        거점으로 치는 엄폐 칸의 명중 배수 상한
+  //   defendSpacing      방어 중대 정면 폭 상한 (소총 사거리 배수) — 이웃 중대 중심 거리 ≈ 값 × 사거리 + 2칸 (상호 지원), 0 = 제한 없음
+  //   stalemateSeconds   교착 해소 (stale): 공격측이 보이는 적 없이 이 초 지나면 진지 사수 대기 해제, 2배 = 예비 투입, 3배 = 적 진지 쪽 전면 전진 (방어 과제 제외). 0 = 끔
+  //   templates          소총 중대 전술 틀 (tactics.json) 사용: 방어 과제 = 종심 방어, 공격 과제 = 접촉 뒤 화력-기동 (2단계 행동 — 중대 지휘관이 실행), 그 밖 = 틀 없음.
+  //                      기본 true (사용자 결정 2026-10-19, N4). 1단계 측정 (정지 배치만) = 6판 1승 → 2단계 측정은 docs/TACTICAL_AI_STAGE3_PLAN.md 'N4 측정'.
+  // ---- strategy 3단계 A (stage 3A, docs/TACTICAL_AI_STAGE3_REVIEW_2026-10-19.md S1 · S14 — 2단계와 비교 = 겹침 "stage2": 예 korean+stage2)
+  //   manoeuvre          기동 계획 (접촉 때 연대가 정면 · 측면 · 협공 · 중점을 점수로 고름, 고정 → 기동 도착 → 돌격 동기). false = 2단계 (scheme 만)
+  //   prePlan            (기본 false — 측정상 손해) 접촉 전 계획: 미션 점령 목표 · 공격 구역을 적 진지로 보고 접근 중에 측면 · 협공을 미리 정함 (접촉하면 실제 적 정면 끝에 맞춤)
+  //   planFrontal · planFlank · planPincer · planSchwerpunkt   계획 점수 편향 (세력 성격 · 난이도용, 기본 0 = 중립 — 성격 배정은 보류)
+  //   maxDetour · maxArrive  측면 우회 상한: 경로 ≤ 정면 거리 × maxDetour, 도착 예정 ≤ maxArrive 초 (사용자 결정 4: 2 · 120)
+  //   flankShare · pincerShare  기동 제대 몫 (중대 수 비율) · flankMinOdds · pincerMinOdds  제대를 나눌 최소 병력비 (우리 / 보이는 적)
+  //   mgWeight           보이는 기관총 하나가 그 축 점수에서 빼는 값 · fixLead  고정 제대가 적 사거리 밖에서 기다리다 교전을 시작하는 기동 제대 도착 예정 초 (0 = 곧바로 교전)
+  //   objectives         미션 objectives → 과제 (점령 · 고수 · 호송 · 차단) · objectiveWeight  목표에 가까운 축 가산 (사거리당)
+  //   withdrawAt         철수 (목표 포기) 문턱: 지시 그룹 병력 비율, 0 = 끝까지 — 미션 factions[].aiWithdrawAt 이 덮어씀 (사용자 결정 5)
+  //   commitment         목표 고수 정도 0~1 (0.5 = 그대로): 공격 한계 · 철수 문턱 배수 2 × (1 − 값) — 미션 factions[].aiCommitment 가 덮어씀
+  //   fixPush · fixPushSec · fixWait   (3B, 기본 끔 — 측정에서 발동 0) 기동 제대 도착 뒤 고정 제대가 fixPushSec 초 교전 못 하면 사거리 ×0.85 까지 밀기 · 돌격 허가까지 최대 대기 (옛 20초)
+  // ---- tactics 3단계 B (방어 · 예비 · 역습, TacticalAi.Reserve3B.cs — 끄기 = 겹침 "no3b", 측정 docs/ai3b_raw)
+  //   ammoRotate · ammoRotateAt · ammoRotateReady · ammoRotateCooldown   저탄약 교대: 예비 중대 (탄약 ≥ ready) ↔ 탄약 평균 < at 인 전선 중대, 대대마다 cooldown 초에 한 번
+  //   reserveEvents · plugSeconds   방어 대대 예비 사건 투입: 전선 중대 붕괴 (틈) · 주저항선을 넘은 적 (돌파 = 국지 역습) · 측면 끝의 적 → 그 지점, plugSeconds 뒤 전선 합류
+  //   reserveRedesignate · reserveCalm   예비를 쓴 대대가 reserveCalm 초 조용하면 가장 성한 중대를 다시 예비로
+  //   counterOdds        (기본 0 = 2단계 문턱) 연대 예비 대대 역습 병력비 — 예비 ≥ 적 × 값 (제압된 적 × 0.6)
+  //   defendRepick       (기본 0 — 미션 측정 엇갈림: village_defense s1 방어 425→152초) 방어 진지 옮기는 최소 거리 (소총 사거리 배수, 하한 8칸 — 0 = 8칸)
+  // 겹침 이름 "바탕+겹침" = 바탕 프로필에 겹침 프로필이 적은 키만 덮어씀 (난이도도 같은 방식으로 쓸 예정).
+  "aliases": {
+    "russian": "russian-white",
+    "soviet": "russian-red"
+  },
+  "profiles": {
+    "default": {
+      "strategy": {
+        "posture": "attack", "aggressiveness": 0.5, "reserve": true, "defendPatience": 90, "artillery": 0.7, "cavalry": 0.6,
+        "scheme": "frontal", "mainEffort": 0.5, "regimentSize": 3, "counterattackOdds": 2.2, "culminate": 0.35,
+        "manoeuvre": true, "prePlan": false, "planFrontal": 0, "planFlank": 0, "planPincer": 0, "planSchwerpunkt": 0, "maxDetour": 2.0, "maxArrive": 120,
+        "flankShare": 0.34, "pincerShare": 0.5, "flankMinOdds": 1.2, "pincerMinOdds": 1.8, "mgWeight": 0.35, "fixLead": 20,
+        "objectives": true, "objectiveWeight": 0.3, "withdrawAt": 0, "commitment": 0.5,
+        "fixPush": false, "fixPushSec": 8, "fixWait": 20
+      },
+      "tactics": {
+        "aggressiveness": 0.5, "retreatStrength": 0.67, "retreatSuppression": 0.6, "trench": 0.6,
+        "chargeRange": 7, "chargeSuppression": 0.45, "chargeOdds": 1.6, "engageFrac": 0.6,
+        "fireAndMovement": true, "boundLength": 0.35, "prepSeconds": 20, "liftDistance": 10,
+        "outposts": true, "outpostDistance": 0.6, "depth": 0.8,
+        "coverWeight": 1.0, "highWeight": 0.7, "losWeight": 0.8, "threatWeight": 0.8,
+        "trenchSearch": 0.5, "defendCover": true, "coverMaxHit": 0.85, "defendSpacing": 0.65,
+        "templates": true,
+        "stalemateSeconds": 30,
+        "ammoRotate": true, "ammoRotateAt": 0.3, "ammoRotateReady": 0.6, "ammoRotateCooldown": 40,
+        "reserveEvents": true, "plugSeconds": 40, "reserveRedesignate": true, "reserveCalm": 30, "counterOdds": 0, "defendRepick": 0
+      }
+    },
+    "aggressive": {
+      "strategy": { "aggressiveness": 0.85, "cavalry": 0.9, "scheme": "flank", "mainEffort": 0.7, "culminate": 0.25 },
+      "tactics": { "aggressiveness": 0.85, "retreatStrength": 0.62, "retreatSuppression": 0.75, "trench": 0.2, "chargeRange": 9, "chargeSuppression": 0.3, "chargeOdds": 1.3, "engageFrac": 0.6, "prepSeconds": 12, "boundLength": 0.45 }
+    },
+    "defensive": {
+      "strategy": { "posture": "defend", "aggressiveness": 0.25, "cavalry": 0.3, "scheme": "defensive", "counterattackOdds": 3.0, "culminate": 0.5 },
+      "tactics": { "aggressiveness": 0.25, "retreatStrength": 0.70, "retreatSuppression": 0.5, "trench": 0.95, "chargeRange": 5, "chargeSuppression": 0.6, "chargeOdds": 2.2, "engageFrac": 0.68, "prepSeconds": 30, "outpostDistance": 0.7 }
+    },
+    // 측정용 겹침: 3단계 A 끄기 (2단계 대 3단계 A/B — 예 --ai tactical:korean+stage2, 미션 aiProfile "korean+stage2")
+    "stage2": { "strategy": { "manoeuvre": false, "objectives": false } },
+    // 3단계 B 겹침 (측정용 — 같은 실행 파일 A/B, KD_AI_OVERLAY=<이름> 이면 모든 세력에): 3b = 전부 켬, no3b = 전부 끔 (2단계 · 3A 동작), 3b_* = 한 가지씩
+    "3b": { "strategy": { "fixPush": true, "fixWait": 35 }, "tactics": { "ammoRotate": true, "reserveEvents": true, "reserveRedesignate": true, "counterOdds": 1.8, "defendRepick": 0.5 } },
+    "no3b": { "strategy": { "fixPush": false, "fixWait": 20 }, "tactics": { "ammoRotate": false, "reserveEvents": false, "reserveRedesignate": false, "counterOdds": 0, "defendRepick": 0 } },
+    "3b_ammo": { "tactics": { "ammoRotate": true } },
+    "3b_events": { "tactics": { "reserveEvents": true } },
+    "3b_redesig": { "tactics": { "reserveRedesignate": true } },
+    "3b_counter": { "tactics": { "counterOdds": 1.8 } },
+    "3b_repick": { "tactics": { "defendRepick": 0.5 } },
+    "3b_fixpush": { "strategy": { "fixPush": true, "fixWait": 35 } },
+    "norepick": { "tactics": { "defendRepick": 0 } },
+    // 측정용: 전술 틀 켜기 / 끄기 (--ai tactical:templates · tactical:notemplates)
+    "templates": { "tactics": { "templates": true } },
+    "notemplates": { "tactics": { "templates": false } },
+    // 측정용: 참호 돌격 순서 끄기 (N32 — --ai tactical:notrenchassault, 미션 aiProfile "korean+notrenchassault")
+    "notrenchassault": { "tactics": { "trenchAssault": false } },
+    // 세력 기본값 (지도 factions[].en)
+    "korean": {
+      "strategy": { "aggressiveness": 0.6, "artillery": 0.8, "cavalry": 0.5 },
+      "tactics": { "aggressiveness": 0.6, "trench": 0.7 }
+    },
+    "japanese": {
+      "strategy": { "aggressiveness": 0.8, "scheme": "flank", "mainEffort": 0.7 },
+      "tactics": { "aggressiveness": 0.8, "retreatStrength": 0.63, "trench": 0.4, "chargeRange": 9, "chargeSuppression": 0.35, "chargeOdds": 1.4, "prepSeconds": 15 }
+    },
+    "japan_garrison": {
+      "strategy": { "posture": "hold", "aggressiveness": 0.4, "artillery": 0.8, "cavalry": 0.3, "scheme": "defensive", "counterattackOdds": 2.5 },
+      "tactics": { "aggressiveness": 0.4, "retreatStrength": 0.60, "retreatSuppression": 0.75, "trench": 0.9, "chargeRange": 6, "chargeSuppression": 0.5, "chargeOdds": 2.0, "engageFrac": 0.68 }
+    },
+    "fengtian": {
+      "strategy": { "aggressiveness": 0.45, "artillery": 0.5, "cavalry": 0.8 },
+      "tactics": { "aggressiveness": 0.45, "retreatStrength": 0.70, "retreatSuppression": 0.5, "trench": 0.5, "fireAndMovement": false, "outposts": false }
+    },
+    "russian-white": {
+      "strategy": { "aggressiveness": 0.5, "artillery": 0.8, "cavalry": 0.9, "scheme": "flank" },
+      "tactics": { "trench": 0.6 }
+    },
+    "russian-red": {
+      "strategy": { "aggressiveness": 0.7, "artillery": 0.9, "culminate": 0.25 },
+      "tactics": { "aggressiveness": 0.7, "retreatStrength": 0.63, "retreatSuppression": 0.7, "trench": 0.5, "chargeOdds": 1.4 }
+    }
+  }
+}

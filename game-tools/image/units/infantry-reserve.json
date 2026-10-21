@@ -1,0 +1,16 @@
+{
+  "name": "infantry-reserve",
+  "_doc": "Reserve (예비군, Korean faction, not legacy) rifleman: infantry-japanese design (same body, poses, bolt rifle, pack, Type 45 cap) in very dark navy (material navy_old) with thin red piping (piping_red, fixed colour, not team): collar top edge, front placket, cuffs, trouser outer seam, cap crown edge + band edges. Team colour stays on the cap band and the upper-arm patch.",
+  "base": "infantry",
+  "anims": "infantry",
+  "headgear": "japanese_cap_old",
+  "uniform": "navy_old",
+  "weapon": "bolt_rifle",
+  "gear": ["field_pack", "haversack", "canteen_cloth", "leather_pouches"],
+  "team": ["helmet_band", "arm_patch"],
+  "belt": true,
+  "belt_pouches": false,
+  "e_pull_extra": 3.0,
+  "dirs": "all",
+  "frames": "all"
+}

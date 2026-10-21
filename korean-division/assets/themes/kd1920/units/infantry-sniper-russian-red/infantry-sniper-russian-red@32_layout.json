@@ -1,0 +1,244 @@
+{
+ "frame": [
+  32,
+  40
+ ],
+ "anchor": [
+  16,
+  36
+ ],
+ "dirs": [
+  "s",
+  "se",
+  "e",
+  "ne",
+  "n"
+ ],
+ "mirror": true,
+ "columns": [
+  "idle",
+  "walk_1",
+  "walk_2",
+  "walk_3",
+  "walk_4",
+  "aim_c",
+  "fire_c",
+  "go_prone",
+  "aim_prone",
+  "fire_prone",
+  "hit",
+  "fall",
+  "dead",
+  "stagger_b",
+  "kneel_b",
+  "dead_b",
+  "stagger_c",
+  "slump_c",
+  "dead_c"
+ ],
+ "anims": {
+  "idle": {
+   "frames": [
+    "idle"
+   ],
+   "ms": 150,
+   "shared_fit": false
+  },
+  "walk": {
+   "frames": [
+    "walk_1",
+    "walk_2",
+    "walk_3",
+    "walk_4"
+   ],
+   "ms": 140,
+   "shared_fit": false
+  },
+  "fire_c": {
+   "frames": [
+    "aim_c",
+    "fire_c"
+   ],
+   "ms": [
+    600,
+    160
+   ],
+   "shared_fit": false
+  },
+  "go_prone": {
+   "frames": [
+    "go_prone"
+   ],
+   "ms": 150,
+   "shared_fit": false
+  },
+  "fire_prone": {
+   "frames": [
+    "go_prone",
+    "aim_prone",
+    "fire_prone",
+    "aim_prone"
+   ],
+   "ms": [
+    260,
+    700,
+    160,
+    500
+   ],
+   "shared_fit": false
+  },
+  "death": {
+   "frames": [
+    "hit",
+    "fall",
+    "dead"
+   ],
+   "ms": [
+    250,
+    250,
+    1000
+   ],
+   "shared_fit": false
+  },
+  "death_b": {
+   "frames": [
+    "hit",
+    "stagger_b",
+    "kneel_b",
+    "dead_b"
+   ],
+   "ms": [
+    200,
+    700,
+    300,
+    1200
+   ],
+   "shared_fit": false
+  },
+  "death_c": {
+   "frames": [
+    "hit",
+    "stagger_c",
+    "slump_c",
+    "dead_c"
+   ],
+   "ms": [
+    200,
+    700,
+    300,
+    1200
+   ],
+   "shared_fit": false
+  }
+ },
+ "sheets": [
+  {
+   "file": "infantry-sniper-russian-red@32.png",
+   "team": "infantry-sniper-russian-red@32_team.png",
+   "columns": [
+    "idle",
+    "walk_1",
+    "walk_2",
+    "walk_3",
+    "walk_4",
+    "aim_c",
+    "fire_c",
+    "go_prone",
+    "aim_prone",
+    "fire_prone",
+    "hit",
+    "fall",
+    "dead",
+    "stagger_b",
+    "kneel_b",
+    "dead_b",
+    "stagger_c",
+    "slump_c",
+    "dead_c"
+   ],
+   "size": [
+    608,
+    200
+   ]
+  }
+ ],
+ "cells": {
+  "idle": {
+   "sheet": "infantry-sniper-russian-red@32.png",
+   "col": 0
+  },
+  "walk_1": {
+   "sheet": "infantry-sniper-russian-red@32.png",
+   "col": 1
+  },
+  "walk_2": {
+   "sheet": "infantry-sniper-russian-red@32.png",
+   "col": 2
+  },
+  "walk_3": {
+   "sheet": "infantry-sniper-russian-red@32.png",
+   "col": 3
+  },
+  "walk_4": {
+   "sheet": "infantry-sniper-russian-red@32.png",
+   "col": 4
+  },
+  "aim_c": {
+   "sheet": "infantry-sniper-russian-red@32.png",
+   "col": 5
+  },
+  "fire_c": {
+   "sheet": "infantry-sniper-russian-red@32.png",
+   "col": 6
+  },
+  "go_prone": {
+   "sheet": "infantry-sniper-russian-red@32.png",
+   "col": 7
+  },
+  "aim_prone": {
+   "sheet": "infantry-sniper-russian-red@32.png",
+   "col": 8
+  },
+  "fire_prone": {
+   "sheet": "infantry-sniper-russian-red@32.png",
+   "col": 9
+  },
+  "hit": {
+   "sheet": "infantry-sniper-russian-red@32.png",
+   "col": 10
+  },
+  "fall": {
+   "sheet": "infantry-sniper-russian-red@32.png",
+   "col": 11
+  },
+  "dead": {
+   "sheet": "infantry-sniper-russian-red@32.png",
+   "col": 12
+  },
+  "stagger_b": {
+   "sheet": "infantry-sniper-russian-red@32.png",
+   "col": 13
+  },
+  "kneel_b": {
+   "sheet": "infantry-sniper-russian-red@32.png",
+   "col": 14
+  },
+  "dead_b": {
+   "sheet": "infantry-sniper-russian-red@32.png",
+   "col": 15
+  },
+  "stagger_c": {
+   "sheet": "infantry-sniper-russian-red@32.png",
+   "col": 16
+  },
+  "slump_c": {
+   "sheet": "infantry-sniper-russian-red@32.png",
+   "col": 17
+  },
+  "dead_c": {
+   "sheet": "infantry-sniper-russian-red@32.png",
+   "col": 18
+  }
+ },
+ "anchors": "infantry-sniper-russian-red@32_anchors.json"
+}

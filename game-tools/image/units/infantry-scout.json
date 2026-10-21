@@ -1,0 +1,41 @@
+{
+  "name": "infantry-scout",
+  "_doc": "Korean Empire (대한제국군) scout (정찰병): infantry-default body/uniform (dark field grey, kepi with team band, no placket), short cavalry-type carbine, field binoculars on a neck strap at the chest, light kit (bread bag + canteen + small map case, no pack). Anims = infantry-motions + binoculars poses (bases/infantry_scout.py).",
+  "base": "infantry_scout",
+  "anims": "infantry-scout",
+  "headgear": "korean_kepi",
+  "uniform": {
+    "jacket": "fgrey_dark",
+    "trousers": "fgrey_dark_trouser",
+    "legging": "fgrey_dark_wrap",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "collar": true,
+    "puttees": true,
+    "puttee_seam": "fgrey_dark_trouser",
+    "piping": "acc_brass",
+    "placket": false,
+    "trouser_stripe": true,
+    "stripe_mat": "acc_brass"
+  },
+  "gear": [
+    "binoc_chest",
+    "haversack",
+    "canteen_cloth",
+    "map_case_front"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "belt": true,
+  "belt_pouches": false,
+  "e_pull_extra": 0.0,
+  "dirs": "all",
+  "frames": "all",
+  "weapons": {
+    "carbine": "cav_carbine",
+    "binoc": "binoculars"
+  }
+}

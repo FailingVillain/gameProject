@@ -1,0 +1,44 @@
+  [sim] AI A=tactical B=tactical
+  t=10s  A 123 @(96,64)  B 276 @(163,61)  wall 0.5s
+  t=20s  A 123 @(106,69)  B 276 @(151,59)  wall 0.8s
+  t=30s  A 123 @(105,68)  B 276 @(150,60)  wall 1.2s
+  t=40s  A 107 @(112,72)  B 276 @(147,60)  wall 1.6s
+  t=50s  A 77 @(116,75)  B 273 @(145,62)  wall 1.9s
+  t=60s  A 48 @(113,76)  B 273 @(141,62)  wall 2.2s
+  t=70s  A 33 @(112,76)  B 273 @(138,64)  wall 2.5s
+  t=80s  A 24 @(112,77)  B 273 @(133,65)  wall 2.8s
+  t=90s  A 4 @(114,75)  B 273 @(130,67)  wall 3.1s
+MARCH ticks=0 move=0 moveOn=0 shots=0 moveShots=0 pistol=0 gren=0 melee=0
+MEAS start=123/276 end_t=92 winner=2 lossEnd=123/3 loss120=-1/-1 loss300=-1/-1 t50=55/- shots=1003 hits=267 hitpct=26.6 meanDist=16.1 hitDist=15.1
+결과: 승자 2, 91.6초, 실행 3.1초, 명령 153
+사살원인 030s infantry_guard/rifle_mauser98->infantry_dadao_fengtian = 16
+사살원인 040s heavy_field_gun/gun_field->infantry_dadao_fengtian = 5
+사살원인 040s infantry_dadao_fengtian/melee->infantry_guard = 3
+사살원인 040s infantry_guard/rifle_mauser98->heavy_infantry_gun = 1
+사살원인 040s infantry_guard/rifle_mauser98->infantry_dadao_fengtian = 24
+사살원인 050s heavy_field_gun/gun_field->infantry_dadao_fengtian = 10
+사살원인 050s infantry_guard/rifle_mauser98->infantry_dadao_fengtian = 19
+사살원인 060s heavy_field_gun/gun_field->infantry_dadao_fengtian = 9
+사살원인 060s infantry_guard/rifle_mauser98->infantry_dadao_fengtian = 6
+사살원인 070s heavy_field_gun/gun_field->infantry_dadao_fengtian = 7
+사살원인 070s infantry_guard/rifle_mauser98->infantry_dadao_fengtian = 2
+사살원인 080s heavy_field_gun/gun_field->heavy_infantry_gun = 1
+사살원인 080s heavy_field_gun/gun_field->infantry_dadao_fengtian = 7
+사살원인 080s infantry_guard/rifle_mauser98->infantry_dadao_fengtian = 12
+사살원인 090s infantry_guard/melee->infantry_dadao_fengtian = 1
+사살원인 090s infantry_guard/rifle_mauser98->heavy_infantry_gun = 1
+사살원인 090s infantry_guard/rifle_mauser98->infantry_dadao_fengtian = 2
+틀 행동: 시작 0 끝 0 약진 0 기동 0 돌격 0 역습 0 참호 0 연신 0 전환 0 인계멈춤 0 포병전개 0
+기병AI: 돌격 정면 0 측면 0 후방 0 측면경유 0 소규모보류 0 물러남 0 | 추격: 후퇴중 희생 사격 6 근접 0 후퇴하는 적 돌격 보병 0 기병 0 | N55 기병 무모한 정면 0 돌격 사격 전진 0 | N23 소탕 0 | S4 제압으로 꺾인 돌격 0
+F4 기병 돌격: 개시 0 무의미 정면 0 자동 막음 0 근접 사살 0 사유(후퇴/제압/승무원/고립/측면) 0/0/0/0/0 · 하마 0 승마 0
+관찰: 사격 1003발 · 명중 267발 (26.6%) · 사망 126기 → 1킬당 8.0발 (명중 2.1발)
+N61 접근: 보병(1) 첫 사격 -초 · 기병(2) 첫 근접 90.1초 · 전환 0 · 그 시점 B 생존 273/276
+템포: 첫 사격 28.5초 · A 50% 손실 55.0초 · B 50% 손실 -초 · 사격 거리 평균 16.1 (첫 100발 14.0) 칸
+  세력:종류            시작→남음   사격    근접   포격  방열%  돌격%
+  1:heavy_infantry_gun    3→0           0      0      0     0     0
+  1:infantry_dadao_fengtian  120→0           0     28      0     0     1
+  2:heavy_field_gun       6→6          39      0     39    55     0
+  2:infantry_guard      270→267       964      1      0     0     0
+AI 비용: 사고 ms/틱 avg 0.013 max 18.68 (호출 733, 호출당 0.101 ms) · 전체 Step avg 0.56 ms
+  [전술 AI 1] 프로필 default 태세 Attack/Attack 중대 3 대대 1 · 명령 40 돌격 0 기병돌격 0 참호 0 후퇴 8 포병이동 0 화력사수 3 예비투입 1 · 연대 1 준비사격 0 연신 0 분대약진 0 전초 0/철수 0 역습 0 증원편입 0 공격한계 0
+  [전술 AI 2] 프로필 default 태세 Attack/Attack 중대 7 대대 2 · 명령 71 돌격 0 기병돌격 0 참호 0 후퇴 0 포병이동 0 화력사수 1 예비투입 1 · 연대 1 준비사격 0 연신 0 분대약진 6 전초 0/철수 0 역습 0 증원편입 0 공격한계 0

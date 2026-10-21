@@ -1,0 +1,41 @@
+{
+  "propScatter": true,
+  // 장갑 차량 시험 미션 (armour 2026-10-21): 한국군 Mark V 중전차 2 + 랜체스터 장갑차 1 + 보병 1개 중대 vs 봉천군 급조 장갑차 2 + 보병 1개 중대, 중앙에 참호선. AI 대 AI 관전.
+  "id": "armour_test",
+  "title": "장갑 차량 (시험)",
+  "date": "1920년 가을 낮",
+  "location": "간도 · 참호 지대",
+  "briefing": "한국군 Mark V 중전차가 참호를 넘어 돌파한다. 봉천군은 급조 장갑차로 맞선다 (AI 대 AI 관전 시험 미션).",
+  "seed": 1921,
+  "weather": "clear",
+  "time": "day",
+  "player": 1,
+  "spectate": true,
+  "factions": [
+    { "name": "한국군", "en": "korean", "lang": "ko", "color": [60, 130, 235], "team": 1, "posture": "attack", "area": "front" },
+    { "name": "봉천군", "en": "fengtian", "lang": "zh", "color": [165, 95, 225], "team": 2, "posture": "defend", "area": "front" }
+  ],
+  "mapData": {
+    "name": "참호 지대",
+    "width": 120, "height": 120, "base": "grass",
+    "paint": [
+      { "terrain": "trench", "rect": [30, 56, 60, 2] },
+      { "terrain": "forest", "rect": [8, 20, 18, 16] }
+    ],
+    "starts": [ [60, 100], [60, 20] ]
+  },
+  "areas": { "front": { "rect": [40, 44, 40, 32] } },
+  "forces": [
+    { "id": "kr", "faction": 1, "name": "한국군 제1중대", "at": [60, 90], "facing": 0, "formation": "line",
+      "companies": [ { "units": { "officer": 1, "infantry": 28, "infantry_scout": 2 } } ] },
+    { "id": "krt", "faction": 1, "name": "전차 소대", "at": [60, 96], "facing": 0, "units": { "tank_mark_v": 2, "tank_lanchester": 1 } },
+    { "id": "ft", "faction": 2, "name": "봉천군 제1중대", "at": [60, 30], "facing": 180, "formation": "line",
+      "companies": [ { "units": { "officer_fengtian": 1, "infantry_fengtian": 28 } } ] },
+    { "id": "ftt", "faction": 2, "name": "급조 장갑차대", "at": [60, 24], "facing": 180, "units": { "tank_fengtian_truck": 2 } }
+  ],
+  "objectives": [
+    { "id": "crush", "type": "eliminate", "percent": 60, "faction": 2, "text": "봉천군 60% 격멸" }
+  ],
+  "failures": [ { "type": "losses", "percent": 80 }, { "type": "timeLimit", "seconds": 600 } ],
+  "events": [ { "id": "intro", "when": { "time": 1 }, "do": [ { "message": "전차가 전진한다" } ] } ]
+}

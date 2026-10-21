@@ -1,0 +1,7 @@
+[mission-run] bandit_raid '마적 습격 (시험)': won (-) at 142.0s, ticks 8522, 0.6s wall
+  objective crush (eliminate, primary): done progress 71.4
+  faction 1 한국군: spawned 31, lost 10, alive 21, trench peak 0 (now 0)
+  faction 2 마적: spawned 35, lost 25, alive 10, trench peak 0 (now 0)
+  events fired 1/1, reinforcements 0/0, messages 1, top kills 31, promotions 3
+  results: C:\Users\seung\AppData\Local\KoreanDivision\results\bandit_raid_20261020_193045.json
+  checksum E7650F57C7DC0AA0 tick 8522

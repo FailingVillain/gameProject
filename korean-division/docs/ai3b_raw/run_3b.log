@@ -1,0 +1,24 @@
+T3B A1 # ai_bn_meeting seed 1: lost at 292.5s (wall 12s) faction 1 한국군: spawned 295, lost 207, alive 88 faction 2 봉천 군벌: spawned 312, lost 181, alive 131
+T3B A2 # ai_bn_meeting seed 2: lost at 163.8s (wall 8s) faction 1 한국군: spawned 295, lost 207, alive 88 faction 2 봉천 군벌: spawned 312, lost 90, alive 222 
+T3B A3 # ai_bn_meeting seed 3: running at 600.0s (wall 15s) faction 1 한국군: spawned 295, lost 206, alive 89 faction 2 봉천 군벌: spawned 312, lost 208, alive 
+T3B A4 # ai_bn_meeting seed 4: won at 400.9s (wall 13s) faction 1 한국군: spawned 295, lost 170, alive 125 faction 2 봉천 군벌: spawned 312, lost 219, alive 93 
+T3B A5 # ai_bn_meeting seed 5: running at 600.0s (wall 22s) faction 1 한국군: spawned 295, lost 202, alive 93 faction 2 봉천 군벌: spawned 312, lost 198, alive 
+T3B B1 # ai_bn_assault seed 1: lost at 500.2s (wall 20s) faction 1 한국군: spawned 301, lost 211, alive 90 faction 2 봉천 군벌: spawned 312, lost 216, alive 96 
+T3B B2 # ai_bn_assault seed 2: won at 313.2s (wall 15s) faction 1 한국군: spawned 301, lost 162, alive 139 faction 2 봉천 군벌: spawned 312, lost 219, alive 93 
+T3B B3 # ai_bn_assault seed 3: won at 268.8s (wall 14s) faction 1 한국군: spawned 301, lost 148, alive 153 faction 2 봉천 군벌: spawned 312, lost 219, alive 93 
+T3B B4 # ai_bn_assault seed 4: won at 525.7s (wall 20s) faction 1 한국군: spawned 301, lost 205, alive 96 faction 2 봉천 군벌: spawned 312, lost 219, alive 93 
+T3B B5 # ai_bn_assault seed 5: won at 384.8s (wall 17s) faction 1 한국군: spawned 301, lost 171, alive 130 faction 2 봉천 군벌: spawned 312, lost 219, alive 93 
+T3B C1 # ai_kr_vs_ft_1000 seed 1: won at 276.5s (wall 51s) faction 1 한국군: spawned 971, lost 359, alive 612 faction 2 봉천 군벌: spawned 996, lost 698, alive 
+T3B C2 # ai_kr_vs_ft_1000 seed 2: won at 336.6s (wall 62s) faction 1 한국군: spawned 971, lost 327, alive 644 faction 2 봉천 군벌: spawned 996, lost 698, alive 
+T3B C3 # ai_kr_vs_ft_1000 seed 3: won at 259.8s (wall 46s) faction 1 한국군: spawned 971, lost 317, alive 654 faction 2 봉천 군벌: spawned 996, lost 698, alive 
+T3B C4 # ai_kr_vs_ft_1000 seed 4: won at 234.8s (wall 47s) faction 1 한국군: spawned 971, lost 298, alive 673 faction 2 봉천 군벌: spawned 996, lost 699, alive 
+T3B C5 # ai_kr_vs_ft_1000 seed 5: won at 284.8s (wall 53s) faction 1 한국군: spawned 971, lost 433, alive 538 faction 2 봉천 군벌: spawned 996, lost 698, alive 
+M3B village_defense 1 [mission-run] village_defense '마을 방어': lost (-) at 148.1s, ticks 8886, 1.2s wall   faction 1 한국: spawned 60, lost 39, alive 21, trench peak 38 (now 0)   faction 2 봉천 군벌: spawned 57, lost 18, alive 39, trench peak 21 (now 0) 
+M3B village_defense 2 [mission-run] village_defense '마을 방어': lost (-) at 154.6s, ticks 9277, 1.3s wall   faction 1 한국: spawned 60, lost 33, alive 27, trench peak 38 (now 0)   faction 2 봉천 군벌: spawned 57, lost 14, alive 43, trench peak 11 (now 0) 
+M3B village_defense 3 [mission-run] village_defense '마을 방어': lost (losses) at 259.8s, ticks 15588, 2.0s wall   faction 1 한국: spawned 60, lost 51, alive 9, trench peak 38 (now 0)   faction 2 봉천 군벌: spawned 57, lost 22, alive 35, trench peak 29 (now 0) 
+M3B c1_01_hoeryong 1 [mission-run] c1_01_hoeryong '1-1 회령 초소': lost (-) at 1048.1s, ticks 62888, 13.1s wall   faction 1 한국: spawned 112, lost 55, alive 57, trench peak 79 (now 4)   faction 2 마적: spawned 280, lost 205, alive 75, trench peak 0 (now 0) 
+M3B c1_01_hoeryong 2 [mission-run] c1_01_hoeryong '1-1 회령 초소': running (-) at 1830.0s, ticks 109799, 27.6s wall   faction 1 한국: spawned 167, lost 84, alive 83, trench peak 85 (now 0)   faction 2 마적: spawned 360, lost 282, alive 78, trench peak 9 (now 0) 
+M3B c1_01_hoeryong 3 [mission-run] c1_01_hoeryong '1-1 회령 초소': running (-) at 1830.0s, ticks 109799, 27.2s wall   faction 1 한국: spawned 167, lost 67, alive 100, trench peak 83 (now 0)   faction 2 마적: spawned 360, lost 297, alive 63, trench peak 9 (now 0) 
+M3B yalu_crossing 1 [mission-run] yalu_crossing '압록강 도하 거점 점령': lost (timeLimit) at 1500.0s, ticks 90000, 9.2s wall   faction 1 한국: spawned 101, lost 67, alive 34, trench peak 2 (now 0)   faction 2 일본: spawned 83, lost 56, alive 27, trench peak 27 (now 0
+M3B yalu_crossing 2 [mission-run] yalu_crossing '압록강 도하 거점 점령': lost (losses) at 451.9s, ticks 27112, 3.1s wall   faction 1 한국: spawned 101, lost 76, alive 25, trench peak 0 (now 0)   faction 2 일본: spawned 83, lost 68, alive 15, trench peak 24 (now 0) 
+M3B yalu_crossing 3 [mission-run] yalu_crossing '압록강 도하 거점 점령': lost (timeLimit) at 1500.0s, ticks 90000, 9.5s wall   faction 1 한국: spawned 101, lost 67, alive 34, trench peak 0 (now 0)   faction 2 일본: spawned 83, lost 49, alive 34, trench peak 24 (now 0

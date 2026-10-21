@@ -1,0 +1,26 @@
+{
+  "name": "heavy-machinegunner-chauchat-fengtian",
+  "fix_as": "heavy-machinegunner-fengtian",
+  "_doc": "heavy-machinegunner-fengtian with the Chauchat (FM Mle 1915) instead of the generic LMG; same body/poses/gear.",
+  "base": "infantry_heavy",
+  "anims": "heavy-machinegunner",
+  "headgear": "fengtian_cap",
+  "uniform": "fengtian",
+  "weapon": "chauchat",
+  "gear": [
+    "bandolier_x_tight",
+    "haversack",
+    "canteen_cloth",
+    "leather_pouches"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "belt": true,
+  "belt_pouches": false,
+  "e_pull_extra": 3.0,
+  "dirs": "16",
+  "frame_wide": 1.5,
+  "frames": "all"
+}

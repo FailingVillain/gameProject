@@ -1,0 +1,292 @@
+{
+  "propScatter": true,
+  "propDensity": 4.0,
+  "propCell": 6,
+ "id": "forest_ambush",
+ "title": "숲길 매복",
+ "date": "1920년 가을",
+ "location": "함경도 산길",
+ "briefing": "일본군 수색대대가 숲 사이 길로 행군해 온다. 숲에 숨어 길이 좁아지는 곳에서 기습하라. 사격 시점은 당신이 정한다.",
+ "seed": 31,
+ "weather": "clear",
+ "time": "day",
+ "player": 1,
+ "factions": [
+  {
+   "name": "한국",
+   "en": "korean",
+   "lang": "ko",
+   "color": [
+    60,
+    130,
+    235
+   ],
+   "team": 1,
+   "posture": "hold",
+   "area": "ambush"
+  },
+  {
+   "name": "일본",
+   "en": "japanese",
+   "lang": "ja",
+   "color": [
+    235,
+    195,
+    50
+   ],
+   "team": 2,
+   "posture": "attack",
+   "area": "exit",
+   "aiProfile": "japanese"
+  }
+ ],
+ "mapData": {
+  "name": "숲길 매복",
+  "width": 140,
+  "height": 90,
+  "base": "grass",
+  "paint": [
+   {
+    "terrain": "forest",
+    "rect": [
+     55,
+     0,
+     30,
+     38
+    ]
+   },
+   {
+    "terrain": "forest",
+    "rect": [
+     55,
+     52,
+     30,
+     38
+    ]
+   },
+   {
+    "terrain": "dirt",
+    "rect": [
+     0,
+     40,
+     140,
+     10
+    ]
+   },
+   {
+    "terrain": "high",
+    "circle": [
+     110,
+     20,
+     6
+    ]
+   }
+  ],
+  "starts": [
+   [
+    70,
+    25
+   ],
+   [
+    10,
+    45
+   ]
+  ]
+ },
+ "areas": {
+  "ambush": {
+   "rect": [
+    55,
+    36,
+    30,
+    16
+   ]
+  },
+  "exit": {
+   "rect": [
+    125,
+    38,
+    12,
+    14
+   ]
+  }
+ },
+ "deployZones": [
+  {
+   "faction": 1,
+   "rect": [
+    50,
+    5,
+    40,
+    80
+   ]
+  }
+ ],
+ "forces": [
+  {
+   "id": "k1",
+   "faction": 1,
+   "name": "매복 대대",
+   "at": [
+    70,
+    27
+   ],
+   "facing": 180,
+   "battalion": 1,
+   "battalionForm": "line",
+   "formation": "line",
+   "companies": [
+    {
+     "units": {
+      "officer": 1,
+      "infantry": 40
+     }
+    },
+    {
+     "units": {
+      "officer": 1,
+      "infantry": 40
+     }
+    }
+   ]
+  },
+  {
+   "id": "k2",
+   "faction": 1,
+   "name": "남쪽 매복",
+   "at": [
+    70,
+    64
+   ],
+   "facing": 0,
+   "formation": "line",
+   "companies": [
+    {
+     "units": {
+      "officer": 1,
+      "infantry": 40
+     }
+    }
+   ]
+  },
+  {
+   "id": "k_lmg",
+   "faction": 1,
+   "name": "경기관총반",
+   "at": [
+    66,
+    28
+   ],
+   "facing": 180,
+   "formation": "line",
+   "units": {
+    "officer": 1,
+    "heavy_machinegunner": 6
+   }
+  },
+  {
+   "id": "k_sc",
+   "faction": 1,
+   "name": "정찰대",
+   "at": [
+    60,
+    30
+   ],
+   "facing": 180,
+   "company": false,
+   "formation": "spread",
+   "units": {
+    "scout": 3
+   }
+  },
+  {
+   "id": "j1",
+   "faction": 2,
+   "name": "일본군 수색대대",
+   "at": [
+    8,
+    45
+   ],
+   "facing": 90,
+   "formation": "column",
+   "companies": [
+    {
+     "units": {
+      "officer": 1,
+      "infantry_japanese": 40
+     }
+    },
+    {
+     "units": {
+      "officer": 1,
+      "infantry_japanese": 40
+     }
+    },
+    {
+     "units": {
+      "officer": 1,
+      "infantry_japanese": 40
+     }
+    }
+   ]
+  },
+  {
+   "id": "j_sc",
+   "faction": 2,
+   "name": "일본군 척후",
+   "at": [
+    16,
+    45
+   ],
+   "facing": 90,
+   "company": false,
+   "formation": "spread",
+   "units": {
+    "infantry_scout": 4
+   }
+  }
+ ],
+ "objectives": [
+  {
+   "id": "stop",
+   "type": "eliminate",
+   "percent": 70,
+   "text": "일본군 70% 격파"
+  }
+ ],
+ "failures": [
+  {
+   "type": "losses",
+   "percent": 60
+  },
+  {
+   "type": "timeLimit",
+   "seconds": 2100
+  }
+ ],
+ "events": [
+  {
+   "id": "intro",
+   "when": {
+    "time": 1
+   },
+   "do": [
+    {
+     "message": "숲에 숨어 적 종대가 들어오길 기다려라"
+    }
+   ]
+  },
+  {
+   "id": "in",
+   "when": {
+    "area": "ambush",
+    "faction": 2
+   },
+   "do": [
+    {
+     "message": "적이 매복 구역에 진입했다"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,7 @@
+{
+  "_doc": "infantry anims + wave_flag (standard bearer waves the flag instead of firing; the game plays wave_flag when he stands). Pose in bases/infantry_motions.py wave_flag.",
+  "extends": "infantry",
+  "anims": {
+    "wave_flag": {"frames": ["wave_flag_1", "wave_flag_2", "wave_flag_3", "wave_flag_4"], "ms": [260, 180, 260, 180]}
+  }
+}

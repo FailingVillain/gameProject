@@ -1,0 +1,18 @@
+== C base (seeds 1-5)
+  KR wins 4/5, mean t 321s, K 563 / E 693, K/E 0.81
+  F1: preContactShells 0 (per game 0.0), contact t 22s, shells before first infantry advance 31.0/game (advance t 50s), assault-aim<=12 5/24 (21%), howitzer moves/game 7.0, gun move-starts/game 178.8, gun-sec moving 23%, fire ratio 11.7%, observers alive 20/20 (mean death nans)
+     far>80%: field_gun 45% of 249, howitzer 37% of 518, infantry_gun 57% of 549
+     direct far shots 482, of which a near target was available 61 (13%); obs-tool shots before first infantry fire 20, before contact 0
+     kill credit/game: field_gun 37.0 (shells 51, first 35s), howitzer 148.8 (shells 102, first 27s), infantry_gun 25.8 (shells 111, first 38s)
+  F2: preContactShells 0 (per game 0.0), contact t 22s, shells before first infantry advance 8.0/game (advance t 66s), assault-aim<=12 2/7 (29%), howitzer moves/game 1.0, gun move-starts/game 99.2, gun-sec moving 30%, fire ratio 12.1%, observers alive 4/10 (mean death 269s)
+     far>80%: field_gun 1% of 129, howitzer 7% of 181, infantry_gun 55% of 285
+     direct far shots 167, of which a near target was available 66 (40%); obs-tool shots before first infantry fire 4, before contact 2
+     kill credit/game: field_gun 18.0 (shells 26, first 69s), howitzer 38.4 (shells 36, first 34s), infantry_gun 13.4 (shells 57, first 120s)
+== B base (seeds 1-12): KR wins 7/12, t 349, K 185 / E 200, KR preContact impacts 2 (contact 16s), shells before first advance 5.0/game (advance 48s), obs-tool shots before inf fire 24 / before contact 2, observers alive 36/36, howitzer shells/game 42 kills/game 43.9, gunMoves 0.3
+== D base F1 (seeds 1-3): KR wins 3/3, t 367, K 1121/E 1400, howitzer moves/game 24.7, gun move-starts/game 525.7, gun-sec moving 41%, fire ratio 10.2%, all-gun kill credit/game 434
+== D base F2 (seeds 1-3): KR wins 3/3, t 367, K 1121/E 1400, howitzer moves/game 12.0, gun move-starts/game 247.0, gun-sec moving 39%, fire ratio 12.3%, all-gun kill credit/game 134
+== small base (seeds 1-10)
+  base hw3s4: A wins 9/10, t 154, A loss 35.3, B loss 61.7, preShells/game 0.0, gunMoves/game 7.4, scouts alive 0/40, observers alive 0/0; howitzer kills 12.9 shells 13.3 first 25
+  base fg3: A wins 10/10, t 103, A loss 16.3, B loss 62.0, preShells/game 0.0, gunMoves/game 8.8, scouts alive 0/0, observers alive 0/0; field_gun kills 23.0 shells 35.5 first 15
+  base ig3: A wins 8/10, t 155, A loss 32.7, B loss 58.1, preShells/game 0.0, gunMoves/game 17.8, scouts alive 0/0, observers alive 0/0; infantry_gun kills 10.5 shells 39.9 first 13
+  base ctl: A wins 1/10, t 184, A loss 58.4, B loss 38.9, preShells/game 0.0, gunMoves/game 0.0, scouts alive 0/0, observers alive 0/0; 

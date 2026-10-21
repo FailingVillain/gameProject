@@ -1,0 +1,30 @@
+{
+ "name": "cavalry-mongol",
+ "_doc": "Mongol horseman: deel robe (blue) + bright sash, pointed hat; carbine+sabre.",
+ "base": "cavalry",
+ "anims": "cavalry",
+ "headgear": "mongol_hat",
+ "uniform": {
+  "jacket": "mg_deel",
+  "trousers": "mg_deel",
+  "legging": "leather",
+  "boot": "leather",
+  "belt": "mg_sash",
+  "hand": "skin",
+  "collar": false,
+  "puttees": false
+ },
+ "weapons": {
+  "carbine": "cav_carbine",
+  "sabre": "sabre"
+ },
+ "gear": [],
+ "team": [
+  "helmet_band",
+  "arm_patch"
+ ],
+ "belt": true,
+ "belt_pouches": false,
+ "dirs": "all",
+ "frames": "all"
+}

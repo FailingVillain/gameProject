@@ -1,0 +1,163 @@
+{
+ "part": "hull",
+ "frame": [
+  144,
+  144
+ ],
+ "anchor": [
+  72,
+  96
+ ],
+ "dirs": [
+  "s",
+  "sse",
+  "se",
+  "ese",
+  "e",
+  "ene",
+  "ne",
+  "nne",
+  "n"
+ ],
+ "yaw_step": 22.5,
+ "mirror": true,
+ "mirror_map": {
+  "ssw": "sse",
+  "sw": "se",
+  "wsw": "ese",
+  "w": "e",
+  "wnw": "ene",
+  "nw": "ne",
+  "nnw": "nne"
+ },
+ "columns": [
+  "idle",
+  "move_1",
+  "move_2",
+  "move_3",
+  "move_4",
+  "dead"
+ ],
+ "anims": {
+  "idle": {
+   "frames": [
+    "idle"
+   ],
+   "ms": 150
+  },
+  "move": {
+   "frames": [
+    "move_1",
+    "move_2",
+    "move_3",
+    "move_4"
+   ],
+   "ms": 110
+  },
+  "dead": {
+   "frames": [
+    "dead"
+   ],
+   "ms": 150
+  }
+ },
+ "sheets": [
+  {
+   "file": "tank-ft-male_hull@144.png",
+   "team": "tank-ft-male_hull@144_team.png",
+   "columns": [
+    "idle",
+    "move_1",
+    "move_2",
+    "move_3",
+    "move_4",
+    "dead"
+   ],
+   "size": [
+    864,
+    1296
+   ]
+  }
+ ],
+ "cells": {
+  "idle": {
+   "sheet": "tank-ft-male_hull@144.png",
+   "col": 0
+  },
+  "move_1": {
+   "sheet": "tank-ft-male_hull@144.png",
+   "col": 1
+  },
+  "move_2": {
+   "sheet": "tank-ft-male_hull@144.png",
+   "col": 2
+  },
+  "move_3": {
+   "sheet": "tank-ft-male_hull@144.png",
+   "col": 3
+  },
+  "move_4": {
+   "sheet": "tank-ft-male_hull@144.png",
+   "col": 4
+  },
+  "dead": {
+   "sheet": "tank-ft-male_hull@144.png",
+   "col": 5
+  }
+ },
+ "anchors": "tank-ft-male_hull@144_anchors.json",
+ "turret": {
+  "layout": "tank-ft-male_turret@120_layout.json",
+  "mount": {
+   "s": [
+    0.0,
+    -23.44
+   ],
+   "sse": [
+    0.96,
+    -23.56
+   ],
+   "se": [
+    1.78,
+    -23.88
+   ],
+   "ese": [
+    2.32,
+    -24.35
+   ],
+   "e": [
+    2.51,
+    -24.92
+   ],
+   "ene": [
+    2.32,
+    -25.48
+   ],
+   "ne": [
+    1.78,
+    -25.96
+   ],
+   "nne": [
+    0.96,
+    -26.28
+   ],
+   "n": [
+    0.0,
+    -26.39
+   ]
+  },
+  "ring_model": [
+   0.0,
+   18.4,
+   1.5
+  ],
+  "pivot": [
+   60,
+   66
+  ],
+  "frame": [
+   120,
+   120
+  ]
+ }
+}

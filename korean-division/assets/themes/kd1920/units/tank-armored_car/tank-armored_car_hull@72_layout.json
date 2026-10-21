@@ -1,0 +1,253 @@
+{
+ "part": "hull",
+ "frame": [
+  72,
+  72
+ ],
+ "anchor": [
+  36,
+  48
+ ],
+ "dirs": [
+  "s",
+  "sse",
+  "se",
+  "ese",
+  "e",
+  "ene",
+  "ne",
+  "nne",
+  "n"
+ ],
+ "yaw_step": 22.5,
+ "mirror": true,
+ "mirror_map": {
+  "ssw": "sse",
+  "sw": "se",
+  "wsw": "ese",
+  "w": "e",
+  "wnw": "ene",
+  "nw": "ne",
+  "nnw": "nne"
+ },
+ "columns": [
+  "idle",
+  "move_1",
+  "move_2",
+  "move_3",
+  "move_4",
+  "dead"
+ ],
+ "anims": {
+  "idle": {
+   "frames": [
+    "idle"
+   ],
+   "ms": 150
+  },
+  "move": {
+   "frames": [
+    "move_1",
+    "move_2",
+    "move_3",
+    "move_4"
+   ],
+   "ms": 110
+  },
+  "dead": {
+   "frames": [
+    "dead"
+   ],
+   "ms": 150
+  }
+ },
+ "sheets": [
+  {
+   "file": "tank-armored_car_hull@72.png",
+   "team": "tank-armored_car_hull@72_team.png",
+   "columns": [
+    "idle",
+    "move_1",
+    "move_2",
+    "move_3",
+    "move_4",
+    "dead"
+   ],
+   "size": [
+    432,
+    648
+   ]
+  }
+ ],
+ "cells": {
+  "idle": {
+   "sheet": "tank-armored_car_hull@72.png",
+   "col": 0
+  },
+  "move_1": {
+   "sheet": "tank-armored_car_hull@72.png",
+   "col": 1
+  },
+  "move_2": {
+   "sheet": "tank-armored_car_hull@72.png",
+   "col": 2
+  },
+  "move_3": {
+   "sheet": "tank-armored_car_hull@72.png",
+   "col": 3
+  },
+  "move_4": {
+   "sheet": "tank-armored_car_hull@72.png",
+   "col": 4
+  },
+  "dead": {
+   "sheet": "tank-armored_car_hull@72.png",
+   "col": 5
+  }
+ },
+ "anchors": "tank-armored_car_hull@72_anchors.json",
+ "turret": {
+  "layout": "tank-armored_car_turret@60_layout.json",
+  "mount": {
+   "s": [
+    -4.44,
+    -15.76
+   ],
+   "sse": [
+    -3.78,
+    -14.8
+   ],
+   "se": [
+    -2.54,
+    -14.06
+   ],
+   "ese": [
+    -0.92,
+    -13.65
+   ],
+   "e": [
+    0.84,
+    -13.64
+   ],
+   "ene": [
+    2.47,
+    -14.03
+   ],
+   "ne": [
+    3.73,
+    -14.76
+   ],
+   "nne": [
+    4.42,
+    -15.71
+   ],
+   "n": [
+    4.44,
+    -16.74
+   ]
+  },
+  "ring_model": [
+   -5.3,
+   24.0,
+   1.0
+  ],
+  "mounts": [
+   {
+    "s": [
+     -4.44,
+     -15.76
+    ],
+    "sse": [
+     -3.78,
+     -14.8
+    ],
+    "se": [
+     -2.54,
+     -14.06
+    ],
+    "ese": [
+     -0.92,
+     -13.65
+    ],
+    "e": [
+     0.84,
+     -13.64
+    ],
+    "ene": [
+     2.47,
+     -14.03
+    ],
+    "ne": [
+     3.73,
+     -14.76
+    ],
+    "nne": [
+     4.42,
+     -15.71
+    ],
+    "n": [
+     4.44,
+     -16.74
+    ]
+   },
+   {
+    "s": [
+     4.44,
+     -19.7
+    ],
+    "sse": [
+     1.86,
+     -20.43
+    ],
+    "se": [
+     -1.01,
+     -20.53
+    ],
+    "ese": [
+     -3.72,
+     -19.98
+    ],
+    "e": [
+     -5.86,
+     -18.86
+    ],
+    "ene": [
+     -7.11,
+     -17.34
+    ],
+    "ne": [
+     -7.28,
+     -15.66
+    ],
+    "nne": [
+     -6.34,
+     -14.07
+    ],
+    "n": [
+     -4.44,
+     -12.81
+    ]
+   }
+  ],
+  "rings_model": [
+   [
+    -5.3,
+    24.0,
+    1.0
+   ],
+   [
+    5.3,
+    24.0,
+    -7.0
+   ]
+  ],
+  "pivot": [
+   30,
+   33
+  ],
+  "frame": [
+   60,
+   60
+  ]
+ }
+}

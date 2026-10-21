@@ -1,0 +1,33 @@
+{
+  "name": "cavalry-fengtian",
+  "_doc": "cavalry-default faction variant (fengtian): same model, fengtian_cap + fengtian infantry uniform; cap badge from parts/badges HEAD_BADGE.",
+  "base": "cavalry",
+  "anims": "cavalry",
+  "headgear": "fengtian_cap",
+  "uniform": {
+    "jacket": "fengtian_bg",
+    "trousers": "fengtian_bg",
+    "legging": "leather",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "collar": true,
+    "puttees": false
+  },
+  "weapons": {
+    "carbine": "cav_carbine",
+    "sabre": "sabre"
+  },
+  "gear": [
+    "leather_pouches"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "belt": true,
+  "belt_pouches": false,
+  "dirs": "all",
+  "frames": "all",
+  "fix_as": "cavalry-default"
+}

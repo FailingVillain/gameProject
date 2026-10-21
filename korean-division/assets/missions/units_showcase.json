@@ -1,0 +1,44 @@
+{
+  "propScatter": true,
+  // [N63 · N68 · N72 · N78] 새 유닛 관전 시험 미션 (2026-10-20): 한국군 (의용병 · 기수 · 타찬카 · 몽골 기병 · 기병 정찰병) 대 봉천군 (위대 · 기수 · 카자크 기병 · 기병 정찰병). AI 대 AI 관전.
+  "id": "units_showcase",
+  "title": "새 유닛 시험 (관전)",
+  "date": "1920년 가을 낮",
+  "location": "간도 · 들판",
+  "briefing": "새 병종 시험: 한국군 (간도 한인 의용병 · 기수 · 타찬카 · 몽골 기병 · 기병 정찰병) 대 봉천군 (봉천 위대 · 기수 · 카자크 기병 · 기병 정찰병). AI 대 AI 관전.",
+  "seed": 2026,
+  "weather": "clear",
+  "time": "day",
+  "player": 1,
+  "spectate": true,
+  "factions": [
+    { "name": "한국군", "en": "korean", "lang": "ko", "color": [60, 130, 235], "team": 1, "posture": "attack", "area": "field" },
+    { "name": "봉천군", "en": "fengtian", "lang": "zh", "color": [210, 170, 40], "team": 2, "posture": "defend", "area": "field" }
+  ],
+  "mapData": {
+    "name": "간도 들판",
+    "width": 120, "height": 120, "base": "grass",
+    "paint": [
+      { "terrain": "dirt", "rect": [57, 0, 6, 120] },
+      { "terrain": "forest", "rect": [14, 40, 20, 16] },
+      { "terrain": "forest", "rect": [86, 62, 20, 16] }
+    ],
+    "starts": [ [60, 100], [60, 20] ]
+  },
+  "areas": { "field": { "rect": [40, 44, 40, 32] } },
+  "forces": [
+    { "id": "kr", "faction": 1, "name": "한국군 의용 중대", "at": [60, 92], "facing": 0, "formation": "line",
+      "companies": [ { "units": { "officer": 1, "standard_bearer": 1, "common_gando_volunteer": 20, "infantry": 8, "heavy_tachanka": 2, "heavy_horse_artillery": 1, "infantry_scout": 2 } } ] },
+    { "id": "krc", "faction": 1, "name": "한국군 기병 소대", "at": [44, 96], "facing": 0, "formation": "line",
+      "units": { "officer_cavalry": 1, "cavalry_mongol": 3, "cavalry_cossack": 3, "cavalry_scout": 2 } },
+    { "id": "ft", "faction": 2, "name": "봉천 위대 중대", "at": [60, 30], "facing": 180, "formation": "line",
+      "companies": [ { "units": { "officer_fengtian": 1, "standard_bearer": 1, "infantry_guard_fengtian": 12, "infantry_fengtian": 16, "infantry_scout": 2 } } ] },
+    { "id": "ftc", "faction": 2, "name": "봉천 기병 소대", "at": [76, 26], "facing": 180, "formation": "line",
+      "units": { "officer_cavalry": 1, "cavalry_mongol": 6, "cavalry_scout": 2 } }
+  ],
+  "objectives": [
+    { "id": "crush", "type": "eliminate", "percent": 60, "faction": 2, "text": "봉천군 60% 격멸" }
+  ],
+  "failures": [ { "type": "losses", "percent": 80 }, { "type": "timeLimit", "seconds": 600 } ],
+  "events": [ { "id": "intro", "when": { "time": 1 }, "do": [ { "message": "새 병종 시험 전투" } ] } ]
+}

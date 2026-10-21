@@ -1,0 +1,21 @@
+# gameProject monorepo root ignore rules.
+# Per-project rules stay in korean-division/.gitignore and game-tools/.gitignore (+ game-tools/audio-sfx/.gitignore).
+
+# Working folders (git worktrees / scratch) — never tracked
+/kd-develop/
+/gt-develop/
+
+# Build outputs (all subprojects)
+**/bin/
+**/obj/
+**/dist/
+*.user
+.vs/
+
+# Large render outputs
+**/_res96/
+game-tools/korean-division-image-out/
+
+# Python / tooling caches
+__pycache__/
+.claude/

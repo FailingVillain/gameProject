@@ -1,0 +1,54 @@
+  [sim] AI A=tactical B=tactical
+  t=10s  A 60 @(106,63)  B 150 @(146,63)  wall 0.3s
+  t=20s  A 60 @(109,65)  B 150 @(147,63)  wall 0.5s
+  t=30s  A 59 @(108,65)  B 150 @(143,65)  wall 0.8s
+  t=40s  A 57 @(109,65)  B 150 @(143,62)  wall 1.0s
+  t=50s  A 52 @(111,64)  B 147 @(140,64)  wall 1.3s
+  t=60s  A 52 @(112,65)  B 143 @(134,65)  wall 1.5s
+  t=70s  A 48 @(109,63)  B 137 @(133,63)  wall 1.7s
+  t=80s  A 41 @(103,62)  B 135 @(129,66)  wall 2.0s
+  t=90s  A 39 @(94,61)  B 135 @(122,66)  wall 2.1s
+  t=100s  A 39 @(95,60)  B 135 @(122,66)  wall 2.2s
+  t=110s  A 38 @(95,60)  B 134 @(120,65)  wall 2.4s
+  t=120s  A 33 @(89,58)  B 132 @(112,64)  wall 2.6s
+  t=130s  A 33 @(79,57)  B 131 @(103,57)  wall 2.7s
+  t=140s  A 30 @(75,55)  B 131 @(101,57)  wall 2.9s
+  t=150s  A 30 @(55,52)  B 131 @(99,57)  wall 3.0s
+  t=160s  A 27 @(55,52)  B 130 @(84,55)  wall 3.1s
+  t=170s  A 23 @(44,48)  B 129 @(75,53)  wall 3.3s
+  t=180s  A 22 @(40,46)  B 129 @(62,50)  wall 3.4s
+  t=190s  A 5 @(40,40)  B 128 @(50,48)  wall 3.6s
+MARCH ticks=2048617 move=1315455 moveOn=1315455 shots=4479 moveShots=2136 pistol=167 gren=4 melee=12
+MEAS start=60/150 end_t=192 winner=2 lossEnd=60/22 loss120=27/18 loss300=-1/-1 t50=138/- shots=4479 hits=374 hitpct=8.4 meanDist=13.0 hitDist=11.9
+결과: 승자 2, 191.6초, 실행 3.6초, 명령 149
+사살원인 020s infantry_assault/carbine_assault->infantry_assault = 1
+사살원인 030s infantry_assault/carbine_assault->infantry_assault = 2
+사살원인 040s infantry_assault/carbine_assault->infantry_assault = 7
+사살원인 040s infantry_assault/melee->infantry_assault = 1
+사살원인 050s infantry_assault/carbine_assault->infantry_assault = 4
+사살원인 060s infantry_assault/carbine_assault->infantry_assault = 4
+사살원인 060s infantry_assault/melee->infantry_assault = 5
+사살원인 060s infantry_assault/pistol_assault->infantry_assault = 1
+사살원인 070s infantry_assault/carbine_assault->infantry_assault = 9
+사살원인 080s infantry_assault/carbine_assault->infantry_assault = 2
+사살원인 100s infantry_assault/carbine_assault->infantry_assault = 2
+사살원인 110s infantry_assault/carbine_assault->infantry_assault = 7
+사살원인 120s infantry_assault/carbine_assault->infantry_assault = 1
+사살원인 130s infantry_assault/carbine_assault->infantry_assault = 3
+사살원인 150s infantry_assault/carbine_assault->infantry_assault = 4
+사살원인 160s infantry_assault/carbine_assault->infantry_assault = 5
+사살원인 170s infantry_assault/carbine_assault->infantry_assault = 1
+사살원인 180s infantry_assault/carbine_assault->infantry_assault = 18
+사살원인 190s infantry_assault/carbine_assault->infantry_assault = 5
+틀 행동: 시작 0 끝 0 약진 0 기동 0 돌격 0 역습 0 참호 0 연신 0 전환 0 인계멈춤 0 포병전개 0
+기병AI: 돌격 정면 0 측면 0 후방 0 측면경유 0 소규모보류 0 물러남 0 | 추격: 후퇴중 희생 사격 6 근접 0 후퇴하는 적 돌격 보병 0 기병 0 | N55 기병 무모한 정면 0 돌격 사격 전진 0 | N23 소탕 34 | S4 제압으로 꺾인 돌격 0
+F4 기병 돌격: 개시 0 무의미 정면 0 자동 막음 0 근접 사살 0 사유(후퇴/제압/승무원/고립/측면) 0/0/0/0/0 · 하마 0 승마 0
+관찰: 사격 4479발 · 명중 374발 (8.4%) · 사망 82기 → 1킬당 54.6발 (명중 4.6발)
+N61 접근: 보병(1) 첫 사격 14.9초 · 기병(2) 첫 근접 40.3초 · 전환 0 · 그 시점 B 생존 150/150
+템포: 첫 사격 14.9초 · A 50% 손실 138.0초 · B 50% 손실 -초 · 사격 거리 평균 13.0 (첫 100발 12.1) 칸
+  세력:종류            시작→남음   사격    근접   포격  방열%  돌격%
+  1:infantry_assault     60→0        1418      3      3     0     0
+  2:infantry_assault    150→128      3061      9      1     0     0
+AI 비용: 사고 ms/틱 avg 0.007 max 17.80 (호출 1533, 호출당 0.050 ms) · 전체 Step avg 0.31 ms
+  [전술 AI 1] 프로필 default 태세 Attack/Defend 중대 1 대대 1 · 명령 52 돌격 0 기병돌격 0 참호 0 후퇴 8 포병이동 0 화력사수 0 예비투입 0 · 연대 1 준비사격 0 연신 0 분대약진 0 전초 0/철수 0 역습 0 증원편입 0 공격한계 1
+  [전술 AI 2] 프로필 default 태세 Attack/Attack 중대 3 대대 1 · 명령 76 돌격 0 기병돌격 0 참호 0 후퇴 0 포병이동 0 화력사수 0 예비투입 1 · 연대 1 준비사격 0 연신 0 분대약진 0 전초 0/철수 0 역습 0 증원편입 0 공격한계 0

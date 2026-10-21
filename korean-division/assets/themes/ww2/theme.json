@@ -1,0 +1,768 @@
+{
+  "name": "2차대전 (임시 픽셀)",
+  "names": {
+    "worker": "공병",
+    "infantry": "소총병",
+    "scout": "정찰병",
+    "barracks": "병영 막사",
+    "depot": "보급 창고",
+    "turret": "대전차포 진지",
+    "factory": "군수공장",
+    "metropolis": "대도시",
+    "city": "소도시",
+    "village": "마을",
+    "supply_plant": "보급 공장",
+    "officer": "장교",
+    "heavy_machinegunner": "기관총병"
+  },
+  "sprites": {
+    "unit.worker": {
+      "sheet": "units/hd/worker.png",
+      "teamSheet": "units/hd/worker_team.png",
+      "frame": [
+        64,
+        80
+      ],
+      "dirs": [
+        "s",
+        "se",
+        "e",
+        "ne",
+        "n"
+      ],
+      "mirror": true,
+      "frameNames": [
+        "idle",
+        "walk_1",
+        "walk_2",
+        "walk_3",
+        "walk_4",
+        "aim_a",
+        "fire_a",
+        "aim_b",
+        "fire_b",
+        "aim_c",
+        "fire_c",
+        "idle_alt",
+        "hit",
+        "fall",
+        "dead",
+        "spare"
+      ],
+      "anims": {
+        "idle": [
+          0
+        ],
+        "walk": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "shoot": [
+          5,
+          6
+        ],
+        "shootVariants": [
+          [
+            5,
+            6
+          ],
+          [
+            7,
+            8
+          ],
+          [
+            9,
+            10
+          ]
+        ],
+        "idle_alt": [
+          11
+        ],
+        "death": [
+          12,
+          13,
+          14
+        ]
+      },
+      "anchor": [
+        32,
+        72
+      ],
+      "anchors": "units/hd/worker_anchors.json",
+      "scale": 0.5,
+      "portrait": "units/hd/portrait_worker.png",
+      "portraitTeam": "units/hd/portrait_worker_team.png"
+    },
+    "unit.infantry": {
+      "sheet": "units/hd/infantry.png",
+      "teamSheet": "units/hd/infantry_team.png",
+      "frame": [
+        64,
+        80
+      ],
+      "dirs": [
+        "s",
+        "se",
+        "e",
+        "ne",
+        "n"
+      ],
+      "mirror": true,
+      "frameNames": [
+        "idle",
+        "walk_1",
+        "walk_2",
+        "walk_3",
+        "walk_4",
+        "aim_a",
+        "fire_a",
+        "aim_b",
+        "fire_b",
+        "aim_c",
+        "fire_c",
+        "idle_alt",
+        "hit",
+        "fall",
+        "dead",
+        "spare"
+      ],
+      "anims": {
+        "idle": [
+          0
+        ],
+        "walk": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "shoot": [
+          5,
+          6
+        ],
+        "shootVariants": [
+          [
+            5,
+            6
+          ],
+          [
+            7,
+            8
+          ],
+          [
+            9,
+            10
+          ]
+        ],
+        "idle_alt": [
+          11
+        ],
+        "death": [
+          12,
+          13,
+          14
+        ]
+      },
+      "anchor": [
+        32,
+        72
+      ],
+      "anchors": "units/hd/infantry_anchors.json",
+      "scale": 0.5,
+      "portrait": "units/hd/portrait_infantry.png",
+      "portraitTeam": "units/hd/portrait_infantry_team.png"
+    },
+    "unit.scout": {
+      "sheet": "units/hd/scout.png",
+      "teamSheet": "units/hd/scout_team.png",
+      "frame": [
+        64,
+        80
+      ],
+      "dirs": [
+        "s",
+        "se",
+        "e",
+        "ne",
+        "n"
+      ],
+      "mirror": true,
+      "frameNames": [
+        "idle",
+        "walk_1",
+        "walk_2",
+        "walk_3",
+        "walk_4",
+        "aim_a",
+        "fire_a",
+        "aim_b",
+        "fire_b",
+        "aim_c",
+        "fire_c",
+        "idle_alt",
+        "hit",
+        "fall",
+        "dead",
+        "spare"
+      ],
+      "anims": {
+        "idle": [
+          0
+        ],
+        "walk": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "shoot": [
+          5,
+          6
+        ],
+        "shootVariants": [
+          [
+            5,
+            6
+          ],
+          [
+            7,
+            8
+          ],
+          [
+            9,
+            10
+          ]
+        ],
+        "idle_alt": [
+          11
+        ],
+        "death": [
+          12,
+          13,
+          14
+        ]
+      },
+      "anchor": [
+        32,
+        72
+      ],
+      "anchors": "units/hd/scout_anchors.json",
+      "scale": 0.5,
+      "portrait": "units/hd/portrait_scout.png",
+      "portraitTeam": "units/hd/portrait_scout_team.png"
+    },
+    "unit.tank_ft_male": {
+      "frame": [
+        112,
+        112
+      ],
+      "dirs": [
+        "s",
+        "s_se",
+        "se",
+        "e_se",
+        "e",
+        "e_ne",
+        "ne",
+        "n_ne",
+        "n"
+      ],
+      "mirror": true,
+      "anchors": "units/hd/tank_anchors.json",
+      "scale": 0.5,
+      "sheet": "units/hd/tank.png",
+      "teamSheet": "units/hd/tank_team.png",
+      "anims": {
+        "idle": [
+          0
+        ],
+        "walk": [
+          1,
+          2
+        ],
+        "dead": [
+          3
+        ]
+      },
+      "anchor": [
+        56,
+        66
+      ],
+      "portrait": "units/hd/portrait_tank.png",
+      "portraitTeam": "units/hd/portrait_tank_team.png"
+    },
+    "unit.tank_ft_male.turret": {
+      "frame": [
+        112,
+        112
+      ],
+      "dirs": [
+        "s",
+        "s_se",
+        "se",
+        "e_se",
+        "e",
+        "e_ne",
+        "ne",
+        "n_ne",
+        "n"
+      ],
+      "mirror": true,
+      "anchors": "units/hd/tank_anchors.json",
+      "scale": 0.5,
+      "sheet": "units/hd/tank_turret.png",
+      "teamSheet": "units/hd/tank_turret_team.png",
+      "anims": {
+        "idle": [
+          0
+        ],
+        "shoot": [
+          1
+        ],
+        "dead": [
+          2
+        ]
+      },
+      "anchor": [
+        56,
+        47
+      ]
+    },
+    "building.barracks": {
+      "frames": [
+        "buildings/barracks.png"
+      ],
+      "teamFrames": [
+        "buildings/barracks_team.png"
+      ],
+      "size": [
+        96,
+        96
+      ]
+    },
+    "building.depot": {
+      "frames": [
+        "buildings/depot.png"
+      ],
+      "teamFrames": [
+        "buildings/depot_team.png"
+      ],
+      "size": [
+        64,
+        64
+      ]
+    },
+    "building.factory": {
+      "frames": [
+        "buildings/factory.png"
+      ],
+      "teamFrames": [
+        "buildings/factory_team.png"
+      ],
+      "size": [
+        128,
+        128
+      ]
+    },
+    "building.turret": {
+      "frames": [
+        "buildings/turret_base.png"
+      ],
+      "teamFrames": [
+        "buildings/turret_base_team.png"
+      ],
+      "size": [
+        64,
+        64
+      ]
+    },
+    "building.turret.gun": {
+      "frames": [
+        "buildings/turret_gun.png"
+      ],
+      "teamFrames": [
+        "buildings/turret_gun_team.png"
+      ],
+      "size": [
+        64,
+        64
+      ]
+    },
+    "terrain.grass": {
+      "variants": [
+        "terrain/grass_0.png",
+        "terrain/grass_1.png",
+        "terrain/grass_2.png",
+        "terrain/grass_3.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.dirt": {
+      "variants": [
+        "terrain/dirt_0.png",
+        "terrain/dirt_1.png",
+        "terrain/dirt_2.png",
+        "terrain/dirt_3.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.sand": {
+      "variants": [
+        "terrain/sand_0.png",
+        "terrain/sand_1.png",
+        "terrain/sand_2.png",
+        "terrain/sand_3.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.water": {
+      "variants": [
+        "terrain/water_0.png",
+        "terrain/water_1.png",
+        "terrain/water_2.png",
+        "terrain/water_3.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "terrain.rock": {
+      "variants": [
+        "terrain/rock_0.png",
+        "terrain/rock_1.png",
+        "terrain/rock_2.png",
+        "terrain/rock_3.png"
+      ],
+      "size": [
+        32,
+        32
+      ]
+    },
+    "building.metropolis": {
+      "frames": [
+        "buildings/metropolis.png"
+      ],
+      "teamFrames": [
+        "buildings/metropolis_team.png"
+      ],
+      "size": [
+        128,
+        128
+      ]
+    },
+    "building.city": {
+      "frames": [
+        "buildings/city.png"
+      ],
+      "teamFrames": [
+        "buildings/city_team.png"
+      ],
+      "size": [
+        128,
+        128
+      ]
+    },
+    "building.village": {
+      "frames": [
+        "buildings/village.png"
+      ],
+      "teamFrames": [
+        "buildings/village_team.png"
+      ],
+      "size": [
+        96,
+        96
+      ]
+    },
+    "unit.recruit": {
+      "sheet": "units/hd/recruit.png",
+      "teamSheet": "units/hd/recruit_team.png",
+      "frame": [
+        64,
+        80
+      ],
+      "dirs": [
+        "s",
+        "se",
+        "e",
+        "ne",
+        "n"
+      ],
+      "mirror": true,
+      "frameNames": [
+        "idle",
+        "walk_1",
+        "walk_2",
+        "walk_3",
+        "walk_4",
+        "aim_a",
+        "fire_a",
+        "aim_b",
+        "fire_b",
+        "aim_c",
+        "fire_c",
+        "idle_alt",
+        "hit",
+        "fall",
+        "dead",
+        "spare"
+      ],
+      "anims": {
+        "idle": [
+          0
+        ],
+        "walk": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "shoot": [
+          5,
+          6
+        ],
+        "shootVariants": [
+          [
+            5,
+            6
+          ],
+          [
+            7,
+            8
+          ],
+          [
+            9,
+            10
+          ]
+        ],
+        "idle_alt": [
+          11
+        ],
+        "death": [
+          12,
+          13,
+          14
+        ]
+      },
+      "anchor": [
+        32,
+        72
+      ],
+      "anchors": "units/hd/recruit_anchors.json",
+      "scale": 0.5,
+      "portrait": "units/hd/portrait_recruit.png",
+      "portraitTeam": "units/hd/portrait_recruit_team.png"
+    },
+    "unit.veteran": {
+      "sheet": "units/hd/veteran.png",
+      "teamSheet": "units/hd/veteran_team.png",
+      "frame": [
+        64,
+        80
+      ],
+      "dirs": [
+        "s",
+        "se",
+        "e",
+        "ne",
+        "n"
+      ],
+      "mirror": true,
+      "frameNames": [
+        "idle",
+        "walk_1",
+        "walk_2",
+        "walk_3",
+        "walk_4",
+        "aim_a",
+        "fire_a",
+        "aim_b",
+        "fire_b",
+        "aim_c",
+        "fire_c",
+        "idle_alt",
+        "hit",
+        "fall",
+        "dead",
+        "spare"
+      ],
+      "anims": {
+        "idle": [
+          0
+        ],
+        "walk": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "shoot": [
+          5,
+          6
+        ],
+        "shootVariants": [
+          [
+            5,
+            6
+          ],
+          [
+            7,
+            8
+          ],
+          [
+            9,
+            10
+          ]
+        ],
+        "idle_alt": [
+          11
+        ],
+        "death": [
+          12,
+          13,
+          14
+        ]
+      },
+      "anchor": [
+        32,
+        72
+      ],
+      "anchors": "units/hd/veteran_anchors.json",
+      "scale": 0.5,
+      "portrait": "units/hd/portrait_veteran.png",
+      "portraitTeam": "units/hd/portrait_veteran_team.png"
+    },
+    "unit.heavy_at_rifleman": {
+      "sheet": "units/hd/at_infantry.png",
+      "teamSheet": "units/hd/at_infantry_team.png",
+      "frame": [
+        64,
+        80
+      ],
+      "dirs": [
+        "s",
+        "se",
+        "e",
+        "ne",
+        "n"
+      ],
+      "mirror": true,
+      "frameNames": [
+        "idle",
+        "walk_1",
+        "walk_2",
+        "walk_3",
+        "walk_4",
+        "aim_a",
+        "fire_a",
+        "aim_b",
+        "fire_b",
+        "aim_c",
+        "fire_c",
+        "idle_alt",
+        "hit",
+        "fall",
+        "dead",
+        "spare"
+      ],
+      "anims": {
+        "idle": [
+          0
+        ],
+        "walk": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "shoot": [
+          5,
+          6
+        ],
+        "shootVariants": [
+          [
+            5,
+            6
+          ],
+          [
+            7,
+            8
+          ],
+          [
+            9,
+            10
+          ]
+        ],
+        "idle_alt": [
+          11
+        ],
+        "death": [
+          12,
+          13,
+          14
+        ]
+      },
+      "anchor": [
+        32,
+        72
+      ],
+      "anchors": "units/hd/at_infantry_anchors.json",
+      "scale": 0.5,
+      "portrait": "units/hd/portrait_at_infantry.png",
+      "portraitTeam": "units/hd/portrait_at_infantry_team.png"
+    },
+    "building.supply_plant": {
+      "frames": [
+        "buildings/supply_plant.png"
+      ],
+      "teamFrames": [
+        "buildings/supply_plant_team.png"
+      ],
+      "size": [
+        96,
+        96
+      ]
+    },
+    "fx.explosion": {
+      "sheet": "units/hd/fx_explosion.png",
+      "frame": 96,
+      "frames": 6,
+      "fps": 12,
+      "anchor": [
+        48,
+        76
+      ],
+      "variantRows": 8
+    },
+    "fx.muzzle_big": {
+      "sheet": "units/hd/fx_muzzle_big.png",
+      "frame": 64,
+      "frames": 3,
+      "fps": 20,
+      "anchor": [
+        32,
+        44
+      ],
+      "variantRows": 3
+    },
+    "unit.officer": { "alias": "unit.infantry" },
+    "unit.heavy_machinegunner": { "alias": "unit.infantry" },
+    "unit.infantry_assault": { "alias": "unit.officer" },
+    "unit.infantry_scout": { "alias": "unit.scout" },
+    "unit.tank_ft_female": { "alias": "unit.tank_ft_male" },
+    "unit.tank_armored_car": { "alias": "unit.tank_ft_male" },
+    "unit.supply_wagon": { "alias": "unit.tank_armored_car" }
+  }
+}

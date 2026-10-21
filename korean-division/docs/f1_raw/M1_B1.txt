@@ -1,0 +1,347 @@
+VARIANT V0 thr 0.3
+# ai_bn_assault seed 1: running at 600.0s (wall 16s)
+faction 1 한국군: spawned 303, lost 206, alive 97
+faction 2 봉천 군벌: spawned 313, lost 199, alive 114
+[대열 정비] 장교 명령 4, 플레이어 명령 0, 슬롯으로 보낸 병사 184, 교전 중이라 미룸 16, 빈자리 점검 재배치 0, 공격 이동 그대로 보냄 0, 돌격 감지 판단 4, 돌격 감지 명령 4
+[F1] 세력1 접적 보병-초 32362, 사격 비율 0.275, 분당 이동 46.79칸 | 세력2 접적 보병-초 35836, 사격 비율 0.339, 분당 이동 29.85칸 || 슬롯 복귀 184, 빈자리 재배치 0, 대열정비 병사 184, 장교 정비 명령 4, 접적 진입 23, 사격 위치 5266, 위치 이동 86, 구역 복귀 7, 고정 해제 3804
+
+## 세력 1
+중대 상태 시간(중대-초): Engage 1137 (47 %), Fallback 707 (29 %), Approach 365 (15 %), Advance 159 (7 %), Reserve 38 (2 %), Defend 18 (1 %)
+역할 시간: Line 1473, Manoeuvre 550, BaseOfFire 281, MainLine 120
+중대 전술 틀 시간: None 1639, FireManoeuvre 655, DefenceDepth 106
+상태 전환: Fallback->Engage x41, Engage->Fallback x38, Approach->Engage x14, Advance->Approach x11, Engage->Approach x10, Approach->Fallback x6, Engage->Advance x5, Reserve->Advance x4, Advance->Reserve x3, Advance->Engage x2, Fallback->Reserve x2, Engage->Defend x2, Defend->Fallback x2, Fallback->Advance x2, Approach->Advance x1, Reserve->Approach x1, Defend->Advance x1, Advance->Defend x1, Advance->Fallback x1, Fallback->Defend x1
+트리거 누계(횟수 / 시각): Orders 432 [1,1,1,1,1,1,1,1,1,1,1,1,...] | CavCharges 1 [28] | Fallbacks 63 [34,60,63,65,69,81,104,122,139,172,172,174,...] | ReserveCommits 1 [27] | Preps 4 [13,90,195,312] | Culminations 1 [282]
+상태 체류(초, 평균/중앙/횟수): Advance 8.8/9.0/18, Approach 17.1/16.0/21, Engage 19.8/20.0/55, Fallback 15.3/15.0/46, Reserve 7.6/4.0/5, Defend 4.5/3.0/4
+교대 약진 한 번(다리) 길이: 횟수 0, 중앙 0.0s, 3초 미만 0회
+자군 보병 제압(30초): 30:0.04/4 % 60:0.09/14 % 90:0.02/4 % 120:0.01/2 % 150:0.02/4 % 180:0.11/16 % 210:0.02/2 % 240:0.09/13 % 270:0.06/6 % 300:0.07/9 % 330:0.04/6 % 360:0.00/0 % 390:0.00/0 % 420:0.00/0 % 450:0.00/0 % 480:0.00/0 % 510:0.00/0 % 540:0.00/0 % 570:0.00/0 % 600:0.00/0 %
+자군 보병 제압 요약: 시간 평균 0.030, 평균 최고 0.156 (t=288), 제압>0.3 비율 최고 25.7 % (t=290), 개인 최고 0.99, 제압>0.3 기-초 3622
+제압 분포 (Suppression/1000 = SuppressionRatio, 이중 나눗셈 없음): 전체 보병 n=81168 평균 0.032 중앙 0.000 p90 0.006 p99 0.755 최대 0.994 (>0.3 4.5%) | 교전 중(최근 5초 안 피격) 보병 n=3435 평균 0.449 중앙 0.440 p90 0.857 p99 0.959 최대 0.994 (>0.3 63.3%)
+기동 개시 때 사격받는 적 제압: 평균 (표본 없음) | 최대값 (표본 없음)
+돌격 개시 0회, 그중 사격받는 적 평균 제압 < 0.2 (조기 돌격) 0회
+중대 활성 전술 틀(ActiveTactic) 시간: None 1639, FireManoeuvre 655, DefenceDepth 106
+Drill 사건: Bound 시작 x24, Phase Idle->Engage x16, Phase Engage->Idle x15, Man 0->3 (DefenceDepth) x5, Man 0->1 (FireManoeuvre) x4, Man 3->0 (DefenceDepth) x4, Phase Defend->Idle x4, Man 1->0 (FireManoeuvre) x3, Phase Idle->Defend x3, Man 3->0 (FireManoeuvre) x2, Phase Engage->Defend x2, Man 1->2 (FireManoeuvre) x1, Man 2->3 (FireManoeuvre) x1, Phase Defend->Engage x1
+Drill 약진 다리: 횟수 24, 중앙 5.0s, 평균 7.9s, <3s 0회
+포병 이동 0회, 간격(세력 합산) 중앙 0.0s 평균 0.0s
+Engage->Approach 되돌림 예:
+  t=64 L2 Engage(31s)->Approach (역할 BaseOfFire, 병력 58/87, 적과 거리 26)
+  t=79 L1 Engage(55s)->Approach (역할 Manoeuvre, 병력 61/87, 적과 거리 27)
+  t=95 L3 Engage(20s)->Approach (역할 BaseOfFire, 병력 52/87, 적과 거리 41)
+  t=100 L2 Engage(20s)->Approach (역할 Manoeuvre, 병력 56/87, 적과 거리 40)
+  t=121 L1 Engage(25s)->Approach (역할 Manoeuvre, 병력 57/87, 적과 거리 24)
+  t=131 L1 Engage(7s)->Approach (역할 Manoeuvre, 병력 57/87, 적과 거리 32)
+  t=131 L2 Engage(9s)->Approach (역할 Manoeuvre, 병력 56/87, 적과 거리 30)
+  t=246 L1 Engage(29s)->Approach (역할 BaseOfFire, 병력 31/87, 적과 거리 24)
+  t=247 L2 Engage(10s)->Approach (역할 Manoeuvre, 병력 45/87, 적과 거리 27)
+  t=314 L2 Engage(1s)->Approach (역할 Manoeuvre, 병력 29/87, 적과 거리 29)
+첫 교전 t=24, 첫 기동(약진/돌격) t=-1
+교대 약진 엄호 비율(엄호조 사격 중 / 중대원) 평균 0.00 (표본 0초)
+기동 개시 0회, 평균 적 제압 0.00, 화력 기반 존재 0회
+행진 사격 발동 15, 지휘관 교체 0, 지휘 능력(중대-초): 장교 2400 / 부사관 대리 0 / 없음 0, 인계 중 0
+포병 600 포대-초, 강제 표적 지정 중 163 (27 %), 최근 3초 안 사격한 포대-초 88, 연대 화력표적 있음 302초, 연신 상태 0초
+중화기 앞섬(소총 전선+3칸, 거치형 중화기 기-초): 0 / 0 (0 %), 한 시점 최대 0기
+유휴 중대(30초+ 명령 · 사격 · 이동 없음): 250 중대-초, 그중 적 45칸 안 76
+  L3 유휴 시작 t=90 (적 45칸 안, 상태 Engage/BaseOfFire/Attack)
+  L4 유휴 시작 t=93 (적 45칸 밖, 상태 Engage/Line/Attack)
+  L3 유휴 종료 t=95
+  L2 유휴 시작 t=95 (적 45칸 안, 상태 Engage/Manoeuvre/Attack)
+  L4 유휴 종료 t=98
+  L2 유휴 종료 t=100
+  L1 유휴 시작 t=111 (적 45칸 안, 상태 Engage/Manoeuvre/Attack)
+  L1 유휴 종료 t=121
+  L2 유휴 시작 t=203 (적 45칸 밖, 상태 Engage/Manoeuvre/Attack)
+  L2 유휴 종료 t=213
+  L3 유휴 시작 t=212 (적 45칸 안, 상태 Engage/Manoeuvre/Attack)
+  L4 유휴 시작 t=258 (적 45칸 밖, 상태 Engage/Line/Attack)
+  L3 유휴 종료 t=263
+  L4 유휴 종료 t=263
+  L4 유휴 시작 t=328 (적 45칸 밖, 상태 Engage/Line/Attack)
+  L4 유휴 종료 t=333
+  L2 유휴 시작 t=347 (적 45칸 밖, 상태 Engage/Manoeuvre/Attack)
+  L2 유휴 종료 t=352
+  L3 유휴 시작 t=351 (적 45칸 안, 상태 Engage/Line/Attack)
+  L1 유휴 시작 t=352 (적 45칸 밖, 상태 Engage/Line/Attack)
+[관측반] 팀 S5: 편성 3명, 종료 생존 3
+[기병지휘] 중대-초: 장교 600 / 부사관 대리 0 / 없음 0, 인계 중 0, 지휘관 교체 0
+기병: 
+  t=28s 기병 돌격 #6 (기수 12): 반경 6 적 보병 중 제압>=0.25 0기 -> 8초 안 최대 1기
+[돌격결과] 완료 0: 후퇴 0 우세 0 열세 0; 미완 0
+== 3차 지표 ==
+[틱시작] 기동조:신호 4, 약진:신호 14
+[엄호] 약진 중 (적 가시) 파트너 사격 비율 평균 0.33 (표본 154초, 무사격 35, >=50% 41), 약진 분대 자신 0.36 | 기동조 이동 중 화력조 사격 비율 평균 0.46 (표본 25초, 무사격 0, >=50% 13), 같은 대대 화력기반 0.34 (표본 21) | 기준: 교전 중 비약진 사격조 0.36 (표본 219초)
+[화력 우세] 교전 중 (적 가시) 중대-초 378, 우세 (평균 제압>=0.3) 101 (26.7%), 가시 적 평균 제압  n=378 평균 0.238 중앙 0.190 p90 0.611 p99 0.820 최대 0.921 (>0.3 26.7%)
+  약진 시작: 13회, 평균 적 제압 0.400, 우세 10회, 우세 아님+90초 넘는 교전(인내) 0회, 그 외 3회, 가시 적 0 0회
+  기동조 출발: 4회, 평균 적 제압 0.847, 우세 4회, 우세 아님+90초 넘는 교전(인내) 0회, 그 외 0회, 가시 적 0 0회
+  t=27 L1 약진 시작: 가시 적 3기 평균 제압 0.31 (우세 O, 교전 1s)
+  t=32 L2 약진 시작: 가시 적 1기 평균 제압 0.42 (우세 O, 교전 9s)
+  t=34 L4 약진 시작: 가시 적 22기 평균 제압 0.31 (우세 O, 교전 13s)
+  t=35 L3 약진 시작: 가시 적 18기 평균 제압 0.34 (우세 O, 교전 8s)
+  t=41 L1 기동조 출발: 가시 적 5기 평균 제압 0.82 (우세 O, 교전 15s)
+  t=55 L3 기동조 출발: 가시 적 1기 평균 제압 0.92 (우세 O, 교전 28s)
+  t=59 L4 약진 시작: 가시 적 33기 평균 제압 0.25 (우세 X, 교전 38s)
+  t=71 L1 약진 시작: 가시 적 6기 평균 제압 0.31 (우세 O, 교전 45s)
+  t=115 L3 약진 시작: 가시 적 3기 평균 제압 0.33 (우세 O, 교전 7s)
+  t=124 L1 약진 시작: 가시 적 12기 평균 제압 0.41 (우세 O, 교전 2s)
+  t=169 L2 약진 시작: 가시 적 13기 평균 제압 0.29 (우세 X, 교전 49s)
+  t=243 L1 약진 시작: 가시 적 12기 평균 제압 0.27 (우세 X, 교전 30s)
+  t=247 L1 약진 시작: 가시 적 2기 평균 제압 0.82 (우세 O, 교전 34s)
+  t=247 L2 약진 시작: 가시 적 2기 평균 제압 0.82 (우세 O, 교전 13s)
+  t=247 L2 기동조 출발: 가시 적 2기 평균 제압 0.82 (우세 O, 교전 13s)
+  t=248 L1 기동조 출발: 가시 적 2기 평균 제압 0.83 (우세 O, 교전 35s)
+  t=313 L3 약진 시작: 가시 적 11기 평균 제압 0.31 (우세 O, 교전 0s)
+[시간차] 화력조 첫 사격 -> 기동 출발: 표본 15, 사격 전 출발 2, 2초 미만 1, 중앙 14.0s, 평균 20.3s, 출발 때 화력조 사격 비율 평균 0.43, 비율>=30% 9
+[대대 시간차] 화력기반 중대 점화 -> 기동 중대 출발: 표본 3, 점화 전 출발 0, 중앙 23.0s, 출발 때 화력기반 사격 비율 평균 0.36
+  t=27 L1 약진: 화력조 첫 사격 후 0s, 출발 때 화력조 사격 비율 88 %, 교전 1s
+  t=32 L2 약진: 화력조 첫 사격 후 5s, 출발 때 화력조 사격 비율 15 %, 교전 9s
+  t=34 L4 약진: 화력조 첫 사격 후 12s, 출발 때 화력조 사격 비율 47 %, 교전 13s
+  t=35 L3 약진: 화력조 첫 사격 후 7s, 출발 때 화력조 사격 비율 76 %, 교전 8s
+  t=41 L1 기동조 출발: 화력조 첫 사격 후 14s, 출발 때 화력조 사격 비율 87 %, 교전 15s
+  t=55 L3 기동조 출발: 화력조 첫 사격 후 27s, 출발 때 화력조 사격 비율 71 %, 교전 28s
+  t=59 L4 약진: 화력조 첫 사격 후 37s, 출발 때 화력조 사격 비율 31 %, 교전 38s
+  t=115 L3 약진: 화력조 첫 사격 후 6s, 출발 때 화력조 사격 비율 53 %, 교전 7s
+  t=124 L1 약진: 화력조 첫 사격 후 사격 전, 출발 때 화력조 사격 비율 0 %, 교전 2s
+  t=169 L2 약진: 화력조 첫 사격 후 48s, 출발 때 화력조 사격 비율 17 %, 교전 49s
+  t=243 L1 약진: 화력조 첫 사격 후 29s, 출발 때 화력조 사격 비율 23 %, 교전 30s
+  t=247 L1 약진: 화력조 첫 사격 후 33s, 출발 때 화력조 사격 비율 32 %, 교전 34s
+  t=247 L2 기동조 출발: 화력조 첫 사격 후 12s, 출발 때 화력조 사격 비율 15 %, 교전 13s
+  t=248 L1 기동조 출발: 화력조 첫 사격 후 34s, 출발 때 화력조 사격 비율 27 %, 교전 35s
+  t=313 L3 약진: 화력조 첫 사격 후 사격 전, 출발 때 화력조 사격 비율 67 %, 교전 0s
+[예비] 투입 1회, 그중 곤경 (전선 후퇴 중대 있음 또는 30초 손실>=20%) 0회; 기준 곤경 비율 65.0% (327/503초)
+  t=27 예비 투입: 전선 중대 후퇴 0개, 30초 손실 0 % (곤경 X), 전선 병력 278
+[포병] 돌격 0회 판정: 돌격 표적 둘레 (앞10초~뒤15초) 포병 사격 있음 0, 조준점이 돌격 표적 12칸 안 0; 포병 조준점 114건 중 교전 중 보병 표적 15칸 안 56 (49%)
+[포병2] 포-초 1200, 표적 보유 619 (52%), 이동 중 131, 제자리 선회 93, 사격 40 (표적 보유 중 사격률 6.5%/포-초), 표적없는 사격 2; 첫 포병 사격 t=13, 첫 보병 사격 t=23, 첫 접촉(가시 적 사거리x1.2 안) t=14, 보병 첫 사격 전 포병 사격 2, 접촉 전 1; 착탄 12초 뒤 평가 38건: 6칸 안 적 보병 사망 165, 생존자 제압 평균 변화 +0.034
+  [포종] heavy_howitzer: 사격 40, 평균 거리 69.9, 사거리 80% 초과 0, 관측 안 되는 표적 0
+[대열] 교전 중 정지 중대-초 415: 2칸 넘게 벗어난 병사 비율 평균 0.622 중앙 0.688, 앞줄 빈 슬롯 평균 12.54, 앞줄 연속 빈 슬롯 평균 6.91, 장교 경보 켜진 중대-초 7
+[장교위치] 교전 중 정지 중대-초 415: 장교가 병사 최전열보다 뒤 10.19칸, 지휘 범위 안 병사 비율 앞줄(최전열 2칸) 0.636 (5223) 전체 0.656 (17740)
+[지휘별] O: 병사-초 5110 사망 27 사망/천병사-초 5.28 평균제압 0.105 N: 병사-초 1409 사망 49 사망/천병사-초 34.78 평균제압 0.202 L: 병사-초 1482 사망 72 사망/천병사-초 48.58 평균제압 0.373
+[대열2] 앞줄 슬롯 평균 10.71 p50 10 p75 17 p90 22 | 구멍 평균 3.59 p50 3 p75 6 p90 8 | 연속 구멍 평균 2.28 p50 2 p75 3 p90 5 | 뒤처짐 평균 0.41 p50 0 p75 0 p90 1 | 판단 문턱 넘음 95/415
+[대열진단] co:anchorArrived=98, co:anchorNone=317, co:drill=405, u:AttackMove/anchG=607, u:AttackMove/anchG/crew=5, u:AttackMove/othG=795, u:AttackMove/othG/chg=43, u:Hold/noG=9418, u:Hold/noG/crew=1312, u:Hold/noG/tr=21, u:Idle/noG=3996, u:Idle/noG/chg=1, u:Idle/noG/crew=3, u:Move/anchG=296, u:Move/othG=1190, u:Move/othG/crew=14, u:Move/othG/tr=39
+[사거리] 보병 사격 중 표적 거리: 표본 1675, 평균 20.3, 중앙 21.5, 20칸 이상 1058, 10칸 미만 64
+[기병] 돌격 1회: 표적 25칸 안 사격 보병 15초 안 최대 >=10 1, 보병 돌격 ±15초 동시 0
+  t=28 C6 기병 돌격: 시작 때 표적 25칸 안 사격 보병 56, 15초 안 최대 80, 보병 돌격 ±15초 X
+생존 곡선(30초): 30:294 60:220 90:188 120:187 150:168 180:142 210:140 240:122 270:114 300:99 330:97 360:97 390:97 420:97 450:97 480:97 510:97 540:97 570:97 600:97
+사건 로그:
+  t=1 연대 R1 국면 None->Approach (Attack, 병력 280/280)
+  t=13 연대 R1 국면 Approach->Prep (Attack, 병력 280/280)
+  t=13 대대 B1 역할 Line/분할 (병력 261/261)
+  t=27 대대 B1 역할 Line/분할/측면연장/예비투입 (병력 261/261)
+  t=33 연대 R1 국면 Prep->Assault (Attack, 병력 265/280)
+  t=60 L3 Engage->Fallback (병력 58/87, 역할 Manoeuvre)
+  t=63 L4 Engage->Fallback (병력 12/18, 역할 Line)
+  t=65 L2 Approach->Fallback (병력 57/87, 역할 BaseOfFire)
+  t=81 L1 Approach->Fallback (병력 58/87, 역할 Manoeuvre)
+  t=89 연대 R1 국면 Assault->Approach (Attack, 병력 176/280)
+  t=89 대대 B1 역할 Line/측면연장/예비투입 (병력 165/261)
+  t=90 연대 R1 국면 Approach->Prep (Attack, 병력 176/280)
+  t=90 대대 B1 역할 Line/분할/측면연장/예비투입 (병력 165/261)
+  t=110 연대 R1 국면 Prep->Assault (Attack, 병력 176/280)
+  t=123 L4 Engage->Fallback (병력 9/18, 역할 Line)
+  t=172 연대 R1 국면 Assault->None (Fallback, 병력 140/280)
+  t=172 대대 B1 역할 Line/측면연장/예비투입 (병력 131/261)
+  t=173 L1 Approach->Fallback (병력 44/87, 역할 Line)
+  t=173 L2 Engage->Fallback (병력 49/87, 역할 Line)
+  t=173 L3 Engage->Fallback (병력 38/87, 역할 Line)
+  t=173 대대 B1 역할 Line/예비투입 (병력 131/261)
+  t=192 연대 R1 국면 None->Approach (Attack, 병력 129/280)
+  t=195 연대 R1 국면 Approach->Prep (Attack, 병력 129/280)
+  t=195 대대 B1 역할 Line/분할/예비투입 (병력 120/261)
+  t=215 연대 R1 국면 Prep->Assault (Attack, 병력 127/280)
+  t=228 L4 Engage->Fallback (병력 6/18, 역할 Line)
+  t=263 L4 Engage->Fallback (병력 6/18, 역할 Line)
+  t=282 L2 Approach->Fallback (병력 29/87, 역할 Manoeuvre)
+  t=282 연대 R1 국면 Assault->Defend (Defend, 병력 96/280)
+  t=282 대대 B1 역할 MainLine/예비투입 (병력 90/261)
+  t=282 대대 B2 역할 MainLine (병력 6/19)
+  t=286 L3 Defend->Fallback (병력 29/87, 역할 MainLine)
+  t=287 L1 Defend->Fallback (병력 30/87, 역할 MainLine)
+  t=298 L4 Advance->Fallback (병력 6/18, 역할 MainLine)
+  t=312 연대 R1 국면 Defend->Prep (Attack, 병력 88/280)
+  t=312 대대 B1 역할 Line/분할/예비투입 (병력 82/261)
+  t=312 대대 B2 역할 Line (병력 6/19)
+  t=317 L2 Approach->Fallback (병력 29/87, 역할 Manoeuvre)
+  t=321 L3 Engage->Fallback (병력 27/87, 역할 Manoeuvre)
+  t=322 L1 Approach->Fallback (병력 25/87, 역할 BaseOfFire)
+  t=332 연대 R1 국면 Prep->Assault (Attack, 병력 87/280)
+  t=333 L4 Engage->Fallback (병력 6/18, 역할 Line)
+  t=348 연대 R1 국면 Assault->Approach (Attack, 병력 87/280)
+  t=348 대대 B1 역할 Line/예비투입 (병력 81/261)
+  t=352 L2 Engage->Fallback (병력 29/87, 역할 Line)
+  t=356 L3 Engage->Fallback (병력 27/87, 역할 Line)
+  t=357 L1 Engage->Fallback (병력 25/87, 역할 Line)
+  t=368 L4 Engage->Fallback (병력 6/18, 역할 Line)
+  t=387 L2 Engage->Fallback (병력 29/87, 역할 Line)
+  t=391 L3 Engage->Fallback (병력 27/87, 역할 Line)
+  t=392 L1 Engage->Fallback (병력 25/87, 역할 Line)
+  t=403 L4 Engage->Fallback (병력 6/18, 역할 Line)
+  t=422 L2 Engage->Fallback (병력 29/87, 역할 Line)
+  t=426 L3 Engage->Fallback (병력 27/87, 역할 Line)
+  t=427 L1 Engage->Fallback (병력 25/87, 역할 Line)
+  t=438 L4 Engage->Fallback (병력 6/18, 역할 Line)
+  t=457 L2 Engage->Fallback (병력 29/87, 역할 Line)
+  t=461 L3 Engage->Fallback (병력 27/87, 역할 Line)
+  t=462 L1 Engage->Fallback (병력 25/87, 역할 Line)
+  t=473 L4 Engage->Fallback (병력 6/18, 역할 Line)
+  t=492 L2 Engage->Fallback (병력 29/87, 역할 Line)
+  t=496 L3 Engage->Fallback (병력 27/87, 역할 Line)
+  t=497 L1 Engage->Fallback (병력 25/87, 역할 Line)
+  t=508 L4 Engage->Fallback (병력 6/18, 역할 Line)
+  t=527 L2 Engage->Fallback (병력 29/87, 역할 Line)
+  t=531 L3 Engage->Fallback (병력 27/87, 역할 Line)
+  t=532 L1 Engage->Fallback (병력 25/87, 역할 Line)
+  t=543 L4 Engage->Fallback (병력 6/18, 역할 Line)
+  t=562 L2 Engage->Fallback (병력 29/87, 역할 Line)
+  t=566 L3 Engage->Fallback (병력 27/87, 역할 Line)
+  t=567 L1 Engage->Fallback (병력 25/87, 역할 Line)
+  t=578 L4 Engage->Fallback (병력 6/18, 역할 Line)
+  t=597 L2 Engage->Fallback (병력 29/87, 역할 Line)
+
+## 세력 2
+중대 상태 시간(중대-초): Defend 1271 (53 %), Fallback 554 (23 %), Advance 355 (15 %), Reserve 185 (8 %), Engage 35 (1 %)
+역할 시간: MainLine 1992, Line 296, Counter 112
+중대 전술 틀 시간: None 423, DefenceDepth 1977
+상태 전환: Defend->Fallback x34, Fallback->Defend x30, Advance->Defend x19, Advance->Reserve x14, Defend->Advance x13, Reserve->Advance x13, Fallback->Reserve x2, Fallback->Advance x2, Reserve->Defend x2, Fallback->Engage x1, Engage->Advance x1, Reserve->Fallback x1
+트리거 누계(횟수 / 시각): Orders 193 [1,1,1,1,1,1,1,1,1,14,15,15,...] | CavCharges 1 [33] | TrenchMoves 18 [1,1,15,25,66,84,103,104,115,159,169,179,...] | Fallbacks 52 [28,30,42,77,112,112,128,147,170,182,217,220,...] | ReserveCommits 1 [113]
+상태 체류(초, 평균/중앙/횟수): Advance 10.8/7.0/33, Defend 19.0/20.0/47, Fallback 15.8/15.0/35, Engage 35.0/35.0/1, Reserve 11.6/6.0/16
+교대 약진 한 번(다리) 길이: 횟수 0, 중앙 0.0s, 3초 미만 0회
+자군 보병 제압(30초): 30:0.01/1 % 60:0.04/6 % 90:0.00/0 % 120:0.00/0 % 150:0.01/0 % 180:0.03/4 % 210:0.02/0 % 240:0.06/6 % 270:0.01/1 % 300:0.04/7 % 330:0.01/2 % 360:0.00/0 % 390:0.00/0 % 420:0.00/0 % 450:0.00/0 % 480:0.00/0 % 510:0.00/0 % 540:0.00/0 % 570:0.00/0 % 600:0.00/0 %
+자군 보병 제압 요약: 시간 평균 0.017, 평균 최고 0.118 (t=43), 제압>0.3 비율 최고 18.3 % (t=227), 개인 최고 0.99, 제압>0.3 기-초 2720
+제압 분포 (Suppression/1000 = SuppressionRatio, 이중 나눗셈 없음): 전체 보병 n=99952 평균 0.020 중앙 0.000 p90 0.000 p99 0.595 최대 0.986 (>0.3 2.7%) | 교전 중(최근 5초 안 피격) 보병 n=4128 평균 0.331 중앙 0.252 p90 0.767 p99 0.952 최대 0.986 (>0.3 44.6%)
+기동 개시 때 사격받는 적 제압: 평균 (표본 없음) | 최대값 (표본 없음)
+돌격 개시 0회, 그중 사격받는 적 평균 제압 < 0.2 (조기 돌격) 0회
+중대 활성 전술 틀(ActiveTactic) 시간: None 748, DefenceDepth 1652
+Drill 사건: Phase Idle->Defend x25, Man 0->3 (DefenceDepth) x23, Phase Defend->Idle x22, Man 3->0 (DefenceDepth) x17, Man 3->4 (DefenceDepth) x3, Man 3->0 (None) x2, Man 4->5 (DefenceDepth) x1, Man 5->3 (DefenceDepth) x1, Man 4->0 (None) x1, Man 4->0 (DefenceDepth) x1
+Drill 약진 다리: 횟수 0, 중앙 0.0s, 평균 0.0s, <3s 0회
+  t=32 L3 돌격 개시(Man4, DefenceDepth): 사격받는 적 3기 평균 제압 0.43
+  t=206 L3 돌격 개시(Man4, DefenceDepth): 사격받는 적 0기 평균 제압 0.00
+  t=284 L2 돌격 개시(Man4, DefenceDepth): 사격받는 적 9기 평균 제압 0.35
+포병 이동 0회, 간격(세력 합산) 중앙 0.0s 평균 0.0s
+Engage->Approach 되돌림 예:
+첫 교전 t=51, 첫 기동(약진/돌격) t=-1
+교대 약진 엄호 비율(엄호조 사격 중 / 중대원) 평균 0.00 (표본 0초)
+기동 개시 0회, 평균 적 제압 0.00, 화력 기반 존재 0회
+행진 사격 발동 0, 지휘관 교체 1, 지휘 능력(중대-초): 장교 1828 / 부사관 대리 0 / 없음 572, 인계 중 8
+포병 0 포대-초, 강제 표적 지정 중 0 (0 %), 최근 3초 안 사격한 포대-초 0, 연대 화력표적 있음 0초, 연신 상태 0초
+중화기 앞섬(소총 전선+3칸, 거치형 중화기 기-초): 0 / 0 (0 %), 한 시점 최대 0기
+유휴 중대(30초+ 명령 · 사격 · 이동 없음): 97 중대-초, 그중 적 45칸 안 16
+  L2 유휴 시작 t=98 (적 45칸 안, 상태 Defend/MainLine/Defend)
+  L2 유휴 종료 t=103
+  L3 유휴 시작 t=229 (적 45칸 안, 상태 Defend/MainLine/Defend)
+  L3 유휴 종료 t=235
+  L4 유휴 시작 t=320 (적 45칸 안, 상태 Defend/MainLine/Defend)
+  L4 유휴 종료 t=325
+  L4 유휴 시작 t=355 (적 45칸 밖, 상태 Defend/MainLine/Defend)
+  L2 유휴 시작 t=356 (적 45칸 밖, 상태 Defend/MainLine/Defend)
+  L4 유휴 종료 t=360
+  L2 유휴 종료 t=361
+  L4 유휴 시작 t=390 (적 45칸 밖, 상태 Defend/MainLine/Defend)
+  L2 유휴 시작 t=391 (적 45칸 밖, 상태 Defend/MainLine/Defend)
+  L4 유휴 종료 t=395
+  L2 유휴 종료 t=396
+  L4 유휴 시작 t=425 (적 45칸 밖, 상태 Defend/MainLine/Defend)
+  L2 유휴 시작 t=426 (적 45칸 밖, 상태 Defend/MainLine/Defend)
+  L4 유휴 종료 t=430
+  L2 유휴 종료 t=431
+  L4 유휴 시작 t=460 (적 45칸 밖, 상태 Defend/MainLine/Defend)
+  L2 유휴 시작 t=461 (적 45칸 밖, 상태 Defend/MainLine/Defend)
+[기병지휘] 중대-초: 장교 57 / 부사관 대리 535 / 없음 8, 인계 중 8, 지휘관 교체 1
+기병: 
+  t=33s 기병 돌격 #5 (기수 12): 반경 6 적 보병 중 제압>=0.25 0기 -> 8초 안 최대 3기
+[돌격결과] 완료 3: 후퇴 2 우세 0 열세 1; 미완 0
+  돌격결과: Man4 열세 아군손실 15 적손실(반경20) 4 시작적 7
+  돌격결과: Man4 후퇴 아군손실 2 적손실(반경20) 0 시작적 0
+  돌격결과: Man4 후퇴 아군손실 11 적손실(반경20) 22 시작적 22
+== 3차 지표 ==
+[틱시작] 
+[엄호] 약진 중 (적 가시) 파트너 사격 비율 평균 0.00 (표본 0초, 무사격 0, >=50% 0), 약진 분대 자신 0.00 | 기동조 이동 중 화력조 사격 비율 평균 0.00 (표본 0초, 무사격 0, >=50% 0), 같은 대대 화력기반 0.00 (표본 0) | 기준: 교전 중 비약진 사격조 0.00 (표본 0초)
+[화력 우세] 교전 중 (적 가시) 중대-초 0, 우세 (평균 제압>=0.3) 0 (0.0%), 가시 적 평균 제압  (표본 없음)
+  Drill 돌격(Man4): 3회, 평균 적 제압 0.067, 우세 0회, 우세 아님+90초 넘는 교전(인내) 0회, 그 외 3회, 가시 적 0 1회
+  t=32 L3 Drill 돌격(Man4): 가시 적 31기 평균 제압 0.09 (우세 X, 교전 0s)
+  t=206 L3 Drill 돌격(Man4): 가시 적 0기 평균 제압 0.00 (우세 X, 교전 0s)
+  t=284 L2 Drill 돌격(Man4): 가시 적 31기 평균 제압 0.11 (우세 X, 교전 0s)
+[시간차] 화력조 첫 사격 -> 기동 출발: 표본 3, 사격 전 출발 3, 2초 미만 0, 중앙 0.0s, 평균 0.0s, 출발 때 화력조 사격 비율 평균 0.29, 비율>=30% 1
+[대대 시간차] 화력기반 중대 점화 -> 기동 중대 출발: 표본 3, 점화 전 출발 3, 중앙 0.0s, 출발 때 화력기반 사격 비율 평균 0.00
+  t=32 L3 돌격: 화력조 첫 사격 후 사격 전, 출발 때 화력조 사격 비율 87 %, 교전 0s
+  t=206 L3 돌격: 화력조 첫 사격 후 사격 전, 출발 때 화력조 사격 비율 0 %, 교전 0s
+  t=284 L2 돌격: 화력조 첫 사격 후 사격 전, 출발 때 화력조 사격 비율 0 %, 교전 0s
+[예비] 투입 1회, 그중 곤경 (전선 후퇴 중대 있음 또는 30초 손실>=20%) 1회; 기준 곤경 비율 0.0% (0/35초)
+  t=113 예비 투입: 전선 중대 후퇴 1개, 30초 손실 4 % (곤경 O), 전선 병력 235
+[포병] 돌격 3회 판정: 돌격 표적 둘레 (앞10초~뒤15초) 포병 사격 있음 0, 조준점이 돌격 표적 12칸 안 0; 포병 조준점 0건 중 교전 중 보병 표적 15칸 안 0 (0%)
+[포병2] 포-초 0, 표적 보유 0 (0%), 이동 중 0, 제자리 선회 0, 사격 0 (표적 보유 중 사격률 0.0%/포-초), 표적없는 사격 0; 첫 포병 사격 t=-1, 첫 보병 사격 t=23, 첫 접촉(가시 적 사거리x1.2 안) t=14, 보병 첫 사격 전 포병 사격 0, 접촉 전 0; 착탄 12초 뒤 평가 0건: 6칸 안 적 보병 사망 0, 생존자 제압 평균 변화 +0.000
+  t=32 L3 돌격 표적 둘레 포병: 사격 X, 조준점 최근접 -칸 (다른 표적/없음)
+  t=206 L3 돌격 표적 둘레 포병: 사격 X, 조준점 최근접 -칸 (다른 표적/없음)
+  t=284 L2 돌격 표적 둘레 포병: 사격 X, 조준점 최근접 -칸 (다른 표적/없음)
+[대열] 교전 중 정지 중대-초 418: 2칸 넘게 벗어난 병사 비율 평균 0.702 중앙 0.808, 앞줄 빈 슬롯 평균 19.14, 앞줄 연속 빈 슬롯 평균 11.08, 장교 경보 켜진 중대-초 12
+[장교위치] 교전 중 정지 중대-초 378: 장교가 병사 최전열보다 뒤 10.51칸, 지휘 범위 안 병사 비율 앞줄(최전열 2칸) 0.231 (6267) 전체 0.558 (21384)
+[지휘별] O: 병사-초 6280 사망 24 사망/천병사-초 3.82 평균제압 0.062 N: 병사-초 4565 사망 68 사망/천병사-초 14.90 평균제압 0.143 L: 병사-초 737 사망 22 사망/천병사-초 29.85 평균제압 0.278
+[대열2] 앞줄 슬롯 평균 0.92 p50 0 p75 0 p90 2 | 구멍 평균 0.37 p50 0 p75 0 p90 0 | 연속 구멍 평균 0.21 p50 0 p75 0 p90 0 | 뒤처짐 평균 0.03 p50 0 p75 0 p90 0 | 판단 문턱 넘음 43/418
+[대열진단] co:anchorArrived=21, co:anchorNone=397, co:drill=366, u:AttackMove/othG=27, u:AttackMove/othG/chg=265, u:Hold/noG=1764, u:Hold/noG/crew=159, u:Hold/noG/tr=16812, u:Hold/noG/tr/crew=369, u:Idle/noG=226, u:Move/anchG/tr=8, u:Move/othG=878, u:Move/othG/crew=52, u:Move/othG/tr=958, u:Move/othG/tr/crew=26
+[사거리] 보병 사격 중 표적 거리: 표본 2587, 평균 20.5, 중앙 21.0, 20칸 이상 1643, 10칸 미만 36
+[기병] 돌격 1회: 표적 25칸 안 사격 보병 15초 안 최대 >=10 1, 보병 돌격 ±15초 동시 1
+  t=33 C5 기병 돌격: 시작 때 표적 25칸 안 사격 보병 88, 15초 안 최대 88, 보병 돌격 ±15초 O
+생존 곡선(30초): 30:301 60:258 90:254 120:238 150:217 180:197 210:184 240:157 270:156 300:132 330:117 360:114 390:114 420:114 450:114 480:114 510:114 540:114 570:114 600:114
+사건 로그:
+  t=1 연대 R1 국면 None->Defend (Defend, 병력 295/295)
+  t=28 L4 Defend->Fallback (병력 6/10, 역할 MainLine)
+  t=29 중대 L4 지휘관 교체 604->0
+  t=30 대대 B2 역할 Line (병력 4/10)
+  t=58 기병 C5 지휘관 교체 616->0
+  t=112 L2 Defend->Fallback (병력 64/95, 역할 MainLine)
+  t=113 대대 B1 역할 MainLine/예비투입 (병력 234/285)
+  t=128 L3 Defend->Fallback (병력 65/95, 역할 MainLine)
+  t=170 L2 Defend->Fallback (병력 45/95, 역할 MainLine)
+  t=220 L1 Defend->Fallback (병력 66/95, 역할 MainLine)
+  t=234 연대 R1 국면 Defend->None (Fallback, 병력 154/295)
+  t=234 대대 B1 역할 Line/예비투입 (병력 152/285)
+  t=235 L2 Defend->Fallback (병력 40/95, 역할 Line)
+  t=235 L3 Defend->Fallback (병력 55/95, 역할 Line)
+  t=254 연대 R1 국면 None->Defend (Defend, 병력 149/295)
+  t=254 대대 B2 역할 MainLine (병력 2/10)
+  t=255 L4 Reserve->Fallback (병력 2/10, 역할 MainLine)
+  t=258 대대 B1 역할 MainLine/예비투입 (병력 147/285)
+  t=290 L4 Defend->Fallback (병력 2/10, 역할 MainLine)
+  t=291 L2 Defend->Fallback (병력 33/95, 역할 MainLine)
+  t=302 L1 Defend->Fallback (병력 29/95, 역할 MainLine)
+  t=325 L4 Defend->Fallback (병력 2/10, 역할 MainLine)
+  t=326 L2 Defend->Fallback (병력 25/95, 역할 MainLine)
+  t=337 L1 Defend->Fallback (병력 29/95, 역할 MainLine)
+  t=360 L4 Defend->Fallback (병력 2/10, 역할 MainLine)
+  t=361 L2 Defend->Fallback (병력 22/95, 역할 MainLine)
+  t=372 L1 Defend->Fallback (병력 29/95, 역할 MainLine)
+  t=395 L4 Defend->Fallback (병력 2/10, 역할 MainLine)
+  t=396 L2 Defend->Fallback (병력 22/95, 역할 MainLine)
+  t=407 L1 Defend->Fallback (병력 29/95, 역할 MainLine)
+  t=430 L4 Defend->Fallback (병력 2/10, 역할 MainLine)
+  t=431 L2 Defend->Fallback (병력 22/95, 역할 MainLine)
+  t=442 L1 Defend->Fallback (병력 29/95, 역할 MainLine)
+  t=465 L4 Defend->Fallback (병력 2/10, 역할 MainLine)
+  t=466 L2 Defend->Fallback (병력 22/95, 역할 MainLine)
+  t=477 L1 Defend->Fallback (병력 29/95, 역할 MainLine)
+  t=500 L4 Defend->Fallback (병력 2/10, 역할 MainLine)
+  t=501 L2 Defend->Fallback (병력 22/95, 역할 MainLine)
+  t=512 L1 Defend->Fallback (병력 29/95, 역할 MainLine)
+  t=535 L4 Defend->Fallback (병력 2/10, 역할 MainLine)
+  t=536 L2 Defend->Fallback (병력 22/95, 역할 MainLine)
+  t=547 L1 Defend->Fallback (병력 29/95, 역할 MainLine)
+  t=570 L4 Defend->Fallback (병력 2/10, 역할 MainLine)
+  t=571 L2 Defend->Fallback (병력 22/95, 역할 MainLine)
+  t=582 L1 Defend->Fallback (병력 29/95, 역할 MainLine)
+[돌격허가] 신호 0 엄호 0 예비타이머 0 막힘(판단수) 0
+[추격] 국면 시작 t50=171 길이 429s, 사살 사격 397 근접 8, 추격 국면 사살 사격 142 근접 0, 후퇴 중 희생 사격 31 근접 5, 후퇴하는 적 돌격 보병 0 기병 0, 막은 판단 5, AI 추격 2/0 한계 정지 0/0
+[기병AI] 돌격 정면 0 측면 2 후방 0, 측면 경유 0, 소규모 보류 69, 교착 물러남 0, 장교 뒤 따라감 2, 무모한 정면 (N55) 0
+[N23/N55] 돌격보병 소탕 명령 0, 돌격 사격 전진 (경험 적은 지휘관) 7, 분대 교대 약진 23
+[후퇴사격] 발수 76 사살 2 | [재정비] 시작 41/0 사수판단 11/0 재전진 6/0 후퇴 63/52
+[아군오사] 없음
+[장교교전] 돌격 개시 없음 | 혼자 돌격 0, 막은 명령 돌격 0, 중대 돌격 끝나 그침 0, 돌격 중 앞줄 대기 틱 0
+[장교사격] 없음 | 합계 0, 자위 밖 0
+[정찰사격] Move 2(나쁨 2, 중대거리 0.0 최대 0.0, 적거리 19.9) | 합계 2, 자위 밖 2
+[장교위치] 시작 장교 23, 전사 3 (1:1/12/2:2/11), 중대 무게중심 거리 표본 11524: 평균 5.0 중앙 3.4 p90 11.4 최대 34.5, 8칸 넘음 2328
+[탄약사용] 교전 = 사격 간격 30s 이내 묶음. 무기: 병사 / 교전수 / 교전당 발수 평균 p50 p90 / 병사당 총 / 한도 / 소진 병사 (첫 소진 중앙값 s)
+  carbine: 8 / 8 / 1.4 1 2 / 1.4 (최대 2) / 45 / 0
+  hmg: 5 / 9 / 41.7 11 146 / 75.0 (최대 194) / 600 / 0
+  howitzer_heavy: 2 / 2 / 20.0 20 20 / 20.0 (최대 20) / 20 / 2 (334s)
+  lmg: 9 / 21 / 12.0 8 30 / 28.1 (최대 59) / 300 / 0
+  lmg_chauchat: 6 / 13 / 28.7 30 52 / 62.2 (최대 92) / 300 / 0
+  rifle_arisaka38: 157 / 248 / 12.8 11 26 / 20.2 (최대 53) / 60 / 0
+  rifle_hanyang88: 79 / 128 / 13.7 13 26 / 22.2 (최대 52) / 60 / 0
+  rifle_lebel86: 26 / 37 / 10.9 11 22 / 15.5 (최대 37) / 60 / 0
+  rifle_mosin: 252 / 519 / 7.1 6 15 / 14.7 (최대 40) / 60 / 0
+checksum C8A686882302E5D4 tick 36000

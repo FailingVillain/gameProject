@@ -1,0 +1,38 @@
+{
+  // 전투 대형 (기하 배열, docs/TACTICAL_AI_STAGE3_PLAN.md '전투 대형 결정'). 코드 쪽: src/Core/CombatFormations.cs.
+  // 키: close = 밀집 · open = 산개 · column = 종대 · line = 횡대 · wedge = 쐐기 · echelon_left / echelon_right = 사선 (기병만).
+  // shape: grid (격자) | wedge (쐐기) | echelon (격자를 비스듬히 — 한쪽 끝이 뒤로).
+  // 격자 열 수: ranks > 0 이면 열 = ceil(인원 / ranks) (줄 수 고정), cols > 0 이면 열 고정, 둘 다 0 이면 정사각.
+  //   우클릭 드래그 폭이 있으면 열 = 폭 / 간격 + 1 (쐐기 제외).
+  // spacing = 기본 간격 (가장 큰 몸 지름 + 0.35칸) 배수. facing = 사선 기울기 (도, 대형 앞쪽 대비 — 사선만).
+  // cavalryOnly = 장교를 뺀 전원이 기병일 때만 고를 수 있음 (아니면 횡대로 대신).
+  // company = 전술 틀이 없을 때 중대 전체 배치 (옛 중대 대형과 같은 값 — 바꾸면 결정성 골든이 바뀜).
+  // squad = 전술 틀 · 포병 대형 안의 분대 배치, 분대만 따로 이동할 때.
+  // lineShape = 중대 횡대가 쓰는 company 키 ("line_waves" = 산개 파상, "" 또는 "line" = 옛 2열 횡대). 기본 끔: 켜면 ai_bn_assault 공격 승 5/5 → 0/5 (formation 2026-10-21 측정, 사용자 결정 대기).
+  "lineShape": "",
+  "company": {
+    "close":  { "shape": "grid", "spacing": 1.0 },
+    "open":   { "shape": "grid", "spacing": 2.2 },
+    "column": { "shape": "grid", "cols": 4, "spacing": 1.0 },
+    "line":   { "shape": "grid", "ranks": 2, "spacing": 1.0 },
+    // 산개 파상 (formation 2026-10-21 "횡대 2열 기본 수정"): 2줄 이상 물결, 옆 간격 1.3배, 줄 사이 rankGap 3배 (≈ 2.9칸), 한 줄 최대 maxCols 명 (넘으면 물결을 늘림 — 90명 = 3줄 × 30, 폭 약 36칸).
+    "line_waves": { "shape": "grid", "ranks": 2, "spacing": 1.3, "rankGap": 3.0, "maxCols": 30 },
+    "wedge":  { "shape": "wedge", "spacing": 1.0 },
+    "echelon_left":  { "shape": "echelon", "ranks": 2, "spacing": 1.2, "facing": 30, "cavalryOnly": true },
+    "echelon_right": { "shape": "echelon", "ranks": 2, "spacing": 1.2, "facing": 30, "cavalryOnly": true }
+  },
+  "squad": {
+    "close":  { "shape": "grid", "spacing": 1.0 },
+    "open":   { "shape": "grid", "ranks": 1, "spacing": 2.2 },
+    "column": { "shape": "grid", "cols": 2, "spacing": 1.0 },
+    "line":   { "shape": "grid", "ranks": 1, "spacing": 1.2 },
+    "wedge":  { "shape": "wedge", "spacing": 1.3 },
+    "echelon_left":  { "shape": "echelon", "ranks": 1, "spacing": 1.3, "facing": 30, "cavalryOnly": true },
+    "echelon_right": { "shape": "echelon", "ranks": 1, "spacing": 1.3, "facing": 30, "cavalryOnly": true }
+  },
+  // 중대 전술 '포병 대형' (분대 종대 횡렬): 분대마다 작은 종대 (squadForm), 종대 사이 squadGap 칸, 본부 (장교 · 분대 없는 병사) 는 뒤 rowGap 칸.
+  // 접촉 (구성원이 표적을 잡거나 최근 1초 안 사격) 하면 deployForm 중대 대형으로 자동 전개 (checkTicks 틱마다 판정).
+  "artillery": { "squadForm": "column", "squadGap": 4.0, "rowGap": 2.0, "deployForm": "line", "checkTicks": 10 },
+  // 대대 파상 대형: 중대들을 rows 줄 (중대 threeRowsAt 개 이상이면 3줄) 의 물결로, 줄 사이 depthGap 칸.
+  "waves": { "rows": 2, "threeRowsAt": 6, "depthGap": 10.0 }
+}

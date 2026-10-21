@@ -1,0 +1,210 @@
+{
+ "part": "hull",
+ "frame": [
+  144,
+  144
+ ],
+ "anchor": [
+  72,
+  96
+ ],
+ "dirs": [
+  "s",
+  "sse",
+  "se",
+  "ese",
+  "e",
+  "ene",
+  "ne",
+  "nne",
+  "n"
+ ],
+ "yaw_step": 22.5,
+ "mirror": true,
+ "mirror_map": {
+  "ssw": "sse",
+  "sw": "se",
+  "wsw": "ese",
+  "w": "e",
+  "wnw": "ene",
+  "nw": "ne",
+  "nnw": "nne"
+ },
+ "columns": [
+  "idle",
+  "move_1",
+  "move_2",
+  "move_3",
+  "move_4",
+  "dead"
+ ],
+ "anims": {
+  "idle": {
+   "frames": [
+    "idle"
+   ],
+   "ms": 150
+  },
+  "move": {
+   "frames": [
+    "move_1",
+    "move_2",
+    "move_3",
+    "move_4"
+   ],
+   "ms": 110
+  },
+  "dead": {
+   "frames": [
+    "dead"
+   ],
+   "ms": 150
+  }
+ },
+ "sheets": [
+  {
+   "file": "tank-lanchester_hull@144.png",
+   "team": "tank-lanchester_hull@144_team.png",
+   "columns": [
+    "idle",
+    "move_1",
+    "move_2",
+    "move_3",
+    "move_4",
+    "dead"
+   ],
+   "size": [
+    864,
+    1296
+   ]
+  }
+ ],
+ "cells": {
+  "idle": {
+   "sheet": "tank-lanchester_hull@144.png",
+   "col": 0
+  },
+  "move_1": {
+   "sheet": "tank-lanchester_hull@144.png",
+   "col": 1
+  },
+  "move_2": {
+   "sheet": "tank-lanchester_hull@144.png",
+   "col": 2
+  },
+  "move_3": {
+   "sheet": "tank-lanchester_hull@144.png",
+   "col": 3
+  },
+  "move_4": {
+   "sheet": "tank-lanchester_hull@144.png",
+   "col": 4
+  },
+  "dead": {
+   "sheet": "tank-lanchester_hull@144.png",
+   "col": 5
+  }
+ },
+ "anchors": "tank-lanchester_hull@144_anchors.json",
+ "turret": {
+  "layout": "tank-lanchester_turret@120_layout.json",
+  "mount": {
+   "s": [
+    0.0,
+    -31.83
+   ],
+   "sse": [
+    -2.56,
+    -31.53
+   ],
+   "se": [
+    -4.73,
+    -30.68
+   ],
+   "ese": [
+    -6.19,
+    -29.4
+   ],
+   "e": [
+    -6.7,
+    -27.9
+   ],
+   "ene": [
+    -6.19,
+    -26.39
+   ],
+   "ne": [
+    -4.73,
+    -25.12
+   ],
+   "nne": [
+    -2.56,
+    -24.26
+   ],
+   "n": [
+    -0.0,
+    -23.96
+   ]
+  },
+  "ring_model": [
+   0.0,
+   20.6,
+   -4.0
+  ],
+  "mounts": [
+   {
+    "s": [
+     0.0,
+     -31.83
+    ],
+    "sse": [
+     -2.56,
+     -31.53
+    ],
+    "se": [
+     -4.73,
+     -30.68
+    ],
+    "ese": [
+     -6.19,
+     -29.4
+    ],
+    "e": [
+     -6.7,
+     -27.9
+    ],
+    "ene": [
+     -6.19,
+     -26.39
+    ],
+    "ne": [
+     -4.73,
+     -25.12
+    ],
+    "nne": [
+     -2.56,
+     -24.26
+    ],
+    "n": [
+     -0.0,
+     -23.96
+    ]
+   }
+  ],
+  "rings_model": [
+   [
+    0.0,
+    20.6,
+    -4.0
+   ]
+  ],
+  "pivot": [
+   60,
+   66
+  ],
+  "frame": [
+   120,
+   120
+  ]
+ }
+}

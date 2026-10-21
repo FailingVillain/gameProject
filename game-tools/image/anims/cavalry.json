@@ -1,0 +1,13 @@
+{
+  "_doc": "cavalry (horse + rider, bases/cavalry.py): 27 columns at 192x224. Gaits and every multi-frame anim use shared_fit (one translation per direction) so the horse does not slide between frames. gallop = fast travel; charge = gallop with the sabre forward.",
+  "anims": {
+    "idle":    {"frames": ["idle", "idle_2"], "ms": [1400, 900], "shared_fit": true},
+    "walk":    {"frames": ["walk_1", "walk_2", "walk_3", "walk_4"], "ms": 170, "shared_fit": true},
+    "gallop":  {"frames": ["gallop_1", "gallop_2", "gallop_3", "gallop_4"], "ms": 95, "shared_fit": true},
+    "fire":    {"frames": ["aim", "fire"], "ms": [450, 160], "shared_fit": true},
+    "charge":  {"frames": ["charge_1", "charge_2", "charge_3", "charge_4"], "ms": 95, "shared_fit": true},
+    "melee":   {"frames": ["melee_1", "melee_2", "melee_3"], "ms": [240, 140, 260], "shared_fit": true},
+    "death":   {"frames": ["hit", "fall", "dead"], "ms": [250, 300, 1200], "shared_fit": true},
+    "death_b": {"frames": ["hit_b", "slip_b", "fall_b", "dead_b"], "ms": [200, 350, 300, 1200], "shared_fit": true}
+  }
+}

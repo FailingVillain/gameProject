@@ -1,0 +1,8 @@
+{
+  "name": "tank-fengtian_truck",
+  "kind": "vehicle",
+  "model": "fengtian_truck",
+  "turret": "mg",
+  "anims": "vehicle",
+  "dirs": "all"
+}

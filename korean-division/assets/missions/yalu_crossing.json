@@ -1,0 +1,83 @@
+{
+  "propScatter": true,
+  "propDensity": 4.0,
+  "propCell": 6,
+  // 샘플 미션 1 — 거점 점령 (capture). 형식 설명: docs/ENGINE_NOTES.md '미션 틀'
+  "id": "yalu_crossing",
+  "title": "압록강 도하 거점 점령",
+  "date": "1920년 10월 3일 새벽",
+  "location": "평안북도 의주 북방, 압록강 여울",
+  "briefing": "일본군 수비대가 압록강 건너편 여울목에 교두보를 쌓았다. 여울을 건너 교두보를 빼앗고 60초 동안 지켜라. 수비대 지휘관을 잡으면 적의 저항이 약해진다.",
+  "seed": 11,
+  "weather": "clear",
+  "time": "dawn",
+  "player": 1,
+  "factions": [
+    { "name": "한국", "en": "korean", "lang": "ko", "color": [60, 130, 235], "team": 1, "posture": "attack", "area": "bridgehead" },
+    { "name": "일본", "en": "japanese", "lang": "ja", "color": [235, 195, 50], "team": 2, "posture": "hold", "area": "bridgehead", "aiProfile": "japan_garrison" }
+  ],
+  "mapData": {
+    "name": "압록강 여울",
+    "width": 168, "height": 120, "base": "grass",
+    "paint": [
+      { "terrain": "sand", "rect": [57, 0, 17, 120] },
+      { "terrain": "water", "rect": [60, 0, 11, 120] },
+      { "terrain": "dirt", "rect": [57, 54, 17, 12] },
+      { "terrain": "forest", "rect": [21, 9, 18, 15] },
+      { "terrain": "forest", "rect": [78, 12, 15, 21] },
+      { "terrain": "forest", "rect": [78, 84, 18, 18] },
+      { "terrain": "high", "rect": [108, 27, 21, 15] },
+      { "terrain": "high", "circle": [36, 93, 8] },
+      { "terrain": "house", "tiles": [[99, 50], [100, 50], [101, 50], [105, 50], [106, 50], [107, 50], [99, 70], [99, 71], [100, 70], [101, 70], [100, 71], [101, 71], [106, 70], [107, 70], [106, 71], [107, 71]] },
+      { "terrain": "rubble", "rect": [91, 57, 5, 4] },
+      { "terrain": "trench", "rect": [86, 51, 1, 18] },
+      { "terrain": "wire", "rect": [80, 45, 1, 8] },
+      { "terrain": "wire", "rect": [80, 67, 1, 8] }
+    ],
+    "starts": [ [27, 60], [99, 60] ],
+    "sites": [ { "at": [102, 60], "type": "village", "owner": 2 } ]
+  },
+  "areas": {
+    "bridgehead": { "rect": [84, 47, 27, 26] },
+    "ford": { "rect": [54, 50, 21, 20] },
+    "east_edge": { "rect": [153, 45, 12, 30] }
+  },
+  "deployZones": [ { "faction": 1, "rect": [6, 21, 45, 78] } ],
+  "forces": [
+    { "id": "b1", "faction": 1, "name": "제1대대", "at": [33, 60], "facing": 90, "battalion": 1, "battalionForm": "line", "formation": "line",
+      "companies": [
+        { "units": { "officer": 1, "infantry": 30 }, "rank": 1 },
+        { "units": { "officer": 1, "infantry": 30 } },
+        { "units": { "officer": 1, "infantry": 30 } }
+      ] },
+    { "id": "mg1", "faction": 1, "name": "기관총 중대", "at": [18, 60], "facing": 90, "units": { "officer": 1, "heavy_maxim": 2 }, "formation": "line" },
+    { "id": "scouts", "faction": 1, "name": "정찰대", "at": [42, 39], "facing": 90, "units": { "scout": 4 }, "company": false, "formation": "spread" },
+    { "id": "wagon", "faction": 1, "name": "보급 마차", "at": [15, 75], "facing": 90, "units": { "supply_wagon": 1 } },
+    { "id": "j1", "faction": 2, "name": "일본군 수비대", "at": [98, 60], "facing": 270, "formation": "line",
+      "companies": [
+        { "units": { "officer": 1, "infantry_japanese": 24 } },
+        { "units": { "officer": 1, "infantry_japanese": 24 } }
+      ] },
+    { "id": "j_mg", "faction": 2, "name": "기관총 진지", "at": [87, 60], "facing": 270, "units": { "heavy_type3": 1 }, "formation": "column" },
+    { "id": "j_cmd", "faction": 2, "name": "수비대 지휘관", "at": [108, 60], "facing": 270, "units": { "officer": 1 }, "tag": "commander", "company": false }
+  ],
+  "reinforcements": [
+    { "id": "j_rein", "faction": 2, "name": "일본군 증원", "area": "east_edge", "facing": 270, "time": 120, "posture": "attack", "aiArea": "bridgehead",
+      "companies": [ { "units": { "officer": 1, "infantry_japanese": 30 } } ] }
+  ],
+  "objectives": [
+    { "id": "take", "type": "capture", "area": "bridgehead", "seconds": 60, "text": "강 건너 교두보 점령 후 60초 유지" },
+    { "id": "cmd", "type": "eliminate", "tag": "commander", "primary": false, "text": "수비대 지휘관 제거" }
+  ],
+  "failures": [
+    { "type": "losses", "percent": 75 },
+    { "type": "timeLimit", "seconds": 1500 }
+  ],
+  "events": [
+    { "id": "intro", "when": { "time": 1 }, "do": [ { "message": "압록강을 건너 일본군 교두보를 점령하라!" } ] },
+    { "id": "ford", "when": { "area": "ford", "faction": 1 }, "do": [ { "message": "여울에 들어섰다 — 적 기관총 진지에 주의" } ] },
+    { "id": "rein", "when": { "time": 115 }, "do": [ { "message": "일본군 증원이 동쪽에서 다가온다" } ] },
+    { "id": "cmd_dead", "when": { "killed": "commander" }, "do": [ { "message": "적 지휘관 사살!" } ] },
+    { "id": "taken", "when": { "objective": "take" }, "do": [ { "message": "교두보 확보!" } ] }
+  ]
+}

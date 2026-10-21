@@ -1,0 +1,18 @@
+{
+  "name": "heavy-at-rifleman-japanese",
+  "fix_as": "heavy-at-rifleman",
+  "_doc": "Japanese variant of heavy-at-rifleman: jkhaki tunic and trousers, japanese_cap. Everything else identical to heavy-at-rifleman.",
+  "base": "infantry_heavy",
+  "anims": "heavy-at-rifleman",
+  "headgear": "japanese_cap",
+  "uniform": {"jacket": "jkhaki", "trousers": "jkhaki", "legging": "puttee", "boot": "leather", "belt": "leather", "hand": "skin",
+              "collar": true, "puttees": true},
+  "weapon": "at_rifle",
+  "gear": ["pack_horseshoe", "haversack", "canteen_cloth", "leather_pouches"],
+  "team": ["helmet_band", "arm_patch"],
+  "belt": true,
+  "belt_pouches": false,
+  "e_pull_extra": 7.0,
+  "dirs": "all",
+  "frames": "all"
+}

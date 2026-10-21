@@ -1,0 +1,61 @@
+  [sim] AI A=tactical B=tactical
+  t=10s  A 96 @(113,64)  B 294 @(142,63)  wall 0.5s
+  t=20s  A 85 @(116,62)  B 288 @(140,60)  wall 0.8s
+  t=30s  A 77 @(107,60)  B 284 @(138,54)  wall 1.1s
+  t=40s  A 77 @(91,61)  B 284 @(128,50)  wall 1.4s
+  t=50s  A 72 @(91,61)  B 278 @(116,55)  wall 1.8s
+  t=60s  A 59 @(91,62)  B 273 @(115,55)  wall 2.0s
+  t=70s  A 53 @(73,67)  B 273 @(111,54)  wall 2.3s
+  t=80s  A 51 @(66,68)  B 273 @(105,54)  wall 2.6s
+  t=90s  A 45 @(65,71)  B 273 @(104,55)  wall 2.8s
+  t=100s  A 40 @(48,83)  B 273 @(92,55)  wall 3.1s
+  t=110s  A 38 @(43,88)  B 273 @(79,58)  wall 3.3s
+  t=120s  A 33 @(47,83)  B 272 @(68,62)  wall 3.6s
+  t=130s  A 21 @(49,89)  B 268 @(65,64)  wall 3.8s
+  t=140s  A 19 @(42,95)  B 268 @(58,73)  wall 4.1s
+  t=150s  A 11 @(42,96)  B 268 @(56,75)  wall 4.4s
+MARCH ticks=0 move=0 moveOn=0 shots=0 moveShots=0 pistol=0 gren=0 melee=0
+MEAS start=96/294 end_t=157 winner=2 lossEnd=96/26 loss120=63/22 loss300=-1/-1 t50=83/- shots=4982 hits=467 hitpct=9.4 meanDist=21.2 hitDist=19.5
+결과: 승자 2, 157.0초, 실행 4.6초, 명령 460
+사살원인 010s bandit_rifleman/rifle_mosin->recruit = 6
+사살원인 010s heavy_machinegunner_fengtian/lmg_chauchat->bandit_rifleman = 1
+사살원인 010s recruit/rifle_mosin->bandit_rifleman = 10
+사살원인 020s bandit_rifleman/rifle_mosin->recruit = 4
+사살원인 020s recruit/rifle_mosin->bandit_rifleman = 8
+사살원인 040s bandit_rifleman/rifle_mosin->cavalry_default = 6
+사살원인 040s cavalry_default/melee->bandit_rifleman = 1
+사살원인 040s recruit/rifle_mosin->bandit_rifleman = 2
+사살원인 040s recruit/rifle_mosin->heavy_howitzer = 2
+사살원인 050s bandit_rifleman/rifle_mosin->cavalry_default = 3
+사살원인 050s bandit_rifleman/rifle_mosin->recruit = 2
+사살원인 050s recruit/rifle_mosin->bandit_rifleman = 9
+사살원인 050s recruit/rifle_mosin->heavy_howitzer = 4
+사살원인 060s recruit/rifle_mosin->bandit_rifleman = 6
+사살원인 070s recruit/rifle_mosin->bandit_rifleman = 2
+사살원인 080s recruit/rifle_mosin->bandit_rifleman = 6
+사살원인 090s recruit/rifle_mosin->bandit_rifleman = 5
+사살원인 100s recruit/rifle_mosin->bandit_rifleman = 2
+사살원인 110s bandit_rifleman/rifle_mosin->recruit = 1
+사살원인 110s heavy_machinegunner_fengtian/lmg_chauchat->bandit_rifleman = 1
+사살원인 110s recruit/rifle_mosin->bandit_rifleman = 4
+사살원인 120s bandit_rifleman/rifle_mosin->recruit = 4
+사살원인 120s recruit/rifle_mosin->bandit_rifleman = 12
+사살원인 130s recruit/rifle_mosin->bandit_rifleman = 2
+사살원인 140s recruit/rifle_mosin->bandit_rifleman = 8
+사살원인 150s recruit/rifle_mosin->bandit_rifleman = 11
+틀 행동: 시작 0 끝 0 약진 0 기동 0 돌격 0 역습 0 참호 0 연신 0 전환 0 인계멈춤 0 포병전개 0
+기병AI: 돌격 정면 0 측면 1 후방 0 측면경유 0 소규모보류 0 물러남 0 | 추격: 후퇴중 희생 사격 25 근접 0 후퇴하는 적 돌격 보병 0 기병 1 | N55 기병 무모한 정면 0 돌격 사격 전진 0 | N23 소탕 0 | S4 제압으로 꺾인 돌격 7
+F4 기병 돌격: 개시 1 무의미 정면 0 자동 막음 0 근접 사살 1 사유(후퇴/제압/승무원/고립/측면) 1/0/0/0/0 · 하마 6 승마 3
+관찰: 사격 4982발 · 명중 467발 (9.4%) · 사망 122기 → 1킬당 40.8발 (명중 3.8발)
+N61 접근: 보병(1) 첫 사격 12.5초 · 기병(2) 첫 근접 43.9초 · 전환 306 · 그 시점 B 생존 282/294
+템포: 첫 사격 12.5초 · A 50% 손실 82.5초 · B 50% 손실 -초 · 사격 거리 평균 21.2 (첫 100발 16.9) 칸
+  세력:종류            시작→남음   사격    근접   포격  방열%  돌격%
+  1:bandit_rifleman      90→0        1040      0      0     0     0
+  1:heavy_howitzer        6→0           0      0      0    41     0
+  2:cavalry_default      10→1           2      7      0     0    15
+  2:heavy_machinegunner_fengtian    7→7         240      0      0    27     0
+  2:recruit             270→253      3700      0      0     0     0
+  2:scout                 7→7           0      0      0     0     0
+AI 비용: 사고 ms/틱 avg 0.013 max 22.51 (호출 1256, 호출당 0.094 ms) · 전체 Step avg 0.48 ms
+  [전술 AI 1] 프로필 default 태세 Attack/Defend 중대 1 대대 1 · 명령 35 돌격 0 기병돌격 0 참호 0 후퇴 7 포병이동 0 화력사수 0 예비투입 0 · 연대 1 준비사격 1 연신 0 분대약진 0 전초 0/철수 0 역습 0 증원편입 0 공격한계 1
+  [전술 AI 2] 프로필 default 태세 Attack/Attack 중대 10 대대 2 · 명령 269 돌격 0 기병돌격 1 참호 0 후퇴 6 포병이동 0 화력사수 5 예비투입 1 · 연대 1 준비사격 0 연신 0 분대약진 6 전초 0/철수 0 역습 0 증원편입 0 공격한계 0

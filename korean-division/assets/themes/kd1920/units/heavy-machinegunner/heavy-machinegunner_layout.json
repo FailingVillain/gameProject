@@ -1,0 +1,258 @@
+{
+ "frame": [
+  192,
+  160
+ ],
+ "anchor": [
+  96,
+  144
+ ],
+ "dirs": [
+  "s",
+  "sse",
+  "se",
+  "ese",
+  "e",
+  "ene",
+  "ne",
+  "nne",
+  "n"
+ ],
+ "mirror": true,
+ "columns": [
+  "mg_idle",
+  "mg_walk_1",
+  "mg_walk_2",
+  "mg_walk_3",
+  "mg_walk_4",
+  "mg_kneel",
+  "mg_down",
+  "mg_aim",
+  "mg_fire_a",
+  "mg_fire_b",
+  "hit",
+  "fall",
+  "dead",
+  "stagger_b",
+  "kneel_b",
+  "dead_b",
+  "stagger_c",
+  "slump_c",
+  "dead_c"
+ ],
+ "anims": {
+  "idle": {
+   "frames": [
+    "mg_idle"
+   ],
+   "ms": 150,
+   "shared_fit": false
+  },
+  "walk": {
+   "frames": [
+    "mg_walk_1",
+    "mg_walk_2",
+    "mg_walk_3",
+    "mg_walk_4"
+   ],
+   "ms": 130,
+   "shared_fit": false
+  },
+  "deploy": {
+   "frames": [
+    "mg_kneel",
+    "mg_down",
+    "mg_aim"
+   ],
+   "ms": [
+    320,
+    320,
+    500
+   ],
+   "shared_fit": false
+  },
+  "fire_prone": {
+   "frames": [
+    "mg_aim",
+    "mg_fire_a",
+    "mg_fire_b",
+    "mg_fire_a",
+    "mg_fire_b"
+   ],
+   "ms": [
+    400,
+    60,
+    60,
+    60,
+    60
+   ],
+   "shared_fit": false
+  },
+  "pack": {
+   "frames": [
+    "mg_aim",
+    "mg_down",
+    "mg_kneel"
+   ],
+   "ms": [
+    400,
+    320,
+    320
+   ],
+   "shared_fit": false
+  },
+  "death": {
+   "frames": [
+    "hit",
+    "fall",
+    "dead"
+   ],
+   "ms": [
+    250,
+    250,
+    1000
+   ],
+   "shared_fit": false
+  },
+  "death_b": {
+   "frames": [
+    "hit",
+    "stagger_b",
+    "kneel_b",
+    "dead_b"
+   ],
+   "ms": [
+    200,
+    700,
+    300,
+    1200
+   ],
+   "shared_fit": false
+  },
+  "death_c": {
+   "frames": [
+    "hit",
+    "stagger_c",
+    "slump_c",
+    "dead_c"
+   ],
+   "ms": [
+    200,
+    700,
+    300,
+    1200
+   ],
+   "shared_fit": false
+  }
+ },
+ "sheets": [
+  {
+   "file": "heavy-machinegunner.png",
+   "team": "heavy-machinegunner_team.png",
+   "columns": [
+    "mg_idle",
+    "mg_walk_1",
+    "mg_walk_2",
+    "mg_walk_3",
+    "mg_walk_4",
+    "mg_kneel",
+    "mg_down",
+    "mg_aim",
+    "mg_fire_a",
+    "mg_fire_b",
+    "hit",
+    "fall",
+    "dead",
+    "stagger_b",
+    "kneel_b",
+    "dead_b",
+    "stagger_c",
+    "slump_c",
+    "dead_c"
+   ],
+   "size": [
+    3648,
+    1440
+   ]
+  }
+ ],
+ "cells": {
+  "mg_idle": {
+   "sheet": "heavy-machinegunner.png",
+   "col": 0
+  },
+  "mg_walk_1": {
+   "sheet": "heavy-machinegunner.png",
+   "col": 1
+  },
+  "mg_walk_2": {
+   "sheet": "heavy-machinegunner.png",
+   "col": 2
+  },
+  "mg_walk_3": {
+   "sheet": "heavy-machinegunner.png",
+   "col": 3
+  },
+  "mg_walk_4": {
+   "sheet": "heavy-machinegunner.png",
+   "col": 4
+  },
+  "mg_kneel": {
+   "sheet": "heavy-machinegunner.png",
+   "col": 5
+  },
+  "mg_down": {
+   "sheet": "heavy-machinegunner.png",
+   "col": 6
+  },
+  "mg_aim": {
+   "sheet": "heavy-machinegunner.png",
+   "col": 7
+  },
+  "mg_fire_a": {
+   "sheet": "heavy-machinegunner.png",
+   "col": 8
+  },
+  "mg_fire_b": {
+   "sheet": "heavy-machinegunner.png",
+   "col": 9
+  },
+  "hit": {
+   "sheet": "heavy-machinegunner.png",
+   "col": 10
+  },
+  "fall": {
+   "sheet": "heavy-machinegunner.png",
+   "col": 11
+  },
+  "dead": {
+   "sheet": "heavy-machinegunner.png",
+   "col": 12
+  },
+  "stagger_b": {
+   "sheet": "heavy-machinegunner.png",
+   "col": 13
+  },
+  "kneel_b": {
+   "sheet": "heavy-machinegunner.png",
+   "col": 14
+  },
+  "dead_b": {
+   "sheet": "heavy-machinegunner.png",
+   "col": 15
+  },
+  "stagger_c": {
+   "sheet": "heavy-machinegunner.png",
+   "col": 16
+  },
+  "slump_c": {
+   "sheet": "heavy-machinegunner.png",
+   "col": 17
+  },
+  "dead_c": {
+   "sheet": "heavy-machinegunner.png",
+   "col": 18
+  }
+ },
+ "anchors": "heavy-machinegunner_anchors.json"
+}

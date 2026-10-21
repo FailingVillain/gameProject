@@ -1,0 +1,82 @@
+  [sim] AI A=tactical B=tactical
+  t=10s  A 158 @(117,64)  B 202 @(140,63)  wall 0.4s
+  t=20s  A 134 @(117,63)  B 190 @(138,62)  wall 0.8s
+  t=30s  A 105 @(113,61)  B 178 @(138,62)  wall 1.1s
+  t=40s  A 97 @(95,59)  B 171 @(133,62)  wall 1.3s
+  t=50s  A 87 @(91,57)  B 170 @(128,66)  wall 1.6s
+  t=60s  A 68 @(86,47)  B 162 @(122,66)  wall 1.8s
+  t=70s  A 61 @(68,32)  B 162 @(114,65)  wall 2.0s
+  t=80s  A 58 @(66,30)  B 162 @(102,62)  wall 2.1s
+  t=90s  A 55 @(55,22)  B 158 @(97,62)  wall 2.3s
+  t=100s  A 52 @(50,15)  B 158 @(95,59)  wall 2.5s
+  t=110s  A 52 @(48,12)  B 158 @(95,58)  wall 2.7s
+  t=120s  A 52 @(48,12)  B 158 @(95,58)  wall 2.8s
+  t=130s  A 52 @(46,11)  B 158 @(96,60)  wall 2.9s
+  t=140s  A 48 @(41,8)  B 158 @(101,65)  wall 3.1s
+  t=150s  A 41 @(36,7)  B 158 @(101,65)  wall 3.2s
+  t=160s  A 36 @(32,5)  B 158 @(98,64)  wall 3.4s
+  t=170s  A 34 @(31,5)  B 158 @(97,63)  wall 3.5s
+  t=180s  A 33 @(26,3)  B 158 @(96,63)  wall 3.6s
+  t=190s  A 22 @(24,3)  B 158 @(95,62)  wall 3.8s
+  t=200s  A 4 @(24,1)  B 158 @(94,62)  wall 3.9s
+MARCH ticks=0 move=0 moveOn=0 shots=0 moveShots=0 pistol=0 gren=0 melee=0
+MEAS start=158/202 end_t=203 winner=2 lossEnd=158/44 loss120=106/44 loss300=-1/-1 t50=54/- shots=4263 hits=637 hitpct=14.9 meanDist=21.3 hitDist=23.4
+결과: 승자 2, 202.8초, 실행 3.9초, 명령 255
+사살원인 010s heavy_machinegunner/lmg->veteran = 1
+사살원인 010s recruit/rifle_mosin->veteran = 11
+사살원인 010s veteran/rifle_mosin->recruit = 24
+사살원인 020s heavy_field_gun/gun_field->recruit = 6
+사살원인 020s heavy_machinegunner/lmg->recruit = 1
+사살원인 020s heavy_machinegunner/lmg->veteran = 2
+사살원인 020s recruit/rifle_mosin->veteran = 10
+사살원인 020s veteran/rifle_mosin->recruit = 22
+사살원인 030s heavy_field_gun/gun_field->heavy_field_gun = 1
+사살원인 030s heavy_field_gun/gun_field->recruit = 2
+사살원인 030s heavy_field_gun/gun_field->veteran = 6
+사살원인 030s heavy_machinegunner/lmg->veteran = 1
+사살원인 030s veteran/rifle_mosin->heavy_field_gun = 1
+사살원인 030s veteran/rifle_mosin->heavy_machinegunner = 2
+사살원인 030s veteran/rifle_mosin->recruit = 2
+사살원인 040s heavy_field_gun/gun_field->heavy_field_gun = 3
+사살원인 040s heavy_field_gun/gun_field->heavy_machinegunner = 1
+사살원인 040s heavy_field_gun/gun_field->recruit = 3
+사살원인 040s recruit/rifle_mosin->veteran = 1
+사살원인 040s veteran/rifle_mosin->recruit = 3
+사살원인 050s heavy_field_gun/gun_field->recruit = 11
+사살원인 050s recruit/rifle_mosin->bandit_horseman = 7
+사살원인 050s recruit/rifle_mosin->veteran = 1
+사살원인 050s veteran/rifle_mosin->recruit = 8
+사살원인 060s heavy_field_gun/gun_field->recruit = 5
+사살원인 060s veteran/rifle_mosin->recruit = 2
+사살원인 070s veteran/rifle_mosin->recruit = 3
+사살원인 080s recruit/rifle_mosin->veteran = 4
+사살원인 080s veteran/rifle_mosin->recruit = 3
+사살원인 090s veteran/rifle_mosin->recruit = 3
+사살원인 130s veteran/rifle_mosin->recruit = 4
+사살원인 140s veteran/rifle_mosin->recruit = 7
+사살원인 150s veteran/rifle_mosin->recruit = 5
+사살원인 160s veteran/rifle_mosin->recruit = 2
+사살원인 170s veteran/rifle_mosin->recruit = 1
+사살원인 180s heavy_field_gun/gun_field->recruit = 5
+사살원인 180s veteran/rifle_mosin->recruit = 6
+사살원인 190s heavy_field_gun/gun_field->recruit = 14
+사살원인 190s heavy_machinegunner/lmg->recruit = 1
+사살원인 190s veteran/rifle_mosin->recruit = 3
+사살원인 200s heavy_field_gun/gun_field->recruit = 4
+틀 행동: 시작 0 끝 0 약진 0 기동 0 돌격 0 역습 0 참호 0 연신 0 전환 0 인계멈춤 0 포병전개 0
+기병AI: 돌격 정면 0 측면 1 후방 0 측면경유 1 소규모보류 14 물러남 1 | 추격: 후퇴중 희생 사격 49 근접 0 후퇴하는 적 돌격 보병 0 기병 1 | N55 기병 무모한 정면 0 돌격 사격 전진 0 | N23 소탕 0 | S4 제압으로 꺾인 돌격 7
+F4 기병 돌격: 개시 1 무의미 정면 0 자동 막음 0 근접 사살 0 사유(후퇴/제압/승무원/고립/측면) 1/0/0/0/0 · 하마 6 승마 4
+관찰: 사격 4263발 · 명중 637발 (14.9%) · 사망 202기 → 1킬당 21.1발 (명중 3.2발)
+N61 접근: 보병(1) 첫 사격 11.2초 · 기병(2) 첫 근접 52.3초 · 전환 425 · 그 시점 B 생존 169/202
+템포: 첫 사격 10.7초 · A 50% 손실 54.0초 · B 50% 손실 -초 · 사격 거리 평균 21.3 (첫 100발 17.0) 칸
+  세력:종류            시작→남음   사격    근접   포격  방열%  돌격%
+  1:heavy_field_gun       5→0          10      0     10    22     0
+  1:heavy_machinegunner    3→0          68      0      0    48     0
+  1:recruit             150→0        1249      0      0     0     0
+  2:bandit_horseman      11→4           0      1      0     0    10
+  2:heavy_field_gun       7→7          83      0     82    29     0
+  2:heavy_machinegunner    4→4         157      0      0    27     0
+  2:veteran             180→143      2696      0      0     0     0
+AI 비용: 사고 ms/틱 avg 0.011 max 25.62 (호출 1623, 호출당 0.085 ms) · 전체 Step avg 0.32 ms
+  [전술 AI 1] 프로필 default 태세 Attack/Defend 중대 1 대대 1 · 명령 64 돌격 0 기병돌격 0 참호 1 후퇴 14 포병이동 0 화력사수 3 예비투입 1 · 연대 1 준비사격 0 연신 0 분대약진 0 전초 0/철수 0 역습 0 증원편입 0 공격한계 1
+  [전술 AI 2] 프로필 default 태세 Attack/Attack 중대 7 대대 1 · 명령 136 돌격 0 기병돌격 1 참호 0 후퇴 2 포병이동 0 화력사수 10 예비투입 1 · 연대 1 준비사격 0 연신 0 분대약진 4 전초 0/철수 0 역습 0 증원편입 0 공격한계 0

@@ -1,0 +1,24 @@
+{
+ "name": "infantry-dadao-fengtian",
+ "_doc": "Fengtian dadao infantry (low-tier, = Korean regional troops): no rifle, dadao slung on back, drawn for charge/melee. Fengtian blue-grey uniform + cap.",
+ "base": "bandit_thug",
+ "anims": "bandit_thug",
+ "headgear": "fengtian_cap",
+ "uniform": "fengtian",
+ "weapons": {
+  "dadao": "dadao"
+ },
+ "gear": [
+  "canteen_cloth",
+  "leather_pouches"
+ ],
+ "team": [
+  "helmet_band",
+  "arm_patch"
+ ],
+ "belt": true,
+ "belt_pouches": false,
+ "dirs": "all",
+ "frames": "all",
+ "fix_as": "infantry-fengtian"
+}

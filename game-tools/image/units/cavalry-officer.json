@@ -1,0 +1,38 @@
+{
+  "name": "cavalry-officer",
+  "_doc": "기병 장교 (mounted officer): copy of cavalry-default (same horse, seat, anims) with the officer's equipment swapped in: officer service cap (dark field grey, brass), dark field-grey officer tunic + breeches with brass piping/stripe, tall boots, holster + map case, pistol (aim/fire one-handed, left hand on the reins) and sabre (charge/melee from the saddle, saddle scabbard). No carbine.",
+  "base": "cavalry",
+  "anims": "cavalry",
+  "headgear": "officer_cap",
+  "uniform": {
+    "jacket": "fgrey_dark",
+    "trousers": "fgrey_dark_trouser",
+    "legging": "leather",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "collar": true,
+    "puttees": false,
+    "piping": "acc_brass",
+    "placket": false,
+    "trouser_stripe": true,
+    "stripe_mat": "acc_brass"
+  },
+  "tune": {"parts": {"headgear": {"officer_cap": {"cap_mat": "fgrey_dark"}}}},
+  "weapons": {
+    "pistol": "pistol",
+    "sabre": "sabre"
+  },
+  "gear": [
+    "holster",
+    "map_case"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "belt": true,
+  "belt_pouches": false,
+  "dirs": "all",
+  "frames": "all"
+}

@@ -1,0 +1,16 @@
+{
+ "name": "infantry-militia",
+ "_doc": "Village militia (common, Chinese villagers, N71): infantry-reserve body/poses, black guapi skullcap, undyed cotton jacket, grey cotton trousers + wraps, old bolt rifle (no bayonet), haversack + canteen.",
+ "base": "infantry",
+ "anims": "infantry",
+ "headgear": "guapi_cap",
+ "uniform": "militia",
+ "weapon": "bolt_rifle",
+ "gear": ["haversack", "canteen_cloth"],
+ "team": ["helmet_band", "arm_patch"],
+ "belt": true,
+ "belt_pouches": false,
+ "e_pull_extra": 3.0,
+ "dirs": "all",
+ "frames": "all"
+}
