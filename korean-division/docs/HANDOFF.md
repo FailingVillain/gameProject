@@ -1,5 +1,7 @@
 # 작업 인계 (HANDOFF)
 
+> **상태는 ops/STATE.md · 대기열은 ops/QUEUE.md 가 정본** (병합 = ops/MERGE_QUEUE.md · 한도 = ops/LIMITS.md · 작업 카드 = korean-division/tasks/).
+
 > 사용량 한계 · 세션 종료 대비. **새 세션은 이 파일부터 읽는다** (그다음 필요할 때만 `docs/ROADMAP_LONG.md` 를 Grep).
 > 사용자가 "상황 저장" (또는 `/save-state`) 하면 아래 절차대로 이 파일을 갱신한다. 재개는 "이어서" (또는 `/resume`).
 > 끝난 항목 = docs/legacy/HANDOFF_ARCHIVE.md (Grep 만).
