@@ -268,6 +268,10 @@ public static partial class S
     public const string SetModeFullscreen = "전체 화면";
     public const string SetVolume = "음량";
     public const string SetMute = "음소거";
+    public const string SetColorBlind = "색각 대응";
+    public const string SetColorBlindOn = "표식 켬";
+    public const string SetColorBlindOff = "표식 끔";
+    public const string SetColorBlindNote = "세력 색 말고 도형(원 · 사각 · 삼각 · 마름모 · 십자)을 함께 표시";
     public const string SetResolutionNote = "해상도는 '창' 모드에서만 바뀝니다.";
     public const string SetFileNote = "설정은 실행 파일 옆 settings.json 에 저장됩니다.";
     public const string MenuStart = "시작";
@@ -469,6 +473,7 @@ public static partial class S
     public const string UnitListMove = "이동";
     public const string UnitListHold = "사수";
     public const string UnitListIdle = "대기";
+    public const string UnitListWiped = "전멸";
     public const string DragCardTip = "카드를 대대 칸에 끌어놓으면 편입 · 빈 곳은 대대에서 분리";
     public const string BatBarTip = "대대 — 클릭: 선택 · 대형 단추: 대대 대형 순환";
     public const string FormSetDefault = "기본 진형: {0} ({1})";

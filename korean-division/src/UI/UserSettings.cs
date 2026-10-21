@@ -15,6 +15,7 @@ public static class UserSettings
 
     public static int Width = Config.ScreenWidth, Height = Config.ScreenHeight;
     public static WindowMode Mode = WindowMode.Windowed;
+    public static bool ColorBlind = false;   // 색각 대응 표식 (T27 ⑧, 기본 꺼짐)
     public static float Volume = 0.8f;   // 마스터 음량 (효과음 · 음성 공용 — Sfx.Volume)
 
     sealed class Data
@@ -23,6 +24,7 @@ public static class UserSettings
         public int Height { get; set; } = Config.ScreenHeight;
         public string Mode { get; set; } = "windowed";
         public float Volume { get; set; } = 0.8f;
+        public bool ColorBlind { get; set; } = false;
     }
 
     static WindowMode applied = WindowMode.Windowed;   // 지금 창이 실제로 있는 모드
@@ -39,6 +41,7 @@ public static class UserSettings
             Height = Math.Clamp(d.Height, Config.MinScreenHeight, 4320);
             Mode = d.Mode switch { "borderless" => WindowMode.Borderless, "fullscreen" => WindowMode.Fullscreen, _ => WindowMode.Windowed };
             Volume = Math.Clamp(float.IsNaN(d.Volume) ? 0.8f : d.Volume, 0f, 1f);
+            ColorBlind = d.ColorBlind;
             Sfx.Volume = Volume;
         }
         catch (Exception e) when (e is IOException or JsonException or UnauthorizedAccessException) { }
@@ -48,7 +51,7 @@ public static class UserSettings
     {
         try
         {
-            var d = new Data { Width = Width, Height = Height, Volume = Volume, Mode = Mode switch { WindowMode.Borderless => "borderless", WindowMode.Fullscreen => "fullscreen", _ => "windowed" } };
+            var d = new Data { Width = Width, Height = Height, Volume = Volume, ColorBlind = ColorBlind, Mode = Mode switch { WindowMode.Borderless => "borderless", WindowMode.Fullscreen => "fullscreen", _ => "windowed" } };
             File.WriteAllText(FilePath, JsonSerializer.Serialize(d, new JsonSerializerOptions { WriteIndented = true }));
         }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException) { }

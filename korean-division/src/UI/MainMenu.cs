@@ -211,7 +211,7 @@ public sealed class MainMenu
 
     void DrawSettings()
     {
-        float pw = MathF.Min(760, screenW - 40), ph = 360;
+        float pw = MathF.Min(760, screenW - 40), ph = 424;
         var panel = new Rectangle((screenW - pw) / 2, MathF.Max(16, (screenH - ph) / 2 - 10), pw, ph);
         Ui.Panel(panel, Palette.Alpha(Palette.PanelDark, 235), Palette.HudTrim);
         Ui.Text(S.MenuSettings, panel.X + 24, panel.Y + 16, 26, Palette.Accent);
@@ -248,6 +248,12 @@ public sealed class MainMenu
         Ui.TextCentered($"{(int)MathF.Round(UserSettings.Volume * 100)}%", new Rectangle(cx + 40, y, 80, 32), 16, Palette.Text);
         if (Button(new Rectangle(cx + 124, y, 36, 32), "+")) { UserSettings.SetVolume(UserSettings.Volume + 0.1f); UserSettings.Save(); }
         if (Button(new Rectangle(cx + 180, y, 100, 32), S.SetMute, true, Sfx.Muted)) Sfx.Muted = !Sfx.Muted;
+        y += RowH + 16;
+
+        Ui.Text(S.SetColorBlind, lx, y + 6, 16, Palette.TextDim);
+        if (Button(new Rectangle(cx, y, 120, 32), UserSettings.ColorBlind ? S.SetColorBlindOn : S.SetColorBlindOff, true, UserSettings.ColorBlind))
+        { UserSettings.ColorBlind = !UserSettings.ColorBlind; UserSettings.Save(); }
+        Ui.Text(S.SetColorBlindNote, cx + 132, y + 8, 14, Palette.TextDim);
 
         Ui.Text(S.SetFileNote, lx, panel.Y + panel.Height - 96, 16, Palette.TextDim);
         if (Button(new Rectangle(panel.X + 24, panel.Y + panel.Height - 62, 140, 40), S.MenuBack)) page = Page.Main;
