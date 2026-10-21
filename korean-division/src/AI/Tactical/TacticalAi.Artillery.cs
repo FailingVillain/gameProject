@@ -19,6 +19,8 @@ public sealed class ArtilleryAiDef
     public float ObserverRepost { get; set; } = 6f;
     /// <summary>관측자 판단 간격 (초).</summary>
     public float ObserverSec { get; set; } = 2f;
+    /// <summary>T24 ② (D08): 보이는 적이 관측자에게 이 칸 안이면 엄폐 중 (N22 Cover) 이라도 물러나게 하고, 새 관측 지점도 보이는 적에게서 이 칸 밖으로. 0 = 끔.</summary>
+    public float ObserverMinEnemyDist { get; set; } = 0f;
     /// <summary>관측자가 모두 죽으면 소총 중대 정찰조에서 이 수만큼 새 관측반으로 (0 = 안 함). 관측 전용 포 (곡사포) 가 있을 때만.</summary>
     public int ObserverRetask { get; set; } = 2;
     /// <summary>tweak1 노출 회피: 노려져 엄폐한 뒤 observerAvoidSec 동안은 그 노출 지점 observerAvoidRadius 칸 안으로 다시 보내지 않고, 그때 사격자 위치에서
@@ -688,13 +690,15 @@ public sealed partial class TacticalAi
         }
         if (front == float.MinValue) { front = Vector2.Dot(g.TaskPoint, dir); lo = hi = Vector2.Dot(g.TaskPoint, side); }
         float R = s.RifleRange > 0 ? s.RifleRange : 16f;
-        float standoff = R * A.ObserverStandoff;
+        float keep = A.ObserverMinEnemyDist;   // T24 ②
+        float standoff = MathF.Max(R * A.ObserverStandoff, keep);
         int n = mem.Count;
         bool any = false;
         for (int i = 0; i < n; i++)
         {
             var u = mem[i];
-            if (u.ScoutState == ScoutState.Cover) continue;   // N22: 노려져서 엄폐 중 (엔진 - Scouts.cs), 조용해지면 다시 보낸다
+            bool close = keep > 0 && Grid.Nearest(u.Pos, TacGrid.Any) is { } ce && Vector2.Distance(ce.Pos, u.Pos) < keep;
+            if (u.ScoutState == ScoutState.Cover && !close) continue;   // N22: 노려져서 엄폐 중 (엔진 - Scouts.cs), 조용해지면 다시 보낸다 — T24 ②: 보이는 적이 keep 안이면 엄폐 중이라도 물러남
             float lat = n == 1 ? (lo + hi) / 2f : lo + (hi - lo) * (i + 0.5f) / n;
             Vector2 p = dir * (front + A.ObserverAhead) + side * lat;
             // 접촉 (지점 둘레 standoff + 앞 거리 안에 보이는 적) 이면 전선 뒤로 — 관측자는 돌격을 이끌지 않고 아군 전선 뒤에서 본다 (시야 ×1.5)
@@ -714,8 +718,17 @@ public sealed partial class TacticalAi
             p = BestCover(w.Map, p, A.ObserverCoverRadius, e?.Pos ?? p + dir * 20f);
             // tweak1: 노려져 엄폐했던 관측자는 같은 노출 지점으로 돌려보내지 않는다 (D 관측반 0/24 의 원인 — 엄폐 뒤 같은 지점으로 다시 보냄)
             if (u.ScoutExposedTick >= 0 && w.Tick - u.ScoutExposedTick < Sec(A.ObserverAvoidSec)) { p = AvoidExposure(w, u, p, A, standoff, out bool moved); if (moved) s.ObserverAvoids++; }
+            // T24 ②: 보이는 적이 keep 안이거나 고른 지점이 keep 안이면 관측 지점 대신 지금 자리에서 곧장 물러남 (전선 · 엄폐 찾기는 적 쪽을 지나가게 했다)
+            if (close || keep > 0 && Grid.Nearest(p, TacGrid.Any) is { } pe && Vector2.Distance(pe.Pos, p) < keep)
+            {
+                var su = Grid.Stats(u.Pos, standoff);
+                var nu = Grid.Nearest(u.Pos, TacGrid.Any);
+                Vector2 from = su.Count > 0 ? su.Sum / su.Count : nu?.Pos ?? u.Pos + dir;
+                float du = nu != null ? Vector2.Distance(nu.Pos, u.Pos) : standoff;
+                p = ClampMap(w.Map, u.Pos + SafeNorm(u.Pos - from, -dir) * MathF.Max(keep, standoff - du + 2f));
+            }
             // 적이 이미 소총 사거리 안이면 바로 물러남 (지점 재계산이 이미 뒤로 뺐다)
-            bool threatened = Grid.Nearest(u.Pos, TacGrid.Any) is { } ne && Vector2.Distance(ne.Pos, u.Pos) < R * 1.05f;
+            bool threatened = close || Grid.Nearest(u.Pos, TacGrid.Any) is { } ne && Vector2.Distance(ne.Pos, u.Pos) < R * 1.05f;
             Vector2 cur = u.Group != null && u.Order is UnitOrder.Move ? u.Group.Goal : u.Pos;
             bool need = Vector2.Distance(cur, p) > A.ObserverRepost || threatened && Vector2.Distance(cur, p) > 2f;
             if (!need) continue;

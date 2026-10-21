@@ -27,6 +27,8 @@ public sealed class OfficerRulesDef
     public float HandoverSec { get; set; } = 5f;
     /// <summary>장교가 없어 부사관이 대리 지휘를 맡기까지 (초).</summary>
     public float NcoHandoverSec { get; set; } = 8f;
+    /// <summary>T24 ① (D08): 부사관 분대장이 하나도 없으면 사병 계급이 이 값 이상인 중대원 중 최고 계급 (분대장 아니어도) 이 대리 지휘. −1 = 끔 (분대장 부사관만).</summary>
+    public int ActingMinRank { get; set; } = -1;
     /// <summary>경험치 단계 문턱 (오름차순). 단계 = 넘은 문턱 수.</summary>
     public int[] XpLevels { get; set; } = { 60, 180, 420, 900 };
     /// <summary>중대가 교전 중인 1초마다 그 중대 장교 경험치 +.</summary>
@@ -85,12 +87,17 @@ public sealed partial class World
     /// <summary>대대장 (없으면 null).</summary>
     public Unit? CommanderOf(Battalion b) => b.Commander;
 
-    /// <summary>장교가 없는 중대의 대리 지휘 부사관: 공식 부사관인 분대장 중 최고 계급 (같으면 Id 작은 쪽).</summary>
+    /// <summary>장교가 없는 중대의 대리 지휘 부사관: 공식 부사관인 분대장 중 최고 계급 (같으면 Id 작은 쪽). 없으면 officers.actingMinRank ≥ 0 일 때 그 계급 이상 중대원 중 최고 계급 (T24 ①).</summary>
     public Unit? ActingNco(Company c)
     {
         Unit? best = null;
         foreach (var q in c.Squads)
             if (q.Leader is { IsNco: true } l && (best == null || l.Rank > best.Rank || (l.Rank == best.Rank && l.Id < best.Id))) best = l;
+        int min = OffRules.ActingMinRank;
+        if (best != null || min < 0) return best;
+        // T24 ①: 부사관 분대장이 없으면 분대장 아닌 최고 계급 병사 (같으면 Id 작은 쪽)
+        foreach (var m in c.Members)
+            if (m.Alive && !m.IsOfficer && m.Company == c && m.Rank >= min && (best == null || m.Rank > best.Rank || (m.Rank == best.Rank && m.Id < best.Id))) best = m;
         return best;
     }
 

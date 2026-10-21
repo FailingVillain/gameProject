@@ -24,6 +24,7 @@
   //   chargeRange        착검 돌격 최대 거리 (칸, 소총 사거리 16 기준 — 실제 = 값 × 소총 사거리 / 16)
   //   chargeSuppression  돌격 조건: 표적 둘레 적 평균 제압 비율이 이 이상 ...
   //   chargeOdds         ... 또는 우리 병력이 표적 둘레 적의 이 배수 이상
+  //   chargeMinSuppression  T24 ③: 공격 돌격이 수 우세 (chargeOdds) 로만 넘을 때도 필요한 적 평균 제압 하한 (0 = 끔)
   //   engageFrac         사격 진지 = 소총 사거리 × 이 비율 거리 (engage 2026-10-19: 반응 거리 combat.engageRangeFrac 0.7 보다 조금 안 — 0.60~0.68; tweak1 2026-10-19: 공격 기본 0.65 → 0.6 (aggressive 는 이미 0.6, 방어 프로필 0.68 그대로))
   //   fireAndMovement    사격선 전진 (화력 우세 뒤 bound) 을 분대 교대 약진으로 (화력 분대 사수 ↔ 기동 분대 이동)
   //   boundLength        약진 한 번의 길이 (소총 사거리 배수)
@@ -75,6 +76,7 @@
       "tactics": {
         "aggressiveness": 0.5, "retreatStrength": 0.67, "retreatSuppression": 0.6, "trench": 0.6,
         "chargeRange": 7, "chargeSuppression": 0.45, "chargeOdds": 1.6, "engageFrac": 0.6,
+        "chargeMinSuppression": 0.2,   // T24 ③ (D08, 후보값 — 사용자 승인 대기): 공격 돌격이 수 우세로만 조건을 넘어도 표적 둘레 적 평균 제압이 이 이상이어야 (0 = 끔)
         "fireAndMovement": true, "boundLength": 0.35, "prepSeconds": 20, "liftDistance": 10,
         "outposts": true, "outpostDistance": 0.6, "depth": 0.8,
         "coverWeight": 1.0, "highWeight": 0.7, "losWeight": 0.8, "threatWeight": 0.8,

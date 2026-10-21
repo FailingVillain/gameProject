@@ -194,12 +194,17 @@ public static class CavCmdSelfTest
             {
                 co.Commander!.Hp = 0;
                 Steps(w, (int)MathF.Round(R.NcoHandoverSec / Config.SimDt) + 2);
+                int savedMin = R.ActingMinRank;
+                R.ActingMinRank = -1;   // T24 ① 끔 = 옛 규칙: 부사관 분대장 없으면 지휘 없음
                 good &= w.CommandLevelOf(co) == CommandLevel.None;
+                R.ActingMinRank = 0;    // T24 ①: 분대장 아닌 최고 계급 병사가 대리
+                good &= w.CommandLevelOf(co) == CommandLevel.Nco && w.ActingNco(co) is { IsOfficer: false };
+                R.ActingMinRank = savedMin;
             }
             ok &= good;
             res.Add($"{rank}: [{Desc(co)}]");
         }
-        check(ok, $"기병 squadLeaderRank 덮어쓰기: {string.Join(" · ", res)} (0 = 부사관 없음 → 장교 상실 뒤 지휘 없음, 6 = 분대장 6), 다른 세력은 기본 하사");
+        check(ok, $"기병 squadLeaderRank 덮어쓰기: {string.Join(" · ", res)} (0 = 부사관 없음 → 장교 상실 뒤 지휘 없음, T24 ① 켜면 최고 계급 병사 대리, 6 = 분대장 6), 다른 세력은 기본 하사");
     }
 
     // ---------------------------------------------------------------- 전술 AI 기병 돌격: 장교는 뒤에서 따라감 (cavalry.officerBack)

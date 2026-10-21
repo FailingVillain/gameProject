@@ -29,8 +29,10 @@ public static class TacticDrillSelfTest
             TestChargeAndLift();
             TestSupportThreat();
             TestDefenceDepth();
-            TestArtilleryDeploy();
-            TestCommanderGating();
+            int actingMin = defs.Officers.ActingMinRank;
+            defs.Officers.ActingMinRank = -1;   // 이 둘은 '지휘 없음' (장교 · 부사관 분대장 없음) 규칙을 본다 — T24 ① 병사 대리는 끈 상태 (켠 상태는 command · cavcmd 묶음)
+            try { TestArtilleryDeploy(); TestCommanderGating(); }
+            finally { defs.Officers.ActingMinRank = actingMin; }
             TestDecideTiming();
             TestPassiveAndDisengage();
             TestSaveMidDrill();

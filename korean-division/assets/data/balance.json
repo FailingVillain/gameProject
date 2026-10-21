@@ -151,6 +151,7 @@
   "officers": {
     "companyRank": 3, "secondRank": 2, "juniorRank": 1, "battalionRank": 4, "battalionSeniorRank": 5, "battalionSeniorCompanies": 3, "maxRank": 6, "maxPromotionRank": 5,
     "maxTempPromotion": 3, "handoverSec": 5, "ncoHandoverSec": 8,
+    "actingMinRank": 0,   // T24 ① (D08, 후보값 — 사용자 승인 대기): 부사관 분대장이 없으면 이 사병 계급 이상 중대원 중 최고 계급이 대리 (0 = 누구나, −1 = 끔)
     "xpLevels": [60, 180, 420, 900], "xpCombatPerSec": 1, "xpPerKill": 2, "xpPerKillBattalion": 1, "combatWindowSec": 3,
     "xpDecidePerLevel": 0.05, "xpDelayPerLevel": 0.06, "xpHandoverPerLevel": 0.1, "xpMax": 1000000,
     // 장교 경험 성향 (N55, src/Core/OfficerStyle.cs): 확률 = 표[계급 (0 = 지휘 장교 없음, 1 소위 … 6 대령)] − 경험치 단계 × perLevel, [min, max].

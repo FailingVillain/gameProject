@@ -43,6 +43,7 @@
     "chargeSuppression": 0.4, // 표적 둘레 적 평균 제압이 이 이상이면 chargeMaxDist 안에서 돌격
     "chargeMaxDist": 12,
     "chargeOdds": 1.6,        // 또는 기동조 돌격 가능 인원이 적 (표적 둘레 chargeStatsRadius) 의 이 배 이상이면 돌격 (둘레 chargeMgRadius 에 쏘는 기관총이 없을 때)
+    "chargeMinSuppression": 0.2,   // T24 ③ (D08, 후보값 — 사용자 승인 대기): chargeOdds 로만 넘는 기동조 돌격 (chargeRange 밖) 도 표적 둘레 적 평균 제압이 이 이상이어야 (0 = 끔)
     "chargeStatsRadius": 10,
     "chargeMgRadius": 8,
     "replanDist": 5,          // 자리 잡은 기동조: 적과의 거리가 standoff + 이 값을 넘으면 (적이 옮김) 새 위치로
@@ -193,6 +194,7 @@
     "observerCoverRadius": 3,
     "observerRepost": 6,         // 관측 지점이 이 칸 넘게 바뀌어야 다시 보냄
     "observerSec": 2,            // 판단 간격 (초)
+    "observerMinEnemyDist": 15,  // T24 ② (D08, 후보값 — 사용자 승인 대기): 보이는 적이 관측자 이 칸 안이면 엄폐 중이라도 물러남 · 새 관측 지점도 이 칸 밖 (0 = 끔)
     "observerAvoidSec": 120, "observerAvoidRadius": 8, "observerAvoidStandoff": 4, "observerAvoidSearch": 10,   // tweak1: 노려져 엄폐한 관측자는 120초 동안 그 노출 지점 8칸 안 · 그때 사격자에게 (노출 거리 + 4) 칸보다 가까운 곳으로 다시 보내지 않음 — 둘레 10칸의 엄폐 · 은폐 · 사선 밖 칸으로
     "observerRetask": 2,         // 관측자 전멸 + 관측 표적 10초 없음 → 소총 중대 정찰조에서 이 수만큼 새 관측반 (곡사포가 있을 때만, 0 = 안 함)
     "supportRadius": 12,         // 곡사포: 아군 돌격 > 기동조 > 약진 표적 둘레 이 칸 안의 적 우선
