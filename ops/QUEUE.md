@@ -24,7 +24,10 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T16 | trench_assault 하락 원인 조사 (D12 A 재측정) | scout→sim | D上 R2 M H2 Wheavy | T03 | assigned |
 | T17 | 지휘 편의 (미션 중 저장 · 전과 보고(wip/battlereport 복원) · 교전 알림/미니맵) | feature | D中 R2 SM H2 Wlight | T08 | assigned |
 | T18 | 한국군 타찬카 (기마 포병 horseart 병합됨) | art+feature | D中 R1 SM H1 Wlight | 없음 | closed (이미 main: tachanka 스냅샷 a1a35e6, 2026-10-22 확인) |
-| T19 | 캠페인 홈 MVP / 규칙 1~15 / 학파 구현 (wip/doctrines 복원 포함) | sim+feature | D上 R3 L (분할) H2 Wlight | T09 | queued |
+| T19a | 저장 정리 · 자동 저장/재시도 · 슬롯 9개 (T19 분할 1/4) | sim | D上 R3 S H2 Wlight | T09 (t09-camp-slice 위 스택) | queued |
+| T19b | 구경별 탄약 5종 · 포탄 규칙 · 노획 (2/4) | sim | D上 R3 SM H2 Wlight | T19a 위 스택; T29 정산 충돌 정리 먼저 | queued |
+| T19c | 캠페인 홈 3화면 · MVP 5탭 · 연대 배속 UI (3/4) | feature | D上 R2 SM H2 Wlight | T19b 위 스택 | queued |
+| T19d | 장교 학파 복원(wip/doctrines) · 참모진 탭 읽기 전용 (4/4) | feature | D中~上 R2 S H2 Wlight | T19c 위 스택 | queued |
 | T21 | wip/sfxnew 복원 (효과음: sounds.json · SfxDirector · SOUND_POLICY) | feature | D中 R1 SM H1 Wlight | 없음 | wip-ready (자기 브랜치 참조) |
 | T22 | wip/gt-face-proto 재개 (얼굴 프로토타입, game-tools) | art | D中 R1 S H0 Wlight | 없음 | wip-ready (자기 브랜치 참조) |
 | T23 | 캠페인 홈 설계 문서 (docs/CAMPAIGN_HOME_DESIGN.md, 코드 없음) | spec | D中 R1 S H0 Wlight | 없음 | wip-ready (자기 브랜치 참조) |
