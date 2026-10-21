@@ -20,6 +20,7 @@
 | +65분 | T26 재발주(feature): 훅 파일 작성+임시 클론 시험 Bash 가 권한 시스템에서 거부 → 우회 없이 정지(46k). 사용자 권한 허용 필요 | 대기 = 사용자 |
 | +75분 | T21 sfxnew wip-ready (sonnet, 61k, 264초): kd-develop/kd-sfxnew aaba414, 빌드·cleanup·ai PASS, detcheck GOLDEN match. 패치 3-way 충돌 1건(DECISIONS_PENDING) 수동 처리 | 병합 안 함 · 사용자 결정(함성 A/B/C) · 청취 시험 대기 |
 | +85분 | T01 gemini-import wip-ready (sonnet, 99k, 407초, 도구 41회): kd-gemini-import 06424c8. 3-way 불가 → --reject 후 4파일 수동 합침. 빌드 0 오류 · GOLDEN match · snaptest · missions · savecompat PASS. 위험: CampaignMenu 즉시 저장이 읽기 실패 상태에서 덮어쓸 수 있음(배너만) | 발주: T08(sonnet)·T09(opus) 를 gemini-import 위 스택으로 (첫 스택 발주) |
+| +100분 | 4건 추가 발주(reviewer×2 · spec 카드 4장 · docs 로드맵 정리). T21 리뷰 완료(51k, 54초): 시뮬 불변 확인, 차단 항목 0, 경미 3 | 리뷰 단계 가동 시작 |
 
 ## 점검 (완료 보고마다 갱신)
 | 지표 | v1 이전 | 지금 | 비고 |
