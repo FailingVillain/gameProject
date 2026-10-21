@@ -13,7 +13,7 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T05 | wip/ai3b2 복원·병합 (전술 AI 3B) | sim → merger | D上 R3 SM H3 Wheavy | T04 | queued |
 | T06 | 사상자 속도 조정 (wip/casualty) | sim | D中~上 R3 SM H2 Wheavy | D19 | assigned (D19 C 확정) |
 | T07 | 철도 지형 (wip/rail 복원, 장갑열차 제외) | feature → merger | D上 R2 SM H2 Wlight | 없음 (T02 병합됨) | wip-ready (자기 브랜치 참조) |
-| T08 | 조작 UI 묶음 + UI 종이 질감 개편 | feature | D中 R1 SM H1 Wlight | T01 | assigned |
+| T08 | 조작 UI 묶음 + UI 종이 질감 개편 | feature | D中 R1 SM H1 Wlight | T01 | wip-ready (자기 브랜치 참조) |
 | T09 | 캠페인 수직 슬라이스 (0-1→0-2→1-1 한 사이클) | feature | D上 R3 SM H2 Wlight | T01(저장 트랜잭션) | assigned |
 | T10 | 통신 알파 ②~④ (대포병 · 야간 · 행군 피로) | sim | D上 R3 SM H3 Wheavy | 없음(D15 A 확정); H3 직렬: T03 wip-ready 뒤 스택 | assigned |
 | T11 | 전 유닛 재렌더 (rerender-1, gt-brender, gt-rerender-prep) | art | D中 R1 SM H0 Wheavy | 병합 큐 종료 뒤 렌더 3칸 예약 | queued |
@@ -21,8 +21,8 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T13 | release (전체 selftest · 골든 · publish · 기록) | release | D中 R2 SM H1 Wheavy | T12 | queued |
 | T14 | 문서 재정비 (4층 구조 + ops + PIPELINE v1) | docs | D下 R1 S H0 Wlight | 없음 | merged (b5918a8 · a4c79c7 · docs-fable) |
 | T15 | 밤 soak 갱신 → 전투 문제 9건 재보고 | measure | D中 R1 S H0 Wheavy | T12 | queued |
-| T16 | trench_assault 하락 원인 조사 (D12 A 재측정) | scout→sim | D上 R2 M H2 Wheavy | T03 | queued |
-| T17 | 지휘 편의 (미션 중 저장 · 전과 보고(wip/battlereport 복원) · 교전 알림/미니맵) | feature | D中 R2 SM H2 Wlight | T08 | queued |
+| T16 | trench_assault 하락 원인 조사 (D12 A 재측정) | scout→sim | D上 R2 M H2 Wheavy | T03 | assigned |
+| T17 | 지휘 편의 (미션 중 저장 · 전과 보고(wip/battlereport 복원) · 교전 알림/미니맵) | feature | D中 R2 SM H2 Wlight | T08 | assigned |
 | T18 | 한국군 타찬카 (기마 포병 horseart 병합됨) | art+feature | D中 R1 SM H1 Wlight | 없음 | closed (이미 main: tachanka 스냅샷 a1a35e6, 2026-10-22 확인) |
 | T19 | 캠페인 홈 MVP / 규칙 1~15 / 학파 구현 (wip/doctrines 복원 포함) | sim+feature | D上 R3 L (분할) H2 Wlight | T09 | queued |
 | T21 | wip/sfxnew 복원 (효과음: sounds.json · SfxDirector · SOUND_POLICY) | feature | D中 R1 SM H1 Wlight | 없음 | wip-ready (자기 브랜치 참조) |
