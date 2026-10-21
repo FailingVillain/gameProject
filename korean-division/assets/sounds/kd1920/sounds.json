@@ -7,6 +7,14 @@
     "maxVoices": 1,
     "loop": true
   },
+  "ambient_night": {
+    "files": [
+      "ambient_night_loop.wav"
+    ],
+    "volume": 0.35,
+    "maxVoices": 1,
+    "loop": true
+  },
   "ambient_rain": {
     "files": [
       "rain_loop.wav"
@@ -20,14 +28,6 @@
       "rain_heavy_loop.wav"
     ],
     "volume": 0.45,
-    "maxVoices": 1,
-    "loop": true
-  },
-  "ambient_night": {
-    "files": [
-      "ambient_night_loop.wav"
-    ],
-    "volume": 0.35,
     "maxVoices": 1,
     "loop": true
   },
@@ -355,6 +355,59 @@
     "maxVoices": 3,
     "minInterval": 0.06
   },
+  "mortar_fire": {
+    "files": [
+      "gun37_fire_near_1.wav",
+      "gun37_fire_near_2.wav"
+    ],
+    "volume": 0.6,
+    "maxVoices": 3,
+    "minInterval": 0.15,
+    "farDist": 30,
+    "important": true
+  },
+  "mortar_fire_far": {
+    "files": [
+      "gun37_fire_far_1.wav",
+      "gun37_fire_far_2.wav"
+    ],
+    "volume": 0.4,
+    "maxVoices": 3,
+    "minInterval": 0.15,
+    "important": true
+  },
+  "mortar_impact": {
+    "files": [
+      "grenade_explosion_near_1.wav",
+      "grenade_explosion_near_2.wav",
+      "grenade_explosion_near_3.wav"
+    ],
+    "volume": 0.85,
+    "maxVoices": 4,
+    "minInterval": 0.1,
+    "farDist": 30,
+    "important": true
+  },
+  "mortar_impact_far": {
+    "files": [
+      "grenade_explosion_far_1.wav",
+      "grenade_explosion_far_2.wav"
+    ],
+    "volume": 0.55,
+    "maxVoices": 4,
+    "minInterval": 0.1,
+    "important": true
+  },
+  "mount_switch": {
+    "files": [
+      "horse_snort_1.wav",
+      "horse_snort_2.wav",
+      "horse_stomp_1.wav"
+    ],
+    "volume": 0.5,
+    "maxVoices": 3,
+    "minInterval": 0.5
+  },
   "pistol": {
     "files": [
       "pistol_shot_near_1.wav",
@@ -418,6 +471,24 @@
     "maxVoices": 3,
     "minInterval": 0.25
   },
+  "shotgun": {
+    "files": [
+      "atrifle_shot_near_1.wav",
+      "atrifle_shot_near_2.wav"
+    ],
+    "volume": 0.75,
+    "maxVoices": 3,
+    "minInterval": 0.1,
+    "farDist": 22
+  },
+  "shotgun_far": {
+    "files": [
+      "atrifle_shot_far_1.wav"
+    ],
+    "volume": 0.5,
+    "maxVoices": 3,
+    "minInterval": 0.1
+  },
   "smg": {
     "files": [
       "smg_burst_near_1.wav",
@@ -437,6 +508,15 @@
     "volume": 0.5,
     "maxVoices": 3,
     "minInterval": 0.12
+  },
+  "smoke_burst": {
+    "files": [
+      "grenade_explosion_far_1.wav",
+      "grenade_explosion_far_2.wav"
+    ],
+    "volume": 0.4,
+    "maxVoices": 2,
+    "minInterval": 0.2
   },
   "tank_idle": {
     "files": [
@@ -478,5 +558,14 @@
     "volume": 0.5,
     "maxVoices": 1,
     "loop": true
+  },
+  "wire_cut": {
+    "files": [
+      "melee_clash_1.wav",
+      "melee_clash_2.wav"
+    ],
+    "volume": 0.35,
+    "maxVoices": 2,
+    "minInterval": 0.3
   }
 }

@@ -22,6 +22,7 @@ internal static class SfxDirector
     /// <summary>발굽 고리에 동시에 더해 줄 말 수 상한 (많은 기병 = 한 고리를 조금 키울 뿐, 여러 겹 쌓지 않음). 표현 전용.</summary>
     const int HoofLoopCap = 3;
     static double lastFrameTime;
+    static readonly HashSet<int> mounting = new();   // 하마 · 승마 전환 중인 기병 (전환 시작에 한 번만 소리). 표현 전용.
 
     /// <summary>월드가 바뀌었거나 시간이 되감겼으면 기준을 다시 잡는다. 다시 잡았으면 true (이번 프레임 사건은 건너뜀).</summary>
     static bool Sync(World world)
@@ -29,7 +30,7 @@ internal static class SfxDirector
         if (ReferenceEquals(world, lastWorld) && world.Tick >= shotTick) return false;
         lastWorld = world;
         shotTick = meleeTick = world.Tick;
-        combatRate = 0; eventsThisFrame = 0;
+        combatRate = 0; eventsThisFrame = 0; mounting.Clear();
         return true;
     }
 
@@ -48,6 +49,7 @@ internal static class SfxDirector
                 "lmg" or "lmg_chauchat" or "mg" => ("lmg", 1f),
                 "hmg" or "hmg_type3" => ("hmg_loop", 1f),
                 "at_rifle" => ("at_rifle", 1f),
+                "shotgun" => ("shotgun", 1f),   // 엽총 (마적 엽총수): 묵직한 단발 — 대전차소총 소리 재사용
                 "ft_gun" => ("gun37_fire", 1f),
                 "tank_gun" => ("artillery_fire", 0.9f),
                 _ => ("rifle", 1f),
@@ -191,16 +193,18 @@ internal static class SfxDirector
             var p = u.Pos;
             if (p.X < min.X || p.X > max.X || p.Y < min.Y || p.Y > max.Y) continue;
             var d = u.Def;
-            if (d.IsInfantry && !d.Mounted) continue;   // 보병은 고리 없음 (대부분의 유닛이 여기서 끝)
+            if (d.IsInfantry && !d.Mounted && !(d.SetupTime > 0 && d.Key is "heavy_tachanka")) continue;   // 보병은 고리 없음 (대부분의 유닛이 여기서 끝; 타찬카는 마차라 예외)
             if (u.Owner != seat && !fog.IsVisible(seat, p)) continue;
             if (d.IsArmored)
             {
                 if (u.Walking) { Sfx.LoopAt("tank_move", p, cam, 0.5f); Sfx.LoopAt("tank_tracks", p, cam, 0.5f); }
                 else Sfx.LoopAt("tank_idle", p, cam, 0.5f);
             }
-            else if (d.IsSupplyWagon) { if (u.Walking) Sfx.LoopAt("wagon_loop", p, cam, 0.6f); }
+            else if (d.IsSupplyWagon || d.Key is "heavy_tachanka" or "heavy_horse_artillery") { if (u.Walking) Sfx.LoopAt("wagon_loop", p, cam, 0.6f); }   // 보급 · 타찬카 · 기마 포병 마차 바퀴
             else if (d.Mounted)
             {
+                if (u.MountLeft > 0) { if (mounting.Add(u.Id)) Sfx.PlayAt("mount_switch", p, cam); }   // 하마 · 승마 전환 시작 한 번
+                else if (mounting.Count > 0) mounting.Remove(u.Id);
                 if (u.Charging) { if (chargers++ < HoofLoopCap) Sfx.LoopAt("cavalry_charge", p, cam, 0.4f); }
                 else if (u.Walking && u.Velocity.LengthSquared() > 2.25f) { if (gallopers++ < HoofLoopCap) Sfx.LoopAt("cavalry_move", p, cam, 0.4f); }
                 else if (!u.Walking && Vector2.DistanceSquared(p, center) < 18f * 18f && rng.Next(++horses) == 0) horse = u;   // 서 있는 말: 한 마리 뽑기
