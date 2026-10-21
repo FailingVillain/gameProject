@@ -219,6 +219,7 @@ public sealed partial class World
         long pt = Profile ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
         float dt = Config.SimDt;
         FlushCommands();
+        StepOrderQueues();   // N74 명령 대기열: 다리가 끝난 묶음은 다음 다리 (OrderQueue.cs)
         StepComms();     // 전달 중 명령 도착 · 분실 (Comms.cs)
         StepWeather();   // 날씨 · 시간대 일정 (Weather.cs)
         if (Map.Version != lastMapVersion) RefreshPaths();

@@ -68,6 +68,7 @@ public static class ReplaySelfTest
             new SetPostureCommand(1, new[] { 1, 2 }, CompanyPosture.Defend),
             new SetKeepFormationCommand(1, new[] { 1, 2 }, true),
             new SetFireModeCommand(1, new[] { 1, 2 }, FireMode.ReturnFire),
+            new QueueOrderCommand(1, new[] { 1, 2 }, QueuedKind.AttackMove, new Vector2(9, 10), 0, new FormSpec(1, 0, Vector2.Zero, 6)),
             new TrenchAssaultCommand(1, new[] { 1, 2 }, new System.Numerics.Vector2(40.5f, 22.5f), true),
             new SetRallyCommand(1, new[] { 1, 2 }, new Vector2(5, 6), false), new GroundFireExCommand(1, new[] { 3 }, new Vector2(7, 8), GroundFireKind.Barrage, new Vector2(1, 0)),
             new SetFinalLineCommand(1, new[] { 3 }, new Vector2(9, 10)),   // arty3

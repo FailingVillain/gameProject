@@ -84,6 +84,7 @@ public sealed partial class World
     /// <summary>지휘 계통 지연 (틱): 단계별 범위 안 결정적 해시 (유닛 Id · 명령 틱), 후퇴 (이동 명령, 돌격 아님) ×retreatMul, 플레이어 선택 인원 배수 ×mul (N37).</summary>
     int ChainDelayTicks(Unit u, float mul = 1f)
     {
+        if (queueNoChain) return 0;   // N74: 대기열 뒤 다리는 이미 받은 명령 — 지휘 계통 지연 없음 (OrderQueue.cs)
         var d = Defs.Command;
         var tier = ChainTierOf(u);
         float lo, hi;

@@ -56,6 +56,7 @@ public sealed partial class World
     void ExecuteInner(GameCommand command, int f)
     {
         TaCancelByOrder(command);   // N32: 이 중대 유닛에 내린 다른 명령 = 참호 돌격 취소
+        QueueCancelByOrder(command);   // N74: Shift 없는 명령 = 대기열에서 빠짐 (OrderQueue.cs)
         switch (command)
         {
             case MoveCommand c: ExecGroupOrder(f, ResolveOrder(f, c.Units), c.Target, UnitOrder.Move, c.Form); break;
@@ -96,6 +97,7 @@ public sealed partial class World
             case SetScoutAutoCommand c: ExecSetScoutAuto(f, Resolve(f, c.Units), c.On); break;   // 정찰병 자율 토글 (Scouts.cs)
             case MissionEndCommand c: ExecMissionEnd(c.Won); break;   // [치트] 미션 즉시 종료 (Mission/WorldMission.cs)
             case CloseRanksCommand c: ExecCloseRanks(f, c.Companies); break;   // 대열 정비 (CloseRanks.cs)
+            case QueueOrderCommand c: ExecQueueOrder(c); break;   // N74 명령 대기열 (OrderQueue.cs)
             case SetFireModeCommand c: ExecSetFireMode(f, c.Units, c.Mode); break;   // N73 사격 통제 (FireControl.cs)
             case SetFinalLineCommand c: ExecSetFinalLine(f, c.Units, c.Point); break;   // arty3 최후 저지선 (FireControl.cs)
             case SetPostureCommand c: ExecSetPosture(f, c.Companies, c.Posture); break;   // 중대 자세 (CoverSeek.cs, tweak1)
