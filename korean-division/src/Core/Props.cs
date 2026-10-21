@@ -38,6 +38,11 @@ public sealed class PropScatterRules
     public int StartClear { get; set; } = 12;
     public int RockPct { get; set; } = 30;
     public int BigRockPct { get; set; } = 25;
+    /// <summary>T28: true = 소품을 군집 위주로 (같은 군집 소품끼리 더 모이고 군집 수는 줄임, 총량 유지). false(기본) = 예전 그대로.</summary>
+    public bool Clump { get; set; }
+    public float ClumpPctMul { get; set; } = 0.75f;
+    public float ClumpCountMul { get; set; } = 1.8f;
+    public float ClumpRadiusMul { get; set; } = 0.7f;
 }
 
 public sealed class PropRules
@@ -52,6 +57,8 @@ public sealed class PropRules
     public float SpotCoverWeight { get; set; } = 1f;
     /// <summary>소품 뒤 (사격자 기준) 병사의 제압도 소품 엄폐 배수만큼 줄인다 (props2).</summary>
     public bool SuppressCover { get; set; } = true;
+    /// <summary>T28: true = 숲 윤곽을 노이즈 경계 + 가장자리 성긴 칸으로 불규칙하게 (생성 맵 덩어리 · 지도 파일의 forest rect / circle 칠하기). false(기본) = 예전 지도 그대로.</summary>
+    public bool OrganicForest { get; set; }
     public PropScatterRules Scatter { get; set; } = new();
 }
 

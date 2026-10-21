@@ -234,6 +234,37 @@ public sealed partial class GameMap
     /// 생성 맵에 숲 덩어리와 고지(언덕)를 결정적으로 흩뿌린다 (좌표 해시 + 시드, mirror 면 180° 회전 대칭).
     /// 풀 · 흙 칸에만, 시작점 · 시설 근처 (clear 반경) 는 비운다. 통행 불가 지형을 만들지 않으므로 연결성은 그대로다.
     /// </summary>
+    /// <summary>T28: 부드러운 값 노이즈 [-1, 1] (격자 cell 칸, 좌표 해시 + 시드 - 결정적).</summary>
+    internal float EdgeNoise(int x, int y, int cell, int salt)
+    {
+        int gx = (int)MathF.Floor(x / (float)cell), gy = (int)MathF.Floor(y / (float)cell);
+        float fx = (x - gx * cell) / (float)cell, fy = (y - gy * cell) / (float)cell;
+        fx = fx * fx * (3f - 2f * fx); fy = fy * fy * (3f - 2f * fy);
+        float V(int a, int b)
+        {
+            uint v = (uint)(a * 73856093) ^ (uint)(b * 19349663) ^ (uint)(salt * 83492791) ^ (uint)Seed * 2654435761u ^ 0x3C6EF372u;
+            v ^= v >> 13; v *= 0x5bd1e995; v ^= v >> 15; v *= 0x27d4eb2d; v ^= v >> 14;
+            return (v & 0xFFFF) / 65535f * 2f - 1f;
+        }
+        float top = V(gx, gy) + (V(gx + 1, gy) - V(gx, gy)) * fx;
+        float bot = V(gx, gy + 1) + (V(gx + 1, gy + 1) - V(gx, gy + 1)) * fx;
+        return top + (bot - top) * fy;
+    }
+
+    /// <summary>
+    /// T28 불규칙 숲 윤곽: sd = 도형 경계까지의 부호 거리 (안 &lt; 0), amp = 윤곽 흔들림 폭 (칸). 노이즈 경계 안쪽이면 숲, 바로 바깥 1.6칸은 35% 만 (가장자리 성긴 칸).
+    /// 노이즈 평균이 0 이라 면적은 거의 그대로, 직선 변은 사라진다.
+    /// </summary>
+    internal bool OrganicForestTile(int x, int y, float sd, float amp)
+    {
+        float edge = (EdgeNoise(x, y, 5, 31) * 0.75f + EdgeNoise(x, y, 2, 32) * 0.25f) * amp - 0.8f;   // 성긴 가장자리 칸이 더하는 면적만큼 안쪽으로 당김
+        if (sd <= edge) return true;
+        if (sd > edge + 1.6f) return false;
+        uint v = (uint)(x * 73856093) ^ (uint)(y * 19349663) ^ (uint)Seed * 2654435761u ^ 0x1B873593u;
+        v ^= v >> 13; v *= 0x5bd1e995; v ^= v >> 15;
+        return v % 100 < 35;
+    }
+
     internal void SprinkleForestsAndHills(bool mirror)
     {
         int seed = Seed;
@@ -257,13 +288,22 @@ public sealed partial class GameMap
             }
             return false;
         }
+        bool organic = PropDefs.Current.Rules.OrganicForest;
         void Blob(int cx, int cy, int r, bool forest)
         {
-            for (int y = cy - r; y <= cy + r; y++)
-            for (int x = cx - r; x <= cx + r; x++)
+            int rr = forest && organic ? r + (int)MathF.Ceiling(MathF.Max(1.5f, r * 0.55f)) + 2 : r;   // 불규칙 윤곽은 반경 밖으로도 번짐
+            for (int y = cy - rr; y <= cy + rr; y++)
+            for (int x = cx - rr; x <= cx + rr; x++)
             {
                 if (!InBounds(x, y)) continue;
                 int dx = x - cx, dy = y - cy;
+                if (forest && organic)
+                {
+                    if (!OrganicForestTile(x, y, MathF.Sqrt(dx * dx + dy * dy) - r, MathF.Max(1.5f, r * 0.55f))) continue;
+                    Apply(x, y, true);
+                    if (mirror) Apply(Width - 1 - x, Height - 1 - y, true);
+                    continue;
+                }
                 // 가장자리를 해시로 울퉁불퉁하게 (반경 ±1)
                 int jitter = (int)(H(x, y, forest ? 11 : 12) % 3) - 1;
                 if (dx * dx + dy * dy > (r + jitter) * (r + jitter)) continue;

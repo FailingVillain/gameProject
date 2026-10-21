@@ -33,6 +33,8 @@ public sealed partial class GameMap
         int seed = Seed;
         int gw = Width / cell + 1, gh = Height / cell + 1;
         int before = PropSeeds.Count;
+        bool clump = sr.Clump;   // T28 (기본 꺼짐): 군집 수 ↓ · 군집당 소품 ↑ · 반경 ↓ - 총량은 비슷하게
+        float pctMul = clump ? sr.ClumpPctMul : 1f, radius = sr.ClusterRadius * (clump ? sr.ClumpRadiusMul : 1f);
         uint H(int a, int b, int salt)
         {
             uint v = (uint)(a * 73856093) ^ (uint)(b * 19349663) ^ (uint)(salt * 83492791) ^ (uint)seed * 2654435761u ^ 0x7F4A7C15u;
@@ -108,7 +110,7 @@ public sealed partial class GameMap
                 int ccx = cxBase + cell / 2, ccy = cyBase + cell / 2;
                 if (ccy * Width + ccx >= (Height - 1 - ccy) * Width + (Width - 1 - ccx)) continue;   // 앞쪽 절반만 (중심 칸은 건너뜀)
             }
-            if (H(gx, gy, 101) % 100 >= (uint)MathF.Min(100f, sr.ClusterPct * density)) continue;   // density 1 = 예전 그대로
+            if (H(gx, gy, 101) % 100 >= (uint)MathF.Min(100f, sr.ClusterPct * density * pctMul)) continue;   // density 1 = 예전 그대로
             // 군집 중심: 칸 묶음 안 후보 8개 중 숲 가장자리를 우선
             int fx = -1, fy = -1, ox = -1, oy = -1;
             for (int k = 0; k < 8; k++)
@@ -123,11 +125,17 @@ public sealed partial class GameMap
             if (!forestCluster && !fieldCluster) continue;
             int cx = forestCluster ? fx : ox, cy = forestCluster ? fy : oy;
             int count = sr.ClusterMin + (int)(H(gx, gy, 104) % (uint)Math.Max(1, sr.ClusterMax - sr.ClusterMin + 1));
+            if (clump) count = Math.Max(2, (int)MathF.Round(count * sr.ClumpCountMul));
             int species = (int)(H(gx, gy, 105) % (uint)TreeKinds.Length);
             for (int j = 0; j < count; j++)
             {
-                float dx = ((int)(H(gx, gy, 300 + j) % 2001) - 1000) / 1000f * sr.ClusterRadius;
-                float dy = ((int)(H(gx, gy, 330 + j) % 2001) - 1000) / 1000f * sr.ClusterRadius;
+                float dx = ((int)(H(gx, gy, 300 + j) % 2001) - 1000) / 1000f * radius;
+                float dy = ((int)(H(gx, gy, 330 + j) % 2001) - 1000) / 1000f * radius;
+                if (clump)   // 두 번 뽑아 평균 = 중심 쪽으로 몰림
+                {
+                    dx = (dx + ((int)(H(gx, gy, 430 + j) % 2001) - 1000) / 1000f * radius) * 0.5f;
+                    dy = (dy + ((int)(H(gx, gy, 460 + j) % 2001) - 1000) / 1000f * radius) * 0.5f;
+                }
                 float x = cx + 0.5f + dx, y = cy + 0.5f + dy;
                 uint roll = H(gx, gy, 360 + j) % 100;
                 string type;

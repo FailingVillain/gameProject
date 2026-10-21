@@ -1,0 +1,31 @@
+# T28 지도 엄폐물 군집화 · 숲 윤곽 불규칙화
+- id: T28 | 역할: feature(sim 접촉) | 등급: D中 H2 (선택 메모: R2 SM Wheavy-측정)
+- 선행: T07 (스택: `rail` 브랜치 위; 건물 크기·철도 지형과 같은 지도 묶음) | 후행: 생성 파라미터/지도 편집기(보류)
+- 핫스팟/만질 파일: GameMapProps.cs(ScatterProps) · GameMapTerrain.cs(SprinkleForestsAndHills/Blob) · props.json rules.scatter · PropRenderer.cs · MapRenderer.cs(숲 렌더) · PropsSelfTest · ForestSelfTest · TerrainSelfTest. 지형 생성이 바뀌면 FV·골든·BASELINE 이 바뀐다 -> 아래 질문 1.
+- 브랜치: t28-cover-forest (kd-develop/kd-t28, rail 에서 분기) | 상태: wip-ready | 담당: -
+## 먼저 할 일 (현 상태 - rail 브랜치 기준 확인함)
+- ScatterProps 는 이미 칸 묶음(cell)마다 군집(숲 가장자리 나무·들판 바위)을 만든다 = '흩어짐' 의 원인(셀 간격·무작위 위치·밀도)을 측정으로 먼저 특정.
+- 숲: SprinkleForestsAndHills 의 Blob 은 원형+반경 ±1 해시 지터. 사용자가 본 '사각형' 숲이 이 생성기의 결과인지, 미션 지도/MapFile 의 직사각형 칠하기인지 **먼저 확인**.
+## 확정 결정 (ROADMAP_LONG '지도 엄폐물 · 숲 모양' 사용자 2026-10-21)
+- 엄폐물 소품이 너무 흩어져 배치됨 -> 군집 (울타리 줄 · 돌담 · 마을 둘레 · 숲 가장자리 · 참호 앞) 위주로.
+- 숲이 사각형이라 이상함 -> 불규칙한 윤곽 (노이즈 경계 · 가장자리 성긴 나무).
+- 지도 묶음 (건물 크기 · 철도 지형 · 생성 파라미터) 과 함께. (엄폐물 밀도 체감 = 추후 재논의, 사용자 - 밀도 총량은 바꾸지 않는다.)
+## 범위 밖
+엄폐물 그림 교체(시각 대개편, 사용자 2026-10-20) · 새 소품 종류 · 엄폐 수치/전투 규칙 변경 · 하천 · 지도 편집기 · 밀도 총량 변경 · 건물 크기(T02 완료)·철도(T07).
+## 수용 기준 (측정 가능)
+1. 같은 시드 -> 같은 지도 (결정성). 180도 대칭(mirror) 유지.
+2. 소품 군집: 지도 샘플 N개(시드 8) 에서 '소품 최근접 이웃 거리' 평균이 변경 전 대비 감소 + 총 소품 수 ±10% 이내 (수치는 측정 후 카드에 기록).
+3. 숲: 직선 변이 긴 직사각형 숲 0개 (경계 둘레/면적 비 또는 최장 직선 길이로 검사), 가장자리 성긴 나무 표현. 숲 총 면적 ±10% 이내.
+4. 시작점 · 시설 둘레 · 길 막힘 금지 규칙(기존) 유지; 길찾기 연결성 회귀 없음.
+5. 빌드 OK, Props/Forest/TerrainSelfTest PASS, 지도 전/후 스크린샷 시트(시드 3).
+## 측정 (도구 · 기준선 docs/BASELINE_CURRENT.md)
+selftest 그룹, detcheck, soak/tactics-obs 일부(지형 변경의 전투 영향 확인 - Wheavy 칸 사용), 지도 시트. 사용자 검수.
+## 확인 필요 (질문 -> docs/DECISIONS_PENDING.md)
+1. 생성기 변경은 기존 시드 지도·골든·BASELINE 을 바꾼다. 새 골든 갱신/재측정 허용? 또는 옵션 플래그(구/신 생성)로 분리?
+2. 군집 종류 중 이번에 만들 것: 울타리 줄·돌담·마을 둘레·숲 가장자리·참호 앞 전부인가, 일부인가? (돌담·울타리는 기존 소품 종류로 가능한가?)
+3. '사각형 숲' 은 어느 지도/미션에서 본 것인가 (재현 시드·미션 id)?
+4. 군집 소품이 막는 소품(blocksMove)인 경우 통로 규칙을 기존(8방향 이웃·둘레 2칸) 그대로 써도 되는가?
+## 결과 (에이전트가 끝에 3~5줄만 기록)
+- 원인: 생성 맵 숲은 원형 Blob 이라 직선 변 최대 10 (사각형 아님). 사각형 숲 = 미션 지도의 forest rect 칠하기 (c1_01_hoeryong 30x26 -> 직선 30, bandit_raid 24, 재현: 미션 mapData). 소품 '흩어짐' = 군집(2~5개)을 반경 3 균등 분포로 뿌려 시드 1~8 평균 최근접 3.45칸, 고립(>3칸) 36%.
+- 해법 (플래그 기본 OFF, props.json rules.organicForest / rules.scatter.clump + clumpPctMul 0.75 · clumpCountMul 1.8 · clumpRadiusMul 0.7): 켜면 소품 총량 772->816(+5.7%), 최근접 3.45->2.00, 고립 36%->~3%; 숲 직선 30->8 / 24->8, 숲 면적 미션 +1.4% / +2.5%, 생성 맵 -6.9%. 꺼짐 = 골든 8aa6448b 동일. 숲 군집 한 종류만(숲 가장자리 포함 기존 군집). 도구 `--t28probe [organic] [clump] [ppm dir]`, 시트 docs/t28_before_after.png.
+- 검증: 빌드 OK, props(T28 9건 추가)·terrain PASS, detcheck GOLDEN match, snaptest OK. forest 묶음 2건 FAIL 은 rail 기준에도 동일(선재). 켜기 결정/기본값 전환은 사용자 몫(켜면 지도·골든 바뀜).

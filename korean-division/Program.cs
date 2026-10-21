@@ -6,6 +6,7 @@ using KoreanDivision.Tests;
 
 // 유닛 수 스트레스 테스트 (창 없음): KoreanDivision --stress [A|B|C|D|E|F] [k=1000,5000] [ticks=900] ... (src/Tests/StressTest.cs)
 if (args.Length > 0 && args[0] == "--detcheck") return KoreanDivision.Tests.DetCheck.Run(args);   // a1: 결정성 체크섬 (tools/detcheck.ps1)
+if (args.Length > 0 && args[0] == "--t28probe") return KoreanDivision.Tests.CoverProbe.Run(args[1..]);   // T28 지도 군집 · 숲 윤곽 측정 (src/Tests/CoverProbe.cs)
 if (args.Length > 0 && args[0] == "--stress") return KoreanDivision.Tests.StressTest.Run(args[1..]);
 if (args.Length > 0 && args[0] == "--mapload") return KoreanDivision.Tests.MapSizeLoad.Run(args[1..]);   // N13 지도 크기별 부하 측정
 if (args.Length > 0 && args[0] == "--collide") return KoreanDivision.Tests.CollisionProbe.Run(args[1..]);   // 대규모 전투 이동 · 겹침 측정 (src/Tests/CollisionProbe.cs)
