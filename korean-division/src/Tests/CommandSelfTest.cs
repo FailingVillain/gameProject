@@ -234,6 +234,30 @@ public static class CommandSelfTest
                 $"T24 ① 부사관 없음 (actingMinRank 0) → 최고 계급 병사 대리 (Id {best.Id}, 계급 {best.Rank})");
         }
         finally { R.ActingMinRank = savedMin; }
+        // T24 ① 후보 제한: 중화기 · 기병이 낮은 Id 에 있어도 대리는 보병 (non-heavy non-scout) 만
+        {
+            var wf = Bare();
+            var gf = new List<Unit> { wf.SpawnUnit(defs.Units["officer"], 1, new Vector2(40, 38)) };
+            gf.Add(wf.SpawnUnit(defs.Units["heavy_mortar_korean"], 1, new Vector2(41, 40)));
+            gf.Add(wf.SpawnUnit(defs.Units["cavalry_default"], 1, new Vector2(42, 40)));
+            var inf = wf.SpawnUnit(defs.Units["infantry"], 1, new Vector2(43, 40));
+            gf.Add(inf);
+            var cf = Form(wf, gf);
+            int sm = R.ActingMinRank;
+            try
+            {
+                R.ActingMinRank = 0;
+                gf[0].Hp = 0; wf.Step();
+                var act = wf.ActingNco(cf);
+                check(act == inf || (act != null && act.Def.IsInfantry && !act.Def.Heavy && !act.Def.Scout),
+                    "T24 ① 대리 후보 = 보병만 (중화기 · 기병 제외)");
+                inf.Hp = 0; wf.Step();
+                var act2 = wf.ActingNco(cf);
+                check(act2 == null || (act2.Def.IsInfantry && !act2.Def.Heavy && !act2.Def.Scout),
+                    "T24 ① 보병 전멸 → 중화기 · 기병이 대리가 되지 않음");
+            }
+            finally { R.ActingMinRank = sm; }
+        }
         // 인계 중에는 장교 판단 (빈자리 점검 · 행진 사격) 없음: 다른 중대 장교가 가까이 있어도
         var w2 = Bare();
         var a = Group(w2, 1, 10, new Vector2(40, 40));

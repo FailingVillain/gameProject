@@ -95,9 +95,9 @@ public sealed partial class World
             if (q.Leader is { IsNco: true } l && (best == null || l.Rank > best.Rank || (l.Rank == best.Rank && l.Id < best.Id))) best = l;
         int min = OffRules.ActingMinRank;
         if (best != null || min < 0) return best;
-        // T24 ①: 부사관 분대장이 없으면 분대장 아닌 최고 계급 병사 (같으면 Id 작은 쪽)
+        // T24 ①: 부사관 분대장이 없으면 분대장 아닌 최고 계급 보병 (중화기 · 정찰 · 기병 제외, 같으면 Id 작은 쪽)
         foreach (var m in c.Members)
-            if (m.Alive && !m.IsOfficer && m.Company == c && m.Rank >= min && (best == null || m.Rank > best.Rank || (m.Rank == best.Rank && m.Id < best.Id))) best = m;
+            if (m.Alive && !m.IsOfficer && m.Def.IsInfantry && !m.Def.Heavy && !m.Def.Scout && m.Company == c && m.Rank >= min && (best == null || m.Rank > best.Rank || (m.Rank == best.Rank && m.Id < best.Id))) best = m;
         return best;
     }
 
