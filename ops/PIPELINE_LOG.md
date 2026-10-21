@@ -69,6 +69,7 @@
 | 실측 ~07:3x | T19d wip-ready (sonnet, 81k, 160초): t19d-doctrines df329b1 (t19c 위). wip/doctrines 4파일 복원(충돌 0), 참모진 탭(8, 우) 읽기 전용·새 파일. doctrines·savecompat·missions PASS, GOLDEN 일치, 퍼즈 0. **T19 체인(a→b→b2→c→d) 완주** — L 카드 분할이 컨텍스트 한도 문제를 해소 | 완료 25/35 |
 | 07:19(실측) | 시험 보강 완료(haiku, 85k, 132초): t19c 9260e36, 시험 +86줄(미리보기=실제 적재 비교 · KD_CAMPAIGN_VIEW 12케이스), 프로덕션 변경 0. ShellBaseLoad 가 미투입 곡사포 포탄도 셈(V5). 자동 점검: harness working 1(이 에이전트) → **T16(opus)·T11(art) 1시간 이상 무보고·무커밋**(T16 마지막 활동 06:03, 'heavy gate 대기' 메시지 후 정지) → SendMessage 로 재개 지시 | 병목 발견: 에이전트가 '게이트 대기'로 정지하면 알림이 오지 않음 |
 | 07:2x | T28 리뷰 완료(sonnet, 60k, 46초): 차단 0. 옵션 꺼짐 = 비트 동일(RNG 호출 전부 if(clump) 안), 켠 상태 결정성 OK, Blob 이 물·도로·건물 미침범. 사소: summary 주석 순서, float 사용(지도 생성 단계). I2: 옵션 ON 전환 시 호환성 계획 필요 | 리뷰 10/10 · 이번 건은 결함 거의 없음 |
+| 07:2x | UI 스택(T08·T17·T27) 리뷰 완료(sonnet, 85k, 106초): 3개 모두 차단 0. 지적: T17 자동 저장 테스트 없음(중간) · '큰 교전 직전'이 실제론 교전 시작 후(낮음) · MoveStats summary 위치 · T08 Paper.Unload 조건 · T27 작은 해상도 설정 패널 미확인. 병합 순서 제안 T08→T17→T27(충돌은 ENGINE_NOTES 하나). T17 시험 보강 발주 | 리뷰 11/11 |
 
 ## 점검 (완료 보고마다 갱신)
 | 지표 | v1 이전 | 지금 | 비고 |
