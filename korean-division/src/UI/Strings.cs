@@ -98,7 +98,12 @@ public static partial class S
     public const string FireKindPrep = "준비 사격";
     public const string FireKindBarrage = "이동탄막";
     public const string FireKindSmoke = "연막";
-    public const string FireKindSmokeNone = "연막탄 없음 (참호 돌파 묶음 때)";
+    public const string FireKindSmokeNone = "연막탄이 있는 포가 없습니다 (박격포 · 곡사포)";
+    public const string CmdSmokeGrenade = "연막탄";
+    public const string TipSmokeGrenade = "연막 수류탄을 지점에 던집니다 (사거리 5칸). 연막은 30초 동안 반경 2.5칸을 덮고, 그 너머로는 보이지도 쏘지도 못합니다 (양쪽 모두).";
+    public const string CmdCutWire = "철조망 절단";
+    public const string TipCutWire = "지점 근처 철조망 칸을 한 사람씩 맡아 옆으로 가서 4초 동안 잘라 통로를 냅니다. 새 명령이면 그만둡니다.";
+    public const string CutWireNone = "근처에 철조망이 없습니다";
     public const string CmdGrenade = "수류탄";
     public const string TipGrenade = "수류탄을 지점에 던집니다 (사거리 5칸, 1.5초 뒤 폭발, 반경 1.5칸, 엄폐 무시). 엄폐 중인 적이 4칸 안, 전차가 3칸 안이면 자동으로 던집니다. 비전투 중 천천히 회복합니다.";
     public const string CmdMount = "하마/승마";

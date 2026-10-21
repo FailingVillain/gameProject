@@ -89,6 +89,8 @@ public sealed partial class World
             case SetCombatSettingCommand c: ExecSetCombatSetting(f, c.Setting, c.Value); break;
             case ChargeCommand c: ExecCharge(f, ResolveOrder(f, c.Units), c.Target, c.TargetId != 0 ? Find(c.TargetId) : null); break;
             case ThrowGrenadeCommand c: ExecThrowGrenade(f, Resolve(f, c.Units), c.Target); break;   // 수류탄 (Combat4.cs)
+            case ThrowSmokeCommand c: ExecThrowSmoke(Resolve(f, c.Units), c.Target); break;   // 연막 수류탄 (Breach.cs, N65)
+            case CutWireCommand c: ExecCutWire(ResolveOrder(f, c.Units), c.Target); break;   // 철조망 절단 (Breach.cs, N59)
             case MountCommand mc: foreach (var u in Resolve(f, mc.Units)) ExecMount(u, mc.Mount); break;   // N61
             case ChargeOnlyCommand c: foreach (var u in Resolve(f, c.Units)) if (u.CanCharge && u.Def.Mounted) u.ChargeOnly = c.On; break;
             case SetScoutAutoCommand c: ExecSetScoutAuto(f, Resolve(f, c.Units), c.On); break;   // 정찰병 자율 토글 (Scouts.cs)
@@ -321,6 +323,7 @@ public sealed partial class World
     {
         LeaveTrench(u);   // 참호 자리 해제 + 이번 명령 동안 그 참호 묶음은 도중 점유 안 함 (Trenches.cs)
         u.CoverHold = false;   // 엄폐 찾기 이동 취소 (CoverSeek.cs)
+        u.WireCutTile = -1; u.WireCutTicks = 0;   // 철조망 절단 취소 (Breach.cs)
         if (u.SpotTick >= 0) Stats.SpotReleases++;
         u.SpotTick = -1; u.HasZone = false;   // F1: 새 명령 = 사격 위치 · 구역 해제 (Contact.cs)
         u.ReactDelay = 0;

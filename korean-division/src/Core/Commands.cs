@@ -27,6 +27,8 @@ public static class Commands
         new("chargeonly", S.CmdChargeOnly, S.TipChargeOnly, 'V', TargetMode.None, 1, 2, d => d.Mounted),   // 기병 돌격만 토글
         new("mount", S.CmdMount, S.TipMount, 'D', TargetMode.None, 0, 2, d => d.Mounted && !d.IsOfficer),   // 기병 하마/승마 토글 (N61)
         new("scoutauto", S.CmdScoutAuto, S.TipScoutAuto, 'E', TargetMode.None, 2, 1, d => d.Scout),   // 정찰병 자율 행동 토글 (Scouts.cs)
+        new("smokegrenade", S.CmdSmokeGrenade, S.TipSmokeGrenade, 'Y', TargetMode.Point, 0, 2, d => d.SmokeGrenades > 0),   // 연막 수류탄 (N65, Breach.cs)
+        new("cutwire", S.CmdCutWire, S.TipCutWire, 'U', TargetMode.Point, 1, 2, d => d.WireCutter),   // 철조망 절단 (N59, Breach.cs)
         new("charge", S.CmdCharge, S.TipCharge, 'C', TargetMode.PointOrEntity, 2, 2, d => d.Melee != null),   // 착검 돌격 (ROADMAP §2-4b)
     };
 

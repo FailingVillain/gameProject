@@ -100,7 +100,7 @@ public sealed partial class FogOfWar
         {
             if (!due[f]) continue;
             stampEpoch = (stampEpoch + 1) & 0xFFFFFF;
-            if (stampEpoch == 0) { stampEpoch = 1; Array.Clear(stampMark); }
+            if (stampEpoch == 0) { stampEpoch = 1; Array.Clear(stampMark); Array.Clear(smokeMark); }
             var g = own[f]!;
             Decay(g);
             // 시야 2단계 (v0.4 §3): 평소 sightNear, 경계 상태(World.IsAlerted) 면 sightFar, × 역할 · 고지 (World.SightOf)
@@ -195,6 +195,7 @@ public sealed partial class FogOfWar
         int cx = (int)MathF.Floor(center.X), cy = (int)MathF.Floor(center.Y);
         bool inMap = (uint)cx < (uint)width && (uint)cy < (uint)height;
         var tv = Vision;
+        if (inMap && world.Smokes.Count > 0 && world.SmokesNear(center, radius, smokeNear)) { StampSmoky(grid, cx, cy, radius, tv); return; }   // 연막 (N59)
         if (inMap)
         {
             int cell = tv != null ? (cy / tv.Bs) * tv.Bw + cx / tv.Bs : cy * width + cx;
@@ -219,6 +220,35 @@ public sealed partial class FogOfWar
             int hw = half[y - cy + radius];
             int x0 = Math.Max(0, cx - hw), x1 = Math.Min(width - 1, cx + hw);
             if (x1 >= x0) Array.Fill(grid, (byte)2, y * width + x0, x1 - x0 + 1);
+        }
+    }
+
+    // 연막 (N59, Breach.cs): 시야 원이 연막과 겹치는 관측자는 칸마다 (관측자 칸 중심 → 칸 중심) 연막 차단을 따져 찍는다.
+    // 같은 갱신 안 같은 칸 · 같거나 작은 반경 관측자는 결과가 부분집합 → 건너뛴다. 작업 버퍼 · 표시만 (저장 안 함).
+    readonly List<SmokeCloud> smokeNear = new();
+    uint[] smokeMark = Array.Empty<uint>();
+
+    void StampSmoky(byte[] grid, int cx, int cy, int radius, TerrainVision? tv)
+    {
+        if (smokeMark.Length != width * height) smokeMark = new uint[width * height];
+        if (radius < 126)
+        {
+            uint r1 = (uint)radius + 1;
+            ref uint m = ref smokeMark[cy * width + cx];
+            if (m >> 8 == stampEpoch && ((m >> 1) & 127) >= r1) return;
+            m = (stampEpoch << 8) | (r1 << 1);
+        }
+        var near = smokeNear;
+        float ox = cx + 0.5f, oy = cy + 0.5f, depth = world.Defs.Breach.SmokeSeeDepth;
+        bool Ok(int x, int y) => !World.SmokeBlocksAmong(near, ox, oy, x + 0.5f, y + 0.5f, depth);
+        if (tv != null) { tv.StampWhere(grid, cx, cy, radius, Ok); return; }
+        int[] half = Circle(radius);
+        int y0 = Math.Max(0, cy - radius), y1 = Math.Min(height - 1, cy + radius);
+        for (int y = y0; y <= y1; y++)
+        {
+            int hw = half[y - cy + radius];
+            int x0 = Math.Max(0, cx - hw), x1 = Math.Min(width - 1, cx + hw);
+            for (int x = x0; x <= x1; x++) if (grid[y * width + x] != 2 && Ok(x, y)) grid[y * width + x] = 2;
         }
     }
 

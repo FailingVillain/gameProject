@@ -661,7 +661,7 @@
 - 테스트: `KD_SELFTEST_ONLY=savecompat` (`SaveCompatSelfTest`) — 옛/새 형식 헤더, 빈 · 잘린 · 임의 바이트 저장, 빈 · 잘린 · 쓰레기 리플레이가 SnapshotException / InvalidDataException 으로만 실패.
 - **캠페인 저장 (`campaign.json`)**: `CampaignState.SchemaVersion` (현재 1, JSON `version`). 규칙 = 필드는 **추가만**; 새 필드의 C# 기본값이 곧 옛 파일에 없을 때의 값이라 옛/부분 파일은 변환 없이 열고 모자란 필드를 기본값으로 채운다 (모르는 필드는 무시). 필드 삭제 · 뜻 변경 시 SchemaVersion 을 올리고 그 옛 파일은 거부. 더 큰 version · 깨진 파일은 `CampaignState.Load()` 가 null + `LastLoadError` (한국어 `SnapMsg.CampaignNewer`/`CampaignBroken`) — 캠페인 메뉴가 사유를 표시하고 "새로 시작하면 덮어쓰입니다" 안내.
 
-## arty3 포병 · 중화기 묶음 (2026-10-22, 브랜치 `arty3`, `src/Core/Arty3.cs`, FormatVersion 50)
+## arty3 포병 · 중화기 묶음 (2026-10-22, 브랜치 `arty3`, `src/Core/Arty3.cs`, FormatVersion 51)
 - 수치 (balance.json): 중기관총 hmg · hmg_type3 사거리 24 → 32 (명중 곡선은 거리/사거리 비라 같은 거리 명중이 오름 — 24칸 0.12 → 0.20), 야전포 피해 70 → 100, 곡사포 splash 2.5 → 3.
 - 방렬 난수: 대포 (category gun) 만 방렬 시간 ×(1 ± `gunDeployTimeVar` 0.15) + 시작 지연 0~`gunDeployDelayMax` 3초. 포마다 고정 (PairNoise(Id), 상태 없음) — DeployLeft 에 지연을 더해 Deploying 앞쪽에서 소모. 중기관총 거치는 그대로.
 - 자리 유지 (`GunKeepsPlace`: 방렬(중) 대포 · 공격 명령 아님): 사선 막힘 자동 표적 → 철수 대신 표적을 놓음. 사거리 밖 자동 표적 → `gunOutOfRangeHoldSec` 8초 기다림 (HoldWait), 방렬 완료 뒤 `gunRepackCooldownSec` 20초 안에는 쫓아 철수하지 않음. 사계 안 = 포신만 · 큰 각 = 공격 명령만 재방렬 · 이동 명령 = 곧바로 철수 (기존 그대로).
@@ -676,3 +676,11 @@
 - 산개 파상 횡대 (`formations.json lineShape = "line_waves"`) · choke (`combat.chokeEnabled`) 는 **기본 끔**. 측정 변형 `KD_OBS_VARIANT` = FMOFF · LWON · LWX(`KD_OBS_LW`) · CHOKE · RST0 등 (TacticsObs.ApplyVariant, --collide 도 같음). `--collide` 끝에 `[rev]` 역전 유닛 상태 분류.
 - 측정 (같은 빌드, 2026-10-22): --collide 역전/s 대형 완화 끔→켬 amove 1.63→1.29 · battle 0.77→0.71 · march 0.20→0.11. tactics-obs 5시드 B(ai_bn_assault) 승: 끔 5 · 켬 4 · 산개 파상 1 · 간격만 1.3 2 (넓은 횡대는 공격 측 불리). choke 켬: tactics-obs A 2→4/5 · B 4→5/5 이지만 --choke 다리 통과 틱 2193→2748 (w3 co3) · 2524→4641 (co5) · 역전/유닛-분 34→56 — 큐가 통과를 늦춤 → 끔 유지.
 - 테스트 `KD_SELFTEST_ONLY=formrelax` · `choke`, 측정 `--choke [w=3] [co=3] [terrain=bridge|ford] [off=1]`.
+
+## 참호 돌파 묶음 (N59 연막 · 철조망 절단, N60 경박격포, N65 연막 수류탄 — 2026-10-22, `src/Core/Breach.cs`)
+- 연막 = `World.Smokes` (원형, 위치 · 크기 고정, 바람 · 번짐 없음, `EndTick` 에 사라짐). 시선 a→b 가 연막 속을 지나는 길이 합 > `breach.smokeSeeDepth` (1칸) 이면 막힘 (`World.SmokeBlocks`, 스칼라 연산). 적용: 직사 사선 `World.HasFiringLine` · 자동 표적 `FindTarget` · `CavReact` · 관측자 `SeenBySpotter` · 안개 찍기 (`FogOfWar.StampSmoky` — 시야 원이 연막과 겹치는 관측자만 칸마다 검사, 같은 칸 · 같은 반경은 한 번). `GameMap.HasFiringLine` (지형 전용) · 전술 AI 지형 점수는 연막을 모른다 (캐시 결정성).
+- 연막 수류탄: `unit.smokeGrenades` (돌격보병 1), `ThrowSmokeCommand` (단축키 Y), 사거리 · 신관 · 흩어짐 = grenade, 반경 2.5 · 30초. 회복 = 수류탄이 다 찬 뒤 같은 시계.
+- 연막탄: `weapon.smokeRadius` (곡사포 5 · 박격포 2.5~3.5) 가 있는 포만 지점 포격 '연막' 종류 (`breach.smokeRounds` 3발 뒤 끝, 지속 45초). `ShellFlight.Smoke` · `GrenadeBlast.Smoke` 이면 착탄 때 피해 대신 연막.
+- 철조망 절단: `unit.wireCutter` (돌격보병), `CutWireCommand` (단축키 U) — 지점 둘레 `wireCutSearch` 칸 철조망을 가까운 순으로 한 사람씩 맡아 옆 칸 (상하좌우 우선) 으로 가서 사수 자세로 `wireCutSec` (4초) → 칸 = 흙 (`GameMap.OpenWire`: Version · ChangeLog → 길찾기 갱신). 새 명령 (`ResetOrder`) = 취소. 진행 막대 = `ProgressRing`.
+- 경박격포 (사거리 36, 관측자 불필요 곡사 — 자기 세력이 보는 적): 한국 `heavy_mortar_korean` (경 미넨베르퍼) · 일본 `heavy_mortar_japanese` (척탄통, 1인) · 그 밖 `heavy_mortar` (스톡스, 봉천 · 러시아). 수치 = 초안 (밸런스 승인 전), 그림 = 보병포 별칭 (artAs).
+- 저장 = CMB2 끝 `WriteBreach` (FormatVersion 53, Replay 20), 체크섬 `HashBreach`, 리플레이 v19. 시험 `KD_SELFTEST_ONLY=breach`. 참호 돌격 순서 (N32) 의 `smokeHook` · `wireCutHook` 는 아직 자리만 (AI 사용은 다음 단계).

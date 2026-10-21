@@ -47,7 +47,7 @@ public sealed partial class World
             float d = c.EdgeDistance(u.Pos) - u.Radius;
             if (d > w.Range || d < w.MinRange || d >= bd) continue;
             if (!Fog.CanSee(u.Owner, c)) continue;
-            if (w.Los && !Map.HasFiringLine(u.Pos, c.Pos, u.Id, c.Id)) continue;
+            if (w.Los && (!Map.HasFiringLine(u.Pos, c.Pos, u.Id, c.Id) || SmokeBlocks(u.Pos, c.Pos))) continue;
             (best, bd) = (c, d);
         }
         if (best == null) return;

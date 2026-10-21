@@ -76,7 +76,10 @@ internal sealed class TerrainVision
     public int Memoized => memo.Count;
 
     /// <summary>타일 pos 에 선 관측자 (반경 r 타일) 의 가시 구간을 grid 에 2 로 찍는다.</summary>
-    public void Stamp(byte[] grid, int tx, int ty, int r)
+    public void Stamp(byte[] grid, int tx, int ty, int r) => StampWhere(grid, tx, ty, r, null);
+
+    /// <summary>Stamp 와 같되 ok(x, y) 가 false 인 칸은 찍지 않는다 (연막 차단, N59 — ok 가 null 이면 Stamp).</summary>
+    public void StampWhere(byte[] grid, int tx, int ty, int r, Func<int, int, bool>? ok)
     {
         int bx = tx / Bs, by = ty / Bs;
         if ((uint)bx >= (uint)Bw || (uint)by >= (uint)Bh) return;
@@ -98,7 +101,11 @@ internal sealed class TerrainVision
             if (x0 < 0) x0 = 0;
             if (x1 < x0) continue;
             int y0 = rby * Bs, y1 = Math.Min(H - 1, y0 + Bs - 1);
-            for (int y = Math.Max(0, y0); y <= y1; y++) Array.Fill(grid, (byte)2, y * W + x0, x1 - x0 + 1);
+            for (int y = Math.Max(0, y0); y <= y1; y++)
+            {
+                if (ok == null) { Array.Fill(grid, (byte)2, y * W + x0, x1 - x0 + 1); continue; }
+                for (int x = x0; x <= x1; x++) if (grid[y * W + x] != 2 && ok(x, y)) grid[y * W + x] = 2;
+            }
         }
     }
 

@@ -30,6 +30,7 @@ public sealed class MoveStats
     public long AssaultSignal, AssaultOverwatch, AssaultFallback, AssaultBlocked;   // 결정 4: 돌격 허가 이유 (TacticDrill.cs AssaultClearance — 엔진 기동조 + 전술 AI 중대 돌격)
     public long MarchChargeGated, MarchChargeBlocked;   // N47: 행진 사격 → 돌격 전환 허가 · 막힘
     public long Dismounts, Mounts;   // N61: 하마 · 승마 전환 시작 수 (Dismount.cs)
+    public long WiresCut, SmokesSpawned;   // N59: 자른 철조망 칸 · 피운 연막 수 (Breach.cs)
     public long BayonetFixes, BladeDraws;   // N57: 착검 · 칼 뽑기 멈춤 시작 수 (Bayonet.cs)
     public long HeavyHeld;   // 중화기가 보병 앞선을 넘으려다 기다린 유닛 · 틱 (HeavyPacing.cs)
     public long OfficerHeld; // N12: 장교가 중대 보병 앞선을 넘으려다 기다린 틱 (HeavyPacing.cs PaceOfficer)
