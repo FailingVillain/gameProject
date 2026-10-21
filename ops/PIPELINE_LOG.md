@@ -56,6 +56,7 @@
 | 07:0x(실측 06:5x~) | T10 리뷰 완료(79k, 76초): 차단 0. **D15 A 의 난이도 플래그가 sim 에 소비처가 없음 발견**(골든 불변이 검증이 아니었음) · 대포병 탐지 사격 형태 무구분. 교훈: 설정 JSON 플래그 변경 시 소비처 grep 필수 | 질문 Q1·Q2 |
 | 07:xx | T05 wip-ready (opus, 101k, 1549초): ai3b2 f74a675 (orderq2 위, FV55). 패치 --reject + 3 hunk 수동. manReplace 기본 꺼짐, s3a·ai3b PASS, GOLDEN 일치. 교훈: wip_patches 는 --directory=korean-division 필수. 스택 breach2→orderq2→ai3b2 완성 → T12 통합 측정 발주(measure, sonnet, 스택 끝 ai3b2 기준) | 완료 20/30 |
 | 07:xx | T09+T29b 리뷰 완료(106k, 134초): 차단 0, 비차단 8 — 경제 JSON 범위 검증 없음(0 나눗셈·음수 가능) · 스폰 경로 float(ScaleAmmo) · 지도 탭에서 회령·두만강 재도전 불가 · MissionDef.Load 가 매번 디스크 읽음 · 곡사포 브리핑 불일치. 수정 에이전트 발주(1·2·4). 교훈: Defs.Load 는 범위 검증(common.md 한 줄) | 리뷰 7/7 결함 포착 |
+| 실측 ~07:1x | T19a 리뷰 수정 완료(sonnet, 71k, 152초): t19a-save-slots 43e69b1 — 깨진/새 버전 슬롯 저장 거부, 결과 화면 이탈 2단계 확인, 실패 창 클릭 무시, .bak.N 보존. 시험 추가, savecompat·missions PASS, GOLDEN 일치. (2)(3) 은 GUI 미확인 | T19b 는 e511f75 기반 → 43e69b1 체리픽 필요 |
 
 ## 점검 (완료 보고마다 갱신)
 | 지표 | v1 이전 | 지금 | 비고 |
