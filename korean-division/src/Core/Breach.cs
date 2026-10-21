@@ -10,11 +10,11 @@ namespace KoreanDivision.Core;
 ///  · 철조망 절단 (CutWireCommand): unit.wireCutter (돌격보병) 가 지점 둘레 철조망 칸 하나씩을 맡아 옆 칸으로 가서 breach.wireCutSec 초 → 그 칸이 흙 (통과 가능) 이 된다.
 ///    새 명령 · 정지 = 취소. 선로 파괴는 나중.
 /// 모두 틱 · 입력의 함수 (명령 · 목록 순서). 상태 = Smokes · 유닛 SmokeGrenades · WireCutTile · WireCutTicks · 수류탄 · 포탄의 연막 표시
-/// (CMB2 끝 WriteBreach, FormatVersion 51), 체크섬 HashBreach.
+/// (CMB2 끝 WriteBreach, FormatVersion 53), 체크섬 HashBreach.
 /// </summary>
 public sealed record ThrowSmokeCommand(int Faction, int[] Units, Vector2 Target) : GameCommand(Faction);
 
-/// <summary>철조망 절단 명령 (N59): Target 둘레 breach.wireCutSearch 칸 안 철조망. 리플레이 v19.</summary>
+/// <summary>철조망 절단 명령 (N59): Target 둘레 breach.wireCutSearch 칸 안 철조망. 리플레이 v20.</summary>
 public sealed record CutWireCommand(int Faction, int[] Units, Vector2 Target) : GameCommand(Faction);
 
 /// <summary>연막 한 덩이 (원형, 크기 고정). EndTick 이 되면 사라진다.</summary>
