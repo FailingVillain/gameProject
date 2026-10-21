@@ -72,3 +72,8 @@ K1 1-1 압록강에 곡사포 중대를 두만강판 그대로 유지? (유지; 
 
 ## L. T19 분할 질문 (2026-10-22; 카드 브랜치 spec/t19-split aea476b) — 무응답 시 괄호 기본값
 L1 T29(첫 승리 정산+경제 JSON)를 t09-camp-slice 위로 재스택해 T09 뒤에 둠 (예: 지휘자가 T29 완료 후 재스택 카드 발주; T19b 는 그 뒤) · L2 '후속' 탭(편제·장비·훈련·외교·진급·정보·기록·연구)은 T19 밖 (제외) · L3 규칙 9 연대 숫자키는 T19c 에 포함하지 않고 별도 카드 (별도).
+
+## M. main selftest 4건 실패 수정 (2026-10-22; 브랜치 fix/n12-forest 36a5a87, kd-develop/kd-fix-n12)
+원인: 코드 결함 아님 — formation 병합의 `formRelax=true`(8초 쉰 중대가 슬롯에서 1.5칸 넘게 벗어난 병사를 재정렬)로 시험 장면이 낡음. 시험 3개(`N12SelfTest` `ForestSelfTest` `GapFillSelfTest`)만 수정(RestAlignSec=0 격리, 원복 위치 정정), 코드·기대값 불변. n12·forest·gapfill·formrelax·choke·units·form·formations·missions PASS, detcheck GOLDEN 일치.
+- **M1** 이 시험-전용 수정을 main 에 병합? A★ 병합(시험 3파일뿐, 위험 매우 낮음; 이후 release 가 전체 selftest 재실행·publish) / B 보류. WIP 가 아니라 main 정상화이므로 '지금 병합 안 함' 지시와 충돌하지 않지만, 지시가 명확하지 않아 사용자 확인을 기다림. 무응답 시 보류.
+- 참고(미수정): 휴식 정렬 중 정찰 방향이 순간 흔들릴 여지 — 실전 영향 미확인.
