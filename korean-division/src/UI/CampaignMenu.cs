@@ -212,6 +212,7 @@ public sealed class CampaignMenu
         {
             if (resetArmed)
             {
+                if (loadError != null) CampaignState.BackupBroken();   // 읽지 못한 원본은 .bak 로 보존한 뒤 초기화
                 CampaignState.Reset();
                 BackRequested = true;
             }
@@ -453,7 +454,7 @@ public sealed class CampaignMenu
                 if (Button(btnRect, btnText, canAssign, 13))
                 {
                     CampaignEconomy.AssignRecruits(state, c.Id, toAssign);
-                    state.Save();
+                    state.SaveUnlessLoadFailed(loadError);
                 }
                 if (hover && !canAssign)
                 {
@@ -490,7 +491,7 @@ public sealed class CampaignMenu
         if (Button(healBtn, S.CmBtnHeal, canHeal, 14, canHeal ? Palette.Accent : null))
         {
             int healed = CampaignEconomy.HealWounded(state);
-            state.Save();
+            state.SaveUnlessLoadFailed(loadError);
             logisticsNotice = string.Format(S.CmHospitalDone, healed);
         }
         ly += 38;
@@ -705,7 +706,7 @@ public sealed class CampaignMenu
             {
                 string res = CampaignEvents.ApplyChoice(state, currentEv.Id, ci);
                 eventNotice = string.Format(S.CmEventApplied, res);
-                state.Save();
+                state.SaveUnlessLoadFailed(loadError);
                 selectedEventIndex = 0;
                 break;
             }
@@ -856,13 +857,13 @@ public sealed class CampaignMenu
 
         // 하단 버튼 ([출격], [취소 / 뒤로])
         float by = panel.Y + panel.Height - 52;
-        bool canLaunch = !overSupply && !overCap && !noDeploy;
+        bool canLaunch = !overSupply && !overCap && !noDeploy && loadError == null;   // 저장을 못 읽었으면 출격 기록을 저장할 수 없다
 
         var deployBtnRect = new Rectangle(panel.X + panel.Width - 24 - 180, by, 180, 40);
         if (Button(deployBtnRect, S.CmPreBtnDeploy, canLaunch, 18, canLaunch ? Palette.Accent : null))
         {
             CampaignEconomy.BeginOperation(state, targetMissionId, preOpSelectedCompanyIds.ToList(), maxDeploy);
-            state.Save();
+            state.SaveUnlessLoadFailed(loadError);
             OpenMission = targetMissionId;
         }
 
@@ -927,7 +928,7 @@ public sealed class CampaignMenu
         if (Button(closeBtn, S.CmDebriefClose, true, 16, Palette.Accent))
         {
             state.LastDebrief = null;
-            state.Save();
+            state.SaveUnlessLoadFailed(loadError);
             currentView = ViewMode.Home;
         }
     }
