@@ -7,10 +7,12 @@
 | wip/breach2 (T03) | 53 | 20 | main | wip-ready | |
 | wip/orderq2 (T04) | 54 | 21 | wip/breach2 | wip-ready | |
 | rail (T07) | 53 → 병합/스택 시 재번호(예: 58) | - | main | wip-ready | breach2 와 같은 줄 충돌; Rail 은 enum 끝 바이트 추가 |
-| T05 ai3b2 | 55 예정 | - | wip/orderq2 | 진행 중 | 에이전트가 카드에 확정 번호 기재 |
-| T24 S1~S3 | 56 예정(상태 추가 시) | 22? | wip/orderq2 | 진행 중 | T10 의 Replay 22 와 충돌 가능 |
+| T05 ai3b2 | 55 | - | wip/orderq2 | wip-ready (f74a675) | 새 명령 없음 |
+| T24 S1~S3 | 56 이후 | 22 이후 | wip/orderq2 | 진행 중 | T10 의 Replay 22 와 충돌 가능 |
 | kd/t10-comms-b (T10) | 57 | 22 | wip/breach2 | wip-ready | breach2 위 스택이라 54~56 을 건너뜀 → 합칠 때 재번호 |
 | gemini-import / t09 / t29 / T19a~d | 확인 필요 | 확인 필요 | gemini-import | - | 캠페인 저장 스키마는 별도(SchemaVersion 2); sim FV 는 안 올림 |
 | sfxnew · rerender · face-proto · t27 · t28 · t17 · t08 | 변경 없음 | - | - | - | 표현/설정/옵션 전용 |
 
 규칙: 합칠 때(사용자 지시 후) 한 줄(Snapshot.cs:83 FormatVersion, Replay.cs:22)을 위 표 순서로 순차 재번호하고 골든 재생성.
+
+메모: t29b-on-t09 가 t09-camp-slice 와 t29-campaign-economy-json 을 대체 (병합 시 단독). 캠페인 저장 스키마는 SchemaVersion 2 로 sim FV 와 무관.
