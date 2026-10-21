@@ -109,6 +109,7 @@ public static class PursuitSelfTest
         var a = Spawn(w, 10, new Vector2(60, 64), 1, attacker, cols: 10);
         a.Add(w.SpawnUnit(defs.Units["officer"], 1, new Vector2(60, 65.2f)));   // 장교 자동 돌격도
         var b = Spawn(w, 10, new Vector2(60, 62.6f), 2, cols: 10);
+        foreach (var u in a) u.BayonetFixed = true;   // T25 (D02 A): 착검 멈춤은 이 시험 대상이 아님 — 첫 틱에 시작된 돌격이 멈춤 동안 '돌격 중'으로 남아 후퇴 표시 뒤 횟수에 섞이는 것을 막는다
         w.Step();
         if (retreat) w.Retreat(2, b, new Vector2(60, 5)); else w.Move(2, b, new Vector2(60, 5));
         var ids = a.Select(u => u.Id).ToHashSet();
