@@ -141,12 +141,19 @@ public sealed class CampaignState
     public PendingOperation? Pending { get; set; }
     public DebriefReport? LastDebrief { get; set; }
 
-    public const string FirstMission = "c1_01_hoeryong";
+    /// <summary>캠페인 첫 미션 = 챕터 0 튜토리얼 0-1 (T09 수직 슬라이스, Q10 압록강 시작 승인 2026-10-22).</summary>
+    public const string FirstMission = "c0_01_bandits";
+    public const string Tutorial2 = "c0_02_yalu", YaluCrossing = "c1_01_yalu";
+    /// <summary>재배치된 옛 1-1 · 1-2 (Q10: 러시아 편 앞부분으로 옮김 — 번호 · 위치는 추후). 옛 저장이 이어서 진행할 수 있게 사슬에는 남긴다.</summary>
+    public const string Hoeryong = "c1_01_hoeryong", Tumen = "c1_02_tumen";
     /// <summary>캠페인 미션 순서 (id → 다음 id · 표시 이름). 다음 파일이 없으면 준비 중.</summary>
     static readonly (string Id, string Next, string NextName)[] Chain =
     {
-        (FirstMission, "c1_02_tumen", "1-2 두만강 도하"),
-        ("c1_02_tumen", "c1_03", "1-3"),
+        (FirstMission, Tutorial2, "0-2 압록강을 건너서"),
+        (Tutorial2, YaluCrossing, "1-1 압록강 도하"),
+        (YaluCrossing, "c1_02", "1-2"),
+        (Hoeryong, Tumen, "두만강 도하"),
+        (Tumen, "c1_03", "1-3"),
     };
 
 
@@ -214,7 +221,7 @@ public sealed class CampaignState
 
     public static bool IsCampaignMission(string id) => Chain.Any(c => c.Id == id);
     /// <summary>다시 하기 버튼용 짧은 이름 ("1-1" · "1-2").</summary>
-    public static string ShortNameOf(string id) => id switch { FirstMission => "1-1", "c1_02_tumen" => "1-2", _ => id };
+    public static string ShortNameOf(string id) => id switch { FirstMission => "0-1", Tutorial2 => "0-2", YaluCrossing => "1-1", Hoeryong => "회령", Tumen => "두만강", _ => id };
     public static string NextNameOf(string id) => Chain.FirstOrDefault(c => c.Id == id).NextName ?? "";
     public bool NextAvailable => NextMission.Length > 0 && File.Exists(MissionDef.PathOf(NextMission));
     public string NextName => Chain.Where(c => c.Next == NextMission).Select(c => c.NextName).FirstOrDefault() ?? NextMission;
@@ -237,12 +244,17 @@ public sealed class CampaignState
         s.History.RemoveAll(h => h.MissionId == r.MissionId);
         var me = r.Factions.FirstOrDefault(f => f.Player);
         s.History.Add(new MissionRecord { MissionId = r.MissionId, Title = r.Title, DurationSeconds = r.DurationSeconds, EnemyKills = r.EnemyKills, Lost = me?.Lost ?? 0, Survivors = r.Survivors.Count, SavedAt = r.SavedAt });
-        // 이 미션이 들고 들어간 병력: 이미 끝낸 미션을 다시 한 것이면 그때 기록한 것, 처음이면 직전 상태의 병력
-        if (s.EntryMission != r.MissionId || !wasDone) { s.EntryUnits = s.Units.ToList(); s.EntryOfficers = s.Officers.ToList(); s.EntryMission = r.MissionId; }
-        if (r.MissionId == "c1_02_tumen") s.HowitzerCompany = true;
-        s.NextMission = Chain.First(c => c.Id == r.MissionId).Next;
-        s.Officers = r.Survivors.Where(u => u.OfficerRank != null).Select(Copy).ToList();
-        s.Units = r.Survivors.Where(u => u.OfficerRank == null).Select(Copy).ToList();
+        // 지난 미션 (마지막 미션이 아닌, 이미 끝낸 미션) 을 다시 이긴 것: 진행 (다음 미션) · 이월 병력은 그대로 둔다 (진행이 뒤로 감기지 않게)
+        bool olderReplay = wasDone && s.EntryMission != r.MissionId;
+        if (!olderReplay)
+        {
+            // 이 미션이 들고 들어간 병력: 마지막 미션을 다시 한 것이면 그때 기록한 것, 처음이면 직전 상태의 병력
+            if (!wasDone) { s.EntryUnits = s.Units.ToList(); s.EntryOfficers = s.Officers.ToList(); s.EntryMission = r.MissionId; }
+            if (r.MissionId == Tumen) s.HowitzerCompany = true;
+            s.NextMission = Chain.First(c => c.Id == r.MissionId).Next;
+            s.Officers = r.Survivors.Where(u => u.OfficerRank != null).Select(Copy).ToList();
+            s.Units = r.Survivors.Where(u => u.OfficerRank == null).Select(Copy).ToList();
+        }
 
         // 곡사포 중대가 편입될 때 HowitzerCompany == true 이면 Roster 에 "how" 곡사포 중대도 Available = true 로 추가/활성화
         if (s.HowitzerCompany)
@@ -255,7 +267,7 @@ public sealed class CampaignState
         }
 
         // 전투 정산 (자원 / 부상 / 노획 / 정기보급 / LastDebrief)
-        CampaignEconomy.SettleBattle(s, r);
+        CampaignEconomy.SettleBattle(s, r, firstWin: !wasDone);   // D10 A: 정기 보급은 그 미션의 첫 승리만
 
         return s;
     }

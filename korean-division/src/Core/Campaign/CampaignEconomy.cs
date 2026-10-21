@@ -193,7 +193,8 @@ public static class CampaignEconomy
     public static string EnemyCaliber(MissionResults r) =>
         r.Factions.Any(f => !f.Player && f.Name.Contains("일본")) ? StockKeys.Jp : StockKeys.Ru;
 
-    public static void SettleBattle(CampaignState s, MissionResults r)
+    /// <param name="firstWin">false = 이미 끝낸 미션을 다시 이김 → 정기 보급 · 신병 없음 (D10 A, 2026-10-22).</param>
+    public static void SettleBattle(CampaignState s, MissionResults r, bool firstWin = true)
     {
         // 0) 출격 때 기록해 둔 비용 · 탄약 · 거부 패널티를 결과 확정 시점에 반영 (원자적 커밋)
         if (s.Pending != null && s.Pending.MissionId == r.MissionId)
@@ -227,9 +228,31 @@ public static class CampaignEconomy
         // 2) 아군 손실: 25% 부상 복귀, 나머지 전사
         var me = r.Factions.FirstOrDefault(f => f.Player);
         int totalLost = me?.Lost ?? 0;
-        int woundedReturned = (int)MathF.Round(totalLost * 0.25f);
-        int dead = totalLost - woundedReturned;
-        s.Manpower.Wounded += woundedReturned;
+        int woundedReturned, dead;
+        var deployed = s.Pending == null ? new List<CampaignState.RosterCompany>()
+            : s.Roster.Where(c => s.Pending.DeployedCompanyIds.Contains(c.Id)).ToList();
+        if (deployed.Count > 0 && me != null && me.Spawned > 0)
+        {
+            // 출격 편성이 있으면 전투 손실 비율 (잃은 수 / 투입 수) 을 출격 중대 병력에 그대로 적용한다 (정수 반올림, 로스터 순서 — 결정적).
+            // 부상 복귀 25% 는 그 중대의 부상자 (치료 → 같은 중대 복귀), 나머지는 전사. 보고 숫자도 사단 편성 기준.
+            int lostFrac = Math.Clamp(totalLost, 0, me.Spawned);
+            totalLost = 0; woundedReturned = 0;
+            foreach (var c in deployed)
+            {
+                int lostC = Math.Min(c.Strength, (int)(((long)c.Strength * lostFrac + me.Spawned / 2) / me.Spawned));
+                int woundC = (int)MathF.Round(lostC * 0.25f);
+                c.Strength -= lostC;
+                c.Wounded += woundC;
+                totalLost += lostC; woundedReturned += woundC;
+            }
+            dead = totalLost - woundedReturned;
+        }
+        else
+        {
+            woundedReturned = (int)MathF.Round(totalLost * 0.25f);
+            dead = totalLost - woundedReturned;
+            s.Manpower.Wounded += woundedReturned;
+        }
 
         // 3) 탄약 환원: Pending 에 적재된 탄약 중 생존 비율만큼 복귀
         int ammoRefunded = 0;
@@ -259,10 +282,10 @@ public static class CampaignEconomy
         // 5) 정기 보급 (기본 보급 +1500, 신병 +1000, 패널티 상한 30%)
         float supplyBefore = s.Supply;
         var (recruitPenalty, supplyPenalty) = ComputePenalty(s);
-        s.Flags.Remove("next_supply_penalty_pct");
+        if (firstWin) s.Flags.Remove("next_supply_penalty_pct");   // 보급이 안 오는 재승리는 다음 보급 감액을 소모하지 않는다
 
-        float regularSupply = 1500f * (1.0f - supplyPenalty);
-        int regularRecruits = (int)MathF.Round(1000 * (1.0f - recruitPenalty));
+        float regularSupply = firstWin ? 1500f * (1.0f - supplyPenalty) : 0f;
+        int regularRecruits = firstWin ? (int)MathF.Round(1000 * (1.0f - recruitPenalty)) : 0;
         s.Supply += regularSupply;
         s.Manpower.Recruits = Math.Min(CampaignState.ManpowerState.MaxRecruits, s.Manpower.Recruits + regularRecruits);
 
