@@ -68,3 +68,18 @@ public static partial class S
         "infGun" => "보병포탄", "field" => "야전포탄", "howitzer" => "곡사포탄", _ => key
     };
 }
+
+public static partial class S
+{
+    // ---- 8 참모진 탭 (T19d, 읽기 전용: 장교 학파 · 인물)
+    public const string CmStaffTitle = "8. 참모진 - 장교 학파";
+    public const string CmStaffLoadFail = "학파 자료(doctrines.json)를 읽지 못했습니다.";
+    public const string CmStaffSchoolHead = "{0} 학파";
+    public const string CmStaffOfficer = "장교 기질";
+    public const string CmStaffTactics = "전술";
+    public const string CmStaffAi = "경향";
+    public const string CmStaffResearch = "연구 연결";
+    public const string CmStaffFigures = "소속 인물";
+    public const string CmStaffNoFigures = "(아직 없음)";
+    public const string CmStaffNote = "읽기 전용 - 학파는 표시와 연구 보정 근거로만 쓰이며 전투 AI 에는 아직 적용되지 않습니다.";
+}

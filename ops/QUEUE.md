@@ -24,7 +24,7 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T16 | trench_assault 하락 원인 조사 (D12 A 재측정) | scout→sim | D上 R2 M H2 Wheavy | T03 | queued |
 | T17 | 지휘 편의 (미션 중 저장 · 전과 보고(wip/battlereport 복원) · 교전 알림/미니맵) | feature | D中 R2 SM H2 Wlight | T08 | queued |
 | T18 | 한국군 타찬카 (기마 포병 horseart 병합됨) | art+feature | D中 R1 SM H1 Wlight | 없음 | queued |
-| T19 | 캠페인 홈 MVP / 규칙 1~15 / 학파 구현 (wip/doctrines 복원 포함) | sim+feature | D上 R3 L (분할) H2 Wlight | T09 | 분할: T19a wip-ready (`t19a-save-slots`, t09-camp-slice 위) · T19b wip-ready · T19c wip-ready (`t19c-home-tabs`, t19b2-synced 위) · T19d queued |
+| T19 | 캠페인 홈 MVP / 규칙 1~15 / 학파 구현 (wip/doctrines 복원 포함) | sim+feature | D上 R3 L (분할) H2 Wlight | T09 | 분할: T19a wip-ready (`t19a-save-slots`, t09-camp-slice 위) · T19b wip-ready · T19c wip-ready (`t19c-home-tabs`, t19b2-synced 위) · T19d wip-ready (`t19d-doctrines`, t19c-home-tabs 위) |
 | T19b | 구경별 탄약 5종 · 포탄 규칙 · 노획 (2/4) | sim | D上 R3 SM H2 Wlight | T19a 위 스택 + T29b(82ab015 · ee810be) 체리픽 | wip-ready (`t19b-ammo-shells`) |
 | T19b2 | T19b 동기화: t19a 리뷰 수정(43e69b1) + t29b 리뷰 수정(a89b4d2) 체리픽, 경제 JSON 보정에 T19b 새 키 포함 | feature | D上 H2 | T19b | wip-ready (`t19b2-synced`) |
 | T29 | 캠페인 경제 숫자 JSON 이전 + 첫 승리만 정산 (D23 A · D24 A) | feature | D中 R1 S H1 Wlight | T01 위 스택 (gemini-import) | wip-ready (자기 브랜치 참조) |

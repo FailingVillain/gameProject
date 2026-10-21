@@ -250,6 +250,7 @@ public sealed partial class CampaignMenu
             case Tab.Logistics: DrawTabLogistics(body); break;
             case Tab.Map: DrawTabMap(body); break;
             case Tab.Events: DrawTabEvents(body); break;
+            case Tab.Staff: DrawTabStaff(body); break;
             default: DrawTabPlaceholder(body, currentTab); break;   // 후속 탭 (틀만)
         }
     }
