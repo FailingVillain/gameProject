@@ -17,6 +17,7 @@ public sealed partial class Game
     MissionResults? missionResults;
     string? missionResultsPath;
     bool missionResultsDone, noResultsFile, deployCamDone, campaignSaved;
+    bool discardArmed;   // 저장 안 된 결과를 버리겠다는 첫 번째 확인
     CampaignState? campaignUnsaved;   // 정산했지만 저장 실패 — 결과 창에서 다시 시도 (T19a)
 
     /// <summary>배치 단계인가: 미션 · 첫 틱 전 · 사람이 조작 · 아직 '작전 개시' 전.</summary>
@@ -134,12 +135,16 @@ public sealed partial class Game
             if (campaignSaved) campaignUnsaved = null;
             return;
         }
-        if (Input.IsKeyPressed(KeyboardKey.Enter) && !IsReplay) RestartRequested = true;
+        if (campaignUnsaved == null) discardArmed = false;
+        bool wantRestart = Input.IsKeyPressed(KeyboardKey.Enter) && !IsReplay, wantQuit = false;
         if (Input.IsMouseButtonPressed(MouseButton.Left))
         {
-            if (!IsReplay && Ui.Contains(ResultButton(0), mouse)) RestartRequested = true;
-            else if (Ui.Contains(ResultButton(1), mouse)) QuitRequested = true;
+            if (!IsReplay && Ui.Contains(ResultButton(0), mouse)) wantRestart = true;
+            else if (Ui.Contains(ResultButton(1), mouse)) wantQuit = true;
         }
+        if ((wantRestart || wantQuit) && campaignUnsaved != null && !discardArmed) { discardArmed = true; return; }   // 저장 전에는 두 번 눌러야 떠난다
+        if (wantRestart) RestartRequested = true;
+        else if (wantQuit) QuitRequested = true;
     }
 
     Rectangle ResultPanel
@@ -312,6 +317,7 @@ public sealed partial class Game
         if (missionResultsPath != null) Ui.Text(string.Format(S.RsSaved, Path.GetFileName(missionResultsPath)), x1, p.Y + p.Height - 44, 16, Palette.TextDim);
         if (campaignSaved) Ui.Text(S.CmSaved, x2, p.Y + p.Height - 44, 16, Palette.HpGood);
         if (campaignUnsaved != null) Ui.Button(CampaignRetryRect, S.CmSaveFailedResult, Ui.Contains(CampaignRetryRect, mouse), false);
+        if (campaignUnsaved != null && discardArmed) Ui.Text(S.CmDiscardUnsaved, x1, p.Y + p.Height - 92, 15, Palette.Warning);
         if (!IsReplay) Ui.Button(ResultButton(0), S.RsRetry, Ui.Contains(ResultButton(0), mouse), false);
         Ui.Button(ResultButton(1), S.RsMenu, Ui.Contains(ResultButton(1), mouse), false);
     }

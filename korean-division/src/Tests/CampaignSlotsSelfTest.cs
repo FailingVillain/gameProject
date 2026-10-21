@@ -80,6 +80,22 @@ public static class CampaignSlotsSelfTest
             var d6 = CampaignSaves.Describe(CampaignSaves.SlotPath(6));
             check(d5.Exists && d5.Error != null && d6.Exists && d6.Error != null && CampaignSaves.Read(CampaignSaves.SlotPath(6), out _) == null,
                 $"캠페인 슬롯: 깨진 · 더 새 버전 슬롯은 사유와 함께 거부 — {d5.Error} / {d6.Error}");
+
+            // 깨진 칸은 덮어쓰지 않는다 (원본 보존) / 정상 칸은 덮어쓴다
+            string brokenBefore = File.ReadAllText(CampaignSaves.SlotPath(5)), newerBefore = File.ReadAllText(CampaignSaves.SlotPath(6));
+            bool blocked = !CampaignSaves.SaveSlot(old, 5) && !CampaignSaves.SaveSlot(old, 6)
+                && File.ReadAllText(CampaignSaves.SlotPath(5)) == brokenBefore && File.ReadAllText(CampaignSaves.SlotPath(6)) == newerBefore
+                && CampaignSaves.SaveSlot(old, 7);
+            check(blocked, "캠페인 슬롯: 깨진 · 더 새 버전 슬롯은 저장이 거부되고 원본 그대로, 정상 슬롯은 저장됨");
+
+            // BackupBroken: 기존 .bak 를 덮어쓰지 않고 .bak.1, .bak.2 로
+            string lf = CampaignState.FilePath;
+            foreach (var f in Directory.GetFiles(dir, "campaign.json.bak*")) File.Delete(f);
+            File.WriteAllText(lf, "broken-A"); bool b1 = CampaignState.BackupBroken();
+            File.WriteAllText(lf, "broken-B"); bool b2 = CampaignState.BackupBroken();
+            File.WriteAllText(lf, "broken-C"); bool b3 = CampaignState.BackupBroken();
+            check(b1 && b2 && b3 && File.ReadAllText(lf + ".bak") == "broken-A" && File.ReadAllText(lf + ".bak.1") == "broken-B" && File.ReadAllText(lf + ".bak.2") == "broken-C" && !File.Exists(lf),
+                "캠페인 슬롯: 깨진 진행 저장 백업은 기존 .bak 를 덮어쓰지 않고 .bak.1 · .bak.2 로 보존");
         }
         finally
         {

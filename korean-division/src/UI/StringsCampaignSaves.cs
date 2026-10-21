@@ -19,9 +19,11 @@ public static partial class S
     public const string CmSlotSaved = "슬롯 {0} 에 저장했습니다.";
     public const string CmSlotLoaded = "불러왔습니다: {0}";
     public const string CmSlotNoSaveBroken = "진행 저장을 읽지 못해 슬롯 저장은 잠겨 있습니다 (불러오기는 가능 — 원본은 .bak 로 보존).";
+    public const string CmSlotBrokenKept = "읽지 못하는 칸은 원본 보존을 위해 저장이 잠겨 있습니다 (파일을 직접 옮기거나 지워야 합니다).";
     public const string CmSaveFailedTitle = "저장 실패";
     public const string CmSaveFailedText = "캠페인을 저장하지 못했습니다 (디스크 · 권한 확인). 이전 저장 파일은 그대로입니다.";
     public const string CmSaveRetry = "다시 시도";
     public const string CmSaveGiveUp = "닫기 (저장 안 함)";
+    public const string CmDiscardUnsaved = "저장되지 않은 결과가 버려집니다 — 떠나려면 한 번 더 누르세요.";
     public const string CmSaveFailedResult = "캠페인 저장 실패 — 다시 시도";
 }

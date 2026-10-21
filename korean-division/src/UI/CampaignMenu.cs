@@ -66,10 +66,12 @@ public sealed class CampaignMenu
     }
 
     /// <summary>저장 → 성공하면 then, 실패하면 알림 + [다시 시도] (설계 §3: 실패 알림 + 다시 시도).</summary>
+    bool saveFresh;   // 저장 실패 알림이 이번 프레임에 만들어짐 → 같은 클릭 무시
+
     void Persist(Func<bool> save, Action? then = null)
     {
         if (save()) { saveRetry = null; saveThen = null; then?.Invoke(); }
-        else { saveRetry = save; saveThen = then; }
+        else { saveRetry = save; saveThen = then; saveFresh = true; }   // 이 프레임의 클릭이 [다시 시도] 를 누르지 않게 한다
     }
 
     /// <summary>진행 저장 (읽기 실패한 원본은 덮어쓰지 않는다 — 원본 보호).</summary>
@@ -161,7 +163,8 @@ public sealed class CampaignMenu
         click = rawClick && !slotsOpen && saveRetry == null;   // 창이 떠 있으면 뒤 화면은 클릭을 받지 않는다
         DrawViews(screenW, screenH);
         if (slotsOpen) { click = rawClick && saveRetry == null; DrawSlots(screenW, screenH); }
-        if (saveRetry != null) { click = rawClick; DrawSaveFailed(screenW, screenH); }
+        if (saveRetry != null) { click = rawClick && !saveFresh; DrawSaveFailed(screenW, screenH); }
+        saveFresh = false;
     }
 
     void DrawViews(int screenW, int screenH)
@@ -1023,7 +1026,7 @@ public sealed class CampaignMenu
             }
             if (!auto)
             {
-                bool canSave = loadError == null;
+                bool canSave = loadError == null && info.Error == null;   // 깨진 · 새 버전 칸은 덮어쓰지 않는다
                 if (Button(new Rectangle(bx - 118, ry + 2, 110, rowH - 6), slotArm == saveKey ? S.CmSlotOverwrite : S.CmSlotSave, canSave, 13, slotArm == saveKey ? Palette.Warning : null))
                 {
                     if (info.Exists && slotArm != saveKey) slotArm = saveKey;   // 덮어쓰기는 한 번 더 눌러 확인
@@ -1039,6 +1042,7 @@ public sealed class CampaignMenu
 
         float by = modal.Y + modal.Height - 50;
         if (loadError != null) Ui.Text(S.CmSlotNoSaveBroken, x, by - 26, 13, Palette.Warning);
+        else if (slotInfo.Any(i => i.Error != null)) Ui.Text(S.CmSlotBrokenKept, x, by - 26, 13, Palette.Warning);
         if (slotNotice != null) Ui.Text(slotNotice, x, by + 10, 14, Palette.HpGood);
         if (Button(new Rectangle(modal.X + modal.Width - 24 - 140, by, 140, 36), S.CmSlotClose, true, 15))
         {
