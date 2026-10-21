@@ -25,7 +25,7 @@
 | ba696b7 | gate-lanes | heavy_gate 3레인 (기본 비활성) |
 | 53712e9 · 4d19119 | - | 도구 정리 · 결정 장부 D01~D22 |
 | b5918a8 · a4c79c7 | docs-ops · docs-roles | 문서 재정비 (ops/tasks, 헌장/역할/절차) |
-| 병합 시 기록 | docs-fable | PIPELINE v1 · STATE/QUEUE 현행화 · T13 |
+| 562e578 | docs-fable | PIPELINE v1 · STATE/QUEUE 현행화 · T13 |
 
 ## 병합 순서 (wip-ready 가 된 것만 처리; 예정 순서)
 | 순 | 브랜치 | 카드 | R | 상태 | 비고 |
