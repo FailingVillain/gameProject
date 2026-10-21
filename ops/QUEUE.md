@@ -22,7 +22,7 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T14 | 문서 재정비 (4층 구조 + ops + PIPELINE v1) | docs | D下 R1 S H0 Wlight | 없음 | merged (b5918a8 · a4c79c7 · docs-fable) |
 | T15 | 밤 soak 갱신 → 전투 문제 9건 재보고 | measure | D中 R1 S H0 Wheavy | T12 | queued |
 | T16 | trench_assault 하락 원인 조사 (D12 A 재측정) | scout→sim | D上 R2 M H2 Wheavy | T03 | queued |
-| T17 | 지휘 편의 (미션 중 저장 · 전과 보고(wip/battlereport 복원) · 교전 알림/미니맵) | feature | D中 R2 SM H2 Wlight | T08 | queued |
+| T17 | 지휘 편의 (미션 중 저장 · 전과 보고(wip/battlereport 복원) · 교전 알림/미니맵) | feature | D中 R2 SM H2 Wlight | T08 | wip-ready (t17-cmd-convenience, T08 위 스택) |
 | T18 | 한국군 타찬카 (기마 포병 horseart 병합됨) | art+feature | D中 R1 SM H1 Wlight | 없음 | queued |
 | T19 | 캠페인 홈 MVP / 규칙 1~15 / 학파 구현 (wip/doctrines 복원 포함) | sim+feature | D上 R3 L (분할) H2 Wlight | T09 | queued |
 | T20 | 저장소 이동 마무리 (옛 폴더 삭제 = 사용자 U02) | docs | D下 R1 S H0 Wlight | U02 | blocked(U02) |
