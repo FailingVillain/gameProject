@@ -1,0 +1,202 @@
+diff --git a/docs/ENGINE_NOTES.md b/docs/ENGINE_NOTES.md
+index c9970e65..650b20e9 100644
+--- a/docs/ENGINE_NOTES.md
++++ b/docs/ENGINE_NOTES.md
+@@ -666,3 +666,7 @@
+ - 곡사포 조정 사격 (`adjustFireShots` 5 · `adjustFireMinMul` 1/3 · `adjustFireZone` 5칸): 관측 사격 (FireArtillery) 만, 앞 조준점 5칸 안이면 연속 발수 +1 → 퍼짐 9 → 7.5 → 6 → 4.5 → 3칸, 구역을 벗어나면 1발째부터. 지점 포격 (관측 없음) 은 해당 없음. 상태 Unit.AdjustShots · AdjustAim.
+ - 중기관총 최후 저지선 (FireMode.FinalLine, K 순환: 자유 → 금지 → 응사만 → [중기관총 있으면 지점 고르기] → 자유): `SetFinalLineCommand` (지점), 사격선 = 유닛 → 지점 방향 사거리까지, 띠 `finalLineBand` 2칸 안의 적만 표적 (FindTarget fpl 필터 · FireAllowed). 상태 Unit.FinalLinePoint. 선택 시 사격선 표시 (Game.DrawFinalLines).
+ - 저장: ORG_ 사격 통제 바이트 뒤에 (유닛 색인, FinalLinePoint, AdjustShots, AdjustAim) 목록 (값이 있는 유닛만). 테스트 `KD_SELFTEST_ONLY=arty3`.
++
++## 지휘 편의 ①⑤ 전투 자동 저장 · 전과 보고 (2026-10-22, 브랜치 `battlereport`)
++- 미션 중 저장 = 기존 HUD 저장 버튼 · F6 (`.kds`). 큰 교전 직전 자동 저장 = `Game.BattleAutosave`: 사격 없는 20초 뒤 `World.Shots` 가 한 번에 6발 이상 되는 틱 경계에서 슬롯 `autosave_battle` 한 개를 덮어씀 (최소 간격 2분, 미션만, 월드 읽기만 — 시뮬 · 저장 형식 무변경, FV 불변). 상수 `SaveManager.Battle*`.
++- 전과 보고 = 결과 화면 `DrawBattleReport`: 세력별 사상 원인(사격 · 근접 · 포격 %, `MoveStats.LossCause` 측정 전용 — 불러오면 0부터) + 아군 중대별 잔존/편성/사살. `MissionResults.LossCause/Companies` (JSON 추가 필드).
+diff --git a/src/Core/Combat3.cs b/src/Core/Combat3.cs
+index f9692cff..ab9a4bd5 100644
+--- a/src/Core/Combat3.cs
++++ b/src/Core/Combat3.cs
+@@ -186,6 +186,11 @@ public sealed partial class World
+     {
+         if (target.Hp <= 0 && target is Unit kv && source is Unit ks && !(ks.Owner == kv.Owner || Allied(ks.Owner, kv.Owner)))   // [측정 전용] 사살 원인: 10초 구간 / 공격자 종류 / 무기 / 피해자 종류
+         { string kk = $"{(int)(Time / 10) * 10:000}s {ks.Def.Key}/{weapon ?? ks.Def.Weapon}->{kv.Def.Key}"; Stats.KillSources[kk] = Stats.KillSources.GetValueOrDefault(kk) + 1; }
++        if (target.Hp <= 0 && target is Unit lv && source is Unit lk && !(lk.Owner == lv.Owner || Allied(lk.Owner, lv.Owner)))   // [측정 전용] 전과 보고: 희생자 세력별 원인
++        {
++            if (!Stats.LossCause.TryGetValue(lv.Owner, out var lc)) Stats.LossCause[lv.Owner] = lc = new long[3];
++            lc[lk.Charging ? 1 : Defs.Current.Weapon(weapon ?? lk.Def.Weapon) is { Splash: > 0 } ? 2 : 0]++;
++        }
+         bool friendly = source != null && (source.Owner == target.Owner || Allied(source.Owner, target.Owner));   // 아군 오사 (포탄 파편, pursuit2) 는 사살 · 계급에 넣지 않음
+         if (target.Hp <= 0 && target is Unit tv && source is Unit sv && !friendly)
+         {
+diff --git a/src/Core/Mission/MissionResults.cs b/src/Core/Mission/MissionResults.cs
+index 3fc08d00..3d21b79f 100644
+--- a/src/Core/Mission/MissionResults.cs
++++ b/src/Core/Mission/MissionResults.cs
+@@ -30,6 +30,10 @@ public sealed class MissionResults
+     /// <summary>[측정] 아군 오사 — 무기 종류별 (명중 · 사살 · 피해량). 저장 · 체크섬과 무관한 부가 계수기.</summary>
+     public Dictionary<string, FriendlyFireEntry> FriendlyFire { get; set; } = new();
+     public sealed class FriendlyFireEntry { public int Hits { get; set; } public int Kills { get; set; } public double Damage { get; set; } }
++    /// <summary>전과 보고 (표시 전용): 세력별 사상 원인 [사격, 근접, 포격] (이번 실행에서 센 것) · 아군 중대별 병력.</summary>
++    public Dictionary<int, long[]> LossCause { get; set; } = new();
++    public List<CompanyLine> Companies { get; set; } = new();
++    public sealed class CompanyLine { public int Number { get; set; } public int Initial { get; set; } public int Alive { get; set; } public int Kills { get; set; } }
+     public string SavedAt { get; set; } = "";
+     public List<FactionLine> Factions { get; set; } = new();
+     public List<ObjectiveLine> Objectives { get; set; } = new();
+@@ -74,6 +78,9 @@ public sealed class MissionResults
+                 State = m.ObjState[i] == MissionState.Done ? "done" : m.ObjState[i] == MissionState.Failed ? "failed" : "active",
+             });
+         }
++        foreach (var (f, c) in w.Stats.LossCause) r.LossCause[f] = (long[])c.Clone();
++        foreach (var c in w.CompaniesOf(m.Player).OrderBy(c => c.Number))
++            r.Companies.Add(new CompanyLine { Number = c.Number, Initial = Math.Max(c.InitialStrength, c.Members.Count), Alive = c.Members.Count(u => u.Alive), Kills = c.Members.Sum(u => u.Kills) });
+         var forceOf = new Dictionary<int, string>();
+         foreach (var (fid, ids) in m.ForceUnits) foreach (int id in ids) forceOf[id] = fid;
+         foreach (var u in w.Units)
+diff --git a/src/Core/MoveStats.cs b/src/Core/MoveStats.cs
+index 7cdfbf6b..9dc0e214 100644
+--- a/src/Core/MoveStats.cs
++++ b/src/Core/MoveStats.cs
+@@ -68,6 +68,8 @@ public sealed class MoveStats
+     public long MarchStart, MarchStop;   // 행진 사격 시작 · 종료 (유닛 또는 중대 단위)
+     public readonly Dictionary<int, float> lastFlagMul = new();
+     /// <summary>[측정 전용] 아군 오사 (같은 팀 · 동맹이 가한 피해) — 무기 종류별 (명중 수 · 피해량 · 사살 수). 시뮬은 읽지 않음 — 저장 · 체크섬 없음 (불러오면 0 부터).</summary>
++    /// <summary>[측정 전용] 전과 보고용: 희생자 세력별 사살 원인 [0 사격, 1 근접, 2 포격]. 시뮬은 읽지 않음 — 저장 없음 (불러오면 0 부터).</summary>
++    public readonly Dictionary<int, long[]> LossCause = new();
+     public readonly SortedDictionary<string, int> KillSources = new(StringComparer.Ordinal);   // [측정 전용] 사살 원인 (Combat3.CountKill)
+     public readonly SortedDictionary<string, FriendlyFireLine> FriendlyFire = new(StringComparer.Ordinal);
+     public sealed class FriendlyFireLine { public int Hits; public int Kills; public double Damage; }
+diff --git a/src/Game.cs b/src/Game.cs
+index 24bbf5d3..c1f0a0bd 100644
+--- a/src/Game.cs
++++ b/src/Game.cs
+@@ -548,6 +548,7 @@ public sealed partial class Game : IDisposable
+         }
+ 
+         AutosaveIfDue();
++        BattleAutosave();
+         ConsumeWorldEvents();
+         Sfx.EndFrame();
+         double now = Now;
+@@ -1833,6 +1834,27 @@ public sealed partial class Game : IDisposable
+         SaveGame(SaveManager.AutosaveName(World.Tick), auto: true);
+     }
+ 
++    long lastShotSeen = -1_000_000, lastBattleSave = -1_000_000;
++    bool battleArmed = true;
++
++    /// <summary>
++    /// 큰 교전 직전 자동 저장 (미션만): 조용한 시간 (BattleLullTicks, 사격 없음) 뒤에 사격이 한꺼번에 BattleShotMin 발 이상 되면
++    /// 그 틱 경계에서 'autosave_battle' 슬롯 한 개를 덮어쓴다. 월드를 읽기만 한다 (시뮬 결과 무관). 최소 간격 BattleSaveGap.
++    /// </summary>
++    void BattleAutosave()
++    {
++        if (IsReplay || World.Winner != 0 || World.Mission == null || SaveManager.AutosaveTicks <= 0) return;
++        long t = World.Tick;
++        var shots = World.Shots;
++        if (shots.Count == 0) { if (t - lastShotSeen >= SaveManager.BattleLullTicks) battleArmed = true; return; }
++        lastShotSeen = t;
++        if (!battleArmed || shots.Count < SaveManager.BattleShotMin) return;
++        battleArmed = false;
++        if (t - lastBattleSave < SaveManager.BattleSaveGap) return;
++        lastBattleSave = t;
++        SaveGame(SaveManager.BattleName, auto: true);
++    }
++
+     void ConsoleSave(string? name)
+     {
+         if (IsReplay) { CommandBox.Print(S.SaveNotInReplay, Palette.Warning); return; }
+diff --git a/src/GameMission.cs b/src/GameMission.cs
+index 354afbd6..eaaf201c 100644
+--- a/src/GameMission.cs
++++ b/src/GameMission.cs
+@@ -133,7 +133,7 @@ public sealed partial class Game
+         get
+         {
+             var vp = Hud.Viewport;
+-            float w = MathF.Min(760, vp.Width - 40), h = MathF.Min(520, vp.Height - 30);
++            float w = MathF.Min(760, vp.Width - 40), h = MathF.Min(660, vp.Height - 30);
+             return new Rectangle(vp.X + (vp.Width - w) / 2, vp.Y + (vp.Height - h) / 2, w, h);
+         }
+     }
+@@ -256,6 +256,32 @@ public sealed partial class Game
+         if (World.Winner != 0) DrawMissionResults(m);
+     }
+ 
++    /// <summary>전과 보고 (읽기 전용 집계): 사상 원인 비율 · 중대별 요약. 공간이 모자라면 아래 줄을 자른다.</summary>
++    void DrawBattleReport(MissionResults r, Rectangle p, float x1, float x2, float y0)
++    {
++        float limit = p.Y + p.Height - 62;
++        float yl = y0;
++        if (yl + 22 <= limit) { Ui.Text(S.RsCauses, x1, yl, 16, Palette.Accent); yl += 22; }
++        foreach (var f in r.Factions)
++        {
++            if (yl + 20 > limit) break;
++            if (!r.LossCause.TryGetValue(f.Id, out var c)) continue;
++            long tot = c[0] + c[1] + c[2];
++            if (tot <= 0) continue;
++            Ui.Text(string.Format(S.RsCauseFmt, f.Name, c[0] * 100 / tot, c[1] * 100 / tot, c[2] * 100 / tot), x1, yl, 16, Palette.Player(f.Id));
++            yl += 20;
++        }
++        float yr = y0;
++        if (r.Companies.Count == 0 || yr + 22 > limit) return;
++        Ui.Text(S.RsCompanies, x2, yr, 16, Palette.Accent); yr += 22;
++        foreach (var c in r.Companies)
++        {
++            if (yr + 20 > limit) break;
++            Ui.Text(string.Format(S.RsCompanyFmt, c.Number, c.Alive, c.Initial, c.Kills), x2, yr, 16, Palette.Text);
++            yr += 20;
++        }
++    }
++
+     void DrawMissionResults(MissionState m)
+     {
+         var r = missionResults ??= MissionResults.From(World);
+@@ -283,6 +309,7 @@ public sealed partial class Game
+         foreach (var u in r.TopUnits) { Ui.Text($"#{u.Id} {u.Name}  {u.Kills}", x1, yl, 16, Palette.Text); yl += 20; }
+         yl += 8;
+         Ui.Text($"{S.RsPromotions}  {string.Format(S.RsPromotionsN, r.Promotions.Count)}", x1, yl, 16, Palette.Text);
++        DrawBattleReport(r, p, x1, x2, yl + 28);
+         for (int i = 0; i < m.Def.Objectives.Count; i++)
+         {
+             var o = m.Def.Objectives[i];
+diff --git a/src/Tests/CommandSelfTest.cs b/src/Tests/CommandSelfTest.cs
+index 62b0c17d..9695afb2 100644
+--- a/src/Tests/CommandSelfTest.cs
++++ b/src/Tests/CommandSelfTest.cs
+@@ -384,6 +384,7 @@ public static class CommandSelfTest
+             "미션 결과: 장교 정식 계급 · 임시 진급 · 경험치 · 직책 기록 (사병은 없음)");
+         string json = System.Text.Json.JsonSerializer.Serialize(res, CommandJson.Options);
+         check(json.Contains("\"xp\"", StringComparison.OrdinalIgnoreCase) && json.Contains("\"tempRank\"", StringComparison.OrdinalIgnoreCase), "결과 json 에 xp · tempRank");
++        check(res.Companies.Count > 0 && res.Companies.All(c => c.Alive <= c.Initial && c.Alive >= 0) && json.Contains("\"companies\"", StringComparison.OrdinalIgnoreCase), "전과 보고: 중대별 요약 (잔존 ≤ 편성) 이 결과에 포함");
+         // 임시 진급한 장교는 진급 후보
+         p1[0].Hp = 0;
+         for (int i = 0; i < 2; i++) w.Step();
+diff --git a/src/UI/SaveManager.cs b/src/UI/SaveManager.cs
+index a1b6c3cb..8d5e4128 100644
+--- a/src/UI/SaveManager.cs
++++ b/src/UI/SaveManager.cs
+@@ -18,6 +18,10 @@ public static class SaveManager
+ 
+     public const string QuickName = "quicksave";
+     public const int AutosaveKeep = 3;
++    /// <summary>큰 교전 직전 자동 저장 슬롯 (한 개, 덮어씀) · 조용한 시간 20초 · 최소 한 번에 6발 · 저장 간격 2분 (게임 시간 틱).</summary>
++    public const string BattleName = "autosave_battle";
++    public const long BattleLullTicks = 20 * 60, BattleSaveGap = 2 * 60 * 60;
++    public const int BattleShotMin = 6;
+     /// <summary>자동 저장 간격 (게임 시간, 틱). 10분. 퍼즈가 짧게 바꾼다.</summary>
+     public static long AutosaveTicks = 10 * 60 * 60;
+ 
+diff --git a/src/UI/StringsMission.cs b/src/UI/StringsMission.cs
+index e76ab1c4..c753e50d 100644
+--- a/src/UI/StringsMission.cs
++++ b/src/UI/StringsMission.cs
+@@ -57,6 +57,10 @@ public static partial class S
+     public const string RsDefeat = "미션 실패";
+     public const string RsDuration = "작전 시간";
+     public const string RsLosses = "손실 (생성 / 손실)";
++    public const string RsCauses = "사상 원인 (아군 / 적)";
++    public const string RsCauseFmt = "{0} 사격 {1}% · 근접 {2}% · 포격 {3}%";
++    public const string RsCompanies = "중대별 (잔존 / 편성 · 사살)";
++    public const string RsCompanyFmt = "제{0}중대  {1} / {2}  · {3}";
+     public const string RsKills = "적 사살";
+     public const string RsTopUnits = "최다 사살 부대원";
+     public const string RsPromotions = "승진";
