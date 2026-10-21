@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "source": "docs/OFFICER_DOCTRINES.md (사용자 승인 2026-10-21)",
+  "retreatCasualtyBasis": [0.30, 0.40],
+  "aiAxes": ["commandDelay", "maneuver", "assault", "firePrep", "retreatThreshold", "reserve", "afterObjective", "specialty"],
+  "schools": [
+    { "key": "german", "name": "독일", "officer": "독단 · 재량 (임무형 지휘), 부사관 신뢰",
+      "tactics": "1918 돌격대식 침투 · 약점 돌파 · 측면 우회 · 탄력 방어 후 즉각 반격",
+      "ai": ["지휘 지연 짧음", "측면/침투 선호", "돌격보병 활용", "후퇴 문턱 중", "반격 빠름"],
+      "research": ["침투 전술", "돌격대"], "figures": ["김 참장", "김주현", "남 참장"], "axes": null },
+    { "key": "french", "name": "불란서", "officer": "신중 · 계획적, 상부 통제 · 시간표",
+      "tactics": "\"화력이 죽인다\" — 포병 준비 → 정해진 목표까지 단계 전진",
+      "ai": ["포격 준비 김", "화력 후 전진", "진격 느림", "손실 적음", "목표에서 굳힘"],
+      "research": ["이동탄막 협동", "포병"], "figures": [], "axes": null },
+    { "key": "russian", "name": "노서아", "officer": "완고 · 인내, 손실 감수",
+      "tactics": "병력 집중 · 정면 공세 · 착검 돌격 전통 · 끈질긴 방어",
+      "ai": ["돌격 선호", "후퇴 문턱 높음", "예비대 일괄 투입", "정찰/조율 약함"],
+      "research": ["착검 돌격", "방어 진지"], "figures": ["황자 이석", "민 대장"], "axes": null },
+    { "key": "pyongyang", "name": "평양", "officer": "규율 · 훈련, 균형형 (영국식 + 러시아식)",
+      "tactics": "영국식 소총 사격술 · 화력과 기동 · 점령 후 굳히기 + 러시아식 끈기",
+      "ai": ["소총 사격 효율", "점령 후 굳히기", "후퇴 문턱 중상", "표준형 (신설 부대 기본)"],
+      "research": ["사격술", "대형"], "figures": ["황손 이태"], "axes": null },
+    { "key": "beijing", "name": "북경", "officer": "실리 · 정치적, 병력 보존 (보정군관학교, 보정학파)",
+      "tactics": "일본식 공세 정신 (야습 · 기습) + 군벌식 실리 · 포위/우회 · 불리하면 빠른 철수",
+      "ai": ["후퇴 문턱 낮음", "야간/기습", "포위 기동", "화력 준비 짧음"],
+      "research": ["야간 전투", "기병/기동"], "figures": [], "axes": null }
+  ],
+  "factions": {
+    "japanese": { "name": "일본 (관동군)", "dispositions": [
+      { "key": "offensive", "name": "공세파 (관동군 정예)", "character": "공격 정신 · 야습 · 착검 돌격, 위험 감수 — \"폭주\" 이벤트의 주역",
+        "ai": ["돌격 성향 높음", "야간 공격", "후퇴 문턱 높음", "기관총 엄호 후 돌격"], "axes": null },
+      { "key": "railway_guard", "name": "철도수비대", "character": "철도 부속지 · 역 고수, 거점 방어",
+        "ai": ["거점 고수", "기관총 진지", "장갑열차", "철도 따라 증원", "반격은 국지적"], "axes": null },
+      { "key": "staff", "name": "참모형", "character": "계산적 · 기만, 국지 충돌 수위 조절",
+        "ai": ["포위 · 우회", "화력 준비", "손실 회피", "불리하면 협상/정전 (스크립트)"], "axes": null }
+    ] },
+    "fengtian": { "name": "봉천", "dispositions": [
+      { "key": "elite_guard", "name": "직속 정예 (장작림 위대 · 강무당 출신)", "character": "비교적 정규, 충성",
+        "ai": ["포병 활용", "끈질긴 방어", "역습", "후퇴 문턱 중"], "axes": null },
+      { "key": "kangwu_new", "name": "강무당 신식파 (일본식 교육 영향)", "character": "공세적, 일본 교관 영향",
+        "ai": ["우회", "기습", "야습", "기관총 운용 양호"], "axes": null },
+      { "key": "old_local", "name": "구식 지방군 (순방대 · 녹림 출신 장교)", "character": "병력 보존, 사기 낮음",
+        "ai": ["화력 약함", "정면 대치", "후퇴 문턱 낮음", "예비대 늦게"], "axes": null },
+      { "key": "toby", "name": "토비형 (최하위 — 마적 공유)", "character": "약탈 · 매복, 규율 없음",
+        "ai": ["매복", "기습", "대도 돌격", "불리하면 즉시 흩어져 도주", "거점 방어 약함"], "axes": null }
+    ] },
+    "bandit": { "name": "마적", "sharesWith": "fengtian.toby", "dispositions": [] },
+    "russian-white": { "name": "러시아 백군", "dispositions": [
+      { "key": "imperial_officers", "name": "제정 장교단 (정통파)", "character": "명예 · 장교 선두, 사기 의존",
+        "ai": ["정면 돌격", "장교 앞장", "장교 잃으면 급격히 약화"], "axes": null },
+      { "key": "ataman", "name": "아타만형 (세묘노프식 코사크)", "character": "기병 습격 · 약탈 · 불안정",
+        "ai": ["기병 기동", "습격", "후퇴 문턱 낮음", "장갑열차"], "axes": null },
+      { "key": "railway_defense", "name": "철도 방어형", "character": "철도 · 도시 고수, 패배주의",
+        "ai": ["거점 방어", "장갑열차", "철수 판단 빠름"], "axes": null }
+    ] },
+    "russian-red": { "name": "적군 (극동공화국 포함)", "dispositions": [
+      { "key": "commissar", "name": "정치위원 통제형", "character": "후퇴 금지 · 손실 감수",
+        "ai": ["후퇴 문턱 매우 높음", "대중 공세", "정면 반복 공격"], "axes": null },
+      { "key": "red_cavalry", "name": "내전 기동파 (붉은 기병)", "character": "기병 집단 돌파 · 타찬카",
+        "ai": ["기병 · 타찬카 기동", "측면", "추격"], "axes": null },
+      { "key": "partisan", "name": "빨치산형 (극동 빨치산)", "character": "매복 · 기습 · 철도 파괴",
+        "ai": ["매복", "숲/산 활용", "치고 빠지기", "거점 방어 약함"], "axes": null }
+    ] }
+  }
+}
