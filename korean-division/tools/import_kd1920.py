@@ -22,7 +22,7 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CODING = os.path.dirname(ROOT)
-# 워크트리 (coding/korean-division/.claude/worktrees/x) 에서 실행해도 coding/ 을 찾는다
+# 워크트리 (C:/gameProject/korean-division/.claude/worktrees/x) 에서 실행해도 coding/ 을 찾는다
 while CODING and not os.path.isdir(os.path.join(CODING, "game-tools")) and os.path.dirname(CODING) != CODING:
     CODING = os.path.dirname(CODING)
 SRC = sys.argv[sys.argv.index("--src") + 1] if "--src" in sys.argv else os.path.join(CODING, "game-tools", "korean-division-image-out")

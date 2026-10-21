@@ -10,7 +10,7 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "tools"))
 from common import ANCHOR, DIRS, FH, FRAMES, FW, OUT  # noqa: E402
 
-CODING = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))   # coding/game-tools/image -> coding
+CODING = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))   # C:/gameProject/game-tools/image -> coding
 GAME = sys.argv[sys.argv.index("--game") + 1] if "--game" in sys.argv else "korean-division"
 GAME_THEME = os.path.join(CODING, GAME, "assets", "themes", "ww2")
 UNITS = ["recruit", "infantry", "veteran", "scout", "worker", "at_infantry"]

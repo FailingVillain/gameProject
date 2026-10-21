@@ -26,7 +26,7 @@ from common import composite  # noqa: E402
 import houses  # noqa: E402
 import village  # noqa: E402
 
-DEFAULT_OUT = r"C:\Users\seung\OneDrive\바탕 화면\coding\game-tools\korean-division-image-out"
+DEFAULT_OUT = r"C:\gameProject\game-tools\korean-division-image-out"
 GRASS = (78, 110, 64, 255)
 TEAM_RED = (210, 40, 40)
 SUFFIX = ["", "@64", "@32"]

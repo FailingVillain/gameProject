@@ -74,7 +74,7 @@ main `ba4033fb` (2026-10-22 arty3 병합, FormatVersion 50 · Replay 18). 옛 �
 
 ### 사용자에게 받을 결정 · 검수
 - (2026-10-19 `retreat`) 중대 후퇴 임계를 사상률 30~40% 로 (retreatStrength 0.60~0.70, 데이터만). 미결: `retreatSuppression` (중대 평균 제압 0.003~0.02 라 사실상 발동 안 함), Spent 후 반감, 대대/연대 ×0.75 — 사용자가 제압 · 사기를 재설계할 때 함께 정함.
-- 효과음 전체 청취 (`coding/game-tools/korean-division-audio-default/index.html`).
+- 효과음 전체 청취 (`C:/gameProject/game-tools/korean-division-audio-default/index.html`).
 - 일괄 재렌더 후 세력별 개요 · 슬림화 전후 비교 검수.
 - 전술 AI 2단계 결과 · 새 밸런스 수치 제안 승인.
 

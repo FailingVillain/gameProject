@@ -1,12 +1,12 @@
 # Korean Division — common agent rules (read this instead of long boilerplate)
 
-Repo: `C:\Users\seung\OneDrive\바탕 화면\coding\korean-division`. Reply/report in Korean, short.
+Repo: `C:\gameProject\korean-division`. Reply/report in Korean, short.
 
 ## Workspace
 - Worktree: `git worktree add ../kd-develop/kd-<name> -b <name> main` (create ../kd-develop if missing). Never switch the main dir's branch.
 - Build: `"/c/Program Files/dotnet/dotnet" build -p:IntermediateOutputPath=obj/<name>/ -p:OutputPath=bin/<name>/`.
 - Heavy gate BEFORE every build / selftest / detcheck / sim / render:
-  `powershell -ExecutionPolicy Bypass -File "C:\Users\seung\OneDrive\바탕 화면\coding\korean-division\tools\agent\heavy_gate.ps1"` — one heavy process at a time yourself.
+  `powershell -ExecutionPolicy Bypass -File "C:\gameProject\korean-division\tools\agent\heavy_gate.ps1"` — one heavy process at a time yourself.
 - NEVER kill processes by image name (no `taskkill /IM`). Kill only PIDs you started.
 - No tanks / AT riflemen in sims.
 
@@ -43,7 +43,7 @@ Repo: `C:\Users\seung\OneDrive\바탕 화면\coding\korean-division`. Reply/repo
 - Never run --selftest with a timeout under 15 min (a killed run must be repeated from scratch).
 - Read selftest output by grepping FAIL/ERROR lines only; long logs go to the Gemini helper (see above).
 - Run commands one per tool call — chained lock+merge+build lines get rejected by the permission checker.
-- **game-tools: never `git checkout` / switch branches in the shared `coding/game-tools` checkout** (it must stay on `main` — other agents and the coordinator commit there). For a game-tools branch use your own worktree: `git -C <game-tools> worktree add ../gt-<task> -b <branch>`, work and render from that folder, commit there, then `git worktree remove` it (no --force). Commits meant for main go to the shared checkout on main.
+- **game-tools: never `git checkout` / switch branches in the shared `C:/gameProject/game-tools` checkout** (it must stay on `main` — other agents and the coordinator commit there). For a game-tools branch use your own worktree: `git -C <game-tools> worktree add ../gt-<task> -b <branch>`, work and render from that folder, commit there, then `git worktree remove` it (no --force). Commits meant for main go to the shared checkout on main.
 
 ## Gemini 위임 (사용자 2026-10-22: flash · pro 적극 활용)
 - Antigravity 플랜 경유: `python C:/works/agentHub/agy_delegate.py -m flash|pro -r reader|finder|coder|reviewer [-w] [-f 파일…|-]` (앱이 꺼져 있으면 자동 API 폴백). 가이드 `C:/works/agentHub/ANTIGRAVITY_GUIDE_FOR_CLAUDE.md`.

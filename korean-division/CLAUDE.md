@@ -54,7 +54,7 @@
 - 한글 UI 문자열은 `src/UI/Strings.cs` 의 const (폰트 아틀라스). Esc 는 창 닫기가 아니라 취소.
 - 이름 규칙: 네임스페이스 `KoreanDivision.*`, 환경변수 `KD_*`, 저장 `.kds` (매직 `KDSV`), 리플레이 `.kdr.json`.
 
-### 외부 도구 (`coding/game-tools/`)
+### 외부 도구 (`C:/gameProject/game-tools/`)
 - `image/` — 복셀 유닛 시트 · 초상화 (`portrait-maker/초상화만들기.bat`, SD.Next). `python export.py` → 이 게임 `assets/themes/ww2/` (`--game wargame` 이면 옛 게임).
 - 유닛 그림 테마: 기본 `kd1920` (새 128×160 · @64 · @32 LOD 시트, 없는 항목은 `ww2` 상속, `--theme ww2|none` 전환). 렌더 결과 반영 = `python tools/import_kd1920.py` (기본은 가져온 폴더만 교체, 옛 폴더 정리 `--prune`, 일부만 `--only a,b`). LOD · 팀색 셰이더 · 애니메이션 매핑은 `docs/ENGINE_NOTES.md` '유닛 시트 LOD'.
 - 그림 규칙 · 결정 (유닛 그래픽 파이프라인 · 군복 · 윤곽선 · 머리띠 · 모션 · 세력 외형 · LOD): `docs/ART_SPEC.md` (ROADMAP §3 에서 옮김).

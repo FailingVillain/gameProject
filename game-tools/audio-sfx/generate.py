@@ -10,7 +10,7 @@ import numpy as np
 from sfxlib import *
 
 OUT = Path(sys.argv[1]) if len(sys.argv) > 1 and not sys.argv[1].startswith('--') else \
-    Path(r"C:\Users\seung\OneDrive\바탕 화면\coding\game-tools\korean-division-audio-default")
+    Path(r"C:\gameProject\game-tools\korean-division-audio-default")
 ONLY = sys.argv[sys.argv.index('--only') + 1] if '--only' in sys.argv else None
 
 REG = []   # (file, group, desc, event key, suggested volume, maxVoices)

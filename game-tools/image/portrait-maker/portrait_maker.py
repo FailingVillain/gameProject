@@ -25,7 +25,7 @@ import urllib.request
 from PIL import Image
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-IMAGE_ROOT = os.path.dirname(HERE)                       # coding/game-tools/image
+IMAGE_ROOT = os.path.dirname(HERE)                       # C:/gameProject/game-tools/image
 OUT = os.path.join(IMAGE_ROOT, "out")
 CANDIDATES = os.path.join(HERE, "candidates")
 API = "http://127.0.0.1:7860"

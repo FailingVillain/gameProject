@@ -20,7 +20,7 @@ import voxel as V  # noqa: E402
 from bcommon import frame_for, make_res, render, TILE_PX, TONE, SIN  # noqa: E402
 from voxel import tr, ry, ell, box, seg  # noqa: E402
 
-GAME = r"C:\Users\seung\OneDrive\바탕 화면\coding\korean-division"
+GAME = r"C:\gameProject\korean-division"
 MATS = {
     "granite":   [(66, 64, 62), (96, 94, 90), (130, 127, 120), (164, 160, 150)],
     "granite2":  [(58, 56, 54), (84, 82, 78), (112, 109, 103), (142, 138, 130)],
@@ -219,7 +219,7 @@ def build(name, out_root):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--out", default=r"C:\Users\seung\OneDrive\바탕 화면\coding\game-tools\korean-division-image-out")
+    ap.add_argument("--out", default=r"C:\gameProject\game-tools\korean-division-image-out")
     ap.add_argument("--sheet", default=GAME + r"\docs\art_review\cover_props_v1.png")
     ap.add_argument("--only", default="")
     a = ap.parse_args()
