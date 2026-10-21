@@ -174,6 +174,43 @@ public static class TerrainSelfTest
             check(lw.ComputeChecksum() == ws.ComputeChecksum() && lw.Fog.Grid(1).SequenceEqual(ws.Fog.Grid(1)), "불러온 뒤 이어 돌려도 체크섬 · 안개 일치");
         }
 
+        // ---- 건물 크기 (2026-10-22): 가옥 칸 → 건물 묶음 (렌더) · 미션 지도 가옥 = 민가 3×3~4×3 · 큰 건물 6×4
+        {
+            const string HouseMap = """
+            { "name": "house test", "width": 48, "height": 48, "base": "grass", "starts": [ [2, 2], [45, 45] ],
+              "paint": [
+                { "terrain": "house", "rect": [5, 5, 3, 3] },
+                { "terrain": "house", "rect": [10, 5, 4, 3] },
+                { "terrain": "house", "rect": [5, 12, 6, 4] },
+                { "terrain": "house", "rect": [20, 5, 3, 4] },
+                { "terrain": "house", "rect": [20, 20, 8, 3] }
+              ] }
+            """;
+            var hm = MapFile.LoadText(HouseMap, "housetest", opt.Seed);
+            var hb = KoreanDivision.Render.HouseBlocks.Build(hm);
+            string got = string.Join(" ", hb.Select(b => $"{b.X},{b.Y},{b.W}x{b.H}"));
+            check(got == "5,5,3x3 10,5,4x3 20,5,3x4 5,12,6x4 20,20,6x3 26,20,2x3", $"가옥 묶음: 칠한 사각형 그대로 · 긴 줄은 6칸에서 끊음 ({got})");
+            var tall = KoreanDivision.Render.HouseBlocks.Pieces(new KoreanDivision.Render.HouseBlocks.Block(0, 0, 3, 4)).ToList();
+            check(tall.Count == 2 && tall.Sum(p => p.H) == 4 && KoreanDivision.Render.HouseBlocks.Pieces(new KoreanDivision.Render.HouseBlocks.Block(0, 0, 4, 3)).Count() == 1,
+                  "세로로 긴 묶음 (3×4) 은 그림 두 채, 가로 묶음 (4×3) 은 한 채");
+            check(!hm.IsWalkable(6, 6) && hm.IsHouseAdjacent(4, 6) && hm.IsHouseAdjacent(8, 6) && !hm.IsHouseAdjacent(9, 9), "큰 가옥: 발자국 전체 통행 불가 · 둘레 칸 가옥 엄폐");
+            var bad = new List<string>();
+            int nMis = 0, nHouse = 0;
+            foreach (var id in MissionDef.Available())
+            {
+                var md = MissionDef.Load(id);
+                var mm = md.MapData is { ValueKind: System.Text.Json.JsonValueKind.Object } mj ? MapFile.LoadText(mj.GetRawText(), "m_" + id, opt.Seed) : MapFile.Load(md.Map!, opt.Seed);
+                nMis++;
+                foreach (var b in KoreanDivision.Render.HouseBlocks.Build(mm))
+                {
+                    nHouse++;
+                    if (Math.Min(b.W, b.H) < 3 || Math.Max(b.W, b.H) > 6) bad.Add($"{id}:{b.X},{b.Y},{b.W}x{b.H}");
+                }
+            }
+            Console.WriteLine($"  [houses] 미션 {nMis}개 · 가옥 {nHouse}채");
+            check(bad.Count == 0, $"미션 지도 가옥은 모두 3~6칸 건물 (어긋남 {bad.Count}: {string.Join(" ", bad.Take(6))})");
+        }
+
         // ---- 생성 맵: 숲 · 언덕 흩뿌리기 (결정적 · 2인 대칭)
         {
             var g1 = GameMap.Generate(128, 128, opt.Seed);
