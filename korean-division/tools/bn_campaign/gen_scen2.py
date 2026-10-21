@@ -9,6 +9,7 @@ No tanks, no AT riflemen.
 """
 import json, sys, os, copy
 import gen_scen as G
+import gen_scen
 from gen_scen import FAC, TERRAINS, ROAD, CORNER_FOREST, TRENCH
 
 SEEDS = [1, 2, 3, 4, 5]
@@ -36,8 +37,7 @@ def rifle_co(fac, n=None, off=3, scouts=2, inf=None, rank=0, slr=None):
 
 
 def mg_units(fac, maxim, lmg, inf):
-    f = FAC[fac]
-    return {f['off']: 1, "heavy_maxim": maxim, "heavy_machinegunner": lmg, "infantry": inf}
+    return gen_scen.mg_mix(fac, maxim, lmg, inf)
 
 
 MG1 = (2, 4, 3)     # campaign 1 defender MG company

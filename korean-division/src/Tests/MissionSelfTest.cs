@@ -485,7 +485,7 @@ public static class MissionSelfTest
         foreach (var f in res.Factions) Console.WriteLine($"  faction {f.Id} {f.Name}: spawned {f.Spawned}, lost {f.Lost}, alive {f.Alive}, trench peak {trenchPeak.GetValueOrDefault(f.Id)} (now {w.Units.Count(u => u.Owner == f.Id && u.InTrench)})");
         foreach (var (fid, ai) in w.Controllers)   // 전술 AI 예비 · 역습 누계 (3B 측정, 읽기 전용)
             if (ai is TacticalAi ta && ta.StateOf(fid) is { } ts)
-                Console.WriteLine($"  tac {fid}: reserve {ts.ReserveCommits} counter {ts.Counterattacks} fallbacks {ts.Fallbacks} ammoRot {ts.AmmoRotations} plug {ts.PlugGaps}/{ts.PlugBreaches}/{ts.PlugFlanks} redesig {ts.ReserveRedesignations} fixPush {ts.FixPushes}");
+                Console.WriteLine($"  tac {fid}: reserve {ts.ReserveCommits} counter {ts.Counterattacks} fallbacks {ts.Fallbacks} ammoRot {ts.AmmoRotations} plug {ts.PlugGaps}/{ts.PlugBreaches}/{ts.PlugFlanks} redesig {ts.ReserveRedesignations} fixPush {ts.FixPushes} manRepl {ts.ManReplaces}");
         Console.WriteLine($"  events fired {m.EventFired.Count(x => x)}/{m.EventFired.Length}, reinforcements {m.ReinforcementSpawned.Count(x => x)}/{m.ReinforcementSpawned.Length}, messages {m.Messages.Count}, top kills {(res.TopUnits.Count > 0 ? res.TopUnits[0].Kills : 0)}, promotions {res.Promotions.Count}");
         Console.WriteLine($"  results: {path}");
         Console.WriteLine($"  checksum {w.ComputeChecksum():X16} tick {w.Tick}");

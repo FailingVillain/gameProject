@@ -245,7 +245,7 @@ public static class TacticsObs
         var offAll = new List<Unit>(); var offDist = new List<double>(); var offFar = 0;   // N35: 시작 장교 · 1초마다 장교 ↔ 중대 무게중심 거리 표본
         bool killDone = false; double killT = -1; string killLog = "";
         double t50 = -1; long kf50 = 0, km50 = 0;   // 12차: 한쪽 50% 미만 (추격 국면 시작) 시각 · 그때까지 사살 (사격 / 근접)
-        string[] cname = { "Orders", "Charges", "CavCharges", "TrenchMoves", "Fallbacks", "ArtMoves", "FireHolds", "ReserveCommits", "Preps", "Lifts", "SquadBounds", "Outposts", "OutpostWithdraw", "Counterattacks", "Reinforced", "Culminations", "AmmoRot", "PlugGap", "PlugBreach", "PlugFlank", "ResRedesig", "FixPush" };
+        string[] cname = { "Orders", "Charges", "CavCharges", "TrenchMoves", "Fallbacks", "ArtMoves", "FireHolds", "ReserveCommits", "Preps", "Lifts", "SquadBounds", "Outposts", "OutpostWithdraw", "Counterattacks", "Reinforced", "Culminations", "AmmoRot", "PlugGap", "PlugBreach", "PlugFlank", "ResRedesig", "FixPush", "ManRepl" };
         while (w.Winner == 0 && w.Tick < max)
         {
             if (BnCamp.On) BnCamp.BeforeStep();
@@ -283,7 +283,7 @@ public static class TacticsObs
                 if (ai is not TacticalAi ta || ta.StateOf(f) is not { } s || s.Phase < 2) continue;
                 if (!sides.TryGetValue(f, out var sd)) { sides[f] = sd = new Side(); foreach (var n in cname) sd.Counters[n] = new List<double>(); startAlive[f] = w.Units.Count(u => u.Owner == f && u.Alive); }
                 Sample(w, ta, s, sd, gs, pend, t);
-                var c = new[] { s.Orders, s.Charges, s.CavalryCharges, s.TrenchMoves, s.Fallbacks, s.ArtilleryMoves, s.FireHolds, s.ReserveCommits, s.Preps, s.Lifts, s.SquadBounds, s.Outposts, s.OutpostWithdrawals, s.Counterattacks, s.Reinforced, s.Culminations, s.AmmoRotations, s.PlugGaps, s.PlugBreaches, s.PlugFlanks, s.ReserveRedesignations, s.FixPushes };
+                var c = new[] { s.Orders, s.Charges, s.CavalryCharges, s.TrenchMoves, s.Fallbacks, s.ArtilleryMoves, s.FireHolds, s.ReserveCommits, s.Preps, s.Lifts, s.SquadBounds, s.Outposts, s.OutpostWithdrawals, s.Counterattacks, s.Reinforced, s.Culminations, s.AmmoRotations, s.PlugGaps, s.PlugBreaches, s.PlugFlanks, s.ReserveRedesignations, s.FixPushes, s.ManReplaces };
                 var p = prevCnt.GetValueOrDefault(f) ?? new int[c.Length];
                 for (int i = 0; i < c.Length; i++) for (int k = p[i]; k < c[i]; k++) sd.Counters[cname[i]].Add(t);
                 prevCnt[f] = c;

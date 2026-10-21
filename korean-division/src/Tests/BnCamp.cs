@@ -472,7 +472,7 @@ public static class BnCamp
         foreach (var (f, ai) in w.Controllers)
             if (ai is TacticalAi ta && ta.StateOf(f) is { } s)
                 plans[f.ToString()] = new Dictionary<string, object> { ["log"] = s.PlanLog.ToList(), ["stride"] = TacticalAi.PlanLogStride, ["profile"] = s.Profile.Name, ["manoeuvre"] = s.Profile.Strategy.Manoeuvre,
-                    ["frontal"] = s.PlansFrontal, ["flank"] = s.PlansFlank, ["pincer"] = s.PlansPincer, ["schwerpunkt"] = s.PlansSchwerpunkt, ["releases"] = s.PlanReleases, ["aborts"] = s.PlanAborts, ["withdrawals"] = s.Withdrawals,
+                    ["frontal"] = s.PlansFrontal, ["flank"] = s.PlansFlank, ["pincer"] = s.PlansPincer, ["schwerpunkt"] = s.PlansSchwerpunkt, ["releases"] = s.PlanReleases, ["aborts"] = s.PlanAborts, ["withdrawals"] = s.Withdrawals, ["manReplaces"] = s.ManReplaces, ["fixPushes"] = s.FixPushes,
                     ["open"] = s.Regiments.Where(r => r.Plan is ManPlan.Flank or ManPlan.Pincer && r.PlanStage == 1).Select(r => new[] { r.Id, (int)r.Plan, r.PlanSide, (int)r.PlanTick, (int)r.FixTick, (int)r.ArriveTick }).ToList() };
         o["plans"] = plans;
         o["firstShot"] = firstShot; o["firstCharge"] = firstCharge; o["firstCas"] = firstCas;
