@@ -16,4 +16,4 @@
 - 패치 --reject 적용 후 4파일 수동 병합(Program.cs CrashLog.Context, CampaignState 중첩 클래스·SchemaVersion=2 단일화, MissionSelfTest, CampaignMenu 전면 교체 + 읽기 실패 사유 배너).
 - 저장 트랜잭션: 정산(Apply→Save)은 결과 확정 한 곳에서만, 깨진·더 새 버전 파일은 새 상태로 덮어쓰지 않음(GameMission); FromJson 은 Version>=1 만 승격(0 은 Parse 가 거부).
 - 검증: 빌드 오류 0, detcheck GOLDEN match, snaptest OK, KD_SELFTEST_ONLY=missions/savecompat PASS. uifuzz 미실행(merger/release 몫).
-- 주의: CampaignMenu 메뉴 내 즉시 Save 는 읽기 실패 시 새 상태로 덮어쓸 수 있음(배너로 경고). 브랜치 gemini-import (main d49feac 기반).
+- 리뷰 수정(2차 커밋): 읽기 실패(loadError) 동안 CampaignMenu 모든 Save 차단(SaveUnlessLoadFailed)·출격 버튼 비활성, 초기화 시 원본을 campaign.json.bak 로 보존; GameMission 확정은 CampaignState.CommitResult 로 추출해 selftest(savecompat); AmmoScale 정수 천분율(World.ScaleAmmo, NaN/범위 검증); 목록 null 원소는 Parse 가 거부; SchemaVersion 주석 정정. 미결: 경제 하드코딩 수치(2)·반복 승리 정산(3)은 사용자 결정 대기. 브랜치 gemini-import (main d49feac 기반).

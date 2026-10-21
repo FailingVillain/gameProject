@@ -108,7 +108,7 @@ public sealed class CampaignState
     }
 
     /// <summary>캠페인 저장 스키마 버전. 규칙 (ENGINE_NOTES 저장 호환): 필드는 추가만 한다 — 새 필드는 C# 기본값이 곧 "옛 파일에 없을 때의 값"
-    /// 이라 옛 파일 (Version 이 작거나 없음) 은 변환 없이 열고 모자란 필드는 기본값으로 채운다. 필드를 지우거나 뜻을 바꾸면 SchemaVersion 을 올리고
+    /// 이라 옛 파일 (Version 1, 또는 Version 필드가 없는 파일 — 없으면 기본값 = 현재 버전으로 읽는다) 은 변환 없이 열고 모자란 필드는 기본값으로 채운다. Version 0 · 음수는 깨진 파일로 거부한다. 필드를 지우거나 뜻을 바꾸면 SchemaVersion 을 올리고
     /// 그 옛 파일은 거부한다. 현재보다 큰 Version (더 새 게임이 만든 파일) 과 깨진 파일도 거부 (사유는 LastLoadError, 한국어).</summary>
     public const int SchemaVersion = 2;
     public int Version { get; set; } = SchemaVersion;
@@ -277,10 +277,40 @@ public sealed class CampaignState
     public static CampaignState? FromJson(string text)
     {
         var s = JsonSerializer.Deserialize<CampaignState>(text, Opts);
+        if (s != null && s.HasNullElements()) return null;   // 손상 파일 (목록 안의 null) — 크래시 대신 거부 (Parse 가 깨짐으로 보고)
         s?.EnsureInitialized();
         if (s != null && s.Version >= 1 && s.Version < SchemaVersion) s.Version = SchemaVersion;   // 옛 파일 (1) 은 기본값으로 채운 채 현재 번호로. 0 · 음수는 그대로 두어 Parse 가 거부
         s?.Sanitize();
         return s;
+    }
+
+    /// <summary>목록 안에 null 원소가 있는가 (손상 · 수작업 편집된 파일). 목록 자체가 null 인 것은 EnsureInitialized/Parse 가 처리한다.</summary>
+    bool HasNullElements() =>
+        (Completed?.Contains(null!) ?? false) || (History?.Contains(null!) ?? false) || (Units?.Contains(null!) ?? false) || (Officers?.Contains(null!) ?? false)
+        || (EntryUnits?.Contains(null!) ?? false) || (EntryOfficers?.Contains(null!) ?? false) || (Roster?.Contains(null!) ?? false)
+        || (Stock?.RecentLog?.Contains(null!) ?? false) || (Pending?.DeployedCompanyIds?.Contains(null!) ?? false);
+
+    /// <summary>메뉴 저장 관문: 읽기 실패 (깨진 · 더 새 버전) 파일이 있는 동안은 저장하지 않는다 (원본 보호). loadError 가 null 이면 일반 Save.</summary>
+    public bool SaveUnlessLoadFailed(string? loadError) => loadError == null && Save();
+
+    /// <summary>결과 확정 (승리 미션 → 이월 저장). 읽기 실패 파일은 새 상태로 덮어쓰지 않는다. 반환: 저장 성공 여부.</summary>
+    public static bool CommitResult(MissionResults r)
+    {
+        var prev = Load();
+        if (prev == null && LastLoadError != null) return false;
+        return Apply(prev, r) is { } cs && cs.Save();
+    }
+
+    /// <summary>읽지 못한 원본을 campaign.json.bak 로 옮긴다 (초기화 전 보존). 옮겼으면 true.</summary>
+    public static bool BackupBroken()
+    {
+        try
+        {
+            if (!File.Exists(FilePath)) return false;
+            File.Move(FilePath, FilePath + ".bak", true);
+            return true;
+        }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException) { return false; }
     }
 
     /// <summary>저장 (실패해도 게임은 계속). 임시 파일에 쓰고 바꿔치기. 성공 여부.</summary>
@@ -320,7 +350,7 @@ public sealed class CampaignState
         error = null;
         CampaignState? s = null;
         try { s = FromJson(text); }
-        catch (Exception e) when (e is JsonException or InvalidOperationException or NotSupportedException) { }
+        catch (Exception e) when (e is JsonException or InvalidOperationException or NotSupportedException or NullReferenceException) { }
         if (s == null || s.Version < 1) error = SnapMsg.CampaignBroken;
         else if (s.Version > SchemaVersion) { error = string.Format(SnapMsg.CampaignNewer, s.Version, SchemaVersion); s = null; }
         else if (s.Units == null! || s.Officers == null! || s.History == null! || s.Completed == null! || s.EntryUnits == null! || s.EntryOfficers == null!) error = SnapMsg.CampaignBroken;
