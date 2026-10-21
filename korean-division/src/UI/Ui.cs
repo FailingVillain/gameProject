@@ -59,6 +59,7 @@ public static class Ui
         if (!customFont) return;
         Raylib.UnloadFont(small);
         Raylib.UnloadFont(large);
+        Paper.Unload();
     }
 
     static Font FontFor(float size) => size >= 20 ? large : small;
@@ -78,6 +79,7 @@ public static class Ui
     public static void Panel(Rectangle r, Color fill, Color border)
     {
         Raylib.DrawRectangleRec(r, fill);
+        Paper.Grain(r);   // T08 종이 질감
         Raylib.DrawRectangleLinesEx(r, 1, border);
     }
 
@@ -86,6 +88,7 @@ public static class Ui
         Color fill = active ? Palette.BtnActive : hover ? Palette.BtnHover : Palette.Btn;
         Raylib.DrawRectangleRounded(r, 0.2f, 4, fill);
         Raylib.DrawRectangleRoundedLinesEx(r, 0.2f, 4, 1, Palette.PanelBorder);
+        Paper.Grain(new Rectangle(r.X + 2, r.Y + 2, r.Width - 4, r.Height - 4));
         TextCentered(label, r, 16, Palette.Text);
     }
 

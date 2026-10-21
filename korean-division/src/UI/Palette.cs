@@ -4,22 +4,22 @@ namespace KoreanDivision.UI;
 
 public static class Palette
 {
-    public static readonly Color Void = new(10, 11, 14, 255);
-    public static readonly Color TopBar = new(22, 25, 31, 255);
-    public static readonly Color HudBg = new(26, 29, 36, 255);
-    public static readonly Color HudTrim = new(120, 104, 70, 255);
-    public static readonly Color Panel = new(34, 38, 47, 255);
-    public static readonly Color PanelDark = new(18, 21, 27, 255);
-    public static readonly Color PanelBorder = new(78, 86, 104, 255);
+    public static readonly Color Void = new(14, 12, 10, 255);
+    public static readonly Color TopBar = new(40, 33, 26, 255);
+    public static readonly Color HudBg = new(46, 38, 30, 255);
+    public static readonly Color HudTrim = new(150, 126, 84, 255);
+    public static readonly Color Panel = new(58, 49, 38, 255);
+    public static readonly Color PanelDark = new(30, 25, 20, 255);
+    public static readonly Color PanelBorder = new(116, 98, 70, 255);
 
-    public static readonly Color Text = new(228, 230, 236, 255);
-    public static readonly Color TextDim = new(148, 154, 170, 255);
+    public static readonly Color Text = new(236, 229, 212, 255);
+    public static readonly Color TextDim = new(176, 164, 140, 255);
     public static readonly Color Accent = new(240, 200, 90, 255);
     public static readonly Color Warning = new(255, 190, 90, 255);
 
-    public static readonly Color Btn = new(46, 52, 64, 255);
-    public static readonly Color BtnHover = new(66, 78, 100, 255);
-    public static readonly Color BtnActive = new(58, 108, 74, 255);
+    public static readonly Color Btn = new(72, 60, 45, 255);
+    public static readonly Color BtnHover = new(100, 83, 58, 255);
+    public static readonly Color BtnActive = new(70, 106, 64, 255);
 
     public static readonly Color Select = new(80, 230, 110, 255);
     /// <summary>교전 중 (경계 상태) 선택 표시 — 녹색 선택 선 대신 같은 굵기로.</summary>

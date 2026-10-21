@@ -446,6 +446,7 @@ public sealed class Hud : IDisposable
     void DrawTopBar(Vector2 mouse)
     {
         Raylib.DrawRectangleRec(TopBar, Palette.TopBar);
+        Paper.Grain(TopBar);
         Raylib.DrawLineEx(new(0, TopBar.Height), new(TopBar.Width, TopBar.Height), 1, Palette.HudTrim);
 
         float y = (TopBar.Height - 16) / 2;
@@ -515,6 +516,7 @@ public sealed class Hud : IDisposable
     void DrawBottom(Vector2 mouse)
     {
         Raylib.DrawRectangleRec(Bottom, Palette.HudBg);
+        Paper.Grain(Bottom);
         Raylib.DrawRectangleRec(new Rectangle(0, Bottom.Y, Bottom.Width, 3), Palette.HudTrim);
 
         Ui.Panel(MinimapPanel, Palette.PanelDark, Palette.PanelBorder);
