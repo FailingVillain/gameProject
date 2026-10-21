@@ -676,3 +676,8 @@
 - 산개 파상 횡대 (`formations.json lineShape = "line_waves"`) · choke (`combat.chokeEnabled`) 는 **기본 끔**. 측정 변형 `KD_OBS_VARIANT` = FMOFF · LWON · LWX(`KD_OBS_LW`) · CHOKE · RST0 등 (TacticsObs.ApplyVariant, --collide 도 같음). `--collide` 끝에 `[rev]` 역전 유닛 상태 분류.
 - 측정 (같은 빌드, 2026-10-22): --collide 역전/s 대형 완화 끔→켬 amove 1.63→1.29 · battle 0.77→0.71 · march 0.20→0.11. tactics-obs 5시드 B(ai_bn_assault) 승: 끔 5 · 켬 4 · 산개 파상 1 · 간격만 1.3 2 (넓은 횡대는 공격 측 불리). choke 켬: tactics-obs A 2→4/5 · B 4→5/5 이지만 --choke 다리 통과 틱 2193→2748 (w3 co3) · 2524→4641 (co5) · 역전/유닛-분 34→56 — 큐가 통과를 늦춤 → 끔 유지.
 - 테스트 `KD_SELFTEST_ONLY=formrelax` · `choke`, 측정 `--choke [w=3] [co=3] [terrain=bridge|ford] [off=1]`.
+
+## 철도 선로 지형 (2026-10-22, 브랜치 `rail`, T07, FormatVersion 53)
+- `TerrainType.Rail` (enum 끝 값): 통행 · 이동 배수 1 · 엄폐 없음 · 시야/사선 안 막음 (= 맨땅). 포탄 구덩이 안 생김 (TryCrater 대상 아님). 선로 파괴 · 장갑열차는 범위 밖.
+- 지도 json paint `"line": [x0, y0, x1, y1, ...]` = 브레즌햄 1칸 폭 꺾은선 (`MapFile.LineTiles`). 렌더: 자갈 절차 타일 (MapRenderer) + 침목 · 레일 덧그림 `src/Render/RailRenderer.cs` (TerrainVersion 캐시).
+- 테스트 `KD_SELFTEST_ONLY=terrain` (선로 블록 6검사).

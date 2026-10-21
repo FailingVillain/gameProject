@@ -211,6 +211,39 @@ public static class TerrainSelfTest
             check(bad.Count == 0, $"미션 지도 가옥은 모두 3~6칸 건물 (어긋남 {bad.Count}: {string.Join(" ", bad.Take(6))})");
         }
 
+        // ---- 철도 선로 (2026-10-22): 지도 json "rail" (rect · line) · 통행 · 이동 · 엄폐 없음 · 사선/시야 안 막음 · 저장 · 선로 그림 선분
+        {
+            const string RailMap = """
+            { "name": "rail test", "width": 64, "height": 64, "base": "grass", "starts": [ [4, 4], [60, 60] ],
+              "paint": [
+                { "terrain": "rail", "rect": [0, 30, 64, 1] },
+                { "terrain": "rail", "line": [10, 5, 20, 15, 30, 15] }
+              ] }
+            """;
+            var rw = World.CreateStandard(MapFile.LoadText(RailMap, "railtest", opt.Seed), defs);
+            foreach (var u in rw.Units) u.Hp = 0;
+            rw.Step();
+            var rm = rw.Map;
+            bool lineOk = true;
+            for (int k = 0; k <= 10; k++) lineOk &= rm.Get(10 + k, 5 + k) == TerrainType.Rail && rm.Get(20 + k, 15) == TerrainType.Rail;
+            check(rm.Get(0, 30) == TerrainType.Rail && rm.Get(63, 30) == TerrainType.Rail && rm.Get(5, 29) == TerrainType.Grass && lineOk && rm.Get(11, 5) == TerrainType.Grass,
+                  "지도 json: rail rect · line (대각선 → 직선 꺾은선)");
+            var ct = rm.TerrainCover(C(20, 30));
+            check(rm.IsWalkable(20, 30) && MathF.Abs(rm.MoveMul(C(20, 30)) - 1f) < 1e-4f && ct.Hit == 1f && ct.Suppress == 1f,
+                  "선로: 통행 가능 · 이동 배수 1 · 지형 엄폐 없음");
+            check(rm.HasFiringLine(C(20, 25), C(20, 36), 0, 0) && rm.HasLineOfSight(C(20, 25), C(20, 36)), "선로를 가로지르는 사선 · 직선 이동 검사 막지 않음");
+            var a = rw.SpawnUnit(inf, 1, C(20, 26));
+            var b = rw.SpawnUnit(inf, 2, C(20, 35));
+            for (int i = 0; i < FogOfWar.Period + 1; i++) rw.Step();
+            check(rw.Fog.CanSee(1, b) && rw.Fog.CanSee(2, a), "선로 건너편 적이 보임 (지형 시야 안 막음)");
+            var segs = KoreanDivision.Render.RailRenderer.Segments(rm);
+            int straight = segs.Count(s => s.Y == 30), diag = segs.Count(s => s.S.B.X - s.S.A.X == 1 && s.S.B.Y - s.S.A.Y == 1);
+            check(straight == 63 && diag == 10, $"선로 그림 선분: 가로 63 (= 64칸 − 1, 받은 {straight}) · 대각선 10 (받은 {diag})");
+            var bytes = Snapshot.Save(rw, new SnapshotMeta("rail", 1, false, "none"));
+            var lw = Snapshot.Load(bytes, defs).World;
+            check(lw.Map.Get(15, 10) == TerrainType.Rail && lw.Map.TerrainHash == rm.TerrainHash && lw.ComputeChecksum() == rw.ComputeChecksum(), "저장 · 불러오기: 선로 칸 유지");
+        }
+
         // ---- 생성 맵: 숲 · 언덕 흩뿌리기 (결정적 · 2인 대칭)
         {
             var g1 = GameMap.Generate(128, 128, opt.Seed);

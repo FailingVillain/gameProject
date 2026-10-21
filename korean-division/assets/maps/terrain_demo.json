@@ -1,12 +1,13 @@
 {
   // 지형 · 높이 시연용 2인 지도 (168×168, 2026-10-19 112 → ×1.5): 숲 · 고지 · 민간 가옥 · 건물 잔해 · 철조망 · 참호 (180° 회전 대칭)
-  // 지형 이름: grass · dirt · sand · water · rock · forest · rubble · house · wire · trench, 높이만 = "high" / "low" (또는 지형과 함께 "high": true)
-  // 칠하기: rect [x, y, w, h] · circle [cx, cy, r] · tiles [[x, y], ...]
+  // 지형 이름: grass · dirt · sand · water · rock · forest · rubble · house · wire · trench · crater · rail, 높이만 = "high" / "low" (또는 지형과 함께 "high": true)
+  // 칠하기: rect [x, y, w, h] · circle [cx, cy, r] · tiles [[x, y], ...] · line [x0, y0, x1, y1, ...] (1칸 폭 꺾은선, 선로)
   "name": "지형 시연",
   "width": 168,
   "height": 168,
   "base": "grass",
   "paint": [
+    { "terrain": "rail", "line": [0, 136, 80, 136, 108, 108, 167, 108] },
     { "terrain": "forest", "rect": [51, 114, 21, 18] },
     { "terrain": "forest", "rect": [96, 36, 21, 18] },
     { "terrain": "high", "rect": [21, 96, 24, 12] },
