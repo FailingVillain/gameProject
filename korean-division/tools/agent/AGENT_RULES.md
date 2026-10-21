@@ -15,7 +15,7 @@ Repo `C:\gameProject\korean-division`. Report in Korean, short. Procedures: `doc
 - Context ~200k, or first mergeable slice done: merge / WIP-commit, then stop and report the rest.
 
 ## Docs / determinism
-- ENGINE_NOTES / ROADMAP_SHORT: append a short section, never rewrite others' text. Count lines (selftest totals, FormatVersion) are replaced, never appended. Per-merge CLAUDE.md / SELFTEST_HISTORY / BASELINE / HANDOFF updates are NOT yours - the release role does them at queue end.
+- ENGINE_NOTES: append a short section, never rewrite others' text. Your task card: write only its 결과/상태 lines. ops/*.md: not yours (owners in ops/PIPELINE.md). Count lines (selftest totals, FormatVersion) are replaced, never appended. Per-merge CLAUDE.md / SELFTEST_HISTORY / BASELINE / HANDOFF updates are NOT yours - the release role does them at queue end.
 - Ambiguous instruction (value, direction, unit): ask in the report, or implement the safest reading behind a JSON switch and say so.
 - Determinism: DetMath, hash RNG, commands only; new state -> checksum + Audit + save + FormatVersion bump (check main's value at merge time).
 - No test dodging: never change a test's seed/map/values to pass an invariant; fix the cause or report and stop.

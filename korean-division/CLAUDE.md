@@ -12,5 +12,5 @@ C# .NET 8 + Raylib-cs 결정적 전술 캠페인 게임. 저장소 `C:/gameProje
 ## 다음에 읽을 곳
 - 역할 카드 `C:/Users/seung/.claude/agents/<role>.md` (sim feature art docs measure merger reviewer release scout spec) + 작업 카드.
 - 공통 규칙 `tools/agent/AGENT_RULES.md` (<=3KB), 절차 `docs/procedures/` (merge-procedure, gate, permissions, measurement).
-- 빌드 · 플래그 · 검증 · 이름 규칙 · 외부 도구 · 최신 selftest: `docs/PROJECT_NOTES.md` (Grep). 한도: `ops/LIMITS.md`. 결정: `ops/DECISIONS.md`.
+- 빌드 · 플래그 · 검증 · 이름 규칙 · 외부 도구 · 최신 selftest: `docs/PROJECT_NOTES.md` (Grep). 한도: `ops/LIMITS.md`. 결정: `ops/DECISIONS.md`. 작업 흐름 · 문서 소유권: `ops/PIPELINE.md`.
 - 심볼 위치: `PROJECT_MAP.md` Grep. 큰 문서(ENGINE_NOTES, ROADMAP_LONG, legacy/)는 통독 금지, 절만 Grep.

@@ -23,7 +23,7 @@
 ### 프로젝트
 - **Korean Division** — 캠페인 위주 싱글 플레이 게임. wargame (master `1444d04`, 2026-10-18) 소스에서 분기. C# .NET 8 + Raylib-cs.
 - 캠페인 구조는 아직 미정 → 설계 전에 사용자에게 묻는다. 기획서 밖 기능은 계획 문서 먼저.
-- **지시 · 결정 · 진행 순서: `docs/ROADMAP_SHORT.md`** (≤50줄, 세션마다 읽음; 사용자 지시는 별도 말 없으면 여기 저장, 50줄 넘으면 가장 오래된 항목을 `docs/ROADMAP_LONG.md` 로). 상세 · 장기 · 보류 = `docs/ROADMAP_LONG.md` (Grep 만). 진행 기록: `WORKPLAN.md` (짧게 유지, 끝난 일은 한 줄).
+- **지시 · 진행 순서 = `ops/QUEUE.md` + 작업 카드(`tasks/`)**, 결정 = `ops/DECISIONS.md`, 흐름 = `ops/PIPELINE.md`. `docs/ROADMAP_SHORT.md` 는 2026-10-22 이전 지시의 보관본(새 지시는 넣지 않음), 상세 · 장기 · 보류 = `docs/ROADMAP_LONG.md` (Grep 만).
 
 ### 토큰 절약 규칙
 - 심볼 위치: `PROJECT_MAP.md` 를 Grep (트리 탐색 · 큰 파일 통독 금지). 구조가 크게 바뀌면 `python C:/works/agentHub/hub.py map . --ai`.
@@ -34,14 +34,14 @@
 - `--selftest` 는 ≈5분, 출력이 길다 → `run_in_background` + 실패 줄만 grep 하거나 Gemini 로 요약.
 
 ### 세션 인계 (사용량 한계 대비)
-- 새 세션 시작 시 **`docs/HANDOFF.md` 먼저** 읽는다. 사용자가 "상황 저장" · `/save-state` 하면 그 파일의 저장 절차 수행, "이어서" · `/resume` 이면 재개 절차.
+- 새 지휘자 세션은 **`ops/STATE.md` → `ops/QUEUE.md` → `ops/DECISIONS.md` → `ops/PIPELINE.md`** 순으로 읽고 시작한다(PIPELINE §재개). "상황 저장" · `/save-state` = STATE.md 갱신(절차는 `docs/HANDOFF.md`), "이어서" · `/resume` = 재개 절차.
 
 ### 토큰 절약 (2026-10-19)
 - 하위 에이전트 모델은 **난이도별 필수 선택** (전역 `~/.claude/CLAUDE.md` 'Model choice by task difficulty'): 문서 · 렌더 · 작은 그림 수정 = haiku, 기존 패턴의 기능 · 새 유닛 그림 = sonnet, 결정성 · 저장 형식 · 성능 · 대규모 제거 = opus (Fable 금지, 사용자 재허가 전까지).
 - 작업 묶음마다 새 에이전트 (긴 에이전트를 계속 이어 쓰지 않음), 사용자 피드백은 모아서 한 번에. Gemini 위임 수준 high ($2/일).
 
 ### Git (중요)
-- 원격: GitHub `FailingVillain/korean-division` (private). 로컬 커밋은 단계마다 자유롭게 (`-c user.name="seung" -c user.email="seungwoo3656@gmail.com"`).
+- 저장소: 모노레포 `C:/gameProject` (korean-division + game-tools, 새 이력 2026-10-22). 로컬 커밋은 단계마다 자유롭게 (`-c user.name="seung" -c user.email="seungwoo3656@gmail.com"`).
 - **push (업로드) 는 사용자가 명령할 때만.** 커밋했다고 push 하지 않는다.
 
 ### 빌드 · 실행

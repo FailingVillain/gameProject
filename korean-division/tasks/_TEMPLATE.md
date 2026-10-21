@@ -1,4 +1,4 @@
-# T-NN <제목>  (파일명 T-NN-<slug>.md, 카드 ≤1.5KB)
+# Tnn <제목>  (파일명 Tnn-<slug>.md, 예 T13-release.md, 카드 ≤1.5KB)
 - id | 역할(sim/feature/art/docs/measure/merger/reviewer/release/scout/spec) | 등급: D(G/下/中/上)·H(핫스팟 0~3) 필수, R·S·W 는 선택 메모
 - 선행(blockedBy) | 후행
 - 핫스팟/만질 파일 (Snapshot · SelfTest · Defs · balance · Combat · Game · Replay 접촉)
