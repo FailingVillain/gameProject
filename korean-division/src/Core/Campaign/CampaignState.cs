@@ -295,23 +295,20 @@ public sealed class CampaignState
         return s;
     }
 
-    /// <summary>저장 (실패해도 게임은 계속). 임시 파일에 쓰고 바꿔치기. 성공 여부.</summary>
-    public bool Save()
+    /// <summary>읽지 못한 원본을 campaign.json.bak 로 옮긴다 (초기화 전 보존). 옮겼으면 true.</summary>
+    public static bool BackupBroken()
     {
         try
         {
-            Directory.CreateDirectory(Folder);
-            string tmp = FilePath + ".tmp";
-            File.WriteAllText(tmp, ToJson());
-            File.Move(tmp, FilePath, true);
+            if (!File.Exists(FilePath)) return false;
+            File.Move(FilePath, FilePath + ".bak", true);
             return true;
         }
-        catch (Exception e) when (e is IOException or UnauthorizedAccessException)
-        {
-            Console.Error.WriteLine($"캠페인 저장 실패: {e.Message}");
-            return false;
-        }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException) { return false; }
     }
+
+    /// <summary>저장 (실패해도 게임은 계속). 임시 파일에 쓰고 바꿔치기 — 실패 시 임시 파일도 지운다 (CampaignSaves.WriteAtomic). 성공 여부.</summary>
+    public bool Save() => CampaignSaves.WriteAtomic(FilePath, ToJson());
 
     /// <summary>마지막 Load 가 파일을 거부한 사유 (한국어, 거부가 아니면 null). 파일이 없는 것은 거부가 아니다.</summary>
     public static string? LastLoadError { get; private set; }
