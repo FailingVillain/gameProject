@@ -5,7 +5,7 @@ namespace KoreanDivision.Tests;
 
 /// <summary>
 /// N79a 집결 지점 · 포격 종류 (Rally.cs · GroundFire.cs): 집결 지점 지정 (자기 중대만 · 리플레이 기록), 후퇴 → 집결 지점, 집결 지점 없는 중대는 기존 목표,
-/// 준비 사격 N발 뒤 끝, 이동탄막 착탄선 전진, 연막 미구현 (명령 거부), 탄약 한도, 지속 사격 그대로, 저장 · 체크섬 · 명령 직렬화. `KD_SELFTEST_ONLY=n79a`.
+/// 준비 사격 N발 뒤 끝, 이동탄막 착탄선 전진, 연막 (N59 구현 — 곡사포 연막 실행), 탄약 한도, 지속 사격 그대로, 저장 · 체크섬 · 명령 직렬화. `KD_SELFTEST_ONLY=n79a`.
 /// </summary>
 public static class N79aSelfTest
 {
@@ -196,15 +196,14 @@ public static class N79aSelfTest
 
     static void TestSmoke(GameOptions opt, Action<bool, string> check)
     {
+        // N59 (참호 돌파 묶음): 연막 종류가 구현됨 — 연막탄 있는 곡사포는 breach.smokeRounds 발을 쏘고 끝 (상세는 BreachSelfTest)
         var (w, gun, c) = Battery(opt.Seed + 13);
         int log0 = w.CommandLog.Count;
         w.GroundFire(1, new[] { gun }, c + new Vector2(10, 0), GroundFireKind.Smoke);
         Steps(w, 5);
-        // 직접 명령을 넣어도 실행되지 않는다
-        w.Issue(new GroundFireExCommand(1, new[] { gun.Id }, c + new Vector2(10, 0), GroundFireKind.Smoke, Vector2.Zero));
-        Steps(w, 5);
-        check(gun.Order != UnitOrder.GroundFire && w.CommandLog.Count == log0 + 1, $"연막: 명령 종류만 있고 실행 안 됨 (연막탄 없음) — 명령 {gun.Order}");
-        check(!string.IsNullOrEmpty(KoreanDivision.UI.S.FireKindSmokeNone) && KoreanDivision.UI.S.FireKindSmokeNone.Contains("연막탄 없음"), "연막 안내 문구 (Strings)");
+        check(gun.Order == UnitOrder.GroundFire && gun.GroundKind == GroundFireKind.Smoke && gun.GroundRounds == Defs.Current.Breach.SmokeRounds && w.CommandLog.Count == log0 + 1,
+            $"연막: 곡사포 연막 지점 포격 실행 (명령 {gun.Order} · 종류 {gun.GroundKind} · 발수 {gun.GroundRounds})");
+        check(!string.IsNullOrEmpty(KoreanDivision.UI.S.FireKindSmokeNone) && KoreanDivision.UI.S.FireKindSmokeNone.Contains("연막탄"), "연막 안내 문구 (Strings)");
     }
 
     static void TestAmmoCap(GameOptions opt, Action<bool, string> check)

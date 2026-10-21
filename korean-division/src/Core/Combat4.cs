@@ -37,6 +37,8 @@ public sealed class GrenadeBlast
     public int ThrowerId, Owner;
     public Vector2 Pos;
     public long ExplodeTick;
+    /// <summary>연막 수류탄 (N65): 터지면 피해 대신 연막 (Breach.cs).</summary>
+    public bool Smoke;
 }
 
 public sealed partial class World
@@ -55,7 +57,7 @@ public sealed partial class World
         {
             var s = spotters[i];
             if (!s.Alive || (s.Owner != faction && !Allied(faction, s.Owner))) continue;
-            if (t.EdgeDistance(s.Pos) <= SightOf(s)) return true;
+            if (t.EdgeDistance(s.Pos) <= SightOf(s) && !SmokeBlocks(s.Pos, t.Pos)) return true;   // 연막 너머는 관측 못 함 (N59)
         }
         return false;
     }
@@ -145,17 +147,19 @@ public sealed partial class World
     void RegenGrenade(Unit u, float dt)
     {
         var g = Defs.Grenade;
-        if (u.Grenades >= u.Def.Grenades || g.RegenSeconds <= 0) return;
+        bool needSmoke = u.SmokeGrenades < u.Def.SmokeGrenades;   // N65: 수류탄이 다 찬 뒤 연막 수류탄 (같은 시계)
+        if ((u.Grenades >= u.Def.Grenades && !needSmoke) || g.RegenSeconds <= 0) return;
         if (Tick - LastCombatTick(u) < (long)(Defs.Supply.RegenDelay / Config.SimDt)) return;
         float mul = AmmoRegenMulAt(u.Owner, u.Pos);   // 수류탄 보충은 아군 도시 · 보급 마차 근처에서만 (탄약과 같은 배수)
         if (mul <= 1f) return;
         u.GrenadeRegen += dt * mul;
-        if (u.GrenadeRegen >= g.RegenSeconds) { u.Grenades++; u.GrenadeRegen = 0; }
+        if (u.GrenadeRegen >= g.RegenSeconds) { if (u.Grenades < u.Def.Grenades) u.Grenades++; else u.SmokeGrenades++; u.GrenadeRegen = 0; }
     }
 
     /// <summary>신관이 다 탄 수류탄 폭발: 반경 안 적대 유닛에 피해 (중심 damage → 가장자리 edgeDamage, 엄폐 무시), 전차는 묶음 고정 피해, 제압 +suppress (엄폐 무시).</summary>
     void UpdateBlasts()
     {
+        UpdateSmokes();   // 다 탄 연막 지우기 (Breach.cs)
         if (Blasts.Count == 0) return;
         var g = Defs.Grenade;
         for (int bi = 0; bi < Blasts.Count;)
@@ -163,6 +167,7 @@ public sealed partial class World
             var b = Blasts[bi];
             if (b.ExplodeTick > Tick) { bi++; continue; }
             Blasts.RemoveAt(bi);
+            if (BlastSmoke(b)) continue;   // 연막 수류탄 (N65, Breach.cs)
             var thrower = Find(b.ThrowerId);
             Impacts.Add((b.Pos, b.Pos, b.Owner, Tick, g.Radius, b.ThrowerId, "grenade"));
             UnitsInRadius(b.Pos, g.Radius + Defs.MaxUnitRadius, grenBuffer);

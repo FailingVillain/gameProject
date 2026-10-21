@@ -648,7 +648,7 @@ public static class SnapshotSelfTest
         Audit1(typeof(WeatherState), "Kind Time StartKind StartTime Schedule Next TimeStepTicks Changes", "");   // WTHR
         Audit1(typeof(Faction), "Id Name Lang IsAi RevealAll Defeated Revealed NoHqTime Team", "");
         Audit1(typeof(FogOfWar), "world width height own memory Enabled Version seeded stampEpoch",
-            "grids circles forget stampMark vision due fversion");   // grids = own 의 동맹 합침 (불러올 때 다시 만듦) · 원 표 캐시 · 작업 버퍼 · 표시 마크 (epoch 로 무효화) · 지형 시야 메모 (지형만의 순수 함수)
+            "grids circles forget stampMark vision due fversion smokeNear smokeMark");   // smokeNear · smokeMark = 연막 찍기 작업 버퍼 · 표시 (N59)   // grids = own 의 동맹 합침 (불러올 때 다시 만듦) · 원 표 캐시 · 작업 버퍼 · 표시 마크 (epoch 로 무효화) · 지형 시야 메모 (지형만의 순수 함수)
         Audit1(typeof(GameMap),
             "Width Height Seed Id DisplayName FileHash Mirrored tiles walkable occupant passable high Version StartTiles ResourceSites UnitSpawns",
             "ChangeLog terrainDirty terrainHashDirty TerrainVersion TrenchVersion terrainLock forestDepth tileFlags terrainHash terrainEdits");   // terrainEdits = 렌더러용 편집 기록   // 숲 깊이 · 칸 표시 · 지형 해시 = 지형 · 고지에서 다시 계산   // ChangeLog 는 길찾기가 소비하는 기록 — 불러올 때 길찾기 그래프를 현재 지도에서 새로 만든다

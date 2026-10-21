@@ -515,6 +515,7 @@ public static class UnitRenderer
 
         SquadIcons.Draw(world, cam, me, sorted.AsSpan(0, n), false);
         Impacts.Draw(world, cam, me, min, max);
+        SmokeFx.Draw(world, me, min, max);   // 연막 (N59) — 유닛 · 폭발 위
     }
 
     static void MiniBar(Rectangle r, float ratio, Color c)

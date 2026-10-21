@@ -110,7 +110,7 @@ public sealed partial class World
 
     /// <summary>직사 무기의 사선 (weapon.los): 사격자 → 표적 직선이 막힌 칸(건물 · 지형 · 깊은 숲 · 평지에서 본 고지 너머)을 지나면 false (GameMap.HasFiringLine). 사격자 · 표적 자신의 건물 발자국은 막힌 것으로 치지 않는다. los 가 없는 무기는 항상 true.</summary>
     public bool HasFiringLine(Entity shooter, Entity target, WeaponDef w) =>
-        !w.Los || Map.HasFiringLine(shooter.Pos, target.Pos, shooter.Id, target.Id);
+        !w.Los || (Map.HasFiringLine(shooter.Pos, target.Pos, shooter.Id, target.Id) && !SmokeBlocks(shooter.Pos, target.Pos));   // 연막 (N59, Breach.cs)
 
     /// <summary>엄폐 · 지형 보정: 표적의 엄폐 (숲 · 잔해 · 참호 지형 · 포탄 구덩이 · 가옥 옆 중 가장 좋은 값, Supply.cs) × 높이 (고지 → 평지 terrain.highToLowHit, 반대 lowToHighHit).</summary>
     float TerrainAccuracy(Entity shooter, Entity target, bool props = true)
