@@ -20,3 +20,5 @@ SPEC §3 프로토콜. tactics-obs A/B/C 시드 1~8 + 제압 재설계 측정 �
 - 검증: detcheck GOLDEN match, s3c1 PASS (끔 = KD_AI_OVERLAY=no3c 와 120초 체크섬 같음), s3a ai3b ai412 pursuit2 supp tactical drill cavcmd PASS. snaptest 생략(저장 상태 변경 없음).
 - 동작 확인(지휘자 지시: 측정·튜닝 보류): ai_bn_assault 시드1~8, 3c 켬 = 엄호 철수 6~14회/판 · 이탈 4~11 · 엎드린 적 표적 전환 479~1278 · 엎드림 약진 보류 0~27; 끔 = 전부 0. 승 끔 8/8 켬 5/8 (n=8, 노이즈 17%p — 판정 아님). 겹침 값은 초안(p50/p90 산출 미실행) → 기본 OFF 유지.
 - 발견: 미션 aiProfile 문자열에 겹침을 붙이면 (korean+norepick 처럼 값 무변 겹침이라도) 같은 시드 결과가 달라짐 → A/B 는 KD_AI_OVERLAY 로만.
+
+- FV 범프 (리뷰 지적): TacticsProfile 필드 7개 추가로 ObjCodec 저장 배치가 바뀌어 Snapshot.FormatVersion 55 -> 56. Replay 머리말에 프로필 없음 -> Replay 21 유지. FV-55 저장 거부 테스트 추가 (SaveCompatSelfTest). 병합 시 번호 재배정 필요.

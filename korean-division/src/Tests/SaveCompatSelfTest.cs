@@ -39,6 +39,14 @@ public static class SaveCompatSelfTest
             check(all, $"저장 호환: 형식 v{fmt} 저장 거부 (Load · ReadHeader · ReadHeaderFile · LoadFile) — {m1}");
         }
 
+        // T34a: FV 55 저장 (TacticsProfile 필드 7개 추가 전 배치) 은 잘못 읽지 않고 버전 메시지로 거부
+        {
+            var b55 = (byte[])good.Clone();
+            BinaryPrimitives.WriteUInt16LittleEndian(b55.AsSpan(4, 2), 55);
+            string m55 = Reject(() => Snapshot.Load(b55, defs));
+            check(cur > 55 && m55.Contains("이전 버전") && m55.Contains("v55") && m55.Contains($"v{cur}"), $"저장 호환: FV 55 저장 거부 (프로필 필드 추가) — {m55}");
+        }
+
         // 잘린 파일 (여러 길이) · 빈 파일 · 임의 바이트: 예외 종류가 SnapshotException 하나뿐
         int wrong = 0, rejected = 0; string first = "";
         void Probe(string what, byte[] data)
