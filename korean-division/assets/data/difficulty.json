@@ -4,6 +4,8 @@
   // ai: AI 정확도 · 탄약 · 증원 배수 — 값은 사용자 승인 뒤 (지금은 모두 1.0 = 현재 동작).
   // D15 A (사용자 2026-10-22): 쉬움 = 전령 사로잡힘 끔 · 보통 = AI 배수 1.0 · 어려움 = 후보만 (tasks/T10-comms-b.md), 확정 전 1.0 유지.
   "default": "easy",
+  // T10b 전령 사로잡힘 · 유선 끊김 판정 (초안, 사용자 승인 전 — 기본 끔 = 기존 동작). 켜면 난이도별 courierCapture · wireCut 이 실제로 쓰인다. 규칙 = src/Core/Difficulty.cs CommsRulesDef.
+  "commsRules": { "enabled": false, "captureRadius": 8, "captureChance": 0.25, "checkSec": 1, "cutRadius": 15, "cutChance": 0.5 },
   "levels": {
     "easy": {
       "comms": { "wireMinSec": 1, "wireMaxSec": 3, "courierMinSec": 10, "courierMaxSec": 20, "wireCut": false, "courierCapture": false, "keepSec": 10 },

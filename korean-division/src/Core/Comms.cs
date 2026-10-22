@@ -63,7 +63,42 @@ public sealed partial class World
         if (hi < lo) hi = lo;
         float sec = Math.Max(0f, lo + (hi - lo) * Roll(id, 0x434F4D53));
         long ticks = Math.Max(1, (long)MathF.Round(sec / Config.SimDt));
-        dispatches.Add(new Dispatch { Id = id, Faction = f, Battalion = b.Id, Via = c.Via, SentTick = Tick, ArriveTick = Tick + ticks, Order = c.Order });
+        var d = new Dispatch { Id = id, Faction = f, Battalion = b.Id, Via = c.Via, SentTick = Tick, ArriveTick = Tick + ticks, Order = c.Order };
+        dispatches.Add(d);
+        // T10b: 유선 끊김 (발송 시점) — 규칙 켜짐 + 난이도 wireCut 일 때만
+        var rules = DifficultyDefs.Current.CommsRules;
+        if (c.Via == CommsVia.Wire && rules.Enabled && lv.WireCut && BattalionUnitIds(b) is { Length: > 0 } ids
+            && EnemyNear(f, Centroid(ids), rules.CutRadius) && Roll(id, 0x57435554) < rules.CutChance)
+            Lose(d, DispatchLoss.WireCut);
+    }
+
+    /// <summary>T10b: 기마 전령 사로잡힘 판정 (규칙 켜짐 + 난이도 courierCapture). 출발점 = 보내는 세력의 첫 살아 있는 사령부 건물 (없으면 판정 안 함).</summary>
+    bool CourierCaptured(Dispatch d, int[] ids)
+    {
+        var rules = DifficultyDefs.Current.CommsRules;
+        if (d.Via != CommsVia.Courier || !rules.Enabled || !DiffLevel.Comms.CourierCapture || Tick >= d.ArriveTick) return false;
+        long every = Math.Max(1, (long)MathF.Round(rules.CheckSec / Config.SimDt));
+        if ((Tick - d.SentTick) % every != 0 || Tick == d.SentTick) return false;
+        Building? hq = null;
+        foreach (var bd in Buildings) if (bd.Alive && bd.Owner == d.Faction && bd.Def.Headquarters) { hq = bd; break; }
+        if (hq == null) return false;
+        float t = (float)(Tick - d.SentTick) / Math.Max(1, d.ArriveTick - d.SentTick);
+        var at = System.Numerics.Vector2.Lerp(hq.Pos, Centroid(ids), t);
+        return EnemyNear(d.Faction, at, rules.CaptureRadius) && Roll(d.Id, 0x43415054) < rules.CaptureChance;
+    }
+
+    /// <summary>at 둘레 radius 칸 안에 f 의 적대 유닛이 있는가 (규칙이 켜졌을 때만 · 전령은 checkSec 마다라 임시 목록 할당은 드묾 — World 필드를 늘리지 않음).</summary>
+    bool EnemyNear(int f, System.Numerics.Vector2 at, float radius)
+    {
+        foreach (var u in UnitsInRadius(at, radius)) if (IsHostile(f, u.Owner)) return true;
+        return false;
+    }
+
+    System.Numerics.Vector2 Centroid(int[] ids)
+    {
+        System.Numerics.Vector2 s = default; int n = 0;
+        foreach (int i in ids) if (Find(i) is { } u) { s += u.Pos; n++; }
+        return n == 0 ? s : s / n;
     }
 
     /// <summary>매 틱 명령 처리 직후: 도착한 명령 실행 · 받는 제대가 사라진 명령 분실 · 오래된 끝난 항목 정리.</summary>
@@ -78,6 +113,7 @@ public sealed partial class World
             var b = FindBattalion(d.Battalion);
             int[] ids = b == null || b.Owner != d.Faction ? Array.Empty<int>() : BattalionUnitIds(b);
             if (ids.Length == 0) { Lose(d, DispatchLoss.TargetGone); continue; }
+            if (CourierCaptured(d, ids)) { Lose(d, DispatchLoss.CourierCaptured); continue; }
             if (Tick < d.ArriveTick) continue;
             d.State = DispatchState.Delivered; d.EndTick = Tick;
             Execute(Retarget(d.Order, ids));

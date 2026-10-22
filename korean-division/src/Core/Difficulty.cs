@@ -11,6 +11,8 @@ public sealed class DifficultyDefs
 {
     public string Default { get; set; } = "easy";
     public Dictionary<string, DifficultyLevel> Levels { get; set; } = new();
+    /// <summary>전령 사로잡힘 · 유선 끊김 판정 규칙 (T10b, 초안 — 기본 끔). 난이도의 courierCapture · wireCut 은 이 규칙이 켜졌을 때만 소비된다.</summary>
+    public CommsRulesDef CommsRules { get; set; } = new();
 
     static DifficultyDefs? current;
     public static DifficultyDefs Current => current ??= Load(Path.Combine(AppContext.BaseDirectory, "assets", "data", "difficulty.json"));
@@ -62,6 +64,22 @@ public sealed class CommsLevelDef
     public bool CourierCapture { get; set; } = true;
     /// <summary>전달 · 분실된 항목을 '전달 중' 목록에 남겨 두는 시간 (초, 표시 · 알림용).</summary>
     public float KeepSec { get; set; } = 10f;
+}
+
+/// <summary>
+/// 전령 사로잡힘 · 유선 끊김 판정 (T10b 초안, 시간 모형 — 실제 기마 전령 유닛 · 전선 칸은 조각 ②). enabled=false = 기존 동작.
+/// 전령: 출발점 = 보내는 세력의 첫 사령부 건물 (Buildings 순서, 살아 있는 것), 도착점 = 받는 대대의 현재 중심. 진행률 (보낸 틱 → 도착 틱) 로 선형 보간한 위치에서
+///   checkSec 마다 captureRadius 칸 안에 적대 유닛이 있으면 captureChance (해시 난수) 로 사로잡힘 → 분실 (CourierCaptured). 사령부가 없으면 판정 안 함.
+/// 유선: 발송 순간 받는 대대 중심에서 cutRadius 칸 안에 적대 유닛이 있으면 cutChance 로 끊김 → 즉시 분실 (WireCut).
+/// </summary>
+public sealed class CommsRulesDef
+{
+    public bool Enabled { get; set; }
+    public float CaptureRadius { get; set; } = 8f;
+    public float CaptureChance { get; set; } = 0.25f;
+    public float CheckSec { get; set; } = 1f;
+    public float CutRadius { get; set; } = 15f;
+    public float CutChance { get; set; } = 0.5f;
 }
 
 /// <summary>AI 배수 (값은 사용자 승인 뒤 — 지금은 모두 1.0).</summary>
