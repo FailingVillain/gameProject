@@ -81,3 +81,6 @@ queued(지휘자/spec) → assigned(지휘자, 발주 시) → running(에이전
 ## 정책 추가 (2026-10-22, 사용자 지시)
 WIP 는 병합하지 않는다 — 재개해 `wip-ready` 까지만. merger 미발주. '선행=병합' 카드는 선행 wip 브랜치 위에 스택. 근거: 사용자 강조 지시.
 (v2) 병합은 사용자 허가 뒤, 통합 리허설(integration/rehearsal) 통과 후에만 main 으로.
+
+## 자동 기본값 로그 (사용자 2026-10-22)
+추천 기본값을 자동 적용할 때는 `ops/AUTO_DEFAULTS_LOG.md` 에 **한 줄 append**(`echo >>`)만 한다. 이 파일은 읽기 목록(STATE→QUEUE→DECISIONS→LESSONS)에 넣지 않고 에이전트 프롬프트에서도 읽지 않게 한다(토큰 누수 방지). 사용자가 요청할 때만 지휘자가 읽어 요약한다.
