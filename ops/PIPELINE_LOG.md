@@ -162,6 +162,7 @@
 | 14:0x | T39b wip-ready(sonnet, 118k, 1595초; river-r2 8ada7a9): 물 위 직사 사격 `terrain.waterBlocksFire`(기본 true=현행, 골든 불변, false 시 유닛 20→126·사격 2530→6119 → 0.3 결정), 여울 실측 감속 0.60, FindCrossing 폭 3~6 정상·1~2 는 minObstacle 에 걸림, 신규 시험 true/false 폭 1·3·6·실사격·바위 차단. 발주: T39c(sonnet, river-r2 위, 렌더+시험 지도) | 완료 ~59 |
 | 14:0x | T35 리뷰(sonnet, 71k): 차단 0, 병합 OK. 참고: 미션/표준 경로 시험 없음, 병합 시 FV/Replay 재번호(60/24, AE2 61/25 앞) | 완료 ~60 |
 | 14:1x | T43 wip-ready(sonnet, 90k, 228초; kd/t43-branch-symbols b9c97a9): 곡사포·저격 기호 추가(데이터 판정), uiicons·uifuzz 30·골든 PASS. 미확인: 색각 도형 겹침(t27 미병합), cavalry_default 병종 Infantry 로 나옴(범위 밖 제안) | 완료 ~61 |
+| 14:2x | T39c wip-ready(sonnet, 135k, 376초; river-r3 26df7f6, river-r2 위): 합성 여울 타일·전이·거품 띠, 미니맵 청록, test_river 지도+AI 관전 미션, terrain/missions/uiicons·uifuzz·골든 PASS. 미확인: 도하 AI 여울 실제 점유, 타일 이음매 약하게 보임, 프레임 시간 | 완료 ~62 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
