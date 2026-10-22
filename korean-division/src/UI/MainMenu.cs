@@ -12,7 +12,7 @@ namespace KoreanDivision.UI;
 /// </summary>
 public sealed class MainMenu
 {
-    enum Page { Main, Setup, Replays, Battle, Load, Missions, Campaign, Settings, Codex }
+    enum Page { Main, Setup, Replays, Battle, Load, Missions, Campaign, Settings, Keys, Codex }
     CodexMenu? codex;
     CampaignMenu? campaign;
     MissionMenu? missions;   // 미션 선택 · 브리핑 (MissionMenu.cs)
@@ -62,6 +62,9 @@ public sealed class MainMenu
             case "replays": OpenReplays(); break;
             case "battle": page = Page.Battle; break;
             case "settings": page = Page.Settings; break;
+            case "keys": page = Page.Keys; break;
+            case "keys-listen": page = Page.Keys; listening = Commands.UnitCommands[0].Key; break;   // 스크린샷용: 첫 줄 입력 대기
+            case "keys-conflict": page = Page.Keys; keysMsg = Bindings.TrySet("move", 'S'); break;   // 스크린샷용: 충돌 거부 표시
             case "codex": page = Page.Codex; codex = new CodexMenu(); break;
             case "load": OpenLoad(); break;
             case "missions": page = Page.Missions; missions = new MissionMenu(); break;
@@ -99,7 +102,8 @@ public sealed class MainMenu
 
         if (Input.IsKeyPressed(KeyboardKey.Escape))
         {
-            if (page == Page.Main) ExitRequested = true;
+            if (page == Page.Keys) { if (listening != null) listening = null; else page = Page.Settings; }
+            else if (page == Page.Main) ExitRequested = true;
             else if (page == Page.Missions && missions?.Back() == true) { }   // 브리핑 → 미션 목록
             else page = Page.Main;
         }
@@ -114,6 +118,7 @@ public sealed class MainMenu
             case Page.Replays: DrawReplays(); break;
             case Page.Battle: DrawBattle(); break;
             case Page.Settings: DrawSettings(); break;
+            case Page.Keys: DrawKeys(); break;
             case Page.Load: DrawLoad(); break;
             case Page.Codex:
                 codex ??= new CodexMenu();
@@ -212,7 +217,7 @@ public sealed class MainMenu
 
     void DrawSettings()
     {
-        float pw = MathF.Min(760, screenW - 40), ph = 424;
+        float pw = MathF.Min(760, screenW - 40), ph = 470;
         var panel = new Rectangle((screenW - pw) / 2, MathF.Max(16, (screenH - ph) / 2 - 10), pw, ph);
         Ui.Panel(panel, Palette.Alpha(Palette.PanelDark, 235), Palette.HudTrim);
         Ui.Text(S.MenuSettings, panel.X + 24, panel.Y + 16, 26, Palette.Accent);
@@ -255,9 +260,59 @@ public sealed class MainMenu
         if (Button(new Rectangle(cx, y, 120, 32), UserSettings.ColorBlind ? S.SetColorBlindOn : S.SetColorBlindOff, true, UserSettings.ColorBlind))
         { UserSettings.ColorBlind = !UserSettings.ColorBlind; UserSettings.Save(); }
         Ui.Text(S.SetColorBlindNote, cx + 132, y + 8, 14, Palette.TextDim);
+        y += RowH + 16;
+
+        Ui.Text(S.SetKeys, lx, y + 6, 16, Palette.TextDim);
+        if (Button(new Rectangle(cx, y, 160, 32), S.SetKeysButton)) { page = Page.Keys; listening = null; keysMsg = null; }
 
         Ui.Text(S.SetFileNote, lx, panel.Y + panel.Height - 96, 16, Palette.TextDim);
         if (Button(new Rectangle(panel.X + 24, panel.Y + panel.Height - 62, 140, 40), S.MenuBack)) page = Page.Main;
+    }
+
+    // ---------------------------------------------------------------- 단축키 재지정 (T38a)
+
+    string? listening;   // 새 키를 기다리는 명령 Key
+    string? keysMsg;     // 마지막 거부 이유 (충돌 표시)
+
+    void DrawKeys()
+    {
+        var cmds = Commands.UnitCommands;
+        float pw = MathF.Min(780, screenW - 40), ph = 78 + 6 * 40 + 150;
+        var panel = new Rectangle((screenW - pw) / 2, MathF.Max(16, (screenH - ph) / 2 - 10), pw, ph);
+        Ui.Panel(panel, Palette.Alpha(Palette.PanelDark, 235), Palette.HudTrim);
+        Ui.Text(S.KeysTitle, panel.X + 24, panel.Y + 16, 26, Palette.Accent);
+
+        if (listening != null)   // A~Z 한 번 = 지정 시도 (충돌이면 거부)
+            for (char ch = 'A'; ch <= 'Z'; ch++)
+                if (Input.IsKeyPressed(Commands.Key(ch)))
+                {
+                    keysMsg = Bindings.TrySet(listening, ch);
+                    if (keysMsg == null) UserSettings.Save();
+                    listening = null;
+                    break;
+                }
+
+        float colW = (pw - 48 - 20) / 2;
+        for (int i = 0; i < cmds.Length; i++)
+        {
+            var c = cmds[i];
+            float x = panel.X + 24 + (i / 6) * (colW + 20), y = panel.Y + 78 + (i % 6) * 40;
+            bool changed = UserSettings.KeyMap.ContainsKey(c.Key);
+            Ui.Text(c.Label, x, y + 6, 16, Palette.Text);
+            var kr = new Rectangle(x + colW - 190, y, 70, 32);
+            bool wait = listening == c.Key;
+            if (Button(kr, wait ? S.KeysPress : Bindings.KeyOf(c).ToString(), true, wait || changed, 16))
+            { listening = wait ? null : c.Key; keysMsg = null; }
+            if (Button(new Rectangle(x + colW - 114, y, 114, 32), S.KeysReset, changed))
+            { keysMsg = Bindings.TrySet(c.Key, c.Hotkey); if (keysMsg == null) UserSettings.Save(); }   // 기본 키를 남이 쓰는 중이면 거부(사유 표시)
+        }
+        float by = panel.Y + 78 + 6 * 40 + 4;
+        if (keysMsg != null) Ui.Text(keysMsg, panel.X + 24, by, 16, Palette.Warning);
+        else Ui.Text(S.KeysHint, panel.X + 24, by, 14, Palette.TextDim);
+        Ui.Text(S.KeysFixedNote, panel.X + 24, by + 24, 14, Palette.TextDim);
+        if (Button(new Rectangle(panel.X + 24, panel.Y + ph - 62, 140, 40), S.MenuBack)) { page = Page.Settings; listening = null; }
+        if (Button(new Rectangle(panel.X + 176, panel.Y + ph - 62, 190, 40), S.KeysResetAll, UserSettings.KeyMap.Count > 0))
+        { Bindings.ResetAll(); UserSettings.Save(); keysMsg = null; }
     }
 
     // ---------------------------------------------------------------- 설정

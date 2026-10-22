@@ -14,7 +14,7 @@ $raw = Join-Path ([System.IO.Path]::GetTempPath()) ("kd_ui_sheet_" + [guid]::New
 New-Item -ItemType Directory -Force $raw | Out-Null
 $runner = Join-Path $PSScriptRoot 'agent\run_game.ps1'
 # screen name -> extra args. menu pages use --menu-page/--menu-shot, in-game screens use --shot.
-$menuPages = @('main', 'setup', 'spectate', 'replays', 'battle', 'load', 'settings', 'codex', 'missions', 'briefing', 'campaign')
+$menuPages = @('main', 'setup', 'spectate', 'replays', 'battle', 'load', 'settings', 'keys', 'keys-listen', 'keys-conflict', 'codex', 'missions', 'briefing', 'campaign')
 $gameShots = [ordered]@{
     'hud-idle'     = @('--map', 'corners4', '--ai', 'standard', '--shot-frame', '120')
     'hud-selected' = @('--map', 'corners4', '--ai', 'standard', '--shot-frame', '120', '--exec', 'select infantry')

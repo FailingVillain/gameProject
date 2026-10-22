@@ -18,6 +18,9 @@ public static class UserSettings
     public static bool ColorBlind = false;   // 색각 대응 표식 (T27 ⑧, 기본 꺼짐)
     public static float Volume = 0.8f;   // 마스터 음량 (효과음 · 음성 공용 — Sfx.Volume)
 
+    /// <summary>카드 명령 키 재지정 (명령 Key -> 대문자 A~Z). 기본과 같은 것은 넣지 않는다. UI 전용 — 시뮬 · 저장 형식 무관 (T38a).</summary>
+    public static Dictionary<string, char> KeyMap = new();
+
     sealed class Data
     {
         public int Width { get; set; } = Config.ScreenWidth;
@@ -25,6 +28,7 @@ public static class UserSettings
         public string Mode { get; set; } = "windowed";
         public float Volume { get; set; } = 0.8f;
         public bool ColorBlind { get; set; } = false;
+        public Dictionary<string, string>? Keys { get; set; }
     }
 
     static WindowMode applied = WindowMode.Windowed;   // 지금 창이 실제로 있는 모드
@@ -43,6 +47,11 @@ public static class UserSettings
             Volume = Math.Clamp(float.IsNaN(d.Volume) ? 0.8f : d.Volume, 0f, 1f);
             ColorBlind = d.ColorBlind;
             Sfx.Volume = Volume;
+            KeyMap = new();
+            if (d.Keys != null)
+                foreach (var (cmd, v) in d.Keys)
+                    if (!string.IsNullOrEmpty(v) && KoreanDivision.Core.Commands.Get(cmd) != null) KeyMap[cmd] = char.ToUpperInvariant(v[0]);
+            Bindings.Sanitize();
         }
         catch (Exception e) when (e is IOException or JsonException or UnauthorizedAccessException) { }
     }
@@ -51,7 +60,7 @@ public static class UserSettings
     {
         try
         {
-            var d = new Data { Width = Width, Height = Height, Volume = Volume, ColorBlind = ColorBlind, Mode = Mode switch { WindowMode.Borderless => "borderless", WindowMode.Fullscreen => "fullscreen", _ => "windowed" } };
+            var d = new Data { Width = Width, Height = Height, Volume = Volume, ColorBlind = ColorBlind, Keys = KeyMap.Count == 0 ? null : KeyMap.OrderBy(kv => kv.Key, StringComparer.Ordinal).ToDictionary(kv => kv.Key, kv => kv.Value.ToString()), Mode = Mode switch { WindowMode.Borderless => "borderless", WindowMode.Fullscreen => "fullscreen", _ => "windowed" } };
             File.WriteAllText(FilePath, JsonSerializer.Serialize(d, new JsonSerializerOptions { WriteIndented = true }));
         }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException) { }
