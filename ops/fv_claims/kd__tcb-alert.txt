@@ -1,0 +1,1 @@
+2026-10-22 | FV+1 | Replay+0 | Schema+0 | base 4e4b405 | TC-B SK2 경보 상태 (MISN 끝 ReinforcementDue · PatrolLeg); 병합 라인(J9)이 지휘자 대신 작성, 임시 FV 67 = 구 기반 66+1
