@@ -74,6 +74,7 @@ public sealed partial class Game : IDisposable
     readonly WeatherFx weatherFx = new();
     int weatherSeen = -1;   // 마지막으로 알린 World.Weather.Changes (환경음 · 알림)
     public readonly CommandConsole CommandBox = new();
+    public CodexMenu? CodexBox;   // T38e: F2 전투 중 병종 도감 (열려 있는 동안 시뮬 틱 정지, Paused 값은 건드리지 않음 — 닫으면 그대로 복귀). 화면 전용
     public readonly HelpOverlay HelpBox = new();   // T38b: F1 도움말 (Bindings 단일 출처, 화면 전용)
     public bool ShowPerf { get; private set; }
     /// <summary>프레임 시간 (Program 이 채움, fps 명령으로 표시).</summary>
@@ -589,7 +590,8 @@ public sealed partial class Game : IDisposable
         {
             if (CommandBox.Update() is string line) RunConsoleCommand(line);
         }
-        else if (HelpBox.IsOpen) HelpBox.Update(mouse);   // 도움말이 열려 있는 동안 게임 입력은 막힘 (F1 은 HandleGlobalKeys)
+        else if (HelpBox.IsOpen) HelpBox.Update(mouse);
+        else if (CodexBox != null) { }   // 도감 입력은 Draw 쪽 (CodexMenu.Draw) — 그동안 게임 입력은 막힘   // 도움말이 열려 있는 동안 게임 입력은 막힘 (F1 은 HandleGlobalKeys)
         else if (World.Winner != 0) { if (World.Mission != null) HandleMissionOver(); else HandleGameOver(); }
         else if (DeployPhase) UpdateDeploy();   // 미션 배치 단계 (GameMission.cs)
         else if (Input.IsKeyPressed(KeyboardKey.Enter) || Input.IsKeyPressed(KeyboardKey.KpEnter)) CommandBox.Open();
@@ -607,7 +609,7 @@ public sealed partial class Game : IDisposable
         if (replay != null && World.Tick >= replay.EndTick) Paused = true;
 
         // 고정 틱 시뮬레이션 (게임 속도 배율 적용)
-        if (!Paused && World.Winner == 0 && !DeployPhase)
+        if (!Paused && CodexBox == null && World.Winner == 0 && !DeployPhase)
         {
             accumulator += dt * Speed;
             int steps = 0, maxSteps = Config.MaxStepsPerFrame * 3;
@@ -778,6 +780,7 @@ public sealed partial class Game : IDisposable
             else if (!Observer && Hud.SquadChipAt(mouse) is Squad chip) SelectSquad(chip, shift);
             else if (!Observer && Hud.CompanyCardAt(mouse) is Company card) { cardPress = card; cardPressPos = mouse; }
             else if (!Observer && Hud.MergeButtonAt(mouse)) MergeSelected();
+            else if (!Observer && Hud.ListBarPress(mouse)) { }
             else if (!Observer && Hud.BatListAt(mouse) is object listItem) SelectListItem(listItem, shift);
             else if (!Observer && Hud.OverBatList(mouse)) { }
             else if (!Observer && Hud.BatFormAt(mouse) is int formSlot) { if (formSlot == 0) CycleDefaultForm(false); else CycleBattalionForm(World.BattalionByNumber(Me, formSlot)); }
@@ -795,6 +798,7 @@ public sealed partial class Game : IDisposable
                 else dragStartWorld = mouseWorld;
             }
         }
+        if (Hud.ListBarDragging) { if (Input.IsMouseButtonDown(MouseButton.Left)) Hud.ListBarDrag(mouse); else Hud.ListBarRelease(); }
         if (minimapDrag && Input.IsMouseButtonDown(MouseButton.Left)) Camera.CenterOn(Hud.Minimap.ScreenToWorld(mouse));
         if (Input.IsMouseButtonReleased(MouseButton.Left))
         {
@@ -834,7 +838,8 @@ public sealed partial class Game : IDisposable
         }
 
         float wheel = Input.GetMouseWheelMove();
-        if (wheel != 0 && Spectator.Contains(mouse)) Spectator.Wheel(wheel);
+        if (wheel != 0 && !Observer && Hud.ListWheel(mouse, wheel)) { }   // T38e: 부대 목록 스크롤
+        else if (wheel != 0 && Spectator.Contains(mouse)) Spectator.Wheel(wheel);
         else if (wheel != 0 && mouseInViewport) Camera.ZoomAt(wheel, mouse);
     }
 
@@ -894,7 +899,8 @@ public sealed partial class Game : IDisposable
     /// <summary>게임 종료 화면에서도 동작하는 키.</summary>
     void HandleGlobalKeys()
     {
-        if (Input.IsKeyPressed(KeyboardKey.F1)) HelpBox.Toggle();   // T38b: 도움말 (일시정지 · 종료 화면에서도)
+        if (Input.IsKeyPressed(KeyboardKey.F1)) { CodexBox = null; HelpBox.Toggle(); }
+        if (Input.IsKeyPressed(KeyboardKey.F2) && !HelpBox.IsOpen) ToggleCodex();   // T38e: 도감 (전투 중)   // T38b: 도움말 (일시정지 · 종료 화면에서도)
         if (Input.IsKeyPressed(KeyboardKey.F3)) Paused = !Paused;
         if (Input.IsKeyPressed(KeyboardKey.F6)) QuickSave();   // 빠른 저장 (saves/quicksave.kds)
         if (Input.IsKeyPressed(KeyboardKey.F7)) QuickLoad();   // 빠른 불러오기
@@ -904,6 +910,8 @@ public sealed partial class Game : IDisposable
         if (Input.IsKeyPressed(KeyboardKey.Equal) || Input.IsKeyPressed(KeyboardKey.KpAdd)) Camera.ZoomAt(1, ViewportCenter);
         if (Input.IsKeyPressed(KeyboardKey.Minus) || Input.IsKeyPressed(KeyboardKey.KpSubtract)) Camera.ZoomAt(-1, ViewportCenter);
     }
+
+    public void ToggleCodex() { CodexBox = CodexBox == null ? new CodexMenu() : null; Sfx.Play("ui_click"); }
 
     Vector2 ViewportCenter => new(Hud.Viewport.X + Hud.Viewport.Width / 2, Hud.Viewport.Y + Hud.Viewport.Height / 2);
 
@@ -1629,6 +1637,9 @@ public sealed partial class Game : IDisposable
             return;
         }
         if (joined == "helpui") { HelpBox.Toggle(); return; }
+        if (joined == "codexui") { ToggleCodex(); return; }   // T38e: 시트 · 퍼즈용
+        if (joined == "listui") { ShowBatList = !ShowBatList; return; }
+        if (words.Length == 2 && words[0] == "listscroll" && int.TryParse(words[1], out int lsRow)) { ShowBatList = true; Hud.SetListScroll(lsRow); return; }
         if (joined == "help" || joined == "?")
         {
             foreach (var h in new[] { S.ConsoleHelp1, S.ConsoleHelp2, S.ConsoleHelp4, S.ConsoleHelp6, S.ConsoleHelp7, S.ConsoleHelpKeys, S.ConsoleHelp5 }) CommandBox.Print(h);
@@ -2005,6 +2016,12 @@ public sealed partial class Game : IDisposable
             Ui.Text(perf, Hud.Viewport.X + Hud.Viewport.Width - pm.X - 16, Hud.Viewport.Y + 12, 16, Palette.Accent);
         }
 
+        if (CodexBox != null)   // T38e: 전투 중 도감 (일시정지처럼 시뮬 정지 · Esc / 뒤로 / F2 로 닫음)
+        {
+            Raylib.DrawRectangle(0, 0, screenW, screenH, Palette.Alpha(Palette.Void, 190));
+            CodexBox.Draw(screenW, screenH);
+            if (CodexBox.BackRequested) CodexBox = null;
+        }
         HelpBox.Draw(mouse);
         if (screenshotPath != null)
         {

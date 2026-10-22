@@ -239,13 +239,79 @@ public sealed class Hud : IDisposable
         var indeps = w.CompaniesOf(game.Me).Where(c => c.Battalion == null && c.Members.Count > 0).OrderBy(c => c.Number).ThenBy(c => c.Id).ToList();
         foreach (var c in indeps) items.Add(c);
 
+        // T38e: 18행 초과는 스크롤 (휠 · 막대 끌기 · 선택 행이 보이게 자동)
+        listTotal = items.Count;
         int rows = Math.Min(items.Count, ListMaxRows);
+        listFirstSel = FirstSelectedIndex(items);
+        if (listFirstSel != listLastSel) { listLastSel = listFirstSel; if (listFirstSel >= 0) listScroll = ListEnsureVisible(listScroll, listFirstSel, items.Count, ListMaxRows); }
+        listScroll = ListClamp(listScroll, items.Count, ListMaxRows);
+        bool bar = items.Count > ListMaxRows;
         float h = 26 + Math.Max(1, rows) * ListRowH + 4;
         float x = Viewport.X + 8, top = MathF.Max(TopBar.Height + 4, BarY - 6 - h);
-        for (int i = 0; i < rows; i++) res.Add((new Rectangle(x + 4, top + 26 + i * ListRowH, ListW - 8, ListRowH - 2), items[i]));
+        float rw = ListW - 8 - (bar ? ListBarW + 2 : 0);
+        for (int i = 0; i < rows; i++) res.Add((new Rectangle(x + 4, top + 26 + i * ListRowH, rw, ListRowH - 2), items[listScroll + i]));
         listPanel = new Rectangle(x, top, ListW, h);
+        listTrack = bar ? new Rectangle(x + ListW - ListBarW - 4, top + 26, ListBarW, rows * ListRowH) : default;
         return res;
     }
+
+    // ---- T38e: 목록 스크롤 (화면 전용). 순수 함수는 테스트가 직접 부른다.
+    const float ListBarW = 8;
+    int listScroll, listTotal, listFirstSel = -1, listLastSel = -1;
+    bool listBarDrag;
+    Rectangle listTrack;
+
+    /// <summary>스크롤 시작 행을 [0, total-visible] 로.</summary>
+    public static int ListClamp(int scroll, int total, int visible) => Math.Clamp(scroll, 0, Math.Max(0, total - visible));
+
+    /// <summary>idx 행이 보이도록 최소로 움직인 시작 행.</summary>
+    public static int ListEnsureVisible(int scroll, int idx, int total, int visible)
+    {
+        if (idx < scroll) scroll = idx;
+        else if (idx >= scroll + visible) scroll = idx - visible + 1;
+        return ListClamp(scroll, total, visible);
+    }
+
+    /// <summary>막대 위치 y (트랙 안 0..1 비율) → 시작 행.</summary>
+    public static int ListScrollFromFraction(float frac, int total, int visible) =>
+        ListClamp((int)MathF.Round(Math.Clamp(frac, 0f, 1f) * Math.Max(0, total - visible)), total, visible);
+
+    int FirstSelectedIndex(List<object> items)
+    {
+        if (game.Selection.Count == 0) return -1;
+        for (int i = 0; i < items.Count; i++)
+            if (items[i] is Company c && c.Members.Count > 0 && c.Members.All(u => u.Selected)) return i;
+        return -1;
+    }
+
+    /// <summary>휠: 목록 위에서 스크롤 (먹었으면 true — 카메라 확대로 새지 않게).</summary>
+    public bool ListWheel(Vector2 p, float wheel)
+    {
+        if (!OverBatList(p)) return false;
+        if (listTotal > ListMaxRows) listScroll = ListClamp(listScroll - (int)MathF.Sign(wheel) * 3, listTotal, ListMaxRows);
+        return true;
+    }
+
+    /// <summary>막대 위 누름 (끌기 시작 · 트랙 클릭은 그 위치로 점프). 먹었으면 true.</summary>
+    public bool ListBarPress(Vector2 p)
+    {
+        if (game.Observer || !game.ShowBatList) return false;
+        BatListRows();
+        if (listTrack.Width <= 0 || !Ui.Contains(listTrack, p)) return false;
+        listBarDrag = true; ListBarDrag(p);
+        return true;
+    }
+
+    public void SetListScroll(int row) => listScroll = ListClamp(row, listTotal, ListMaxRows);   // 콘솔 listscroll (시트 · 점검용)
+    public bool ListBarDragging => listBarDrag;
+    public void ListBarDrag(Vector2 p)
+    {
+        if (!listBarDrag) return;
+        float thumbH = MathF.Max(16, listTrack.Height * ListMaxRows / listTotal);
+        float frac = (p.Y - listTrack.Y - thumbH / 2) / MathF.Max(1, listTrack.Height - thumbH);
+        listScroll = ListScrollFromFraction(frac, listTotal, ListMaxRows);
+    }
+    public void ListBarRelease() => listBarDrag = false;
 
     /// <summary>대대 목록 패널의 행 (Battalion 또는 Company).</summary>
     public object? BatListAt(Vector2 p)
@@ -397,12 +463,23 @@ public sealed class Hud : IDisposable
         var rows = BatListRows();
         Ui.Panel(listPanel, Palette.Alpha(Palette.PanelDark, 235), Palette.PanelBorder);
         Ui.Text(S.BatListTitle + " (0)", listPanel.X + 8, listPanel.Y + 4, 16, Palette.Accent);
+        if (listTotal > ListMaxRows)
+        {
+            string range = string.Format(S.BatListRange, listScroll + 1, listScroll + ListMaxRows, listTotal);
+            Ui.Text(range, listPanel.X + listPanel.Width - Ui.Measure(range, 14).X - 10, listPanel.Y + 6, 14, Palette.TextDim);
+            Ui.RegHit(listTrack, "listbar");
+            Raylib.DrawRectangleRec(listTrack, Palette.Alpha(Palette.Panel, 200));
+            float thumbH = MathF.Max(16, listTrack.Height * ListMaxRows / listTotal);
+            float ty = listTrack.Y + (listTrack.Height - thumbH) * listScroll / (listTotal - ListMaxRows);
+            Raylib.DrawRectangleRec(new Rectangle(listTrack.X, ty, listTrack.Width, thumbH), listBarDrag ? Palette.Accent : Palette.PanelBorder);
+        }
         if (rows.Count == 0) Ui.Text(S.BatListEmpty, listPanel.X + 8, listPanel.Y + 30, 14, Palette.TextDim);
         bool dropHover = game.DragCard != null && Ui.Contains(listPanel, mouse);
         if (dropHover) Raylib.DrawRectangleLinesEx(listPanel, 2, Palette.Select);
         foreach (var (r, item) in rows)
         {
             bool hv = Ui.Contains(r, mouse);
+            Ui.RegHit(r, "listrow");
             string text; bool sel; float ind = 6;
             if (item is int regNum)
             {

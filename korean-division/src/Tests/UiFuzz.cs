@@ -211,7 +211,7 @@ public sealed class UiFuzz
         for (var k = KeyboardKey.A; k <= KeyboardKey.Z; k++) l.Add(k);
         for (var k = KeyboardKey.Zero; k <= KeyboardKey.Nine; k++) l.Add(k);
         for (var k = KeyboardKey.Kp0; k <= KeyboardKey.Kp9; k++) l.Add(k);
-        l.AddRange(new[] { KeyboardKey.Escape, KeyboardKey.Space, KeyboardKey.Tab, KeyboardKey.F10, KeyboardKey.F1, KeyboardKey.F3, KeyboardKey.F6, KeyboardKey.F7, KeyboardKey.Equal, KeyboardKey.Minus,
+        l.AddRange(new[] { KeyboardKey.Escape, KeyboardKey.Space, KeyboardKey.Tab, KeyboardKey.F10, KeyboardKey.F1, KeyboardKey.F2, KeyboardKey.F3, KeyboardKey.F6, KeyboardKey.F7, KeyboardKey.Equal, KeyboardKey.Minus,
             KeyboardKey.KpAdd, KeyboardKey.KpSubtract, KeyboardKey.LeftBracket, KeyboardKey.RightBracket, KeyboardKey.Backspace, KeyboardKey.Up, KeyboardKey.Down });
         return l.ToArray();
     }
