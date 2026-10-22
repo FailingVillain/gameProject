@@ -97,6 +97,10 @@ public sealed class CampaignEconomyDefs
     public float CasualtyReplaceCost { get; set; } = 1f;
     /// <summary>D02 C 대민 구제의 영구 보급 소모 (이벤트 런타임은 TC-E 가 이 값을 쓴다).</summary>
     public int CivilianReliefSupplyLoss { get; set; } = 400;
+    /// <summary>[C1E1-d2] 투입 비용 단위 (보급 풀 4,000 기준): 보병 1 · 기병 3 · 외인 1명당. 저장 필드 아님 (JSON 상수; 포는 명세에 단일값 없음 - 미정).</summary>
+    public int SupplyCostInfantry { get; set; } = 1;
+    public int SupplyCostCavalry { get; set; } = 3;
+    public int SupplyCostForeign { get; set; } = 1;
 
     static CampaignEconomyDefs? current;
     public static CampaignEconomyDefs Current => current ??= Load(Path.Combine(AppContext.BaseDirectory, "assets", "data", "campaign_economy.json"));
@@ -167,6 +171,7 @@ public sealed class CampaignEconomyDefs
         PermanentDeployFrac = F(PermanentDeployFrac, 0f, 1f, d.PermanentDeployFrac);
         CasualtyReplaceCost = F(CasualtyReplaceCost, 0f, 1000f, d.CasualtyReplaceCost);
         CivilianReliefSupplyLoss = Math.Clamp(CivilianReliefSupplyLoss, 0, 10_000_000);
+        SupplyCostInfantry = Math.Clamp(SupplyCostInfantry, 0, 1000); SupplyCostCavalry = Math.Clamp(SupplyCostCavalry, 0, 1000); SupplyCostForeign = Math.Clamp(SupplyCostForeign, 0, 1000);
         PromoSoldierMaxRank = Math.Clamp(PromoSoldierMaxRank, 0, 8);
         PromoMaxPerBreak = Math.Clamp(PromoMaxPerBreak, 0, 10_000);
         PromoSoldierKills = FixArray(PromoSoldierKills, d.PromoSoldierKills, 9);

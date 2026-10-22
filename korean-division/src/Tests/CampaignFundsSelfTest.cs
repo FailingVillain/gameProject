@@ -75,6 +75,35 @@ public static class CampaignFundsSelfTest
                 $"TC-D R5 시나리오 OP1 가용 보급: S1 {s1:0} (~3760) · S2 {s2:0} (~3380) · S3 {s3:0} (~3380) · S4 {s4:0} (3845)");
             check(Math.Abs(CampaignFunds.PermanentLoss(1000f, 20) - 120f) < 0.01f && CampaignFunds.PermanentLoss(-5f, -3) == 0f, "TC-D 영구 소모 식: 1000x10% + 20x1 = 120, 음수 0");
 
+            // 7b) [C1E1-d2] campaign_e1_start.json op1SupplyCheck 를 읽어 가용 보급 재현 (JSON 키 기반, 하드코딩 아님)
+            check(d.SupplyCostInfantry == 1 && d.SupplyCostCavalry == 3 && d.SupplyCostForeign == 1, "C1E1-d2 supplyCost* JSON 매핑: 보병 1 · 기병 3 · 외인 1");
+            try
+            {
+                var path = Path.Combine(AppContext.BaseDirectory, "assets", "data", "campaign_e1_start.json");
+                using var doc = System.Text.Json.JsonDocument.Parse(File.ReadAllText(path));
+                var chk = doc.RootElement.GetProperty("op1SupplyCheck");
+                var per = chk.GetProperty("_estimateMissionPermanentUse");
+                float M(string k) => per.GetProperty(k).GetSingle();
+                // 허용오차 5: S2·S3 는 4000-623=3377 이 정확하나 명세 기록은 반올림 3380 (S1 도 명세 240 vs 합 241).
+                const float tol = 5f;
+                // 경로별 구성: D02 C(대민 구제) 여부 + 거친 미션
+                var routes = new (string Id, bool Relief, string[] Ms)[] { ("S1", false, new[] { "BT1", "SK1", "SK4" }), ("S2", true, new[] { "BT1", "SK2", "SK4" }), ("S3", true, new[] { "BT1", "SK1", "SK2" }), ("S4", false, new[] { "BT1" }) };
+                var got = new List<string>(); bool allOk = true;
+                foreach (var (id, relief, ms) in routes)
+                {
+                    var r = chk.GetProperty(id);
+                    var cs = new CampaignState();
+                    CampaignFunds.AddPermanentLoss(cs, r.GetProperty("permanentUse").GetSingle());
+                    float avail = CampaignFunds.AvailableSupply(cs);
+                    float sum = (relief ? d.CivilianReliefSupplyLoss : 0f) + ms.Sum(M);
+                    float expect = r.GetProperty("op1AvailableSupply").GetSingle();
+                    bool ok = Math.Abs(avail - expect) <= tol && Math.Abs(d.EpisodeSupplyStart - sum - expect) <= tol;
+                    allOk &= ok; got.Add($"{id} {avail:0}/{expect:0} (합산 {d.EpisodeSupplyStart - sum:0})");
+                }
+                check(allOk, "C1E1-d2 op1SupplyCheck(JSON) OP1 가용 보급 ±5: " + string.Join(" · ", got));
+            }
+            catch (Exception ex) { check(false, "C1E1-d2 op1SupplyCheck 읽기 실패: " + ex.Message); }
+
             // 8) JSON 깨진 값 보정
             var wild = new CampaignEconomyDefs { RegularControlCap = -4, ForeignSlotCap = int.MaxValue, PermanentDeployFrac = float.NaN, EpisodeSupplyStart = -1, VolunteerBlockMen = 0 }.Sanitized();
             check(wild.RegularControlCap == 0 && wild.ForeignSlotCap == 1_000_000 && wild.PermanentDeployFrac == 0.1f && wild.EpisodeSupplyStart == 0 && wild.VolunteerBlockMen == 1, "TC-D 경제 JSON 보정");
