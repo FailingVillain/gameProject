@@ -202,6 +202,7 @@
 | 15:2x | T38j 중단(sonnet, 56k, 38초): t38e 워크트리(미커밋 8파일)에 휠·드래그 스크롤 이미 구현 → 중복 발주(지휘자 실수: 진행 중 브랜치의 미커밋 변경 미확인). 교훈 후보: 발주 전 관련 워크트리 git status 확인. T38j 는 T38e wip-ready 뒤 시트 점검만 남으면 재판단 | 종료 |
 | 15:3x | 사용자: T38b 도움말 단축키 승인 / 'T38 시리즈는 사령관 책상 형식' 지적 → 현재 T38a/b 시트 확인(어두운 웹게임풍, 종이 아님): 종이 전환은 T38d(Palette 토큰 일괄)로 계획했으나 지휘자가 '나중 스킨 단계'로 전달해 인식 차이. T38e·T38i 에 Palette 토큰만 쓰라고 통보. T38d 는 T38 시리즈 전 화면(a/b/e/f/h/i) 포함을 수용 기준에 명시 필요 | 기록 |
 | 15:3x | MERGE_PLAN 패치 완료(haiku, 79k; f473852): 쉬운 요약 추가·t38c-on-ui 교체·t38h f126551 만·팁 정정. 확인 사항 처리: B2 계획대로, t38h = f126551 체리픽만, FV T32b=65·T34a=66. **병합 1단계 발주**(merger sonnet): 준비+그룹 A+B1~B5b, merge/0.2(kd-merge) 에서만, MERGE_PROGRESS.md 인계. 같이 발주: 로드맵 PDF(spec sonnet → C:/works/KoreanDivision_roadmap_2026-10-22.pdf), 편집기 체인+T36/T37/T41/T44 리뷰(reviewer sonnet). T38i wip-ready(sonnet, 95k, 335초; t38i-tutorial-link 3e41444, t38h 위): 지도 탭 [튜토리얼 0-1/0-2 연습] 버튼, 연습 출격은 결과 저장·CommitResult·BeginOperation 생략 → campaign 저장 바이트 동일 시험, Palette 토큰만 사용, missions/savecompat/uiicons·퍼즈·골든 PASS | 완료 ~86 · 병합 진행 |
+| 15:3x | 성능 기준선 완료(measure sonnet, 81k, 792초; ops/PERF_BASELINE_2026-10-22.md): main 9b4f848 vs integration 984c404 틱 비용 차이는 잡음 범위(C 10000기 평균 6.3/6.1ms, E 10000기 13.0/11.6ms·p99 52/44ms), FindTarget 틱의 63%, Fog 0.30~0.31ms@5000·0.41ms@10000(목표 0.3 초과), 1시간 메모리 힙 +50~78MB(유닛이 5000→667/236 로 줄어든 시나리오라 확정 못함). 의심: E 10000기 p99 가 16.7ms 예산 초과·Fog 10000기 초과·유닛 감소에도 힙 증가. 측정은 동시 부하(heavy 3~6) 중 단일 시드 → 대략치. 렌더 프레임 시간 미측정(창 금지) | 완료 ~87 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
