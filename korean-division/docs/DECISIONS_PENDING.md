@@ -14,3 +14,4 @@
 - [T30a/sim] 열차 Q-A1~A5 임시 답(권장안) 승인 필요 — A1 새 Entity(TrainCar, Units 밖) · A2 단선/순환+경유점 · A3 선로 위 유닛이면 정지 · A4 속도 3칸/s 가속 0.4 제동 1.2 간격 1.5 최대 8량 감지 5칸 · A5 T28 재스택 불필요. 근거 tasks/T30a 결과.
 - [T39b/sim] `terrain.waterBlocksFire` 기본값을 false(강 건너 사격 허용)로 바꿀지 — 0.3 밸런스 패스 결정 (지휘자 확정: 0.2 는 키만, 기본 true). 켜면 시험 장면 units 20->126 · shots 2530->6119, 골든 변경. minObstacle 은 유지.
 - [T32b/AI 연막] 질문 Q1~Q6 (카드 tasks/T32b-ai-smoke.md): 연막탄 AI 사용 · 사거리 5 상향 · 아군 사선 가드 40% · 한국군 전용 여부 · 켜는 대상 프로필 · 합격선. 기본값 = 모두 꺼짐 유지, 카드 권장안대로 구현 (수류탄만 · 값 그대로 · 40% · 사실상 한국군 전용 · 결정 보류 · 숫자만 기록).
+- [T34a 3C-1] 결정: 제압 문턱 superioritySupp·boundSuppression·(틀)chargeSuppression 의 엔진 틀(TacticDrill) 쪽은 세력별 겹침으로 못 바꿈(시뮬은 AI 프로필 금지) — 측정에서 '켬 권고'가 나오면 tactics.json 전역 값 변경(골든 바뀜)으로 할지. 겹침 값(0.30/0.6/0.45/0.6, pinned 0.25, pivot 0.4)은 초안, 측정·튜닝 보류(밸런스 후순위).

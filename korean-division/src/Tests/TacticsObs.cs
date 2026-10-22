@@ -219,6 +219,16 @@ public static class TacticsObs
     static readonly int TacDbgEvery = Environment.GetEnvironmentVariable("KD_TAC_DBG") == "1"
         ? (int.TryParse(Environment.GetEnvironmentVariable("KD_TAC_DBG_SEC"), out int ds) && ds > 0 ? ds : 15) : 0;
 
+    /// <summary>[측정 전용, T34a] 겹침 (KD_AI_OVERLAY) 이 default 대비 바꾼 superioritySupp · boundSuppression · chargeSuppression 을 틀 (DrillDef) 에 비춘다.</summary>
+    static void Mirror3c(Defs defs)
+    {
+        if (Environment.GetEnvironmentVariable("KD_AI_OVERLAY") is not { Length: > 0 } ov || AiProfiles.Find("default+" + ov) is not { } o || AiProfiles.Find("default") is not { } d0) return;
+        var b = defs.Tactics.Behaviour;
+        if (o.Tactics.SuperioritySupp > 0) b.SuperioritySupp = o.Tactics.SuperioritySupp;
+        if (o.Tactics.BoundSuppression > 0) b.BoundSuppression = o.Tactics.BoundSuppression;
+        if (o.Tactics.ChargeSuppression != d0.Tactics.ChargeSuppression) b.ChargeSuppression = o.Tactics.ChargeSuppression;
+    }
+
     public static int RunCli(string[] args)
     {
         try { Console.OutputEncoding = Encoding.UTF8; } catch (IOException) { }
@@ -226,6 +236,7 @@ public static class TacticsObs
         string variant = Environment.GetEnvironmentVariable("KD_OBS_VARIANT") ?? "";   // 4차: 시험용 메모리 안 덮어쓰기 (V0..V5), 파일 · 정상 게임은 영향 없음
         foreach (var part in variant.Split('+', StringSplitOptions.RemoveEmptyEntries)) ApplyVariant(defs, part);   // engage: '+' 로 여러 덮어쓰기
         if (variant.Length == 0) ApplyVariant(defs, "");   // offnco: 변형 없어도 KD_OBS_OFFBACK 등 덮어쓰기는 적용
+        Mirror3c(defs);   // T34a: KD_AI_OVERLAY 겹침이 바꾼 제압 문턱을 엔진 틀에도 (측정 전용 — 시뮬은 AI 프로필을 읽지 않는다)
         SupThr = defs.Tactics.Behaviour.SuperioritySupp;
         PatThr = defs.Tactics.Behaviour.PatienceSec;
         string id = args[1]; float seconds = 0; int? seed = null; string? outPath = null;
@@ -328,6 +339,7 @@ public static class TacticsObs
             sb.AppendLine($"[제압2] 세력{f} 엎드림 {st.ProneTicks[f] * ds:0}병-초 고정 {st.PinTicksF[f] * ds:0}병-초 붕괴 {st.Breaks[f]} 회복 {st.Rallies[f]} 도주 {st.BrokenTicks[f] * ds:0}병-초 | 출처 " + string.Join(" ", Enumerable.Range(0, SupSrc.Count).Select(i => $"{SupSrc.Names[i]} {st.SuppBy[f * SupSrc.Count + i] / 1000.0:0.0}")));
         }
         foreach (var f in sides.Keys.OrderBy(k => k).Where(k => (uint)k < MoveStats.MaxF)) sb.AppendLine($"[항복] 세력{f} 항복 {w.Stats.Surrenders[f]}");   // N79b
+        sb.AppendLine($"[3C-1] 엄호 철수 {w.Stats.Cover3cWithdraws} (엄호 병사 {w.Stats.Cover3cMen}) 이탈 {w.Stats.Cover3cReleases} | 엎드린 적 표적 전환 {w.Stats.Pinned3cRetargets} | 아군 엎드림 약진 보류 {w.Stats.Prone3cPivots}");   // T34a
         sb.AppendLine($"[돌격허가] 신호 {w.Stats.AssaultSignal} 엄호 {w.Stats.AssaultOverwatch} 예비타이머 {w.Stats.AssaultFallback} 막힘(판단수) {w.Stats.AssaultBlocked}");   // 결정 4 (양측 합, 엔진 기동조 + 전술 AI 중대 돌격)
         { var st = w.Stats; double end = res.DurationSeconds; var ps = sides.ToDictionary(k => k.Key, k => w.Controllers.Select(c => c.Ai).OfType<TacticalAi>().Select(a => a.StateOf(k.Key)).FirstOrDefault(x => x != null));
           sb.AppendLine($"[추격] 국면 시작 t50={(t50 < 0 ? -1 : t50):0} 길이 {(t50 < 0 ? 0 : end - t50):0}s, 사살 사격 {st.KillsFire} 근접 {st.KillsMelee}, 추격 국면 사살 사격 {(t50 < 0 ? 0 : st.KillsFire - kf50)} 근접 {(t50 < 0 ? 0 : st.KillsMelee - km50)}, 후퇴 중 희생 사격 {st.KillsFleeingFire} 근접 {st.KillsFleeingMelee}, 후퇴하는 적 돌격 보병 {st.InfChargeFleeing} 기병 {st.CavChargeFleeing}, 막은 판단 {st.FleeingChargeBlocked}, AI 추격 {string.Join("/", ps.OrderBy(k => k.Key).Select(k => k.Value?.Pursuits ?? 0))} 한계 정지 {string.Join("/", ps.OrderBy(k => k.Key).Select(k => k.Value?.PursuitHalts ?? 0))}");

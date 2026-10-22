@@ -117,6 +117,12 @@
     "notrenchassault": { "tactics": { "trenchAssault": false } },
     // 측정용: 전술 AI 연막 수류탄 켜기 (T32b — --ai tactical:smoke_on, KD_AI_OVERLAY=smoke_on). 참호 돌격 안 연막 (smokeHook) 은 tactics.json 자료 키라 겹침이 아님 (tactics-obs 변형 SMOKEHOOK).
     "smoke_on": { "tactics": { "smokeAi": true } },
+    // 3C-1 겹침 (T34a 측정용 — KD_AI_OVERLAY=<이름>, docs/T34_3CD_SPEC.md): 3c = 전부 켬, no3c = 전부 끔 (3B2 동작), 3c_suppthr = 제압 문턱 (교전 병사 분포로 산출, 카드 결과 표),
+    // 3c_coverwd = 엄호 철수. superioritySupp · boundSuppression 의 엔진 틀 (TacticDrill) 쪽은 측정 도구 거울로만 (TacticsObs) — 정상 게임 틀 값은 tactics.json
+    "3c": { "tactics": { "superioritySupp": 0.30, "boundSuppression": 0.6, "chargeSuppression": 0.45, "retreatSuppression": 0.6, "pinnedTargetWeight": 0.25, "ownPronePivot": 0.4, "coverWithdraw": true, "withdrawStep": 0.34, "coverSec": 15 } },
+    "no3c": { "tactics": { "superioritySupp": 0, "boundSuppression": 0, "pinnedTargetWeight": 0, "ownPronePivot": 0, "coverWithdraw": false } },
+    "3c_suppthr": { "tactics": { "superioritySupp": 0.30, "boundSuppression": 0.6, "chargeSuppression": 0.45, "retreatSuppression": 0.6, "pinnedTargetWeight": 0.25, "ownPronePivot": 0.4 } },
+    "3c_coverwd": { "tactics": { "coverWithdraw": true, "withdrawStep": 0.34, "coverSec": 15 } },
     // 세력 기본값 (지도 factions[].en)
     "korean": {
       "strategy": { "aggressiveness": 0.6, "artillery": 0.8, "cavalry": 0.5 },

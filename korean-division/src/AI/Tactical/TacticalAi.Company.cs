@@ -65,7 +65,7 @@ public sealed partial class TacticalAi
         {
             if (g.State == TacState.Fallback)
             {
-                if (w.Tick < g.FallbackUntil) return;
+                if (w.Tick < g.FallbackUntil) { CoverRelease(w, s, g, T); return; }   // T34a 엄호조 이탈 (TacticalAi.Coop3C.cs)
                 g.State = TacState.Idle;
                 g.NoRetreatUntil = w.Tick + Sec(20);
                 g.OrderTick = -100000;
@@ -95,10 +95,10 @@ public sealed partial class TacticalAi
                         // N79a: 전술 AI 도 자기 중대의 집결 지점을 정한다 — 전선 뒤 (기본 후퇴 위치와 같은 곳) 에 두고 거기로 후퇴 (집결 지점이 이 후퇴의 목적지)
                         var rp = ClampMap(w.Map, g.Center - SafeNorm(g.TaskDir, s.Dir) * back);
                         if (g.CompanyId != 0 && w.FindCompany(g.CompanyId) is { } rco && rco.Owner == s.Faction) { w.SetRally(s.Faction, new[] { rco.Id }, rp); retreatUseRally = true; }
-                        Order(w, s, g, mem, Ord.Retreat, rp, g.TaskDir, Frontage(g));
+                        CoverRetreat(w, s, g, T, mem, rp);   // T34a: 엄호 철수 켬이면 엄호조를 남기고 본대만 (끔 = 전원 Order Retreat)
                         retreatUseRally = false;
                     }
-                    g.State = TacState.Fallback; g.StateTick = w.Tick; g.FallbackUntil = w.Tick + Sec(15);
+                    g.State = TacState.Fallback; g.StateTick = w.Tick; g.FallbackUntil = w.Tick + Sec(15) + TakeCoverExtra();
                     s.Fallbacks++;
                     return;
                 }
@@ -288,7 +288,7 @@ public sealed partial class TacticalAi
         // 돌격 중: 10초 (또는 둘레에 적이 없어질 때) 까지 맡겨 둔다. 소총 중대는 깰 수 없는 전차를 표적 삼지 않는다
         bool hurtsArmor = false;
         foreach (var u in mem) if (u.Weapon != null && u.Weapon.CanDamage("armored")) { hurtsArmor = true; break; }
-        var e = FixTarget(g, hurtsArmor) ?? Grid.Nearest(g.Center, hurtsArmor ? TacGrid.Any : TacGrid.Infantry);   // 고정 제대는 맡은 구역의 적 (stage 3A)
+        var e = FixTarget(g, hurtsArmor) ?? PinnedPick(w, g, Grid.Nearest(g.Center, hurtsArmor ? TacGrid.Any : TacGrid.Infantry), T, range);   // 고정 제대는 맡은 구역의 적 (stage 3A) · T34a 엎드린 적 가중
         float d = e != null ? Vector2.Distance(e.Pos, g.Center) : float.MaxValue;
         if (g.State == TacState.Assault)
         {
@@ -388,7 +388,7 @@ public sealed partial class TacticalAi
         if (TryAssault(w, s, g, e, d, supp, attack: true)) return;
         // 사격선 전진 (bound): 한동안 사격한 뒤 제압이 낮고 유리하면 몇 칸 앞으로 — 분대 교대 (행진 사격 유닛은 걸으며 쏜다)
         long boundAfter = Sec(14f - 10f * T.Aggressiveness);
-        if (d > T.ChargeRange * K + 1f && w.Tick - g.StateTick > boundAfter && supp < 0.4f && T.Aggressiveness > 0.1f && Favourable(g, e))
+        if (d > T.ChargeRange * K + 1f && w.Tick - g.StateTick > boundAfter && T.Aggressiveness > 0.1f && BoundOk3C(w, T, g, e, supp))   // T34a: 제압 상한 · 아군 엎드림 · 우세 문턱 (끔 = supp < 0.4 · Favourable)
         {
             float bd = MathF.Max(T.ChargeRange * K - 1f, d - 6f * K);
             Vector2 p = BestCover(w.Map, g.Center + toE * (d - bd), 2, e.Pos);

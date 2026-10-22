@@ -25,6 +25,7 @@ public sealed class MoveStats
     public long HeavyGapSteps;       // arty3: heavy 간격으로 방렬 전 옆으로 비켜선 틱 수 (Arty3.cs)
     public long SpotterIndirectShots; // arty3: 야전포 간접 사격 발수 (관측 유닛 · 사선 없음)
     // 전술 틀 2단계 행동 (TacticDrill.cs) 누계
+    public long Cover3cWithdraws, Cover3cMen, Cover3cReleases, Pinned3cRetargets, Prone3cPivots;   // [측정] T34a 3C-1 (TacticalAi.Coop3C.cs)
     public long DrillStarts, DrillEnds, DrillBounds, DrillManoeuvres, DrillCharges, DrillCounters, DrillTrench, DrillLifts, DrillPaused, TacticTransitions, DrillDecisions;
     public long CoverSeeks, CoverSeekTrench, OccupyOrders, OccupyTrenchSpots, OccupyCoverSpots;   // engage (2026-10-19): 엄폐 찾기 · 진지 점유 (CoverSeek.cs)
     public long AssaultSignal, AssaultOverwatch, AssaultFallback, AssaultBlocked;   // 결정 4: 돌격 허가 이유 (TacticDrill.cs AssaultClearance — 엔진 기동조 + 전술 AI 중대 돌격)
