@@ -172,7 +172,7 @@ G 보류: t38e-unitlist-codex(작업 중), t38i(작업 중) - 팁이 정해지�
 5. 시트 검수 15장(`C:\works\_review_sheets_2026-10-22`)은 병합과 독립 - 병합이 막지 않는다.
 
 ## 5. 작업 분할 · 무거운 풀 사용
-- 무거운 작업 = 빌드, selftest 묶음, snaptest, uifuzz, detcheck. **동시 2개까지**(사용자 규칙 heavy-job-concurrency; 풀 한도 10 은 다른 에이전트와 공유) - 병합 에이전트는 한 번에 1개를 기본, 묶음 2개만 병렬. 병합 잠금 보유 중에만 게이트 `-Priority`.
+- 무거운 작업 = 빌드, selftest 묶음, snaptest, uifuzz, detcheck. **에이전트당 동시 2개까지**(사용자 규칙 heavy-job-concurrency; 풀 한도는 ops/LIMITS.md 참조, 다른 에이전트와 공유) - 병합 에이전트는 한 번에 1개를 기본, 묶음 2개만 병렬. 병합 잠금 보유 중에만 게이트 `-Priority`.
 - 에이전트 컨텍스트 200k 규칙 때문에 merger(sonnet) 를 **그룹별로 새로 띄운다**; 한 에이전트가 이어받지 않는다.
 
 | 에이전트 | 범위 | 예상 토큰 | 무거운 작업 수(대략) |
