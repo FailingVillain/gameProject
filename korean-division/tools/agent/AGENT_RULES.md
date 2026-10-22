@@ -26,3 +26,6 @@ Repo `C:\gameProject\korean-division`. Report in Korean, short. Procedures: `doc
 - Commit specific files only (`git add <file>`; never `commit -a`; never touch untracked `docs/soak/` or `캠페인-초안.txt`); identity + trailer per CLAUDE.md. NEVER push.
 - Permission-prone command -> permissions.md (DECISIONS_PENDING line, continue).
 - When done: report in the role card's format, leave no background jobs.
+
+## Running the game window
+- Whenever the game window opens (visual check, screenshot, uifuzz, manual run) launch it via `powershell -File tools/agent/run_game.ps1 <KoreanDivision.exe | project dir> [game args]`: it moves the window to the SECONDARY monitor (primary if only one); `KD_MONITOR=primary|secondary|<index>` overrides; exit code is the game's. Headless flags (`--selftest`, `--detcheck`) need no launcher.

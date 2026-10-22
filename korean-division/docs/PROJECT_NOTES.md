@@ -63,3 +63,6 @@
 - 유닛 그림 테마: 기본 `kd1920` (새 128×160 · @64 · @32 LOD 시트, 없는 항목은 `ww2` 상속, `--theme ww2|none` 전환). 렌더 결과 반영 = `python tools/import_kd1920.py` (기본은 가져온 폴더만 교체, 옛 폴더 정리 `--prune`, 일부만 `--only a,b`). LOD · 팀색 셰이더 · 애니메이션 매핑은 `docs/ENGINE_NOTES.md` '유닛 시트 LOD'.
 - 그림 규칙 · 결정 (유닛 그래픽 파이프라인 · 군복 · 윤곽선 · 머리띠 · 모션 · 세력 외형 · LOD): `docs/ART_SPEC.md` (ROADMAP §3 에서 옮김).
 - `audio-voice/` — 무전기 음성 변조 (`음성변조.bat`, `voice_fx.py`). 현재 음성은 임시 (사용자 녹음 4대사 × en/de/ru).
+
+## 게임 창 실행 (모니터 규칙, 2026-10-22)
+사용자 규칙: 창이 뜨는 모든 실행(시각 확인, 스크린샷, `--uifuzz`, 수동 확인)은 보조 모니터(= `Screen.AllScreens` 중 Primary 가 아닌 첫 화면, 없으면 주 모니터)에 띄운다. `powershell -File tools/agent/run_game.ps1 <exe 또는 프로젝트 폴더> [게임 인자]` (예: `run_game.ps1 . --uifuzz 5`). 창 크기 유지, 화면 중앙 배치, 게임 종료 코드 전달, 관리자 권한 · 프로세스 kill 없음. `KD_MONITOR=primary|secondary|<번호>` 로 지정. 게임 코드 변경 불필요(어느 브랜치 빌드든 동작).
