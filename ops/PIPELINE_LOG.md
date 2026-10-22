@@ -151,6 +151,7 @@
 | 13:4x | **게이트 병목 근본 원인 발견·수정**: heavy_gate 가 재렌더 드라이버(rerender96)와 자식(make_unit)을 둘 다 heavy 로 세어 4레인=8 이 되어 풀이 렌더만으로 가득 참(모든 빌드·selftest 가 막힘). 렌더 레인은 make_unit 자식만 세도록 수정(korean-division/tools/agent/heavy_gate.ps1, 시험 갱신 통과, 'gate open: heavy=4'), main 564cc53. 각 워크트리는 옛 사본을 쓰므로 대기 중 에이전트에 main 사본 경로 통보. 사용자: 자유전은 개발용 진입점으로만 유지, 다자간 대결·샌드박스 제거 → 정찰에 범위 반영 | AO1(풀 한도 상향)은 불필요해질 가능성 |
 | 13:5x | 레거시 플레이 목록화 완료(scout sonnet, 80k, 122초): 메뉴 항목 8개 분류, 샌드박스·튜토리얼·멀티 로비·16인 전용 화면은 코드에 없음(플레이 설정 화면의 세력·AI 선택이 '다자간', 교전 테스트/빠른 교전이 샌드박스에 해당 추정). 제거 단계안 (a)숨김→(b)UI 삭제→(c)죽은 코드(위험)→(d)개발 CLI 유지, 권장 a→b. AQ1 범위 확인 대기. 게이트 수정 통보를 대기 중 에이전트 9개에 발송 | |
 | 13:5x | 사용자 결정: AI 관전 유지·다자간 대결 숨김만·AI vs AI 미션을 관전 탭으로 이동·교전 테스트/빠른 교전은 나중에 검토. → T45 발주(feature sonnet, main 위; 게이트 수정본 `-ExecutionPolicy Bypass` 명령 명시). T40 wip-ready(2de288d): 열차 전멸 판정(AliveCars), FV59 유지 | 완료 ~53 |
+| 13:5x | T32a wip-ready(sonnet, 97k, 2560초; kd/t32a-pioneer 26cc9fd): infantry_pioneer(hp100·속도3.2·제압저항 0.75·소총+총검·수류탄2·wireCutter·한국군 전용·편성 미포함), artAs=infantry_regular 임시, pioneer 그룹 등 PASS, 골든 일치. 발주: T32d 그림(art sonnet, t32a 위, 재렌더 res96 파이프라인 재사용) | AI 규칙 T32b·c 는 0.4 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
