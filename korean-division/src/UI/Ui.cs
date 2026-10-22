@@ -135,6 +135,14 @@ public static class Ui
     public static void Text(string text, float x, float y, float size, Color color, FontRole role = FontRole.Body) =>
         Raylib.DrawTextEx(FontFor(role, size), text, new Vector2(MathF.Round(x), MathF.Round(y)), size, Spacing(role), color);
 
+    /// <summary>폭 maxW 에 맞춰 글자 크기를 (최소 minSize 까지) 줄여 그린다 — 소해상도에서 잘림 방지 (T38d).</summary>
+    public static void TextFit(string text, float x, float y, float size, Color color, float maxW, float minSize = 12, FontRole role = FontRole.Body)
+    {
+        float w = Measure(text, size, role).X;
+        if (w > maxW && w > 0) size = MathF.Max(minSize, MathF.Floor(size * maxW / w));
+        Text(text, x, y, size, color, role);
+    }
+
     public static Vector2 Measure(string text, float size, FontRole role = FontRole.Body) =>
         Raylib.MeasureTextEx(FontFor(role, size), text, size, Spacing(role));
 

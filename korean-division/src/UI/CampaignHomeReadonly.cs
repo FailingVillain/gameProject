@@ -107,7 +107,7 @@ public sealed partial class CampaignMenu
                     ? string.Format(S.CmOrgBat, string.IsNullOrEmpty(b.Name) ? $"{b.Number}" : b.Name, b.Companies, b.Strength, b.MaxStrength, b.Wounded, b.Available)
                     : string.Format(S.CmOrgDirectCo, b.Name, b.Strength, b.MaxStrength, b.Wounded, b.Available > 0 ? "" : S.CmOrgDirectUnavail);
                 Ui.Text(line, x + 24, y, 14, Palette.Text);
-                DrawMeter(body.X + body.Width - 330, y + 3, S.CmOrgBarFatigue, b.Fatigue, b.Fatigue >= CampaignEconomyDefs.Current.FatigueWarnThreshold ? Palette.Warning : Palette.HpGood);   // T42a 읽기 막대
+                DrawMeter(body.X + body.Width - 330, y + 3, S.CmOrgBarFatigue, b.Fatigue, b.Fatigue >= CampaignEconomyDefs.Current.FatigueWarnThreshold ? Palette.Warning : Palette.GoodInk);   // T42a 읽기 막대
                 DrawMeter(body.X + body.Width - 170, y + 3, S.CmOrgBarMorale, b.Morale, Palette.Accent);
                 y += 20; shown++;
             }

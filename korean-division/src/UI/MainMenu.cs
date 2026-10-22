@@ -159,12 +159,12 @@ public sealed class MainMenu
                 if (missions.BackRequested) { missions.BackRequested = false; page = Page.Main; }
                 break;
         }
-        Ui.TextCentered(S.MenuHint, new Rectangle(0, screenH - 30, screenW, 20), 16, Palette.TextDim);
+        Ui.TextCentered(S.MenuHint, new Rectangle(0, screenH - 30, screenW, 20), 16, Palette.TextDimOnDark);
         if (page == Page.Main && startNotice != null)
         {
             string nm = startNotice;
             while (nm.Length > 4 && Ui.Measure(nm, 16).X > screenW - 40) nm = nm[..^4] + "...";
-            Ui.TextCentered(nm, new Rectangle(0, screenH - 64, screenW, 20), 16, Palette.Warning);
+            Ui.TextCentered(nm, new Rectangle(0, screenH - 64, screenW, 20), 16, Palette.WarningOnDark);
             if (click) startNotice = null;
         }
 
@@ -180,20 +180,20 @@ public sealed class MainMenu
 
     void DrawBackdrop()
     {
-        Raylib.DrawRectangleGradientV(0, 0, screenW, screenH, new Color(22, 26, 34, 255), Palette.Void);
+        Raylib.DrawRectangleGradientV(0, 0, screenW, screenH, Palette.DeskTop, Palette.Void);
         if (page == Page.Main) Raylib.DrawRectangleRec(new Rectangle(0, screenH * 0.30f, screenW, 2), Palette.Alpha(Palette.HudTrim, 120));
     }
 
     void DrawTitle(float y)
     {
         Vector2 m = Ui.Measure(S.GameTitle, 72, Ui.FontRole.Heading);
-        Ui.Text(S.GameTitle, (screenW - m.X) / 2, y, 72, Palette.Accent, Ui.FontRole.Heading);
+        Ui.Text(S.GameTitle, (screenW - m.X) / 2, y, 72, Palette.AccentOnDark, Ui.FontRole.Heading);
         y += m.Y - 6;
         Vector2 s = Ui.Measure(S.GameTitleSub, 26);
-        Ui.Text(S.GameTitleSub, (screenW - s.X) / 2, y, 26, Palette.TextDim);
-        y += s.Y - 4;
+        Ui.Text(S.GameTitleSub, (screenW - s.X) / 2, y, 26, Palette.TextDimOnDark);
+        y += s.Y + 2;
         Vector2 k = Ui.Measure(S.GameTitleKo, 26);
-        Ui.Text(S.GameTitleKo, (screenW - k.X) / 2, y, 26, Palette.Text);
+        Ui.Text(S.GameTitleKo, (screenW - k.X) / 2, y, 26, Palette.TextOnDark);
     }
 
     bool Button(Rectangle r, string label, bool enabled = true, bool active = false, int size = 16)
@@ -847,7 +847,7 @@ public sealed class MainMenu
             else
             {
                 string kind = e.Note != null ? S.SaveIncompatible : S.SaveUnreadable;
-                Ui.Text(kind, x + Ui.Measure(e.Name, 16).X + 14, row.Y + 7, 16, Palette.HpLow);
+                Ui.Text(kind, x + Ui.Measure(e.Name, 16).X + 14, row.Y + 7, 16, Palette.BadInk);
                 string msg = e.Error ?? "";
                 float maxW = del.X - x - 24;
                 while (msg.Length > 4 && Ui.Measure(msg, 16).X > maxW) msg = msg[..^4] + "...";

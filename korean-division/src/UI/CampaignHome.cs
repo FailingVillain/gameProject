@@ -195,7 +195,7 @@ public sealed partial class CampaignMenu
         Ui.Text(string.Format(S.CmPreviewBasis, CampaignState.ShortNameOf(targetMissionId), previewCompanies, previewMen), x + 10, y, 13, Palette.TextDim); y += 18;
         bool lack = previewCost > state.Supply;
         Ui.Text(lack ? string.Format(S.CmPreviewSupplyLack, previewCost, state.Supply) : string.Format(S.CmPreviewSupply, previewCost, state.Supply - previewCost),
-            x + 10, y, 14, lack ? Palette.HpLow : Palette.Text); y += 18;
+            x + 10, y, 14, lack ? Palette.BadInk : Palette.Text); y += 18;
 
         var selected = state.Roster.Where(c => c.Available).ToList();
         bool anyAmmo = false;

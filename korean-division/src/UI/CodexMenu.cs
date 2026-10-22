@@ -199,7 +199,7 @@ public sealed class CodexMenu
 
     void DrawUnitList(Rectangle r, List<UnitDef> list)
     {
-        Ui.Panel(r, Palette.Alpha(Palette.Void, 180), Palette.PanelBorder);
+        Ui.Panel(r, Palette.Alpha(Palette.Panel, 200), Palette.PanelBorder);
 
         float headerH = 24;
         Raylib.DrawRectangleRec(new Rectangle(r.X + 1, r.Y + 1, r.Width - 2, headerH), Palette.Alpha(Palette.PanelDark, 180));
@@ -283,7 +283,7 @@ public sealed class CodexMenu
 
     void DrawDetailPanel(Rectangle r, UnitDef? u)
     {
-        Ui.Panel(r, Palette.Alpha(Palette.Void, 180), Palette.PanelBorder);
+        Ui.Panel(r, Palette.Alpha(Palette.Panel, 200), Palette.PanelBorder);
 
         if (u == null)
         {

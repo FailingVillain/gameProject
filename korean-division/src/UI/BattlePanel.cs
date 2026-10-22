@@ -35,7 +35,7 @@ public static class BattlePanel
 
         int lines = 5 + initial.Count(e => e.A > 0) + initial.Count(e => e.B > 0);
         const float lh = 19;
-        var panel = new Rectangle(vp.X + 8, vp.Y + 8, 330, lines * lh + 22);
+        var panel = new Rectangle(vp.X + 8, vp.Y + 8, MathF.Max(330, Ui.Measure(S.BattleRestartHint, 16).X + 24), lines * lh + 22);   // 안내 줄이 상자 밖으로 나가지 않게 (T38d)
         Raylib.DrawRectangleRec(panel, Palette.Alpha(Palette.PanelDark, 215));
         Raylib.DrawRectangleLinesEx(panel, 1, Palette.PanelBorder);
         float x = panel.X + 10, y = panel.Y + 7;
@@ -56,7 +56,7 @@ public static class BattlePanel
                 if (init == 0) continue;
                 int now = remain[side * 64 + keys.IndexOf(e.Key)];
                 Ui.Text($"{defs.Units[e.Key].Name}", x + 16, y, 16, Palette.TextDim);
-                Ui.Text($"{now} / {init}", x + 210, y, 16, now == 0 ? Palette.HpLow : Palette.Text);
+                Ui.Text($"{now} / {init}", x + 210, y, 16, now == 0 ? Palette.BadInk : Palette.Text);
                 y += lh;
             }
             y += 4;
