@@ -25,6 +25,10 @@ public static partial class S
     public const string WeatherChanged = "날씨 변화: {0} · {1}";
     public const string Grid = "격자 (Ctrl+G)";
     public const string SquadIcons = "분대 아이콘 (I)";
+    public const string OverlayNotice = "머리 위 표시: {0}";
+    public const string SetOverlay = "머리 위 표시";
+    public const string SetOverlayNote = "U 키로도 바꿈. 간결 = 선택 · 위험한 것만";
+    public static string OverlayName(KoreanDivision.UI.OverlayLevel l) => l switch { KoreanDivision.UI.OverlayLevel.Normal => "보통", KoreanDivision.UI.OverlayLevel.Detailed => "상세", _ => "간결" };
     public const string SquadIconsOn = "분대 상태 아이콘 켜짐";
     public const string SquadIconsOff = "분대 상태 아이콘 꺼짐";
     public const string Pause = "일시정지 (F3)";

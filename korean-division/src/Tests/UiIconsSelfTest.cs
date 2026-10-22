@@ -145,6 +145,8 @@ public static class UiIconsSelfTest
         catch (Exception ex) { check(false, $"아이콘 테스트 중 예외: {ex.GetType().Name}: {ex.Message}\n{ex.StackTrace}"); }
         Console.WriteLine("[단축키 재지정 (T38a)]");
         try { CheckRemap(check); } catch (Exception ex) { check(false, $"단축키 재지정 테스트 예외: {ex.GetType().Name}: {ex.Message}\n{ex.StackTrace}"); }
+        Console.WriteLine("[머리 위 표시 단계 (T38m)]");
+        try { CheckOverlay(check); } catch (Exception ex) { check(false, $"머리 위 표시 테스트 예외: {ex.GetType().Name}: {ex.Message}\n{ex.StackTrace}"); }
         Console.WriteLine("[도움말 단축키 = CONTROLS.md]");
         try { CheckListScroll(check); } catch (Exception ex) { check(false, $"T38e 목록 스크롤 테스트 예외: {ex.GetType().Name}: {ex.Message}"); }
         try { CheckControlsDoc(check); } catch (Exception ex) { check(false, $"도움말 문서 동기 테스트 예외: {ex.GetType().Name}: {ex.Message}"); }
@@ -223,6 +225,54 @@ public static class UiIconsSelfTest
         check(KoreanDivision.UI.Hud.ListEnsureVisible(0, N - 1, N, V) == N - V, "마지막 행 -> 끝까지");
         check(KoreanDivision.UI.Hud.ListScrollFromFraction(0f, N, V) == 0 && KoreanDivision.UI.Hud.ListScrollFromFraction(1f, N, V) == N - V && KoreanDivision.UI.Hud.ListScrollFromFraction(0.5f, N, V) == 11, "막대 끌기 비율 -> 시작 행");
         check(KoreanDivision.UI.Bindings.AllDefaults().Any(x => x.Key == "F2"), "도감 키 F2 가 Bindings 에 있음");
+    }
+
+    /// <summary>T38m: 단계별 가시성 규칙 (순수 함수) · 기본 간결 · settings.json 저장 / 관대한 읽기. 임시 파일, 끝에 원복.</summary>
+    static void CheckOverlay(Action<bool, string> check)
+    {
+        var C = KoreanDivision.UI.OverlayLevel.Concise; var N = KoreanDivision.UI.OverlayLevel.Normal; var D = KoreanDivision.UI.OverlayLevel.Detailed;
+        bool hp(KoreanDivision.UI.OverlayLevel l, bool sel, bool hov, bool rec, bool own) => KoreanDivision.Render.OverlayRules.ShowHp(l, sel, hov, rec, own);
+        bool bars(KoreanDivision.UI.OverlayLevel l, bool sel, bool own, bool low) => KoreanDivision.Render.OverlayRules.ShowAmmoCargo(l, sel, own, low);
+        check(!hp(C, false, false, false, true) && hp(C, true, false, false, true) && hp(C, false, true, false, false) && hp(C, false, false, true, false), "간결: 체력 막대는 선택 · 호버 · 피격만");
+        check(!hp(N, false, false, false, true) && hp(D, false, false, false, true) && !hp(D, false, false, false, false), "체력: 보통은 상시 없음, 상세는 아군 상시 (적 제외)");
+        check(!bars(C, false, true, true) && bars(C, true, true, false) && !bars(C, true, false, false), "간결: 탄약 · 적재량 막대는 선택한 아군만 (부족해도 상시 없음)");
+        check(bars(N, false, true, true) && !bars(N, false, true, false) && bars(D, false, true, false) && !bars(D, true, false, true), "보통 = 선택 또는 부족, 상세 = 아군 상시, 적군은 어느 단계에서도 없음");
+        bool sq(KoreanDivision.UI.OverlayLevel l, KoreanDivision.Render.SquadIcons.Status st, bool sel) => KoreanDivision.Render.OverlayRules.ShowSquadIcon(l, st, sel);
+        check(!sq(C, KoreanDivision.Render.SquadIcons.Status.Holding, false) && sq(C, KoreanDivision.Render.SquadIcons.Status.Holding, true), "간결: 참호 같은 평범한 상태는 선택 분대만");
+        check(new[] { KoreanDivision.Render.SquadIcons.Status.Pinned, KoreanDivision.Render.SquadIcons.Status.Suppressed, KoreanDivision.Render.SquadIcons.Status.Retreating, KoreanDivision.Render.SquadIcons.Status.OutOfAmmo, KoreanDivision.Render.SquadIcons.Status.LowAmmo }.All(x => sq(C, x, false)), "간결: 고정 · 제압 · 후퇴 · 탄약 없음/부족 아이콘은 선택 없이도 경고");
+        check(!sq(C, KoreanDivision.Render.SquadIcons.Status.None, true) && sq(N, KoreanDivision.Render.SquadIcons.Status.Holding, false) && sq(D, KoreanDivision.Render.SquadIcons.Status.Charging, false), "None 은 안 그림, 보통 · 상세는 모든 상태");
+        var KR = KoreanDivision.Render.OverlayRules.ShowTeamMarker;
+        check(!KR(C, false, false) && KR(C, true, false) && KR(C, false, true) && KR(N, false, false) && KR(D, false, false), "색각 도형: 간결은 선택 · 호버만, 보통 · 상세는 상시");
+        check(KoreanDivision.Render.OverlayRules.ShowProgress(C, true) && !KoreanDivision.Render.OverlayRules.ShowProgress(D, false), "진행 막대: 동작 중일 때만");
+
+        string tmp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "kd_overlay_" + Guid.NewGuid().ToString("N") + ".json");
+        var oldPath = KoreanDivision.UI.UserSettings.PathOverride; var oldLv = KoreanDivision.UI.UserSettings.Overlay;
+        try
+        {
+            KoreanDivision.UI.UserSettings.PathOverride = tmp;
+            File.WriteAllText(tmp, "{\"Width\":1280,\"Height\":720}");   // Overlay 항목 없는 옛 파일 = 기본 간결
+            KoreanDivision.UI.UserSettings.Overlay = D; KoreanDivision.UI.UserSettings.Load();
+            check(KoreanDivision.UI.UserSettings.Overlay == C, "기본 단계 = 간결 (옛 settings.json 에 항목 없음)");
+            foreach (var lv in new[] { N, D, C })
+            {
+                KoreanDivision.UI.UserSettings.Overlay = lv; KoreanDivision.UI.UserSettings.Save();
+                KoreanDivision.UI.UserSettings.Overlay = lv == C ? N : C; KoreanDivision.UI.UserSettings.Load();
+                check(KoreanDivision.UI.UserSettings.Overlay == lv, $"단계 {lv} 저장 · 불러오기 왕복");
+            }
+            File.WriteAllText(tmp, "{\"Overlay\":\"엉뚱한값\"}"); KoreanDivision.UI.UserSettings.Overlay = D; KoreanDivision.UI.UserSettings.Load();
+            check(KoreanDivision.UI.UserSettings.Overlay == C, "모르는 값 = 간결");
+            File.WriteAllText(tmp, "{\"Overlay\":\" DETAILED \"}"); KoreanDivision.UI.UserSettings.Load();
+            check(KoreanDivision.UI.UserSettings.Overlay == D, "대소문자 · 공백 관대");
+            File.WriteAllText(tmp, "{\"Overlay\":5}"); KoreanDivision.UI.UserSettings.Overlay = D; KoreanDivision.UI.UserSettings.Load();
+            check(KoreanDivision.UI.UserSettings.Overlay == D, "형식이 틀린 파일은 무시 (현재 값 유지, 예외 없음)");
+            check(KoreanDivision.UI.UserSettings.NextOverlay(C) == N && KoreanDivision.UI.UserSettings.NextOverlay(N) == D && KoreanDivision.UI.UserSettings.NextOverlay(D) == C, "U 키 순환 간결 → 보통 → 상세 → 간결");
+            check(KoreanDivision.UI.Bindings.Extra.Any(e => e.Key == "U") && KoreanDivision.UI.Bindings.Conflict("move", 'U') != null, "U 는 도움말 표에 있고 카드 키 재지정 대상에서 제외");
+        }
+        finally
+        {
+            KoreanDivision.UI.UserSettings.PathOverride = oldPath; KoreanDivision.UI.UserSettings.Overlay = oldLv;
+            try { File.Delete(tmp); } catch { }
+        }
     }
 
     /// <summary>T38b: docs/CONTROLS.md 「단축키 일람」 표 (BINDINGS 표지 사이) 가 Bindings.All() 과 한 줄도 어긋나지 않는다 (누락 0 · 잉여 0).</summary>
