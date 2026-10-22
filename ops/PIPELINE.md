@@ -171,3 +171,10 @@ queued(지휘자/spec) → assigned(지휘자, 발주 시) → running(에이전
 
 ## 자동 기본값 로그 (사용자 2026-10-22)
 추천 기본값을 자동 적용할 때는 `ops/AUTO_DEFAULTS_LOG.md` 에 **한 줄 append**(`echo >>`)만 한다. 이 파일은 읽기 목록(STATE→QUEUE→DECISIONS→LESSONS)에 넣지 않고 에이전트 프롬프트에서도 읽지 않게 한다(토큰 누수 방지). 사용자가 요청할 때만 지휘자가 읽어 요약한다.
+
+- 2026-10-23 (게이트): 렌더(art) 풀 기본 상한 2(RAM<6GB 이면 1), 병합 담당은 merge_step -Priority 유지. 변경 위치 korean-division/tools/agent/heavy_gate.ps1(KD_GATE_ART_LIMIT 환경 변수로 재정의), 시험 heavy_gate_test.ps1 갱신·통과, 백업 C:/works/_backup/heavy_gate*.before_artlimit_2026-10-23. 발주 규칙: general-purpose 지양, opus 는 카드 분할+턴 상한(LESSONS.md 참조).
+
+## 감독관·자동 점검 규칙 v2.2 (사용자 승인 2026-10-23, 토큰 집계 근거: 점검 비용은 점검 대상 비용의 5% 이하)
+- 감독관 발주 모델: opus → **sonnet**. 정기(60분) 실행은 폐지하고 **하니스 이상 신호가 뜰 때 또는 사용자가 요청할 때만** 실행한다. (위 '감독관 상시화' 미결정 항목은 이 규칙으로 대체: 상시화하지 않음.)
+- 감독관 프롬프트에는 읽을 문서·파일을 직접 지정하고(대문서 전체 읽기 금지), 보고는 **12줄 이내**로 받는다.
+- 지휘자의 '자동 점검 1회': 주기를 1시간 이상으로 늘리고 읽는 것은 `ops/STATE_LIVE.md`(tools/agent/state_snapshot.ps1 -Write 출력)와 하니스 `/api/state` 요약뿐. PIPELINE_LOG·큰 문서는 읽지 않고, 이상이 없으면 한 줄만 남긴다. 정기 점검은 코드(하니스·스크립트)로 하고 LLM 은 이상 신호일 때만 부른다.

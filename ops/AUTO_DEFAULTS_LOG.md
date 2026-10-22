@@ -150,3 +150,6 @@ T33e: MapDoc.MaxDim=1500 mirror of Config.MaxMapSize (test-checked); synthetic b
 2026-10-22 | 사용자 허용(1회): settings.json 금지/확인 목록 보강(git -C 형태·강제 옵션·rm 변형·스케줄러 등록·레지스트리·포맷 등 deny, gh/scp/rsync/설정 변경 ask). 백업 ~/.claude/settings.json.bak_20261022_perm | 사용자 결정
 2026-10-22 | 사용자 허용: day_close.ps1 에 D:\KoreanDivisionBackup 2차 복사(별도 물리 디스크 D:) 추가, tools/storage-guard 에 커밋 | 지휘자
 2026-10-22 | 사용자 명령: 0.2.1 백업 실시 -> 마일스톤 태그 v0.2.1 = merge/0.2-final de2a6053(병합 L1~L8 시점; 기준 커밋은 지휘자 해석), bundle v0.2.1.bundle(태그만) + v0.2.1-all-branches.bundle(전 브랜치) -> C:\works\_backup\KoreanDivision, D:\KoreanDivisionBackup, v0.2.1.bundle 은 G: 백업 폴더에도 | 사용자 결정/지휘자
+2026-10-22 | 장부 2차 반영(DECISIONS BJ 25~39·마일스톤 전환 절차): 사용자 답 기록 · (38) M2 포 단가 보병포 7·곡사포 7 은 응답 없어 추천 기본값 자동 적용(사용자 확인 대기 표시) [사용자 승인 2026-10-22] · 0.3 전환·백업은 사용자 명령 시에만 | docs
+2026-10-22 | 장부 3차 반영(DECISIONS BK 40~49): (45) AG1 항복 켜기 0.4→0.3 분류 변경(VERSIONS 0.3·0.4 줄, spec Q3·B5 기록, spec 커밋 6776212a) · BACKLOG D1·D4 [사용자 처리 답함], D13 일부 처리 표시 · 재확인 결과 기록 | docs
+2026-10-22 | 장부 5차 반영(DECISIONS BM, D14·D18 재보고 묶음 1~8 추천안 일괄 승인 · BACKLOG D14·D18 해결 표시 · 표 F 발주 대기 6건 등재) · TW2 눈보라 유지 확정 정정(사용자 요청 기능, 106줄 낡은 "사용자 보류" 기록 정정) · 임의: 표 F 선행조건 배정(T57·RV·TF-C·색각 = bugfix-1 병합·N2/N3 후, 색각은 설정 패널 충돌 회피) · 이월 목록에 T10 N3 포함 · 등급은 사용자 지시 값 그대로 · 커밋 없음 | docs

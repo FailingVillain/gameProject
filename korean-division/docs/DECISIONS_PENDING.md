@@ -3,7 +3,6 @@
 > 2026-10-22 이전 항목은 전부 ops/DECISIONS.md D01~D22 로 이관됨 (원문 = docs/legacy/DECISIONS_PENDING_ARCHIVE_2026-10-22.md).
 
 
-- [MERGE_PLAN 2026-10-22] 병합 계획서(ops/MERGE_PLAN.md) 확인 요청 — 병합 개시 전 최종 확인(AT). 권장: 승인.
 - [MERGE_PLAN] 골든: T36(immune-target-fix)·T37(acting-delay-tier)가 둘 다 자체 골든이 바뀌는 브랜치라 리허설 값 bef5ffb0 822cdacd 와 다른 값이 나올 수 있음 — 최종 값 확인 후 재생성(사용자 OK). 권장: 그룹 H 뒤 1회.
 - [MERGE_PLAN] t38h-fuzz-campaign(e5f76ec)은 t38g 커밋의 중복이라 병합 제외 — 캠페인 화면 퍼즈 커버(T42c 보고 갭)는 별도 카드로 남음. 권장: 제외 유지.
 - [MERGE_PLAN] AE2(62/25) 번호는 미발주라 비워 둠(river 63 · 다리 64 · 연막 65) — 나중에 AE2 를 발주하면 그때 번호를 새로 정함(저장 형식 호환 영향 없음). 권장: 비워 둔 채 진행.
@@ -11,7 +10,6 @@
 - [MERGE_PLAN] 지도 편집기 지형 목록에 Bridge 가 없으면(T39d 메모) 병합 때 고치지 않고 T33 후속 카드로 — 권장: 카드로.
 - [소리 방침] 함성 방침 A(공용)/B(세력군 3묶음, 권장)/C(세력별 녹음) 선택 + 연막 · 철조망 · 박격포 임시 매핑을 새 음원으로 바꿀지 — docs/SOUND_POLICY_2026-10-22.md
 - [ai3b2/AI 3B] 결정: 3B 합격 지표 '방어 중대 간 24칸 안 ≥50%' 는 90명 중대 정면 폭(≈30칸)상 거의 불가 (C1/C2 기본 34~42%) — 40칸 안 비율로 바꿀지, 값 유지할지. 또 pincerShare 0.5→0.65 (협공 고정 몫 축소) 는 측면 계획으로 바뀌는 효과라 기본 유지 제안.
-- [T30a/sim] 열차 Q-A1~A5 임시 답(권장안) 승인 필요 — A1 새 Entity(TrainCar, Units 밖) · A2 단선/순환+경유점 · A3 선로 위 유닛이면 정지 · A4 속도 3칸/s 가속 0.4 제동 1.2 간격 1.5 최대 8량 감지 5칸 · A5 T28 재스택 불필요. 근거 tasks/T30a 결과.
 - [T39b/sim] `terrain.waterBlocksFire` 기본값을 false(강 건너 사격 허용)로 바꿀지 — 0.3 밸런스 패스 결정 (지휘자 확정: 0.2 는 키만, 기본 true). 켜면 시험 장면 units 20->126 · shots 2530->6119, 골든 변경. minObstacle 은 유지.
 - [T32b/AI 연막] 질문 Q1~Q6 (카드 tasks/T32b-ai-smoke.md): 연막탄 AI 사용 · 사거리 5 상향 · 아군 사선 가드 40% · 한국군 전용 여부 · 켜는 대상 프로필 · 합격선. 기본값 = 모두 꺼짐 유지, 카드 권장안대로 구현 (수류탄만 · 값 그대로 · 40% · 사실상 한국군 전용 · 결정 보류 · 숫자만 기록).
 - [T34a 3C-1] 결정: 제압 문턱 superioritySupp·boundSuppression·(틀)chargeSuppression 의 엔진 틀(TacticDrill) 쪽은 세력별 겹침으로 못 바꿈(시뮬은 AI 프로필 금지) — 측정에서 '켬 권고'가 나오면 tactics.json 전역 값 변경(골든 바뀜)으로 할지. 겹침 값(0.30/0.6/0.45/0.6, pinned 0.25, pivot 0.4)은 초안, 측정·튜닝 보류(밸런스 후순위).
@@ -21,7 +19,6 @@
 - [spec T10] T10 의 ②~④ 가 ROADMAP_LONG(대포병·야간·피로) 인지 COMMS_ALPHA_PLAN(기마 전령·연대 지휘소·AI Dispatch) 인지 확인
 - [T27] ⑧ 색각 대응 표식 형태/적용 범위, 설정 위치·기본값 / 일시정지 중 명령 허용 여부 / 도감을 전투 중에도 열지 — 카드 '확인 필요' 참조
 - [T28] 지형 생성 변경에 따른 골든·BASELINE 재생성 허용 vs 옵션 플래그 / 이번 군집 종류 범위 / '사각형 숲' 재현 시드 — 카드 '확인 필요' 참조
-- [T30a] 객차 = 새 Entity 인가 Unit 확장인가 / 분기·교차 처리 / 열차 위 보병 처리(정지 권장) / 속도·간격 수치 — 카드 T30a 질문 Q-A1~A5
 - [T30b] 선두 객차 파괴 시 이동 (권장: 기관차 파괴 = 전체 정지) / 객차 무기·HP 수치 / 승무원 없음 — T30b Q-B1~B3
 - [T30c] '탈취' 정의(소유 변경 여부) / 화물 보상 연결 여부 (권장 없음) — T30c Q-C1~C3
 - [T30d] 시대 고증 수준 / 방향 수 — T30d Q-D1~D2
@@ -40,7 +37,6 @@
 - [T34d] Q4 결정 8(무능 장교 정면 돌격)은 strictCharge=false 때만 켜짐, 기본 true 라 지금 꺼짐 — 의도 확인. Q5 세력별 프로필 vs 전역값. Q6 기병 혼성 시나리오 추가. Q7 하마 사격 끄고 비교. Q8 퇴행 허용폭 -20%p.
 - [T34 전체] Q-G1 측정 종료선 50% 사본(*_obs) 채택(T31b 권고)? Q-G2 S12 지휘 대행은 T24 ① 로 일부 충족 — 별도 카드? Q-G3 3000기 대량 시험·대포병 사격(결정 11, AI에 아직 없음)을 T34f 로? Q-G4 난이도 인지 지연(0/2/4초) 새 상태 필요 가능 — AE2 와 합칠지.
 - [T39a~d spec] 하천 Q1~Q8 은 제안서 권장 답으로 가정하고 카드를 썼다(폭 1~6 · 흙 다리 유지 · 여울 전 병종 · 감속만 · 수영 불가 · 건너 사격 허용 · 시험 지도만 · 열차와 별개). 다른 답이면 카드 갱신 — 특히 Q2(Bridge 필요 시 T39d 발주), Q6(T39b 측정이 골든을 바꾸면 중단 후 질문).
-- [T39a spec] FV 예약 필요: 하천 = rail FV + 1 (제안서 ≈54; rail 53 / breach2 53 / orderq2 54 / T30a 58 / T30b 59 와 겹침) — 지휘자가 ops/FV_RESERVATIONS.md 행 추가(카드는 편집 안 함).
 - [T39f spec] 한국 x0.78 / 봉천 x1.22 는 ART_SPEC 상 418c1dc 에서 이미 반영됨 — 카드는 재렌더 산출물 전체 적용 검증으로 한정. 값 자체 변경 요청이면 알려 달라.
 - [T39h spec] 모션 2차는 게임 쪽 연결(상태기계가 새 애니 이름 사용) 카드가 따로 필요 — 요청 없이 만들지 않음, 발주 여부 확인.
 - [T42a Q1] 사기/피로 효과를 홈 출전 문턱까지만(권장, 시뮬 무변경) 할지 전투 안(후퇴 문턱)까지 넣을지 — 후자는 시뮬·0.3
@@ -54,13 +50,46 @@
 - [T43] 저격 판정 기준? 혼성 중대 표시(다수결 1종 vs 보조 표시)? 열차·공병 아이콘은 병합 뒤 후속 카드로?
 - [T44] 정지 판정 300 시뮬초 적절? 16인 지도 없으면 새 지도 추가는 범위 밖? 통합 리허설 관문에 넣을지
 - [spec/ui-backlog] UI 백로그 질문 Q1~Q8 = korean-division/docs/UI_BACKLOG.md 맨 아래 (단축키 재지정 범위 · 도움말 키 · 카드 넘침 해법 · 종이 UI 범위 · 전투 중 도감 · 홈 탭 순서 · 색각 표식 범위 · 교전 알림 승인) - 권장: 문서의 우선순위 순서대로 T38g 먼저.
-- [spec/T19 분할] 질문1 T29(첫 승리만 정산 · 경제 JSON, gemini-import 위)와 T09(정산 변경: CampaignEconomy +37 · CampaignState +34줄) 충돌 — 권장: T29 를 t09-camp-slice 위로 재스택해 T09 뒤에 하고 T19b 는 그 위에서 시작 (T09 가 이미 D10/D11 정산을 구현했으니 T29 는 수치 JSON화만 남는지 확인)
-- [spec/T19 분할] 질문2 설계 §11 의 "후속" 탭(3 편제 · 5 장비 · 6 훈련 · 7 외교 · 9 진급 · 11 정보 · 12 명부/훈장 · 14 · 15 연구)과 규칙 7 · 11 · 12 · 13 은 T19 범위에 넣는가? 카드는 MVP 5탭 + 학파만 — 권장: 별도 T30 이후 카드로, 사용자 지시 시 발주
-- [spec/T19 분할] 질문3 T09 가 자동 저장/재시도를 이미 구현했는지 불명(T09 결과 란에 언급 없음) — T19a 에이전트가 먼저 확인, 구현됐다면 T19a 는 슬롯 9개 UI 만
-- [spec/T19 분할] 질문4 F3: T09 슬라이스는 탄약 \`ru\` 한 종으로 시작했는지 확인 필요 (T19b 가 5종으로 확장, 저장 v2→v3 이행)
-- [spec/T19 분할] 질문5 규칙 9(연대 숫자키 · Alt+대대)는 T19c 의 연대 배속 UI 와 번호만 공유, 키 구현은 ROADMAP_SHORT 별 작업 — 별 카드 필요?
 - [C1E1-g1/sim] SK 실패 확정 시 일수 소모 여부 — 명세에 없음. 기본 0 (`failDays`, 노드별 JSON). 1일로 할지 확인.
 - [C1E1-g1/sim] 에피소드 미션 승리 시 CampaignState.Day 는 지금 missionDays 고정으로 오른다 — 노드 days(BT1 1 · OP1 2/4)로 맞추는 연동은 g2/연동 카드에서. 권장: 에피소드 중에는 노드 days 사용.
 - [C1E1-g1/d1] D08 이 붙는 SK 미지정 (c1e1.json 에 D08 위치 없음) — d1 이 흐름요약 §7 표대로 decisions 에 추가.
 - [C1E1-m1] 갈대 지형(reed)이 없어 갈대밭 = grass 로 둠. 갈대 지형 신설 카드를 낼지? 권장: 지도 확정 후 필요하면. a_escape = 북단 중앙 200칸 폭 기본값, 구술로 수정.
 - [C1E1-m2] MAP-B 가정(명세에 위치 없음): 부속지=시가 북동, SK1 우회로=서쪽 가장자리 북상+평야 동진, 목재 야적장=rubble. 수정 필요시 구술 바랍니다.
+
+<!-- assembled-notes:begin (generated by tools/agent/assemble_notes.ps1 from the .d directory; do not edit by hand) -->
+- [T48e] 특성 전투 수치 임시값 (commander_traits.json battle, 0.3 확정): 철벽 retreatCas +50 · 돌격정신 chargeBreak -100 (설계서 '+' 만, 크기는 에이전트 임시) + retreatCas -30 · 보급통 ammoSave 30 · 인자 casualtyMorale -100 · 노련 break -30 ('기본 사기 +3' 을 붕괴 확률 -3% 로 해석) · 포병통 artyDelay -100.
+- [T48e] 전투에는 '사기' 수치가 없어 후퇴 문턱 · 돌격 사기 · 부상 사기 · 기본 사기를 모두 붕괴 확률 (Suppression.BreakChanceOf) 에 연결: 후퇴 문턱 = 중대 사상률 항을 %p 만큼 덜 셈 · 나머지는 배율 가산. 다른 연결 원하면 지정 요망.
+- [T48e] 포병통 '포병 지연' 보류: 전투 안에서 포 ↔ 연대 대응이 없음 (포는 중대가 아니고 명부 포 중대 ↔ 미션 포 블록 매핑 없음). 캠페인 표만 계산, 미션 텍스트에 안 씀. 연결 방식 결정 필요.
+- [T48e] commsRegimentHq: T10 통신 알파 조각 ③ '연대 본부 노드' 가 코드에 없음 → 키는 판정 함수 (CommanderBattle.RegimentHqActive) 만, 효과 0. Q-C6 (공석 약화 폭) 기본 '약화 없음' 유지. 조각 ③ 구현 카드 필요.
+- [T48e] delegationStance: doctrines.json axes 전부 null → 연결 보류 (읽기 함수 DelegationAxes 만, 시뮬 소비처 없음). 0.3 에서 axes 채우면 T24 대리 지휘 범위 안 소비처 연결 (T57 doctrine_stances.json 과 같은 스키마 권장).
+- [T48e] 미션 b1 중대 ↔ 명부 중대 대응 = 출격 편성 (Pending) 의 보병 중대 (없으면 명부 보병 중대) 를 명부 순서로 b1 중대 순서에 맞춤 (기존 Patch 가 중대 수만 줄이는 방식과 같은 가정). 명시 매핑이 필요하면 별 카드.
+- [C1E1-d2/docs] E1 시작 상태 미정 항목: 호감 초기값(사용자 지정) · 챕터 0 unlock 목록 · 튜토리얼 병력 잔존 · E1 외인 잔존(시작) · 포 보급 단가(명세 5~9 범위, 단일값 없음) — 선택지: 사용자 구술 후 값 기입 / 권장: 미정 유지하고 속행 (campaign_e1_start.json 에 "미정" 표기)
+  - [해결 2026-10-22 사용자 결정] 호감 초기값 = 50 (범위 0~100) · 챕터 0 unlock = 보병(infantry) · 중기관총(heavy_maxim), 그 외 잠금 (야전포는 BT1 첫 승리 해금) · 튜토리얼 병력 잔존 = 0 (이월 없음) · E1 외인 잔존 = 이월 true (미션 사이 생존 외인 계속 잔존). 값은 campaign_e1_start.json 에 기입 (브랜치 kd/c1e1-d2-econ).
+  - [해결 - BH5: 포·중화기 보급 단가 추천값 7, 밸런스 때 조정 (ops/DECISIONS.md:216)] 포 보급 단가 (명세 5~9 범위, 단일값 없음) — 사용자 "남는 것: 없음" 지시와 불일치하여 미표시 유지. 값 지정 시 이 줄 갱신.
+C1E1-g5: 피난민 50% 사망 패배는 기존 목표로 정확 표현 불가 (escort count 는 30% 초과 사망에서 실패) — g4(losses% 변수) 후 s4 가 선택
+- C1E1-d1: 노드 데이터는 g1 그래프(episodes/c1e1.json)를 건드리지 않고 별도 파일 episodes/c1e1_nodes.json 로 둠 (이 브랜치는 g1 없는 tce 위라 병합 충돌 회피). 결정 16개 본체는 TC-E 의 campaign_decisions.json 그대로 (중복 안 함).
+- C1E1-d1: g1 그래프의 SK3 노드에 D08 이 빠져 있음 — 배치는 c1e1_nodes.json placements 가 정본(SK3=D08), 병합 때 g1 그래프에 D08 추가 여부 확인 필요.
+- C1E1-d1: EV3 진입 시 flag.siwidaeDispatched=1, flag.namLetter=1 (spec 에 값 명시 없음, 플래그이므로 1). 소비는 g2/g3.
+- C1E1-d1: IL1/IL2 supplyGauge, IL2 deadlineWarning 필드 추가 (계획 §2 #25 IL 보급 게이지 · TC-E D16 '⚠' 표시에서 가져옴; 동작 구현은 g2).
+- [C1E1-g2] 에피소드 화면 진입: 캠페인 홈 중앙 화면에 16번 [에피소드] 탭을 추가했다 (중앙 9+1 — 사용자 확정 "중앙 9·좌 3·우 3" 에서 1탭 늘어남; 대안: 이벤트(13) 탭에 흡수 또는 좌 화면). 승인/재배치 필요.
+- [C1E1-g2] 에피소드 시작 지점이 아직 없어 (캠페인 진행 -> Episode 시작은 후속 연결), 개발 점검용 [에피소드 시작] 버튼을 환경 변수 KD_EPISODE_UI=1 일 때만 연다. 정식 시작 트리거(어느 화면/이벤트가 EpisodeRuntime.Start 를 부르는지) 결정 필요.
+- [C1E1-g2] 에피소드 노드 JSON 에 선택 필드 outcomes {"결정id.선택지id": "이름"} 추가 (EV2: D10 -> follow/delay/persuade [+Ok/Fail], IL2: D16.B = wait, OP1: D11 -> assault/siege). 선택지 id 와 g1 기한 키/변형 key 를 잇는 데이터 매핑 (d1 이 최종 데이터 소유 시 이어받을 것).
+- [C1E1-g2] 경고 표시 글리프: 명세의 "⚠" 는 번들 글꼴(나눔고딕·명조·고딕코딩)에 없어 "▲" (U+25B2) 로 대체.
+- [C1E1-g2] 범위 밖으로 남긴 것: 미션 중 결정(D04·D08·D12·D13·D15)과 SK2 의 D07(승리 후 문서 처리)은 g3, 미션 출격/승패 호출(BeginMission·MissionWon/Lost 를 미션 흐름에서 부르기)은 연결 카드 몫 — 접근 확정 뒤 [출격 준비] 는 미션 파일이 있을 때만 기존 출격 준비 화면을 연다.
+- [C1E1-g2] IL 편성 점검의 사용량은 "가용 중대 전원 투입" 가정치 (실제 중대 선택은 기존 출격 준비 화면의 TC-D 게이지/한도 검사). IL1 에는 대기 없음(waitDays 0).
+- [C1E1-g3] 미션 이벤트 행동 구현 완료. 남은 연결(범위 밖): 미션 시작 때 CampaignVars.StartVarsFor -> CreateMissionWorld(startVars), 승리 정산에서 CampaignDecisions.ApplyMissionOutcome 호출 (g1/TC-F), 결정 라벨 글리프가 폰트 아틀라스에 있는지 확인
+- kd/fix-squads-fail (2026-10-22, 상태 wip-ready): squads 묶음 FAIL 2건 = 시험이 낡음. T37 (cd140c9, U4 승인) 이 ChainTierOf 에서 "대리 지휘관 있는 중대 → Nco" 로 바꿨는데 SquadSelfTest.TestCommandDelayTiers 는 T37 이전 기대값 (부사관 없는 분대 = Acting) 그대로였고, T24 actingMinRank 0 (승인) 에서는 Form() 중대에 항상 대리가 있어 Acting 이 나올 수 없음. 실제값 지연 15,13,18,17,16,13 틱 = Nco 범위 (0.14~0.28초) 로 T37 의도대로. 수정: 시험만 — 대리 있음 → Nco 단계·Nco 지연, actingMinRank −1 (대리 없음) → Acting 단계·Acting 지연 (25~36 틱) 을 둘 다 확인 (약화 아님, 확인 1개 추가). 코드·골든 불변 (672804207fc4e486 3c42aea49324248e). 결정 필요 없음.
+- (kd/flaky-isai-roundtrip, 2026-10-22) IsAi 스냅샷 왕복 간헐 실패 원인 = 시험이 파일 전체 바이트를 비교했고 머리말 `SavedAt = DateTime.Now ("yyyy-MM-dd HH:mm:ss")` (Snapshot.cs:105) 가 두 Save 사이에 초 경계를 넘으면 달라짐. 시뮬 비결정성 아님 (본문 · 체크섬 무관). 수정 = 시험만: 다른 왕복 시험 30여 곳과 같은 `Snapshot.RawBody` 비교 + SavedAt 만 비운 머리말 JSON 비교 (약화 아님 — 비교 범위는 벽시계 한 칸만 제외). 결정 필요 없음, 기록만.
+- [kd/j-followup-fixes] (4) TC-G 구역 검사 확장: 후퇴(집결지 후퇴 UseRally+목표 0 은 제외 — 집결지는 지정 때 검사) · 집결지 지정(Clear 제외, 점이 구역 안/중대 무게중심→점 직선이 구역에 닿으면 거절) · 참호 돌격(On, 같은 규칙). 경로탐색 자동 우회는 범위 밖(별도 카드).
+- [kd/j-followup-fixes] (3) props.json 검증: PropDefs.Validate() 를 Defs.Load 가 호출(balance.json 옆 props.json). 알 수 없는 v2 종류는 오류가 아니라 stderr 경고 1줄(산포는 기존대로 건너뜀, 시드 불변). v2 지형 키 미등록·가중치<0 은 오류로 새로 거부.
+- [kd/rp1-battle-timeline] 표본 간격 10초(600틱=ChecksumInterval), 미션 월드만 표본 (교전 테스트/자유전 제외). 중대 Kills = 생존 구성원 Kills 합 (CompanyLine.Kills 와 같은 정의 — 전사자의 사살은 빠져 '누적'이 줄 수 있음; 정확한 누적은 RP2 에서 결정). ReplayFile.CreateWorld 가 저장 표본을 미리 채움. 평균 탄약은 탄약 쓰는 생존 병력만 ‰ 정수.
+- [kd/rp2-aar-pages] 열린 질문은 설계서 추천값: P2 예상 부상 = 켬(표시 전용, CampaignEconomy.WoundedOf 를 읽음; 리뷰 수정: 출격 편성이 있으면 정산 직전 캠페인 상태로 CampaignEconomy.PlanLoss 를 불러 정산과 같은 중대별 반올림을 탄다 → 표시 = 정산), P4 탈영 칸 없음. 중대 사살(기여) = 기존 CompanyLine.Kills = **생존 구성원** 합 (죽은 병사는 LeaveCompany 가 Members 에서 빼므로 전사자 몫 제외; 전멸해 RemoveCompany 로 사라진 중대는 표·합계에서 빠짐 — 화면에 '생존 병사 기준' · '전멸 중대 제외' 각주. 전사자 포함 정확 누적은 설계서 추천 = 전사 시점에 중대 누적 계수기에 더하는 방식이나 새 상태(체크섬·저장) 가 필요해 하지 않음). 탄약 소모 = 탄약 쓰는 **생존** 구성원의 최대−잔량 합 (보급 시 줄어드는 근사). 교전 시간 = 10초 표본 중 중대의 사살↑·병력↓·탄약↓ 가 있던 표본 수×10초. 그래프: 세력 생존(세력별 선) · 아군 누적 사상 원인(사격/근접/포격 누적 면적) · 중대 탄약 잔량 %(평균 굵은 선 + 중대별). 쪽 전환 = Tab(Shift+Tab 역순) + 상단 버튼 3개; 결과 창에서 Tab 은 게임의 기존 Tab 동작도 같이 받음. 스크린샷용 환경변수 KD_RESULT_PAGE(0~2) 추가.
+- T51a: 잘못된 id 의 MissionDef/MapFile.PathOf 는 예외 대신 존재할 수 없는 경로(`?invalid-id?.json`)를 돌려줌 (File.Exists 호출부가 안 터지게). 엄격한 거부가 필요한 쪽은 PathGuard.TryCombine(사유 포함). 윈도우 예약 이름(CON 등)도 거부. 승인 불필요 판단, 이견 있으면 알려 주세요.
+- T51a: JsonLimits 중복 키는 대소문자 무시(게임이 PropertyNameCaseInsensitive 로 읽음). 파일 4MB 한도 포함. 아직 어디에도 연결 안 함 (T51b 에서 사용).
+- T52a 임의 결정(추천값 적용, 사용자 확인 대기): Q-A1 최근 알림 키 = Backspace (콘솔은 열린 동안만 Backspace 를 쓰므로 충돌 없음, 카드 키 A~Z 와도 무관). Q-A2 알림 종류 = UnderAttack · SiteContested 만. 구역 표기 = 16칸 격자 "A1" 형식(기존 격자 라벨이 없어 새로 정함). 띠 = 최근 3건, 6초 후 흐려짐, 60초 후 띠에서 빠짐(이력 8건엔 남음). 띠 위치 = 뷰포트 왼쪽 아래, 대대 막대 바로 위(미니맵은 하단 HUD 안이라 그 위 뷰포트에 둠). 설정 메뉴 패널 높이 526 -> 600.
+- TF-A 임의 결정: 캠페인 스키마 임시 v14 (기반 13 + 1, fv_claim Schema+1); 출하 campaign.json = T01(c0_01) → T02(c0_02) → M11(c1_01_yalu) → E1(EPISODE c1e1) → G_END(GATE 갈래 없음, default) → END_TBD (자리표시 엔딩 TBD; endings A~D 는 키만, D requires dlc.republic → fallback TBD); 옛 c1_02 다음 미션은 E1 로 이행; 옛 회령·두만강 사슬은 시작 노드 T01 + 알림 (Q 답 전 제안 기본값); Visited 상한 1000; 그래프 변경 복구는 Visited 를 거꾸로 훑어 남은 노드, 없으면 Chain 역산; 이행/복구 알림은 CampaignGraphState.Notice 에만 (화면 연결 TF-B). 엔딩 결과 키 ep.<id>.late/days 는 TF-B/C 몫으로 미구현.
+- TF-B 임의 결정: 진행 = CampaignGraphState.Advance (현재 노드가 이긴 MISSION 일 때만 next 로, GATE 는 즉시 판정해 건너뛰고 MISSION/EPISODE/ENDING 에서 멈춤; 지난 미션 재승리 · 그래프 밖 미션은 불변 → SyncLegacy). GATE 판정 엔진(EvalCond/ResolveGate)은 TF-B 에 포함(진행에 필요), 출하 데이터는 갈래 없음. NextMission 은 MISSION 노드면 그 미션, EPISODE/ENDING 이면 옛 Chain 값('c1_02')을 그대로 둠 (에피소드 실행 화면은 아직 없음 = '준비 중'). 지도 거점 = 주 사슬 첫 노드 다음부터 MISSION(미션 id)/EPISODE(에피소드 id) 순서, 그래프 못 읽으면 옛 표. 이행·복구 알림은 T49a 마이그레이션 알림 띠(migratedNote)에 합쳐 12초 표시. 소형 작전 패배 분기(onLose/loseTo)와 ENDING 도달 처리(EndingId)는 미구현 (Q7 · TF-C).
+- [TI1] Q1~Q8 은 설계서 추천 기본값으로 진행(기본 ko 고정, 이벤트 메시지 키 저장(Q5) 안 함, 라틴 글꼴 추가 안 함). 임의 결정 후보: CSV 이스케이프 `\n`/역슬래시 두 개, 파일 ui_misc.csv 에 시범 3행, 설정 행 추가로 설정 패널 높이 +62px, 시범 영어 문구(7. Diplomacy / Prisoners 등)는 임시(TI5 가 용어집으로 대체).
+- TI4: factions[].name · mapData.name · 계급 · 학파 표시 번역은 후크 미구현(TI3/후속 필요?). 비샘플 미션의 영어는 TI5.
+- TW3 임의 결정: 페이드 2.0초 선형, 종류·시간대 모두 같은 `Changes` 로 페이드; 페이드 중 재전환은 도착 상태를 이전으로 삼아 약간 튐 허용; 이전 층의 비/눈 입자는 즉시 소멸(도착 입자만 알파 페이드인); 눈보라 입자 상한은 Blizzard 종류 부재로 미구현; 프레임 ms 측정 도구 없어 미측정; 미니맵/HUD 스크린샷 미촬영(오버레이 순서 Game.cs 불변).
+<!-- assembled-notes:end -->

@@ -191,3 +191,8 @@
 - T50a · findtarget-ring · scan · 2026-10-22 · kd/t50a-perf
 - T51f · weather-fx-fade · agent · 2026-10-22 · kd/t51f-user-mission-menu
 - T51g · weather-fx-fade · agent · 2026-10-22 · kd/t51g-mission-flags
+- T58 · weather-fx-fade · spec · 2026-10-22 · spec/balance-pass-0.3
+- T59 · weather-fx-fade · spec · 2026-10-22 · spec/balance-pass-0.3
+- T60 · weather-fx-fade · spec · 2026-10-22 · spec/balance-pass-0.3
+- T61 · weather-fx-fade · agent · 2026-10-22 · main
+- C1E1-g3b · weather-fx-fade · agent · 2026-10-22 · kd/g3-win-and-delay
