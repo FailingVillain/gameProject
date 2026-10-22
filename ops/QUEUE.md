@@ -53,7 +53,7 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | TC-F | 미션 데이터 변형 · SK 플래그 · BT1 이탈 · pow.bandit (C1E1) | feature | D中 H2 | TC-D · TC-E | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
 | TC-G | 일본 철도 부속지 진입/사격 금지 (C1E1) | sim | D中~上 H3 | 없음(base merge/0.2) | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
 | C1E1-m1 | MAP-A 지도 생성 (medium) | feature | D中 H0 | 없음 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
-| C1E1-m2 | MAP-B 지도 생성 (large) | feature | D中 H0 | 없음 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-m2 | MAP-B 지도 생성 (large) | feature | D中 H0 | 없음 | wip-ready (kd/c1e1-m2-map-b) |
 | C1E1-u1 | 유닛/무기/세력 점검 (보고서) | scout | D下 H0 | 없음 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
 | C1E1-g1 | 에피소드 그래프 런타임 | sim | D上 H3 | 없음(base t42d) | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
 | C1E1-g2 | 에피소드 화면 UI | feature | D中 H2 | g1 TC-D TC-E | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
