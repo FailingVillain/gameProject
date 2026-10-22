@@ -1,0 +1,59 @@
+{
+  "_note": "C1E1 결정 16개 (TC-E 런타임용 껍데기, 흐름요약 v3 §7 + spec R1~R13). label 은 기능 라벨(서사 문구 아님 — 층 3은 별도). consumers = 이 결정이 바꾸는 것(소비처, 필수). 호감·사기·평판의 증감 크기는 [보류]라 effects 에 넣지 않았다 — 자금 가격·대민 구제 소모만 TC-D 경제 값을 쓴다. 노드 배치(EV/CH/IL)와 선택지 상세 효과는 d1 카드 몫.",
+  "negotiation": {
+    "max": 3,
+    "sources": [
+      { "decision": "D02", "all": ["A", "C"], "delta": 1 },
+      { "decision": "D07", "all": ["B"], "delta": 1 },
+      { "var": "flag.andongCavalryCut", "atLeast": 1, "delta": 1 }
+    ]
+  },
+  "decisions": [
+    { "id": "D01", "tier": "std", "kind": "ORDER", "where": "EV1", "label": "황손 훈수", "consumers": ["favor.hwangson", "D11", "D15"],
+      "choices": [ { "id": "A", "label": "따름" }, { "id": "B", "label": "설득" }, { "id": "C", "label": "무시" } ] },
+    { "id": "D02", "tier": "major", "kind": "CHOICE", "where": "CH1", "label": "병력 보충", "multi": true, "consumers": ["편성", "rep.local", "funds", "supply"],
+      "choices": [
+        { "id": "A", "label": "의용군", "effects": [ { "op": "spendFunds", "econ": "volunteer", "men": 150 } ] },
+        { "id": "B", "label": "마적", "effects": [ { "op": "spendFunds", "econ": "bandit", "men": 0 } ] },
+        { "id": "C", "label": "대민 구제", "effects": [ { "op": "permanentSupplyLoss", "econ": "civilianRelief" } ] } ] },
+    { "id": "D03", "tier": "std", "kind": "APPROACH", "where": "BT1", "label": "도하 방식", "consumers": ["BT1 배치", "OP1 경계심"],
+      "choices": [ { "id": "A", "label": "정면" }, { "id": "B", "label": "여울 우회" }, { "id": "C", "label": "야간" } ] },
+    { "id": "D04", "tier": "minor", "kind": "INMISSION", "where": "BT1", "label": "노획 처리", "pausesMission": true, "consumers": ["탄약", "보급", "시간"],
+      "choices": [ { "id": "A", "label": "즉시 투입" }, { "id": "B", "label": "후방 집결" } ] },
+    { "id": "D05", "tier": "std", "kind": "SELECT", "where": "SELECT", "label": "Skirmish 1/2", "consumers": ["일수", "보상"], "choices": [] },
+    { "id": "D06", "tier": "std", "kind": "SELECT", "where": "SELECT", "label": "Skirmish 2/2", "consumers": ["일수", "보상"], "choices": [] },
+    { "id": "D07", "tier": "std", "kind": "CHOICE", "where": "SK2", "label": "문서 처리", "consumers": ["intel.andong", "D10", "D11", "negotiation"],
+      "choices": [
+        { "id": "A", "label": "본국 보고" },
+        { "id": "B", "label": "작전 활용", "effects": [ { "op": "set", "var": "intel.andong", "value": 1 } ] },
+        { "id": "C", "label": "황손에게 공" } ] },
+    { "id": "D08", "tier": "minor", "kind": "INMISSION", "where": "SK3", "label": "호송 대 추격", "pausesMission": true, "consumers": ["rep.local", "시간"],
+      "choices": [ { "id": "A", "label": "호송 우선" }, { "id": "B", "label": "마적 추격 우선" } ] },
+    { "id": "D09", "tier": "std", "kind": "CHOICE", "where": "CH2", "label": "군 내부", "consumers": ["morale.troops", "favor.*", "rep.local", "funds", "pow.bandit"],
+      "choices": [
+        { "id": "A", "label": "요정", "effects": [ { "op": "spendFunds", "econ": "fairy" } ] },
+        { "id": "B", "label": "포로 처형", "enableIf": [ { "var": "pow.bandit", "op": ">=", "value": 1 } ], "effects": [ { "op": "set", "var": "pow.bandit", "value": 0 } ] },
+        { "id": "C", "label": "보검", "effects": [ { "op": "spendFunds", "econ": "sword" } ] },
+        { "id": "D", "label": "안 함" } ] },
+    { "id": "D10", "tier": "major", "kind": "ORDER", "where": "EV2", "label": "민 대장 강행", "consumers": ["OP1 기한", "favor.minDaejang"],
+      "choices": [
+        { "id": "A", "label": "따름" },
+        { "id": "B", "label": "지연" },
+        { "id": "C", "label": "설득", "successIf": [ { "var": "intel.andong", "op": ">=", "value": 1 } ] } ] },
+    { "id": "D11", "tier": "major", "kind": "APPROACH", "where": "OP1", "label": "접근 방식", "consumers": ["OP1 전체", "D13"],
+      "choices": [ { "id": "A", "label": "강공" }, { "id": "B", "label": "포위 · 항복 유도" } ] },
+    { "id": "D12", "tier": "minor", "kind": "INMISSION", "where": "OP1", "label": "시가지 포격", "pausesMission": true, "consumers": ["속도", "rep.local"],
+      "choices": [ { "id": "A", "label": "허가" }, { "id": "B", "label": "금지" } ] },
+    { "id": "D13", "tier": "major", "kind": "CHOICE", "where": "OP1 종료", "label": "항복 조건", "consumers": ["노획", "flag.andongSurrender", "rep.local"],
+      "choices": [
+        { "id": "A", "label": "무장해제" },
+        { "id": "B", "label": "일부 편입", "enableIf": [ { "var": "negotiation", "op": ">=", "value": 1 } ] },
+        { "id": "C", "label": "포로 송환 · 무혈 입성", "enableIf": [ { "var": "negotiation", "op": ">=", "value": 3 } ] } ] },
+    { "id": "D14", "tier": "minor", "kind": "REPORT", "where": "종료", "label": "전과 귀속", "consumers": ["favor.hwangson", "본국 보급"],
+      "choices": [ { "id": "A", "label": "황손" }, { "id": "B", "label": "자기 이름" } ] },
+    { "id": "D15", "tier": "std", "kind": "ORDER", "where": "OP1 중", "label": "황손의 강제 착검 돌격", "pausesMission": true, "consumers": ["OP1 진행", "negotiation", "favor.hwangson"],
+      "choices": [ { "id": "A", "label": "추인" }, { "id": "B", "label": "철회" }, { "id": "C", "label": "방치" } ] },
+    { "id": "D16", "tier": "std", "kind": "CHOICE", "where": "IL2", "label": "대기 여부", "consumers": ["OP1 시작 전력", "일수"],
+      "choices": [ { "id": "A", "label": "즉시 진군" }, { "id": "B", "label": "1일 대기" } ] }
+  ]
+}

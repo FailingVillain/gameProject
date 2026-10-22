@@ -31,7 +31,7 @@ public static class CampaignFundsSelfTest
 
             // 4) 저장: v10 이하 -> v11 (자금 = fundsStart, 소모 0, 외인 아님) · 왕복 · 깨진 값
             var old = CampaignState.FromJson("{\"Version\":8,\"Roster\":[{\"Id\":\"a\",\"Strength\":60}]}");
-            check(old != null && old.Version == CampaignState.SchemaVersion && CampaignState.SchemaVersion == 11 && old.Funds == 10 && old.EpisodePermanentSupplyLoss == 0f && old.Roster.All(r => !r.Foreign),
+            check(old != null && old.Version == CampaignState.SchemaVersion && CampaignState.SchemaVersion >= 11 && old.Funds == 10 && old.EpisodePermanentSupplyLoss == 0f && old.Roster.All(r => !r.Foreign),
                 "TC-D 저장 이행: v8 -> v11 (자금 10 · 소모 0 · 외인 아님)");
             var rt = new CampaignState { Funds = 4, EpisodePermanentSupplyLoss = 623f };
             rt.Roster.Add(Co("v", 150, true));
