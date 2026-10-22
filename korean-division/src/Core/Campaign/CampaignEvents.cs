@@ -6,6 +6,8 @@ public sealed class CampaignChoiceDef
 {
     public string Text { get; set; } = "";
     public string Effect { get; set; } = "";
+    /// <summary>[T48c] 선택 시 연대장 호감 증감 {연대장 id: ±n} (|n| 은 commander_favor.json deltaSizes 안이어야 함). 없으면 변화 없음.</summary>
+    public Dictionary<string, int>? FavorDelta { get; set; }
 }
 
 public sealed class CampaignEventDef
@@ -243,6 +245,9 @@ public static class CampaignEvents
                 result = $"이벤트 [{eventId}] 선택 [{choiceIndex}] 완료";
                 break;
         }
+
+        var favorChoice = Current.FirstOrDefault(e => e.Id == eventId)?.Choices.ElementAtOrDefault(choiceIndex);
+        if (favorChoice?.FavorDelta != null) CommanderFavors.ApplyEventDeltas(s, favorChoice.FavorDelta);   // T48c
 
         s.Flags["ev_" + eventId] = choiceIndex + 1;
         s.AddTimeline("event", eventId, "", choiceIndex + 1);   // T42d: 발동 기록
