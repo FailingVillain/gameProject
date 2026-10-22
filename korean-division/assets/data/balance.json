@@ -89,6 +89,7 @@
     "chargeOrderDelayMul": 0.5,
     "targetSpreadJitter": 5,            // 표적 분산: 보병 자동 표적 점수 = 거리 + [0, 5) 칸 결정적 흔들림 (사격자 · 표적 쌍 해시)
     "suppressMax": 1000, "suppressDecay": 25, "suppressDecayProp": 0, "suppressGainSat": 1.0, "suppressRankDecayBonus": 0.05, "suppressDecayInterval": 15,   // 제압 0~1000, 초당 −25 (N39 2026-10-19 사용자 결정: 옛 80 → 너무 빨리 빠짐; 사병 계급 단계당 +5%), 가산 × (1 − 제압비) 포화 (상한에 붙지 않음), 0.25초마다 판정
+    "moraleSuppressDecayAt0": 0.75, "moraleSuppressDecayAt100": 1.25,   // M1 (BH2): 아군 세력 사기 0 / 100 일 때 제압 감소 배수, 50 = ×1 (사이 선형). 자리표시 — 0.3 밸런스
     "suppressCalmSec": 4, "suppressFireDecayMul": 0.25,   // N39: 최근 4초 안 노려진 병사는 감소 ×0.25 (지속 사격 중 고정 유지, 사격이 그치면 0.6 → 0.4 약 10초)
     "suppressFireSlow": 1.0, "suppressMoveSlow": 0.5,   // 제압 1000 일 때 사격 간격 ×2 · 이동 −50% (선형)
     "suppressAccMul": 0.5,                              // N25: 사격자 명중률 × (1 − 0.5 × 제압비)

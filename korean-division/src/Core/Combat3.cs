@@ -103,6 +103,8 @@ public sealed partial class World
         if (c.CoverDecayMul != 1f && CoverSuppressMul(u) < 1f) mul *= c.CoverDecayMul;   // 엄폐 안에서 빨리 추스른다 (supp 2026-10-20)
         if (c.SuppressCalmSec > 0 && Tick - u.LastFiredAtTick <= (long)MathF.Round(c.SuppressCalmSec / Config.SimDt)) mul *= c.SuppressFireDecayMul;   // 사격받는 중 · 직후 천천히 (N39)
         mul *= u.Def.SuppressRecoverMul;   // assaultinf: 돌격보병 회복 ×1.5
+        int morale = Faction(u.Owner).Morale;
+        if (morale != Core.Faction.MoraleDefault) mul *= MoraleSuppressDecayMul(morale, c);   // M1 세력 사기 (Morale.cs) — 50 이면 건너뜀 (정수 비교)
         int dec = (int)MathF.Round((c.SuppressDecay + c.SuppressDecayProp * u.Suppression) * iv * Config.SimDt * mul);   // 비례 항 (N25, Suppression.cs)
         if (dec < 1) dec = 1;
         u.Suppression = (short)Math.Max(0, u.Suppression - dec);
