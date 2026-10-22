@@ -430,6 +430,7 @@ public sealed partial class World
         WriteRally(w);            // N79a 집결 지점 · 포격 종류 (Rally.cs, FormatVersion 43)
         WriteChoke(w);            // 길목 통과 큐 (Choke.cs, FormatVersion 45)
         WriteComms(w);            // 통신 · 난이도 (Comms.cs, comms)
+        WriteOrderQueues(w);      // N74 명령 대기열 (OrderQueue.cs, FormatVersion 54 orderq)
     }
 
     static void WriteSlots(SnapWriter w, Dictionary<int, Vector2> d)
@@ -537,6 +538,7 @@ public sealed partial class World
         ReadRally(r);
         ReadChoke(r);
         ReadComms(r);
+        ReadOrderQueues(r);
     }
 
     CompanyAnchor ReadAnchor(SnapReader r, SnapCtx ctx, Defs defs, Company c)
@@ -595,5 +597,6 @@ public sealed partial class World
         HashRally(ref h);            // N79a 집결 지점 · 포격 종류 (Rally.cs)
         HashChoke(ref h);            // 길목 통과 큐 (Choke.cs)
         HashComms(ref h);            // 통신 · 난이도 (Comms.cs, 기본 상태면 생략)
+        HashOrderQueues(ref h);      // N74 명령 대기열 (OrderQueue.cs)
     }
 }

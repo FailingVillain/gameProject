@@ -93,7 +93,7 @@ public sealed partial class Game : IDisposable
     public CardTab Tab { get; private set; }
     FormType lastSimDefaultForm = FormType.Free;
     public bool ShowGrid { get; private set; }
-    bool losShow, losCursor; int frameCounter;   // N75 사선 표시
+    bool losShow, losCursor; int frameCounter, blockFrame;   // N75 사선 표시
     public bool Paused { get; private set; }
     public float Speed => Speeds[speedIndex];
     static readonly float[] PlaySpeeds = { 0.5f, 1f, 1.5f, 2f, 3f };
@@ -747,8 +747,8 @@ public sealed partial class Game : IDisposable
         {
             rightStartScreen = rightStartWorld = null;
             var units = OwnUnits();
-            if (units.Count > 0 && Vector2.Distance(mouse, rs) >= Config.DragThreshold) IssueFrontLine(units, rw, mouseWorld);
-            else SmartCommand(rw, hover);
+            if (units.Count > 0 && Vector2.Distance(mouse, rs) >= Config.DragThreshold) IssueFrontLine(units, rw, mouseWorld, shift);
+            else SmartCommand(rw, hover, shift);   // N74: Shift = 명령 대기열에 덧붙임
         }
 
         if (Input.IsMouseButtonDown(MouseButton.Middle))
@@ -1069,10 +1069,10 @@ public sealed partial class Game : IDisposable
         return new FormSpec((int)DefaultType, (int)DefaultOrder, n, len);
     }
 
-    void IssueFrontLine(List<Unit> units, Vector2 a, Vector2 b)
+    void IssueFrontLine(List<Unit> units, Vector2 a, Vector2 b, bool queue = false)
     {
         var spec = FrontLineSpec(units, a, b, out var mid);
-        PlayerOrder(units.Count, () => World.Move(Me, units, mid, spec));
+        PlayerOrder(units.Count, () => { if (queue) World.QueueOrder(Me, units, QueuedKind.Move, mid, 0, spec); else World.Move(Me, units, mid, spec); });   // N74: Shift = 대기열
         Mark(mid, Palette.MarkerMove);
         Voice("move");
     }
@@ -1288,7 +1288,7 @@ public sealed partial class Game : IDisposable
         switch (key)
         {
             case "stop": World.Stop(Me, units); break;
-            case "hold": World.Hold(Me, units); break;
+            case "hold": if (ShiftHeld) PlayerOrder(units.Count, () => World.QueueOrder(Me, units, QueuedKind.Hold, Vector2.Zero)); else World.Hold(Me, units); break;   // N74: Shift+사수 = 대기열 끝에 사수
             case "marchfire": World.SetMarchFire(Me, units, !units.Where(u => u.Company != null && u.Def.MarchFire && u.Def.Category == "infantry").All(u => u.Company!.MarchFireOn)); break;   // 돌격 사격 토글 (중대 단위)
             case "chargeonly": World.SetChargeOnly(Me, units, !units.Where(u => u.Def.Mounted).All(u => u.ChargeOnly)); break;   // 기병 돌격만 토글
             case "mount": World.SetMount(Me, units, units.Where(u => u.Def.Mounted && !u.IsOfficer).All(u => u.Dismounted || u.MountLeft > 0)); break;   // 기병 하마/승마 토글 (N61): 모두 내렸으면 타기
@@ -1333,9 +1333,32 @@ public sealed partial class Game : IDisposable
     void ResolvePending(Vector2 point, Entity? target)
     {
         var key = PendingCommand!;
-        PendingCommand = null;
+        bool queue = ShiftHeld && key is "move" or "quickstep" or "attack" or "charge";   // N74: Shift+좌클릭 = 대기열에 덧붙이고 명령 대기 유지
+        PendingCommand = queue ? key : null;
         var units = OwnUnits();
+        if (queue) { if (units.Count > 0) PlayerOrder(units.Count, () => QueueFor(key, units, point, target)); return; }
         PlayerOrder(units.Count, () => ResolvePendingFor(key, units, point, target));
+    }
+
+    static bool ShiftHeld => Input.IsKeyDown(KeyboardKey.LeftShift) || Input.IsKeyDown(KeyboardKey.RightShift);
+
+    /// <summary>N74 명령 대기열 (OrderQueue.cs): 진형 방향은 비움 → 그 다리를 실행할 때 무게중심 → 목표로 정한다.</summary>
+    void QueueFor(string key, List<Unit> units, Vector2 point, Entity? target)
+    {
+        var form = FormFor(units, point) is { } f ? f with { Dir = Vector2.Zero } : null;
+        bool foe = target != null && World.IsHostile(Me, target.Owner) && !target.Indestructible;
+        switch (key)
+        {
+            case "move": World.QueueOrder(Me, units, QueuedKind.Move, point, 0, form); Mark(point, Palette.MarkerMove); break;
+            case "quickstep": World.QueueOrder(Me, units, QueuedKind.QuickStep, point, 0, form); Mark(point, Palette.MarkerMove); break;
+            case "attack":
+                if (foe) World.QueueOrder(Me, units, QueuedKind.Attack, target!.Pos, target.Id);
+                else World.QueueOrder(Me, units, QueuedKind.AttackMove, point, 0, form);
+                Mark(target?.Pos ?? point, Palette.HpLow);
+                break;
+            case "charge": World.QueueOrder(Me, units, QueuedKind.Charge, foe ? target!.Pos : point, foe ? target!.Id : 0); Mark(target?.Pos ?? point, Palette.HpLow); break;
+        }
+        Sfx.Play("ui_click");
     }
 
     void ResolvePendingFor(string key, List<Unit> units, Vector2 point, Entity? target)
@@ -1411,11 +1434,12 @@ public sealed partial class Game : IDisposable
     }
 
     /// <summary>우클릭 기본 동작: 적 → 공격, 그 외 → 이동.</summary>
-    void SmartCommand(Vector2 point, Entity? target)
+    void SmartCommand(Vector2 point, Entity? target, bool queue = false)
     {
         if (Observer) return;
         var units = OwnUnits();
         if (units.Count == 0) return;
+        if (queue) { PlayerOrder(units.Count, () => QueueFor(target != null && World.IsHostile(Me, target.Owner) && !target.Indestructible ? "attack" : "move", units, point, target)); return; }   // N74 Shift+우클릭
         PlayerOrder(units.Count, () => SmartCommandFor(units, point, target));
     }
 
@@ -1895,6 +1919,7 @@ public sealed partial class Game : IDisposable
         DrawFrontLinePreview();
         DrawFinalLines();   // arty3
         if (losShow) { LosOverlay.Update(World, OwnUnits(), mouseWorld, losCursor, Camera.VisibleWorld(), frameCounter++); LosOverlay.Draw(); }   // N75 사선 표시 (표시 전용)
+        if (!Observer) { OrderOverlay.DrawQueues(World, OwnUnits(), Camera.Zoom); if (Camera.Zoom >= UnitRenderer.DotZoom) { OrderOverlay.UpdateBlocked(World, Me, Camera.VisibleWorld(), blockFrame++); OrderOverlay.DrawBlocked(World, Camera.Zoom); } }   // N74 대기열 경로 · N75 사선 막힘 사수 (표시 전용, OrderOverlay.cs)
         Raylib.EndMode2D();
         weatherFx.Draw(World, Camera, vp, Raylib.GetFrameTime());   // 날씨 · 시간대 색조 · 안개 · 비 · 눈 (화면 전용)
         if (Camera.Zoom < UnitRenderer.DotZoom) UnitSymbols.Draw(World, Camera, ViewSeat, mouse, mouseInViewport, vp);

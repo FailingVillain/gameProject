@@ -2,6 +2,9 @@ using System.Numerics;
 
 namespace KoreanDivision.Core;
 
+/// <summary>사선을 막은 것 (표시용 — GameMap.FiringLineBlock).</summary>
+public enum LosBlock : byte { None = 0, Obstacle = 1, Forest = 2, High = 3 }
+
 /// <summary>
 /// 지형 시뮬 (ROADMAP '지형 · 높이'): 고지 (칸마다 bool) · 지형별 이동 배수 · 엄폐 · 숲 깊이 · 가옥 옆 · 경사, 직사 사선 (시야 규칙 포함).
 /// 구조 정보 (숲 깊이 · 가옥 옆 · 경사 · 지형 해시) 는 지형이 바뀐 뒤 처음 물을 때 다시 만든다 (지도는 생성 · 불러오기 때만 바뀐다).
@@ -217,6 +220,44 @@ public sealed partial class GameMap
             if (shooterLow && high[i]) passedHigh = true;
         }
         return true;
+    }
+
+    /// <summary>
+    /// [읽기 전용 — 표시용, N75 사선 막힘 사수 표시] HasFiringLine 과 같은 걸음으로 무엇이 사선을 막는지 돌려준다 (None = 트임).
+    /// 시뮬은 이 함수를 쓰지 않는다 (HasFiringLine 그대로). 둘이 같은 결과인지는 firectl 셀프테스트가 무작위 쌍으로 확인.
+    /// </summary>
+    public LosBlock FiringLineBlock(Vector2 a, Vector2 b, int ignoreA, int ignoreB)
+    {
+        EnsureTerrain();
+        int seeDepth = Defs.Current.Terrain.ForestSeeDepth;
+        var (x, y) = TileOf(a);
+        var (ex, ey) = TileOf(b);
+        if (!ClearFor(x, y, ignoreA, ignoreB)) return LosBlock.Obstacle;
+        bool shooterLow = !high[y * Width + x];
+        bool passedHigh = false;
+        Vector2 d = b - a;
+        int stepX = Math.Sign(d.X), stepY = Math.Sign(d.Y);
+        float tDeltaX = d.X != 0 ? MathF.Abs(1f / d.X) : float.MaxValue;
+        float tDeltaY = d.Y != 0 ? MathF.Abs(1f / d.Y) : float.MaxValue;
+        float tMaxX = d.X > 0 ? (x + 1 - a.X) * tDeltaX : d.X < 0 ? (a.X - x) * tDeltaX : float.MaxValue;
+        float tMaxY = d.Y > 0 ? (y + 1 - a.Y) * tDeltaY : d.Y < 0 ? (a.Y - y) * tDeltaY : float.MaxValue;
+        int guard = Math.Abs(ex - x) + Math.Abs(ey - y) + 2;
+        while ((x != ex || y != ey) && guard-- > 0)
+        {
+            if (tMaxX < tMaxY) { x += stepX; tMaxX += tDeltaX; }
+            else if (tMaxY < tMaxX) { y += stepY; tMaxY += tDeltaY; }
+            else
+            {
+                if (!ClearFor(x + stepX, y, ignoreA, ignoreB) || !ClearFor(x, y + stepY, ignoreA, ignoreB)) return LosBlock.Obstacle;
+                x += stepX; y += stepY; tMaxX += tDeltaX; tMaxY += tDeltaY;
+            }
+            if (!ClearFor(x, y, ignoreA, ignoreB)) return LosBlock.Obstacle;
+            if (passedHigh) return LosBlock.High;
+            int i = y * Width + x;
+            if ((x != ex || y != ey) && forestDepth[i] > seeDepth) return LosBlock.Forest;
+            if (shooterLow && high[i]) passedHigh = true;
+        }
+        return LosBlock.None;
     }
 
     bool ClearFor(int x, int y, int ignoreA, int ignoreB)
