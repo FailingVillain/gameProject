@@ -33,6 +33,12 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T25 | 착검 멈춤 범위 = 모든 돌격 (D02 A); 전환 거리 3칸 유지 (D01 B, 코드 변경 없음) | sim | D中 R3 S H3 Wlight | T03 위 스택 | assigned |
 | T26 | 레거시 이메일 차단 git 훅 설치 (D20 A) | docs | D下 R1 S H0 Wlight | 없음 | done (훅 설치됨 .git/hooks pre-commit·commit-msg; 2026-10-22) |
 | T20 | 저장소 이동 마무리 (옛 폴더 삭제 = 사용자 U02) | docs | D下 R1 S H0 Wlight | U02 | blocked(U02) |
+| T42a | 캠페인 사기·피로 계정 + 스키마 v4 (설계 docs/CAMPAIGN_FOLLOWUP_RULES.md) | feature | D中 R2 S H2 Wlight | t38f-home-readonly-tabs | queued (spec/cards-t42) |
+| T42b | 진급 후보·적용 (탭 9) | feature | D中 R2 S H2 Wlight | T42a | queued (spec/cards-t42) |
+| T42c | 포로 장부·송환/수용 (탭 7) | feature | D中 R3 S H2 Wlight | T42b (+T31c 통계 형식) | queued (spec/cards-t42) |
+| T42d | 일정·일지 (탭 14·12) | feature | D下 R1 S H1 Wlight | T42c | queued (spec/cards-t42) |
+| T43 | 축소 화면 병종 기호 빈틈 정비 (howitzer·sniper·혼성) | feature | D中 R1 S H1 Wlight | t27-cmd-ui2 | queued (spec/cards-t42) |
+| T44 | 전 미션 기능 스모크 하네스 (스크립트+selftest 그룹) | feature | D中 R1 S H1 Wlight | 없음 (main) | queued (spec/cards-t42) |
 
 **정책 (사용자 2026-10-22, 강조): WIP 는 병합하지 않는다. WIP 작업은 재개해서 완료(wip-ready)까지만 한다.** merger 는 발주하지 않는다. 선행이 '병합'인 카드는 선행 카드의 wip 브랜치 위에 쌓아(스택) 진행한다. main 에는 WIP 가 들어가지 않는다(사용자 지시 전까지).
 
