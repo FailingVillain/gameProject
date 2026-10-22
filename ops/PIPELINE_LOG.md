@@ -177,6 +177,7 @@
 | 14:3x | T34a wip-ready(sonnet, 209k — 한도 근접, 4813초; kd/t34a-suppress 3d0f4de, ai3b2 위): 3C-1(제압 문턱·엄호 철수) 키 7개 기본 꺼짐(0.4 AI 소관), 키 끔=no3c 체크섬 동일, 회귀 묶음 PASS, 골든 일치, 측정·튜닝 생략(n=8 동작 확인만). 설계 발견: 엔진 틀(TacticDrill) 문턱은 AI 겹침으로 못 바꿈(AF1) → 전역 tactics.json 변경 필요(골든 변동) → DECISIONS_PENDING 항목. 교훈 후보: 카드 작성 시 'AI 층 키 vs 엔진 전역 키' 구분. A/B 는 KD_AI_OVERLAY 로만 | 완료 ~70 |
 | 14:3x | T42b wip-ready(sonnet, 143k, 325초; t42b-promotion 51b92c3, t42a 위): 진급 후보·적용(탭 9), 스키마 v5(추가만, v3/v4 이행), promotionManual 기본 꺼짐(에이전트 판단), 임시 문턱 JSON, savecompat 13건 추가·골든 일치. 미확인: 탭 9 화면 스크린샷/퍼즈 도달 | 완료 ~71 |
 | 14:4x | T42c wip-ready(sonnet, 131k, 296초; t42c-prisoners 66e7637, t42b 위): 포로 장부·송환/수용(탭 7), 스키마 v6(추가만, v3~v5 이행), 기존 Surrendered 집계 재사용(시뮬·FV 불변), 항복 꺼짐 기본에서 0. savecompat 15건 추가·골든 일치. **갭**: uifuzz --fuzz-menu 가 캠페인 홈에 도달 못함(캠페인 화면 퍼즈 미커버) → T38g 후속 카드 후보 | 완료 ~72 |
+| 14:4x | T42d wip-ready(sonnet, 123k, 246초; t42d-schedule-log 0d5a676, t42c 위): 스키마 v7(Day·Timeline 200건, v3~v6 이행), 첫 승리 정산 시 일수(missionDays 임시 1), 탭 14 연표(읽기 전용)·탭 12 [N일] 접두, savecompat 10건·골든 일치. T42a~d 체인 완료 → 체인 리뷰 발주(sonnet) | 완료 ~73 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
