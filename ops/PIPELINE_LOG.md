@@ -139,6 +139,7 @@
 | 13:2x | T36·T37 wip-ready(sonnet, 89k, 1072초): T36 kd/immune-target-fix c89175d — 소총병이 피해 불가 표적에 반격/표적 지정 안 함(플레이어 Attack 명령 유지), 골든 갱신(units 20→31), 열차 8-0 은 수정 전후 동일(원인이 헛사격만은 아님). T37 kd/acting-delay-tier cd140c9 — 대리 부사관 중대의 지연 등급 Nco, 틱 캐시(저장 안 함), 골든 갱신(156→69). 발주: T36+T37 리뷰(sonnet) | 완료 ~47 |
 | 13:3x | 사용자: 단서 3가지 승인 · 밸런스 패스는 한 번에 · 버전 정의(0.2 밸런스 이전 / 0.3 이후 / 0.4 AI 개선) → ops/VERSIONS.md, QUEUE 갱신, 로드맵 재검토 에이전트에 반영 지시, 진행 중 AI 작업(T32b·T34a)은 마무리하고 남은 AI 카드는 0.4 로 | 마일스톤 확정 |
 | 13:3x | T36+T37 리뷰 완료(sonnet, 69k, 107초): 차단 0. T37: actingCache 를 FlushCommands 에서 비울 것 · 인계 구간 불일치 · 테스트의 `|| ...` 로 tAct 항상 참(보강) / T36: 면역 예외가 AI 의 Attack 명령에도 적용(카드 문구 정정). 수정 에이전트 발주(sonnet) | 리뷰 19건 모두 개선점 |
+| 13:3x | 카드 T39a~j 완료(spec, 95k, 237초; spec/cards-t39 aee2993): 하천 T39a(rail 위)→b·c(병행)→d(선택, 기본 미발주), art T39e~j(kd-rerender 기반, T11 끝나기 전 make_unit/rerender96 편집 금지 → blocked(T11)), T39i 가옥 폐허는 make_building 만 쓰면 지금 가능, T39f 는 색 ×0.78/×1.22 이미 반영 여부 검증만. 발주: T39a(sonnet, rail 위, FV54)·T39i(art sonnet) | 동시 약 15 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
