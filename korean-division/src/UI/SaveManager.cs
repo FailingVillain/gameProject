@@ -51,7 +51,8 @@ public static class SaveManager
             sb.Append(c < 128 && (char.IsLetterOrDigit(c) || c is '-' or '_' or '.') ? c : '_');
         }
         string s = sb.ToString().Trim('.');
-        return s.Length == 0 ? "save" : s;
+        if (s.Length == 0) return "save";
+        return PathGuard.IsReservedName(s) ? "_" + s : s;   // T51a: CON · NUL 같은 윈도우 예약 이름 거름
     }
 
     public static string PathOf(string name) => Path.Combine(Folder, Sanitize(name) + Snapshot.Extension);

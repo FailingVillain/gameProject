@@ -1,0 +1,2 @@
+- T51a: 잘못된 id 의 MissionDef/MapFile.PathOf 는 예외 대신 존재할 수 없는 경로(`?invalid-id?.json`)를 돌려줌 (File.Exists 호출부가 안 터지게). 엄격한 거부가 필요한 쪽은 PathGuard.TryCombine(사유 포함). 윈도우 예약 이름(CON 등)도 거부. 승인 불필요 판단, 이견 있으면 알려 주세요.
+- T51a: JsonLimits 중복 키는 대소문자 무시(게임이 PropertyNameCaseInsensitive 로 읽음). 파일 4MB 한도 포함. 아직 어디에도 연결 안 함 (T51b 에서 사용).
