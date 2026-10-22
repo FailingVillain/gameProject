@@ -97,6 +97,11 @@
 | T42b | 진급 후보·적용 (스키마 v5) | 0.2 | wip-ready (로그 14:3x) | t42b-promotion @51b92c3 | kd-develop/kd-t42b | T42a | spec/cards-t42 : ? (T42a~d 파일명 확인 필요) |
 | T42c | 포로 장부·송환/수용 (스키마 v6) | 0.2 | wip-ready (로그 14:4x) | t42c-prisoners @66e7637 | kd-develop/kd-t42c | T42b | spec/cards-t42 : ? (T42a~d 파일명 확인 필요) |
 | T42d | 일정·연표 (스키마 v7; 포로 이중집계 수정 06ee9bd) | 0.2 | wip-ready (로그 14:4x·15:0x) | t42d-schedule-log @06ee9bd | kd-develop/kd-t42d | T42c | spec/cards-t42 : ? (T42a~d 파일명 확인 필요) |
+| T48a | 연대장 데이터·스키마 v8·로더 | 0.2 | queued | kd/t48a-… (미발주) | - | T42d | spec/cards-commanders 122c65a : korean-division/tasks/T48a-*.md · 설계 docs/COMMANDERS_DESIGN.md |
+| T48b | 장교 신원·종착·배정·기용/해임 | 0.2 | queued | kd/t48b-… (미발주) | - | T48a | spec/cards-commanders 122c65a : korean-division/tasks/T48b-*.md · 설계 docs/COMMANDERS_DESIGN.md |
+| T48c | 연대장 호감도·해임 하락 | 0.2 | queued | kd/t48c-… (미발주) | - | T48b | spec/cards-commanders 122c65a : korean-division/tasks/T48c-*.md · 설계 docs/COMMANDERS_DESIGN.md |
+| T48d | 관리 UI (탭 8/9/12/14) | 0.2 | queued | kd/t48d-… (미발주) | - | T48b·T48c | spec/cards-commanders 122c65a : korean-division/tasks/T48d-*.md · 설계 docs/COMMANDERS_DESIGN.md |
+| T48e | 2단계 전투 연결 (기본 꺼짐) | 0.2 | queued | kd/t48e-… (미발주) | - | T48d·T10·T24 | spec/cards-commanders 122c65a : korean-division/tasks/T48e-*.md · 설계 docs/COMMANDERS_DESIGN.md |
 | T43 | 병종 기호 곡사포·저격 추가 (+ 기병 기호 수정 d45b18f) | 0.2 | wip-ready (로그 14:1x; T43b 커밋 d45b18f) | kd/t43-branch-symbols @d45b18f | kd-develop/kd-t43 | main | kd/t43-branch-symbols : ? (카드 파일명 확인 필요) |
 | T44 | 미션 전수 동작 스모크 | 0.2 | running (발주됨, dirty 3) | kd/t44-smoke @1c4036d | kd-develop/kd-t44 | main | spec/cards-t42 : ? (카드 파일명 확인 필요) |
 | T45 | 메뉴 숨김 (플레이 버튼 DevMenu 뒤·AI vs AI 미션 관전 탭) | 0.2 | wip-ready (로그 14:0x) | kd/t45-menu-hide @88735b1 | kd-develop/kd-t45 | main | ? |
