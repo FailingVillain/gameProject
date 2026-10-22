@@ -96,6 +96,7 @@ public sealed partial class World
         var w = u.Weapon;
         if (w == null || !CanGroundFire(u)) { ResetOrder(u); return; }
         Vector2 p = GroundAimPoint(u);
+        if (InNeutralZone(p)) { ResetOrder(u); return; }   // TC-G 중립 구역 안 지점 포격 금지 (이동탄막이 구역에 닿아도 해제)
         Vector2 d = p - u.Pos;
         float dist = d.Length();
         if (u.GroundKind == GroundFireKind.Barrage && (!Map.InBounds((int)MathF.Floor(p.X), (int)MathF.Floor(p.Y)) || Vector2.Distance(p, u.GroundPoint) > Defs.CombatRules.BarrageMaxTiles)) { ResetOrder(u); return; }   // 이동탄막 끝 (지도 끝 · 최대 전진)

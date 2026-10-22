@@ -65,6 +65,7 @@ public sealed partial class World
     /// <summary>[읽기] 이 유닛이 이 표적 (null = 표적 무관) 을 쏴도 되는가 — 사격 통제.</summary>
     internal bool FireAllowed(Unit u, Entity? t)
     {
+        if (t != null && InNeutralZone(t.Pos)) return false;   // TC-G 중립 구역 안 표적 사격 금지 (NeutralZone.cs)
         switch (u.FireMode)
         {
             case FireMode.Hold: return false;
