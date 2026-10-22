@@ -27,3 +27,5 @@ Cause: B6 (T37, kd/acting-delay-tier) adds `readonly Dictionary<Company,(long Ti
 Decision for coordinator: (a) fix on kd/acting-delay-tier and re-merge (needs reset of B6-B9, user OK), or (b) add the 1-line classification as a fixup commit here.
 Resume point: B10 kd/t10-comms-b @1c91c96 (expected FV 57/22; ENGINE_NOTES, Replay.cs, Snapshot.cs FV lines). Tags: pre-merge-A, post-A, pre-merge-B exist; no post-B yet. HEAD tip see `git log -1 merge/0.2`.
 Lock .git/kd-merge.lock released on stop.
+- (phase2, merger Sonnet) fixup 4a5d322 classify actingCache transient; snapshot/snaptest/replay/command/officer PASS. NOTE: selftest needs '--selftest' flag with KD_SELFTEST_ONLY (without it the game starts).
+- B10 kd/t10-comms-b 1c91c96 -> 578ef29 (Snapshot.cs/Replay.cs from rehearsal be04a5b; ENGINE_NOTES union; ops ours). FV 57/22. detcheck b7c3761c573cad25 unchanged. fieldops/replay/snapshot/savecompat/crossing PASS, snaptest 0 FAIL, uiicons 1 expected FAIL.
