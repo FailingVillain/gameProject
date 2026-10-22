@@ -292,15 +292,15 @@
   {
    "id": "crush",
    "type": "eliminate",
-   "percent": 70,
+   "percent": 50,
    "faction": 2,
-   "text": "봉천군 70% 격멸"
+   "text": "봉천군 50% 격멸"
   }
  ],
  "failures": [
   {
    "type": "losses",
-   "percent": 70
+   "percent": 50
   },
   {
    "type": "timeLimit",
