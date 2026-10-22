@@ -681,3 +681,8 @@
 - `TerrainType.Rail` (enum 끝 값): 통행 · 이동 배수 1 · 엄폐 없음 · 시야/사선 안 막음 (= 맨땅). 포탄 구덩이 안 생김 (TryCrater 대상 아님). 선로 파괴 · 장갑열차는 범위 밖.
 - 지도 json paint `"line": [x0, y0, x1, y1, ...]` = 브레즌햄 1칸 폭 꺾은선 (`MapFile.LineTiles`). 렌더: 자갈 절차 타일 (MapRenderer) + 침목 · 레일 덧그림 `src/Render/RailRenderer.cs` (TerrainVersion 캐시).
 - 테스트 `KD_SELFTEST_ONLY=terrain` (선로 블록 6검사).
+
+## 열차 이동 (2026-10-22, 브랜치 `t30a-train-move`, T30a, FormatVersion 58 · Replay 23)
+- `src/Core/Train.cs`: 열차 = `TrainCar : Entity` 순서열, World.Units/byId 밖 `World.Trains` ([SnapExt], ORG_ 끝 WriteTrains). 호장 정수(1칸 = 65536, 대각 92682), 선두 S · 객차 i = S − i·간격. 열차 없으면 체크섬 · Step 영향 없음.
+- 경로 = 미션 json `trains[].path` 경유점(rail 칸) 사이 8방향 BFS(고정 이웃 순, 지난 칸 재방문 금지), `loop` 순환선. 스크립트: 경유점 + `waits` 초 정차, 끝에서 되돌아 반복. 조종: `TrainMoveCommand(f, train, dir)` (-1/0/1, 스크립트 끔), API `World.TrainMove`.
+- 가감속 = balance.json `trains` (정지 가능 속도 √(2·brake·거리)), 선로 끝 관통 없음. 앞쪽 lookahead 칸 선로 위 유닛 → 정지 (6틱 주기 감지). 테스트 `KD_SELFTEST_ONLY=train`.

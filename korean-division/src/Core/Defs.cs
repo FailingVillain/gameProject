@@ -804,6 +804,8 @@ public sealed class Defs
     public CommandDelayDef Command { get; set; } = new();
     /// <summary>장교 직책 계급 · 임시 진급 · 승계 · 경험치 (balance.json "officers", CommandRanks.cs).</summary>
     public OfficerRulesDef Officers { get; set; } = new();
+    /// <summary>열차 속도 · 간격 · 객차 (balance.json "trains", Train.cs, T30a).</summary>
+    public TrainRulesDef Trains { get; set; } = new();
     public Dictionary<string, WeaponDef> Weapons { get; set; } = new();
     /// <summary>[N54] 세력별 소총 분배 (map factions[].en → {무기 키 → 가중치}). 소총 칸 = 유닛 weapon "rifle_mosin".</summary>
     public Dictionary<string, Dictionary<string, int>> FactionRifles { get; set; } = new(StringComparer.OrdinalIgnoreCase);

@@ -242,6 +242,7 @@ public sealed partial class World
         StepMarchFire();   // 장교 (중대) · 부사관 (분대) 행진 사격 시작 · 종료 (MarchCommand.cs)
         StepScouts();      // 정찰병 자율 행동 (Scouts.cs) — 이동 목표만 정한다
         StepHeavyPacing(); // 중화기 보폭 기준: 중대 · 대대 · 섞인 이동 묶음의 보병 앞선 (HeavyPacing.cs)
+        StepTrains();      // 열차 선로 이동 (Train.cs, T30a) — 열차 없으면 바로 돌아감
         for (int i = 0; i < Units.Count; i++) UpdateUnit(Units[i], dt);
         if (Profile) P(ref pt, 2);
         RebuildHash();

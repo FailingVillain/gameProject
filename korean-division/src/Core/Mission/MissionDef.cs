@@ -47,6 +47,8 @@ public sealed class MissionDef
     public List<MissionEvent> Events { get; set; } = new();
     /// <summary>F6 엄폐 소품 (assets/data/props.json 종류, 칸 좌표) - 손으로 놓는다.</summary>
     public List<MissionProp> Props { get; set; } = new();
+    /// <summary>열차 (T30a, Train.cs): 객차 · 경유점 경로 · 정차 시간 · 스크립트/조종.</summary>
+    public List<MissionTrain> Trains { get; set; } = new();
     /// <summary>true = 지도 생성기와 같은 규칙으로 소품을 흩뿌린다 (병력 둘레 · 배치 구역 · 증원 구역은 비움).</summary>
     public bool PropScatter { get; set; }
     /// <summary>propScatter 군집 확률 배수 (기본 1 = 예전과 같음). clusterPct x 값, 상한 100.</summary>

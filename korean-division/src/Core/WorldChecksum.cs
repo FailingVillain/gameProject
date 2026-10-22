@@ -7,6 +7,7 @@ namespace KoreanDivision.Core;
 public sealed partial class World
 {
     partial void HashCombat2(ref Hasher h);
+    partial void HashTrains(ref Hasher h);   // 열차 (Train.cs, T30a) — 열차 없으면 아무것도 섞지 않음
 
     public ulong ComputeChecksum()
     {
@@ -50,6 +51,7 @@ public sealed partial class World
         HashCombat2(ref h);   // 포탑 회전 · 은폐 · 경계 (Combat2.cs)
         HashOrganisation(ref h);   // 중대 · 대대 · 깃발 (Organisation.cs)
         HashMission(ref h);   // 미션 목표 · 사건 · 증원 (Mission/WorldMission.cs)
+        HashTrains(ref h);
         foreach (var b in Buildings)
         {
             h.Add(b.Id);
