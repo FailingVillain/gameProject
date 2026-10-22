@@ -18,6 +18,51 @@ static class Tests
     // 고정 편집열 골든 (battle_flat 에 BuildEdit 적용 후 정규화 JSON 해시). 편집 의미나 직렬화 규칙을 바꾸면 의도적으로 갱신.
     const string GoldenEditHash = "5BDE9FE433DD6FD1";
 
+    // battle_flat.json 사본 (골든 해시가 라이브 에셋 변경에 흔들리지 않게). 지도 6개 왕복 · 미션 치환 시험은 라이브 에셋을 그대로 쓴다.
+    const string FlatFixtureRaw = """
+{
+ "name": "교전 테스트: 평지",
+ "width": 256,
+ "height": 128,
+ "base": "grass",
+ "paint": [],
+ "starts": [
+  [
+   30,
+   64
+  ],
+  [
+   225,
+   64
+  ]
+ ],
+ "factions": [
+  {
+   "name": "아군",
+   "en": "Blue",
+   "color": [
+    60,
+    130,
+    235
+   ],
+   "lang": "en"
+  },
+  {
+   "name": "적군",
+   "en": "Red",
+   "color": [
+    215,
+    50,
+    50
+   ],
+   "lang": "en"
+  }
+ ],
+ "sites": []
+}
+""";
+    static readonly string FlatFixture = FlatFixtureRaw.Replace("\r\n", "\n").Replace("\n", "\r\n");   // 원본 에셋이 CRLF 라 골든 해시도 CRLF 기준
+
     static void Check(bool ok, string what)
     {
         if (ok) passes++; else { fails++; Console.WriteLine("FAIL " + what); }
@@ -34,6 +79,8 @@ static class Tests
         MissionSubstitution();
         EmbedReference();
         StrokeAndFill();
+        ForwardCompat();
+        InputValidation();
 
         Console.WriteLine($"map-editor tests: pass {passes} fail {fails}");
         return fails == 0 ? 0 : 1;
@@ -125,7 +172,7 @@ static class Tests
     // 2. 같은 연산열 -> 같은 바이트(골든), undo 전부 = 원본, 단계별 undo/redo 해시 일치, 편집 결과가 게임 로드와 같음
     static void EditDeterminismAndUndo()
     {
-        string orig = File.ReadAllText(Path.Combine(root, "assets", "maps", "battle_flat.json"));
+        string orig = FlatFixture;
         var a = MapDoc.Parse(orig);
         var b = MapDoc.Parse(orig);
         string origHash = a.CanonicalHash();
@@ -229,7 +276,7 @@ static class Tests
     // 4. map 참조 -> 내장 mapData (내장으로 복사)
     static void EmbedReference()
     {
-        string mapText = File.ReadAllText(Path.Combine(root, "assets", "maps", "battle_flat.json"));
+        string mapText = FlatFixture;
         string mission = "{\n  // 설명 주석\n  \"id\": \"t\",\n  \"map\": \"battle_flat\",\n  \"seed\": 1\n}\n";
         var doc = MapDoc.Parse(mapText);
         string outp = MissionMapData.EmbedReference(mission, doc);
@@ -265,5 +312,112 @@ static class Tests
         Check(saved.Contains("// 다리 1") && saved.Contains("\"weather\": \"fog\""), "주석 · 추가 필드 보존");
         Check(MapDoc.Parse(saved).ToFileText() == saved, "주석 포함 왕복 바이트 동일");
         Check(Semantic(Game(withComments, "c")) == Semantic(Game(saved, "c")), "주석 지도 의미 불변");
+    }
+
+    // 6. 앞으로 올 키 (rail line/width, river ford, 시설 · 유닛 여분 키) 는 왕복에서 그대로, 모르는 지형은 래스터에서만 건너뜀
+    static void ForwardCompat()
+    {
+        string text = """
+{
+  "name": "fc",
+  "width": 32, "height": 32, "base": "grass",
+  "paint": [
+    { "terrain": "rail", "line": [[1, 1], [20, 1]], "width": 2 },
+    { "terrain": "water", "rect": [0, 5, 32, 3], "ford": [[10, 5, 3]] },
+    { "terrain": "dirt", "rect": [2, 2, 2, 2] }
+  ],
+  "starts": [[1, 3], [30, 30]],
+  "sites": [
+    { "at": [5, 5], "type": "village", "owner": 0, "tag": { "a": [1, 2] } }
+  ],
+  "units": [
+    { "unit": "rifle", "at": [3, 3], "faction": 1, "count": 2, "stance": "hold" }
+  ]
+}
+""";
+        var d = MapDoc.Parse(text);
+        string saved = d.ToFileText();
+        Check(saved.Contains("{ \"terrain\": \"rail\", \"line\": [[1, 1], [20, 1]], \"width\": 2 }"), "rail 형 paint: line / width 원문 보존");
+        Check(saved.Contains("\"ford\": [[10, 5, 3]]"), "ford 형 paint: 여분 키 원문 보존");
+        Check(saved.Contains("\"tag\": { \"a\": [1, 2] }") && saved.Contains("\"stance\": \"hold\""), "시설 · 유닛 여분 키 보존");
+        Check(MapDoc.Parse(saved).ToFileText() == saved, "여분 키 포함 왕복 바이트 동일");
+        Check(JsonEq(text, saved), "여분 키 포함 저장본 = 원본 (JSON 의미 동일)");
+        var warn = new List<string>();
+        var errs = d.Validate(warn);
+        Check(errs.Count == 0, "모르는 지형 / 키는 오류가 아님");
+        Check(warn.Count == 2 && warn[0].Contains("rail") && warn[1].Contains("ford"), $"Validate 경고 2개 (실제 {warn.Count})");
+        var g = d.Raster();   // 예외 없음
+        Check(g.At(1, 1) == 0 && g.At(5, 5) == MapDoc.TerrainIndex("water") && g.At(2, 2) == MapDoc.TerrainIndex("dirt"), "모르는 지형 줄은 래스터에서 건너뜀, 나머지는 적용");
+        d.PaintRect("rock", 0, 0, 1, 1);
+        Check(d.ToFileText().Contains("\"line\": [[1, 1], [20, 1]]"), "편집 뒤에도 여분 키 보존");
+        d.Undo();
+        Check(d.ToFileText() == saved, "undo 뒤 바이트 동일");
+        string withC = "{ \"name\": \"c\", \"width\": 8, \"height\": 8,\n \"paint\": [ { \"terrain\": \"rail\", \"line\": [ // 선\n [1,1] ] } ],\n \"schedule\": [ // 일정\n 1 ] }";
+        var c = MapDoc.Parse(withC);
+        Check(c.DroppedComments == 0, $"여분 키 안 주석은 보존으로 셈 (버림 {c.DroppedComments})");
+        Check(MapDoc.Parse(c.ToFileText()).ToFileText() == c.ToFileText(), "여분 키 안 주석 포함 왕복 동일");
+    }
+
+    static bool JsonEq(string a, string b)
+    {
+        var o = new System.Text.Json.JsonDocumentOptions { CommentHandling = System.Text.Json.JsonCommentHandling.Skip, AllowTrailingCommas = true };
+        using var da = System.Text.Json.JsonDocument.Parse(a, o);
+        using var db = System.Text.Json.JsonDocument.Parse(b, o);
+        return Eq(da.RootElement, db.RootElement);
+    }
+
+    static bool Eq(System.Text.Json.JsonElement x, System.Text.Json.JsonElement y)
+    {
+        if (x.ValueKind != y.ValueKind) return false;
+        switch (x.ValueKind)
+        {
+            case System.Text.Json.JsonValueKind.Object:
+                var px = x.EnumerateObject().OrderBy(p => p.Name, StringComparer.Ordinal).ToArray();
+                var py = y.EnumerateObject().OrderBy(p => p.Name, StringComparer.Ordinal).ToArray();
+                return px.Length == py.Length && px.Zip(py).All(t => t.First.Name == t.Second.Name && Eq(t.First.Value, t.Second.Value));
+            case System.Text.Json.JsonValueKind.Array:
+                var ax = x.EnumerateArray().ToArray(); var ay = y.EnumerateArray().ToArray();
+                return ax.Length == ay.Length && ax.Zip(ay).All(t => Eq(t.First, t.Second));
+            default: return x.GetRawText() == y.GetRawText();
+        }
+    }
+
+    // 7. 입력 검증: 크기 범위, 원 반지름, tiles 원소, 쓰레기 입력, 중복 키
+    static void InputValidation()
+    {
+        Check(MapDoc.Parse("{ \"width\": 0, \"height\": 5 }").Validate().Count > 0, "width 0 은 오류");
+        Check(MapDoc.Parse("{ \"width\": 5000, \"height\": 5 }").Validate().Any(e => e.Contains("1..1024")), "width 5000 은 오류");
+        Check(MapDoc.Parse("{ \"width\": 1024, \"height\": 1024 }").Validate().Count == 0, "1024x1024 는 통과");
+        bool threw = false;
+        try { MapDoc.Parse("{ \"width\": 100000, \"height\": 100000 }").Raster(); } catch (InvalidDataException) { threw = true; }
+        Check(threw, "범위 밖 크기의 Raster 는 InvalidDataException (메모리 폭주 없음)");
+
+        var big = MapDoc.Parse("{ \"width\": 16, \"height\": 16, \"paint\": [ { \"terrain\": \"rock\", \"circle\": [8, 8, 2000000000] }, { \"terrain\": \"dirt\", \"rect\": [-2000000000, 2, 2147483647, 1] }, { \"terrain\": \"sand\", \"circle\": [2147483647, 2147483647, 5] } ] }");
+        Check(big.Validate().Any(e => e.Contains("반지름")), "거대 반지름은 Validate 오류");
+        var gr = big.Raster();   // 오버플로 / 무한 루프 없이 반환
+        Check(gr.At(8, 8) == MapDoc.TerrainIndex("rock") && gr.At(0, 2) == MapDoc.TerrainIndex("dirt"), "큰 정수 래스터 안전");
+        Check(MapDoc.Parse("{ \"width\": 8, \"height\": 8, \"paint\": [ { \"terrain\": \"rock\", \"circle\": [1, 1, -3] } ] }").Validate().Any(e => e.Contains("반지름")), "음수 반지름 오류");
+
+        var bad = MapDoc.Parse("{ \"width\": 8, \"height\": 8, \"paint\": [ { \"terrain\": \"rock\", \"tiles\": [[1, 2], [3], [4, 5, 6]] } ] }");
+        Check(bad.Validate().Any(e => e.Contains("tiles")), "tiles 원소 길이 != 2 는 Validate 오류");
+        bad.Raster();   // 예외 없음
+
+        foreach (var garbage in new[] { "", "   ", "[]", "null", "\"x\"", "{", "{ \"width\": \"a\" }", "{ \"width\": 1e99, \"height\": 4 }", "{ \"paint\": 5 }",
+                     "{ \"paint\": [1] }", "{ \"paint\": [ { \"rect\": \"x\" } ] }", "{ \"paint\": [ { \"tiles\": [5] } ] }", "{ \"starts\": [[1]] }", "{ \"sites\": [ {} ] }",
+                     "{ \"units\": [ { \"at\": [\"a\", 1] } ] }", "{ \"name\": 5 }", "{ \"base\": [] }", new string('[', 5000) })
+        {
+            string label = garbage.Length > 20 ? garbage[..20] : garbage;
+            var (doc, errs) = MapDoc.TryParse(garbage);
+            Check(doc != null || errs.Count > 0, $"TryParse 쓰레기 '{label}' 예외 없이 결과 또는 오류");
+            bool other = false;
+            try { MapDoc.Parse(garbage); } catch (InvalidDataException) { } catch { other = true; }
+            Check(!other, $"Parse 쓰레기 '{label}' 는 InvalidDataException 만");
+        }
+        Check(MapDoc.TryParse(null).Doc == null, "TryParse(null) 예외 없음");
+
+        var dup = MapDoc.Parse("{ \"width\": 8, \"height\": 8, \"paint\": [ { \"terrain\": \"rock\", \"rect\": [0,0,1,1] } ], \"Paint\": [ { \"terrain\": \"dirt\", \"rect\": [1,1,1,1] } ] }");
+        Check(dup.Paint.Count == 1, "중복 paint 키는 두 번 더하지 않음");
+        Check(dup.Validate().Any(e => e.Contains("중복")), "중복 최상위 키는 Validate 오류");
+        Check(MapDoc.Parse("{ \"width\": 8, \"height\": 8, \"starts\": [[1,1]], \"STARTS\": [[2,2]] }").Validate().Any(e => e.Contains("중복")), "starts / STARTS 중복 오류");
     }
 }
