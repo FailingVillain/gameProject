@@ -30,6 +30,7 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T29 | 캠페인 경제 숫자 JSON 이전 + 첫 승리만 정산 (D23 A · D24 A) | feature | D中 R1 S H1 Wlight | T01 위 스택 (gemini-import) | wip-ready (자기 브랜치 참조) |
 | T20 | 저장소 이동 마무리 (옛 폴더 삭제 = 사용자 U02) | docs | D下 R1 S H0 Wlight | U02 | blocked(U02) |
 | T42a | 캠페인 사기·피로 계정 + 스키마 v4 (설계 docs/CAMPAIGN_FOLLOWUP_RULES.md) | feature | D中 R2 S H2 Wlight | t38f-home-readonly-tabs | wip-ready (t42a-fatigue-morale; 스택: t38f 위) |
+| T42b | 캠페인 진급 후보·적용 (탭 9, 스키마 v5, 기본 꺼짐) | feature | D中 H2 | T42a | wip-ready (t42b-promotion; 스택: t42a 위) |
 
 카드가 있는 것 = T01~T13 (+_TEMPLATE). T15~T20 과 카드 없는 브랜치(wip/chokefix D14 보류 · wip/sfxnew 효과음 · wip/gt-face-proto)는 발주 직전 spec/지휘자가 카드를 쓴다.
 보류(이 표 밖): 장갑열차 · 하천 · 전술 AI 3C/3D · 지도 편집기 · 캠페인 순서 연결/챕터 1/엔딩.

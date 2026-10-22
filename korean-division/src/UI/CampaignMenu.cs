@@ -254,6 +254,7 @@ public sealed partial class CampaignMenu
             case Tab.Records: DrawTabRecords(body); break;        // T38f 읽기 전용
             case Tab.Equipment: DrawTabEquipment(body); break;
             case Tab.Organization: DrawTabOrganization(body); break;
+            case Tab.Promotion: DrawTabPromotion(body); break;       // T42b
             default: DrawTabPlaceholder(body, currentTab); break;   // 후속 탭 (틀만)
         }
     }

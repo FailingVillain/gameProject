@@ -20,6 +20,16 @@ public static class StockKeys
 
 public sealed class CampaignState
 {
+    /// <summary>[v5 · T42b] 진급 한 건: 어느 작전 뒤에 누가 어떤 계급에서 어떤 계급으로 (Officer = 장교 계급 색인, 아니면 사병 계급 색인).</summary>
+    public sealed class PromotionRecord
+    {
+        public string AfterMission { get; set; } = "";
+        public bool Officer { get; set; }
+        public int UnitId { get; set; }
+        public int FromRank { get; set; }
+        public int ToRank { get; set; }
+    }
+
     public sealed class MissionRecord
     {
         public string MissionId { get; set; } = "";
@@ -128,14 +138,19 @@ public sealed class CampaignState
     /// 이라 옛 파일 (Version 1, 또는 Version 필드가 없는 파일 — 없으면 기본값 = 현재 버전으로 읽는다) 은 변환 없이 열고 모자란 필드는 기본값으로 채운다. Version 0 · 음수는 깨진 파일로 거부한다. 필드를 지우거나 뜻을 바꾸면 SchemaVersion 을 올리고
     /// 그 옛 파일은 거부한다. 현재보다 큰 Version (더 새 게임이 만든 파일) 과 깨진 파일도 거부 (사유는 LastLoadError, 한국어).
     /// 3 (T19b): 구경별 탄약 · 포탄 정산 — RosterCompany.Caliber · Pending.AmmoByCaliber/ShellsLoaded/ShellScale · DebriefReport.ShellsFired/LootedShells (추가만, v2 는 기본값으로 이행).
-    /// 4 (T42a): 중대 피로 · 사기 계정 — RosterCompany.Fatigue/Morale (추가만, v3 는 Fatigue 0 · Morale 70 으로 이행).</summary>
-    public const int SchemaVersion = 4;
+    /// 4 (T42a): 중대 피로 · 사기 계정 — RosterCompany.Fatigue/Morale (추가만, v3 는 Fatigue 0 · Morale 70 으로 이행).
+    /// 5 (T42b): 진급 기록 · 정원 — PromotionLog / PromotionsThisBreak (추가만, v3 · v4 는 빈 목록 · 0 으로 이행).</summary>
+    public const int SchemaVersion = 5;
     public int Version { get; set; } = SchemaVersion;
     public string CampaignId { get; set; } = "c1";
     /// <summary>다음에 할 미션 id (파일이 없으면 '준비 중' 화면).</summary>
     public string NextMission { get; set; } = "";
     public List<string> Completed { get; set; } = new();
     public List<MissionRecord> History { get; set; } = new();
+    /// <summary>[v5 · T42b] 진급 적용 기록 (오래된 것이 앞). 옛 파일 = 빈 목록. 규칙: CampaignPromotion.</summary>
+    public List<PromotionRecord> PromotionLog { get; set; } = new();
+    /// <summary>[v5 · T42b] 이번 작전 사이에 이미 낸 진급 수 (정원 계산용). 이월 병력이 새로 정해지면 (CampaignState.Apply) 0 으로 돌아간다.</summary>
+    public int PromotionsThisBreak { get; set; }
     /// <summary>이월 사병 (계급 · 사살 수 · 병력 id).</summary>
     public List<MissionResults.UnitLine> Units { get; set; } = new();
     /// <summary>이월 장교 (OfficerRank · Xp · Post).</summary>
@@ -184,6 +199,7 @@ public sealed class CampaignState
     public void EnsureInitialized()
     {
         Manpower ??= new();
+        PromotionLog ??= new();   // T42b
         Stock ??= new();
         Stock.Rifles ??= new();
         if (!Stock.Rifles.ContainsKey(StockKeys.Ru)) Stock.Rifles[StockKeys.Ru] = 3000;
@@ -228,6 +244,8 @@ public sealed class CampaignState
     public void Sanitize()
     {
         Supply = float.IsFinite(Supply) ? Math.Max(0f, Supply) : 0f;
+        PromotionsThisBreak = Math.Max(0, PromotionsThisBreak);
+        (PromotionLog ??= new()).RemoveAll(p => p == null);   // T42b
         Manpower.Recruits = Math.Clamp(Manpower.Recruits, 0, ManpowerState.MaxRecruits);
         Manpower.Wounded = Math.Max(0, Manpower.Wounded);
         Manpower.Reserve = Math.Max(0, Manpower.Reserve);
@@ -291,6 +309,7 @@ public sealed class CampaignState
             s.NextMission = Chain.First(c => c.Id == r.MissionId).Next;
             s.Officers = r.Survivors.Where(u => u.OfficerRank != null).Select(Copy).ToList();
             s.Units = r.Survivors.Where(u => u.OfficerRank == null).Select(Copy).ToList();
+            s.PromotionsThisBreak = 0;   // T42b: 새 이월 병력 = 새 작전 사이
         }
 
         // 곡사포 중대가 편입될 때 HowitzerCompany == true 이면 Roster 에 "how" 곡사포 중대도 Available = true 로 추가/활성화
@@ -312,7 +331,7 @@ public sealed class CampaignState
 
     static MissionResults.UnitLine Copy(MissionResults.UnitLine u) => new()
     {
-        Id = u.Id, Unit = u.Unit, Name = u.Name, Kills = u.Kills, Rank = u.Rank, StartRank = u.Rank, Force = u.Force,
+        Id = u.Id, Unit = u.Unit, Name = u.Name, Kills = u.Kills, Rank = CampaignPromotion.CarriedRank(u), StartRank = CampaignPromotion.CarriedRank(u), Force = u.Force,
         OfficerRank = u.OfficerRank, TempRank = null, Xp = u.Xp, Post = u.Post,
     };
 

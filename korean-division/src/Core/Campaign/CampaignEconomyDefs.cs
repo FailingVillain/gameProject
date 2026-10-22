@@ -43,6 +43,18 @@ public sealed class CampaignEconomyDefs
     /// <summary>[임시] 미투입 중대 사기 회복 (쉼).</summary>
     public int MoraleRestRecovery { get; set; } = 3;
 
+    // ---- [T42b] 진급 후보 · 적용 — 모든 수치 임시 (0.3 밸런스에서 확정). 홈 계정만, 전투 시뮬과 무관.
+    /// <summary>[기본 꺼짐] true = 작전 사이 수동 진급: 이월 때 사병 계급은 작전 시작 계급에 머물고 (사살 환산 자동 진급 중지), 홈 [진급] 탭에서 후보를 눌러 올린다. false = 기존 동작 (자동 이월).</summary>
+    public bool PromotionManual { get; set; }
+    /// <summary>[임시] 사병 후보 문턱: 현재 계급 색인 (0..8) → 마지막 작전 사살 수가 이 값 이상이면 후보. 0 이하 = 그 계급에서는 후보 없음.</summary>
+    public int[] PromoSoldierKills { get; set; } = { 1, 2, 3, 4, 4, 5, 6, 8, 0 };
+    /// <summary>[임시] 사병이 작전 사이 진급으로 오를 수 있는 최고 계급 색인 (7 = 정교 · 상사급).</summary>
+    public int PromoSoldierMaxRank { get; set; } = 7;
+    /// <summary>[임시] 장교 후보 문턱: 현재 정식 계급 (0..6) → 경험치가 이 값 이상이면 후보. 0 이하 = 후보 없음. 상한 = 중령 (balance.json officers.maxPromotionRank).</summary>
+    public int[] PromoOfficerXp { get; set; } = { 0, 60, 180, 420, 900, 0, 0 };
+    /// <summary>[임시] 작전 사이 한 번에 낼 수 있는 진급 수 (사병 + 장교 합계 정원).</summary>
+    public int PromoMaxPerBreak { get; set; } = 8;
+
     static CampaignEconomyDefs? current;
     public static CampaignEconomyDefs Current => current ??= Load(Path.Combine(AppContext.BaseDirectory, "assets", "data", "campaign_economy.json"));
     /// <summary>[테스트] 정의를 갈아 끼운다 (null = 파일 다시 읽기).</summary>
@@ -56,6 +68,15 @@ public sealed class CampaignEconomyDefs
         }
         catch (Exception ex) when (ex is JsonException or IOException or UnauthorizedAccessException or NotSupportedException) { }
         return new CampaignEconomyDefs();
+    }
+
+    /// <summary>[T42b] 배열 정리: null 이면 기본값, 모자라면 0 (= 후보 없음) 으로 채우고 남는 것은 버리며, 값은 0..1,000,000.</summary>
+    static int[] FixArray(int[]? v, int[] def, int len)
+    {
+        if (v == null) return def;
+        var r = new int[len];
+        for (int i = 0; i < len && i < v.Length; i++) r[i] = Math.Clamp(v[i], 0, 1_000_000);
+        return r;
     }
 
     static float F(float v, float lo, float hi, float def) => float.IsFinite(v) ? Math.Clamp(v, lo, hi) : def;
@@ -86,6 +107,10 @@ public sealed class CampaignEconomyDefs
         MoraleLoss = Math.Clamp(MoraleLoss, 0, 100);
         MoraleCasualtyScale = Math.Clamp(MoraleCasualtyScale, 0, 100);
         MoraleRestRecovery = Math.Clamp(MoraleRestRecovery, 0, 100);
+        PromoSoldierMaxRank = Math.Clamp(PromoSoldierMaxRank, 0, 8);
+        PromoMaxPerBreak = Math.Clamp(PromoMaxPerBreak, 0, 10_000);
+        PromoSoldierKills = FixArray(PromoSoldierKills, d.PromoSoldierKills, 9);
+        PromoOfficerXp = FixArray(PromoOfficerXp, d.PromoOfficerXp, 7);
         // [T19b] 포탄 사전: null 이면 기본값, 값은 알려진 포탄 재고 키만 (모르는 키 · null 항목은 버림), 노획은 0..1000 으로 자름.
         if (ShellWeapons == null) ShellWeapons = d.ShellWeapons;
         else ShellWeapons = ShellWeapons.Where(kv => kv.Key != null && kv.Value != null && Array.IndexOf(StockKeys.AllShells, kv.Value) >= 0)

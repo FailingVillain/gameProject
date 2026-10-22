@@ -15,7 +15,7 @@ public static class CampaignAmmoSelfTest
         // 1) v2 저장 → v3 자동 이행 (구경 = ru, 옛 출격 기록의 탄약 = ru 한 종)
         var v2 = CampaignState.FromJson("{\"Version\":2,\"Roster\":[{\"Id\":\"b1_c1\",\"Kind\":\"infantry\",\"Strength\":60,\"MaxStrength\":60}],"
             + "\"Pending\":{\"MissionId\":\"c1_01_yalu\",\"DeployedCompanyIds\":[\"b1_c1\"],\"AmmoLoaded\":3600,\"AmmoScale\":1}}");
-        check(v2 != null && v2.Version == CampaignState.SchemaVersion && CampaignState.SchemaVersion == 4 && v2.Roster[0].Caliber == StockKeys.Ru
+        check(v2 != null && v2.Version == CampaignState.SchemaVersion && CampaignState.SchemaVersion == 5 && v2.Roster[0].Caliber == StockKeys.Ru
             && v2.Pending!.AmmoByCaliber.GetValueOrDefault(StockKeys.Ru) == 3600 && v2.Pending.ShellsLoaded.Count == 0
             && StockKeys.AllCalibers.All(k => v2.Stock.Ammo.ContainsKey(k)) && StockKeys.AllShells.All(k => v2.Stock.Shells.ContainsKey(k)),
             "T19b 저장: v2 → v3 이행 (중대 구경 ru · 옛 출격 탄약 = ru · 구경 5종 · 포탄 3종 키)");
