@@ -118,8 +118,54 @@ public static class UiIconsSelfTest
             }
         }
         catch (Exception ex) { check(false, $"아이콘 테스트 중 예외: {ex.GetType().Name}: {ex.Message}\n{ex.StackTrace}"); }
+        Console.WriteLine("[단축키 재지정 (T38a)]");
+        try { CheckRemap(check); } catch (Exception ex) { check(false, $"단축키 재지정 테스트 예외: {ex.GetType().Name}: {ex.Message}\n{ex.StackTrace}"); }
         Console.WriteLine("[도움말 단축키 = CONTROLS.md]");
         try { CheckControlsDoc(check); } catch (Exception ex) { check(false, $"도움말 문서 동기 테스트 예외: {ex.GetType().Name}: {ex.Message}"); }
+    }
+
+    /// <summary>T38a: 단축키 재지정 — 충돌 거부 · settings.json 왕복 · 기본값 복원 · 손상 파일 방어 · 도움말/카드 반영. 임시 settings 파일 사용, 끝에 원복.</summary>
+    static void CheckRemap(Action<bool, string> check)
+    {
+        string tmp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "kd_keys_" + Guid.NewGuid().ToString("N") + ".json");
+        var oldPath = KoreanDivision.UI.UserSettings.PathOverride;
+        var oldMap = new Dictionary<string, char>(KoreanDivision.UI.UserSettings.KeyMap);
+        try
+        {
+            KoreanDivision.UI.UserSettings.PathOverride = tmp;
+            KoreanDivision.UI.Bindings.ResetAll();
+            var move = Commands.Get("move")!; var stop = Commands.Get("stop")!;
+            check(KoreanDivision.UI.Bindings.KeyOf(move) == 'M', "기본: 이동 = M");
+            check(KoreanDivision.UI.Bindings.TrySet("move", 'S') != null && KoreanDivision.UI.Bindings.KeyOf(move) == 'M', "다른 명령(정지 S)이 쓰는 키는 거부, 키 그대로");
+            check(KoreanDivision.UI.Bindings.TrySet("move", 'F') != null, "고정 키(F 돌격 사격)는 거부");
+            check(KoreanDivision.UI.Bindings.TrySet("move", '1') != null, "글자 아닌 키는 거부");
+            check(KoreanDivision.UI.Bindings.TrySet("move", 'z') == null && KoreanDivision.UI.Bindings.KeyOf(move) == 'Z', "빈 키 Z 로 재지정 (소문자도 대문자로)");
+            check(KoreanDivision.UI.Bindings.TrySet("stop", 'M') == null, "비어진 기본 키 M 을 다른 명령이 쓸 수 있음");
+            check(KoreanDivision.UI.Bindings.All().Any(x => x.Key == "Z" && x.Text == move.Label) && KoreanDivision.UI.Bindings.All().Any(x => x.Key == "M" && x.Text == stop.Label), "도움말 일람(All)이 새 키를 반영");
+            check(KoreanDivision.UI.Bindings.RaylibKeyOf(move) == Raylib_cs.KeyboardKey.Z, "카드 단축키(RaylibKeyOf)가 새 키를 반영");
+            check(KoreanDivision.UI.Bindings.AllDefaults().Any(x => x.Key == "M" && x.Text == move.Label), "AllDefaults 는 기본 키 그대로");
+            KoreanDivision.UI.UserSettings.Save();
+            KoreanDivision.UI.UserSettings.KeyMap = new();
+            KoreanDivision.UI.UserSettings.Load();
+            check(KoreanDivision.UI.Bindings.KeyOf(move) == 'Z' && KoreanDivision.UI.Bindings.KeyOf(stop) == 'M', "settings.json 왕복 후 재지정 유지");
+            var all = Commands.UnitCommands.Select(KoreanDivision.UI.Bindings.KeyOf).ToList();
+            check(all.Distinct().Count() == all.Count, "재지정 뒤에도 카드 키 중복 없음");
+            KoreanDivision.UI.Bindings.TrySet("move", 'M');   // 기본값과 같으면 재지정 항목이 사라짐 (M 은 정지가 쓰는 중이라 거부)
+            check(KoreanDivision.UI.UserSettings.KeyMap.ContainsKey("move"), "기본 키가 남이 쓰는 중이면 복원 시도도 거부");
+            KoreanDivision.UI.Bindings.ResetAll();
+            check(KoreanDivision.UI.Bindings.KeyOf(move) == 'M' && KoreanDivision.UI.Bindings.KeyOf(stop) == 'S', "모두 기본값 복원");
+            // 손으로 망가뜨린 파일: 중복 · 고정 키 · 모르는 명령 · 숫자
+            File.WriteAllText(tmp, "{\"Keys\":{\"move\":\"K\",\"stop\":\"A\",\"nope\":\"Q\",\"hold\":\"7\",\"attack\":\"A\"}}");
+            KoreanDivision.UI.UserSettings.Load();
+            var all2 = Commands.UnitCommands.Select(KoreanDivision.UI.Bindings.KeyOf).ToList();
+            check(all2.Distinct().Count() == all2.Count && KoreanDivision.UI.Bindings.KeyOf(move) == 'M' && KoreanDivision.UI.Bindings.KeyOf(Commands.Get("hold")!) == 'H', "손상된 키 항목(고정 키 · 숫자 · 중복)은 버리고 키 중복 없음");
+        }
+        finally
+        {
+            KoreanDivision.UI.UserSettings.PathOverride = oldPath;
+            KoreanDivision.UI.UserSettings.KeyMap = oldMap;
+            try { File.Delete(tmp); } catch { }
+        }
     }
 
     /// <summary>T38b: docs/CONTROLS.md 「단축키 일람」 표 (BINDINGS 표지 사이) 가 Bindings.All() 과 한 줄도 어긋나지 않는다 (누락 0 · 잉여 0).</summary>
@@ -136,12 +182,12 @@ public static class UiIconsSelfTest
         check(b >= 0 && e > b, "CONTROLS.md 에 BINDINGS:BEGIN / END 표지가 있음");
         if (b < 0 || e <= b) return;
         var doc = lines.Skip(b + 1).Take(e - b - 1).Where(l => l.StartsWith("| `")).Select(l => l.TrimEnd()).ToList();
-        var code = KoreanDivision.UI.Bindings.All().Select(KoreanDivision.UI.Bindings.MarkdownRow).ToList();
+        var code = KoreanDivision.UI.Bindings.AllDefaults().Select(KoreanDivision.UI.Bindings.MarkdownRow).ToList();
         var missing = code.Except(doc).ToList();   // 코드에 있고 문서에 없음
         var extra = doc.Except(code).ToList();   // 문서에 있고 코드에 없음
         string detail = missing.Count + extra.Count > 0 ? Environment.NewLine + "  누락: " + string.Join(" / ", missing) + Environment.NewLine + "  잉여: " + string.Join(" / ", extra) : "";
         check(missing.Count == 0 && extra.Count == 0 && doc.Count == code.Count, $"CONTROLS.md 단축키 일람 = Bindings.All() (누락 {missing.Count}, 잉여 {extra.Count}){detail}");
         check(code.Distinct().Count() == code.Count, "Bindings.All() 에 같은 줄이 두 번 나오지 않음");
-        check(KoreanDivision.UI.Bindings.All().Any(x => x.Key == "F1"), "도움말 키 F1 이 Bindings 에 있음");
+        check(KoreanDivision.UI.Bindings.AllDefaults().Any(x => x.Key == "F1"), "도움말 키 F1 이 Bindings 에 있음");
     }
 }

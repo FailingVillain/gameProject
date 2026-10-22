@@ -356,7 +356,7 @@ public sealed partial class Game : IDisposable
             {
                 if (!CardAvailable(c, units)) continue;
                 bool active = PendingCommand == c.Key || (c.Key == "hold" && units.All(u => u.Order == UnitOrder.Hold)) || (c.Key == "scoutauto" && units.All(u => u.ScoutAuto));
-                list.Add(new CardButton(c.Key, c.Label, c.Tooltip, c.Hotkey.ToString(), Commands.Key(c.Hotkey), c.Col, c.Row, c.Key, true, active));
+                list.Add(new CardButton(c.Key, c.Label, c.Tooltip, KoreanDivision.UI.Bindings.KeyOf(c).ToString(), KoreanDivision.UI.Bindings.RaylibKeyOf(c), c.Col, c.Row, c.Key, true, active));
             }
             // 중대 명령: 돌격 사격 켜기 / 끄기 (기본 꺼짐 — 켜면 공격 이동 중 장교가 판단해 중대 단위로 걸으며 쏜다)
             var inf = units.Where(u => u.Company != null && u.Def.MarchFire && u.Def.Category == "infantry").ToList();

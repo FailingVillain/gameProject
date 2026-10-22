@@ -277,6 +277,18 @@ public static partial class S
     public const string SetColorBlindOff = "표식 끔";
     public const string SetColorBlindNote = "세력 색 말고 도형(원 · 사각 · 삼각 · 마름모 · 십자)을 함께 표시";
     public const string SetResolutionNote = "해상도는 '창' 모드에서만 바뀝니다.";
+    public const string SetKeys = "단축키";
+    public const string SetKeysButton = "단축키 재지정";
+    public const string KeysTitle = "단축키 재지정";
+    public const string KeysChange = "변경";
+    public const string KeysPress = "새 키...";
+    public const string KeysReset = "기본값";
+    public const string KeysResetAll = "모두 기본값으로";
+    public const string KeysHint = "'변경'을 누른 뒤 A~Z 키를 누르세요. 이미 쓰는 키는 거부됩니다. Esc = 취소.";
+    public const string KeysFixedNote = "숫자 · F키 · 카드 밖 고정 키(F K L O J W G I B N 등)는 바꿀 수 없습니다.";
+    public const string KeysErrLetter = "A~Z 글자 키만 지정할 수 있습니다.";
+    public const string KeysErrReserved = "{0} 는 고정 키입니다 ({1}).";
+    public const string KeysErrUsed = "{0} 는 이미 '{1}' 이(가) 씁니다.";
     public const string SetFileNote = "설정은 실행 파일 옆 settings.json 에 저장됩니다.";
     public const string MenuStart = "시작";
     public const string MenuSetupPlay = "게임 설정";
