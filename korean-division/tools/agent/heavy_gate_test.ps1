@@ -38,5 +38,18 @@ $env:KD_GATE_FREEGB_OVERRIDE = '7'; $o = (& powershell -NoProfile -ExecutionPoli
 Ok ($o -match 'gate open: heavy=\d+/limit 12 free=7(\.0)? GB') "status 7GB: $($o.Trim())"
 $env:KD_GATE_FREEGB_OVERRIDE = '2.5'; $o = (& powershell -NoProfile -ExecutionPolicy Bypass -File $gate -TimeoutMin 0 | Out-String)
 Ok ($o -match 'gate timeout: free RAM 2.5 GB') "closed at 2.5GB: $($o.Trim())"
+# memory budget (default 14 GB, env KD_GATE_BUDGET_GB / -BudgetGB)
+Ok ((Get-BudgetGB) -eq 14) 'budget default 14 GB'
+Ok ((Get-BudgetGB 20) -eq 20) 'fixed budget overrides'
+Ok (-not (Test-BudgetOk 15 14)) 'budget: 15 GB heavy RAM closes'
+Ok (Test-BudgetOk 13 14) 'budget: 13 GB heavy RAM open'
+Ok (Test-BudgetOk 14 14) 'budget: exactly 14 GB open'
+$env:KD_GATE_FREEGB_OVERRIDE = '7'; $env:KD_GATE_HEAVYRAM_OVERRIDE = '15'
+$o = (& powershell -NoProfile -ExecutionPolicy Bypass -File $gate -TimeoutMin 0 | Out-String)
+Ok ($o -match 'gate timeout: .*heavyRAM=15 GB') "heavy RAM 15GB closed: $($o.Trim())"
+$env:KD_GATE_HEAVYRAM_OVERRIDE = '13'
+$o = (& powershell -NoProfile -ExecutionPolicy Bypass -File $gate -TimeoutMin 1 | Out-String)
+Ok ($o -match 'gate open: heavy=\d+/limit 12 free=7(\.0)? GB heavyRAM=13(\.0)? GB') "heavy RAM 13GB open: $($o.Trim())"
+Remove-Item Env:KD_GATE_HEAVYRAM_OVERRIDE
 Remove-Item Env:KD_GATE_FREEGB_OVERRIDE
 if ($fail) { "FAILED $fail"; exit 1 } else { 'ALL PASS' }
