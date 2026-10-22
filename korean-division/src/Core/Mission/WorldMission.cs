@@ -441,6 +441,11 @@ public sealed partial class World
         if (m.Alive.Length != Factions.Count) m.Alive = new int[Factions.Count];
         Array.Clear(m.Alive);
         foreach (var u in Units) if (u.Hp > 0 && !u.Surrendered && (uint)u.Owner < (uint)m.Alive.Length) m.Alive[u.Owner]++;
+        if (m.AliveCars.Length != Factions.Count) { m.AliveCars = new int[Factions.Count]; m.TotalCars = new int[Factions.Count]; }
+        Array.Clear(m.AliveCars); Array.Clear(m.TotalCars);
+        foreach (var tr in Trains)   // T40: 살아 있는 객차는 병력 (기관차 없는 정지 열차도 포함, 잔해 제외)
+            if ((uint)tr.Owner < (uint)m.AliveCars.Length)
+                foreach (var c in tr.Cars) { m.TotalCars[tr.Owner]++; if (c.Alive) m.AliveCars[tr.Owner]++; }
 
         for (int i = 0; i < def.Reinforcements.Count; i++)
             if (!m.ReinforcementSpawned[i] && def.Reinforcements[i].Time is float rt && t >= rt) SpawnReinforcement(i);
@@ -467,7 +472,7 @@ public sealed partial class World
         int fail = -1;
         for (int i = 0; i < def.Failures.Count && fail < 0; i++)
             if (FailureTriggered(m, def.Failures[i], t, allDone)) fail = i;
-        bool wiped = m.Alive[m.Player] == 0 && !PendingReinforcement(m, m.Player);
+        bool wiped = m.Alive[m.Player] == 0 && m.AliveCars[m.Player] == 0 && !PendingReinforcement(m, m.Player);
         if (primaryFailed || fail >= 0 || (wiped && !allDone)) EndMission(m, false, fail);
         else if (allDone) EndMission(m, true, -1);
     }
@@ -539,8 +544,8 @@ public sealed partial class World
                 {
                     bool target = o.Faction > 0 ? f == o.Faction : IsHostile(m.Player, f);
                     if (!target) continue;
-                    spawned += m.Spawned[f];
-                    aliveN += m.Alive[f];
+                    spawned += m.Spawned[f] + m.TotalCars[f];   // T40 객차 포함 (열차 없으면 0 → 불변)
+                    aliveN += m.Alive[f] + m.AliveCars[f];
                 }
                 float pct = spawned == 0 ? 0 : (spawned - aliveN) * 100f / spawned;
                 m.ObjProgress[i] = pct;

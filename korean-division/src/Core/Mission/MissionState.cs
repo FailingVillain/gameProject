@@ -42,6 +42,8 @@ public sealed class MissionState
     public int FailReason { get; internal set; } = -1;
     /// <summary>[작업 버퍼 — 저장 안 함] 세력별 살아 있는 유닛 수 (UpdateMission 이 매 틱 다시 센다).</summary>
     internal int[] Alive = Array.Empty<int>();
+    /// <summary>[작업 버퍼 — 저장 안 함] T40: 세력별 살아 있는 열차 객차 수 / 전체 객차 수(잔해 포함). 전멸 · 섬멸 판정에만 쓴다 (손실 % 는 유닛만).</summary>
+    internal int[] AliveCars = Array.Empty<int>(), TotalCars = Array.Empty<int>();
 
     public MissionState(MissionDef def)
     {

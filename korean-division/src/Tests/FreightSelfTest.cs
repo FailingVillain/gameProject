@@ -195,6 +195,49 @@ public static class FreightSelfTest
             check(w.ComputeChecksum() != h, "체크섬에 화물 목표 진행 포함");
         }
 
+        // ---- 8. T40 전멸 · 섬멸 판정에 살아 있는 객차 포함 (잔해 제외, 기관차 없는 정지 열차도 살아 있음)
+        {
+            const string Elim2 = """{ "id": "o", "type": "eliminate", "faction": 2, "percent": 100 }""";
+            string EnemyT = Enemy.Replace("\"fr\"", "\"en\"");
+            static void KillUnits(World w, int f) { foreach (var u in w.Units.ToArray()) if (u.Owner == f && u.Alive) w.Damage(u, 100000, null); }
+            // (a) 적 병력 전멸 + 적 열차 객차 생존 → 섬멸 아님 / 객차마저 잔해 → 섬멸 · 승리
+            var w = Make(Mine + "," + EnemyT, Elim2);
+            Steps(w, 30);
+            KillUnits(w, 2);
+            Steps(w, 5);
+            check(w.Mission!.ObjState[0] == MissionState.Active && w.Mission.Result == MissionState.Running && w.Winner == 0, "섬멸: 적 보병 전멸, 적 열차 객차 생존 → 섬멸 아님");
+            var en = w.Trains.First(t => t.Owner == 2);
+            w.Damage(en.Cars[0], 100000, null);   // 기관차 파괴 = 정지 열차, 화차 생존
+            Steps(w, 5);
+            check(en.Stalled && w.Mission.ObjState[0] == MissionState.Active, "섬멸: 기관차 없는 정지 열차의 살아 있는 화차 = 아직 생존");
+            w.Damage(en.Cars[1], 100000, null); w.Damage(en.Cars[2], 100000, null);
+            Steps(w, 5);
+            check(w.Mission.ObjState[0] == MissionState.Done && w.Winner == 1, "섬멸: 적 병력 · 객차 모두 잔해 → 섬멸 완료 · 승리");
+            // (b) 열차만 남은 적 (병력 없이 시작): 열차가 있는 한 섬멸 아님 / 잔해만 → 섬멸
+            var w2 = Make(Mine + "," + EnemyT, Elim2);
+            KillUnits(w2, 2);
+            Steps(w2, 60);
+            check(w2.Mission!.ObjState[0] == MissionState.Active, "섬멸: 병력 0 + 객차 생존 60틱 → 섬멸 아님");
+            foreach (var c in w2.Trains.First(t => t.Owner == 2).Cars) w2.Damage(c, 100000, null);
+            Steps(w2, 3);
+            check(w2.Mission.ObjState[0] == MissionState.Done, "섬멸: 병력 0 + 객차 전부 잔해 → 섬멸");
+            // (c) 아군: 병력 전멸 + 열차 생존 → 패배 아님 / 객차 잔해 → 패배
+            var w3 = Make(Mine + "," + EnemyT, Elim2);
+            Steps(w3, 30);
+            KillUnits(w3, 1);
+            Steps(w3, 5);
+            check(w3.Mission!.Result == MissionState.Running && w3.Winner == 0, "패배: 아군 보병 전멸, 아군 열차 객차 생존 → 전멸 아님 (패배 안 함)");
+            foreach (var c in w3.Trains.First(t => t.Owner == 1).Cars) w3.Damage(c, 100000, null);
+            Steps(w3, 5);
+            check(w3.Mission.Result == MissionState.Lost && w3.Winner == 2, "패배: 아군 병력 · 객차 모두 잔해 → 전멸 패배");
+            // (d) 열차 없는 미션은 기존대로 (병력 전멸 = 패배)
+            var w4 = Make("", Elim2);
+            Steps(w4, 30);
+            KillUnits(w4, 1);
+            Steps(w4, 5);
+            check(w4.Mission!.Result == MissionState.Lost, "열차 없는 미션: 병력 전멸 = 패배 (변화 없음)");
+        }
+
         // ---- 7. 결정성: AI 붙인 호송 미션 2회 체크섬 동일
         {
             World A() { var w = Make(Mine, Escort, 3); World.AttachMissionAi(w, 0, all: true); return w; }
