@@ -32,3 +32,5 @@ Repo `C:\gameProject\korean-division`. Report in Korean, short. Procedures: `doc
 - 스크린샷 검수용 이미지는 이미지 뷰어를 열지 말고 파일만 만든다(지휘자가 폴더로 안내).
 - 창은 `tools/agent/run_game.ps1` 로 보조 모니터에 띄운다.
 - (명확화 2026-10-22) `--uifuzz` 의 무작위 창 크기 변경(최대 1920x1080)은 **허용**: 창 모드·보조 모니터이고 전체화면/최대화가 아니기 때문. 금지 대상은 fullscreen/borderless/최대화와 settings.json Mode 변경.
+- (토큰 절약 2026-10-22) **최종 보고는 8~12줄 이내**(요약 + 경로 + 막힌 것). 긴 표·원인 설명은 커밋 메시지·카드 파일에 쓰고 보고에는 경로만. 백그라운드 작업이 끝나길 기다릴 때 '대기 중' 보고로 멈추지 말고 블로킹 대기(`Monitor` 또는 폴링 루프)로 끝까지 진행한다. 큰 컨텍스트(>150k) 에이전트에 SendMessage 로 재개시키지 않는다(전체 기록 재처리) — 후속은 새 에이전트 + 카드/커밋 인계.
+- 창 위치: 환경변수 KD_MONITOR=secondary 가 이미 설정돼 있다(게임이 T38n 병합 뒤 따른다). 게임을 직접 실행할 땐 `tools/agent/run_game.ps1` 사용.
