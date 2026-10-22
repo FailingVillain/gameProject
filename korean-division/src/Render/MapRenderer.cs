@@ -24,6 +24,8 @@ public sealed partial class MapRenderer : IDisposable
     static readonly string[] TrenchPieces = { "h", "v", "ne", "nw", "se", "sw", "end_n", "end_e", "end_s", "end_w" };
     static readonly int SlotEdge = NT, SlotDeep = NT + 1, SlotHigh = NT + 2, SlotTrench = NT + 3;
     static readonly int NS = NT + 3 + TrenchPieces.Length;
+    const int FordSlot = (int)TerrainType.Ford;
+    static bool Wet(int t) => t == (int)TerrainType.Water || t == FordSlot;   // 물가 처리 대상 (깊은 물 · 여울)
     static readonly string[] RimSides = { "n", "e", "s", "w" };
     static readonly int[] Res = { 32, 64, 128 };
     static readonly int[] Caps = { Config.MaxLoadedChunks, 24, 24 };   // 1024² 청크: 32px 5.3MB (밉맵) · 64/128px 4MB
@@ -299,8 +301,10 @@ public sealed partial class MapRenderer : IDisposable
         var th = Theme.Current;
         slot ??= BuildSlots(th);
         var src = new Color[NS][][];
+        bool fordDerived = th?.HasTerrain("ford") != true;   // 테마에 여울 그림이 없으면 물 + 모래 타일에서 합성 (MakeFord)
         for (int t = 0; t < NS; t++)
         {
+            if (t == FordSlot && fordDerived) continue;
             var (name, fb) = SlotInfo(t, houseYard);
             var imgs = th?.TerrainImages(name, L.R) ?? th?.TerrainImages(fb, L.R);
             bool own = imgs == null;
@@ -316,6 +320,7 @@ public sealed partial class MapRenderer : IDisposable
                 if (own) Raylib.UnloadImage(imgs[v]);
             }
         }
+        if (fordDerived) src[FordSlot] = MakeFord(src[(int)TerrainType.Water], src[(int)TerrainType.Sand], L.R);
         L.Src = src;   // CPU 메모리 ≈ 슬롯 23 × ≤6변형 × R² × 4B (128px 에서 ≈ 9MB)
         if (useRim)
         {
@@ -416,6 +421,49 @@ public sealed partial class MapRenderer : IDisposable
         Raylib.UnloadImage(img);
         Raylib.SetTextureFilter(overview, TextureFilter.Point);
         bytesNow += (long)W * H * 4;
+    }
+
+    /// <summary>여울 타일 (T39c): 테마의 물 + 모래 타일을 섞어 만든다 - 모래 얼룩이 비치는 얕은 물 + 짧은 잔물결. 정적(흐름 애니 없음), 굽기 캐시를 그대로 쓴다.
+    /// 노이즈는 타일 안 정규화 좌표라 LOD 사이에서 모양이 같고, 해시만 써서 결정적. 변형 4개.</summary>
+    static Color[][] MakeFord(Color[][] water, Color[][] sand, int R)
+    {
+        const int NV = 4;
+        var res = new Color[NV][];
+        Color shallow = new(128, 176, 182, 255), foam = new(222, 234, 230, 255);
+        float inv = 1f / R;
+        for (int v = 0; v < NV; v++)
+        {
+            var w = water[v % water.Length]; var sd = sand[v % sand.Length];
+            var a = new Color[R * R];
+            int salt = 4100 + v * 31;
+            for (int j = 0; j < R; j++)
+            for (int i = 0; i < R; i++)
+            {
+                float u = (i + 0.5f) * inv, vv = (j + 0.5f) * inv;
+                float n = ValueNoise(u * 5f + v * 3.7f, vv * 5f - v * 2.3f, salt) * 0.65f + ValueNoise(u * 11f, vv * 11f + v, salt + 1) * 0.35f;
+                float bar = Math.Clamp((n - 0.45f) / 0.35f, 0f, 1f);        // 모래 얼룩 (얕은 곳)
+                Color c = Lerp(w[j * R + i], shallow, 0.3f);
+                c = Lerp(c, sd[j * R + i], 0.08f + 0.3f * bar);
+                a[j * R + i] = c;
+            }
+            // 잔물결: 짧은 가로 호 3개 (위치는 변형마다 해시)
+            for (int k = 0; k < 3; k++)
+            {
+                uint h = Hash(v, k, 4177);
+                float cx = 0.12f + (h % 60) / 100f, cy = 0.15f + ((h >> 8) % 70) / 100f, len = 0.2f + ((h >> 16) % 12) / 100f, ph = (h >> 20) % 6;
+                int i0 = (int)(cx * R), i1 = (int)((cx + len) * R), th = Math.Max(1, R / 32);
+                for (int i = i0; i <= i1 && i < R; i++)
+                {
+                    float t = (i - i0) / (float)Math.Max(1, i1 - i0);
+                    int j = (int)((cy + 0.025f * MathF.Sin(t * 6.28f + ph)) * R) ;
+                    float edge = MathF.Sin(t * 3.14159f);   // 양 끝은 옅게
+                    for (int q = 0; q < th; q++)
+                        if ((uint)(j + q) < (uint)R) a[(j + q) * R + i] = Lerp(a[(j + q) * R + i], foam, 0.55f * edge);
+                }
+            }
+            res[v] = a;
+        }
+        return res;
     }
 
     /// <summary>테마 없음 (--theme none): 예전 절차 타일을 변형 4개로 그려 원본으로 쓴다.</summary>
@@ -748,19 +796,27 @@ public sealed partial class MapRenderer : IDisposable
                     int key2 = qk[k2], t2 = key2 >> 3;
                     float m = s1 - s2;
                     if (t1 == t2) { if (m < 0.6f) c = Lerp(src[t2][key2 & 7][li], c, 0.5f + 0.5f * m / 0.6f); }   // 같은 지형 변형끼리는 넓게 섞기
+                    else if (Wet(t1) && Wet(t2) && t1 != t2) { if (m < 0.55f) c = Lerp(src[t2][key2 & 7][li], c, 0.5f + 0.5f * m / 0.55f); }   // 깊은 물 ↔ 여울: 넓고 부드럽게 (수심이 서서히 얕아짐)
                     else if (t1 != Water && t2 != Water && m < aa)
                         c = Lerp(src[t2][key2 & 7][li], c, 0.5f + 0.5f * m / aa);   // 다른 지형은 1px 만 부드럽게
                     float landBest = MathF.Max(MathF.Max(MathF.Max(ts[0], ts[1]), MathF.Max(ts[2], ts[4])), ts[SlotHigh]);
-                    if (t1 != Water && ts[Water] > float.MinValue)
+                    float wetBest = MathF.Max(ts[Water], ts[FordSlot]);
+                    if (!Wet(t1) && wetBest > float.MinValue)
                     {
-                        // 물가: 젖은 모래 띠 (물 쪽으로 갈수록 어둡게)
-                        float mw = s1 - ts[Water], band = 0.45f;
+                        // 물가: 젖은 모래 띠 (물 쪽으로 갈수록 어둡게; 여울 쪽은 옅게)
+                        float mw = s1 - wetBest, band = ts[Water] >= ts[FordSlot] ? 0.45f : 0.3f;
                         if (mw < band)
                         {
                             float k = 1f - mw / band;
                             Color wet = Mul(sand[li], 1f - 0.22f * k);
                             c = Lerp(c, wet, t1 == Sand ? k * 0.6f : MathF.Min(1f, k * 1.3f));
                         }
+                    }
+                    else if (t1 == FordSlot && landBest > float.MinValue)
+                    {
+                        // 여울 쪽 둑: 옅은 거품 줄만 (타일 자체가 이미 얕은 물)
+                        float ml = s1 - landBest;
+                        if (ml < aa * 1.2f) c = Lerp(c, new Color(214, 226, 220, 255), 0.35f);
                     }
                     else if (t1 == Water && landBest > float.MinValue)
                     {

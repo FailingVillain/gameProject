@@ -1,0 +1,46 @@
+{
+  // 하천 도하 AI 시험 미션 (T39c, AI 대 AI 관전). 지도 = assets/maps/test_river.json (본류 폭 5 + 여울 2 + 흙 다리 1). 기존 유닛만 사용, 새 규칙 없음.
+  "id": "test_river_crossing",
+  "title": "하천 도하 시험 (AI 대 AI)",
+  "date": "1920년 가을 낮",
+  "location": "시험 지도",
+  "briefing": "한국군 소총대대가 강 건너 봉천군 중대를 공격한다. 강에는 여울 둘과 흙 다리 하나뿐 - 도하 AI 와 하천 렌더 시험용.",
+  "map": "test_river",
+  "seed": 1920,
+  "weather": "clear",
+  "time": "day",
+  "player": 1,
+  "spectate": true,
+  "factions": [
+    { "name": "한국군", "en": "korean", "lang": "ko", "color": [60, 130, 235], "team": 1, "posture": "attack", "area": "north_bank" },
+    { "name": "봉천 군벌", "en": "fengtian", "lang": "zh", "color": [165, 95, 225], "team": 2, "posture": "defend", "area": "north_bank" }
+  ],
+  "areas": {
+    "north_bank": { "rect": [60, 30, 60, 22] }
+  },
+  "forces": [
+    { "id": "f1_bn", "faction": 1, "name": "한국군 소총대대", "at": [70, 100], "facing": 0, "formation": "line", "battalion": 1, "battalionForm": "line",
+      "companies": [
+        { "units": { "officer": 1, "infantry": 40, "infantry_scout": 2 }, "formation": "line" },
+        { "units": { "officer": 1, "infantry": 40, "infantry_scout": 2 }, "formation": "line" },
+        { "units": { "officer": 1, "infantry": 40, "infantry_scout": 2 }, "formation": "line" }
+      ] },
+    { "id": "f1_mg", "faction": 1, "name": "한국군 기관총 중대", "at": [70, 108], "facing": 0, "units": { "officer": 1, "heavy_maxim": 2, "infantry": 8 }, "company": true, "formation": "line" },
+    { "id": "f2_bn", "faction": 2, "name": "봉천군 소총대", "at": [90, 38], "facing": 180, "formation": "line", "battalion": 1, "battalionForm": "line",
+      "companies": [
+        { "units": { "officer_fengtian": 1, "infantry_fengtian": 50, "infantry_scout": 2 }, "formation": "line" },
+        { "units": { "officer_fengtian": 1, "infantry_fengtian": 50, "infantry_scout": 2 }, "formation": "line" }
+      ] },
+    { "id": "f2_mg", "faction": 2, "name": "봉천군 기관총 중대", "at": [90, 30], "facing": 180, "units": { "officer_fengtian": 1, "heavy_maxim": 2, "infantry_fengtian": 6 }, "company": true, "formation": "line" }
+  ],
+  "objectives": [
+    { "id": "crush", "type": "eliminate", "percent": 70, "faction": 2, "text": "봉천군 70% 격멸" }
+  ],
+  "failures": [
+    { "type": "losses", "percent": 70 },
+    { "type": "timeLimit", "seconds": 1200 }
+  ],
+  "events": [
+    { "id": "intro", "when": { "time": 1 }, "do": [ { "message": "하천 도하 시험 (AI 대 AI)" } ] }
+  ]
+}

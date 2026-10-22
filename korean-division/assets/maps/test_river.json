@@ -1,0 +1,26 @@
+{
+  // 하천 시험 지도 (T39c, 2026-10-22; 180x120): 도하 AI · 하천 렌더 시험용. 본류(폭 5, 곡선 꺾은선) 에 여울 2개 + 흙 다리 1개, 북동쪽에 지류 폭 1/2/4/6 (끝은 본류에 합류 / 위쪽 끝은 막힘).
+  // 남쪽(아래) = 시작 1, 북쪽 = 시작 2. 새 규칙 없음: 기존 paint (water line width · ford rect · dirt 다리) 만 사용.
+  "name": "하천 시험",
+  "width": 180,
+  "height": 120,
+  "base": "grass",
+  "paint": [
+    { "terrain": "sand", "line": [0, 56, 34, 56, 62, 66, 118, 66, 146, 54, 179, 54], "width": 6 },
+    { "terrain": "water", "line": [0, 56, 34, 56, 62, 66, 118, 66, 146, 54, 179, 54], "width": 5 },
+    { "terrain": "water", "line": [150, 14, 150, 54], "width": 1 },
+    { "terrain": "water", "line": [158, 14, 158, 54], "width": 2 },
+    { "terrain": "water", "line": [166, 14, 166, 54], "width": 4 },
+    { "terrain": "water", "line": [174, 14, 174, 54], "width": 6 },
+    { "terrain": "ford", "rect": [14, 54, 6, 5] },
+    { "terrain": "ford", "rect": [76, 64, 6, 5] },
+    { "terrain": "dirt", "rect": [104, 63, 6, 7] },
+    { "terrain": "forest", "rect": [30, 80, 18, 14] },
+    { "terrain": "forest", "rect": [96, 28, 20, 14] },
+    { "terrain": "forest", "rect": [128, 76, 16, 12] },
+    { "terrain": "high", "circle": [60, 30, 7] },
+    { "terrain": "rubble", "rect": [88, 80, 5, 4] },
+    { "terrain": "dirt", "rect": [8, 100, 10, 8] }
+  ],
+  "starts": [ [60, 105], [90, 14] ]
+}
