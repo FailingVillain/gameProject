@@ -35,6 +35,7 @@
 | 2231459 · abbe77f | gt-face-proto · t30d-train-art | T22 얼굴 시안 · T30d 열차 그림 (A6, src 변경 없음) · FV 52/19 · detcheck 8aa6448b9690b922 |
 | ffc4129 | wip/breach2 | T03 돌파 (B1) · FV 53/20 · detcheck 19501757040f0d62 · breach/snapshot/replay/crossing PASS · snaptest OK · uiicons FAIL 1건(정상, 카드 칸) |
 | d1947b0 | wip/orderq2 | T04 명령 대기열 · 사격선 (B3) · FV 54/21 · detcheck 19501757040f0d62 · orderq/firectl/replay/command/crossing PASS · snaptest OK · uiicons FAIL 1건(정상) |
+| 7d5c124 | ai3b2 | T05 AI 블랙보드 3B (B4) · FV 55/21 · detcheck 19501757040f0d62 · ai3b/snapshot/crossing PASS · snaptest OK · uiicons FAIL 1건(정상) |
 
 **큐 닫음 (release, 2026-10-22)**: fix/n12-forest 큐 — 전체 selftest 2008 OK/FAIL 0 · detcheck 8변형 동일 · snaptest OK · dist 발행. (T03~T05 큐의 T13 은 별도, 아직 queued.)
 
