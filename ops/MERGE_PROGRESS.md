@@ -36,3 +36,4 @@ Lock .git/kd-merge.lock released on stop.
 - Post-B: uifuzz 30 = 1979 frames, 0 exceptions. Tag post-B placed. pre-merge-C tag = same commit.
 - C1 rail 9f513e7 -> c7929fe (Snapshot.cs from rehearsal 16a63bc; ENGINE_NOTES union; ops ours). FV 58/22. detcheck b7c3761c unchanged. terrain/savecompat/snapshot/crossing PASS, snaptest 0 FAIL.
 - C2 t28-cover-forest c577c0f -> 6a5f199 (ops ours). FV 58/22, detcheck b7c3761c unchanged. props/forest/snapshot/crossing PASS, snaptest 0 FAIL. Tag post-C = 6a5f199. Group D next (pre-merge-D = post-C).
+- D1 t30a-train-move 863f9d1 -> b396991 (GameCommand/Replay/Organisation/Snapshot/ReplaySelfTest from rehearsal 1df3a01; SnapshotSelfTest Audit lines union keeping actingCache fixup; DECISIONS_PENDING union; T30a card theirs (= rehearsal); ops ours). FV 59/23, detcheck b7c3761c unchanged. train/replay/snapshot/crossing PASS, snaptest 0 FAIL.
