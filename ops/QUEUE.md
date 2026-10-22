@@ -28,6 +28,7 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T20 | 저장소 이동 마무리 (옛 폴더 삭제 = 사용자 U02) | docs | D下 R1 S H0 Wlight | U02 | blocked(U02) |
 | T30a | 장갑열차 ① 열차 객체 + 선로 이동 (조종 · 스크립트, 결정성/저장/Replay) | sim | D上 R3 SM H3 Wheavy | T07(rail) 위 스택 | wip-ready (t30a-train-move, FV58/Replay23) |
 | T30b | 장갑열차 ② 객차 무기 (야포 · 중기관총) · 객차별 HP/장갑 · 잔해 · 기관차 파괴 정지 | sim | D上 H3 | T30a 위 스택 | wip-ready (t30b-train-weapons, FV59, Replay 그대로) |
+| T30c | 화물열차 = 미션 목표 (호송 · 탈취 · 파괴) + 미션/UI 연결 | sim+feature | D上 R3 SM H2 Wlight | T30b 위 스택 | wip-ready (t30c-freight-objective, FV 그대로 59 · Replay 그대로 23) |
 
 카드가 있는 것 = T01~T13 (+_TEMPLATE). T15~T20 과 카드 없는 브랜치(wip/chokefix D14 보류 · wip/sfxnew 효과음 · wip/gt-face-proto)는 발주 직전 spec/지휘자가 카드를 쓴다.
 보류(이 표 밖): 장갑열차 · 하천 · 전술 AI 3C/3D · 지도 편집기 · 캠페인 순서 연결/챕터 1/엔딩.

@@ -39,6 +39,9 @@ public sealed class MissionResults
     /// <summary>살아남은 플레이어 유닛 전부 (병력 id · 종류 · 계급 — 캠페인 이월용).</summary>
     public List<UnitLine> Survivors { get; set; } = new();
     public List<DeployEntry> Deployment { get; set; } = new();
+    /// <summary>T30c: 열차마다 객차 · 화물 객차 손실 (잔해 = 손실). 열차 없는 미션은 빈 목록.</summary>
+    public List<TrainLine> Trains { get; set; } = new();
+    public sealed class TrainLine { public int Id { get; set; } public string? Tag { get; set; } public int Owner { get; set; } public int Cars { get; set; } public int CarsLost { get; set; } public int Freight { get; set; } public int FreightLost { get; set; } }
 
     public static MissionResults From(World w)
     {
@@ -91,6 +94,16 @@ public sealed class MissionResults
             }
             r.Survivors.Add(line);
             if (line.Rank > start || line.TempRank > 0) r.Promotions.Add(line);   // 장교 임시 진급 = 캠페인 정식 진급 후보
+        }
+        foreach (var t in w.Trains)
+        {
+            var tl = new TrainLine { Id = t.Id, Tag = t.Tag, Owner = t.Owner, Cars = t.Cars.Count };
+            foreach (var c in t.Cars)
+            {
+                if (!c.Alive) tl.CarsLost++;
+                if (c.Def.Freight) { tl.Freight++; if (!c.Alive) tl.FreightLost++; }
+            }
+            r.Trains.Add(tl);
         }
         r.TopUnits = r.Survivors.Where(s => s.Kills > 0).OrderByDescending(s => s.Kills).ThenBy(s => s.Id).Take(5).ToList();
         return r;

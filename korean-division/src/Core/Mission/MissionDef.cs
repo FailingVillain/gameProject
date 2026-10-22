@@ -9,7 +9,7 @@ namespace KoreanDivision.Core;
 /// 형식 요약은 docs/ENGINE_NOTES.md '미션 틀'. 정의는 불변 데이터 (실행 상태는 MissionState).
 /// 좌표 = 타일, 방향(facing) = 나침반 각도 (0 = 북/위, 90 = 동/오른쪽, 180 = 남, 270 = 서).
 /// </summary>
-public sealed class MissionDef
+public sealed partial class MissionDef
 {
     public string Id { get; set; } = "";
     public string Title { get; set; } = "";
@@ -163,11 +163,13 @@ public sealed class MissionDef
                 Require(MissionCompany.ParseForm(c.Formation ?? f.Formation) != null, $"병력 '{f.Id}': 대형 '{c.Formation ?? f.Formation}'");
             }
         }
+        ValidateTrains();   // T30c (FreightObjective.cs)
         var oids = new HashSet<string>();
         foreach (var o in Objectives)
         {
             Require(!string.IsNullOrWhiteSpace(o.Id) && oids.Add(o.Id), $"목표 id '{o.Id}' 가 비었거나 중복");
             Require(MissionObjective.Types.Contains(o.Type), $"목표 '{o.Id}' 종류 '{o.Type}' (capture · eliminate · defend · escort)");
+            if (o.Train != null) { ValidateFreightObjective(o, defs); continue; }   // T30c 화물열차 목표 (FreightObjective.cs)
             if (o.Type is "capture" or "escort") Require(Area(o.Area) != null, $"목표 '{o.Id}': 구역 '{o.Area}' 없음");
             if (o.Type == "defend") Require(o.Seconds > 0, $"목표 '{o.Id}': defend 는 seconds 필요");
             if (o.Type == "escort") Require(!string.IsNullOrEmpty(o.Tag), $"목표 '{o.Id}': escort 는 tag 필요");
@@ -369,6 +371,11 @@ public sealed class MissionObjective
     public int Faction { get; set; }
     /// <summary>defend + area: 적이 구역을 이 초 동안 홀로 차지하면 실패 (기본 10).</summary>
     public float LoseAfter { get; set; } = 10;
+    /// <summary>T30c 화물열차 목표: 열차 tag (미션 trains[].tag). 대상 = 그 열차들의 화물 객차 (balance.json trains.cars 의 freight).
+    /// escort = 화물 객차 count 량이 area 도착 · capture = 살아 있는 화물 객차 radius 안을 seconds 초 단독 확보 (소유 변경 없음) · eliminate = 화물 객차 percent% 파괴. FreightObjective.cs.</summary>
+    public string? Train { get; set; }
+    /// <summary>T30c capture + train: 화물 객차 둘레 확보 반경 (칸, 기본 3).</summary>
+    public float Radius { get; set; } = 3;
 }
 
 public sealed class MissionFailure

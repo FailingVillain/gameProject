@@ -33,7 +33,7 @@ public sealed class TrainRulesDef
         ["locomotive"] = new() { Name = "기관차", Hp = 400, Armor = "heavy", Engine = true, Sight = 24 },
         ["guncar"] = new() { Name = "포차", Hp = 300, Armor = "heavy", Weapons = new() { "gun_field" }, Sight = 24 },
         ["mgcar"] = new() { Name = "기관총차", Hp = 300, Armor = "heavy", Weapons = new() { "hmg", "hmg" }, Sight = 24 },
-        ["wagon"] = new() { Name = "화차", Hp = 200, Armor = "basic" },
+        ["wagon"] = new() { Name = "화차", Hp = 200, Armor = "basic", Freight = true },
     };
 
     public const int TicksPerSecond = 60;
@@ -57,6 +57,8 @@ public sealed class TrainCarDef
     public string Category { get; set; } = "armored";
     /// <summary>T30b: 기관차. 열차의 기관차가 모두 파괴되면 열차 전체가 멈춘다 (Q-B1). 다른 객차 파괴는 잔해로 남아 끌려간다 (분리 없음).</summary>
     public bool Engine { get; set; }
+    /// <summary>T30c: 화물 객차 — 미션 화물열차 목표(escort · capture · eliminate + train)의 대상 (FreightObjective.cs). 화물 내용 · 보상 연결 없음 (Q-C3).</summary>
+    public bool Freight { get; set; }
 }
 
 /// <summary>객차 무기 한 문/정 (T30b). 표적은 Id (객차 · 유닛 · 건물 — World.Find), 냉각 · 조준은 틱.</summary>

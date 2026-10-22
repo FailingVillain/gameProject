@@ -691,3 +691,8 @@
 - `TrainCarDef`: weapons (기존 무기 키) · category (기본 armored = 장갑차 규칙) · engine. `TrainCar.Guns` (TrainGun: TargetId · Cooldown · AimLeft 틱), StepTrains 끝 `StepTrainGun` (AcquireInterval 주기 FindTarget → 조준 → 사선 → Fire). 탄약 무제한.
 - 전투 경로 공유: FindTarget 객차 후보 (trainMask), Fire/FireSpray 사격자 Entity, bonus = `World.CategoryOf`, Explode → `SplashTrains`, `World.Find` → `FindCar` 대비, 안개 객차 시야, CanMelee 객차 불가.
 - HP 0 = 잔해 (열차에 남음). 기관차 모두 파괴 → `Train.Stalled` (제동 · 정지, 명령 무시). 저장: 열차 = ENTS 끝, 엔티티 참조 태그 3 = 객차. 테스트 `KD_SELFTEST_ONLY=trainweapons`.
+
+## 화물열차 목표 (2026-10-22, 브랜치 `t30c-freight-objective`, T30c, FormatVersion 59 그대로)
+- 미션 목표에 `"train": "<열차 tag>"` (escort · capture · eliminate). 대상 = 그 tag 열차들의 화물 객차 (`TrainCarDef.Freight`, balance.json 화차 wagon). `src/Core/Mission/FreightObjective.cs` (검증 · 판정), EvalObjective 첫 줄 분기.
+- escort = 살아 있는 화물 객차 count 량 area 안 (부족 · 남은 열차 모두 Stalled → 실패). capture = 화물 객차 radius(기본 3) 안 단독 확보 seconds 초, 소유 변경 없음 (전멸 → 실패). eliminate = 화물 객차 percent% 파괴 (진행 0~1 비율).
+- 새 저장 상태 없음 (ObjProgress · 객차 HP). AI ObjectiveFor: 호송/탈취를 화물 객차 중심으로 재사용. UI: 목표 문구 · 월드/미니맵 화차 표식 (MissionText.FreightMarkers) · 결과 `trains` 손실. 테스트 `KD_SELFTEST_ONLY=freight`.

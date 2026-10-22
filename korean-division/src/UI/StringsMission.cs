@@ -31,6 +31,13 @@ public static partial class S
     public const string ObjDefend = "{0}초 동안 버티기";
     public const string ObjDefendArea = "{1} 을(를) {0}초 동안 지키기";
     public const string ObjEscort = "'{0}' {1}기를 {2} 까지 호위";
+    // T30c 화물열차 목표 (train)
+    public const string ObjTrainEscort = "화물열차 '{0}' 화차 {1}량을 {2} 까지 호송";
+    public const string ObjTrainCapture = "화물열차 '{0}' 화차 탈취 ({1}초 확보)";
+    public const string ObjTrainDestroy = "화물열차 '{0}' 화차 파괴";
+    public const string ObjTrainDestroyPct = "화물열차 '{0}' 화차 {1}% 파괴";
+    public const string RsTrains = "열차 손실 (객차 · 화차)";
+    public const string RsTrainLine = "'{0}'  객차 {1}/{2} · 화차 {3}/{4}";
     public const string FailLosses = "아군 손실 {0}% 이상";
     public const string FailKeyUnit = "'{0}' 전사";
     public const string FailTimeLimit = "{0} 안에 주 목표 미달성";

@@ -92,6 +92,9 @@ public sealed class Minimap : IDisposable
         Vector2 a = WorldToScreen(min), bb = WorldToScreen(max);
         Raylib.BeginScissorMode((int)Rect.X, (int)Rect.Y, (int)MathF.Ceiling(Rect.Width), (int)MathF.Ceiling(Rect.Height));
         Raylib.DrawRectangleLinesEx(new Rectangle(a.X, a.Y, bb.X - a.X, bb.Y - a.Y), 1.5f, Color.White);
+        foreach (var (car, _) in KoreanDivision.UI.MissionText.FreightMarkers(world))   // T30c 화물열차 목표 화물 객차 (적 열차는 보일 때만)
+            if (world.Allied(me, car.Owner) || world.Fog.CanSee(me, car))
+                Raylib.DrawRing(WorldToScreen(car.Pos), 3, 4.5f, 0, 360, 16, Palette.Accent);
         if (ping is var (pos, age) && age < 3)
         {
             float t = (float)(age % 1.0);
