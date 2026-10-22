@@ -54,3 +54,7 @@ T55b1: gt-house-b1 specs manchu_b1_*, tone a=base b=variant; flat/thatch mix per
 TC-D: base t48b2-assign(v9), schema v11 skip v10; supply gate for episode not enforced yet; fairy/sword price 2 temp; E2 cap via param
 - T38m: Overlay default=간결(concise), U key cycles; concise hides colorblind markers/low bars unless selected (user 2026-10-22 messy)
 2026-10-22 | 머리 위 표시 | 기본 간결(HP·탄약·색각 도형·분대 아이콘 선택/위험 때만), 색각 도형은 간결에서 선택·호버만 — 색각 사용자는 보통 이상 권장 | T38m, 사용자 확인 대기
+T38n: KD_MONITOR unset=old behaviour; secondary=first non-primary, window clamped to monitor-80px, centred; never fullscreen
+T48d defaults: no commanders.enabled on base -> rules off when roster empty; fuzz-campaign absent; hire/dismiss both confirm; portraits via file else silhouette
+T11b: infantry cells widened 128->176/192 approved (user auto-default); imported, no C# change
+T33e: MapDoc.MaxDim=1500 mirror of Config.MaxMapSize (test-checked); synthetic big maps in tests; fixtures A/B copied
