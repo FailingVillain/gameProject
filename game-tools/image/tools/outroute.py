@@ -20,7 +20,7 @@ _LEGACY_NAMES = ("infantry-ww2",)
 
 def faction_of(name):
     """Faction subfolder name for a unit / vehicle name."""
-    if name.startswith("tank-") or name in ("supply-wagon", "heavy-tachanka", "heavy-horse-artillery"):
+    if name.startswith(("tank-", "train-")) or name in ("supply-wagon", "heavy-tachanka", "heavy-horse-artillery"):
         return "vehicles"
     if name.endswith("-old") or name in _LEGACY_NAMES:
         return "_legacy"

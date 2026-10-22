@@ -1,0 +1,8 @@
+{
+  "name": "train-freight",
+  "kind": "vehicle",
+  "model": "train_freight",
+  "turret": "vent",
+  "anims": "vehicle",
+  "dirs": "all"
+}

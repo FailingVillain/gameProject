@@ -1,0 +1,8 @@
+{
+  "name": "train-mgcar",
+  "kind": "vehicle",
+  "model": "train_mgcar",
+  "turret": "mg",
+  "anims": "vehicle",
+  "dirs": "all"
+}

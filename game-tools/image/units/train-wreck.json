@@ -1,0 +1,8 @@
+{
+  "name": "train-wreck",
+  "kind": "vehicle",
+  "model": "train_wreck",
+  "turret": "none",
+  "anims": "vehicle",
+  "dirs": "all"
+}
