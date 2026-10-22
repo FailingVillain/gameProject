@@ -50,8 +50,7 @@ public sealed class View : IDisposable
     {
         int i = Array.IndexOf(Editor.PaletteNames, name);
         if (i < 0) return Color.White;
-        if (i < MapDoc.TerrainNames.Length) return Terrains.Get((TerrainType)i).Color;
-        return i == 11 ? new Color(230, 220, 120, 255) : new Color(110, 140, 170, 255);
+        return Editor.SwatchColor(name);
     }
 
     static Color Owner(int o) => o <= 0 ? Palette.Neutral : Palette.Player(o);
@@ -123,6 +122,9 @@ public sealed class View : IDisposable
             for (int x = x0; x <= x1; x++)
                 if (g.High[y * g.Width + x]) Raylib.DrawRectangleLinesEx(new Rectangle(x * TS + 1, y * TS + 1, TS - 2, TS - 2), 2, new Color(255, 240, 120, 170));
         }
+
+        DrawRails(ed, x0, y0, x1, y1);
+        DrawRailPending(ed, lw);
 
         var m = ed.Mission;
         if (m != null)
@@ -212,6 +214,60 @@ public sealed class View : IDisposable
             int lo = -((n - 1) / 2);
             Raylib.DrawRectangleLinesEx(new Rectangle((ed.Hover.X + lo) * TS, (ed.Hover.Y + lo) * TS, n * TS, n * TS), 2 / ed.Cam.Zoom + 1, Palette.Accent);
         }
+    }
+
+    static readonly Color RailSleeper = new(78, 58, 40, 255), RailSleeperDark = new(52, 40, 30, 255), RailTop = new(168, 168, 172, 255), RailSide = new(58, 58, 62, 255);
+
+    /// <summary>선로 침목 · 레일. 게임에서는 BuildingRenderer 가 RailRenderer.Draw 로 덧그리므로(지형 타일은 자갈 바닥만) 편집기도 같은 규칙 · 같은 치수로 직접 덧그린다. rail 이 합쳐진 뒤에는 RailRenderer.Draw(PreviewMap, ...) 로 바꿔도 된다 (모양 동일).</summary>
+    void DrawRails(Editor ed, int x0, int y0, int x1, int y1)
+    {
+        var g = ed.Doc.Raster();
+        var segs = g.RailSegments();
+        if (segs.Count == 0) return;
+        float zoom = ed.Cam.Zoom;
+        bool detail = zoom >= 0.6f;
+        float px = 1f / zoom;
+        foreach (var (x, y, ax, ay, bx, by) in segs)
+        {
+            if (x < x0 - 2 || x > x1 + 2 || y < y0 - 2 || y > y1 + 2) continue;
+            Vector2 a = new Vector2(ax, ay) * TS, b = new Vector2(bx, by) * TS, d = b - a;
+            float len = d.Length();
+            Vector2 u = d / len, nrm = new(-u.Y, u.X);
+            if (!detail) { Raylib.DrawLineEx(a, b, MathF.Max(2.5f * px, TS * 0.22f), RailSleeperDark); continue; }
+            int nSl = Math.Max(1, (int)MathF.Round(len / (TS * 0.25f)));
+            float half = TS * 0.36f, thick = MathF.Max(1.5f * px, TS * 0.09f);
+            float ang = MathF.Atan2(nrm.Y, nrm.X) * 180f / MathF.PI;
+            for (int i = 0; i < nSl; i++)
+            {
+                var p = a + d * ((i + 0.5f) / nSl);
+                Raylib.DrawRectanglePro(new Rectangle(p.X, p.Y, half * 2f, thick), new Vector2(half, thick / 2f), ang, RailSleeper);
+            }
+            float gg = TS * 0.2f, ext = TS * 0.04f;
+            for (int k = -1; k <= 1; k += 2)
+            {
+                var o = nrm * (gg * k);
+                Vector2 ra = a + o - u * ext, rb = b + o + u * ext;
+                Raylib.DrawLineEx(ra, rb, MathF.Max(1.5f * px, TS * 0.07f), RailSide);
+                Raylib.DrawLineEx(ra - nrm * (TS * 0.012f), rb - nrm * (TS * 0.012f), MathF.Max(1f * px, TS * 0.035f), RailTop);
+            }
+        }
+    }
+
+    /// <summary>선로 도구로 찍는 중인 꺾은선: 확정되면 칠해질 칸 + 점 표식 + 마지막 점에서 마우스까지 고무줄.</summary>
+    static void DrawRailPending(Editor ed, float lw)
+    {
+        if (ed.Tool != Tool.Rail) return;
+        var pts = ed.RailPts;
+        var col = Editor.SwatchColor("rail");
+        var all = new List<(int X, int Y)>(pts);
+        if (ed.HoverIn && !ed.PopupOpen && pts.Count > 0 && pts[^1] != ed.Hover) all.Add(ed.Hover);
+        for (int k = 0; k + 1 < all.Count; k++)
+            foreach (var (x, y) in MapDoc.LineCells(all[k].X, all[k].Y, all[k + 1].X, all[k + 1].Y))
+                Raylib.DrawRectangle(x * TS, y * TS, TS, TS, Palette.Alpha(col, 170));
+        for (int k = 0; k < pts.Count; k++)
+            Raylib.DrawCircleV(new Vector2((pts[k].X + 0.5f) * TS, (pts[k].Y + 0.5f) * TS), Math.Max(TS * 0.3f, 5f / ed.Cam.Zoom), k == pts.Count - 1 ? Palette.Accent : Palette.Select);
+        if (ed.HoverIn && !ed.PopupOpen && pts.Count == 0)
+            Raylib.DrawRectangleLinesEx(new Rectangle(ed.Hover.X * TS, ed.Hover.Y * TS, TS, TS), 2 / ed.Cam.Zoom + 1, Palette.Accent);
     }
 
     static void DrawProp(string type, float x, float y, int alpha, bool scatter)
