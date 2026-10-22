@@ -25,7 +25,7 @@ if (args.Length > 1 && args[0] == "--tactics-obs") return KoreanDivision.Tests.T
 //                      [--shot out.png [--shot-frame N] [--sim 초]] [--replay 파일] [--verify-replay 파일] [--selftest]
 const string Usage = "사용법: KoreanDivision [--players N] [--faction 번호|이름] [--map WxH|tiny|small|medium|large|huge|지도이름] [--seed N] [--ai 이름|none] [--nofog] [--weather clear|overcast|fog|rain|snow] [--time dawn|day|dusk|night] [--shot out.png] [--shot-frame N] [--sim 초] [--demo] [--exec 명령] [--theme kd1920|ww2|none] [--replay 파일] [--verify-replay 파일] [--no-replay] [--spectate [--view N]] [--mute] [--size WxH] [--quick-battle [n]] [--battle \"종류:수,.. --vs \"종류:수,..\" [--battle-map flat|terrain|city] [--battle-ai-vs-ai] [--battle-distance N]] [--balance [suite]] [--selftest]  (인자 없이 실행하면 시작 화면)";
 var opt = new GameOptions();
-bool selfTest = false, mapGiven = false, noVsync = false, fuzzMenu = false;
+bool selfTest = false, mapGiven = false, noVsync = false, fuzzMenu = false, fuzzCampaign = false;
 double fuzzSeconds = 0;   // > 0 이면 UI 퍼즈 모드 (src/Tests/UiFuzz.cs)
 string? sizeArg = null;   // --size WxH: 이번 실행만 창 크기 (settings.json 은 건드리지 않음; UI 하네스용)
 string? factionArg = null, verifyReplay = null, menuShot = null, menuPage = null;
@@ -39,7 +39,7 @@ try
 {
     for (int i = 0; i < args.Length; i++)
     {
-        if (args[i] is not ("--novsync" or "--menu-shot" or "--menu-page" or "--theme" or "--uifuzz" or "--size" or "--fuzz-menu" or "--mute" or "--crash-test")) gameFlag = true;   // 테마만 바꿔도 시작 화면은 그대로
+        if (args[i] is not ("--novsync" or "--menu-shot" or "--menu-page" or "--theme" or "--uifuzz" or "--size" or "--fuzz-menu" or "--fuzz-campaign" or "--mute" or "--crash-test")) gameFlag = true;   // 테마만 바꿔도 시작 화면은 그대로
         switch (args[i])
         {
             case "--map":
@@ -88,6 +88,7 @@ try
             case "--uifuzz":   // UI 크래시 퍼즈: --uifuzz [초] (기본 120). 지도를 안 주면 corners4 + AI, 리플레이는 저장 안 함
                 fuzzSeconds = i + 1 < args.Length && double.TryParse(args[i + 1], System.Globalization.CultureInfo.InvariantCulture, out double fs) ? (++i, fs).fs : 120;
                 break;
+            case "--fuzz-campaign": fuzzMenu = true; fuzzCampaign = true; break;   // T38h: 퍼즈가 캠페인 홈(임시 폴더 + 합성 자료)을 계속 두드린다
             case "--fuzz-menu": fuzzMenu = true; break;   // 퍼즈를 시작 화면부터 (메뉴 → 게임 → 메뉴 ...)
             case "--quick-battle":   // 빠른 교전: 빈 평지 보병 n 대 AI 보병 n (기본 500, 예: --quick-battle 200)
                 if (i + 1 < args.Length && int.TryParse(args[i + 1], out int qn)) { battleA = battleB = MainMenu.QuickBattleSideFor(qn); i++; }
@@ -178,7 +179,7 @@ Ui.LoadFonts(defs.AllText().Concat(MissionDef.AllText()));   // 미션 파일의
 KoreanDivision.Render.Theme.Use(opt.Theme);   // 이미지 세트 (assets/themes/<id>, "none" = 도형 그림)
 Sfx.Init(opt.Theme == "none" ? "ww2" : opt.Theme);   // 효과음 (assets/sounds/<id>)
 
-UiFuzz? fuzz = fuzzSeconds > 0 ? new UiFuzz(fuzzSeconds, opt.Seed) : null;
+UiFuzz? fuzz = fuzzSeconds > 0 ? new UiFuzz(fuzzSeconds, opt.Seed, fuzzCampaign) : null;
 if (crashTest) throw new InvalidOperationException("crash-test");
 bool running = true;
 double updMs = 0, drawMs = 0;
@@ -199,6 +200,7 @@ while (running)
             {
                 menu.ExitRequested = false;
                 fuzz.MenuFrame(Raylib.GetScreenWidth(), Raylib.GetScreenHeight());
+                fuzz.CampaignDrive(menu);
                 fuzz.Guard("menu", () => menu.Frame(null));
             }
             else menu.Frame(mshoot ? menuShot : null);

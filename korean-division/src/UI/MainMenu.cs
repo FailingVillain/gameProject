@@ -87,6 +87,7 @@ public sealed class MainMenu
     /// <summary>게임을 마치고 돌아왔을 때: 첫 화면으로.</summary>
     public void ShowMain(string? notice = null) { page = Page.Main; startNotice = notice; }
     /// <summary>캠페인 미션을 끝내고 돌아올 때: 캠페인 홈을 새로 읽어 (전과 보고 → 보충) 연다.</summary>
+    public CampaignMenu? FuzzCampaign => page == Page.Campaign ? campaign : null;   // T38h 퍼즈 관찰용
     public void ShowCampaign() { page = Page.Campaign; campaign = new CampaignMenu(); }
     string? startNotice;   // 시작 실패 안내 (옛 형식 리플레이 등) — 첫 화면에 한 번 표시, 클릭하면 사라짐
 

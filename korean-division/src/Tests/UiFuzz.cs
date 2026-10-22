@@ -53,9 +53,13 @@ public sealed class UiFuzz
     readonly Dictionary<string, int> events = new();
     void Ev(string k) => events[k] = events.GetValueOrDefault(k) + 1;
 
-    public UiFuzz(double seconds, int seed)
+    readonly bool campaignMode;   // T38h: --fuzz-campaign
+
+    public UiFuzz(double seconds, int seed, bool campaign = false)
     {
         Seconds = seconds;
+        campaignMode = campaign;
+        if (campaign) Environment.SetEnvironmentVariable("KD_CAMPAIGN_DIR", TestTemp.Child("fuzz_campaign"));   // 진짜 캠페인 저장을 건드리지 않는다
         rng = new Random(seed);
         Input.Source = inp;
         Ui.HitRecording = true;   // T38g: 그려진 버튼 사각형을 모아 겨냥 클릭에 쓴다
@@ -142,6 +146,7 @@ public sealed class UiFuzz
     {
         Console.Error.WriteLine($"[uifuzz] 선택 종류 {seenSelections.Count}가지: {string.Join(" ", seenSelections.OrderBy(x => x))}");
         Console.Error.WriteLine($"[uifuzz] 겨냥 클릭: 서로 다른 버튼 {aimedLabels.Count}개 (작은 것 {aimedSmall.Count}개: {string.Join(" | ", aimedSmall.OrderBy(x => x).Take(12))})");
+        if (campaignMode) Console.Error.WriteLine($"[uifuzz] 캠페인 홈: 방문한 탭 {visitedTabs.Count}/15 ({string.Join(",", visitedTabs.OrderBy(x => x))}), 화면 상태 {string.Join("/", visitedViews)}");
         Console.Error.WriteLine($"[uifuzz] 사건: {string.Join(", ", events.Select(kv => $"{kv.Key}={kv.Value}"))}");
         Console.Error.WriteLine(KoreanDivision.Render.LodAtlas.Summary());
         Console.Error.WriteLine($"[uifuzz] {frame} 프레임, 예외 {Exceptions}건, 고유 크래시 지점 {crashes.Count}곳");
@@ -163,10 +168,86 @@ public sealed class UiFuzz
             inp.Mouse = rng.Next(2) == 0 ? new Vector2(rng.Next(0, w), rng.Next(0, h)) : new Vector2(w / 2f + rng.Next(-420, 420), h * 0.3f + rng.Next(0, (int)(h * 0.6f)));
             stay = rng.Next(1, 4);
         }
-        if (rng.Next(14) == 0) { if (!AimedClick()) inp.Pressed.Add(MouseButton.Left); }
+        if (rng.Next(campaignMode ? 4 : 14) == 0) { if (!AimedClick()) inp.Pressed.Add(MouseButton.Left); }
         if (rng.Next(400) == 0) inp.KeyPress.Add(KeyboardKey.Escape);
         if (rng.Next(60) == 0) inp.Wheel = rng.Next(-3, 4);
         if (rng.Next(30) == 0) inp.KeyHeld.Add(KeyboardKey.LeftShift);
+    }
+
+    // ---------------------------------------------------------------- 캠페인 홈 퍼즈 (T38h)
+
+    readonly HashSet<int> visitedTabs = new();
+    readonly HashSet<string> visitedViews = new();
+    int campFrame, awayFrames;
+
+    /// <summary>합성 캠페인 자료 (전과 보고 · 포로 · 진급 · 일정 · 기록 등 모든 탭에 보여줄 것이 있게)를 임시 폴더에 쓴다.</summary>
+    void SeedCampaign()
+    {
+        Directory.CreateDirectory(CampaignState.Folder);
+        var st = new CampaignState();
+        st.EnsureInitialized();
+        st.Completed.Add(CampaignState.FirstMission);
+        st.NextMission = CampaignState.Tutorial2;
+        st.Day = 37;
+        for (int i = 0; i < 6; i++)
+            st.History.Add(new CampaignState.MissionRecord { MissionId = CampaignState.FirstMission, Title = $"fz{i}", DurationSeconds = 600 + i * 90, EnemyKills = 40 + i, Lost = 5 + i, Survivors = 100 - i, SavedAt = "2027-01-01" });
+        st.AddTimeline("mission", CampaignState.FirstMission, "fz");
+        st.AddTimeline("event", "fz_ev", "fz event", 1);
+        st.PromotionLog.Add(new CampaignState.PromotionRecord { AfterMission = CampaignState.FirstMission, Officer = false, UnitId = 3, FromRank = 1, ToRank = 2 });
+        st.PrisonersRepatriated = 4; st.PrisonersInterned = 6; st.Stock.Prisoners = 25;
+        st.Stock.Heavy["field_gun"] = 3; st.Stock.RecentLog.Add("fz log");
+        for (int i = 0; i < st.Roster.Count; i++)
+        {
+            var c = st.Roster[i];
+            c.Regiment = i % 4; c.Fatigue = (i * 17) % 100; c.Morale = 20 + (i * 13) % 80; c.Wounded = i % 3 == 0 ? 7 : 0;
+            if (i % 5 == 4) c.Available = false;
+        }
+        st.LastDebrief = new CampaignState.DebriefReport
+        {
+            MissionId = CampaignState.FirstMission, Title = "fz debrief", TotalLost = 12, WoundedReturned = 5, Dead = 7, DischargedWounded = 1, EnemyKills = 55,
+            SupplyBefore = 3000, SupplyAfter = 2800, RegularSupplyAdded = 200, RecruitsAdded = 150, LootedSupply = 40, LootedRifles = 30, LootedAmmo = 900, LootedHorses = 4,
+            AmmoRefunded = 120, PrisonersTaken = 9, ShellsFired = new() { [StockKeys.InfGun] = 20, [StockKeys.Field] = 10 }, LootedShells = new() { [StockKeys.Field] = 5 },
+        };
+        st.Sanitize();
+        st.Save();
+    }
+
+    /// <summary>시작 화면 퍼즈 한 프레임 뒤 (MenuFrame 다음): 캠페인 홈 밖이면 40프레임 뒤 들어가고, 600프레임마다 새 합성 자료로 다시 들어가며(전과 보고 복원), 홈 화면이면 5프레임마다(다 가본 뒤 12) 아직 안 가본 탭 버튼을 실제로 클릭한다.</summary>
+    public void CampaignDrive(MainMenu menu)
+    {
+        if (!campaignMode) return;
+        Guard("menu", () =>
+        {
+            campFrame++;
+            var cm = menu.FuzzCampaign;
+            if (cm == null)
+            {
+                context = "menu (campaign mode, outside)";
+                if (++awayFrames >= 40) { awayFrames = 0; SeedCampaign(); menu.ShowCampaign(); Ev("campaign-enter"); }
+                return;
+            }
+            awayFrames = 0;
+            string view = cm.FuzzView;
+            context = $"campaign tab {cm.FuzzTab} view {view}{(cm.FuzzSlotsOpen ? " slots" : "")}";
+            visitedTabs.Add(cm.FuzzTab); visitedViews.Add(view);
+            if (cm.FuzzSlotsOpen) Ev("cm-slots-frames");
+            if (view == "Debrief") Ev("cm-debrief-frames");
+            if (campFrame % 600 == 0) { SeedCampaign(); menu.ShowCampaign(); Ev("campaign-reseed"); return; }
+            if (campFrame % (visitedTabs.Count < CampaignMenu.FuzzTabCount ? 5 : 12) != 0 || view != "Home" || cm.FuzzSlotsOpen) return;
+            int n = Enumerable.Range(1, CampaignMenu.FuzzTabCount).FirstOrDefault(t => !visitedTabs.Contains(t));
+            if (n == 0) n = rng.Next(1, CampaignMenu.FuzzTabCount + 1);
+            var (tab, screen) = CampaignMenu.FuzzTabLabels(n);
+            foreach (var key in new[] { tab, screen })
+            {
+                var hit = targets.FirstOrDefault(t => t.Label.StartsWith(key, StringComparison.Ordinal));
+                if (hit.Label == null) continue;
+                var r = hit.R;
+                inp.Mouse = new Vector2(r.X + r.Width / 2, r.Y + r.Height / 2);
+                inp.Pressed.Add(MouseButton.Left);
+                Ev(key == tab ? "cm-tab-click" : "cm-screen-click");
+                break;
+            }
+        });
     }
 
     // ---------------------------------------------------------------- 겨냥 클릭 (T38g)
@@ -181,7 +262,7 @@ public sealed class UiFuzz
     {
         if (targets.Length == 0) return false;
         int roll = rng.Next(10);
-        if (roll >= 5) return false;
+        if (roll >= (campaignMode ? 8 : 5)) return false;
         bool wantSmall = roll < 3;
         var pool = wantSmall ? targets.Where(t => IsSmall(t.R)).ToArray() : targets;
         if (pool.Length == 0) { if (wantSmall) pool = targets; else return false; }
