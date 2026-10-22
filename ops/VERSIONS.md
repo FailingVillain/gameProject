@@ -30,3 +30,5 @@
 - 제외 (진행 중): kd/prone-rerender-* (엎드려쏴 4샤드) · kd/t39g-gando (간도 복식) · kd/bridge-rework (나무 다리) · kd/water-foam-fix (기슭 거품) · ui-lowfix · skill-grade-labels · T51d · T61 · T57 · TF-C 등 신규.
 - 제외 (골든 변경): kd/water-fire-open (waterBlocksFire=false) → 0.3 태그 뒤 '0.3 초기'에 병합하고 골든을 그때 일괄 재생성.
 - 승격 시점: 병합 N3 후 전체 selftest 통과 + 사용자 '명령'. 00:30 은 목표 시각일 뿐이며 서두르지 않는다.
+
+- 0.3 (승격 2026-10-23 03:29): 태그 v0.3 = 2531ec16 (merge/0.2-final 선단, post-N3f-1 selftest 133 그룹 PASS + detcheck 일치, Config 0.2.1, FV Snapshot 74/Replay 27/스키마 15). 백업: v0.3.bundle(태그 이력)·v0.3-all-branches.bundle → C:\works\_backup\KoreanDivision, D:\KoreanDivisionBackup (+태그만 G:). MANIFEST C:\works\_backup\MANIFEST-v0.3.txt. 승격 스크립트 verify 단계 PowerShell 오류로 중단 → 수동 검증 완료.
