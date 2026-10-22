@@ -26,6 +26,7 @@ public static partial class SelfTest
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "f4") { Tests.F4SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "armour") { Tests.ArmourSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "factions") { Tests.FactionsSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+        if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "c1e1maps") { Tests.C1e1MapsSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "lodaudit") { Tests.LodAuditSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "lmgtable") return Tests.LmgTable.Run();
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "lmgaim") { Tests.LmgAimSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
@@ -131,6 +132,7 @@ public static partial class SelfTest
         Tests.ReplaySelfTest.Run(opt, Check);
         Console.WriteLine("[기본 4인 맵 · 세력 선택 · 부대 지정]");
         Tests.FactionsSelfTest.Run(opt, Check);
+        Tests.C1e1MapsSelfTest.Run(opt, Check);
         Tests.ArmourSelfTest.Run(opt, Check);
         Tests.S4SelfTest.Run(opt, Check);
         Tests.F4SelfTest.Run(opt, Check);
