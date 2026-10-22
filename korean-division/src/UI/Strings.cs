@@ -39,7 +39,7 @@ public static partial class S
     public const string MuteOff = "소리 켬";
     public const string Hint1 = "좌클릭: 선택  ·  드래그: 범위 선택  ·  더블클릭: 분대 -> 중대 -> 대대  ·  Ctrl+클릭: 같은 종류  ·  우클릭: 이동 / 공격";
     public const string Hint2 = "화면 가장자리 / 방향키 / 휠 드래그: 화면 이동  ·  휠: 확대·축소  ·  F3: 일시정지  ·  [ ]: 속도  ·  N: 소리";
-    public const string Hint3 = "Alt+숫자: 중대 편성  ·  숫자: 대대 선택  ·  G: 병합  ·  Ctrl+숫자: 대대 번호  ·  0: 대대 목록  ·  Alt+드래그: 분대 단위  ·  Shift+드래그: 중대 단위";
+    public const string Hint3 = "1~9: 연대  ·  Alt+숫자: 대대  ·  Ctrl+Alt+숫자: 중대 편성  ·  Ctrl+Shift+숫자: 연대 편입  ·  Ctrl+숫자: 대대 번호  ·  0: 대대 목록";
     public const string Hint4 = "우클릭 드래그: 전선  ·  Ctrl+F: 중대 대형  ·  Ctrl+Shift+F: 대대 대형  ·  Ctrl+G: 격자  ·  Space: 선택으로 이동  ·  Enter: 명령어";
 
     public const string Hp = "체력";
@@ -85,6 +85,10 @@ public static partial class S
     public const string TipGroundFire = "땅의 한 지점을 찍으면 관측자 없이도 그 지점으로 계속 포격합니다 (퍼짐 1.5배). 사거리 밖 · 최소 사거리 안은 불가, 직사포는 사선이 필요합니다. 정지 · 다른 명령 · 탄약 소진 시 끝납니다.";
     public const string StateGroundFire = "지점 포격";
     // N79a: 집결 지점 · 포격 종류
+    public const string CmdMoreCard = "더 보기";
+    public const string TipMoreCard = "명령 카드 둘째 쪽 (칸이 모자라 넘친 명령). 그 명령의 단축키는 어느 쪽에서나 동작합니다.";
+    public const string CmdBackCard = "처음으로";
+    public const string TipBackCard = "명령 카드 첫 쪽으로 돌아갑니다.";
     public const string CmdRallyPoint = "집결 지점";
     public const string TipRallyPoint = "선택한 중대가 후퇴할 집결 지점을 지정합니다 (깃발 표시). 후퇴 · 철수는 그 지점으로 갑니다. 전술 AI 도 자기 중대의 집결 지점을 정합니다.";
     public const string RallySet = "집결 지점 지정 ({0}개 중대)";
@@ -240,6 +244,7 @@ public static partial class S
     public const string ConsoleHelp2 = "spawn <유닛> [수] — 화면 중앙에 내 유닛 생성 (치트, 인구 무시)";
     public const string ConsoleHelp4 = "fps — 프레임 시간 표시 켜기/끄기";
     public const string ConsoleHelp6 = "volume <0~100> · mute — 효과음 음량 / 음소거";
+    public const string ConsoleHelpKeys = "keys — 단축키 목록";
     public const string ConsoleHelp5 = "help — 이 목록";
     public const string ConsoleVolume = "효과음 음량 {0}%{1}";
     public const string ConsoleMuted = " (음소거)";
@@ -255,6 +260,16 @@ public static partial class S
     public const string MenuSpectate = "관전 (AI끼리)";
     public const string MenuReplays = "리플레이 보기";
     public const string MenuBack = "뒤로";
+    public const string MenuSettings = "설정";
+    public const string SetResolution = "해상도";
+    public const string SetWindowMode = "창 모드";
+    public const string SetModeWindowed = "창";
+    public const string SetModeBorderless = "전체 창";
+    public const string SetModeFullscreen = "전체 화면";
+    public const string SetVolume = "음량";
+    public const string SetMute = "음소거";
+    public const string SetResolutionNote = "해상도는 '창' 모드에서만 바뀝니다.";
+    public const string SetFileNote = "설정은 실행 파일 옆 settings.json 에 저장됩니다.";
     public const string MenuStart = "시작";
     public const string MenuSetupPlay = "게임 설정";
     public const string MenuSetupSpectate = "관전 설정";
@@ -307,7 +322,7 @@ public static partial class S
     public const string ToMenu = "메뉴로";
     public const string WatchAgain = "다시 보기";
 
-    public const string ExtraGlyphs = "×·…→←↑↓%+-/()[]—!?:";
+    public const string ExtraGlyphs = "×·…→←↑↓%+-/()[]—!?:└";
 
     // --- ui v2
     // 자원 이름 (balance.json 이름과 같게 — 글리프 보장용)
@@ -378,9 +393,11 @@ public static partial class S
     public const string OrdTagInf = "보";
     public const string FormDefaultShort = "기본";
     public const string FormSet = "대형: {0} ({1})";
-    // ---- 편제 (중대 · 대대)
+    // ---- 편제 (중대 · 대대 · 연대)
     public const string CompanyName = "제{0}중대";
     public const string BattalionName = "제{0}대대";
+    public const string RegimentName = "제{0}연대";
+    public const string RegimentAssigned = "{0}을 {1}에 편입";
     public const string BattalionNoNumber = "번호 없는 대대";
     public const string NoBattalion = "대대 없음";
     public const string Merge = "병합";
@@ -445,9 +462,13 @@ public static partial class S
     public const string SquadCount = "분대 {0}개";
     public const string SquadNcoCount = "부사관 분대장 {0}";
     public const string SquadChipTip = "분대 칩 — 클릭: 그 분대 선택 (Shift: 추가)";
-    public const string AmmoShort = "탄";
+    public const string AmmoShort = "탄 {0}%";
     public const string SuppressShort = "제압";
     public const string StrengthShort = "병력";
+    public const string UnitListEngage = "교전!";
+    public const string UnitListMove = "이동";
+    public const string UnitListHold = "사수";
+    public const string UnitListIdle = "대기";
     public const string DragCardTip = "카드를 대대 칸에 끌어놓으면 편입 · 빈 곳은 대대에서 분리";
     public const string BatBarTip = "대대 — 클릭: 선택 · 대형 단추: 대대 대형 순환";
     public const string FormSetDefault = "기본 진형: {0} ({1})";

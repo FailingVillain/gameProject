@@ -54,16 +54,17 @@ public static class LodAuditSelfTest
             for (int f = 0; f < nf; f++)
             {
                 if (lv.CellSheet[f] != i) continue;
-                int x0 = lv.CellCol[f] * lv.FrameW;
+                int fw = lv.CellFW[f], fh = lv.CellFH[f];
+                int x0 = lv.CellCol[f] * fw;
                 for (int r = 0; r < nd; r++)
                 {
-                    int y0 = r * lv.FrameH;
-                    if (x0 + lv.FrameW > img.Width || y0 + lv.FrameH > img.Height) continue;
+                    int y0 = r * fh;
+                    if (x0 + fw > img.Width || y0 + fh > img.Height) continue;
                     bool any = false;
-                    for (int y = 0; y < lv.FrameH && !any; y++)
+                    for (int y = 0; y < fh && !any; y++)
                     {
                         byte* row = b + ((long)(y0 + y) * img.Width + x0) * 4;
-                        for (int x = 0; x < lv.FrameW; x++) if (row[x * 4 + 3] != 0) { any = true; break; }
+                        for (int x = 0; x < fw; x++) if (row[x * 4 + 3] != 0) { any = true; break; }
                     }
                     res[r * nf + f] = any;
                 }

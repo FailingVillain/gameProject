@@ -26,6 +26,16 @@
     <PackageReference Include="Raylib-cs" Version="8.1.0" />
   </ItemGroup>
 
+  <!-- 충돌 로그용: 빌드 시점 git 커밋 (없으면 빈 값) -->
+  <Target Name="KdGitRev" BeforeTargets="GetAssemblyAttributes;GenerateAssemblyInfo">
+    <Exec Command="git rev-parse --short HEAD" ConsoleToMSBuild="true" IgnoreExitCode="true" StandardOutputImportance="low" StandardErrorImportance="low">
+      <Output TaskParameter="ConsoleOutput" PropertyName="KdGitRevOut" />
+    </Exec>
+    <ItemGroup>
+      <AssemblyMetadata Include="GitRev" Value="$(KdGitRevOut)" />
+    </ItemGroup>
+  </Target>
+
   <ItemGroup>
     <None Include="assets\**\*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
