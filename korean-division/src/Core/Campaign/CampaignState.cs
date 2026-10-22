@@ -346,6 +346,7 @@ public sealed class CampaignState
             if (o.Status is not ("alive" or "wounded" or "dead")) o.Status = "alive";
             o.Rank = Math.Max(0, o.Rank); o.Xp = Math.Max(0, o.Xp); o.Battalion = Math.Max(0, o.Battalion); o.WoundedUntilMission = Math.Max(0, o.WoundedUntilMission);
         }
+        OfficerAssign.Sanitize(this);   // T48b2
     }
 
     /// <summary>손상 · 수작업 편집된 저장 값을 허용 범위로 되돌린다 (음수 재고 · 정원 초과 · 모르는 미션을 가리키는 출격 기록).</summary>
@@ -448,6 +449,8 @@ public sealed class CampaignState
         else CampaignEconomy.RecordRepeatVictory(s, r);
         // T48b1: 장교 신원 (키 발급 · 명부 갱신 · 전사/부상) — 이월 병력을 새로 정한 첫 승리만 (연표 Day = 정산 뒤)
         if (!wasDone && !olderReplay) OfficerIdentity.Settle(s, r);
+        // T48b2: 풀 등장 갱신 · 작전 태그 호감 · 전사자 자리 비움 · 참모 보급 보너스
+        if (!wasDone && !olderReplay) CommanderPoolOps.OnSettle(s, r);
 
         return s;
     }
