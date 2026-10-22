@@ -12,7 +12,7 @@ public static class CampaignFatigueSelfTest
 
         // 1) v3 저장 (피로 · 사기 필드 없음) -> v4 자동 이행: 피로 0 · 사기 기본값, 범위 밖 값은 자른다
         var v3 = CampaignState.FromJson("{\"Version\":3,\"Roster\":[{\"Id\":\"a\",\"Kind\":\"infantry\",\"Strength\":60,\"MaxStrength\":60}]}");
-        check(v3 != null && CampaignState.SchemaVersion == 7 && v3.Version == 7 && v3.Roster[0].Fatigue == 0 && v3.Roster[0].Morale == CampaignState.RosterCompany.MoraleStart,
+        check(v3 != null && CampaignState.SchemaVersion == 8 && v3.Version == 8 && v3.Roster[0].Fatigue == 0 && v3.Roster[0].Morale == CampaignState.RosterCompany.MoraleStart,
             "T42a 저장 이행: v3 파일 -> v5, 피로 0 · 사기 기본값");
         var wild = CampaignState.FromJson("{\"Version\":4,\"Roster\":[{\"Id\":\"a\",\"Fatigue\":250,\"Morale\":-5,\"MaxStrength\":60}]}");
         check(wild != null && wild.Roster[0].Fatigue == 100 && wild.Roster[0].Morale == 0, "T42a 저장: 범위 밖 피로 · 사기는 0..100 으로 자름");
@@ -23,7 +23,7 @@ public static class CampaignFatigueSelfTest
         s.Roster.Add(new CampaignState.RosterCompany { Id = "a", Strength = 60, MaxStrength = 60, Fatigue = 33, Morale = 41 });
         s.Roster.Add(new CampaignState.RosterCompany { Id = "b", Strength = 60, MaxStrength = 60, Fatigue = 90, Morale = 95 });
         var back = CampaignState.FromJson(s.ToJson());
-        check(back != null && back.Roster[0].Fatigue == 33 && back.Roster[0].Morale == 41 && back.Roster[1].Fatigue == 90 && back.Roster[1].Morale == 95 && back.Version == 7,
+        check(back != null && back.Roster[0].Fatigue == 33 && back.Roster[0].Morale == 41 && back.Roster[1].Fatigue == 90 && back.Roster[1].Morale == 95 && back.Version == 8,
             "T42a 저장 왕복: v4 피로 · 사기 보존");
 
         // 3) 정산: a 투입 (승리, 손실 10/100) -> 피로 +x · 사기 +win -round(0.1*scale); b 미투입 -> 피로 -y · 사기 +rest

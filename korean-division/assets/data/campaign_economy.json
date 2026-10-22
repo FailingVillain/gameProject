@@ -32,6 +32,12 @@
   "prisonerAcceptSupply": 2,
   "_schedule": "T42d 임시값 - Q6 가정: 첫 승리 정산마다 고정 일수. 0 이면 일수 안 늘림. 계절 · 시간 효과 없음(카운터만)",
   "missionDays": 1,
+  "_commanders": "T48a 임시값 - 0.3 밸런스에서 확정. 해임 시 해당 연대장 호감 소폭 하락(사용자 AW), 재기용 쿨다운 1작전(AY), 호감 범위",
+  "commanderDismissFavorPenalty": 2,
+  "commanderFavorMin": -20,
+  "commanderFavorMax": 100,
+  "commanderRehireCooldownMissions": 1,
+  "commanderRehireMinFavor": -5,
   "shellWeapons": { "gun_infantry": "infGun", "gun_field": "field", "howitzer_heavy": "howitzer" },
   "lootShellsPerKill": { "infGun": 0.1, "field": 0.05, "howitzer": 0.02 }
 }
