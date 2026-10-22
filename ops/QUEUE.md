@@ -37,7 +37,7 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T32a | 전투공병 유닛 데이터 infantry_pioneer (wireCutter·수류탄2·한국군 전용) | feature | D中 R1 S H1 Wlight | ai3b2 위 스택 | wip-ready (kd/t32a-pioneer 26cc9fd) |
 | T32b | 전술 AI 연막 수류탄 (개활 횡단·사격 아래·참호 돌격 smokeHook, 기본 꺼짐, FV 56→예약 62) | sim | D上 R3 SM H2 Wheavy | ai3b2 위 스택 | wip-ready (kd/t32b-ai-smoke 33284fa) |
 | T43 | 병종 기호 곡사포·저격 추가 | feature | D下 R1 S H0 Wlight | 없음 (main) | wip-ready (kd/t43-branch-symbols b9c97a9) |
-| T48a | 연대장 데이터 · 스키마 v8 · 로더 · 샘플 (연대장 풀) | feature | D中 R2 S H2 Wlight | T42d 위 스택 (06ee9bd) | queued (카드 spec/cards-commanders 122c65a) |
+| T48a | 연대장 데이터 · 스키마 v8 · 로더 · 샘플 (연대장 풀) | feature | D中 R2 S H2 Wlight | T42d 위 스택 (06ee9bd) | wip-ready (브랜치 t48a-commander-data, 스택 base t42d 06ee9bd) |
 | T48b | 장교 신원 영속 · 진급 종착 · 배정 · 연대장 기용/해임 · 전사/항상부상 | sim | D上 R3 M H2 Wlight | T48a | queued |
 | T48c | 연대장 호감도 + 해임 시 소폭 하락 | feature | D中 R2 S H2 Wlight | T48b | queued |
 | T48d | 연대장·대대장·참모 관리 UI (탭 8/9/12/14) | feature | D中 R1 M H2 Wlight | T48b T48c | queued |
