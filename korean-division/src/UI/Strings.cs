@@ -439,6 +439,7 @@ public static partial class S
     public const string CompanyFormBtn = "대형";
     public const string BatCount = "{0}중대";
     public const string BatListTitle = "대대 목록";
+    public const string BatListRange = "{0}-{1} / {2}";
     public const string BatListEmpty = "편성된 중대가 없습니다";
     public const string UnitsShort = "{0}명";
     public const string BatFormLine = "횡대";

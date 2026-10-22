@@ -18,6 +18,8 @@ $menuPages = @('main', 'setup', 'spectate', 'replays', 'battle', 'load', 'settin
 $gameShots = [ordered]@{
     'hud-idle'     = @('--map', 'corners4', '--ai', 'standard', '--shot-frame', '120')
     'hud-selected' = @('--map', 'corners4', '--ai', 'standard', '--shot-frame', '120', '--exec', 'select infantry')
+    'hud-list40'   = @('--battle', 'infantry:2000', '--vs', 'infantry:40', '--battle-map', 'flat', '--shot-frame', '60', '--exec', 'listscroll 12')   # T38e: 40-row unit list scrolled
+    'hud-codex'    = @('--battle', 'infantry:40', '--vs', 'infantry:40', '--battle-map', 'flat', '--shot-frame', '120', '--exec', 'codexui')   # T38e: in-battle codex (F2)
     'hud-combat'   = @('--battle', 'infantry:40', '--vs', 'infantry:40', '--battle-map', 'flat', '--shot-frame', '240', '--exec', 'select infantry')
 }
 $fails = @(); $manifest = @()

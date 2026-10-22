@@ -146,6 +146,7 @@ public static class UiIconsSelfTest
         Console.WriteLine("[단축키 재지정 (T38a)]");
         try { CheckRemap(check); } catch (Exception ex) { check(false, $"단축키 재지정 테스트 예외: {ex.GetType().Name}: {ex.Message}\n{ex.StackTrace}"); }
         Console.WriteLine("[도움말 단축키 = CONTROLS.md]");
+        try { CheckListScroll(check); } catch (Exception ex) { check(false, $"T38e 목록 스크롤 테스트 예외: {ex.GetType().Name}: {ex.Message}"); }
         try { CheckControlsDoc(check); } catch (Exception ex) { check(false, $"도움말 문서 동기 테스트 예외: {ex.GetType().Name}: {ex.Message}"); }
     }
 
@@ -208,6 +209,20 @@ public static class UiIconsSelfTest
         }
         if (seen.Count != btns.Count) bad++;
         return bad;
+    }
+
+    /// <summary>T38e: 부대 목록 스크롤 순수 함수 (40행 · 18행 창) + F2 도감 키가 Bindings 에 있음.</summary>
+    static void CheckListScroll(Action<bool, string> check)
+    {
+        const int V = 18, N = 40;
+        check(KoreanDivision.UI.Hud.ListClamp(-5, N, V) == 0 && KoreanDivision.UI.Hud.ListClamp(99, N, V) == N - V, "목록 스크롤 범위 0..N-18");
+        check(KoreanDivision.UI.Hud.ListClamp(5, 10, V) == 0, "18행 이하는 스크롤 0");
+        check(KoreanDivision.UI.Hud.ListEnsureVisible(0, 30, N, V) == 30 - V + 1, "아래 행 선택 -> 그 행이 맨 아래에 보임");
+        check(KoreanDivision.UI.Hud.ListEnsureVisible(20, 3, N, V) == 3, "위 행 선택 -> 그 행이 맨 위에 보임");
+        check(KoreanDivision.UI.Hud.ListEnsureVisible(5, 10, N, V) == 5, "이미 보이면 그대로");
+        check(KoreanDivision.UI.Hud.ListEnsureVisible(0, N - 1, N, V) == N - V, "마지막 행 -> 끝까지");
+        check(KoreanDivision.UI.Hud.ListScrollFromFraction(0f, N, V) == 0 && KoreanDivision.UI.Hud.ListScrollFromFraction(1f, N, V) == N - V && KoreanDivision.UI.Hud.ListScrollFromFraction(0.5f, N, V) == 11, "막대 끌기 비율 -> 시작 행");
+        check(KoreanDivision.UI.Bindings.AllDefaults().Any(x => x.Key == "F2"), "도감 키 F2 가 Bindings 에 있음");
     }
 
     /// <summary>T38b: docs/CONTROLS.md 「단축키 일람」 표 (BINDINGS 표지 사이) 가 Bindings.All() 과 한 줄도 어긋나지 않는다 (누락 0 · 잉여 0).</summary>
