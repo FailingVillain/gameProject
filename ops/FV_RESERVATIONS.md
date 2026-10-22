@@ -21,3 +21,5 @@
 메모: t29b-on-t09 가 t09-camp-slice 와 t29-campaign-economy-json 을 대체 (병합 시 단독). 캠페인 저장 스키마는 SchemaVersion 2 로 sim FV 와 무관.
 
 후보(미발주): IsAi 를 리플레이 머리말·스냅샷에 포함(AF1) FV+1/Replay+1 · AI 난이도 배수 안 A(AE2) FV+1/Replay+1 — 발주 시 이 표에 먼저 번호를 적는다.
+
+예약(2026-10-22 13:10, 사용자 승인으로 발주): IsAi 리플레이 머리말·스냅샷 복원(AF1) = FV 60 / Replay 24, 기반 main (병합 순서에서 breach2 계열 뒤). AI 난이도 배수 안 A(AE2)는 AF1 뒤 FV 61 / Replay 25 예정.
