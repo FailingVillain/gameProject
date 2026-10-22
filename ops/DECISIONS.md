@@ -138,3 +138,7 @@ V1 연대 배속 규칙: 대대 소속 중대는 대대 단위로 함께 배속,
 ## AA. 구현 여부 확인 결과 (scout, 2026-10-22)
 공병(철조망 절단·돌격대 겸임)·경박격포(사거리 36, heavy_mortar 3종)·연막 수류탄(플레이어 측)은 **wip/breach2 에만 구현**, main 에는 없음(병합 안 하는 정책이라 breach2 가 정본). AI 의 연막·철조망 사용은 D18 보류(tactics.json wireCutHook/smokeHook false). 하천은 코드 없음(설계 제안 문서 발주함 → docs/RIVER_DESIGN.md). 간도 의용대 복식·가옥 폐허 그림은 부분 완료로 보이나 미검증 — T11 시트 검수 때 사용자 확인.
 - **AA1** 전투공병 `infantry-pioneer` 는 로드맵상 보류(ROADMAP_LONG:243) — 착수 시기? 무응답 시 보류.
+
+## AB. 하천 설계 제안 (2026-10-22; 브랜치 spec/river-design 26e0b88, kd-develop/kd-spec-river/korean-division/docs/RIVER_DESIGN.md) — 전부 '제안', 구현 미착수
+요지: 깊은 물 = 기존 `Water`(통행 불가) 유지, 여울 = `TerrainType.Ford` enum 끝에 1개 추가(권장), 다리 = 기존 c0_02_yalu 방식(물 위 흙 띠) 유지. 도하 AI(`FindCrossing`)는 걸을 수 있나만 봐서 여울/다리가 자동 도하 지점이 됨. FV +1(rail 53 → 하천 54, 예약 필요), 새 상태 필드 없음, 기존 지도에 Ford 없으면 골든 불변. 구현 카드 제안(rail 위): R1 Ford 바이트·이동 배수·paint 폭(소) · R2 길찾기·도하 AI·NearWater 정리(중) · R3 렌더·테스트 지도(중) · R4 Bridge 지형(선택).
+- **AB1~8** 질문: 폭 상한 · `Bridge` 필요 여부 · 여울에 차량·포 통과 · 여울 사격 보정 · 수영 · 강 건너 사격(`GameMapTerrain.ClearFor` 가 물이 사선을 막는 것으로 읽혀 영향 가능 — 구현 1단계에서 먼저 측정) · 쓸 미션 · 장갑열차와 묶음 여부. 무응답 시 구현 보류(제안서만 보존).
