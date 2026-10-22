@@ -104,7 +104,10 @@ public sealed partial class MissionDef
         return list;
     }
 
-    public static MissionDef Load(string id)
+    public static MissionDef Load(string id) => LoadCore(id, null);
+
+    /// <summary>미션 파일 읽기 + 캠페인 이월 패치 (WantsCarry / WantsPending 검사는 여기 한 곳) + 선택적 losses 덮어쓰기.</summary>
+    static MissionDef LoadCore(string id, float? maxCasualtyFrac)
     {
         string path = PathOf(id);
         if (!File.Exists(path)) throw new FileNotFoundException($"미션 파일 없음: {path}");
@@ -112,20 +115,13 @@ public sealed partial class MissionDef
         var cs = CampaignState.Load();
         if (CampaignCarry.WantsCarry(text) || CampaignCarry.WantsPending(id, cs)) text = CampaignCarry.Patch(text, id, cs);
         if (MissionVariants.Wants(text)) text = MissionVariants.Patch(text, cs);   // TC-F: 캠페인 상태로 적 배치 · 배치 구역 변형 (적용이 끝난 텍스트가 스냅샷 · 리플레이에 실린다)
+        if (maxCasualtyFrac is float frac) text = WithLossesFrac(text, frac);
         return Parse(text, id);
     }
 
     /// <summary>C1E1-g4: 캠페인 변수 maxCasualtyFrac (0 초과 1 이하) 로 패배 조건 losses 의 percent 를 덮어써서 읽는다 (없으면 losses 조건 하나를 추가).
     /// 미션 텍스트가 바뀌는 것이라 스냅샷 · 리플레이는 덮어쓴 텍스트를 그대로 싣는다 (결정적, 저장 형식 불변). frac 이 null 이면 <see cref="Load(string)"/> 과 동일.</summary>
-    public static MissionDef Load(string id, float? maxCasualtyFrac)
-    {
-        if (maxCasualtyFrac is not float frac) return Load(id);
-        string path = PathOf(id);
-        if (!File.Exists(path)) throw new FileNotFoundException($"미션 파일 없음: {path}");
-        string text = File.ReadAllText(path);
-        if (CampaignCarry.WantsCarry(text)) text = CampaignCarry.Patch(text, id, CampaignState.Load());
-        return Parse(WithLossesFrac(text, frac), id);
-    }
+    public static MissionDef Load(string id, float? maxCasualtyFrac) => LoadCore(id, maxCasualtyFrac);
 
     /// <summary>미션 텍스트의 failures[type=losses].percent 를 frac×100 으로 (losses 가 없으면 추가). 범위 밖이면 InvalidDataException.</summary>
     public static string WithLossesFrac(string text, float frac)

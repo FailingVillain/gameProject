@@ -91,6 +91,38 @@ public static class NeutralZoneSelfTest
                 check(refused && gun.Order == UnitOrder.GroundFire, $"지점 포격: 구역 안 거절 {refused}, 구역 밖 수락 {gun.Order == UnitOrder.GroundFire}");
             }
 
+            // ---- 4b. 후퇴 · 집결지 지정 · 참호 돌격 (구역 안 / 가로지르기 거절, 구역 밖 허용, 구역 안에서 나가는 후퇴 허용)
+            {
+                var r = Make(On);
+                var m1 = Mine(r, 1);
+                bool Moving() { Steps(r, 2); return m1.Order == UnitOrder.Move; }
+                r.Retreat(1, new[] { m1 }, new Vector2(48, 18)); bool rIn = Moving(); r.Stop(1, new[] { m1 }); Steps(r, 2);
+                r.Retreat(1, new[] { m1 }, new Vector2(80, 18)); bool rAcross = Moving(); r.Stop(1, new[] { m1 }); Steps(r, 2);
+                r.Retreat(1, new[] { m1 }, new Vector2(30, 30)); bool rOut = Moving();
+                m1.Pos = new Vector2(48, 18); r.Stop(1, new[] { m1 }); Steps(r, 2);
+                r.Retreat(1, new[] { m1 }, new Vector2(48, 40)); bool rLeave = Moving();
+                check(!rIn && !rAcross && rOut && rLeave, $"후퇴 명령: 구역 안 거절 {!rIn}, 가로지르기 거절 {!rAcross}, 밖 허용 {rOut}, 구역에서 나가기 허용 {rLeave}");
+
+                const string ForceA = "{ \"id\": \"a\", \"faction\": 1, \"at\": [10, 18], \"units\": { \"infantry\": 1 }, \"company\": false }";
+                var rc = World.CreateMissionWorld(MissionDef.Parse(Json(On).Replace(ForceA, "{ \"id\": \"a\", \"faction\": 1, \"at\": [10, 18], \"companies\": [ { \"units\": { \"officer\": 1, \"infantry\": 8 } } ] }"), "t_neutral"), Defs.Current);
+                var co = rc.Units.FirstOrDefault(u => u.Owner == 1 && u.Company != null)?.Company;
+                if (co != null)
+                {
+                    rc.SetRally(1, new[] { co.Id }, new Vector2(48, 18)); Steps(rc, 2); bool inRej = !co.HasRally;
+                    rc.SetRally(1, new[] { co.Id }, new Vector2(80, 18)); Steps(rc, 2); bool acrossRej = !co.HasRally;
+                    int n0 = rc.Notices.Count(n => n.Result == CommandResult.NotAllowed);
+                    rc.Issue(new TrenchAssaultCommand(1, new[] { co.Id }, new Vector2(48, 18), true)); Steps(rc, 2);   // 시험 지도에 참호가 없어 World.TrenchAssault 래퍼는 못 쓴다 — 명령을 직접 넣는다
+                    bool taRej = rc.Notices.Count(n => n.Result == CommandResult.NotAllowed) == n0 + 1 && !rc.TrenchAssaultActive(co);
+                    rc.SetRally(1, new[] { co.Id }, new Vector2(30, 30)); Steps(rc, 2); bool okSet = co.HasRally;
+                    check(inRej && acrossRej && okSet && taRej, $"집결지 지정: 구역 안 {inRej} · 가로지르기 {acrossRej} 거절, 밖 허용 {okSet}; 참호 돌격 구역 안 거절 {taRej}");
+                }
+                else check(false, "집결지 시험: 중대 생성 실패");
+                var offw = Make("");
+                var o1 = Mine(offw, 1);
+                offw.Retreat(1, new[] { o1 }, new Vector2(48, 18)); Steps(offw, 2);
+                check(o1.Order == UnitOrder.Move && offw.Notices.Count == 0, "기능 꺼짐: 후퇴 거절 없음 (결과 불변)");
+            }
+
             // ---- 5. 기능 꺼짐 (neutralZones 없음) = 거절 없음
             {
                 var off = Make("");

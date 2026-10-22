@@ -342,15 +342,19 @@ public static class SquadSelfTest
         var offRules = defs.Officers;
         int savedActingMin = offRules.ActingMinRank;
         bool ccActingNco = w.ActingNco(cc) != null;
-        bool ccTierWithActing = cc.Members.All(u => w.ChainTierOf(u) == (ccActingNco ? ChainTier.Nco : ChainTier.Acting));
-        offRules.ActingMinRank = -1;
-        w.Step();   // 대리 캐시는 틱 단위
-        bool ccTierNoActing = cc.Members.All(u => w.ChainTierOf(u) == ChainTier.Acting);
-        offRules.ActingMinRank = savedActingMin;
+        bool ccTierWithActing = ccActingNco && cc.Members.All(u => w.ChainTierOf(u) == ChainTier.Nco);   // T37: 대리 지휘관 있음 → 반드시 Nco
+        bool ccTierNoActing;
+        try
+        {
+            offRules.ActingMinRank = -1;
+            w.Step();   // 대리 캐시는 틱 단위
+            ccTierNoActing = cc.Members.All(u => w.ChainTierOf(u) == ChainTier.Acting);
+        }
+        finally { offRules.ActingMinRank = savedActingMin; }
         w.Step();
         check(soldiersA.All(u => w.ChainTierOf(u) == ChainTier.Officer) && cb.Members.All(u => w.ChainTierOf(u) == ChainTier.Nco)
               && ccTierWithActing && ccTierNoActing && free.All(u => w.ChainTierOf(u) == ChainTier.Isolated) && w.ChainTierOf(tank) == ChainTier.None,
-            $"지휘 계통 단계: 장교 범위 안 · 부사관 분대 · 임시 분대장 (대리 지휘관 {(ccActingNco ? "있음 → Nco" : "없음 → Acting")}, 대리 끔 → Acting) · 분대 없음 · 차량 (지연 없음)");
+            $"지휘 계통 단계: 장교 범위 안 · 부사관 분대 · 임시 분대장 (대리 지휘관 {(ccActingNco ? "있음 → Nco" : "없음 — T37 위반")}, 대리 끔 → Acting) · 분대 없음 · 차량 (지연 없음)");
         var lone = cc.Members[0];
         foreach (var u in cc.Members.Skip(1)) u.Hp = 0;
         w.Step();

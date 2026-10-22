@@ -359,6 +359,20 @@ public static class PropsSelfTest
         bool tables = rules.Scatter.V2.All(kv => GameMap.V2Biomes.Contains(kv.Key) && kv.Value.All(e => e.W >= 0 && pd.Types.ContainsKey(e.Type)))
                       && GameMap.V2Biomes.All(b => rules.Scatter.V2.TryGetValue(b, out var l) && l.Any(e => e.W > 0));
         check(has && range && refs && noHpNoRef && tables, $"PR1 소품 정의: 13종 있음 {has} · 범위 {range} · 파괴 변종 참조 {refs}/{noHpNoRef} · 지형표 참조 {tables}");
+        {   // 후속: PropDefs.Validate (Defs.Load 가 호출) - 현재 자료 통과, 잘못된 자료 거부, 알 수 없는 v2 종류는 경고만
+            bool okNow = true; try { pd.Validate(); } catch (InvalidDataException) { okNow = false; }
+            string Mut(Action<PropDefs> m) { var c = PropDefs.Load(Path.Combine(AppContext.BaseDirectory, "assets", "data", "props.json")); m(c); try { c.Validate(); return ""; } catch (InvalidDataException e) { return e.Message; } }
+            string eRange = Mut(c => c.Types["bush"].Cover = 0f);
+            string eRef = Mut(c => c.Types["willow"].Destroyed = "no_such_prop");
+            string eNeg = Mut(c => c.Rules.Scatter.V2[c.Rules.Scatter.V2.Keys.First()][0].W = -1);
+            var saveErr = Console.Error; var sw = new StringWriter(); Console.SetError(sw);
+            string eUnk;
+            try { eUnk = Mut(c => c.Rules.Scatter.V2[c.Rules.Scatter.V2.Keys.First()].Add(new PropWeight { Type = "no_such_prop", W = 1 })); }
+            finally { Console.SetError(saveErr); }
+            int warnLines = sw.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Length;
+            check(okNow && eRange.Length > 0 && eRef.Length > 0 && eNeg.Length > 0 && eUnk.Length == 0 && warnLines == 1,
+                $"PropDefs.Validate: 현재 자료 통과 {okNow} · 범위/참조/음수 가중치 거부 {eRange.Length > 0}/{eRef.Length > 0}/{eNeg.Length > 0} · 알 수 없는 v2 종류 = 경고 {warnLines}줄 (오류 아님 {eUnk.Length == 0})");
+        }
         bool v0 = rules.Scatter.PropsV2;
         try
         {

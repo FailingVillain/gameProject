@@ -113,6 +113,30 @@ public sealed class PropDefs
     }
 
     public bool TryGet(string key, out PropDef def) => Types.TryGetValue(key, out def!);
+
+    /// <summary>props.json 검증: 종류 범위 · 파괴 변종 참조 무결성 · propsV2 지형표 참조. 잘못이면 InvalidDataException.
+    /// v2 표의 알 수 없는 종류는 산포 때 조용히 건너뛰므로 (시드 불변) 오류가 아니라 경고 로그 한 줄로 알린다.</summary>
+    public void Validate()
+    {
+        void Req(bool ok, string msg) { if (!ok) throw new InvalidDataException("props.json: " + msg); }
+        foreach (var (k, t) in Types)
+        {
+            Req(t.Cover > 0f && t.Cover <= 1f && t.LosBlock >= 0f && t.LosBlock <= 1f && t.Radius > 0f && t.Radius <= 2f && t.Hp >= 0f, $"소품 '{k}' 값 범위 (cover 0 초과 1 이하, losBlock 0..1, radius 0 초과 2 이하, hp >= 0)");
+            if (t.Destroyed.Length == 0) continue;
+            Req(Types.TryGetValue(t.Destroyed, out var d) && d.Hp == 0f && t.Hp > 0f && t.Destroyed != k, $"소품 '{k}': destroyed '{t.Destroyed}' 는 hp 0 인 다른 종류여야 하고 이 소품 hp > 0");
+        }
+        var unknown = new SortedSet<string>(StringComparer.Ordinal);
+        foreach (var (biome, list) in Rules.Scatter.V2)
+        {
+            Req(GameMap.V2Biomes.Contains(biome), $"scatter.v2 지형 '{biome}' 알 수 없음");
+            foreach (var e in list)
+            {
+                Req(e.W >= 0, $"scatter.v2.{biome}: 가중치 < 0 ('{e.Type}')");
+                if (!Types.ContainsKey(e.Type)) unknown.Add(e.Type);
+            }
+        }
+        if (unknown.Count > 0) Console.Error.WriteLine("[경고] props.json scatter.v2 에 알 수 없는 소품 종류 (산포에서 건너뜀): " + string.Join(", ", unknown));
+    }
 }
 
 /// <summary>낱개 소품 한 개의 상태 (자리 · 종류는 지도 PropSeeds 와 같은 순서, 종류는 부서지면 변종으로 바뀜).</summary>

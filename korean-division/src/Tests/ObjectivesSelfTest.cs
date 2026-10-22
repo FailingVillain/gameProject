@@ -178,6 +178,23 @@ public static class ObjectivesSelfTest
             check(plain.Json == viaNull.Json && plain.Hash == viaNull.Hash, $"인자 없음(null) = 기존 로드와 텍스트 동일 ('{id}')");
             check(over.Failures.Where(f => f.Type == "losses").All(f => MathF.Abs(f.Percent - 50f) < 1e-4f) && over.Objectives.Count == plain.Objectives.Count && over.Forces.Count == plain.Forces.Count,
                   "덮어쓴 로드: 모든 losses 50, 그 밖의 정의 불변");
+            // 후속: frac 경로도 pending 이월 패치 (WantsPending) 를 포함 — 임시 캠페인 폴더에 Pending(AmmoScale 0.5) 을 두면 두 로드 모두 ammoScale 이 박힌다
+            {
+                string? oldEnv = Environment.GetEnvironmentVariable("KD_CAMPAIGN_DIR");
+                string cdir = Path.Combine(Path.GetTempPath(), "kd_obj_pend_" + Guid.NewGuid().ToString("N"));
+                Directory.CreateDirectory(cdir);
+                Environment.SetEnvironmentVariable("KD_CAMPAIGN_DIR", cdir);
+                try
+                {
+                    var cs = new CampaignState { Pending = new CampaignState.PendingOperation { MissionId = id, DeployedCompanyIds = { "b1_c1" }, AmmoScale = 0.5f } };
+                    bool saved = cs.Save();
+                    var p0 = MissionDef.Load(id); var p1 = MissionDef.Load(id, null); var p2 = MissionDef.Load(id, 0.5f);
+                    check(saved && p0.Json.Contains("ammoScale") && p0.Json == p1.Json && p2.Json.Contains("ammoScale")
+                          && p2.Failures.Where(f => f.Type == "losses").All(f => MathF.Abs(f.Percent - 50f) < 1e-4f),
+                        $"Load(id, frac) 도 pending 이월 패치 포함 (ammoScale {p2.Json.Contains("ammoScale")}), Load(id) = Load(id, null) {p0.Json == p1.Json}");
+                }
+                finally { Environment.SetEnvironmentVariable("KD_CAMPAIGN_DIR", oldEnv); try { Directory.Delete(cdir, true); } catch (IOException) { } }
+            }
             // 같은 덮어쓴 텍스트 → 스냅샷에 그대로 실려 복원
             var ws = Make(patched); Steps(ws, 5);
             var meta = new SnapshotMeta("obj", 1, false, "none");

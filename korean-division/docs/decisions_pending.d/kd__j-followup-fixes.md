@@ -1,0 +1,2 @@
+- [kd/j-followup-fixes] (4) TC-G 구역 검사 확장: 후퇴(집결지 후퇴 UseRally+목표 0 은 제외 — 집결지는 지정 때 검사) · 집결지 지정(Clear 제외, 점이 구역 안/중대 무게중심→점 직선이 구역에 닿으면 거절) · 참호 돌격(On, 같은 규칙). 경로탐색 자동 우회는 범위 밖(별도 카드).
+- [kd/j-followup-fixes] (3) props.json 검증: PropDefs.Validate() 를 Defs.Load 가 호출(balance.json 옆 props.json). 알 수 없는 v2 종류는 오류가 아니라 stderr 경고 1줄(산포는 기존대로 건너뜀, 시드 불변). v2 지형 키 미등록·가중치<0 은 오류로 새로 거부.
