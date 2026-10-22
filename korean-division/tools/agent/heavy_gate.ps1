@@ -1,9 +1,10 @@
 # Heavy-job gate. DEFAULT = legacy single pool (lanes OFF). Lanes apply only with explicit -Lane or env KD_GATE_LANES=1.
-# Usage: heavy_gate.ps1 [-Lane validate|measure|render] [-Render] [-Priority] [-Max 8] [-TimeoutMin 60]
+# Usage: heavy_gate.ps1 [-Lane validate|measure|render] [-Render] [-Priority] [-Max N] [-TimeoutMin 60]
 #  (lane mode) Guaranteed limits: validate 3 / measure 3 / render 2 (total Max=8). A lane below its limit passes if total < Max.
 #  A lane at its limit may borrow free slots (total < Max) unless another lane that is below its limit is waiting.
 #  -Render == -Lane render. -Priority (merge-lock holder): limits and Max +3.
-param([int]$Max = 10, [int]$TimeoutMin = 60, [string]$Lane = 'validate', [switch]$Render, [switch]$Priority)
+# Limit: 10 by default, 12 when free physical RAM >= 6 GB (re-evaluated every check); free < 3 GB closes the gate. -Max N forces a fixed limit.
+param([int]$Max = 0, [int]$TimeoutMin = 60, [string]$Lane = 'validate', [switch]$Render, [switch]$Priority)
 
 $script:LaneLimits = @{ validate = 3; measure = 3; render = 2 }
 
@@ -39,6 +40,17 @@ function Test-GateOpen([hashtable]$Counts, [string]$Lane, [int]$Max, [bool]$Prio
   return $true
 }
 
+# Free physical RAM in GB; env KD_GATE_FREEGB_OVERRIDE injects a value (tests).
+function Get-FreeGB {
+  if ($env:KD_GATE_FREEGB_OVERRIDE) { return [double]$env:KD_GATE_FREEGB_OVERRIDE }
+  return [math]::Round((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory / 1MB, 1)
+}
+function Get-GateLimit([double]$FreeGB, [int]$Fixed = 0) {
+  if ($Fixed -gt 0) { return $Fixed }
+  if ($FreeGB -ge 6) { return 12 }
+  return 10
+}
+
 function Get-HeavyCounts {
   $c = @{ validate = 0; measure = 0; render = 0 }
   foreach ($p in @(Get-CimInstance Win32_Process)) {
@@ -50,21 +62,24 @@ function Get-HeavyCounts {
 
 if ($MyInvocation.InvocationName -eq '.') { return }   # dot-sourced by tests: functions only
 
+$FixedMax = $Max
 $laneMode = $PSBoundParameters.ContainsKey('Lane') -or ($env:KD_GATE_LANES -eq '1')
 if ($Render) { $Lane = 'render' }
 if (-not $laneMode) {
-  # legacy single pool: render sees Max, others Max-1, priority +3
-  if (-not $Render) { $Max = $Max - 1 }
-  if ($Priority) { $Max = $Max + 3 }
+  # legacy single pool: render sees limit, others limit-1, priority +3
   $deadline0 = (Get-Date).AddMinutes($TimeoutMin)
   while ($true) {
     $c0 = Get-HeavyCounts
     # RAM guard (user decision AO1 2026-10-22): below 3 GB free physical memory the gate stays closed
-    $freeGB = [math]::Round((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory / 1MB, 1)
+    $freeGB = Get-FreeGB
     if ($freeGB -lt 3) { if ((Get-Date) -gt $deadline0) { "gate timeout: free RAM $freeGB GB - proceed carefully"; exit 1 }; Start-Sleep -Seconds 20; continue }
+    $limit = Get-GateLimit $freeGB $Max
+    $eff = $limit
+    if (-not $Render) { $eff = $eff - 1 }
+    if ($Priority) { $eff = $eff + 3 }
     $n = $c0.validate + $c0.measure + $c0.render
-    if ($n -lt $Max) { "gate open: heavy=$n"; exit 0 }
-    if ((Get-Date) -gt $deadline0) { "gate timeout: heavy=$n - proceed carefully"; exit 1 }
+    if ($n -lt $eff) { "gate open: heavy=$n/limit $limit free=$freeGB GB"; exit 0 }
+    if ((Get-Date) -gt $deadline0) { "gate timeout: heavy=$n/limit $limit free=$freeGB GB - proceed carefully"; exit 1 }
     Start-Sleep -Seconds 20
   }
 }
@@ -76,6 +91,9 @@ $deadline = (Get-Date).AddMinutes($TimeoutMin)
 try {
   while ($true) {
     $c = Get-HeavyCounts
+    $freeGB = Get-FreeGB
+    if ($freeGB -lt 3) { if ((Get-Date) -gt $deadline) { "gate timeout: free RAM $freeGB GB - proceed carefully"; exit 1 }; Start-Sleep -Seconds 20; continue }
+    $Max = Get-GateLimit $freeGB $FixedMax
     # live waiters of other lanes (stale markers >2h or dead pids are ignored)
     $waiting = @()
     foreach ($f in @(Get-ChildItem $dir -ErrorAction SilentlyContinue)) {
@@ -83,7 +101,7 @@ try {
       if ($parts.Count -eq 2 -and $parts[0] -ne $Lane -and (Get-Process -Id ([int]$parts[1]) -ErrorAction SilentlyContinue)) { $waiting += $parts[0] }
     }
     if (Test-GateOpen $c $Lane $Max ([bool]$Priority) $waiting) {
-      "gate open: lane=$Lane heavy=$($c.validate + $c.measure + $c.render) (validate=$($c.validate) measure=$($c.measure) render=$($c.render))"
+      "gate open: lane=$Lane heavy=$($c.validate + $c.measure + $c.render)/limit $Max free=$freeGB GB (validate=$($c.validate) measure=$($c.measure) render=$($c.render))"
       exit 0
     }
     Set-Content $marker '' -ErrorAction SilentlyContinue
