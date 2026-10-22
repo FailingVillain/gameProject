@@ -74,6 +74,30 @@ public sealed class CampaignEconomyDefs
     /// <summary>[임시] 해임 뒤 호감이 이 값 이하로 내려가 있으면 재기용 불가 (설계 3.4, 이 값 초과여야 함).</summary>
     public int CommanderRehireMinFavor { get; set; } = -5;
 
+    // ---- [TC-D · C1E1 R5] 자금 · 외인 슬롯 · 통제 한도 · 에피소드 보급 풀 — 모든 수치는 spec R5/사용자 결정(2026-10-22), 가격 일부 임시 (균형 단계에서 조정).
+    /// <summary>에피소드 시작 자금 (10 = 은 5,000냥).</summary>
+    public int FundsStart { get; set; } = 10;
+    /// <summary>자금 1 = 은 몇 냥 (표시 단위).</summary>
+    public int SilverPerFund { get; set; } = 500;
+    /// <summary>의용군: 이 인원(묶음)마다 자금 VolunteerFundsPerBlock (150명 = 6).</summary>
+    public int VolunteerBlockMen { get; set; } = 50;
+    public int VolunteerFundsPerBlock { get; set; } = 2;
+    /// <summary>마적: 이 인원(묶음)마다 자금 BanditFundsPerBlock (100명당 3).</summary>
+    public int BanditBlockMen { get; set; } = 100;
+    public int BanditFundsPerBlock { get; set; } = 3;
+    /// <summary>[임시] D09 요정 · 보검 가격.</summary>
+    public int FairyFunds { get; set; } = 2;
+    public int SwordFunds { get; set; } = 2;
+    /// <summary>한국 정규군 통제 한도 (E1 3,000; E2 는 데이터에서 5,000~6,000 로 바꾼다) · 외인(의용군 · 마적 · 의용병) 별도 슬롯 합계.</summary>
+    public int RegularControlCap { get; set; } = 3000;
+    public int ForeignSlotCap { get; set; } = 800;
+    /// <summary>에피소드 시작 보급 (투입 비용 단위) · 영구 소모 = 투입 비용 x 이 비율(탄약) + 전사자 x 보충 비용.</summary>
+    public int EpisodeSupplyStart { get; set; } = 4000;
+    public float PermanentDeployFrac { get; set; } = 0.10f;
+    public float CasualtyReplaceCost { get; set; } = 1f;
+    /// <summary>D02 C 대민 구제의 영구 보급 소모 (이벤트 런타임은 TC-E 가 이 값을 쓴다).</summary>
+    public int CivilianReliefSupplyLoss { get; set; } = 400;
+
     static CampaignEconomyDefs? current;
     public static CampaignEconomyDefs Current => current ??= Load(Path.Combine(AppContext.BaseDirectory, "assets", "data", "campaign_economy.json"));
     /// <summary>[테스트] 정의를 갈아 끼운다 (null = 파일 다시 읽기).</summary>
@@ -133,6 +157,16 @@ public sealed class CampaignEconomyDefs
         CommanderRehireCooldownMissions = Math.Clamp(CommanderRehireCooldownMissions, 0, 100);
         CommanderRehireMinFavor = Math.Clamp(CommanderRehireMinFavor, CommanderFavorMin, CommanderFavorMax);
         PrisonerAcceptSupply = F(PrisonerAcceptSupply, 0f, 1000f, d.PrisonerAcceptSupply);
+        FundsStart = Math.Clamp(FundsStart, 0, 1_000_000);
+        SilverPerFund = Math.Clamp(SilverPerFund, 1, 1_000_000);
+        VolunteerBlockMen = Math.Clamp(VolunteerBlockMen, 1, 100_000); VolunteerFundsPerBlock = Math.Clamp(VolunteerFundsPerBlock, 0, 1_000_000);
+        BanditBlockMen = Math.Clamp(BanditBlockMen, 1, 100_000); BanditFundsPerBlock = Math.Clamp(BanditFundsPerBlock, 0, 1_000_000);
+        FairyFunds = Math.Clamp(FairyFunds, 0, 1_000_000); SwordFunds = Math.Clamp(SwordFunds, 0, 1_000_000);
+        RegularControlCap = Math.Clamp(RegularControlCap, 0, 1_000_000); ForeignSlotCap = Math.Clamp(ForeignSlotCap, 0, 1_000_000);
+        EpisodeSupplyStart = Math.Clamp(EpisodeSupplyStart, 0, 10_000_000);
+        PermanentDeployFrac = F(PermanentDeployFrac, 0f, 1f, d.PermanentDeployFrac);
+        CasualtyReplaceCost = F(CasualtyReplaceCost, 0f, 1000f, d.CasualtyReplaceCost);
+        CivilianReliefSupplyLoss = Math.Clamp(CivilianReliefSupplyLoss, 0, 10_000_000);
         PromoSoldierMaxRank = Math.Clamp(PromoSoldierMaxRank, 0, 8);
         PromoMaxPerBreak = Math.Clamp(PromoMaxPerBreak, 0, 10_000);
         PromoSoldierKills = FixArray(PromoSoldierKills, d.PromoSoldierKills, 9);

@@ -139,6 +139,8 @@ public sealed class CampaignState
         public string Caliber { get; set; } = StockKeys.Ru;
         /// <summary>[T19c · Q9] 배속 연대 1~9 (0 = 사단 직할 · 미배속, 옛 파일 기본값). 추가만 — SchemaVersion 그대로. 규칙: CampaignRegiments.</summary>
         public int Regiment { get; set; }
+        /// <summary>[v11 · TC-D] 외인 (의용군 · 마적 · 의용병): 정규 통제 한도가 아니라 외인 슬롯으로 센다. 옛 파일 = false.</summary>
+        public bool Foreign { get; set; }
         /// <summary>[v4 · T42a] 피로 0..100 (0 = 쌩쌩). 작전 정산 때만 변한다: 투입 +, 미투입 −. 옛 파일 = 0.</summary>
         public int Fatigue { get; set; }
         /// <summary>[v4 · T42a] 사기 0..100. 작전 정산 때만 변한다 (승패 · 손실률). 옛 파일 = <see cref="MoraleStart"/>.</summary>
@@ -159,6 +161,8 @@ public sealed class CampaignState
         public Dictionary<string, int> ShellsLoaded { get; set; } = new();
         public Dictionary<string, float> ShellScale { get; set; } = new();
         public bool RefusedMandatory { get; set; }
+        /// <summary>[v11 · TC-D] 출발 때 예약한 에피소드 보급 (투입 비용). 정산 때 생존분은 풀로 환원, 영구 소모만 EpisodePermanentSupplyLoss 에 쌓인다. 옛 파일 = 0.</summary>
+        public float EpisodeSupplyReserved { get; set; }
     }
 
     public sealed class DebriefReport
@@ -197,7 +201,8 @@ public sealed class CampaignState
     /// 7 (T42d): 작전 일수 · 연표 — Day / Timeline (추가만, v3~v6 은 Day = 1 + 치른 작전 수 × missionDays · 빈 연표로 이행).
     /// 8 (T48a): 연대장 풀 · 장교 명부 — CommanderPool / CampaignOfficers (추가만, v3~v7 은 빈 목록으로 이행; 풀은 불러올 때 CommanderPools.Sync 가 데이터와 맞춘다).
     /// 9 (T48b1): 장교 신원 — UnitLine.Key · NextOfficerKey · CampaignOfficer.Merits/Traits/DeathMission/DeathDay · PromotionRecord.Key (추가만, v3~v8 은 키 없음 → 다음 승리 정산 때 생존 장교에게 발급).
-    public const int SchemaVersion = 9;
+    /// 11 (TC-D): 자금 · 에피소드 보급 — Funds · EpisodePermanentSupplyLoss · RosterCompany.Foreign · Pending.EpisodeSupplyReserved (추가만, v3~v10 은 자금 = fundsStart · 소모 0 · 외인 아님으로 이행; 10 은 건너뜀 — ops/FV_RESERVATIONS.md C1E1 예약).
+    public const int SchemaVersion = 11;
     public const int TimelineMax = 200;
     /// <summary>Day 상한 (손상 저장 · 덧셈 넘침 방지).</summary>
     public const int DayMax = 100000;
@@ -247,6 +252,10 @@ public sealed class CampaignState
     // ---- v2 신규 필드
     public ManpowerState Manpower { get; set; } = new();
     public float Supply { get; set; } = 3000f;
+    /// <summary>[v11 · TC-D] 자금 (10 = 은 5,000냥, 설계 단위). 에피소드 안에서 회복 없음. 옛 파일 = fundsStart. API: CampaignFunds.</summary>
+    public int Funds { get; set; } = CampaignEconomyDefs.Current.FundsStart;
+    /// <summary>[v11 · TC-D] 에피소드 보급 풀의 누적 영구 소모 (대민 구제 · 전사자 보충 · 탄약 10%). 가용 보급 = episodeSupplyStart − 이 값 − 진행 중 예약. 옛 파일 = 0.</summary>
+    public float EpisodePermanentSupplyLoss { get; set; }
     public StockState Stock { get; set; } = new();
     public List<RosterCompany> Roster { get; set; } = new();
     public Dictionary<string, int> Flags { get; set; } = new() { ["heir_mood"] = 60, ["cmd_favor"] = 50 };
@@ -353,6 +362,9 @@ public sealed class CampaignState
     public void Sanitize()
     {
         Supply = float.IsFinite(Supply) ? Math.Max(0f, Supply) : 0f;
+        Funds = Math.Clamp(Funds, 0, 1_000_000);   // TC-D
+        EpisodePermanentSupplyLoss = float.IsFinite(EpisodePermanentSupplyLoss) ? Math.Clamp(EpisodePermanentSupplyLoss, 0f, 1e8f) : 0f;
+        if (Pending != null) Pending.EpisodeSupplyReserved = float.IsFinite(Pending.EpisodeSupplyReserved) ? Math.Clamp(Pending.EpisodeSupplyReserved, 0f, 1e8f) : 0f;
         PromotionsThisBreak = Math.Max(0, PromotionsThisBreak);
         (PromotionLog ??= new()).RemoveAll(p => p == null);   // T42b
         Manpower.Recruits = Math.Clamp(Manpower.Recruits, 0, ManpowerState.MaxRecruits);

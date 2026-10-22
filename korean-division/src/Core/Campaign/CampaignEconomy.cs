@@ -171,9 +171,10 @@ public static class CampaignEconomy
     /// 작전 개시: 투입 비용 · 구경별 탄약 적재 (Q5) · 포탄 종류별 적재 (Q6) · 의무 중대 거부 패널티를 PendingOperation 에 기록.
     /// shellBase = 포탄 기본 휴대량 (null 이면 미션 파일에서 ShellBaseLoad).
     /// </summary>
-    public static void BeginOperation(CampaignState s, string missionId, IReadOnlyList<string> deployedIds, int maxDeploy = 0, IReadOnlyDictionary<string, int>? shellBase = null)
+    public static bool BeginOperation(CampaignState s, string missionId, IReadOnlyList<string> deployedIds, int maxDeploy = 0, IReadOnlyDictionary<string, int>? shellBase = null)
     {
         var selected = s.Roster.Where(c => deployedIds.Contains(c.Id)).ToList();
+        if (CampaignFunds.CheckControl(selected) != null) return false;   // [TC-D] 통제 한도 · 외인 슬롯 초과 편성은 시작하지 않는다 (상태 불변)
 
         // 출격 직전에는 상태를 바꾸지 않는다: 비용 · 탄약 · 포탄 · 거부 패널티는 Pending 에 기록만 하고
         // 전투 결과가 확정될 때 SettleBattle 이 한 번에 반영한다 (출격 후 강제 종료 · 포기해도 자원이 사라지지 않음).
@@ -215,8 +216,10 @@ public static class CampaignEconomy
             AmmoByCaliber = ammoBy,
             ShellsLoaded = shellsLoaded,
             ShellScale = shellScale,
-            RefusedMandatory = refusedMandatory
+            RefusedMandatory = refusedMandatory,
+            EpisodeSupplyReserved = DeployCost(selected, maxDeploy)   // [TC-D] 출발 시 예약
         };
+        return true;
     }
 
     /// <summary>
@@ -356,6 +359,9 @@ public static class CampaignEconomy
 
         // 2-1) [T42a] 피로 · 사기 계정: 투입 중대 피로 +, 미투입 −. 사기 = 승패 ± 손실률. 출격 편성이 있을 때만 (홈 계정, 시뮬 무관)
         if (deployed.Count > 0) SettleFatigueMorale(s, deployed, r.Result == "won", me != null && me.Spawned > 0 ? Math.Clamp((float)me.Lost / me.Spawned, 0f, 1f) : 0f);
+
+        // 2-2) [TC-D] 에피소드 보급: 예약 환원, 영구 소모 (전사자 보충 + 투입 비용 10%) 누적
+        CampaignFunds.SettleReservation(s, dead);
 
         // 3) 탄약 환원: Pending 에 적재된 탄약 중 생존 비율만큼 같은 구경으로 복귀
         int ammoRefunded = 0;

@@ -860,6 +860,25 @@ public sealed partial class CampaignMenu
         Ui.Text(string.Format(S.CmPreSupplyGauge, deployCost, state.Supply), x + maxSupplyBarW + 14, y + 2, 14, deployCost > state.Supply ? Palette.HpLow : Palette.Text);
         y += 28;
 
+        // [TC-D] 에피소드 가용 보급 게이지 · 자금 · 통제 한도 사용량 (한 줄)
+        {
+            var ed = CampaignEconomyDefs.Current;
+            float availEp = CampaignFunds.AvailableSupply(state);
+            var (ctrlReg, ctrlFrn) = CampaignFunds.ControlUsage(selectedComps);
+            bool epOver = deployCost > availEp;
+            float epRatio = Math.Clamp(deployCost / MathF.Max(1f, ed.EpisodeSupplyStart), 0f, 1f);
+            float availRatio = Math.Clamp(availEp / MathF.Max(1f, ed.EpisodeSupplyStart), 0f, 1f);
+            var epBg = new Rectangle(x, y, maxSupplyBarW, 12);
+            Raylib.DrawRectangleRec(epBg, Palette.Alpha(Palette.PanelDark, 200));
+            Raylib.DrawRectangleRec(new Rectangle(x, y, maxSupplyBarW * availRatio, 12), Palette.Alpha(Palette.HpGood, 110));
+            Raylib.DrawRectangleRec(new Rectangle(x, y, maxSupplyBarW * MathF.Min(epRatio, availRatio), 12), epOver ? Palette.HpLow : Palette.HpGood);
+            Raylib.DrawRectangleLinesEx(epBg, 1, Palette.PanelBorder);
+            y += 16;
+            Ui.Text(string.Format(S.CmPreEpisodeSupply, availEp, ed.EpisodeSupplyStart, deployCost, state.Funds, CampaignFunds.ToSilver(state.Funds), ctrlReg, ed.RegularControlCap, ctrlFrn, ed.ForeignSlotCap),
+                x, y, 13, epOver || CampaignFunds.CheckControl(selectedComps) != null ? Palette.HpLow : Palette.TextDim);
+            y += 20;
+        }
+
         // 경고 메시지 표시
         bool overSupply = deployCost > state.Supply;
         bool overCap = totalStrength > maxDeploy;
@@ -873,12 +892,12 @@ public sealed partial class CampaignMenu
 
         // 하단 버튼 ([출격], [취소 / 뒤로])
         float by = panel.Y + panel.Height - 52;
-        bool canLaunch = !overSupply && !overCap && !noDeploy && loadError == null;   // 저장을 못 읽었으면 출격 기록을 저장할 수 없다
+        bool canLaunch = !overSupply && !overCap && !noDeploy && loadError == null && CampaignFunds.CheckControl(selectedComps) == null;   // TC-D 통제 한도   // 저장을 못 읽었으면 출격 기록을 저장할 수 없다
 
         var deployBtnRect = new Rectangle(panel.X + panel.Width - 24 - 180, by, 180, 40);
         if (Button(deployBtnRect, S.CmPreBtnDeploy, canLaunch, 18, canLaunch ? Palette.Accent : null))
         {
-            CampaignEconomy.BeginOperation(state, targetMissionId, preOpSelectedCompanyIds.ToList(), maxDeploy);
+            if (!CampaignEconomy.BeginOperation(state, targetMissionId, preOpSelectedCompanyIds.ToList(), maxDeploy)) return;   // TC-D 한도 초과 (버튼은 이미 잠겨 있음)
             string mission = targetMissionId;
             // 작전 시작 직전 자동 저장 (= 재도전 지점). 실패하면 출격하지 않고 알림 + 다시 시도 (성공하면 그때 출격)
             Persist(() => CampaignSaves.SaveWithAuto(state, CampaignSaves.Auto.PreOp), () => OpenMission = mission);

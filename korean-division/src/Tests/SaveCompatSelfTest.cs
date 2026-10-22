@@ -150,6 +150,7 @@ public static class SaveCompatSelfTest
         TolerantReadSelfTest.Run(check);   // T49b 설정 / 사용자 작성 지휘관 JSON 관대한 읽기
         OfficerIdentitySelfTest.Run(check);   // T48b1 장교 신원 키 · 주입 · 전사/부상 · 저장 v9
         CommanderPoolSelfTest.Run(check);   // T48b2 기용/해임 · 배정 · 참모 효과 · 옛 저장 v3~v9
+        CampaignFundsSelfTest.Run(check);   // TC-D 자금 · 외인 슬롯 · 통제 한도 · 가용 보급 (저장 v11)
         CampaignHomeViewsSelfTest.Run(check);   // T38f 읽기 전용 탭 (기록 · 장비 · 편제) 표시 자료
         MapZoomSelfTest.Run(check);   // T47 작전 지도 확대 (배율 · 중심 범위 · 클릭 좌표 · 상태 불변)
         string cdir = TestTemp.Child("kd_compat_campaign");
