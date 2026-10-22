@@ -753,3 +753,8 @@
 - 전사 = dead 영구 (대대장만 연표 `commander` `dead:<키>`), AlwaysWounded = wounded + `WoundedUntilMission = 완료 작전 수 + 1` (연표 `wounded:<키>`). 항복 장교도 상실 (Captured 표시).
 ## T55s 민가 양식 선택 (렌더 전용)
 `houseStyle` (지도 json / 미션 json, 미션 우선; korean | manchu | mixed, 생략 = 예전 4종) -> `HouseStyles.Assign` 이 지도 전체 조각을 순서대로 한 번에 배정 (좌표 해시, 왼쪽·위 2칸 안 같은 (키,구운 B) 면 salt 올려 최대 3회 재시도). 가중치·색조·42 키 등록 = assets/data/house_styles.json (키 = building_art.house.<prefix>NN, B 변형 = 키+".b", 없는 키는 건너뜀, 클래스에 하나도 없으면 fallback 예전 키). 반전 = CellFit/Cell 음수 원본 폭, 색조 = plain(기본 셰이더) 에서 정점 색 곱. 팀 셰이더는 불투명 픽셀에 정점 색을 곱하지 않으므로 색조엔 plain 필수. 폐허 칸 = 'ruined' / 'ruined_b' 프레임 (없으면 1번). 스냅샷·체크섬·FormatVersion 불변.
+## TC-B SK2 경보 상태 (2026-10-22, `src/Core/Mission/MissionAlert.cs`, 미션 JSON 에 쓸 때만 동작)
+- 사건 조건 `seenBy` (세력 1~) + `seenTag` (생략 = 플레이어 세력 전원): 그 세력이 안개 시야 + 은폐 탐지 (`Fog.CanSee`) 로 대상 유닛을 식별하면 참. 안개 꺼짐 = 거짓. 새 상태 없음 (사건은 한 번만).
+- 행동 `spawn` 의 `delay` 초 (0~3600, 기본 0 = 즉시): `MissionState.ReinforcementDue` (도착 틱) 에 예약, 매 틱 UpdateMission 이 등장. 병력 `patrol` ([x,y] 두 점 이상): 부대원 전원이 한가하고 경계 상태 (World.IsAlerted) 가 아니면 30틱마다 다음 점으로 이동 명령 (`PatrolLeg`).
+- 저장: MISN 끝 ReinforcementDue · PatrolLeg, FormatVersion 67 (임시 — 병합 때 fv_renumber). 체크섬은 값이 있을 때만 → 기존 미션·detcheck 불변. Replay 번호 불변 (새 명령 없음). 시험 `KD_SELFTEST_ONLY=tcb`.
+- c1e1_sk2.json 교체 안: sk2_alarm `when {seenBy:2}` + `[message, {spawn:r_alarm, delay:N}]`, 순찰조 e_patrol_w/e 에 `patrol`, 소초 존 진입 조건 삭제. id 그대로.

@@ -471,6 +471,8 @@ public sealed partial class World
 
         for (int i = 0; i < def.Reinforcements.Count; i++)
             if (!m.ReinforcementSpawned[i] && def.Reinforcements[i].Time is float rt && t >= rt) SpawnReinforcement(i);
+        UpdateDueReinforcements(m);   // TC-B 지연 증원
+        UpdatePatrols(m);             // TC-B 순찰
 
         for (int i = 0; i < def.Objectives.Count; i++)
             if (m.ObjState[i] == MissionState.Active)
@@ -502,7 +504,7 @@ public sealed partial class World
     bool PendingReinforcement(MissionState m, int faction)
     {
         for (int i = 0; i < m.Def.Reinforcements.Count; i++)
-            if (!m.ReinforcementSpawned[i] && m.Def.Reinforcements[i].Faction == faction && m.Def.Reinforcements[i].Time != null) return true;
+            if (!m.ReinforcementSpawned[i] && m.Def.Reinforcements[i].Faction == faction && (m.Def.Reinforcements[i].Time != null || m.ReinforcementDue[i] > 0)) return true;
         return false;
     }
 
@@ -623,6 +625,7 @@ public sealed partial class World
             var ids = m.TagUnits(c.Killed);
             if (ids.Count == 0 || AliveOf(ids) > 0) return false;
         }
+        if (c.SeenBy > 0 && !SeenByFaction(m, c)) return false;   // TC-B 감지 경보
         return true;
     }
 
@@ -631,7 +634,7 @@ public sealed partial class World
         if (a.Spawn != null)
         {
             int i = m.Def.Reinforcements.FindIndex(r => r.Id == a.Spawn);
-            if (i >= 0) SpawnReinforcement(i);
+            if (i >= 0) { if (a.Delay > 0) ScheduleReinforcement(m, i, a.Delay); else SpawnReinforcement(i); }
         }
         if (a.Message != null) m.Messages.Add((Tick, a.Message));
         if (a.Weather != null || a.Time != null)
@@ -719,6 +722,7 @@ public sealed partial class World
         foreach (var d in m.Deployment) { h.Add(d.Force); h.Add(d.At.X); h.Add(d.At.Y); h.Add(d.Facing); }
         foreach (var (k, l) in m.Tags) { h.Add(k); h.Add(l.Count); }
         if (m.OfficerKey.Count > 0) { h.Add(m.OfficerKey.Count); foreach (var (k, v) in m.OfficerKey) { h.Add(k); h.Add(v); } }   // T48b1 (없으면 기존 체크섬 그대로)
+        HashAlertState(m, ref h);
     }
 }
 
