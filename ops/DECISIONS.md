@@ -143,3 +143,7 @@ trench_assault 시드 101~120 한국 승/20: 구 main 92ac51c5 N32 켬 5·끔 11
 27/81 유닛 완료(카드는 70이라 하나 스크립트 큐는 81 — SKIP 집합이 큐에 적용 안 됨: 어느 쪽이 맞나?). 남은 54유닛 ≈ 13~14시간(2레인). `rerender96.py --shard K/N` 으로 임의 분할 가능(동적 claim). 렌더는 Blender 아님(Python numpy voxel), 자식 1개당 CPU 1코어·RAM 250~380MB. PC = Ryzen 7 9800X3D 16논리/RX 9070 XT/RAM 31GB(여유 ~8GB). `standard-bearer-fengtian` collide_hits=5(rc=0 이나 0 아님) 재확인 필요.
 - ~~Y2~~ **승인(사용자 2026-10-22: A 4레인, 낮은 우선순위)** — 실행 중. 렌더 레인 수 원문: A★ 4레인(`--shard K/4`, 낮은 우선순위로 실행 → 약 7시간) / B 3레인(약 9시간) / C 현행 2레인(약 13시간). 메모리 규칙 'heavy 동시 2'(PC 멈춤 사고)를 렌더에 한해 완화하는 결정이라 사용자 승인 필요. 무응답 시 현행 2레인.
 - **Y3** 카드 70 vs 큐 81 유닛: 어느 쪽이 정본인지.
+
+## AK. 종료선 50% (사용자 승인 반영 완료; 브랜치 kd/endline-50 10361a4, kd-develop/kd-endline50)
+측정 시나리오 `ai_bn_meeting`·`ai_bn_assault`·`ai_kr_vs_ft_1000` 의 eliminate/losses percent 70→50 (캠페인 미션·trench_assault 등 불변), detcheck 골든 불변. **새 기준선(n=16, 600초)**: A 7/9/0·한국 손실 43%·K/E 1.00·평균 203초 / B 13/3/0·38%·0.75·226초 / C 16/0/0·25%·0.49·157초. 병합 시 야간 soak 의 이 세 미션 행 기준선 재측정 필요(soak.ps1 은 70 하드코딩 없음).
+- **AK2** `trench_assault.json`(eliminate 70)에도 50 을 적용할지. 무응답 시 불변.
