@@ -32,3 +32,4 @@ Lock .git/kd-merge.lock released on stop.
 - B11 kd/t10b-difficulty 4d74ce9 -> 60be399 (clean). FV 57/22, detcheck b7c3761c unchanged. comms/fieldops/snapshot/crossing PASS, snaptest 0 FAIL, uiicons expected FAIL.
 - B12 kd/t16-trench 2cb118c -> c907fa5 (ops/QUEUE ours). FV 57/22, detcheck b7c3761c unchanged. missions/n32/snapshot/crossing PASS, snaptest 0 FAIL.
 - B13a kd/t32a-pioneer 26cc9fd -> 6f2d146 (ENGINE_NOTES + SelfTest.cs registration lines union). FV 57/22, detcheck b7c3761c unchanged. pioneer/units/ai3b/tactical/combat4/missions/snapshot/crossing PASS, snaptest 0 FAIL.
+- B13b kd/t32d-pioneer-art af357ce (plan said 2118f9b; tip moved) -> 5a9e0bb (ops/QUEUE ours; no src). FV 57/22, detcheck b7c3761c unchanged. pioneer/units/snapshot/crossing PASS, snaptest 0 FAIL. Tag post-B set at 5a9e0bb (before this progress commit). t34a NOT merged (E tail).
