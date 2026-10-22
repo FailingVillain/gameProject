@@ -139,6 +139,7 @@ public static class SaveCompatSelfTest
         CampaignScheduleSelfTest.Run(check);   // T42d 일정 · 연표 (저장 v7 · 일수 · 이벤트 기록 · 표시)
         CommanderDataSelfTest.Run(check);   // T48a 연대장 데이터 · 로더 · 저장 v8 · 풀 동기화
         CommanderFavorSelfTest.Run(check);   // T48c 연대장 호감 · 해임 · 태그 · 단계 · 규칙 JSON
+        TolerantReadSelfTest.Run(check);   // T49b 설정 / 사용자 작성 지휘관 JSON 관대한 읽기
         CampaignHomeViewsSelfTest.Run(check);   // T38f 읽기 전용 탭 (기록 · 장비 · 편제) 표시 자료
         MapZoomSelfTest.Run(check);   // T47 작전 지도 확대 (배율 · 중심 범위 · 클릭 좌표 · 상태 불변)
         string cdir = TestTemp.Child("kd_compat_campaign");
