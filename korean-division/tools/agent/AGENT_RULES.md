@@ -26,3 +26,8 @@ Repo `C:\gameProject\korean-division`. Report in Korean, short. Procedures: `doc
 - Commit specific files only (`git add <file>`; never `commit -a`; never touch untracked `docs/soak/` or `캠페인-초안.txt`); identity + trailer per CLAUDE.md. NEVER push.
 - Permission-prone command -> permissions.md (DECISIONS_PENDING line, continue).
 - When done: report in the role card's format, leave no background jobs.
+
+## 창 규칙 (사용자 2026-10-22)
+- 게임·편집기 창을 **전체화면/테두리 없는 전체화면/최대화로 띄우지 않는다.** 항상 창 모드(windowed), 크기는 1280x720 이하(해상도 시험은 `--size WxH` 로 캡처하되 최대화 금지). `settings.json` 의 `Mode` 를 fullscreen/borderless 로 바꾸지 말 것(바꿨다면 원복).
+- 스크린샷 검수용 이미지는 이미지 뷰어를 열지 말고 파일만 만든다(지휘자가 폴더로 안내).
+- 창은 `tools/agent/run_game.ps1` 로 보조 모니터에 띄운다.
