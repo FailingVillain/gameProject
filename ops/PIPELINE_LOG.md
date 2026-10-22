@@ -160,6 +160,7 @@
 | 14:0x | T33b wip-ready(sonnet, 177k — 한도 근접, 2352초; kd/t33b-map-ui 9fb5363 + c5b30f4 체리픽 5207b8f): 별도 Raylib exe MapEditor.App, 브러시·선·사각·원·채움·지우개·지형 11종·고지·격자·열기/저장/undo, 드래그 중 미리보기·마우스 뗄 때 커밋, --script 입력 재생·--selftest(모든 버튼 클릭 확인, 3개 해상도), 시험 1735+264 pass/0 fail, 게임 코드 불변. 게이트 25분 대기 후 수정본으로 통과(우회 없음). 발주: T33c(sonnet, t33b 위: 소품·시설·시작점·구역·검사 패널·시험 플레이) | 완료 ~57 |
 | 14:0x | T35 wip-ready(opus, 151k, 3215초=54분; kd/isai-restore 5c08a38): IsAi 를 읽는 sim 은 Surrender.cs:39 하나, 리플레이 재생에서 AI 가 안 붙는 결함은 자유전뿐 아니라 **미션 리플레이도 동일**(WorldMission.cs:77 은 실제 게임에서만 실행)했음. 리플레이 머리말 AiFactions(Replay 24)+체크섬 `if (f.IsAi) h.Add(0x4149)`(AI 아닌 세력은 불변 → 골든 그대로)+FV60. 시험: 재생 체크섬 일치·항복 27 대 27, 머리말 제거 시 어긋남 재현, replay 31 OK 등, 8변형 골든 일치. 발주: T35 리뷰(sonnet) | 완료 ~58 |
 | 14:0x | T39b wip-ready(sonnet, 118k, 1595초; river-r2 8ada7a9): 물 위 직사 사격 `terrain.waterBlocksFire`(기본 true=현행, 골든 불변, false 시 유닛 20→126·사격 2530→6119 → 0.3 결정), 여울 실측 감속 0.60, FindCrossing 폭 3~6 정상·1~2 는 minObstacle 에 걸림, 신규 시험 true/false 폭 1·3·6·실사격·바위 차단. 발주: T39c(sonnet, river-r2 위, 렌더+시험 지도) | 완료 ~59 |
+| 14:0x | T35 리뷰(sonnet, 71k): 차단 0, 병합 OK. 참고: 미션/표준 경로 시험 없음, 병합 시 FV/Replay 재번호(60/24, AE2 61/25 앞) | 완료 ~60 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
