@@ -16,6 +16,8 @@ public sealed class PaintOp
     public List<int[]>? Tiles;
     /// <summary>꺾은선 [x0, y0, x1, y1, ...] (게임 MapFile paint "line", rail 브랜치): 1칸 폭 8방향 직선으로 이어 칠한다.</summary>
     public int[]? Line;
+    /// <summary>꺾은선 폭 (칸, 1~6, 생략 = 1; river-r2 의 paint "width"). 편집기 UI 는 없고 파일의 값을 읽고 그대로 쓰며 래스터에만 반영 -- line 에만 영향.</summary>
+    public int? Width;
     public bool? High;
     /// <summary>이 줄 바로 앞의 // 주석 (파일에서 읽은 것, 다시 쓸 때 보존).</summary>
     public List<string> Comments = new();
@@ -25,7 +27,7 @@ public sealed class PaintOp
     public PaintOp Clone() => new()
     {
         Terrain = Terrain, Rect = Rect?.ToArray(), Circle = Circle?.ToArray(),
-        Tiles = Tiles?.Select(t => t.ToArray()).ToList(), Line = Line?.ToArray(), High = High, Comments = Comments.ToList(), Extra = Extra.ToList(),
+        Tiles = Tiles?.Select(t => t.ToArray()).ToList(), Line = Line?.ToArray(), Width = Width, High = High, Comments = Comments.ToList(), Extra = Extra.ToList(),
     };
 }
 
@@ -242,6 +244,7 @@ public sealed class MapDoc
                 case "circle": op.Circle = p.Value.EnumerateArray().Select(v => v.GetInt32()).ToArray(); break;
                 case "tiles": op.Tiles = p.Value.EnumerateArray().Select(t => t.EnumerateArray().Select(v => v.GetInt32()).ToArray()).ToList(); break;
                 case "line" when TryFlatInts(p.Value, out var ln): op.Line = ln; break;
+                case "width" when p.Value.ValueKind == JsonValueKind.Number && p.Value.TryGetInt32(out int wd): op.Width = wd; break;
                 case "high": op.High = p.Value.ValueKind == JsonValueKind.Null ? null : p.Value.GetBoolean(); break;
                 default: op.Extra.Add(new ExtraField(p.Name, p.Value.GetRawText())); break;
             }
@@ -358,10 +361,15 @@ public sealed class MapDoc
         if (p.Tiles != null)
             foreach (var tp in p.Tiles)
                 if (tp is { Length: 2 } && g.InBounds(tp[0], tp[1])) Put(tp[0], tp[1]);
-        if (p.Line is { Length: >= 4 } ln)   // 게임 MapFile 과 같은 순서 (rect, circle, tiles, line) · 같은 브레즌햄
+        if (p.Line is { Length: >= 4 } ln)   // 게임 MapFile 과 같은 순서 (rect, circle, tiles, line) · 같은 브레즌햄 · 같은 폭 확장
+        {
+            int wd = Math.Clamp(p.Width ?? 1, 1, 6), lo = -((wd - 1) / 2), hiOff = lo + wd - 1;
             for (int k = 0; k + 3 < ln.Length; k += 2)
                 foreach (var (lx, ly) in LineCells(ln[k], ln[k + 1], ln[k + 2], ln[k + 3]))
-                    if (g.InBounds(lx, ly)) Put(lx, ly);
+                    for (int oy = lo; oy <= hiOff; oy++)
+                    for (int ox = lo; ox <= hiOff; ox++)
+                        if (g.InBounds(lx + ox, ly + oy)) Put(lx + ox, ly + oy);
+        }
     }
 
     // ---------------------------------------------------------------- 검사
@@ -385,6 +393,7 @@ public sealed class MapDoc
                 else if (p.Circle[2] < 0 || p.Circle[2] > MaxDim) errs.Add($"circle 반지름 {p.Circle[2]} (0..{MaxDim})");
             }
             if (p.Tiles != null && p.Tiles.Any(t => t.Length != 2)) errs.Add("tiles 원소는 [x,y]");
+            if (p.Width is int pw && (pw < 1 || pw > 6)) errs.Add($"paint width {pw} 는 1~6 (칸)");
             if (p.Line != null && (p.Line.Length < 4 || p.Line.Length % 2 != 0)) errs.Add("line 은 [x0,y0,x1,y1,...] (점 2개 이상, 짝수 개)");
             idx++;
         }
@@ -451,6 +460,7 @@ public sealed class MapDoc
         if (p.Circle != null) parts.Add($"\"circle\": [{string.Join(", ", p.Circle)}]");
         if (p.Tiles != null) parts.Add($"\"tiles\": [{string.Join(", ", p.Tiles.Select(t => $"[{string.Join(", ", t)}]"))}]");
         if (p.Line != null) parts.Add($"\"line\": [{string.Join(", ", p.Line)}]");
+        if (p.Width is int pw) parts.Add($"\"width\": {pw}");
         if (p.High is bool h) parts.Add($"\"high\": {(h ? "true" : "false")}");
         foreach (var x in p.Extra) parts.Add($"{Q(x.Name)}: {x.RawJson}");
         return "{ " + string.Join(", ", parts) + " }";

@@ -327,7 +327,7 @@ static partial class Tests
   "name": "fc",
   "width": 32, "height": 32, "base": "grass",
   "paint": [
-    { "terrain": "magma", "line": [[1, 1], [20, 1]], "width": 2 },
+    { "terrain": "magma", "line": [[1, 1], [20, 1]], "wide": 2 },
     { "terrain": "water", "rect": [0, 5, 32, 3], "ford": [[10, 5, 3]] },
     { "terrain": "dirt", "rect": [2, 2, 2, 2] }
   ],
@@ -342,7 +342,7 @@ static partial class Tests
 """;
         var d = MapDoc.Parse(text);
         string saved = d.ToFileText();
-        Check(saved.Contains("{ \"terrain\": \"magma\", \"line\": [[1, 1], [20, 1]], \"width\": 2 }"), "rail 형 paint: line / width 원문 보존");
+        Check(saved.Contains("{ \"terrain\": \"magma\", \"line\": [[1, 1], [20, 1]], \"wide\": 2 }"), "rail 형 paint: line / width 원문 보존");
         Check(saved.Contains("\"ford\": [[10, 5, 3]]"), "ford 형 paint: 여분 키 원문 보존");
         Check(saved.Contains("\"tag\": { \"a\": [1, 2] }") && saved.Contains("\"stance\": \"hold\""), "시설 · 유닛 여분 키 보존");
         Check(MapDoc.Parse(saved).ToFileText() == saved, "여분 키 포함 왕복 바이트 동일");

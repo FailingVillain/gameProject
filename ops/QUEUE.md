@@ -36,6 +36,7 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T33a | 지도 편집 문서 모델 + 직렬화 + undo (헤드리스, game-tools/map-editor, 브랜치 kd/t33a-map-model) | feature | D中 H1 Wlight | 없음 | wip-ready |
 | T33b | 지도 편집기 창 + 지형 브러시 UI + 스크립트/스크린샷 시험 (game-tools/map-editor/MapEditor.App, 브랜치 kd/t33b-map-ui, T33a 위 스택) | feature | D中 H1 Wlight | T33a | wip-ready |
 | T33c | 지도 편집기 배치 층 (소품 · 시설 · 시작 · 구역 · 유닛) + 검사 패널 + 테스트 실행 + 미션 mapData 열기 (브랜치 kd/t33c-placement, T33b 위 스택, 게임 코드 불변) | feature | D中 H1 Wlight | T33b | wip-ready |
+| T33d | 지도 편집기 선로 꺾은선 도구 + rail/ford/bridge 지형 이름 (브랜치 kd/t33d-rail, T33c 위 스택, 게임 코드 불변; 병합 시 rail + river-r4-bridge 선행 필요) | feature | D中 H2 Wlight | T33c, T07(rail) | wip-ready |
 
 **정책 (사용자 2026-10-22, 강조): WIP 는 병합하지 않는다. WIP 작업은 재개해서 완료(wip-ready)까지만 한다.** merger 는 발주하지 않는다. 선행이 '병합'인 카드는 선행 카드의 wip 브랜치 위에 쌓아(스택) 진행한다. main 에는 WIP 가 들어가지 않는다(사용자 지시 전까지).
 
