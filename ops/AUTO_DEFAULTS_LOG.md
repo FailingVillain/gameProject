@@ -149,3 +149,4 @@ T33e: MapDoc.MaxDim=1500 mirror of Config.MaxMapSize (test-checked); synthetic b
 2026-10-22 | 권한 점검: settings.json deny 에 'git reset --hard*' 가 있으나 'git -C <경로> reset --hard' 형태는 패턴에 안 걸릴 가능성(추정, 병합자 사용 명령 원문은 미확인). merger.md 의 'reset ORIG_HEAD' 문구를 금지 문구로 교체(백업 agents_backup_20261022/merger.md.bak2). deny 보강안은 사용자 승인 대기 | 지휘자
 2026-10-22 | 사용자 허용(1회): settings.json 금지/확인 목록 보강(git -C 형태·강제 옵션·rm 변형·스케줄러 등록·레지스트리·포맷 등 deny, gh/scp/rsync/설정 변경 ask). 백업 ~/.claude/settings.json.bak_20261022_perm | 사용자 결정
 2026-10-22 | 사용자 허용: day_close.ps1 에 D:\KoreanDivisionBackup 2차 복사(별도 물리 디스크 D:) 추가, tools/storage-guard 에 커밋 | 지휘자
+2026-10-22 | 사용자 명령: 0.2.1 백업 실시 -> 마일스톤 태그 v0.2.1 = merge/0.2-final de2a6053(병합 L1~L8 시점; 기준 커밋은 지휘자 해석), bundle v0.2.1.bundle(태그만) + v0.2.1-all-branches.bundle(전 브랜치) -> C:\works\_backup\KoreanDivision, D:\KoreanDivisionBackup, v0.2.1.bundle 은 G: 백업 폴더에도 | 사용자 결정/지휘자
