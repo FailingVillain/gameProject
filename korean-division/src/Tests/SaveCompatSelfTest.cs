@@ -153,6 +153,7 @@ public static class SaveCompatSelfTest
         CampaignEpisodeSelfTest.Run(check);   // C1E1-g1 에피소드 그래프 · R1 표 · SELECT · 재도전 복원 · 저장 v12
         CommanderPoolSelfTest.Run(check);   // T48b2 기용/해임 · 배정 · 참모 효과 · 옛 저장 v3~v9
         CampaignFundsSelfTest.Run(check);   // TC-D 자금 · 외인 슬롯 · 통제 한도 · 가용 보급 (저장 v11)
+        CampaignDecisionsSelfTest.Run(check);   // TC-E 변수 레지스트리 · 결정 16개 · 결정 런타임 · 재도전 복원 (저장 v13)
         CampaignHomeViewsSelfTest.Run(check);   // T38f 읽기 전용 탭 (기록 · 장비 · 편제) 표시 자료
         MapZoomSelfTest.Run(check);   // T47 작전 지도 확대 (배율 · 중심 범위 · 클릭 좌표 · 상태 불변)
         string cdir = TestTemp.Child("kd_compat_campaign");

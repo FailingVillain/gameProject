@@ -1,0 +1,23 @@
+{
+  "_note": "C1E1 캠페인 변수 레지스트리 (TC-E). 값은 CampaignState.Flags 에 저장 (alias = 옛 키). 호감·평판·사기의 증감 크기는 [보류] — 이 파일은 자리와 범위·초기값만 정한다. 초기값은 현행 Flags 기본값(heir_mood 60, cmd_favor 50)을 그대로, 나머지는 0 (사기만 중대 기본 사기 70).",
+  "vars": [
+    { "key": "favor.hwangson",    "alias": "heir_mood", "min": 0, "max": 100, "default": 60 },
+    { "key": "favor.minDaejang",  "alias": "cmd_favor", "min": 0, "max": 100, "default": 50 },
+    { "key": "favor.namChamjang", "min": 0, "max": 100, "default": 0 },
+    { "key": "favor.siwidae",     "min": 0, "max": 100, "default": 0 },
+    { "key": "favor.yiSeok",      "min": 0, "max": 100, "default": 0 },
+    { "key": "rep.local",         "min": -100, "max": 100, "default": 0 },
+    { "key": "morale.troops",     "min": 0, "max": 100, "default": 70 },
+    { "key": "intel.andong",      "min": 0, "max": 1, "default": 0 },
+    { "key": "pow.bandit",        "min": 0, "max": 100000, "default": 0 },
+    { "key": "flag.flankPath",          "min": 0, "max": 1, "default": 0 },
+    { "key": "flag.dockIntel",          "min": 0, "max": 1, "default": 0 },
+    { "key": "flag.andongCavalryCut",   "min": 0, "max": 1, "default": 0 },
+    { "key": "flag.andongSurrender",    "min": 0, "max": 1, "default": 0 },
+    { "key": "flag.andongRemnant",      "min": 0, "max": 1, "default": 0 },
+    { "key": "flag.siwidaeDispatched",  "min": 0, "max": 1, "default": 0 },
+    { "key": "flag.namLetter",          "min": 0, "max": 1, "default": 0 },
+    { "key": "unlock.fieldGun",   "min": 0, "max": 1, "default": 0 },
+    { "key": "maxCasualtyFrac",   "min": 1, "max": 100, "default": 50 }
+  ]
+}

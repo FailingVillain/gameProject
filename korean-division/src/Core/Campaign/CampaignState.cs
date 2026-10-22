@@ -203,7 +203,8 @@ public sealed class CampaignState
     /// 9 (T48b1): 장교 신원 — UnitLine.Key · NextOfficerKey · CampaignOfficer.Merits/Traits/DeathMission/DeathDay · PromotionRecord.Key (추가만, v3~v8 은 키 없음 → 다음 승리 정산 때 생존 장교에게 발급).
     /// 11 (TC-D): 자금 · 에피소드 보급 — Funds · EpisodePermanentSupplyLoss · RosterCompany.Foreign · Pending.EpisodeSupplyReserved (추가만, v3~v10 은 자금 = fundsStart · 소모 0 · 외인 아님으로 이행; 10 은 건너뜀 — ops/FV_RESERVATIONS.md C1E1 예약).
     /// 12 (C1E1-g1): 에피소드 그래프 진행 — Episode (추가만, v3~v11 은 null = 에피소드 밖으로 이행; 10/11 은 T48b2/TC-D 예약 — 병합 때 정렬).
-    public const int SchemaVersion = 12;
+    /// 13 (TC-E): 결정 응답 기록 · 대기 결정 · 미션 복원점 — Decisions (추가만, v3~v11 은 빈 기록으로 이행; 12 는 건너뜀 — g1 에피소드 그래프 몫, ops/FV_RESERVATIONS.md). 변수 레지스트리(CampaignVars)는 Flags 를 그대로 쓰므로 저장 형식 변화 없음.
+    public const int SchemaVersion = 13;
     public const int TimelineMax = 200;
     /// <summary>Day 상한 (손상 저장 · 덧셈 넘침 방지).</summary>
     public const int DayMax = 100000;
@@ -257,6 +258,8 @@ public sealed class CampaignState
     public int Funds { get; set; } = CampaignEconomyDefs.Current.FundsStart;
     /// <summary>[v11 · TC-D] 에피소드 보급 풀의 누적 영구 소모 (대민 구제 · 전사자 보충 · 탄약 10%). 가용 보급 = episodeSupplyStart − 이 값 − 진행 중 예약. 옛 파일 = 0.</summary>
     public float EpisodePermanentSupplyLoss { get; set; }
+    /// <summary>[v13 · TC-E] 결정 응답 기록 · 대기 결정 · 미션 복원점. 옛 파일 = 빈 기록. 규칙: CampaignDecisions. 변수 값은 Flags (CampaignVars).</summary>
+    public DecisionLog Decisions { get; set; } = new();
     public StockState Stock { get; set; } = new();
     public List<RosterCompany> Roster { get; set; } = new();
     public Dictionary<string, int> Flags { get; set; } = new() { ["heir_mood"] = 60, ["cmd_favor"] = 50 };
@@ -312,6 +315,7 @@ public sealed class CampaignState
             if (Pending.AmmoByCaliber.Count == 0 && Pending.AmmoLoaded > 0) Pending.AmmoByCaliber[StockKeys.Ru] = Pending.AmmoLoaded;
         }
         if (LastDebrief != null) { LastDebrief.ShellsFired ??= new(); LastDebrief.LootedShells ??= new(); }
+        Decisions ??= new();   // TC-E
         Flags ??= new();
         if (!Flags.ContainsKey("heir_mood")) Flags["heir_mood"] = 60;
         if (!Flags.ContainsKey("cmd_favor")) Flags["cmd_favor"] = 50;
@@ -366,6 +370,7 @@ public sealed class CampaignState
     {
         Supply = float.IsFinite(Supply) ? Math.Max(0f, Supply) : 0f;
         Funds = Math.Clamp(Funds, 0, 1_000_000);   // TC-D
+        (Decisions ??= new()).Sanitize(); CampaignVars.Sanitize(this);   // TC-E
         EpisodePermanentSupplyLoss = float.IsFinite(EpisodePermanentSupplyLoss) ? Math.Clamp(EpisodePermanentSupplyLoss, 0f, 1e8f) : 0f;
         if (Pending != null) Pending.EpisodeSupplyReserved = float.IsFinite(Pending.EpisodeSupplyReserved) ? Math.Clamp(Pending.EpisodeSupplyReserved, 0f, 1e8f) : 0f;
         PromotionsThisBreak = Math.Max(0, PromotionsThisBreak);
