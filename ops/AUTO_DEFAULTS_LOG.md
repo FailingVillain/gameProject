@@ -33,3 +33,24 @@ T50d perf bench: Prof hooks reused, 3 seeds x ACE x 1k/5k/10k, 10% regress thres
 2026-10-22 | 엎드려쏴 | 보병 칸 폭 확장(176x160/192x160) 동의 처리 → 27종 import 발주(사용자 '정확한 직각' 요구; C# 변경 없음) | 이의 시 되돌림
 - T38k: tiers Body16/26 Heading26/40/72 Numeric16/22; >=40px title-only glyphs; unused 7.4MB fonts kept (propose drop); no merge
 2026-10-22 | 글꼴 | 배포 시 미사용 글꼴 3개(Gothic Bold·Myeongjo Regular·Coding Bold, ~7.4MB) 제외 권장(코드가 안 씀) — 개발 중엔 유지 | T38k FONTS.md
+T55s: houseStyle absent=legacy 4; tones 255/238-230-218/222-230-240; retry 3; frameMb 2.0; B-variant key suffix .b
+2026-10-22 | T55g | 스펙=JSON 파일(house_specs/*.json), 파이썬 표 아님: 생성기 무수정으로 T55a/b 추가 | 카드 요구 housegen_specs.py 대신
+2026-10-22 | T55g | 발자국 [w,d] 는 가로형(4x3,5x3) 권장: 용마루가 x축 | 3x4 는 깊이가 커 맞배가 어색
+2026-10-22 | T55g | 기존4종 재현 비교 시트 생략, 6샘플+팔레트변형3만 | 요청 범위(샘플 ~6)
+2026-10-22 C1E1-u1 audit: 유닛 플래그 기준 표 작성, 외인 의용병 id 는 common_village_militia 후보로 두고 미확정 표기 (보고서만)
+- C1E1-m1: 강 폭 26칸(사행 ±10), 여울 폭 14칸, 상류=동, 시작 위치 임시 2개, 가옥 북안10+소초2+내륙10 (스펙 범위 내)
+- C1E1-m1: a_escape=북단 중앙 200x12 기본값, 갈대=grass, 밭=dirt, 제방=high 띠, 내륙마을 보조구역 a_inland_village 추가
+c1e1-m2: annex NE of city, rubble=timber yard, flank path west edge (spec lacks positions); large=1200 default
+T55a1: ko 12 classes (all registry tones=1), footprint 3x4 specified as [4,3] (wider than deep)
+- T55b2 (Sonnet): zh giwa footprints written wide-first (4x3 not 3x4); barns 1 tone; renders in gt-house-b2/_out (untracked)
+- C1E1-u2: 의용병 id=common_volunteer (신규, 민단 수치); 철도수비대=japanese 전용; 피난민=common 비무장 hp60 spd2.6
+- C1E1-u2: 새 유닛 id 규칙 = 기존 접미 패턴(cavalry_fengtian, heavy_field_gun_fengtian, infantry_railway_guard_japanese, civilian_refugee)
+T55a2: 9 giwa specs korean_a2_giwa.json set ko_a2, 2 tones via variant a; renders in gt-house-a2/render_a2
+T55b1: gt-house-b1 specs manchu_b1_*, tone a=base b=variant; flat/thatch mix per request despite Gemini note flat roofs rare
+- 2026-10-22 C1E1-g1: SK 실패 확정 일수 failDays 기본 0 (일수는 승리 시 확정 규칙의 안전한 해석, JSON 노드값으로 변경 가능)
+- 2026-10-22 C1E1-g1: OP1 재도전 = IL2 확정 직후 상태 → D11 변형(강공/포위) 선택도 지워 다시 고름
+- 2026-10-22 C1E1-g1: 에피소드 일수는 Episode.DaysUsed 별도. CampaignState.Day(missionDays) 연동은 g2/연동 카드로 미룸
+- 2026-10-22 C1E1-g1: OP1 미션 id = c1e1_op1_assault / c1e1_op1_siege (Q10 파일 2개, Q18 이름 규칙), D10 결과 키 follow/delay/persuadeOk/persuadeFail
+TC-D: base t48b2-assign(v9), schema v11 skip v10; supply gate for episode not enforced yet; fairy/sword price 2 temp; E2 cap via param
+- T38m: Overlay default=간결(concise), U key cycles; concise hides colorblind markers/low bars unless selected (user 2026-10-22 messy)
+2026-10-22 | 머리 위 표시 | 기본 간결(HP·탄약·색각 도형·분대 아이콘 선택/위험 때만), 색각 도형은 간결에서 선택·호버만 — 색각 사용자는 보통 이상 권장 | T38m, 사용자 확인 대기

@@ -246,6 +246,7 @@
 | 16:5x | 스프라이트 칸 B 계획(opus, 125k; ops/SPRITE_CELL_PLAN.md 3ab61a9, 카드 T56a~e): LodAtlas.Build 가 이미 칸마다 여백을 잘라 GPU 에 담음 → B 이득은 GPU 가 아니라 디코드 CPU·디스크(보병 29종 디코드 623→895MB +44% vs B 후 ~300MB), GPU LOD0 219→230MB(+5%), 기존 uifuzz LOD0 최대 211MB(예산 768MB). 현존 버그: main 이 시트별 frame/anchor 를 못 읽어 infantry-bandit _prone(160x200)을 128x160 으로 오독(읽는 코드는 T01 06424c8). 순서 T56a 패커→T56b 게임 v2 읽기(opus, T01·T55s 병합 뒤)→T56c import→T56d 재패킹→T56e 가옥. kd/prone-wide-assets 는 그대로 먼저 병합 권장(LOD0 +10% 이내·≤384MB·업로드 프레임 ≤6ms·lodaudit 통과 조건). 사용자 요청: 상황 저장 후 /clear → 새 발주 중단(드레인), 진행 중 에이전트 완료 후 STATE·메모리 갱신 | 기록 |
 | 16:5x | T55b1 완료(gt-house-b1 cdef9f8): 토벽·벽돌 10+토담 3 클래스(톤 포함 23종), 138프레임 가장자리 접촉 0, 시트 housegen_b1.png, 렌더 4~12초/집. 한계: mud-05 톤 차 작음, 만주 평지붕·붉은벽돌은 당시 드묾(다양성 우선). 드레인 모드 | 기록 |
 | 16:5x | T55a2 완료(gt-house-a2 14f20e2): 한국 기와 9종(톤 2, 팔작·ㄱ자·ㅁ자 암시), @32 접촉 수정, 시트 housegen_a2.png. **민가 1차 42종 렌더 전부 완료**(a1 b4a53db·a2 14f20e2·b1 cdef9f8·b2 e5a4db5). 남은 것: T55i(게임 import, house_classes/theme 연결), 생성기 2차 개선 목록 | 기록 |
+| 17:0x | T38m 완료(t38m-overlay-declutter 2ca199c): 머리 위 '흰 테두리+세력색 도형' = ColorBlind:true 일 때 모든 유닛에 상시(파랑 아군 원·빨강 적 사각; 마름모는 4번 세력 모양이라 재현 안 됨), 사용자 settings.json 미확인. Overlay 3단계 간결/보통/상세 기본 간결, U 키·설정 화면·F1. 간결: HP/탄약/색각 도형/분대 아이콘은 선택·호버·위험 때만. 교전 테스트엔 중대·분대 없어 UnitSymbols 는 원인 아님. 색각 사용자는 간결에서 평소 구분 약화(보통 이상 권장) | 완료 ~111 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
