@@ -81,6 +81,7 @@ public static partial class SelfTest
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "ai412") { Tests.Ai412SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "trainweapons") { Tests.TrainWeaponsSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }   // T30b 열차 무기
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "freight") { Tests.FreightSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }   // T30c 화물열차 목표
+        if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "traindemo") { Tests.TrainDemoSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }   // T30e 시연 미션
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "train") { Tests.TrainSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }   // T30a 열차
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "replay") { Tests.ReplaySelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "tweak1") { Tests.Tweak1SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
@@ -135,6 +136,7 @@ public static partial class SelfTest
         Tests.TrainSelfTest.Run(opt, Check);   // T30a 열차
         Tests.TrainWeaponsSelfTest.Run(opt, Check);   // T30b 열차 무기
         Tests.FreightSelfTest.Run(opt, Check);   // T30c 화물열차 목표
+        Tests.TrainDemoSelfTest.Run(opt, Check);   // T30e 시연 미션
         Console.WriteLine("[기본 4인 맵 · 세력 선택 · 부대 지정]");
         Tests.FactionsSelfTest.Run(opt, Check);
         Tests.ArmourSelfTest.Run(opt, Check);

@@ -41,8 +41,8 @@
     { "id": "esc1", "faction": 1, "name": "호위 중대", "at": [14, 33], "facing": 90, "units": { "officer": 1, "infantry": 24, "heavy_machinegunner": 2, "heavy_at_rifleman": 4 }, "formation": "column" },
     { "id": "blk_n", "faction": 2, "name": "북선 저지선", "at": [52, 30], "facing": 270, "units": { "infantry_fengtian": 10 }, "formation": "spread" },
     { "id": "blk_s", "faction": 2, "name": "남선 저지선", "at": [46, 36], "facing": 270, "units": { "infantry_fengtian": 10 }, "formation": "spread" },
-    { "id": "amb", "faction": 2, "name": "고개 매복조", "at": [100, 33], "facing": 270, "units": { "officer_fengtian": 1, "infantry_fengtian": 16, "heavy_machinegunner_fengtian": 2 }, "formation": "spread" },
-    { "id": "gate", "faction": 2, "name": "보급역 수비대", "at": [130, 32], "facing": 270, "units": { "infantry_fengtian": 12 }, "formation": "spread" }
+    { "id": "amb", "faction": 2, "name": "고개 매복조", "at": [100, 33], "facing": 270, "units": { "officer_fengtian": 1, "infantry_fengtian": 24, "heavy_machinegunner_fengtian": 4, "heavy_at_rifleman": 6 }, "formation": "spread" },
+    { "id": "gate", "faction": 2, "name": "보급역 수비대", "at": [130, 32], "facing": 270, "units": { "infantry_fengtian": 20, "heavy_at_rifleman": 4 }, "formation": "spread" }
   ],
   "trains": [
     { "tag": "armor", "faction": 1, "cars": ["locomotive", "guncar", "mgcar"], "path": [[18, 30], [40, 30], [84, 30], [140, 30]], "waits": [0, 12, 12, 0] },

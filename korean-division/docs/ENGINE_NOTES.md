@@ -696,3 +696,6 @@
 - 미션 목표에 `"train": "<열차 tag>"` (escort · capture · eliminate). 대상 = 그 tag 열차들의 화물 객차 (`TrainCarDef.Freight`, balance.json 화차 wagon). `src/Core/Mission/FreightObjective.cs` (검증 · 판정), EvalObjective 첫 줄 분기.
 - escort = 살아 있는 화물 객차 count 량 area 안 (부족 · 남은 열차 모두 Stalled → 실패). capture = 화물 객차 radius(기본 3) 안 단독 확보 seconds 초, 소유 변경 없음 (전멸 → 실패). eliminate = 화물 객차 percent% 파괴 (진행 0~1 비율).
 - 새 저장 상태 없음 (ObjProgress · 객차 HP). AI ObjectiveFor: 호송/탈취를 화물 객차 중심으로 재사용. UI: 목표 문구 · 월드/미니맵 화차 표식 (MissionText.FreightMarkers) · 결과 `trains` 손실. 테스트 `KD_SELFTEST_ONLY=freight`.
+
+## 장갑열차 시연 미션 (2026-10-22, 브랜치 `t30e-demo-mission`, T30e, FormatVersion 59 그대로)
+- `assets/missions/train_escort_demo.json`: 호송 (Q-E1 권장), 인라인 mapData 150x64, 장갑열차 + 화물열차 스크립트 이동, 시간 제한 900초. 캠페인 미연결. 시험 `KD_SELFTEST_ONLY=traindemo` (golden = `assets/data/train_demo.golden`, 갱신 `KD_TRAIN_DEMO_UPDATE=1`). 코드 · 밸런스 변경 없음.
