@@ -15,3 +15,6 @@
 5. main 에서 `.git/MERGE_HEAD` 없음 확인 후 `git merge --no-ff <branch>` (1회 재시도). 병합 후 main detcheck. 깨지면 `git reset --hard ORIG_HEAD`, 잠금 해제, 보고.
 6. 잠금 해제(`rmdir`, 실패 시에도), worktree + 브랜치 제거(no --force), 코드 변경 시 `bin/main` 재빌드, `publish.ps1` 은 `dist/KoreanDivision.exe` 미실행일 때만(PID 확인). `ops/MERGE_QUEUE.md` 병합 완료 표에 한 줄 추가 + 카드 상태 `merged`. 그 밖의 문서 갱신(CLAUDE/PROJECT_NOTES/BASELINE/STATE)은 하지 않는다 — release 몫.
 7. 측정이 불분명하면 기능을 JSON 스위치 뒤(기본 꺼짐)에 두고 병합, 판단은 나중에.
+
+## 도구 (파이프라인 v2)
+- 병합 단계는 `tools/agent/merge_step.ps1` 하나로 한다(빌드·detcheck·snapshot + `--snaptest` 강제; 직접 명령을 풀어 쓰지 않는다). FV/Replay 줄 충돌은 `fv_assign.ps1 -Apply` 로 확정하고, 작업 브랜치의 ops/QUEUE·STATE 변경은 `queue_guard.ps1` 로 걸러 'ours' 처리한다. 병합 라운드 시작 때 각 브랜치 팁 해시를 재확인한다(병합 뒤 브랜치가 앞서간 경우 방지).
