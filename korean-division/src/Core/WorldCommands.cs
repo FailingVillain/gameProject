@@ -34,6 +34,7 @@ public sealed partial class World
     {
         if (CommandFeed != null) pending.AddRange(CommandFeed(Tick));
         if (pending.Count == 0) return;
+        actingCache.Clear();               // 대리 부사관 캐시도 같이 (같은 틱 전사 · 계급 변경이 낡은 값을 읽지 않게)
         cmdOfficersTick = long.MinValue;   // 지휘 계통 지연의 장교 목록은 명령 묶음마다 새로 (CommandDelay.cs)
         executing.AddRange(pending);
         pending.Clear();

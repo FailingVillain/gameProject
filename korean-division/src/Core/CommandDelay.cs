@@ -56,7 +56,7 @@ public sealed partial class World
         }
         if (u.Squad is not { } s || s.Members.Count < 2) return ChainTier.Isolated;
         foreach (var m in s.Members) if (m.Alive && m.IsNco) return ChainTier.Nco;
-        if (u.Company is { Commander: null } co && HasActingNcoCached(co)) return ChainTier.Nco;   // T37: 대리 지휘관 (CommandLevelOf = Nco) 이 있는 중대는 부사관 단계 — 지연 단계도 같은 기준
+        if (u.Company is { Commander: null } co && !InHandover(co) && HasActingNcoCached(co)) return ChainTier.Nco;   // T37: 대리 지휘관 (CommandLevelOf = Nco) 이 있는 중대는 부사관 단계 — 지연 단계도 같은 기준 (인계 창 안은 CommandLevelOf = None 이라 Acting)
         return ChainTier.Acting;
     }
 

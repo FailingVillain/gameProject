@@ -238,11 +238,32 @@ public static class CommandSelfTest
             {
                 var offs = w.Units.Where(o => o.Alive && o.Def.CommandRadius > 0 && o.Owner == noNco.Owner && Vector2.Distance(o.Pos, noNco.Pos) <= o.Def.CommandRadius).ToList();
                 bool tNco = w.ChainTierOf(noNco) == (offs.Count > 0 ? ChainTier.Officer : ChainTier.Nco);
+                ChainTier Want(ChainTier noOff) => w.Units.Any(o => o.Alive && o.Def.CommandRadius > 0 && o.Owner == noNco.Owner && Vector2.Distance(o.Pos, noNco.Pos) <= o.Def.CommandRadius) ? ChainTier.Officer : noOff;
+                void NewBatch() { w.Issue(new MoveCommand(noNco.Owner, Array.Empty<int>(), noNco.Pos)); w.FlushCommands(); }   // 명령 묶음 = 캐시 초기화 시점
                 R.ActingMinRank = -1;
                 w.Step();   // 캐시는 틱 단위
-                bool tAct = w.ChainTierOf(noNco) == (offs.Count > 0 ? ChainTier.Officer : ChainTier.Acting) || w.CommandLevelOf(c) != CommandLevel.None;
+                bool tAct = w.ChainTierOf(noNco) == Want(ChainTier.Acting) && w.CommandLevelOf(c) == CommandLevel.None;   // 대리 없음 → Acting (엄격)
                 R.ActingMinRank = 0;
                 check(tNco && tAct, "T37: 대리 지휘관이 있는 중대는 분대에 부사관이 없어도 지연 단계 Nco (CommandLevelOf 와 일치), 대리 없으면 Acting");
+                // 인계 창: 지휘관 없음 + 인계 중이면 CommandLevelOf = None → 지연 단계도 Acting (Nco 아님)
+                long hu = c.HandoverUntil; c.HandoverUntil = w.Tick + 5; NewBatch();
+                check(w.CommandLevelOf(c) == CommandLevel.None && w.ChainTierOf(noNco) == Want(ChainTier.Acting), "T37: 인계 창 안에서는 지휘 단계 None = 지연 단계 Acting");
+                c.HandoverUntil = hu; NewBatch();
+                check(w.ChainTierOf(noNco) == Want(ChainTier.Nco), "T37: 인계 창이 끝나면 Nco 로 복귀");
+                // 같은 틱 변경: 조회로 캐시된 뒤 계급 문턱이 바뀌고 명령 묶음이 실행되면 새 값
+                var before = w.ChainTierOf(noNco);
+                R.ActingMinRank = 99;   // 대리 후보 없음
+                NewBatch();
+                check(before == Want(ChainTier.Nco) && w.ChainTierOf(noNco) == Want(ChainTier.Acting), "T37: 같은 틱 계급 변경 → 다음 명령 묶음에서 새 값 (캐시 안 낡음)");
+                R.ActingMinRank = 0; NewBatch();
+                // 같은 틱 장교 전사: 지휘 범위 안 장교가 죽으면 Officer 단계 해제
+                var near = w.Units.FirstOrDefault(o => o.Alive && o.Def.CommandRadius > 0 && o.Owner == noNco.Owner && Vector2.Distance(o.Pos, noNco.Pos) <= o.Def.CommandRadius);
+                if (near != null)
+                {
+                    bool was = w.ChainTierOf(noNco) == ChainTier.Officer;
+                    near.Hp = 0; NewBatch();
+                    check(was && w.ChainTierOf(noNco) != ChainTier.Officer, "T37: 같은 틱 장교 전사 → 지연 단계 Officer 해제");
+                }
             }
             else check(false, "T37: 부사관 없는 분대 병사 없음 (테스트 전제)");
         }
