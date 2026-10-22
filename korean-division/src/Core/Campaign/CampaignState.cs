@@ -76,6 +76,8 @@ public sealed class CampaignState
         public bool Mandatory { get; set; } = false;
         /// <summary>[v3 · T19b Q5] 이 중대 소총 · 기관총이 쓰는 탄약 구경 (StockKeys.AllCalibers). 옛 파일 = 노식 (ru, 그때 유일한 재고 키).</summary>
         public string Caliber { get; set; } = StockKeys.Ru;
+        /// <summary>[T19c · Q9] 배속 연대 1~9 (0 = 사단 직할 · 미배속, 옛 파일 기본값). 추가만 — SchemaVersion 그대로. 규칙: CampaignRegiments.</summary>
+        public int Regiment { get; set; }
     }
 
     public sealed class PendingOperation
@@ -236,6 +238,7 @@ public sealed class CampaignState
         if (Pending != null && (string.IsNullOrEmpty(Pending.MissionId) || Pending.DeployedCompanyIds == null)) Pending = null;
         if (Pending != null) Pending.AmmoScale = float.IsFinite(Pending.AmmoScale) ? Math.Clamp(Pending.AmmoScale, 0f, 1f) : 1f;
         foreach (var c in Roster) if (Array.IndexOf(StockKeys.AllCalibers, c.Caliber) < 0) c.Caliber = StockKeys.Ru;   // 모르는 구경 키 → 노식
+        foreach (var c in Roster) if (c.Regiment < 0 || c.Regiment > CampaignRegiments.Max) c.Regiment = 0;   // 범위 밖 연대 → 직할 (T19c)
         if (Pending != null)
         {
             foreach (var d in new[] { Pending.AmmoByCaliber, Pending.ShellsLoaded })

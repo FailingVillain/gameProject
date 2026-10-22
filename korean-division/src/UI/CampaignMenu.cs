@@ -5,16 +5,15 @@ using KoreanDivision.Core;
 namespace KoreanDivision.UI;
 
 /// <summary>
-/// 사단 캠페인 홈 화면 (5개 탭 · 작전 전 출격 준비 · 전과 보고 모달).
+/// 사단 캠페인 홈 화면 (3화면 15탭 — 배치 · 틀은 CampaignHome.cs, MVP 5탭 본문은 여기 · 작전 전 출격 준비 · 전과 보고 모달).
 /// S2(home-ui), S3(작전 전 투입), S4(전과 보고), S5(본국 전문) 통합 UI.
 /// </summary>
-public sealed class CampaignMenu
+public sealed partial class CampaignMenu
 {
     public string? OpenMission { get; set; }
     public bool BackRequested { get; set; }
 
     enum ViewMode { Home, PreOp, Debrief }
-    enum Tab { Summary, Roster, Logistics, Map, Events }
 
     CampaignState state;        // 슬롯 불러오기 시 교체 (T19a)
     string? loadError;
@@ -52,6 +51,7 @@ public sealed class CampaignMenu
         state = CampaignState.Load() ?? new CampaignState();
         loadError = CampaignState.LastLoadError;
         Adopt(state);
+        ApplyViewOverride();
     }
 
     /// <summary>상태를 화면에 붙인다 (생성 · 슬롯 불러오기).</summary>
@@ -203,29 +203,10 @@ public sealed class CampaignMenu
         float tabW = 126;
         float tabX = panel.X + 16;
         float tabY = panel.Y + 70;
-        float tabBtnH = 36;
-        float gap = 6;
-
-        Tab[] tabs = { Tab.Summary, Tab.Roster, Tab.Logistics, Tab.Map, Tab.Events };
-        string[] tabLabels = { S.CmTabSummary, S.CmTabRoster, S.CmTabLogistics, S.CmTabMap, S.CmTabEvents };
-
-        var pendingEvents = CampaignEvents.AvailableEvents(state);
-        for (int i = 0; i < tabs.Length; i++)
-        {
-            var tr = new Rectangle(tabX, tabY + i * (tabBtnH + gap), tabW, tabBtnH);
-            bool isCurrent = currentTab == tabs[i];
-            string lbl = tabLabels[i];
-            if (tabs[i] == Tab.Events && pendingEvents.Count > 0) lbl += $" ({pendingEvents.Count})";
-
-            Color? tCol = isCurrent ? Palette.Accent : null;
-            if (Button(tr, lbl, true, 16, tCol))
-            {
-                currentTab = tabs[i];
-            }
-        }
 
         // 좌측 하단 액션 버튼 ([작전 개시], [캠페인 초기화], [뒤로])
         float by = panel.Y + panel.Height - 48;
+        DrawTabColumn(tabX, tabY, tabW, by - 88 - 8);   // 현재 화면의 탭 (중앙 9 · 좌 3 · 우 3, CampaignHome.cs)
         var opStartRect = new Rectangle(tabX, by - 88, tabW, 40);
         bool opReady = File.Exists(MissionDef.PathOf(targetMissionId));   // 다음 작전 파일이 없으면 (준비 중) 출격 잠금
         if (Button(opStartRect, S.CmBtnOpStart, opReady, 18, opReady ? Palette.Accent : null))
@@ -259,7 +240,7 @@ public sealed class CampaignMenu
         }
 
         // 우측 본문 영역
-        var body = new Rectangle(panel.X + tabW + 28, panel.Y + 70, panel.Width - tabW - 44, panel.Height - 86);
+        var body = DrawScreenStrip(new Rectangle(panel.X + tabW + 28, panel.Y + 64, panel.Width - tabW - 44, panel.Height - 80));   // 3화면 띠
         Ui.Panel(body, Palette.Alpha(Palette.Panel, 200), Palette.PanelBorder);
 
         switch (currentTab)
@@ -269,6 +250,7 @@ public sealed class CampaignMenu
             case Tab.Logistics: DrawTabLogistics(body); break;
             case Tab.Map: DrawTabMap(body); break;
             case Tab.Events: DrawTabEvents(body); break;
+            default: DrawTabPlaceholder(body, currentTab); break;   // 후속 탭 (틀만)
         }
     }
 
@@ -380,7 +362,7 @@ public sealed class CampaignMenu
             Ui.Text(string.Format(S.CmEventSender, ev.Sender), rightX + 10, ry, 14, Palette.TextDim); ry += 18;
             foreach (var l in WrapText(ev.Text, colW - 20, 14).Take(3)) { Ui.Text(l, rightX + 10, ry, 14, Palette.Text); ry += 18; }
             var evBtn = new Rectangle(rightX + 10, ry + 4, 140, 26);
-            if (Button(evBtn, "[본국 탭에서 확인]", true, 13, Palette.Accent)) currentTab = Tab.Events;
+            if (Button(evBtn, "[본국 탭에서 확인]", true, 13, Palette.Accent)) SelectTab(Tab.Events);
             ry += 38;
         }
         else
@@ -415,10 +397,11 @@ public sealed class CampaignMenu
     {
         float x = body.X + 20, y = body.Y + 16;
         float w = body.Width - 40;
-        Ui.Text(S.CmRosterTitle, x, y, 22, Palette.Accent); y += 30;
+        Ui.Text(S.CmRosterTitle, x, y, 22, Palette.Accent);
+        DrawRegimentSummary(x + w, y - 4); y += 30;   // 연대 배속 요약 (Q9)
 
         // 표 머리말
-        float colBattalion = 100, colCompany = 120, colKind = 80, colStrength = 110, colWounded = 60, colStatus = 110, colBtn = 130;
+        float colBattalion = 100, colCompany = 110, colKind = 70, colStrength = 100, colWounded = 50, colStatus = 100, colRegiment = 90, colBtn = 130;
         var headerRect = new Rectangle(x, y, w, 26);
         Ui.Panel(headerRect, Palette.Alpha(Palette.PanelDark, 200), Palette.PanelBorder);
 
@@ -429,6 +412,7 @@ public sealed class CampaignMenu
         Ui.Text(S.CmColStrength, hx, y + 5, 14, Palette.TextDim); hx += colStrength;
         Ui.Text(S.CmColWounded, hx, y + 5, 14, Palette.TextDim); hx += colWounded;
         Ui.Text(S.CmColStatus, hx, y + 5, 14, Palette.TextDim); hx += colStatus;
+        Ui.Text(S.CmColRegiment, hx, y + 5, 14, Palette.TextDim); hx += colRegiment;
         Ui.Text(S.CmColAction, hx, y + 5, 14, Palette.TextDim);
         y += 30;
 
@@ -471,6 +455,8 @@ public sealed class CampaignMenu
             else if (c.Available) Ui.Text(S.CmStatusAvailable, rx, ry + 7, 14, Palette.HpGood);
             else Ui.Text(S.CmStatusUnavailable, rx, ry + 7, 14, Palette.HpLow);
             rx += colStatus;
+            if (ry >= listArea.Y && ry + rowH <= listArea.Y + listArea.Height) DrawRegimentCell(c, rx, ry, rowH);   // 연대 배속 (가려진 행은 클릭 안 받음)
+            rx += colRegiment;
 
             // 신병 배치 버튼
             int need = c.MaxStrength - c.Strength;
@@ -550,6 +536,9 @@ public sealed class CampaignMenu
 
         // 군마
         Ui.Text(string.Format(S.CmHorses, state.Stock?.Horses ?? 0), leftX, ly, 16, Palette.Text); ly += 24;
+
+        // 다음 작전 보급 미리보기 (가용 중대 전원 · 구경별 탄약 · 포탄, CampaignHome.cs)
+        ly += DrawSupplyPreview(leftX, ly, colW);
 
         // [우측 열] 탄약 5종 & 포탄 3종 & 최근 입고 5건
         Ui.Text(S.CmAmmoSecTitle, rightX, ry, 16, Palette.Accent); ry += 22;
