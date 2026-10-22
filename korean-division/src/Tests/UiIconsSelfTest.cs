@@ -44,12 +44,23 @@ public static class UiIconsSelfTest
                             btns.Add(new KoreanDivision.UI.CardButton(c.Key, c.Label, c.Tooltip, c.Hotkey.ToString(), Commands.Key(c.Hotkey), c.Col, c.Row, c.Key));
                     if (sel.All(d => d.MarchFire && d.Category == "infantry")) btns.Add(new KoreanDivision.UI.CardButton("marchfire", "", "", "F", Raylib_cs.KeyboardKey.F, 0, 2, "marchfire"));
                     btns.Add(new KoreanDivision.UI.CardButton("closeranks", "", "", "L", Raylib_cs.KeyboardKey.L, 1, 2, "closeranks"));
-                    Game.ResolveSlots(btns);
                     combos++;
-                    if (btns.Select(b => b.Row * 3 + b.Col).Distinct().Count() != btns.Count || btns.Any(b => b.Col is < 0 or > 2 || b.Row is < 0 or > 2)) bad++;
                     if (btns.Select(b => b.Hotkey).Distinct().Count() != btns.Count) bad++;
+                    bad += CardPagesBad(btns);
                 }
             check(bad == 0, $"카드 칸 · 단축키 충돌 없음 ({combos} 조합)");
+            // T38c: 동적 버튼(포격 종류 · 집결 · 참호 돌격 · 사격 통제 …)까지 붙은 11개 · 25개 카드 — 쪽마다 칸 충돌 없음, 버튼은 정확히 한 쪽, 쪽 버튼은 (2,2)
+            var big = new List<KoreanDivision.UI.CardButton>();
+            string ks = "MSAQHXTVDEC";
+            for (int n = 0; n < 11; n++) big.Add(new(ks[n].ToString(), "", "", ks[n].ToString(), Raylib_cs.KeyboardKey.A + n, n % 3, n / 3 % 3, ks[n].ToString()));   // 일부러 칸 겹침
+            check(CardPagesBad(big) == 0 && Game.PaginateCard(big, 0, out int pg11).Count == 9 && pg11 == 2, "11개 카드 → 2쪽 (쪽당 8 + 쪽 버튼), 모든 버튼이 한 쪽에");
+            var big25 = Enumerable.Range(0, 25).Select(n => new KoreanDivision.UI.CardButton("k" + n, "", "", "", Raylib_cs.KeyboardKey.Null, n % 3, n / 3 % 3, "")).ToList();
+            check(CardPagesBad(big25) == 0 && Game.PaginateCard(big25, 99, out int pg25).Count == 2 && pg25 == 4, "25개 카드 → 4쪽, 범위 밖 쪽 번호는 마지막 쪽 (버튼 1 + 쪽 버튼)");
+            var nine = big.Take(9).ToList();
+            check(Game.PaginateCard(nine, 0, out int pg9).All(b => b.Key != "cardpage") && pg9 == 1 && CardPagesBad(nine) == 0, "9개 이하는 쪽 버튼 없이 옛 배치");
+            var pgBtn = Game.PaginateCard(big, 1, out _).First(b => b.Key == "cardpage");
+            check(pgBtn.Hotkey == Raylib_cs.KeyboardKey.Period && pgBtn.HotkeyLabel == "." && pgBtn.Value == "2/2", "쪽 버튼: 키 '.', 값 2/2");
+            check(KoreanDivision.UI.Bindings.Extra.Any(x => x.Key == ".") && KoreanDivision.UI.Bindings.Conflict("move", '.') != null && KoreanDivision.UI.Bindings.TrySet("move", '.') != null, "'.' 는 고정 키 — 도움말 표에 있고 명령에 재지정 불가");
             var tf = new List<KoreanDivision.UI.CardButton> { new("groundfire", "", "", "T", Raylib_cs.KeyboardKey.T, 0, 2, "g"), new("marchfire", "", "", "F", Raylib_cs.KeyboardKey.F, 0, 2, "m") };
             Game.ResolveSlots(tf);
             check(tf[0].Col == 0 && tf[0].Row == 2 && (tf[1].Col, tf[1].Row) != (0, 2) && tf[1].Hotkey == Raylib_cs.KeyboardKey.F, "T · F 가 같은 칸이면 F 가 빈 칸으로 이동, 단축키 유지");
@@ -166,6 +177,23 @@ public static class UiIconsSelfTest
             KoreanDivision.UI.UserSettings.KeyMap = oldMap;
             try { File.Delete(tmp); } catch { }
         }
+    }
+
+    /// <summary>T38c: 쪽 나눔 불량 수 — 쪽마다 칸 중복 · 칸 범위 밖 · 쪽 버튼 위치 · 모든 버튼이 정확히 한 쪽에 보이는지.</summary>
+    static int CardPagesBad(List<KoreanDivision.UI.CardButton> btns)
+    {
+        int bad = 0;
+        var seen = new HashSet<string>();
+        Game.PaginateCard(btns, 0, out int pgs);
+        for (int pg = 0; pg < pgs; pg++)
+        {
+            var vis = Game.PaginateCard(btns, pg, out _);
+            if (vis.Select(b => b.Row * 3 + b.Col).Distinct().Count() != vis.Count || vis.Any(b => b.Col is < 0 or > 2 || b.Row is < 0 or > 2)) bad++;
+            if (pgs > 1 && !vis.Exists(b => b.Key == "cardpage" && b.Col == 2 && b.Row == 2)) bad++;
+            foreach (var vb in vis) if (vb.Key != "cardpage" && !seen.Add(vb.Key)) bad++;
+        }
+        if (seen.Count != btns.Count) bad++;
+        return bad;
     }
 
     /// <summary>T38b: docs/CONTROLS.md 「단축키 일람」 표 (BINDINGS 표지 사이) 가 Bindings.All() 과 한 줄도 어긋나지 않는다 (누락 0 · 잉여 0).</summary>

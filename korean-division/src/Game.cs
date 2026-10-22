@@ -333,16 +333,22 @@ public sealed partial class Game : IDisposable
     public List<Unit> SelectedOwnUnits() => !Observer ? OwnUnits() : new List<Unit>();
     public Building? SelectedBuilding => Selection.Count == 1 ? Selection[0] as Building : null;
 
-    /// <summary>현재 선택에 맞는 커맨드 카드 버튼 목록.</summary>
-    public List<CardButton> CommandCard()
+    /// <summary>현재 선택에 맞는 커맨드 카드 버튼 목록 (보이는 쪽만). allPages = 명령 탭의 모든 쪽 버튼 (단축키 처리용, 칸 무관).</summary>
+    public List<CardButton> CommandCard(bool allPages = false)
     {
-        if (Observer) return new List<CardButton>();   // 리플레이 · 관전: 조작 불가
-        if (Tab == CardTab.Combat) return CombatCard(World.Faction(Me));
-        return PaginateCard(BuildUnitCard());
+        if (Observer) { CardPages = 1; return new List<CardButton>(); }   // 리플레이 · 관전: 조작 불가
+        if (Tab == CardTab.Combat) { CardPages = 1; return CombatCard(World.Faction(Me)); }
+        var full = BuildUnitCard();
+        if (allPages) return full;
+        var shown = PaginateCard(full, CardPage, out int pages);
+        CardPages = pages;
+        CardPage = Math.Clamp(CardPage, 0, pages - 1);
+        return shown;
     }
 
-    /// <summary>카드 쪽 (0 = 첫 쪽). 버튼이 9칸을 넘치면 둘째 쪽으로 넘어간다 (칸이 모자라 버튼이 사라지지 않게).</summary>
+    /// <summary>카드 쪽 (0 = 첫 쪽) · 쪽 수. 버튼이 9칸을 넘치면 쪽당 8개 + 우하단 쪽 넘김 버튼 (T38c: N쪽). UI 전용 — 시뮬 무관.</summary>
     public int CardPage { get; private set; }
+    public int CardPages { get; private set; } = 1;
 
     /// <summary>모든 쪽의 명령 버튼 (단축키 처리용 — 안 보이는 쪽의 단축키도 동작해야 한다).</summary>
     List<CardButton> BuildUnitCard()
@@ -394,37 +400,18 @@ public sealed partial class Game : IDisposable
         return list;
     }
 
-    /// <summary>9칸 넘치는 버튼을 둘째 쪽으로: 첫 쪽 마지막 칸 = "더 보기", 둘째 쪽 마지막 칸 = "처음으로". 단축키는 그대로.</summary>
-    List<CardButton> PaginateCard(List<CardButton> all)
+    /// <summary>버튼이 9칸에 다 들어가면 그대로 (ResolveSlots), 넘치면 선호 칸 순으로 쪽당 8개 + 우하단 쪽 넘김 버튼 (".", "1/N"). 단축키는 모든 쪽에서 동작한다.</summary>
+    public static List<CardButton> PaginateCard(List<CardButton> full, int page, out int pages)
     {
-        var page1 = new List<CardButton>();
-        var over = new List<CardButton>();
-        var used = new bool[9];
-        foreach (var b in all)
-        {
-            var nb = b;
-            if (b.Col is >= 0 and <= 2 && b.Row is >= 0 and <= 2)
-            {
-                int slot = used[b.Row * 3 + b.Col] ? Array.IndexOf(used, false) : b.Row * 3 + b.Col;
-                if (slot < 0) { over.Add(b); continue; }
-                used[slot] = true;
-                nb = b with { Col = slot % 3, Row = slot / 3 };
-            }
-            page1.Add(nb);
-        }
-        if (over.Count == 0) { CardPage = 0; return page1; }
-        var last = page1[^1];   // 가장 나중 버튼을 둘째 쪽으로 보내고 그 칸에 "더 보기"
-        page1.RemoveAt(page1.Count - 1);
-        over.Insert(0, last);
-        if (CardPage == 0)
-        {
-            page1.Add(new CardButton("cardpage", S.CmdMoreCard, S.TipMoreCard, "", KeyboardKey.Null, last.Col, last.Row, "quickstep"));
-            return page1;
-        }
-        var page2 = new List<CardButton>();
-        for (int i = 0; i < over.Count && i < 8; i++) page2.Add(over[i] with { Col = i % 3, Row = i / 3 });
-        page2.Add(new CardButton("cardpage", S.CmdBackCard, S.TipBackCard, "", KeyboardKey.Null, 2, 2, "stop"));
-        return page2;
+        if (full.Count <= 9) { var one = new List<CardButton>(full); ResolveSlots(one); pages = 1; return one; }
+        pages = (full.Count + 7) / 8;
+        page = Math.Clamp(page, 0, pages - 1);
+        var sorted = full.OrderBy(b => b.Row * 3 + b.Col).ToList();   // 안정 정렬: 같은 칸이면 먼저 온 쪽이 앞
+        var res = new List<CardButton>();
+        for (int i = page * 8, k = 0; i < Math.Min(sorted.Count, page * 8 + 8); i++, k++)
+            res.Add(sorted[i] with { Col = k % 3, Row = k / 3 });
+        res.Add(new CardButton("cardpage", S.CmdCardPage, S.TipCardPage, ".", KeyboardKey.Period, 2, 2, "", true, false, null, $"{page + 1}/{pages}"));
+        return res;
     }
 
     /// <summary>명령 카드 버튼을 보일지: 공격 · 돌격은 선택 중 하나라도 할 수 있으면 (N36 — 비전투 유닛은 대열을 따라 이동, 돌격 못 하는 유닛은 사수), 나머지는 전원이 할 수 있을 때.</summary>
@@ -885,8 +872,15 @@ public sealed partial class Game : IDisposable
         bool pressedCard = false;
         if (!ctrl && !Observer && Input.IsKeyPressed(KeyboardKey.J) && SelectedCompanies().Count > 0) { PendingCommand = "rally"; Sfx.Play("ui_click"); }   // N79a: 집결 지점 (J — 어느 탭에서든)
         if (!ctrl)
-            foreach (var c in Tab == CardTab.Combat ? CommandCard() : BuildUnitCard())
+        {
+            if (Tab == CardTab.Command && Input.IsKeyPressed(KeyboardKey.Period))   // T38c: 쪽 넘김 (고정 키 — 재지정 불가)
+            {
+                CommandCard();   // 쪽 수 갱신
+                if (CardPages > 1) { CardPage = (CardPage + 1) % CardPages; Sfx.Play("ui_click"); pressedCard = true; }
+            }
+            if (!pressedCard) foreach (var c in Tab == CardTab.Combat ? CommandCard() : CommandCard(true))   // 명령 탭: 모든 쪽의 단축키
                 if (c.Hotkey != KeyboardKey.Null && Input.IsKeyPressed(c.Hotkey)) { Press(c); pressedCard = true; break; }
+        }
         // N32: 참호 돌격 W 는 카드에 칸이 없어도 (보병 중대는 명령 탭이 가득 참) 어느 탭에서나
         if (!ctrl && !pressedCard && !Observer && Defs.Current.Tactics.TrenchAssault.Enabled && Input.IsKeyPressed(KeyboardKey.W) && SelectedCompanies().Count > 0) { Sfx.Play("ui_click"); PressTrenchAssault(); }
     }
@@ -1371,7 +1365,7 @@ public sealed partial class Game : IDisposable
         if (key.StartsWith("cb:")) { CombatPress(key); return; }
         switch (key)
         {
-            case "cardpage": CardPage = CardPage == 0 ? 1 : 0; break;   // 카드 쪽 넘기기 (UI 전용)
+            case "cardpage": CardPage = (CardPage + 1) % Math.Max(1, CardPages); break;   // 카드 쪽 넘기기 (UI 전용)
             case "stop": World.Stop(Me, units); break;
             case "hold": World.Hold(Me, units); break;
             case "marchfire": World.SetMarchFire(Me, units, !units.Where(u => u.Company != null && u.Def.MarchFire && u.Def.Category == "infantry").All(u => u.Company!.MarchFireOn)); break;   // 돌격 사격 토글 (중대 단위)
