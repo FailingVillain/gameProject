@@ -24,7 +24,7 @@ public static class CampaignDecisionsSelfTest
             check(a1 && a2 && !a3 && a4 && s0.Flags["heir_mood"] == 100 && CampaignVars.Get(s0, "rep.local") == 0 && CampaignVars.Get(s0, "nope.var") == 0 && !s0.Flags.ContainsKey("nope.var") && CampaignVars.Get(s0, "pow.bandit") == 100000,
                 "TC-E 변수: 범위로 자름 (호감 100 · 민심 0 · 포로 상한) · 모르는 키는 쓰기 거부 / 읽기 0");
             var snap = CampaignVars.SnapshotAll(s0); CampaignVars.Set(s0, "favor.hwangson", 1); CampaignVars.Set(s0, "flag.namLetter", 1); CampaignVars.RestoreAll(s0, snap);
-            check(CampaignVars.Get(s0, "favor.hwangson") == 100 && CampaignVars.Get(s0, "flag.namLetter") == 0 && snap.Count == 18, "TC-E 변수: 스냅샷 / 복원");
+            check(CampaignVars.Get(s0, "favor.hwangson") == 100 && CampaignVars.Get(s0, "flag.namLetter") == 0 && snap.Count == 17, "TC-E 변수: 스냅샷 / 복원");
             var junk = CampaignVars.Sanitized(new CampaignVarDef?[] { null, new() { Key = "" }, new() { Key = "x.a", Min = 5, Max = 1 }, new() { Key = "x.b", Min = 0, Max = 10, Default = 99 }, new() { Key = "x.b" }, new() { Key = "x.c", Alias = "x.b" } });
             check(junk.Count == 1 && junk[0].Key == "x.b" && junk[0].Default == 10, "TC-E 변수 JSON 보정: 빈 키 · min>max · 키 중복 · 저장 키 충돌은 버리고 초기값은 범위로");
 
@@ -108,7 +108,7 @@ public static class CampaignDecisionsSelfTest
             CampaignDecisions.BeginMission(sm);
             dd.Raise(sm, "D04");
             dd.Answer(sm, "D04", One("A"), 0, out _); dd.Answer(sm, "D09", One("A"), 0, out _);
-            CampaignVars.Add(sm, "morale.troops", -30); CampaignVars.Set(sm, "rep.local", -9); sm.Supply = 900f; CampaignFunds.AddPermanentLoss(sm, 50f);
+            CampaignVars.Add(sm, "morale.troops", -30); sm.Roster[0].Morale = 20; CampaignVars.Set(sm, "rep.local", -9); sm.Supply = 900f; CampaignFunds.AddPermanentLoss(sm, 50f);
             bool during = sm.Decisions.Answers.Count == 3 && sm.Funds == 8;
             bool retried = CampaignDecisions.RetryMission(sm);
             check(during && retried && sm.Day == 3 && sm.Decisions.Answers.Count == 1 && sm.Decisions.Answers[0].Id == "D01" && sm.Funds == 10 && CampaignVars.Get(sm, "rep.local") == 7 && CampaignVars.Get(sm, "morale.troops") == 50
@@ -132,7 +132,7 @@ public static class CampaignDecisionsSelfTest
             dd.Raise(sp2, "D08"); CampaignVars.Set(sp2, "favor.siwidae", 33);
             var back = CampaignState.FromJson(sp2.ToJson());
             check(back != null && back.Version == CampaignState.SchemaVersion && CampaignState.SchemaVersion >= 13 && back.Decisions.Answers.Count == 1 && back.Decisions.Answers[0].Choices[0] == "B" && back.Decisions.Pending.SequenceEqual(new[] { "D08" })
-                && back.Decisions.Checkpoint != null && back.Decisions.Checkpoint.Answers == 1 && back.Decisions.Checkpoint.Vars.Count == 18 && CampaignVars.Get(back, "favor.siwidae") == 33 && back.ToJson() == sp2.ToJson(),
+                && back.Decisions.Checkpoint != null && back.Decisions.Checkpoint.Answers == 1 && back.Decisions.Checkpoint.Vars.Count == 17 && CampaignVars.Get(back, "favor.siwidae") == 33 && back.ToJson() == sp2.ToJson(),
                 "TC-E 저장 v13: 응답 · 대기 · 복원점 · 변수(Flags) 왕복 동일");
             var old = CampaignState.FromJson("{\"Version\":11,\"Funds\":7,\"Flags\":{\"heir_mood\":80,\"cmd_favor\":41}}");
             check(old != null && old.Version == CampaignState.SchemaVersion && old.Decisions.Answers.Count == 0 && old.Decisions.Checkpoint == null && old.Funds == 7 && CampaignVars.Get(old, "favor.hwangson") == 80 && CampaignVars.Get(old, "favor.minDaejang") == 41,

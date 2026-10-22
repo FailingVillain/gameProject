@@ -79,6 +79,8 @@ public sealed class DecisionCheckpoint
     public float PermanentLoss { get; set; }
     public float Supply { get; set; }
     public List<string> Pending { get; set; } = new();
+    /// <summary>중대별 사기 (id -> 사기). morale.troops 가 중대 사기 평균(파생값)이라 미션 중 이벤트로 바뀐 중대 사기를 되돌리는 용도. 옛 저장 = null (복원 안 함, 스키마 불변).</summary>
+    public Dictionary<string, int>? CompanyMorale { get; set; }
 }
 
 public sealed class DecisionLog
@@ -302,6 +304,7 @@ public sealed class CampaignDecisions
         {
             Vars = CampaignVars.SnapshotAll(s), Answers = s.Decisions.Answers.Count, Funds = s.Funds, PermanentLoss = s.EpisodePermanentSupplyLoss, Supply = s.Supply,
             Pending = s.Decisions.Pending.ToList(),
+            CompanyMorale = s.Roster.Where(c => c != null && !string.IsNullOrEmpty(c.Id)).GroupBy(c => c.Id).ToDictionary(g => g.Key, g => g.First().Morale),
         };
     }
 
@@ -310,6 +313,7 @@ public sealed class CampaignDecisions
     {
         var cp = s.Decisions.Checkpoint; if (cp == null) return false;
         CampaignVars.RestoreAll(s, cp.Vars);
+        if (cp.CompanyMorale != null) foreach (var c in s.Roster) if (c != null && c.Id != null && cp.CompanyMorale.TryGetValue(c.Id, out var m)) c.Morale = Math.Clamp(m, 0, 100);
         if (cp.Answers < s.Decisions.Answers.Count) s.Decisions.Answers.RemoveRange(cp.Answers, s.Decisions.Answers.Count - cp.Answers);
         s.Funds = cp.Funds; s.EpisodePermanentSupplyLoss = cp.PermanentLoss; s.Supply = cp.Supply;
         s.Decisions.Pending = cp.Pending.ToList();

@@ -21,8 +21,28 @@ public static class CampaignDesertionSelfTest
 
         // 2) 옛 저장 (범위 밖) -> 안전 보정
         var old = CampaignState.FromJson("{\"Version\":13,\"Flags\":{\"rep.local\":-60,\"morale.troops\":170,\"favor.siwidae\":-3}}");
-        check(old != null && CampaignVars.Get(old, "rep.local") == 0 && CampaignVars.Get(old, "morale.troops") == 100 && CampaignVars.Get(old, "favor.siwidae") == 0
-            && old.Flags["rep.local"] == 0 && old.Flags["morale.troops"] == 100, "M2 옛 저장(v13): 범위 밖 민심 · 사기 · 호감은 0~100 으로 보정");
+        check(old != null && CampaignVars.Get(old, "rep.local") == 0 && CampaignVars.Get(old, "morale.troops") == 50 && CampaignVars.Get(old, "favor.siwidae") == 0
+            && old.Flags["rep.local"] == 0, "M2 옛 저장(v13): 범위 밖 민심 · 호감은 0~100 으로 보정, 옛 morale.troops 플래그는 무시(중대 사기 평균 50)");
+
+        // 2b) morale.troops = 중대 사기 평균 (파생값): 병력 0 제외, 내림, 중대 없으면 50, 증감 = 모든 중대, 클램프
+        var sm = new CampaignState();
+        sm.Roster.RemoveRange(3, sm.Roster.Count - 3);
+        foreach (var c in sm.Roster) c.Strength = 60;
+        sm.Roster[0].Morale = 10; sm.Roster[1].Morale = 21; sm.Roster[2].Morale = 40;
+        int avg3 = CampaignVars.Get(sm, "morale.troops");   // 71/3 = 23 (내림)
+        sm.Roster[2].Strength = 0;
+        int avg2 = CampaignVars.Get(sm, "morale.troops");   // 31/2 = 15 (병력 0 제외)
+        var none = new CampaignState { Roster = new() };
+        check(avg3 == 23 && avg2 == 15 && CampaignVars.Get(none, "morale.troops") == 50, $"M2 morale.troops = 중대 사기 평균 (내림 {avg3}, 병력0 제외 {avg2}, 중대 없음 {CampaignVars.Get(none, "morale.troops")})");
+        sm.Roster[2].Strength = 60;
+        CampaignVars.Add(sm, "morale.troops", -15);
+        bool addOk = sm.Roster[0].Morale == 0 && sm.Roster[1].Morale == 6 && sm.Roster[2].Morale == 25;
+        CampaignVars.Add(sm, "morale.troops", 200);
+        bool clampOk = sm.Roster.All(c => c.Morale == 100);
+        CampaignVars.Set(sm, "morale.troops", 37);
+        check(addOk && clampOk && sm.Roster.All(c => c.Morale == 37) && !sm.Flags.ContainsKey("morale.troops"), "M2 morale.troops 증감 = 모든 중대 사기에 같은 증감 (0~100 클램프), set = 전 중대, 플래그 저장 안 함");
+        var rt = CampaignState.FromJson(sm.ToJson());
+        check(rt != null && rt.Version == CampaignState.SchemaVersion && CampaignVars.Get(rt, "morale.troops") == 37, "M2 morale.troops 저장 왕복 (중대 사기로 복원)");
 
         // 3) 탈영률: 문턱 이상 0, 사기 0 = 최대, 중간 선형
         check(CampaignEconomy.DesertionRate(30) == 0f && CampaignEconomy.DesertionRate(80) == 0f && MathF.Abs(CampaignEconomy.DesertionRate(0) - E.DesertionMaxRate) < 1e-6f

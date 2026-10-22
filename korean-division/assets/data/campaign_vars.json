@@ -7,7 +7,7 @@
     { "key": "favor.siwidae",     "min": 0, "max": 100, "default": 50 },
     { "key": "favor.yiSeok",      "min": 0, "max": 100, "default": 50 },
     { "key": "rep.local",         "min": 0, "max": 100, "default": 50 },
-    { "key": "morale.troops",     "min": 0, "max": 100, "default": 50 },
+    { "key": "morale.troops",     "min": 0, "max": 100, "default": 50, "derived": "rosterMoraleAvg" },
     { "key": "intel.andong",      "min": 0, "max": 1, "default": 0 },
     { "key": "pow.bandit",        "min": 0, "max": 100000, "default": 0 },
     { "key": "flag.flankPath",          "min": 0, "max": 1, "default": 0 },
