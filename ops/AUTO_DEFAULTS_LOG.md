@@ -10,3 +10,8 @@
 2026-10-22 | T48b | 분할: T48b1(opus 신원 영속)·T48b2(sonnet 풀/참모); 스냅샷 A안(MissionState 매핑, FV 52→53) | 장교 신원 조사(89b2e5f)
 2026-10-22 | 병합 | merge/0.2 에서만 병합, main 은 --ff-only 마지막, 그룹별 태그, 충돌 임의 해결 금지 | MERGE_PLAN
 - 2026-10-22 저장 호환 정책: 캠페인=항상 이행(더하기만), 미션 저장·리플레이=옛 형식 거부+한국어 안내, 설정=관대, 사용자 파일=건너뛰기 -> ops/SAVE_COMPAT_POLICY.md (권고 기본값, 자동 적용)
+- kd/t33d-rail review: protected-path = korean-division/assets/ or assets/maps|missions; test id _editor_test_<pid>, cleanup at editor exit (not right after launch)
+T48a: 연대장 풀 시작상태 = 조건 없음 available/있음 locked; 학파 목록 commander_tags.json; 해임 -2, 쿨다운 1, 호감 -20~100, 재기용 최소 -5 (economy JSON)
+T48a: 일정 탭은 Kind mission/event 외 연표 줄 건너뜀; Sync 는 Load()/Apply 에서만(FromJson 이행은 빈 풀); 항목 거부 시 로드 계속
+2026-10-22 | 게임 제목 | 'KOREAN DIVISION'/'코리안 디비전' + 부제 '1920 대한 사단'(시안 적용, 사용자 직역체 선호 반영) | 사용자 확정 시 DECISIONS
+2026-10-22 | 웹 검색 | 모든 웹 조회·검증은 hub ask gemini-flash -w 로(web-fetch/WebSearch 에이전트 금지) | 사용자 재지시

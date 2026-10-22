@@ -214,6 +214,7 @@
 | 15:4x | 게이트 RAM 예산 14GB 반영(haiku, 56k; main 23eb1c7·tools/gate-12 7f88498): heavy 프로세스 WorkingSet 합>14GB 면 닫힘, 상태줄 heavyRAM 표시, 15GB 닫힘/13GB 열림 ALL PASS. 발주(사용자 결정 AZ·제목 정정 반영): OFL 글꼴(general sonnet; ui/fonts-ofl·시안 재생성·T38k 카드·제목 문자열 목록), 활성 탭 시안 3갈래(tabs-a: 1~5 / tabs-b: 6·10(줌)·13·15 / tabs-c: 11·12·14·7·8·9+연대장 도시에), T47 캠페인 지도 줌(sonnet, t38i 위), T48c 호감도(sonnet, t48a 위), T49b+c 호환 시험(sonnet), T48b1(opus)·T49a 진행 중 | 진행 |
 | 15:4x | 공병 총구 잘림 수정(art sonnet, 147k, 2389초; kd/t32d-pioneer-art af357ce): **근본 원인 = 192x240 칸이 좁음**(새 엎드려쏴 자세 E 방향 ≈255px) → 공병은 E 62°·NE 20° 회전으로 임시 회피(사선=사용자 금지와 충돌), 소총병 시트는 옛 짧은 자세라 멀쩡해 보였을 뿐 새 코드로 재렌더하면 같은 잘림. LodAtlas 가 시트별 칸 크기를 읽지 않음. edge_check.py(테두리 0칸) 추가, 공병만 재렌더(18분). → opus 총구 정렬 에이전트에 근본 수정 권한 통보(넓은 칸 지원 kd/prone-wide-cells, 총구 ≤0.5°), 공병은 후속 재렌더 | 완료 ~91 · 근본 수정 진행 |
 | 15:4x | 사용자: 제목 확정(KOREAN DIVISION/코리안 디비전, 극중 '제17 대한 사단') + 이름 중복·브랜드 검토 요청 → Gemini 웹 검색 1차(정확 일치 없음; Steel Division(Eugen) 혼동 위험 '높음'·Ubisoft The Division 낮음·SEO '한반도 분단' 노이즈 → 대안 제시) + web-fetch 로 Steam/itch/GOG 직접 검증 발주. 글꼴·시안 3갈래 에이전트에 제목 정정 통보 | 진행 |
+| 15:5x | 이름 검증: Gemini 1차 후 web-fetch 에이전트로 재검증(61k) — 사용자 지적: 웹 검색은 Gemini 로(규칙 재확인, 메모리 강화). 결과: Steam 검색 API 'korean division'/'코리안 디비전' 0건, GOG 무결과, itch/Google 검증 불가. OFL 글꼴 완료(general sonnet, 82k; ui/fonts-ofl 832b592·20899b3: Nanum Myeongjo/Gothic/Gothic Coding OFL, 한글 11,172자·두부 0, T38k 카드+제목 문자열 목록; 시안 604f6f1 재생성). tabs-a 시안 완료(c87a559, 시스템 글꼴) → OFL 재렌더·최종 제목 통보 | 기록 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
