@@ -23,3 +23,4 @@ T49bc: settings tolerant read per-key via reflection; compat fixtures v1-v8 key-
 2026-10-22 | 성능 | T50a~e 는 순수 리팩터(골든 동일 필수)만 자동 진행, 표적 캐시·탐색 반경 축소는 사용자 결정 전 미발주 | ops/PERF_OPT_PLAN.md §5
 T47 campaign map zoom: range 1-8x, wheel x1.18, button x1.5, node pick radius 14px, drag slop 5px (UI-only, per-session)
 2026-10-22 | 제목 순서 | 프로젝트=KOREAN DIVISION, 게임명='KOREAN DIVISION : MARCH ON MANCHURIA'(프랜차이즈 먼저; 확장·후속 대비) | 사용자 이의 시 역순 'MARCH ON MANCHURIA : KOREAN DIVISION'
+2026-10-22 | 민가 | T55g 생성기 시트는 사용자 승인 대기 없이 T55a/b 자동 착수(시트는 추후 일괄 검수) | 사용자 '그래픽 시안은 추후 한 번에 검토'
