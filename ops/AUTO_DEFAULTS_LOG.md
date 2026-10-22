@@ -31,3 +31,5 @@ T50d perf bench: Prof hooks reused, 3 seeds x ACE x 1k/5k/10k, 10% regress thres
 - T48b2: wounded officers: no new battalion assignment, staff allowed; staff->battalion return allowed; dead officers free their slot at settlement
 - T48b2: supply staff bonus = floor(regular supply * permille/1000) added at first-win settlement; journal = Stock.RecentLog; schema stays v9
 2026-10-22 | 엎드려쏴 | 보병 칸 폭 확장(176x160/192x160) 동의 처리 → 27종 import 발주(사용자 '정확한 직각' 요구; C# 변경 없음) | 이의 시 되돌림
+- T38k: tiers Body16/26 Heading26/40/72 Numeric16/22; >=40px title-only glyphs; unused 7.4MB fonts kept (propose drop); no merge
+2026-10-22 | 글꼴 | 배포 시 미사용 글꼴 3개(Gothic Bold·Myeongjo Regular·Coding Bold, ~7.4MB) 제외 권장(코드가 안 씀) — 개발 중엔 유지 | T38k FONTS.md
