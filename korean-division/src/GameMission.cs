@@ -17,6 +17,8 @@ public sealed partial class Game
     MissionResults? missionResults;
     string? missionResultsPath;
     bool missionResultsDone, noResultsFile, deployCamDone, campaignSaved;
+    bool discardArmed;   // 저장 안 된 결과를 버리겠다는 첫 번째 확인
+    CampaignState? campaignUnsaved;   // 정산했지만 저장 실패 — 결과 창에서 다시 시도 (T19a)
 
     /// <summary>배치 단계인가: 미션 · 첫 틱 전 · 사람이 조작 · 아직 '작전 개시' 전.</summary>
     public bool DeployPhase => World.Mission is { Started: false } && World.Tick == 0 && !Observer && !deployDone;
@@ -121,16 +123,28 @@ public sealed partial class Game
                 if (!World.CheatsUsed)
                 {
                     // 저장 트랜잭션: 읽기 실패 (깨진 · 더 새 버전) 파일은 새 상태로 덮어쓰지 않는다. 확정 (Apply → Save) 은 결과가 정해진 이 한 곳에서만.
-                    campaignSaved = CampaignState.CommitResult(missionResults);
+                    var prev = CampaignState.Load();
+                    if (prev != null || CampaignState.LastLoadError == null)
+                        if (CampaignState.Apply(prev, missionResults) is { } cs) { campaignSaved = CampaignSaves.SaveWithAuto(cs, CampaignSaves.Auto.Settle); campaignUnsaved = campaignSaved ? null : cs; }   // 정산 직후 자동 저장 (T19a)
                 }   // 캠페인 미션 승리 → 이월 저장
             }
         }
-        if (Input.IsKeyPressed(KeyboardKey.Enter) && !IsReplay) RestartRequested = true;
+        if (campaignUnsaved != null && Input.IsMouseButtonPressed(MouseButton.Left) && Ui.Contains(CampaignRetryRect, mouse))
+        {   // 저장 실패 → 다시 시도 (같은 정산 결과를 다시 쓴다; 정산을 두 번 하지 않음)
+            campaignSaved = CampaignSaves.SaveWithAuto(campaignUnsaved, CampaignSaves.Auto.Settle);
+            if (campaignSaved) campaignUnsaved = null;
+            return;
+        }
+        if (campaignUnsaved == null) discardArmed = false;
+        bool wantRestart = Input.IsKeyPressed(KeyboardKey.Enter) && !IsReplay, wantQuit = false;
         if (Input.IsMouseButtonPressed(MouseButton.Left))
         {
-            if (!IsReplay && Ui.Contains(ResultButton(0), mouse)) RestartRequested = true;
-            else if (Ui.Contains(ResultButton(1), mouse)) QuitRequested = true;
+            if (!IsReplay && Ui.Contains(ResultButton(0), mouse)) wantRestart = true;
+            else if (Ui.Contains(ResultButton(1), mouse)) wantQuit = true;
         }
+        if ((wantRestart || wantQuit) && campaignUnsaved != null && !discardArmed) { discardArmed = true; return; }   // 저장 전에는 두 번 눌러야 떠난다
+        if (wantRestart) RestartRequested = true;
+        else if (wantQuit) QuitRequested = true;
     }
 
     Rectangle ResultPanel
@@ -142,6 +156,9 @@ public sealed partial class Game
             return new Rectangle(vp.X + (vp.Width - w) / 2, vp.Y + (vp.Height - h) / 2, w, h);
         }
     }
+
+    /// <summary>캠페인 저장 실패 시 [다시 시도] 버튼 (결과 창 아래 두 번째 줄, T19a).</summary>
+    Rectangle CampaignRetryRect { get { var p = ResultPanel; return new Rectangle(p.X + p.Width - 24 - 260, p.Y + p.Height - 100, 260, 36); } }
 
     Rectangle ResultButton(int i)
     {
@@ -299,6 +316,8 @@ public sealed partial class Game
         }
         if (missionResultsPath != null) Ui.Text(string.Format(S.RsSaved, Path.GetFileName(missionResultsPath)), x1, p.Y + p.Height - 44, 16, Palette.TextDim);
         if (campaignSaved) Ui.Text(S.CmSaved, x2, p.Y + p.Height - 44, 16, Palette.HpGood);
+        if (campaignUnsaved != null) Ui.Button(CampaignRetryRect, S.CmSaveFailedResult, Ui.Contains(CampaignRetryRect, mouse), false);
+        if (campaignUnsaved != null && discardArmed) Ui.Text(S.CmDiscardUnsaved, x1, p.Y + p.Height - 92, 15, Palette.Warning);
         if (!IsReplay) Ui.Button(ResultButton(0), S.RsRetry, Ui.Contains(ResultButton(0), mouse), false);
         Ui.Button(ResultButton(1), S.RsMenu, Ui.Contains(ResultButton(1), mouse), false);
     }

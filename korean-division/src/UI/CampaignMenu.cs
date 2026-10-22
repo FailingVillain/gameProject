@@ -16,8 +16,8 @@ public sealed class CampaignMenu
     enum ViewMode { Home, PreOp, Debrief }
     enum Tab { Summary, Roster, Logistics, Map, Events }
 
-    readonly CampaignState state;
-    readonly string? loadError;
+    CampaignState state;        // 슬롯 불러오기 시 교체 (T19a)
+    string? loadError;
     ViewMode currentView = ViewMode.Home;
     Tab currentTab = Tab.Summary;
 
@@ -40,20 +40,45 @@ public sealed class CampaignMenu
     Vector2 mouse;
     bool click;
 
+    // 저장 슬롯 창 · 저장 실패 재시도 (T19a)
+    bool slotsOpen;
+    string? slotArm, slotNotice;
+    CampaignSaves.Info[] slotInfo = Array.Empty<CampaignSaves.Info>();   // 0..8 = 슬롯 1~9, 9 = 작전 직전, 10 = 정산 직후
+    Func<bool>? saveRetry;      // null 이 아니면 저장 실패 알림 (다시 시도할 저장)
+    Action? saveThen;           // 저장 성공 뒤 이어서 할 일 (출격 · 불러오기 완료)
+
     public CampaignMenu()
     {
         state = CampaignState.Load() ?? new CampaignState();
         loadError = CampaignState.LastLoadError;
+        Adopt(state);
+    }
+
+    /// <summary>상태를 화면에 붙인다 (생성 · 슬롯 불러오기).</summary>
+    void Adopt(CampaignState s)
+    {
+        state = s;
         state.EnsureInitialized();
+        currentView = state.LastDebrief != null ? ViewMode.Debrief : ViewMode.Home;   // 직전 전과 보고가 있으면 바로 Debrief 모달 표시
+        targetMissionId = !string.IsNullOrEmpty(state.NextMission) ? state.NextMission : CampaignState.FirstMission;   // 기본 타깃 미션
+        eventNotice = logisticsNotice = null;
+        resetArmed = false;
+    }
 
-        // 직전 전과 보고가 있으면 바로 Debrief 모달 표시
-        if (state.LastDebrief != null)
-        {
-            currentView = ViewMode.Debrief;
-        }
+    /// <summary>저장 → 성공하면 then, 실패하면 알림 + [다시 시도] (설계 §3: 실패 알림 + 다시 시도).</summary>
+    bool saveFresh;   // 저장 실패 알림이 이번 프레임에 만들어짐 → 같은 클릭 무시
 
-        // 기본 타깃 미션 결정
-        targetMissionId = !string.IsNullOrEmpty(state.NextMission) ? state.NextMission : CampaignState.FirstMission;
+    void Persist(Func<bool> save, Action? then = null)
+    {
+        if (save()) { saveRetry = null; saveThen = null; then?.Invoke(); }
+        else { saveRetry = save; saveThen = then; saveFresh = true; }   // 이 프레임의 클릭이 [다시 시도] 를 누르지 않게 한다
+    }
+
+    /// <summary>진행 저장 (읽기 실패한 원본은 덮어쓰지 않는다 — 원본 보호).</summary>
+    void SaveLive(Action? then = null)
+    {
+        if (loadError != null) { then?.Invoke(); return; }
+        Persist(state.Save, then);
     }
 
     // ---------------------------------------------------------------- UI 유틸
@@ -134,8 +159,16 @@ public sealed class CampaignMenu
     public void Draw(int screenW, int screenH)
     {
         mouse = Input.GetMousePosition();
-        click = Input.IsMouseButtonPressed(MouseButton.Left);
+        bool rawClick = Input.IsMouseButtonPressed(MouseButton.Left);
+        click = rawClick && !slotsOpen && saveRetry == null;   // 창이 떠 있으면 뒤 화면은 클릭을 받지 않는다
+        DrawViews(screenW, screenH);
+        if (slotsOpen) { click = rawClick && saveRetry == null; DrawSlots(screenW, screenH); }
+        if (saveRetry != null) { click = rawClick && !saveFresh; DrawSaveFailed(screenW, screenH); }
+        saveFresh = false;
+    }
 
+    void DrawViews(int screenW, int screenH)
+    {
         float pw = MathF.Min(1020, screenW - 32);
         float ph = MathF.Min(640, screenH - 48);
         var panel = new Rectangle((screenW - pw) / 2, MathF.Max(8, (screenH - ph) / 2 - 8), pw, ph);
@@ -270,6 +303,10 @@ public sealed class CampaignMenu
             }
             rEnd -= 140;
         }
+
+        var slotsBtnRect = new Rectangle(rEnd - 130, y, 130, 28);   // 슬롯 UI = 홈 상단 메뉴 (설계 §15 표 8)
+        if (Button(slotsBtnRect, S.CmTopSaves, true, 14)) OpenSlots();
+        rEnd -= 140;
 
         if (pendingEvents.Count > 0)
         {
@@ -454,7 +491,7 @@ public sealed class CampaignMenu
                 if (Button(btnRect, btnText, canAssign, 13))
                 {
                     CampaignEconomy.AssignRecruits(state, c.Id, toAssign);
-                    state.SaveUnlessLoadFailed(loadError);
+                    SaveLive();
                 }
                 if (hover && !canAssign)
                 {
@@ -491,7 +528,7 @@ public sealed class CampaignMenu
         if (Button(healBtn, S.CmBtnHeal, canHeal, 14, canHeal ? Palette.Accent : null))
         {
             int healed = CampaignEconomy.HealWounded(state);
-            state.SaveUnlessLoadFailed(loadError);
+            SaveLive();
             logisticsNotice = string.Format(S.CmHospitalDone, healed);
         }
         ly += 38;
@@ -706,7 +743,7 @@ public sealed class CampaignMenu
             {
                 string res = CampaignEvents.ApplyChoice(state, currentEv.Id, ci);
                 eventNotice = string.Format(S.CmEventApplied, res);
-                state.SaveUnlessLoadFailed(loadError);
+                SaveLive();
                 selectedEventIndex = 0;
                 break;
             }
@@ -863,8 +900,9 @@ public sealed class CampaignMenu
         if (Button(deployBtnRect, S.CmPreBtnDeploy, canLaunch, 18, canLaunch ? Palette.Accent : null))
         {
             CampaignEconomy.BeginOperation(state, targetMissionId, preOpSelectedCompanyIds.ToList(), maxDeploy);
-            state.SaveUnlessLoadFailed(loadError);
-            OpenMission = targetMissionId;
+            string mission = targetMissionId;
+            // 작전 시작 직전 자동 저장 (= 재도전 지점). 실패하면 출격하지 않고 알림 + 다시 시도 (성공하면 그때 출격)
+            Persist(() => CampaignSaves.SaveWithAuto(state, CampaignSaves.Auto.PreOp), () => OpenMission = mission);
         }
 
         var cancelBtnRect = new Rectangle(panel.X + 24, by, 140, 40);
@@ -928,8 +966,127 @@ public sealed class CampaignMenu
         if (Button(closeBtn, S.CmDebriefClose, true, 16, Palette.Accent))
         {
             state.LastDebrief = null;
-            state.SaveUnlessLoadFailed(loadError);
+            SaveLive();
             currentView = ViewMode.Home;
+        }
+    }
+
+    // ---------------------------------------------------------------- 저장 슬롯 창 · 저장 실패 알림 (T19a)
+
+    void OpenSlots()
+    {
+        slotsOpen = true;
+        slotArm = slotNotice = null;
+        RefreshSlots();
+    }
+
+    void RefreshSlots()
+    {
+        slotInfo = new CampaignSaves.Info[CampaignSaves.SlotCount + 2];
+        for (int i = 0; i < CampaignSaves.SlotCount; i++) slotInfo[i] = CampaignSaves.Describe(CampaignSaves.SlotPath(i + 1));
+        slotInfo[CampaignSaves.SlotCount] = CampaignSaves.Describe(CampaignSaves.AutoPath(CampaignSaves.Auto.PreOp));
+        slotInfo[CampaignSaves.SlotCount + 1] = CampaignSaves.Describe(CampaignSaves.AutoPath(CampaignSaves.Auto.Settle));
+    }
+
+    static string SlotPathOf(int row) => row < CampaignSaves.SlotCount ? CampaignSaves.SlotPath(row + 1)
+        : CampaignSaves.AutoPath(row == CampaignSaves.SlotCount ? CampaignSaves.Auto.PreOp : CampaignSaves.Auto.Settle);
+
+    static string SlotLabelOf(int row) => row < CampaignSaves.SlotCount ? string.Format(S.CmSlotName, row + 1)
+        : row == CampaignSaves.SlotCount ? S.CmAutoPreOp : S.CmAutoSettle;
+
+    void DrawSlots(int screenW, int screenH)
+    {
+        Raylib.DrawRectangle(0, 0, screenW, screenH, Palette.Alpha(Color.Black, 180));
+        float dw = MathF.Min(820, screenW - 32), dh = MathF.Min(560, screenH - 32);
+        var modal = new Rectangle((screenW - dw) / 2, (screenH - dh) / 2, dw, dh);
+        Ui.Panel(modal, Palette.Alpha(Palette.PanelDark, 250), Palette.Accent);
+        float x = modal.X + 24, y = modal.Y + 16;
+        Ui.Text(S.CmSlotsTitle, x, y, 20, Palette.Accent); y += 34;
+
+        int rows = CampaignSaves.SlotCount + 2;
+        float rowH = MathF.Min(34, (modal.Height - 130) / rows);
+        for (int row = 0; row < rows && row < slotInfo.Length; row++)
+        {
+            var info = slotInfo[row];
+            bool auto = row >= CampaignSaves.SlotCount;
+            float ry = y + row * rowH + (auto ? 10 : 0);
+            Ui.Text(SlotLabelOf(row), x, ry + 6, 15, auto ? Palette.Accent : Palette.Text);
+            string desc = !info.Exists ? S.CmSlotEmpty
+                : info.Error != null ? string.Format(S.CmSlotBroken, info.Error)
+                : string.Format(S.CmSlotSummary, info.SavedAt, info.NextName, info.Completed, info.Supply);
+            Ui.Text(desc, x + 200, ry + 7, 13, info.Exists && info.Error == null ? Palette.TextDim : info.Error != null ? Palette.Warning : Palette.TextDim);
+
+            float bx = modal.X + modal.Width - 24 - 110;
+            string loadKey = "load" + row, saveKey = "save" + row;
+            bool canLoad = info.Exists && info.Error == null;
+            if (Button(new Rectangle(bx, ry + 2, 110, rowH - 6), slotArm == loadKey ? S.CmSlotLoadConfirm : S.CmSlotLoad, canLoad, 13))
+            {
+                if (slotArm != loadKey) slotArm = loadKey;
+                else LoadSlot(row);
+            }
+            if (!auto)
+            {
+                bool canSave = loadError == null && info.Error == null;   // 깨진 · 새 버전 칸은 덮어쓰지 않는다
+                if (Button(new Rectangle(bx - 118, ry + 2, 110, rowH - 6), slotArm == saveKey ? S.CmSlotOverwrite : S.CmSlotSave, canSave, 13, slotArm == saveKey ? Palette.Warning : null))
+                {
+                    if (info.Exists && slotArm != saveKey) slotArm = saveKey;   // 덮어쓰기는 한 번 더 눌러 확인
+                    else
+                    {
+                        int slot = row + 1;
+                        slotArm = null;
+                        Persist(() => CampaignSaves.SaveSlot(state, slot), () => { slotNotice = string.Format(S.CmSlotSaved, slot); RefreshSlots(); });
+                    }
+                }
+            }
+        }
+
+        float by = modal.Y + modal.Height - 50;
+        if (loadError != null) Ui.Text(S.CmSlotNoSaveBroken, x, by - 26, 13, Palette.Warning);
+        else if (slotInfo.Any(i => i.Error != null)) Ui.Text(S.CmSlotBrokenKept, x, by - 26, 13, Palette.Warning);
+        if (slotNotice != null) Ui.Text(slotNotice, x, by + 10, 14, Palette.HpGood);
+        if (Button(new Rectangle(modal.X + modal.Width - 24 - 140, by, 140, 36), S.CmSlotClose, true, 15))
+        {
+            slotsOpen = false;
+            slotArm = null;
+        }
+    }
+
+    /// <summary>슬롯 · 자동 저장을 진행 저장(campaign.json)으로 되돌린다. 작전 직전 자동 저장 = 재도전 복귀.</summary>
+    void LoadSlot(int row)
+    {
+        slotArm = null;
+        var loaded = CampaignSaves.Read(SlotPathOf(row), out string? err);
+        if (loaded == null) { slotNotice = err ?? S.CmSlotEmpty; RefreshSlots(); return; }
+        string label = SlotLabelOf(row);
+        Persist(() =>
+        {
+            if (loadError != null) CampaignState.BackupBroken();   // 읽지 못한 원본은 .bak 로 보존한 뒤 덮어쓴다
+            return loaded.Save();
+        }, () =>
+        {
+            loadError = null;
+            Adopt(loaded);
+            slotNotice = string.Format(S.CmSlotLoaded, label);
+            RefreshSlots();
+        });
+    }
+
+    void DrawSaveFailed(int screenW, int screenH)
+    {
+        Raylib.DrawRectangle(0, 0, screenW, screenH, Palette.Alpha(Color.Black, 160));
+        float dw = MathF.Min(560, screenW - 32), dh = 170;
+        var modal = new Rectangle((screenW - dw) / 2, (screenH - dh) / 2, dw, dh);
+        Ui.Panel(modal, Palette.Alpha(Palette.PanelDark, 252), Palette.HpLow);
+        Ui.Text(S.CmSaveFailedTitle, modal.X + 24, modal.Y + 16, 20, Palette.HpLow);
+        foreach (var (l, i) in WrapText(S.CmSaveFailedText, dw - 48, 14).Select((l, i) => (l, i)))
+            Ui.Text(l, modal.X + 24, modal.Y + 52 + i * 18, 14, Palette.Text);
+        float by = modal.Y + modal.Height - 52;
+        if (Button(new Rectangle(modal.X + modal.Width - 24 - 150, by, 150, 38), S.CmSaveRetry, true, 16, Palette.Accent))
+            Persist(saveRetry!, saveThen);
+        else if (Button(new Rectangle(modal.X + 24, by, 180, 38), S.CmSaveGiveUp, true, 14))
+        {
+            saveRetry = null;
+            saveThen = null;
         }
     }
 }
