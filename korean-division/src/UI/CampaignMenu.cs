@@ -251,6 +251,9 @@ public sealed partial class CampaignMenu
             case Tab.Map: DrawTabMap(body); break;
             case Tab.Events: DrawTabEvents(body); break;
             case Tab.Staff: DrawTabStaff(body); break;
+            case Tab.Records: DrawTabRecords(body); break;        // T38f 읽기 전용
+            case Tab.Equipment: DrawTabEquipment(body); break;
+            case Tab.Organization: DrawTabOrganization(body); break;
             default: DrawTabPlaceholder(body, currentTab); break;   // 후속 탭 (틀만)
         }
     }
