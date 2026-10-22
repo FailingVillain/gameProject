@@ -40,3 +40,14 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 
 카드가 있는 것 = T01~T13 (+_TEMPLATE). T15~T20 과 카드 없는 브랜치(wip/chokefix D14 보류 · wip/sfxnew 효과음 · wip/gt-face-proto)는 발주 직전 spec/지휘자가 카드를 쓴다.
 보류(이 표 밖): 장갑열차 · 하천 · 전술 AI 3C/3D · 지도 편집기 · 캠페인 순서 연결/챕터 1/엔딩.
+
+## UI 개선 백로그 (spec/ui-backlog, 2026-10-22) - 상세 korean-division/docs/UI_BACKLOG.md, 모두 시뮬 무변경
+| id | 제목 | 역할 | 등급 | 선행 | 상태 |
+|---|---|---|---|---|---|
+| T38g | UI 하네스 (퍼즈 작은 버튼 + 화면x3해상도 시트) | feature | D中 R1 S H0 Wlight | 없음 (run_game.ps1 = tools/monitor-launch) | queued |
+| T38b | 게임 내 도움말 오버레이 + CONTROLS 동기 테스트 | feature | D中 R1 S H1 Wlight | T27 위 스택 | queued |
+| T38a | 설정 메뉴: 단축키 재지정 | feature | D中 R2 SM H1 Wlight | T38b | queued |
+| T38c | 명령 카드 칸 넘침 감사+수정 | feature | D中 R1 S H1 Wlight | T27 위 (T38b 뒤 직렬) | queued |
+| T38e | 부대 목록 스크롤 · 전투 중 도감 · 툴팁 | feature | D中 R1 S H1 Wlight | T38c | queued |
+| T38d | 종이 UI 2단계 (밝은 종이 팔레트 · 책상 · 세부 · 소해상도) | feature | D中 R1 M H1 Wlight | T38e (사용자: 실구현 10-23 뒤) | queued |
+| T38f | 캠페인 홈 후속 탭 읽기 전용 | spec→feature | D中 R2 M H1 Wlight | T19c 위 스택 | queued |
