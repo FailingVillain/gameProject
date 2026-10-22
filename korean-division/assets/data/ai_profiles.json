@@ -113,6 +113,8 @@
     "notemplates": { "tactics": { "templates": false } },
     // 측정용: 참호 돌격 순서 끄기 (N32 — --ai tactical:notrenchassault, 미션 aiProfile "korean+notrenchassault")
     "notrenchassault": { "tactics": { "trenchAssault": false } },
+    // 측정용: 전술 AI 연막 수류탄 켜기 (T32b — --ai tactical:smoke_on, KD_AI_OVERLAY=smoke_on). 참호 돌격 안 연막 (smokeHook) 은 tactics.json 자료 키라 겹침이 아님 (tactics-obs 변형 SMOKEHOOK).
+    "smoke_on": { "tactics": { "smokeAi": true } },
     // 세력 기본값 (지도 factions[].en)
     "korean": {
       "strategy": { "aggressiveness": 0.6, "artillery": 0.8, "cavalry": 0.5 },

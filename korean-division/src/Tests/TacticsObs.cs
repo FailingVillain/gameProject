@@ -145,6 +145,9 @@ public static class TacticsObs
             case "NOCLOSE": d.CombatRules.CloseOnFrac = 99f; d.CombatRules.CloseHoles = d.CombatRules.CloseHoleGap = 1 << 20; d.CombatRules.CloseHoleFrac = 0; d.CombatRules.CloseBehindMen = 0; d.CombatRules.CloseChargeRange = 0; break;   // gapfill 기준선: 장교 판단 끔 (= N12 동작, 대열 지표만 잼)
             case "NoNco": d.CombatRules.SquadLeaderRank = 0; break;
             case "OFFOLD": d.CombatRules.OfficerAvoid = false; d.CombatRules.ScoutAvoid = false; break;   // N35 기준선: 장교 교전 회피 끔 (옛 동작)                 // 9차 분리: 부사관 기본 편성 끔
+            case "SMOKE": AiProfiles.Tweak(p => p.Tactics.SmokeAi = true); break;        // T32b: 전술 AI 연막 수류탄 켬 (= 겹침 smoke_on)
+            case "SMOKEHOOK": d.Tactics.TrenchAssault.SmokeHook = true; break;          // T32b: 참호 돌격 순서 안 연막 (AI 돌격만) 켬
+            case "SMOKEALL": AiProfiles.Tweak(p => p.Tactics.SmokeAi = true); d.Tactics.TrenchAssault.SmokeHook = true; break;
             case "NoTA": d.Tactics.TrenchAssault.AiEnabled = false; break;   // N32 기준선: 전술 AI 참호 돌격 끔 (같은 빌드 끔 대 켬)
             case "TA12": d.Tactics.TrenchAssault.BoundEndDist = 12f; d.Tactics.TrenchAssault.FarDist = 40f; break;   // N32 민감도: 약진을 사격 거리 안 (사거리 24) 까지, 집결 40칸
             case "TA8": d.Tactics.TrenchAssault.BoundEndDist = 8f; d.Tactics.TrenchAssault.FarDist = 40f; break;
@@ -322,6 +325,7 @@ public static class TacticsObs
           sb.AppendLine($"[F4기병] 돌격 개시 {st.CavChargeStarts} 근접 사살 {st.CavMeleeKills} 무의미 정면 {st.CavChargePointless} 자동 막음 {st.CavAutoBlocked} 꺾인 {st.ChargesBroken} 사유(후퇴/제압/승무원/고립/측면) {string.Join("/", st.CavWhy)}");
           sb.AppendLine($"[기병AI] 돌격 정면 {st.CavChargeFront} 측면 {st.CavChargeFlank} 후방 {st.CavChargeRear}, 측면 경유 {st.CavFlankRoutes}, 소규모 보류 {st.CavSmallHeld}, 교착 물러남 {st.CavScreens}, 장교 뒤 따라감 {st.CavOfficerHeldBack}, 무모한 정면 (N55) {st.CavRashFront}");
           sb.AppendLine($"[N32 참호돌격] 시작 {st.TaStarts} (AI {st.TaAiStarts}) 성공 {st.TaDone} 실패 {st.TaFail} 취소 {st.TaCancel} | 단계 진입 제압 {st.TaStageEntered[1]} 접근 {st.TaStageEntered[2]} 돌파 {st.TaStageEntered[3]} 소탕 {st.TaStageEntered[4]} 확보 {st.TaStageEntered[5]} | 약진 {st.TaBounds} 수류탄 {st.TaGrenades} 돌격 {st.TaCharges} | 취소 원인 {(st.TaCancelWhy.Count == 0 ? "없음" : string.Join(", ", st.TaCancelWhy.Select(kv => kv.Key + " " + kv.Value)))}");
+          sb.AppendLine($"[T32b 연막] AI 개활 {st.AiSmokeOpen} 사격아래 {st.AiSmokeFire} 참호돌격 {st.TaSmokeHook} | 피운 연막 {st.SmokesSpawned}");
           sb.AppendLine($"[N23/N55] 돌격보병 소탕 명령 {st.DrillSweeps}, 돌격 사격 전진 (경험 적은 지휘관) {st.DrillMarchAdvances}, 분대 교대 약진 {st.DrillBounds}"); }
         { var ps2 = sides.Keys.OrderBy(k => k).Select(k => w.Controllers.Select(c => c.Ai).OfType<TacticalAi>().Select(a => a.StateOf(k)).FirstOrDefault(x => x != null)).ToList();
           sb.AppendLine($"[후퇴사격] 발수 {w.Stats.RetreatShots} 사살 {w.Stats.KillsRetreatFire} | [재정비] 시작 {string.Join("/", ps2.Select(x => x?.Regroups ?? 0))} 사수판단 {string.Join("/", ps2.Select(x => x?.RegroupHolds ?? 0))} 재전진 {string.Join("/", ps2.Select(x => x?.Readvances ?? 0))} 후퇴 {string.Join("/", ps2.Select(x => x?.Fallbacks ?? 0))}"); }

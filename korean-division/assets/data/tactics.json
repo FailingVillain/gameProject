@@ -146,7 +146,7 @@
   // 2 접근: 분대 교대 약진 (boundLength, boundMaxSec) 참호까지 boundEndDist 칸이면 속보 돌진 (사양 "~30칸" 은 소총 사거리 24 밖이라 약진이 아무 의미 없고 돌진이 사격 구역 전체 25칸이 됨 — 측정 B 1/5 → 12칸 5/5, 그래서 12; 30 으로 되돌리려면 farDist 60 · boundEndDist 30) (수류탄 거리 × rushStandFrac). liftDist 안이면 포격을 creepLead 칸 너머로 (이동 탄막).
   // 3 돌파: 수류탄 volleys 번 (volleyGapSec 간격) → fuseWaitSec 뒤 착검 돌격 chargeThrough 칸 너머까지. enterFrac 이 참호에 들어가면 (또는 breakMaxSec) 다음.
   // 4 소탕: 양 끝으로 참호를 따라 쓸기, 경기관총은 양 끝 (endHoldBack 안쪽). 보이는 적이 clearConfirmSec 없으면 (또는 clearMaxSec) 다음. 5 확보: 공격 방향을 향해 점유 (holdPad · coverMaxHit), consolidateSec.
-  // smokeHook · wireCutHook = 참호 돌파 묶음 (N59 연막 · 철조망 절단) 자리 (이 묶음에서는 안 씀). ai* = 전술 AI (공격 과제 소총 중대, 프로필 tactics.trenchAssault 로 켜고 끔).
+  // smokeHook (T32b, 기본 꺼짐) = 전술 AI 가 시작한 돌격만 접근 → 돌파 직전 참호 앞 연막 수류탄 줄 (breachAi 간격 · 개수). wireCutHook = 자리만 (T32c). ai* = 전술 AI (공격 과제 소총 중대, 프로필 tactics.trenchAssault 로 켜고 끔).
   "trenchAssault": {
     "enabled": true, "decideSec": 0.5, "snapRadius": 6, "minMen": 6,
     "farDist": 40, "gunStandFrac": 0.85, "prepMinSec": 8, "prepMaxSec": 45, "suppGoal": 0.35, "suppFrac": 0.5, "suppRadius": 12, "stageMaxSec": 150,
@@ -158,6 +158,17 @@
     "maxTotalSec": 420, "cooldownSec": 60, "spanRadius": 45,
     "aiEnabled": true, "aiTriggerDist": 70, "aiMinDist": 10, "aiMinDefenders": 3, "aiMinMen": 20, "aiMinOdds": 0.8,
     "smokeHook": false, "wireCutHook": false
+  },
+  // 전술 AI 연막 수류탄 (T32b 초안 값, src/AI/Tactical/TacticalAi.Smoke.cs, 켜기 = 프로필 tactics.smokeAi — 기본 꺼짐). 칸 = 지도 칸.
+  // 공격 과제 소총 중대 · 연막 보유 돌격병 ≥ smokeMinMen · 사선 열린 보이는 적 사수 (소총 사거리 × smokeFireRangeMul 안) ≥ smokeMinShooters 일 때:
+  // R1 진격 중 + 적까지 엄폐 (TacMap 엄폐 ≥ smokeCoverMin) 없는 구간 ≥ smokeOpenMinDist, R2 돌격 직전 · 중 + (제압 ≥ smokeUnderFireSupp 또는 최근 smokeUnderFireLossSec 초 피격 비율 ≥ smokeUnderFireLoss).
+  // 줄 = 앞선 보유자 + 사거리, 적에서 smokeStandoffMin (R2 는 2) ~ smokeStandoffMax 칸, smokeSpacing 간격, 중대 둘레 동시 smokeMaxPerCompany, 핀 뒤 smokeCooldownSec 초 쉼.
+  // smokeSelfBlockGuard: 돌격 중이 아니고 최근 smokeFiringSec 초에 쏜 병사 ≥ smokeSelfBlockFrac 이면 안 던짐.
+  "breachAi": {
+    "smokeMinMen": 8, "smokeOpenMinDist": 18, "smokeStandoffMin": 8, "smokeStandoffMax": 20, "smokeSpacing": 5, "smokeMaxPerCompany": 4, "smokeCooldownSec": 20,
+    "smokeUnderFireSupp": 0.25, "smokeUnderFireLossSec": 10, "smokeUnderFireLoss": 0.05,
+    "smokeSelfBlockGuard": true, "smokeSelfBlockFrac": 0.4, "smokeFiringSec": 3,
+    "smokeFireRangeMul": 1.3, "smokeMinShooters": 3, "smokeCoverMin": 0.4
   },
   // 도하 · 병목 돌파 (사용자 결정 2026-10-19, src/AI/Tactical/TacticalAi.Crossing.cs, docs/ENGINE_NOTES.md '도하 · 병목 돌파'). 밸런스 수치 아님 — AI 판단만. 칸 = 지도 칸.
   // 연대 앞 중대 → 적 직선이 두께 minObstacle~maxObstacle 칸의 못 걷는 띠 (강) 를 지나고, 그 띠가 옆으로 minBarrier 칸 이상 이어지며, searchLateral 칸 안에 폭 maxLaneWidth 이하의

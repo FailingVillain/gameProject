@@ -693,3 +693,9 @@
 - `strategy.manReplace` (기본 끔, 겹침 `3b_manrepl`): 측면 · 협공 중 기동 제대가 모두 빠지면 (후퇴 · 조우 · 전멸) 고정 제대 중 성한 소총 중대 (8명↑ · 후퇴 · Spent 아님) 가 2개 이상일 때 경유점에 가장 가까운 중대를 같은 경유점 · 돌격 진지로 보냄 (도착 예정 ≤ maxArrive, 기한 연장). 누계 `TacFaction.ManReplaces` (tactics-obs `ManRepl`). 테스트 `KD_SELFTEST_ONLY=s3a` 2항목.
 - 측정 도구: `tools/bn_campaign/gen_scen.py`·`gen_scen2.py` 기관총 중대를 세력 전용 유닛으로 (봉천 = `heavy_machinegunner_fengtian` — 전엔 MGD_* · C1 기관총 시나리오가 검증 오류로 전부 실패), `gen_scen4.py` (DR_* — 방어 대대 3~4개 중대 = 예비 있음; C1/C2 방어는 2개 중대라 3B 예비 기능이 발동 0), `agg_3b2.py` (변형별 승 · 미결 · 손실 · 방어 24칸 · 참호 · Defend→Advance · 예비 · 역습 · 투입 · 계획).
 - 측정 (main e0dc64d, C1 7 + C2 9 시나리오 × 시드 1~5, 같은 실행 파일 KD_AI_OVERLAY, `docs/ai3b2_raw/summary_base.md`): counterOdds 1.8 = 기본과 완전히 같음 (역습 발동 0) · defendRepick 0.5 = 승 50/80 같음, Defend→Advance 1.59→1.39 · fixPush = 발동 5회, 승 50→49 · pincerShare 0.65 = 협공이 거의 안 골라짐 (측면만), 승 50→52 (RIV_br2 1→4, MGD 4→3, D_hill 방어 손실 25→11%). 방어 예비 · 역습 지표는 이 시나리오에서 0 → DR_* 로 다음 통합 측정.
+
+## T32b 전술 AI 연막 수류탄 (2026-10-22, `src/AI/Tactical/TacticalAi.Smoke.cs` · `TrenchAssault.cs` TaSmokeHook, 기본 꺼짐)
+- 사용자 2026-10-22: AI 연막 · 철조망 보류(D18) 해제. 켜기 = 프로필 `tactics.smokeAi` (겹침 `smoke_on`) · tactics.json `trenchAssault.smokeHook`. 수치 = tactics.json `breachAi` (초안).
+- R1 개활 횡단 / R2 사격 아래 돌격: 공격 과제 소총 중대 (연막 보유 ≥ smokeMinMen) 가 기존 `ThrowSmokeCommand`(리플레이 `smokegrenade`) 를 점마다 1명씩 낸다. R3: AI 플래그 (TA.Flags 1) 돌격만 접근 → 돌파 직전 참호 앞 줄에 시뮬이 직접 투척.
+- AF1: 시뮬은 Faction.IsAi 를 안 읽는다. 새 저장 상태 없음 — 쿨다운 · 동시 수 = 자기 연막 · 날아가는 연막 수류탄, 최근 사상 = 생존자 LastDamagedTick (대용). 프로필 키 추가로 FormatVersion 56 (병합 때 재번호).
+- 사거리 grenade.range 5 그대로라 줄은 앞선 보유자 + 4.5칸, 적에서 8~20칸 (R2 하한 2칸) 일 때만. 시험 `KD_SELFTEST_ONLY=smokeai`, 관찰 tactics-obs 변형 SMOKE · SMOKEHOOK · SMOKEALL, 보고 줄 `[T32b 연막]`.
