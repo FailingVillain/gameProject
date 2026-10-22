@@ -1,0 +1,6 @@
+{
+  "_doc": "RUNTIME multiply tints (renderer, T55s) - zero extra atlas memory. Per culture, 3 levels picked from a hash bit pair; RGB multipliers 0-255 (255 = unchanged). Level 0 is always neutral so the baked art keeps its authored look. Not used by the generator; shipped here so art and renderer agree.",
+  "ko":      [[255, 255, 255], [238, 234, 226], [252, 246, 234]],
+  "zh":      [[255, 255, 255], [240, 232, 222], [250, 240, 228]],
+  "default": [[255, 255, 255], [240, 236, 230], [250, 246, 238]]
+}

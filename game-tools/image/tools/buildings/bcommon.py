@@ -46,6 +46,13 @@ MATS = {
     "clay":       [(70, 40, 28), (100, 60, 38), (130, 82, 52), (158, 106, 68)],
     "char":       [(18, 16, 14), (30, 27, 24), (46, 42, 38), (64, 60, 54)],
     "char2":      [(40, 38, 34), (60, 57, 52), (82, 78, 72), (106, 102, 94)],
+    # --- appended for housegen (T55g); append-only, never reorder above ---
+    "earth":      [(104, 82, 56), (134, 108, 76), (162, 136, 100), (188, 162, 124)],    # rammed earth, yellow-brown
+    "earth_pale": [(124, 106, 80), (154, 134, 102), (180, 160, 126), (204, 186, 152)],  # dry pale loess
+    "brick_red":  [(84, 44, 36), (116, 62, 48), (146, 82, 62), (172, 104, 80)],
+    "kiwa_blue":  [(28, 50, 58), (42, 76, 86), (60, 104, 114), (84, 132, 140)],         # blue-green glazed tile
+    "tile_red":   [(86, 42, 32), (120, 62, 44), (152, 84, 58), (180, 108, 76)],         # terracotta tile
+    "thatch_gold": [(118, 90, 40), (160, 126, 60), (198, 164, 88), (226, 196, 118)],    # fresh straw
 }
 
 
@@ -62,7 +69,8 @@ def register_materials():
 register_materials()
 
 RUIN_MAP = {"thatch": "char", "thatch_old": "char", "plaster": "char2", "kiwa": "char", "kiwa2": "char2", "paper": "char",
-            "wood": "char", "wood_dark": "char", "mud": "mud_dark", "clay": "mud_dark"}
+            "wood": "char", "wood_dark": "char", "mud": "mud_dark", "clay": "mud_dark",
+            "earth": "mud_dark", "earth_pale": "mud_dark", "brick_red": "brick_dark", "kiwa_blue": "char", "tile_red": "char2", "thatch_gold": "char"}
 
 
 def mapper(ruin):
