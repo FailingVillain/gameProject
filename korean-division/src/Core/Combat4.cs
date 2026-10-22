@@ -73,7 +73,7 @@ public sealed partial class World
     {
         var m = u.Melee;
         if (m == null) return false;
-        return t is not Unit tu || (!tu.Def.IsArmored && m.CanDamage(tu.Def.Category));
+        return t is not Unit tu ? t is not TrainCar : (!tu.Def.IsArmored && m.CanDamage(tu.Def.Category));   // T30b: 열차 객차 = 장갑 → 근접 불가
     }
 
     // ---------------------------------------------------------------- 직사포 폭발 (보병포 · 야전포)
@@ -255,7 +255,7 @@ public sealed partial class World
     {
         dist = 0;
         if (!t.Alive || t.Indestructible || !IsHostile(u.Owner, t.Owner) || !Fog.CanSee(u.Owner, t)) return false;
-        if (t is Unit tu && !w.CanDamage(tu.Def.Category)) return false;
+        if (!w.CanDamage(CategoryOf(t))) return false;   // 유닛 · 열차 객차 (건물 = 항상 가능)
         dist = MathF.Max(0, t.EdgeDistance(u.Pos) - u.Radius);
         if (dist > MarchRadius(u, w, c) || dist < w.MinRange) return false;
         Vector2 dir = u.Velocity, to = t.Pos - u.Pos;

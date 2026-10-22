@@ -458,6 +458,7 @@ public sealed partial class World
             if (d > w.Splash) continue;
             Damage(b, w.Damage * SplashFactor(w, d), shooter, w.Key);
         }
+        SplashTrains(owner, impact, targetId, w, shooter);   // T30b 열차 객차 (Train.cs) — 열차 없으면 바로 돌아감
         if (Profile) ProfSplash += System.Diagnostics.Stopwatch.GetTimestamp() - pt0;
     }
 

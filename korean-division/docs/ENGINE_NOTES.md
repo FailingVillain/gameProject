@@ -721,3 +721,8 @@
 - `src/Core/Train.cs`: 열차 = `TrainCar : Entity` 순서열, World.Units/byId 밖 `World.Trains` ([SnapExt], ORG_ 끝 WriteTrains). 호장 정수(1칸 = 65536, 대각 92682), 선두 S · 객차 i = S − i·간격. 열차 없으면 체크섬 · Step 영향 없음.
 - 경로 = 미션 json `trains[].path` 경유점(rail 칸) 사이 8방향 BFS(고정 이웃 순, 지난 칸 재방문 금지), `loop` 순환선. 스크립트: 경유점 + `waits` 초 정차, 끝에서 되돌아 반복. 조종: `TrainMoveCommand(f, train, dir)` (-1/0/1, 스크립트 끔), API `World.TrainMove`.
 - 가감속 = balance.json `trains` (정지 가능 속도 √(2·brake·거리)), 선로 끝 관통 없음. 앞쪽 lookahead 칸 선로 위 유닛 → 정지 (6틱 주기 감지). 테스트 `KD_SELFTEST_ONLY=train`.
+
+## 열차 무기 · 객차 피해 (2026-10-22, 브랜치 `t30b-train-weapons`, T30b, FormatVersion 59)
+- `TrainCarDef`: weapons (기존 무기 키) · category (기본 armored = 장갑차 규칙) · engine. `TrainCar.Guns` (TrainGun: TargetId · Cooldown · AimLeft 틱), StepTrains 끝 `StepTrainGun` (AcquireInterval 주기 FindTarget → 조준 → 사선 → Fire). 탄약 무제한.
+- 전투 경로 공유: FindTarget 객차 후보 (trainMask), Fire/FireSpray 사격자 Entity, bonus = `World.CategoryOf`, Explode → `SplashTrains`, `World.Find` → `FindCar` 대비, 안개 객차 시야, CanMelee 객차 불가.
+- HP 0 = 잔해 (열차에 남음). 기관차 모두 파괴 → `Train.Stalled` (제동 · 정지, 명령 무시). 저장: 열차 = ENTS 끝, 엔티티 참조 태그 3 = 객차. 테스트 `KD_SELFTEST_ONLY=trainweapons`.

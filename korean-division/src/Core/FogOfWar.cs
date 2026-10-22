@@ -111,6 +111,9 @@ public sealed partial class FogOfWar
             if (world.Flares.Count > 0 && world.Weather.Time != TimeOfDay.Day)   // T10 ③ 조명탄: 가까이 있는 세력은 밝힌 원을 본다 (FieldOps.cs)
                 foreach (var fl in world.Flares)
                     if (world.FlareSeenBy(f, fl)) Stamp(g, fl.Pos, (int)MathF.Ceiling(fl.Radius));
+            foreach (var t in world.Trains)   // T30b 열차 객차 시야 (잔해 제외)
+                foreach (var c in t.Cars)
+                    if (c.Alive && c.Owner == f) Stamp(g, c.Pos, world.TrainCarSight(c));
         }
         bool shared = ShareAlliedVision();
         for (int f = 1; f < grids.Length; f++)

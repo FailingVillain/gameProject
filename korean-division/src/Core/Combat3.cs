@@ -326,7 +326,7 @@ public sealed partial class World
     /// 흩뿌림 사격 (weapon.spray > 0): 명중 판정은 표적 기준. 빗나간 탄은 표적 둘레 spray 반경 안 결정적 지점에 떨어지고,
     /// 그 지점에서 spray 안의 다른 적 중 하나(가까울수록 가중)가 자기 명중률로 대신 맞을 수 있다. 제압은 착탄점 spray 안 적 전원 (아군 오사 없음).
     /// </summary>
-    void FireSpray(Unit shooter, Vector2 from, Entity target, WeaponDef w, float dist)
+    void FireSpray(Entity shooter, Vector2 from, Entity target, WeaponDef w, float dist)   // T30b: 사격자 = 유닛 또는 열차 객차
     {
         bool hit = Roll(shooter.Id, target.Id) < ShotChance(shooter, target, w, dist);
         bool aimedHit = hit;
@@ -365,7 +365,7 @@ public sealed partial class World
                     chosen = e;
                     if (acc >= pick) break;
                 }
-                if (chosen != null && Roll(chosen.Id, -9 - shooter.Id) < ShotChance(shooter, chosen, w, MathF.Max(0, chosen.EdgeDistance(shooter.Pos) - shooter.Radius)))
+                if (chosen != null && Roll(chosen.Id, -9 - shooter.Id) < ShotChance(shooter, chosen, w, MathF.Max(0, chosen.EdgeDistance(shooter.Pos) - ShooterRadius(shooter))))
                 {
                     hit = true; victim = chosen; impact = chosen.Pos;
                 }
@@ -384,7 +384,7 @@ public sealed partial class World
         }
         sprayBuffer.Clear();
         if (!aimedHit) NearMissPath(shooter.Owner, from, impact, w.Suppress, target.Id, impact, w.Spray);   // 빗나간 탄: 흩뿌림 반경 밖 사선 근접 제압 (Suppression.cs)
-        if (hit) Damage(victim, w.Damage * (victim is Unit vu ? w.BonusAgainst(vu.Def.Category) : 1f), shooter, w.Key);
+        if (hit) Damage(victim, w.Damage * w.BonusAgainst(CategoryOf(victim)), shooter, w.Key);
         else
         {
             MarkAlert(target.Owner, target.Pos);
