@@ -31,3 +31,11 @@ Repo `C:\gameProject\korean-division`. Report in Korean, short. Procedures: `doc
 - 게임·편집기 창을 **전체화면/테두리 없는 전체화면/최대화로 띄우지 않는다.** 항상 창 모드(windowed), 크기는 1280x720 이하(해상도 시험은 `--size WxH` 로 캡처하되 최대화 금지). `settings.json` 의 `Mode` 를 fullscreen/borderless 로 바꾸지 말 것(바꿨다면 원복).
 - 스크린샷 검수용 이미지는 이미지 뷰어를 열지 말고 파일만 만든다(지휘자가 폴더로 안내).
 - 창은 `tools/agent/run_game.ps1` 로 보조 모니터에 띄운다.
+
+## Parallel full selftest (release / pre-merge full run)
+- `powershell -NoProfile -ExecutionPolicy Bypass -File tools/selftest_parallel.ps1 [-Jobs 4] [-Dll bin/<own>/KoreanDivision.dll] [-OutDir dir] [-Only g1,g2] [-DetCheck] [-SelfCheck]` (headless; build into your OWN bin dir first, never shared bin\Debug).
+- Groups = every `KD_SELFTEST_ONLY` name in src/SelfTest.cs (incl. `core_*` / `perf` (lodaudit + lmgtable excluded: not in the full run), which cover the inline parts of the full run); unknown `-Only` names fail loudly (the exe would silently run the FULL selftest).
+- Buckets: longest-first greedy by `tools/selftest_timings.json` (refreshed after a clean full run). `perf` + `core_fog` (timing thresholds) run alone after the buckets. Each job = one heavy_gate slot (gate closed >15 min -> job NOT RUN, exit 2).
+- Each group has its own `KD_TMP` / `KD_CAMPAIGN_DIR`; groups writing shared files go in `$SharedState` (one bucket). A new group needs no registration (parsed from SelfTest.cs); new inline test code outside a group is NOT run in parallel mode - add it to a `core_*` case.
+- Output: per-group PASS/FAIL + seconds, last 30 log lines of each failure, logs in `<OutDir>/logs/<group>.log`. Exit 0 pass, 1 fail, 2 partial. `-DetCheck` also runs `--detcheck` and prints the DETCHECK/GOLDEN lines.
+- `-SelfCheck` = 3 tiny groups in 2 jobs (~10 s) to prove the harness works.
