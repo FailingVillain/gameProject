@@ -24,15 +24,21 @@ public sealed partial class Unit
 
 public sealed partial class World
 {
+    /// <summary>C1E1-g4: 유닛 세력의 미션 항복 덮어쓰기 (MissionFaction.SurrenderChance 가 있을 때만, 없으면 null).</summary>
+    MissionFaction? MissionSurrender(Unit u) =>
+        Mission?.Def.Factions is { } fs && (uint)(u.Owner - 1) < (uint)fs.Count && fs[u.Owner - 1].SurrenderChance != null ? fs[u.Owner - 1] : null;
+
     /// <summary>항복 판정 · 상태 갱신 (매 틱, UpdateBreak 다음).</summary>
     void UpdateSurrender(Unit u)
     {
         var c = Defs.CombatRules;
         bool ai = Faction(u.Owner).IsAi;
         float baseChance = ai && c.SurrenderAiChance >= 0 ? c.SurrenderAiChance : c.SurrenderChance;
-        if (baseChance <= 0 && c.SurrenderChance <= 0) { u.SuppHighTicks = 0; return; }
         float suppAt = ai && c.SurrenderAiSuppAt >= 0 ? c.SurrenderAiSuppAt : c.SurrenderSuppAt;
         float suppSec = ai && c.SurrenderAiSuppSec >= 0 ? c.SurrenderAiSuppSec : c.SurrenderSuppSec;
+        var mf = MissionSurrender(u);   // C1E1-g4: 미션 세력별 덮어쓰기 (surrenderChance 를 적은 세력만; 없으면 null = 위 값 그대로)
+        if (mf != null) { baseChance = mf.SurrenderChance!.Value; suppAt = mf.SurrenderSuppAt ?? suppAt; suppSec = mf.SurrenderSuppSec ?? suppSec; }
+        if (baseChance <= 0 && c.SurrenderChance <= 0 && mf == null) { u.SuppHighTicks = 0; return; }
         if (u.Suppression >= suppAt * c.SuppressMax) { if (u.SuppHighTicks < 1_000_000) u.SuppHighTicks++; }
         else u.SuppHighTicks = 0;
         if (u.SuppHighTicks < (int)MathF.Round(suppSec / Config.SimDt)) return;
@@ -40,7 +46,7 @@ public sealed partial class World
         if ((Tick + u.Id) % iv != 0) return;
         if (!SurrenderEligible(u)) return;
         if (!CannotRetreat(u)) return;   // AI 는 퇴각 가능하면 항복하지 않음 (기존 후퇴 · 철수가 먼저)
-        float p = ai ? baseChance : c.SurrenderChance * c.SurrenderPlayerMul;
+        float p = mf != null || ai ? baseChance : c.SurrenderChance * c.SurrenderPlayerMul;
         if (Roll(u.Id, 0x51D3) >= p) return;
         Surrender(u);
     }
@@ -54,6 +60,7 @@ public sealed partial class World
         bool ai = Faction(u.Owner).IsAi;
         float cas = ai && c.SurrenderAiCasualty >= 0 ? c.SurrenderAiCasualty : c.SurrenderCasualty;
         int maxLeft = ai && c.SurrenderAiMaxLeft >= 0 ? c.SurrenderAiMaxLeft : c.SurrenderMaxLeft;
+        if (MissionSurrender(u) is { } mf) { cas = mf.SurrenderCasualty ?? cas; maxLeft = mf.SurrenderMaxLeft ?? maxLeft; }
         return left <= co.InitialStrength * (1f - cas) && left <= maxLeft;
     }
 

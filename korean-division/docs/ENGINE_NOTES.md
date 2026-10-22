@@ -740,3 +740,8 @@
 - R1 개활 횡단 / R2 사격 아래 돌격: 공격 과제 소총 중대 (연막 보유 ≥ smokeMinMen) 가 기존 `ThrowSmokeCommand`(리플레이 `smokegrenade`) 를 점마다 1명씩 낸다. R3: AI 플래그 (TA.Flags 1) 돌격만 접근 → 돌파 직전 참호 앞 줄에 시뮬이 직접 투척.
 - AF1: 시뮬은 Faction.IsAi 를 안 읽는다. 새 저장 상태 없음 — 쿨다운 · 동시 수 = 자기 연막 · 날아가는 연막 수류탄, 최근 사상 = 생존자 LastDamagedTick (대용). 프로필 키 추가로 FormatVersion 56 (병합 때 재번호).
 - 사거리 grenade.range 5 그대로라 줄은 앞선 보유자 + 4.5칸, 적에서 8~20칸 (R2 하한 2칸) 일 때만. 시험 `KD_SELFTEST_ONLY=smokeai`, 관찰 tactics-obs 변형 SMOKE · SMOKEHOOK · SMOKEALL, 보고 줄 `[T32b 연막]`.
+
+## C1E1-g4 목표 확장 (미션 JSON)
+- 목표 `surrender` {faction?, percent(기본100), count(항복자 최소, 기본1)}: 대상 세력 생존 병력(항복자 포함) 중 항복 비율 >= percent. 목표 `nOfM` {of:[앞선 목표 id], count:N}: of 중 N 개 달성 (OR = count 1), 달성+진행중 < N 이면 실패. 하위 목표는 보통 primary:false.
+- 패배 `groupWiped` {tag}: 태그 그룹 전원 사망 (keyUnit 은 1명만 죽어도 발동 - 불변). 패배 `losses` + `tag`: 그 태그 유닛만 집계 (항복자 = 손실).
+- `MissionDef.Load(id, maxCasualtyFrac)`: losses.percent 를 frac*100 으로 덮어씀 (없으면 losses 추가); 텍스트 패치라 저장 형식 불변. 세력 `surrenderChance/Casualty/MaxLeft/SuppAt/SuppSec`: chance 를 적은 세력만 T31c 항복 규칙 덮어씀 (기본 꺼짐). 시험 KD_SELFTEST_ONLY=objectives.

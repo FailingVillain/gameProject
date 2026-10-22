@@ -31,6 +31,10 @@ public static partial class S
     public const string ObjDefend = "{0}초 동안 버티기";
     public const string ObjDefendArea = "{1} 을(를) {0}초 동안 지키기";
     public const string ObjEscort = "'{0}' {1}기를 {2} 까지 호위";
+    // C1E1-g4 목표 (기능 문구 - 서사 문구는 미션 text)
+    public const string FailGroupWiped = "'{0}' 전멸";
+    public const string ObjSurrender = "적 {0}% 항복";
+    public const string ObjNofM = "{1}개 중 {0}개 달성";
     // T30c 화물열차 목표 (train)
     public const string ObjTrainEscort = "화물열차 '{0}' 화차 {1}량을 {2} 까지 호송";
     public const string ObjTrainCapture = "화물열차 '{0}' 화차 탈취 ({1}초 확보)";
@@ -59,6 +63,7 @@ public static partial class S
     public const string MsHudCapture = "{0:0}/{1:0}초";
     public const string MsHudEliminate = "{0:0}%";
     public const string MsHudEscort = "{0}/{1}";
+    public const string MsHudSurrender = "{0:0}%";
     // 결과
     public const string RsVictory = "미션 성공";
     public const string RsDefeat = "미션 실패";
