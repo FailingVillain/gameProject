@@ -19,6 +19,7 @@ public static class UserSettings
     public static int Width = Config.ScreenWidth, Height = Config.ScreenHeight;
     public static WindowMode Mode = WindowMode.Windowed;
     public static bool ColorBlind = false;   // 색각 대응 표식 (T27 ⑧, 기본 꺼짐)
+    public static bool AlertBand = true;   // 교전 알림 띠 (T52a, 기본 켜짐)
     public static OverlayLevel Overlay = OverlayLevel.Concise;   // 머리 위 표시 단계 (T38m, 기본 간결)
     public static float Volume = 0.8f;   // 마스터 음량 (효과음 · 음성 공용 — Sfx.Volume)
 
@@ -33,6 +34,7 @@ public static class UserSettings
         public float Volume { get; set; } = 0.8f;
         public bool ColorBlind { get; set; } = false;
         public string Overlay { get; set; } = "concise";
+        public bool AlertBand { get; set; } = true;
         public Dictionary<string, string>? Keys { get; set; }
     }
 
@@ -83,6 +85,7 @@ public static class UserSettings
             Mode = d.Mode switch { "borderless" => WindowMode.Borderless, "fullscreen" => WindowMode.Fullscreen, _ => WindowMode.Windowed };
             Volume = Math.Clamp(float.IsNaN(d.Volume) ? 0.8f : d.Volume, 0f, 1f);
             ColorBlind = d.ColorBlind;
+            AlertBand = d.AlertBand;
             Overlay = ParseOverlay(d.Overlay);
             Sfx.Volume = Volume;
             KeyMap = new();
@@ -121,7 +124,7 @@ public static class UserSettings
         if (blockSave) return;   // [T49b] 못 읽은 원본을 .bak 없이 덮어쓰지 않는다
         try
         {
-            var d = new Data { Width = Width, Height = Height, Volume = Volume, ColorBlind = ColorBlind, Overlay = OverlayName(Overlay), Keys = KeyMap.Count == 0 ? null : KeyMap.OrderBy(kv => kv.Key, StringComparer.Ordinal).ToDictionary(kv => kv.Key, kv => kv.Value.ToString()), Mode = Mode switch { WindowMode.Borderless => "borderless", WindowMode.Fullscreen => "fullscreen", _ => "windowed" } };
+            var d = new Data { Width = Width, Height = Height, Volume = Volume, ColorBlind = ColorBlind, AlertBand = AlertBand, Overlay = OverlayName(Overlay), Keys = KeyMap.Count == 0 ? null : KeyMap.OrderBy(kv => kv.Key, StringComparer.Ordinal).ToDictionary(kv => kv.Key, kv => kv.Value.ToString()), Mode = Mode switch { WindowMode.Borderless => "borderless", WindowMode.Fullscreen => "fullscreen", _ => "windowed" } };
             File.WriteAllText(FilePath, JsonSerializer.Serialize(d, new JsonSerializerOptions { WriteIndented = true }));
         }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException) { }

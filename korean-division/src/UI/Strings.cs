@@ -180,6 +180,18 @@ public static partial class S
     public const string MissingRequirement = "선행 건물이 필요합니다";
     public const string Requires = "필요";
     public const string UnderAttack = "공격받고 있습니다!";
+    public const string SiteContested = "시설이 분쟁 중입니다!";
+    public const string AlertKindAttack = "공격";
+    public const string AlertKindSite = "시설 분쟁";
+    public const string AlertJustNow = "방금";
+    public const string AlertSecAgo = "{0}초 전";
+    public const string AlertMinAgo = "{0}분 전";
+    public const string SetAlertBand = "교전 알림 띠";
+    public const string SetAlertBandOn = "띠 켬";
+    public const string SetAlertBandOff = "띠 끔";
+    public const string SetAlertBandNote = "화면 왼쪽 아래(대대 막대 위) 알림 목록. 클릭 · Backspace = 그 위치로 이동";
+    public const string AlertRepeat = " x{0}";
+    public const string KeyAlertJump = "최근 교전 알림 위치로 이동";
     public const string BuildPending = "{0} 건설: 위치를 좌클릭  (Shift: 연속 · 우클릭/Esc: 취소)";
     public const string Victory = "승리!";
     public const string Defeat = "패배";

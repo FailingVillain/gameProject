@@ -159,9 +159,9 @@ public sealed partial class Game : IDisposable
     readonly List<(Vector2[] From, Vector2 To, double Time, Color Color)> orderLines = new();
     Vector2? dragStartWorld;
     bool minimapDrag;
-    double lastClickTime, lastGroupTime, lastAlertTime = -100;
+    double lastClickTime, lastGroupTime;
     int lastClickId = -1, lastGroupKey = -1;
-    long lastAttackTick = -1;
+    public readonly AlertLog Alerts = new();   // 교전 알림 이력 (T52a, UI 전용)
     (Vector2 Pos, double Time)? alert;
     string? notice;
     string? loadWarning;
@@ -720,17 +720,19 @@ public sealed partial class Game : IDisposable
 
         World.Notices.Clear();   // 생산 · 건설 실패 알림은 방향 변경 §0-1 에서 사라짐
 
-        if (World.LastAttacked.TryGetValue(Me, out var atk) && atk.Tick != lastAttackTick)
+        // 교전 알림 (T52a): 이력 · 병합 · 8초 간격은 AlertLog 가 맡는다 (시뮬 상태는 읽기만)
+        foreach (var r in Alerts.Poll(World, Me, Now))
         {
-            lastAttackTick = atk.Tick;
-            if (Now - lastAlertTime > 8)
-            {
-                lastAlertTime = Now;
-                alert = (atk.Pos, Now);
-                ShowNotice(S.UnderAttack);
-                Sfx.Play("alert");
-                Voice("under_attack");
-            }
+            if (r.Notice) ShowNotice(r.Entry.Kind == AlertKind.UnderAttack ? S.UnderAttack : S.SiteContested);
+            if (!r.Sound) continue;
+            alert = (r.Entry.Pos, Now);
+            Sfx.Play("alert");
+            if (r.Entry.Kind == AlertKind.UnderAttack) Voice("under_attack");
+        }
+        if (Environment.GetEnvironmentVariable("KD_ALERTDEMO") == "1" && Alerts.Entries.Count == 0)   // 스크린샷 확인용: 가짜 알림 3건 (UI 전용)
+        {
+            var c = Camera.CenterWorld;
+            Alerts.Feed(AlertKind.UnderAttack, c, Now - 20); Alerts.Feed(AlertKind.SiteContested, c + new Vector2(20, 5), Now - 9); Alerts.Feed(AlertKind.UnderAttack, c + new Vector2(-30, 8), Now - 1);
         }
     }
 
@@ -762,6 +764,7 @@ public sealed partial class Game : IDisposable
         if (Input.IsMouseButtonPressed(MouseButton.Left))
         {
             if (Hud.TopButtonAt(mouse) is string top) OnTopButton(top);
+            else if (Hud.AlertAt(mouse) is AlertLog.Entry ae) { Camera.CenterOn(ae.Pos); Sfx.Play("ui_click"); }
             else if (Spectator.Click(mouse)) { }
             else if (!Observer && Hud.TabAt(mouse) is int tabIdx and >= 0) SetTab((CardTab)tabIdx);
             else if (Hud.PagerAt(mouse) is int pageDir and not 0) { Hud.MovePage(pageDir); Sfx.Play("ui_click"); }
@@ -860,6 +863,7 @@ public sealed partial class Game : IDisposable
             else CycleCompanyForm();
         }
         if (Input.IsKeyPressed(KeyboardKey.Space) && Selection.Count > 0) CenterOnSelection();
+        if (Input.IsKeyPressed(KeyboardKey.Backspace) && Alerts.Latest is AlertLog.Entry lastAlert) Camera.CenterOn(lastAlert.Pos);   // 최근 알림 위치로 (T52a)
 
         bool shift = Input.IsKeyDown(KeyboardKey.LeftShift) || Input.IsKeyDown(KeyboardKey.RightShift);
         for (int n = 0; n <= 9; n++)
