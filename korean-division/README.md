@@ -93,3 +93,4 @@ src/UI/                    Hud · Ui(폰트) · Icons · Palette · Strings(모�
 - **그래픽**: 테마 `assets/themes/ww2/theme.json` (건물 · 지형 = `tools/make_ww2_sprites.py`, 다른 항목은 보존). 유닛 = `../game-tools/image` 의 복셀 3D → 쿼터뷰 렌더 → 픽셀 후처리 (`tools/vox_*.py`, 64×80 · 5방향 + 반전 · 서기/걷기 2/조준/발사/대기동작, 칸별 발 위치 `*_anchors.json`), `python export.py` 로 테마에 복사. 같은 그림을 쓰는 유닛은 `{"alias": "unit.infantry"}`. 0.5배 미만으로 축소하면 유닛은 세력 색 점.
 - **효과음**: `tools/make_sfx.py` → `assets/sounds/ww2/` (`sounds.json`: 키 → 파일 · 음량 · 동시 재생 수 · 최소 간격).
 - **고정 한글 텍스트**: `Strings.cs`(S)에 const 로 추가 (폰트 아틀라스에 포함되는 글자). 데이터 파일의 이름 · 설명 글자는 자동 포함.
+- **글꼴**: 나눔명조(제목) · 나눔고딕(본문) · 나눔고딕코딩(숫자), SIL OFL 1.1 (NHN Corp.) - `assets/fonts/<가족>/OFL.txt`. 역할 · 크기 단계별 지연 로드는 `src/UI/Ui.cs`.

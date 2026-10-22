@@ -92,6 +92,7 @@ public static partial class SelfTest
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "bunchfix") { Tests.BunchFixSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "uiicons") { Tests.UiIconsSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "menuhide") { Tests.MenuHideSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+        if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "fonts") { Tests.FontCoverageSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "artyai") { Tests.ArtyAiSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "n12") { Tests.N12SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "n77") { Tests.N77SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
@@ -186,6 +187,7 @@ public static partial class SelfTest
         Tests.Tweak1SelfTest.Run(opt, Check);              // tweak1 대열 정비 화력조 제외 · 돌격 중 보류 · 방어 유닛만 엄폐 · 참호 0.5 · 보병포 · 관측자 노출 회피 · 야전포 방열
         Tests.UiIconsSelfTest.Run(opt, Check);              // 수류탄 X · 아군 오사 계수 · 분대 아이콘 우선순위
         Tests.MenuHideSelfTest.Run(opt, Check);            // T45 시작 화면 숨김 · 관전 미션 목록
+        Tests.FontCoverageSelfTest.Run(opt, Check);         // T38k 글꼴 커버리지 (번들 OFL 3종 cmap)
         Tests.CommandSelfTest.Run(opt, Check);   // 지휘 계급 · 승계 · 장교 경험치 (N3)
         Tests.ScoutSelfTest.Run(opt, Check);   // 정찰병 (정찰조 · 자율 행동 · 곡사포 관측)
         Tests.CommandExtSelfTest.Run(opt, Check);

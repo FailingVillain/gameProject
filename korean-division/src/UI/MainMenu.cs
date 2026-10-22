@@ -186,8 +186,8 @@ public sealed class MainMenu
 
     void DrawTitle(float y)
     {
-        Vector2 m = Ui.Measure(S.GameTitle, 72);
-        Ui.Text(S.GameTitle, (screenW - m.X) / 2, y, 72, Palette.Accent);
+        Vector2 m = Ui.Measure(S.GameTitle, 72, Ui.FontRole.Heading);
+        Ui.Text(S.GameTitle, (screenW - m.X) / 2, y, 72, Palette.Accent, Ui.FontRole.Heading);
     }
 
     bool Button(Rectangle r, string label, bool enabled = true, bool active = false, int size = 16)
