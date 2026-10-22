@@ -428,16 +428,17 @@ public sealed partial class CampaignMenu
         // Roster 중대 행 스크롤 목록
         var listArea = new Rectangle(x, y, w, body.Y + body.Height - y - 16);
         const float rowH = 32;
-        float totalH = state.Roster.Count * rowH;
+        var deployRoster = CampaignUnlocks.Deployable(state).ToList();   // C1E1-g6: 미해금 병종은 편성 화면에서 뺀다
+        float totalH = deployRoster.Count * rowH;
 
         if (Ui.Contains(listArea, mouse)) rosterScroll -= Input.GetMouseWheelMove() * rowH * 2;
         rosterScroll = Math.Clamp(rosterScroll, 0, MathF.Max(0, totalH - listArea.Height));
 
         Raylib.BeginScissorMode((int)listArea.X, (int)listArea.Y, (int)listArea.Width, (int)listArea.Height);
         int curBn = -1;
-        for (int i = 0; i < state.Roster.Count; i++)
+        for (int i = 0; i < deployRoster.Count; i++)
         {
-            var c = state.Roster[i];
+            var c = deployRoster[i];
             float ry = listArea.Y + i * rowH - rosterScroll;
             if (ry + rowH < listArea.Y || ry > listArea.Y + listArea.Height) continue;
 
@@ -770,7 +771,7 @@ public sealed partial class CampaignMenu
         preOpSelectedCompanyIds.Clear();
         foreach (var c in state.Roster)
         {
-            if (c.Available) preOpSelectedCompanyIds.Add(c.Id);
+            if (c.Available && CampaignUnlocks.CanDeploy(state, c)) preOpSelectedCompanyIds.Add(c.Id);   // C1E1-g6
         }
     }
 
@@ -810,7 +811,7 @@ public sealed partial class CampaignMenu
         var selAllBtn = new Rectangle(x + 160, y - 2, 90, 26);
         if (Button(selAllBtn, S.CmPreBtnSelectAll, true, 13))
         {
-            foreach (var c in state.Roster) if (c.Available) preOpSelectedCompanyIds.Add(c.Id);
+            foreach (var c in CampaignUnlocks.Deployable(state)) if (c.Available) preOpSelectedCompanyIds.Add(c.Id);
         }
         var deselAllBtn = new Rectangle(x + 258, y - 2, 90, 26);
         if (Button(deselAllBtn, S.CmPreBtnDeselectAll, true, 13))
