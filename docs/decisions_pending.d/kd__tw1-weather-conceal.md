@@ -1,0 +1,1 @@
+- TW1: 은폐 보정 자리표시 수치(fog +10 / rain +5 / snow +5, 설계서 초안값)와 켜기 시점은 0.3 밸런스에서 결정. 현재 extendedEffects=false.

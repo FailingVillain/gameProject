@@ -65,9 +65,9 @@
     "states": {
       "clear":    { "sight": 1.0,  "hit": 1.0,  "move": 1.0 },
       "overcast": { "sight": 0.9,  "hit": 1.0,  "move": 1.0 },
-      "fog":      { "sight": 0.45, "hit": 0.9,  "move": 1.0 },
-      "rain":     { "sight": 0.7,  "hit": 0.9,  "move": 1.0 },
-      "snow":     { "sight": 0.8,  "hit": 0.95, "move": 0.85 }   // 만주 겨울 (진창은 나중)
+      "fog":      { "sight": 0.45, "hit": 0.9,  "move": 1.0, "conceal": 10 },
+      "rain":     { "sight": 0.7,  "hit": 0.9,  "move": 1.0, "conceal": 5 },
+      "snow":     { "sight": 0.8,  "hit": 0.95, "move": 0.85, "conceal": 5 }   // 만주 겨울 (진창은 나중)
     },
     "times": {
       "dawn":  { "sight": 0.8,  "hit": 0.95, "binocular": 0.7 },
@@ -76,7 +76,8 @@
       "night": { "sight": 0.45, "hit": 0.85, "binocular": 0.3 }
     },
     "minSight": 8,              // 줄어든 시야 하한 (칸, 2026-10-19 사용자 승인: 날씨 최저 시야 8칸)
-    "minSightMul": 0.3          // 날씨 × 시간대 시야 배수 하한 (안개 0.45 × 밤 0.45 = 0.2 → 0.3)
+    "minSightMul": 0.3,         // 날씨 × 시간대 시야 배수 하한 (안개 0.45 × 밤 0.45 = 0.2 → 0.3)
+    "extendedEffects": false    // 확장 효과 스위치 (기본 꺼짐): 켜면 states.<종류>.conceal 은폐 보정(%p, 은폐>0 유닛만) 적용. 수치는 자리표시 (밸런스 최후)
   },
   "capture": {
     "radius": 4,                // 시설 가장자리에서의 점령 반경

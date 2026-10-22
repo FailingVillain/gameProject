@@ -143,7 +143,7 @@ public sealed partial class World
     public float BaseConcealment(Unit u)
     {
         float c = u.Def.Concealment;
-        if (c > 0) c += TerrainConcealment(u);   // 숲 · 고지 훅 (Combat4.cs)
+        if (c > 0) c += TerrainConcealment(u) + WeatherConcealment(u);   // 숲 · 고지 훅 · 날씨 보정 (Combat4.cs, 날씨는 extendedEffects 켬일 때만)
         return c < 0 ? 0 : c > 100 ? 100 : c;
     }
 
