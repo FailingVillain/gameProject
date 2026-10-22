@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "set": "zhb2",
+  "houses": [
+    {"id": "zh-bar-01", "label": "곡물 창고 3x3 (널벽, 높은 기단)", "footprint": [3, 3], "seed": 31,
+     "wall": {"mat": "wood", "pattern": "planks", "height": 7.2},
+     "base": {"height": 2.2, "mat": "stone"},
+     "roof": {"type": "gable_plain", "mat": "thatch_old", "alt_mat": "thatch", "rise": 4.8, "eave": 1.8},
+     "chimney": {"type": "none"},
+     "front": {"bays": ["plank", "slit", "slit"], "porch": "none"},
+     "addons": [{"type": "hang", "n": 5, "mat": "thatch_gold"}, {"type": "jars", "n": 2, "side": "R"}]},
+    {"id": "zh-bar-02", "label": "마구간 4x3 (토담 외쪽지붕)", "footprint": [4, 3], "seed": 32,
+     "wall": {"mat": "earth_pale", "pattern": "rammed", "height": 7.0},
+     "base": {"height": 0.4, "mat": "stone"},
+     "roof": {"type": "shed", "mat": "thatch", "alt_mat": "thatch_old", "rise": 3.2, "eave": 2.0},
+     "chimney": {"type": "none"},
+     "front": {"bays": ["blank", "arch", "arch", "slit"], "porch": "none"},
+     "addons": [{"type": "stakes", "n": 6}, {"type": "haystack", "x": -16}]},
+    {"id": "zh-bar-03", "label": "농기구 헛간 4x4 (통나무 벽, 판자지붕)", "footprint": [4, 4], "seed": 33,
+     "wall": {"mat": "wood", "pattern": "planks", "height": 6.8},
+     "base": {"height": 0.0},
+     "roof": {"type": "gable_plain", "mat": "wood", "alt_mat": "wood_dark", "rise": 4.0, "eave": 2.2},
+     "chimney": {"type": "none"},
+     "front": {"bays": ["blank", "plank", "blank", "plank"], "porch": "none"},
+     "addons": [{"type": "firewood", "x": 6}, {"type": "stakes", "n": 4}]}
+  ]
+}
