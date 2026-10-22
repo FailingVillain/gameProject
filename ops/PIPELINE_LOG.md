@@ -173,6 +173,7 @@
 | 14:3x | t32a/t32d/t43 리뷰(sonnet, 91k, 174초): **블로커 1** = uiicons FAIL 은 breach2(6ad6c50)가 smokegrenade·cutwire 를 추가해 돌격보병 카드 11버튼>9칸 → 겹침(t32a 공병 10버튼도 동일); main 에는 없음 → 병합 큐 차단 요인. 비차단: UnitSymbols 기병 판정이 mounted 미사용(t43 이전부터), 공병이 Assault 기호, QUEUE T43 행 중복(병합 때 정리). t32a/t32d 자체는 병합 OK. 발주: T46 카드 칸 초과 수정(sonnet, wip/breach2 위) | 리뷰 완료 |
 | 14:3x | T38a wip-ready(sonnet, 114k, 389초; t38a-settings-keys 7274c71, t38b 위): 단축키 재지정 화면(카드 명령 11개 A~Z, 충돌 거부, settings.json Keys), 전투 중 진입은 제외. 퍼즈·골든 PASS. 지휘자 정정: T46 은 기존 카드 T38c(spec/ui-backlog)와 같은 일 → 에이전트에 T38c 카드를 따르라고 통보. QUEUE 에 T38a/b/g 행 없음(spec 에만) | 완료 ~67 |
 | 14:3x | T42a wip-ready(sonnet, 117k, 240초; t42a-fatigue-morale ba621fe, t38f 위): 중대 피로·사기 계정(스키마 v4, v3 이행), 임시값 campaign_economy.json(0.3 확정), 홈 읽기 전용 표시, 전투 시뮬 불변, savecompat 8건 추가·골든 일치. 발주: T42b(t42a 위) | 완료 ~68 |
+| 14:3x | T38c(=T46) wip-ready(sonnet, 91k, 203초; kd/t46-card-overflow 54e8a54, wip/breach2 위): 명령 카드 9칸 초과 시 쪽당 8개+쪽 버튼(. 키), 단축키 불변, breach2 에서 uiicons PASS(1431), t32a(10버튼) 체리픽 PASS(1485). 한계: 동적 버튼(firecontrol 등) 수동 확인, 시트는 개략도, 실창 클릭 미확인. → **병합 큐 uiicons 블로커 해소 경로 확보**(breach2 직후 병합) | 완료 ~69 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
