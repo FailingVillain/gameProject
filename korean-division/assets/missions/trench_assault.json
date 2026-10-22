@@ -274,7 +274,7 @@
  "failures": [
   {
    "type": "losses",
-   "percent": 70
+   "percent": 50
   },
   {
    "type": "timeLimit",

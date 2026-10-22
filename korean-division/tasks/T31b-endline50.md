@@ -28,3 +28,8 @@ build: 이 브랜치 (= main 0ca2157 + 위 JSON), `--tactics-obs bin/endline/ass
 ## endline50 (2026-10-22, main 0ca2157 + 측정 시나리오 3개 종료선 70->50, 새 기준선)
 ai_bn_meeting · ai_bn_assault · ai_kr_vs_ft_1000 의 eliminate/losses percent 70->50 (캠페인 미션 불변). golden 불변 (detcheck 8 변형 동일 GOLDEN match). 전체 selftest FAIL 4건(N12 빈자리 점검 · gapfill 예외 · 숲 탐색 켬/끔) 은 70 원본 JSON 으로도 동일 = 기존 main 실패, 변경 무관. tactics-obs 시드 1-16 (n=16, 600 s, 새 종료선): A ai_bn_meeting 7/9/0 K/E 1.00 (한국 손실 43% · 봉천 41% · 평균 203 s) · B ai_bn_assault 13/3/0 K/E 0.75 (38% · 49% · 226 s) · C ai_kr_vs_ft_1000 16/0/0 K/E 0.49 (25% · 50% · 157 s). 시간 초과 0/48. 승 수 잡음 +-12%p (n=16). 70 시절 기준선과 직접 비교 불가; "after" 비교는 이 블록으로.
 ```
+
+## 추가: trench_assault 종료선 70 -> 50 (사용자 승인 AK2, 2026-10-22; measure/Sonnet)
+- 변경: assets/missions/trench_assault.json `failures losses.percent` 70->50 (1곳). 이 미션엔 `eliminate` 목표가 없고(승 = 참호선 점령 후 45초 유지) 목표 문구에 70 이 없어 문구 변경 없음.
+- 검증: 빌드 OK. 선택 selftest trench / n32 / missions 전부 OK 줄만 (FAIL 없음). breach 지정 실행은 위 기존 main 실패 4건(`SELFTEST FAIL (4)`)과 같은 요약 줄 -- 이 변경과 무관. detcheck 8aa6448b9690b922... GOLDEN match (golden 불변, 재생성 없음).
+- 재측정(`--mission-run trench_assault --seconds 1200 --seed 101..124`, n=24)은 **보류**: 지휘자 지시(밸런스 작업 최후순위, 사용자 결정 전까지 측정 연기). 비교 기준(70 선, main): 약 5/20 (ops/DECISIONS.md Z, N32 켬). 새 BASELINE 블록은 측정 후 작성.
