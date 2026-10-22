@@ -169,3 +169,7 @@ Q-A1 새 Entity(TrainCar, Units 밖 World.Trains) · Q-A2 단선·순환선만(�
 ## AI. T30c 화물열차 목표 (2026-10-22; 브랜치 t30c-freight-objective f5fa49a, kd-develop/kd-t30c) — 무응답 시 유지
 미션 목표 `"train": <tag>` 로 화물열차 지정(balance.json 에서 wagon 을 `freight:true`), 호송=escort·탈취=capture(반경 `radius` 기본 3칸, 정해진 초 동안 아군만 확보하면 완료·열차 소유는 안 바뀜)·파괴=eliminate. 보상은 연결 안 함(Q-C3). FV59/Replay23 유지.
 - **AI1** 에이전트가 덧붙인 실패 조건(미션 정지 방지): 화차가 전멸하면 탈취 실패, 남은 열차가 모두 기관차를 잃고 멈추면 호송 실패. 승인? 무응답 시 유지.
+
+## AJ. T15·T31a 측정 결과 (2026-10-22)
+- **T15** (measure/t15 0ab1c6e..): 스택(T03+T04+T05)과 main 196판 중 195판 동일 → 회귀 0. 의심: artillery_spotters 90%→5/8(p≈0.04)·trench_assault 1/8 (n=8, 표준오차 17%p) → 재확인 발주(n=24). 신기능 개별: breach·orderq 는 AI 가 안 써서 효과 0 · 3B2 manReplace 켜면 +3승/88판이나 A 시간 초과 증가 → **기본 꺼짐 유지 권장(R2 와 관련)** · T24 는 승패 악화 확인 안 됨. 메모: main c0_02_yalu 시드 103 빈 로그 exit 1 이 392회 중 1회 일시 오류.
+- **T31a** (kd/t31a-regroup 97ed026, ai3b2 위): 재투입 제한 키(`regroup.noRejoinBelow` 기본 0=꺼짐; `rejoinStrength` 기존)로는 대대 손실을 1~3%p 밖에 못 줄임 — 측정 미션이 '진 쪽 70% 손실 시 종료'라 평균 손실의 바닥이 70%. 0.67 은 손실 −9%p 이나 시간 초과 5/8 이라 기각. **수용 기준(손실 20~40%) 미달** → T31b(종료선 측정, 발주함)가 관건. wip-ready 이나 켜지 말 것.

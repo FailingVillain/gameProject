@@ -110,6 +110,7 @@
 | 12:3x | T30b wip-ready (opus, 237k — 한도 근접, 1131초, 101회): t30b-train-weapons ca1cdb8, FV59. 지휘자가 보낸 863f9d1 을 a2e0f97 로 체리픽 확인. 저장 위치 이동(ORG_ 끝→ENTS 끝)·엔티티 참조 태그 3(표적 지정 상태 저장 파손 방지). trainweapons 19검사 PASS. **밸런스: 열차 8승 0패(보병 전멸)** → AH1. 발주: T30c(opus, t30b 위)·T30b 리뷰(sonnet) | 완료 31/47 |
 | 12:27 | T30b 리뷰 완료(sonnet, 123k, 160초): 차단 0. 저장 태그 3·FindCar(deadOk)·ENTS 끝 읽기 순서 OK, 열차 없으면 핫패스 즉시 탈출. 참고: Retaliate/IsValidTarget 에 CanDamage 검사 없음 → 소총병이 면역 객차에 0피해 사격 지속(장갑차에도 기존), 열차 8-0 을 키울 수 있음 · AI 위협·미션 전멸 판정이 Units 만 봄(T30c 범위). 자동 점검: working 2(T15·T31a 등), T16b 는 발주 50분 경과·워크트리 무변화이나 측정이 다른 빌드 디렉터리에서 돌 수 있고 첫 T16 선례(5.5시간 게이트 대기)가 있어 재시작 보류 | 리뷰 15/15 |
 | 12:4x | T30c wip-ready (opus, 199k — 한도 근접, 1123초, 82회): t30c-freight-objective f5fa49a. 새 상태 없음(ObjProgress 재사용) → FV59/R23 유지. freight 21검사·train·trainweapons·missions·snapshot·savecompat·replay PASS, GOLDEN 일치. 작성자가 덧붙인 실패 조건 2개(화차 전멸→탈취 실패, 기관차 상실→호송 실패)는 확인 요청. 발주: T30e(sonnet, t30c 위, 승리 가능 설계 지시)·T30c 리뷰(sonnet) | 완료 33/50 |
+| 12:5x | T15 측정 완료(measure sonnet, 140k, 4338초=72분): 스택=main 195/196판, 회귀 0; artillery_spotters·trench_assault 낮음(n=8)→재확인. T31a 완료(opus, 128k, 2944초): 키 구현, 수용 기준 미달(손실 1~3%p, 종료선이 바닥) → T31b 측정 발주. 발주: T31b(sonnet)·artillery_spotters n=24 재확인(haiku) | 완료 35/52 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
