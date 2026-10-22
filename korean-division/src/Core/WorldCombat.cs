@@ -40,7 +40,7 @@ public sealed partial class World
         UpdateStamina(u, moved, dt);   // 스태미나 (Combat3.cs)
         if (!u.Charging) { u.HopUntil = 0; u.ChargeRun = 0; u.ImpactSpent = false; u.MeleeVictims = 0; u.MeleeLastId = 0; } else if (moved) u.ChargeRun++;   // 돌격 충격 (Combat3.cs)
         if (u.ChargeCdLeft > 0) u.ChargeCdLeft--;   // 돌격 충격 쿨다운 (Combat3.cs)
-        if (u.Def.Grenades > 0) RegenGrenade(u, dt);   // 수류탄 회복 (Combat4.cs)
+        if (u.Def.Grenades > 0 || u.Def.SmokeGrenades > 0) RegenGrenade(u, dt);   // 수류탄 · 연막 수류탄 회복 (Combat4.cs)
         if (u.Cooldown > 0) u.Cooldown -= dt;
         DecaySuppression(u);   // 제압 감소 (Combat3.cs, 15틱마다 Id 분산)
         UpdatePinned(u);       // 고정 (엎드림) 이력 pinAt / pinRelease (Suppression.cs)
@@ -72,6 +72,7 @@ public sealed partial class World
         UpdateCoverSeek(u);   // 피격 중인 대기 · 사수 보병: 가까운 참호 자리 · 엄폐 칸으로 (CoverSeek.cs)
         UpdateSpot(u);        // F1 접적 중 구역 · 사격 위치 (Contact.cs)
         CavReact(u);          // n61 돌격 기병 우선 표적 (CavReact.cs)
+        UpdateWireCut(u);     // N59 철조망 절단 진행 (Breach.cs)
 
         switch (u.Order)
         {
@@ -418,7 +419,7 @@ public sealed partial class World
                                 if (score >= bestScore) continue;
                                 if (!Fog.CanSee(faction, e)) continue;
                                 if (spotterOnly && !SeenBySpotter(faction, e)) continue;
-                                if (losFrom != null && !Map.HasFiringLine(losFrom.Pos, e.Pos, losFrom.Id, e.Id)) continue;
+                                if (losFrom != null && (!Map.HasFiringLine(losFrom.Pos, e.Pos, losFrom.Id, e.Id) || SmokeBlocks(losFrom.Pos, e.Pos))) continue;   // 연막 (N59)
                                 (best, bestScore) = (e, score);
                             }
                         }
@@ -438,7 +439,7 @@ public sealed partial class World
                     float score = d + 300;
                     if (arcFrom != null) { float sh = TraverseShiftTo(arcFrom, b.Pos); if (sh > 0) { if (sh >= RedeployRad) continue; score += 5000 + sh; } }
                     if (score >= bestScore) continue;
-                    if (losFrom != null && !Map.HasFiringLine(losFrom.Pos, b.Pos, losFrom.Id, b.Id)) continue;
+                    if (losFrom != null && (!Map.HasFiringLine(losFrom.Pos, b.Pos, losFrom.Id, b.Id) || SmokeBlocks(losFrom.Pos, b.Pos))) continue;
                     (best, bestScore) = (b, score);
                 }
             }

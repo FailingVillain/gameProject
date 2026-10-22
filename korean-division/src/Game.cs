@@ -1307,9 +1307,9 @@ public sealed partial class Game : IDisposable
             case "closeranks": World.CloseRanks(Me, units); ShowNotice(S.CloseRanksIssued); break;   // 대열 정비 (CloseRanks.cs)
             case "firekind":   // N79a: 지속 → 준비 → 이동탄막 → 연막 순환
                 FireKindSel = (GroundFireKind)(((int)FireKindSel + 1) % 4);
-                ShowNotice(FireKindSel == GroundFireKind.Smoke ? S.FireKindSmokeNone : FireKindName(FireKindSel));
+                ShowNotice(FireKindSel == GroundFireKind.Smoke && !OwnUnits().Any(World.CanSmoke) ? S.FireKindSmokeNone : FireKindName(FireKindSel));
                 break;
-            case "move" or "quickstep" or "attack" or "charge" or "grenade" or "groundfire" or "rally":
+            case "move" or "quickstep" or "attack" or "charge" or "grenade" or "groundfire" or "rally" or "smokegrenade" or "cutwire":
                 PendingCommand = key;
                 break;
         }
@@ -1364,6 +1364,11 @@ public sealed partial class Game : IDisposable
                 break;
             }
             case "grenade": World.ThrowGrenadeAt(Me, units, point); Mark(point, Palette.HpLow); Voice("attack"); break;   // 수류탄 (교전 4차)
+            case "smokegrenade": World.ThrowSmokeAt(Me, units, point); Mark(point, Palette.MarkerMove); Voice("attack"); break;   // 연막 수류탄 (N65)
+            case "cutwire":   // 철조망 절단 (N59)
+                if (World.WireTilesNear(point, World.Defs.Breach.WireCutSearch).Count == 0) { ShowNotice(S.CutWireNone); break; }
+                World.CutWire(Me, units, point); Mark(point, Palette.MarkerMove); Voice("move");
+                break;
             case "finalline":   // arty3 최후 저지선: 중기관총 = 사격선 지정, 나머지 무장 유닛 = 순환 다음 (자유 사격)
             {
                 var fpl = units.Where(World.CanFinalLine).ToList();
@@ -1376,7 +1381,7 @@ public sealed partial class Game : IDisposable
             }
             case "groundfire":   // 플레이어 지점 포격 (GroundFire.cs) + 포격 종류 (N79a)
             {
-                if (FireKindSel == GroundFireKind.Smoke) { ShowNotice(S.FireKindSmokeNone); break; }   // 연막탄 없음
+                if (FireKindSel == GroundFireKind.Smoke && !units.Any(World.CanSmoke)) { ShowNotice(S.FireKindSmokeNone); break; }   // 연막탄이 있는 포가 없음 (N59)
                 var guns = units.Where(World.CanGroundFire).ToList();
                 if (guns.Count == 0) break;
                 Vector2 gc = Vector2.Zero;

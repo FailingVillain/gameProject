@@ -8,7 +8,7 @@ Apply from the repo root with `git apply --3way --directory=korean-division <pat
 | ai3b2 | wip/ai3b2 | conflict (DECISIONS_PENDING, ENGINE_NOTES, Snapshot.cs) — patch file only |
 | battlereport | wip/battlereport | conflict (ENGINE_NOTES) — patch file only |
 | bigbldg | wip/bigbldg | applied |
-| breach | wip/breach | conflict (detcheck.golden, ENGINE_NOTES, Replay.cs, Snapshot.cs) — patch file only |
+| breach | wip/breach | conflict (detcheck.golden, ENGINE_NOTES, Replay.cs, Snapshot.cs) — patch file only. **Resolved on `wip-resolved/breach` (2026-10-22, base main 8d22ad5)**: applied with `--reject` (old blobs missing, no 3-way); Snapshot FV 52→53 (new comment prepended), Replay 19→20 (same); ENGINE_NOTES section appended at end (FV mention → 53/Replay 20); golden regenerated 19501757 d62e1446 (8 variants identical); temp mission trench_assault_mortar.json excluded; build 0 errors, breach · snapshot · n79a groups + snaptest OK. Not merged (user: WIP continues). |
 | casualty | wip/casualty | applied |
 | chokefix | wip/chokefix | applied |
 | doctrines | wip/doctrines | applied |

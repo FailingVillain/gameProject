@@ -160,6 +160,10 @@
   },
   // 수류탄 (교전 4차): unit.grenades 개 보유 (돌격보병 1). 사거리 5칸, 신관 1.5초, 반경 1.5칸, 피해 60 -> 20 (엄폐 무시), 제압 +300.
   // 자동 투척: 엄폐 중(참호) 적 보병 4칸 이내, 전차 3칸 이내. 전차에는 묶음 수류탄 고정 피해 tankDamage. 회복: 비전투 중 regenSeconds 초에 1개
+  // [N59 · N65] 참호 돌파 묶음 (Breach.cs): 연막 = 원형, 크기 · 위치 고정 (바람 없음), 지속 시간 뒤 사라짐. 시선이 연막 속을 smokeSeeDepth 칸 넘게 지나면 시야 · 직사 사선 차단.
+  // 연막 수류탄 (돌격보병 unit.smokeGrenades) 반경 · 초 (사거리 · 신관은 grenade), 연막탄 지속 초 (반경 = weapon.smokeRadius), 지점 포격 '연막' 발수.
+  // 철조망 절단 (unit.wireCutter = 돌격보병): 칸 옆에서 wireCutSec 초 → 흙 (통과 가능), 절단 중 칸 중심까지 wireCutReach 칸 안, 명령 지점 둘레 wireCutSearch 칸에서 철조망을 찾는다.
+  "breach": { "smokeGrenadeRadius": 2.5, "smokeGrenadeSec": 30, "smokeShellSec": 45, "smokeRounds": 3, "smokeSeeDepth": 1.0, "wireCutSec": 4, "wireCutReach": 2.0, "wireCutSearch": 4 },
   "grenade": { "range": 5, "fuse": 1.5, "radius": 1.5, "damage": 60, "edgeDamage": 20, "suppress": 300, "tankDamage": 40, "autoCoverRange": 4, "autoTankRange": 3, "regenSeconds": 180, "scatter": 0.5 },
   // [N54] 세력별 소총 분배 (map factions[].en → {무기 → 가중치 %}). 소총 칸 (weapon = rifle_mosin) 보병이 생성될 때 유닛 id · 지도 시드의 해시로 결정적으로 고른다. 없는 세력 = 모신나강. 공용 유닛은 분배 안 함 (모신나강).
   "factionRifles": {
@@ -223,7 +227,13 @@
     "dadao":       { "name": "대도",        "damage": 60, "range": 0.3, "cooldown": 1.4, "cooldownMin": 1.2, "cooldownMax": 1.6, "accuracy": 0.6, "fire": "direct", "aimTime": 0, "holdTime": 0.2, "bonus": { "armored": 0 } },
     "gun_infantry": { "name": "보병포",     "damage": 70, "range": 40,  "cooldown": 3.3, "cooldownMin": 3.0, "cooldownMax": 3.6, "accuracy": 0.6, "accNear": 0.8, "accFar": 0.35, "fire": "direct", "los": true, "aimTime": 0.3, "holdTime": 0.3, "splash": 1.5, "splashEdge": 0.3, "scatter": 2.0, "ammo": 60, "suppress": 250, "craterChance": 0.08, "shellSpeed": 60, "flightMax": 1.0, "traverseArc": 45 },   // tweak1 (2026-10-19 사용자 결정 4): 피해 45 → 70 · 반경 0.8 → 1.5 · 제압 150 → 250 (야전포 피해 · 반경 상한, C 10+10판 감도 시험 — ARTILLERY_EFFECT N44)
     "gun_field":   { "name": "야전포",      "damage": 100, "spotterIndirect": true, "range": 80,  "cooldown": 5.5, "cooldownMin": 5.0, "cooldownMax": 6.0, "accuracy": 0.6, "accNear": 0.8, "accFar": 0.35, "fire": "direct", "los": true, "aimTime": 0.4, "holdTime": 0.4, "splash": 1.5, "splashEdge": 0.3, "scatter": 4.0, "ammo": 40, "suppress": 250, "craterChance": 0.2, "shellSpeed": 80, "flightMax": 1.2, "traverseArc": 45 },
-    "howitzer_heavy": { "name": "곡사포",   "damage": 100, "range": 120, "minRange": 6, "cooldown": 15.5, "cooldownMin": 14.0, "cooldownMax": 17.0, "accuracy": 1.0, "fire": "indirect", "spotterOnly": true, "aimTime": 2.0, "holdTime": 1.0, "spotterDelay": 0, "splash": 3, "adjustFireShots": 5, "adjustFireMinMul": 0.3333, "adjustFireZone": 5, "splashEdge": 0.3, "scatter": 9.0, "ammo": 32, "suppress": 400, "craterChance": 0.5, "shellSpeed": 22, "flightBase": 1.5, "flightMin": 1.5, "flightMax": 8.0, "traverseArc": 60 }
+    "howitzer_heavy": { "name": "곡사포",   "damage": 100, "range": 120, "minRange": 6, "cooldown": 15.5, "cooldownMin": 14.0, "cooldownMax": 17.0, "accuracy": 1.0, "fire": "indirect", "spotterOnly": true, "aimTime": 2.0, "holdTime": 1.0, "spotterDelay": 0, "splash": 3, "adjustFireShots": 5, "adjustFireMinMul": 0.3333, "adjustFireZone": 5, "splashEdge": 0.3, "scatter": 9.0, "ammo": 32, "suppress": 400, "craterChance": 0.5, "shellSpeed": 22, "flightBase": 1.5, "flightMin": 1.5, "flightMax": 8.0, "traverseArc": 60, "smokeRadius": 5 },
+    // [N60] 경박격포 (참호 돌파 묶음, 사용자 결정 사거리 36): 중대 · 대대 곡사 화력 — 관측자 없이 자기 세력이 보는 적에게 곡사 (spotterOnly 아님, 사선 무시).
+    // 세력별 변형: 한국 = 독일식 경 미넨베르퍼 (7.58cm, 무겁고 강함) · 일본 = 척탄통 (1인, 가볍고 빠름 · 약함) · 그 밖 = 스톡스 박격포. smokeRadius = 연막탄 (지점 포격 '연막').
+    // 수치는 초안 (밸런스 승인 전): 피해 · 반경은 보병포 (70 · 1.5) 이하, 퍼짐은 곡사포 (9) 보다 훨씬 작게.
+    "mortar_minenwerfer": { "name": "경 미넨베르퍼", "damage": 70, "range": 36, "minRange": 5, "cooldown": 6.0, "cooldownMin": 5.5, "cooldownMax": 6.5, "accuracy": 1.0, "fire": "indirect", "aimTime": 1.0, "holdTime": 0.6, "splash": 1.5, "splashEdge": 0.3, "scatter": 3.0, "ammo": 30, "suppress": 300, "craterChance": 0.15, "shellSpeed": 14, "flightBase": 1.5, "flightMin": 2.0, "flightMax": 5.0, "smokeRadius": 3.5 },
+    "mortar_discharger": { "name": "척탄통", "damage": 45, "range": 36, "minRange": 3, "cooldown": 3.5, "cooldownMin": 3.0, "cooldownMax": 4.0, "accuracy": 1.0, "fire": "indirect", "aimTime": 0.6, "holdTime": 0.4, "splash": 1.2, "splashEdge": 0.3, "scatter": 3.5, "ammo": 40, "suppress": 200, "craterChance": 0.03, "shellSpeed": 14, "flightBase": 1.2, "flightMin": 1.5, "flightMax": 4.0, "smokeRadius": 2.5 },
+    "mortar_stokes": { "name": "스톡스 박격포", "damage": 60, "range": 36, "minRange": 4, "cooldown": 4.5, "cooldownMin": 4.0, "cooldownMax": 5.0, "accuracy": 1.0, "fire": "indirect", "aimTime": 0.8, "holdTime": 0.5, "splash": 1.4, "splashEdge": 0.3, "scatter": 3.2, "ammo": 36, "suppress": 250, "craterChance": 0.1, "shellSpeed": 14, "flightBase": 1.5, "flightMin": 2.0, "flightMax": 5.0, "smokeRadius": 3.0 }
   },
   "armors": {
     "none":      { "name": "없음",      "armor": 0 },   // 보병 전원 (2차 추가 D): 피해 전액
@@ -299,7 +309,7 @@
       "hp": 130, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
       "weapon": "carbine_assault", "melee": "sabre_short", "armor": "none", "category": "infantry", "suppressResist": 0.5,
       "suppressRecoverMul": 1.5, "movingHitMul": 0.75, "shellCenterKillRadius": 0.5, "chargeHopRange": 6, "chargeHopMaxHit": 0.85, "chargeHopMinDist": 9, "chargeHopMaxSec": 4,   // assaultinf (2026-10-22): A 제압 저항 (받는 제압 suppressResist 0.5 는 N23 부터 ×0.6 보다 강해 유지) + 회복 ×1.5 · B 이동 중 피격 ×0.75 · 포탄 착탄 중심 0.5칸 즉사 · C 돌격 접근 6칸 안 엄폐 약진 (체력 130 은 이미 반영)
-      "marchFire": true, "grenades": 2, "koreaOnly": true, "marchFireDefault": true, "marchAccMul": 0.8, "marchIntervalMul": 1.0, "marchMoveMul": 0.5, "marchGrenadeFrac": 0.5, "sidearm": "pistol_assault", "sidearmRange": 6, "canCapture": true, "autoAttack": true,
+      "marchFire": true, "grenades": 2, "smokeGrenades": 1, "wireCutter": true, "koreaOnly": true, "marchFireDefault": true, "marchAccMul": 0.8, "marchIntervalMul": 1.0, "marchMoveMul": 0.5, "marchGrenadeFrac": 0.5, "sidearm": "pistol_assault", "sidearmRange": 6, "canCapture": true, "autoAttack": true,
     },
     // ---- 교전 4차 (ROADMAP 추가 병종 / 이름 규칙). 그림은 기존 별칭 (theme.json)
     "infantry_regular": {
@@ -389,6 +399,25 @@
       "hp": 350, "speed": 1.4, "radius": 0.7, "sight": 21, "sightNear": 9, "sightFar": 21, "accuracy": 1.0,
       "weapon": "howitzer_heavy", "armor": "basic", "category": "gun", "suppressResist": 0.75, "setupTime": 20, "packTime": 15, "turnRate": 20,
       "canCapture": false, "autoAttack": true,
+    },
+    // ---- [N60] 경박격포 (참호 돌파 묶음): 세력별 변형, 사거리 36 곡사. 그림은 보병포 별칭 (artAs, 전용 그림은 별도 작업).
+    "heavy_mortar_korean": {
+      "name": "경박격포", "description": "2인이 운용하는 한국군 독일식 경 미넨베르퍼 (7.58cm). 아군이 보는 적에게 곡사 (사선 무시, 사거리 36 · 최소 5). 지점 포격 · 연막탄 가능. 방열(6초) 후 사격, 이동하려면 철수(4초).",
+      "hp": 160, "speed": 2.4, "radius": 0.5, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "mortar_minenwerfer", "armor": "none", "category": "infantry", "suppressResist": 0.6, "setupTime": 6, "packTime": 4,
+      "factions": ["korean"], "artAs": "heavy_infantry_gun", "canCapture": true, "autoAttack": true,
+    },
+    "heavy_mortar_japanese": {
+      "name": "척탄통병", "description": "일본군 척탄통 (1인 운용 경박격포). 아군이 보는 적에게 곡사 (사선 무시, 사거리 36 · 최소 3). 가볍고 빠르게 쏘지만 한 발이 약합니다. 지점 포격 · 연막탄 가능. 거치(2초) 후 사격, 해제(1초).",
+      "hp": 100, "speed": 3.0, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "mortar_discharger", "armor": "none", "category": "infantry", "suppressResist": 0.75, "setupTime": 2, "packTime": 1,
+      "factions": ["japanese"], "artAs": "heavy_infantry_gun", "canCapture": true, "autoAttack": true,
+    },
+    "heavy_mortar": {
+      "name": "박격포병", "description": "2인이 운용하는 스톡스 박격포. 아군이 보는 적에게 곡사 (사선 무시, 사거리 36 · 최소 4). 지점 포격 · 연막탄 가능. 방열(4초) 후 사격, 철수(3초).",
+      "hp": 160, "speed": 2.6, "radius": 0.5, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "mortar_stokes", "armor": "none", "category": "infantry", "suppressResist": 0.6, "setupTime": 4, "packTime": 3,
+      "factions": ["fengtian", "russian"], "artAs": "heavy_infantry_gun", "canCapture": true, "autoAttack": true,
     },
     // ---- [N26] 마적 (bandit, 2026-10-19 사용자 결정). 세력 제한 factions:["bandit"]. 그림은 봉천 그림 대용 (artAs · artVariant) — 전용 그림이 오면 unit.bandit_* 로 바뀐다.
     "bandit_thug": {

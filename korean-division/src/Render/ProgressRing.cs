@@ -21,6 +21,7 @@ internal static class ProgressRing
             case DeployPhase.Deploying: ratio = u.DeployProgress; kind = 0; return true;
             case DeployPhase.Packing: ratio = 1f - u.DeployProgress; kind = 1; return true;
         }
+        if (u.CuttingWire && u.WireCutProgress > 0) { ratio = u.WireCutProgress; kind = 0; return true; }   // 철조망 절단 (N59)
         return false;
     }
 

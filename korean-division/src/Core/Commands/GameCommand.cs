@@ -22,6 +22,8 @@ namespace KoreanDivision.Core;
 [JsonDerivedType(typeof(SetCombatSettingCommand), "combatset")]
 [JsonDerivedType(typeof(ChargeCommand), "charge")]
 [JsonDerivedType(typeof(ThrowGrenadeCommand), "grenade")]
+[JsonDerivedType(typeof(ThrowSmokeCommand), "smokegrenade")]   // N65 (Breach.cs, 리플레이 v20)
+[JsonDerivedType(typeof(CutWireCommand), "cutwire")]   // N59 (Breach.cs, 리플레이 v20)
 [JsonDerivedType(typeof(ChargeOnlyCommand), "chargeonly")]
 [JsonDerivedType(typeof(MountCommand), "mount")]
 [JsonDerivedType(typeof(FormCompanyCommand), "company")]

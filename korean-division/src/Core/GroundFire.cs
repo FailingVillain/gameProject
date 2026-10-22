@@ -13,7 +13,7 @@ namespace KoreanDivision.Core;
 /// <summary>
 /// 포격 종류 (N79a, 사용자 승인 2026-10-20): Sustained = 지속 사격 (취소 · 탄약 소진까지, 기존 지점 포격), Prep = 준비 사격 (combat.prepRounds 발을 한 지점에 쏘고 끝),
 /// Barrage = 이동탄막 (착탄선이 combat.barrageStepSec 초마다 barrageStepTiles 칸씩 Dir 방향으로 전진, 사거리 · 지도 끝 · barrageMaxTiles 를 넘으면 끝),
-/// Smoke = 연막 (아직 없음 — 명령 종류만 있고 실행되지 않는다. 참호 돌파 묶음에서 구현). 탄약 한도는 모든 종류에 적용.
+/// Smoke = 연막 (N59, 참호 돌파 묶음): weapon.smokeRadius 가 있는 포만, breach.smokeRounds 발 연막탄을 쏘고 끝 (착탄 = 연막, Breach.cs). 탄약 한도는 모든 종류에 적용.
 /// </summary>
 public enum GroundFireKind : byte { Sustained = 0, Prep = 1, Barrage = 2, Smoke = 3 }
 
@@ -51,7 +51,8 @@ public sealed partial class World
     /// <summary>지점 포격 명령 (플레이어 전용 — AI 는 부르지 않는다). 곡사포 · 방열 직사포만 골라 보낸다.</summary>
     public void GroundFire(int faction, IEnumerable<Unit> units, Vector2 point, GroundFireKind kind = GroundFireKind.Sustained, Vector2 dir = default)
     {
-        if (kind == GroundFireKind.Smoke || !Enum.IsDefined(typeof(GroundFireKind), kind)) return;   // 연막탄 없음 (N79a — 참호 돌파 묶음에서)
+        if (!Enum.IsDefined(typeof(GroundFireKind), kind)) return;
+        if (kind == GroundFireKind.Smoke) units = units.Where(CanSmoke);   // 연막탄이 있는 포만 (N59)
         if (kind == GroundFireKind.Sustained) IssueUnits(faction, units.Where(CanGroundFire), ids => new GroundFireCommand(faction, ids, point));
         else IssueUnits(faction, units.Where(CanGroundFire), ids => new GroundFireExCommand(faction, ids, point, kind, dir));
     }
@@ -68,15 +69,16 @@ public sealed partial class World
 
     void ExecGroundFire(int faction, List<Unit> list, Vector2 point, GroundFireKind kind, Vector2 dir)
     {
-        if (kind == GroundFireKind.Smoke || !Enum.IsDefined(typeof(GroundFireKind), kind)) return;
+        if (!Enum.IsDefined(typeof(GroundFireKind), kind)) return;
         foreach (var u in list)
         {
-            if (!CanGroundFireAt(u, point)) continue;
+            if (!CanGroundFireAt(u, point) || (kind == GroundFireKind.Smoke && !CanSmoke(u))) continue;
             ResetOrder(u);
             u.Order = UnitOrder.GroundFire;
             u.GroundPoint = point;
             u.GroundKind = kind;
             if (kind == GroundFireKind.Prep) u.GroundRounds = Math.Max(1, Defs.CombatRules.PrepRounds);
+            if (kind == GroundFireKind.Smoke) u.GroundRounds = Math.Max(1, Defs.Breach.SmokeRounds);
             if (kind == GroundFireKind.Barrage)
             {
                 Vector2 d = float.IsFinite(dir.X) && float.IsFinite(dir.Y) && dir.LengthSquared() > 1e-6f ? dir : point - u.Pos;
@@ -123,7 +125,7 @@ public sealed partial class World
             if (!ConsumeAmmo(u)) { ResetOrder(u); return; }
             u.Cooldown = NextCooldown(u, w) * FireIntervalMul(u);
             FireAtGround(u, p, w, dist);
-            if (u.GroundKind == GroundFireKind.Prep && --u.GroundRounds <= 0) ResetOrder(u);   // 준비 사격: 정해진 발수를 쏘면 끝
+            if (u.GroundKind is GroundFireKind.Prep or GroundFireKind.Smoke && --u.GroundRounds <= 0) ResetOrder(u);   // 준비 사격 · 연막: 정해진 발수를 쏘면 끝
         }
     }
 
@@ -138,6 +140,9 @@ public sealed partial class World
         float err = maxErr * MathF.Sqrt(Roll(u.Id, 0x6701));
         float ang = Roll(u.Id, 0x6702) * DetMath.Tau;
         Vector2 impact = p + new Vector2(DetMath.Cos(ang) * err, DetMath.Sin(ang) * err);
-        LaunchShell(u, u.Pos, impact, 0, w);
+        LaunchShell(u, u.Pos, impact, 0, w, u.GroundKind == GroundFireKind.Smoke);   // 연막탄 (N59)
     }
+
+    /// <summary>연막탄을 쏠 수 있는 포인가 (weapon.smokeRadius &gt; 0, N59).</summary>
+    public static bool CanSmoke(Unit u) => CanGroundFire(u) && u.Weapon!.SmokeRadius > 0;
 }

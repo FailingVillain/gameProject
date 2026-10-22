@@ -14,6 +14,8 @@ public sealed class ShellFlight
     public WeaponDef Weapon = null!;
     public Vector2 From, Pos;
     public long FireTick, ImpactTick;
+    /// <summary>연막탄 (N59): 착탄하면 피해 대신 연막 (Breach.cs).</summary>
+    public bool Smoke;
 }
 
 public sealed partial class World
@@ -32,12 +34,13 @@ public sealed partial class World
     }
 
     /// <summary>포 발사: 포구 섬광 · 발사음 기록 (Shots), 비행 시간이 있으면 포탄을 띄우고 아니면 즉시 폭발.</summary>
-    void LaunchShell(Entity shooter, Vector2 from, Vector2 impact, int targetId, WeaponDef w)
+    void LaunchShell(Entity shooter, Vector2 from, Vector2 impact, int targetId, WeaponDef w, bool smoke = false)
     {
         Shots.Add((from, impact, shooter.Owner, Tick, true, shooter.Id));
         int ticks = FlightTicks(w, Vector2.Distance(from, impact));
-        if (ticks <= 0) { Explode(shooter.Id, shooter.Owner, shooter, from, impact, targetId, w); return; }
-        Shells.Add(new ShellFlight { ShooterId = shooter.Id, Owner = shooter.Owner, TargetId = targetId, Weapon = w, From = from, Pos = impact, FireTick = Tick, ImpactTick = Tick + ticks });
+        var shell = new ShellFlight { ShooterId = shooter.Id, Owner = shooter.Owner, TargetId = targetId, Weapon = w, From = from, Pos = impact, FireTick = Tick, ImpactTick = Tick + ticks, Smoke = smoke };
+        if (ticks <= 0) { if (!ShellSmoke(shell)) Explode(shooter.Id, shooter.Owner, shooter, from, impact, targetId, w); return; }
+        Shells.Add(shell);
     }
 
     /// <summary>착탄 틱이 된 포탄 폭발 (UpdateBlasts 옆, 유닛 이동 뒤). 사격자가 죽었어도 폭발한다 (피해 출처 없음 → 반격 · 사살 수 없음).</summary>
@@ -49,6 +52,7 @@ public sealed partial class World
             var s = Shells[i];
             if (s.ImpactTick > Tick) { i++; continue; }
             Shells.RemoveAt(i);
+            if (ShellSmoke(s)) continue;   // 연막탄 (N59, Breach.cs)
             var shooter = Find(s.ShooterId);
             if (shooter != null && !shooter.Alive) shooter = null;
             Explode(s.ShooterId, s.Owner, shooter, s.From, s.Pos, s.TargetId, s.Weapon);

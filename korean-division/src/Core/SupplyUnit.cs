@@ -17,6 +17,7 @@ public sealed partial class Unit
         Ammo = Weapon?.Ammo ?? 0;
         Cargo = Def.Cargo;
         Grenades = Def.Grenades;
+        SmokeGrenades = Def.SmokeGrenades;   // N65 (Breach.cs)
     }
 
     /// <summary>무기 탄약 칸 (0 = 무한 · 무기 없음).</summary>

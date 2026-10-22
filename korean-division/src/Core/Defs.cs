@@ -94,6 +94,8 @@ public sealed class WeaponDef
     public float FlightMax { get; set; }
     /// <summary>방열 사계 (도, 전체 폭): 방열한 대포는 방열 때 정한 중심 ± 절반 안만 쏜다. 밖이면 방열한 채 포가 회전 (옮길 각 < combat.traverseRedeployDeg) 또는 철수 → 회전 → 재방열 (Combat2.cs CanTraverseTo · ShiftTraverse). 0 = 제한 없음.</summary>
     public float TraverseArc { get; set; }
+    /// <summary>연막탄 반경 (칸, 참호 돌파 묶음 N59). 0 = 연막탄 없음. 지점 포격 '연막' 종류로만 쏜다 (Breach.cs).</summary>
+    public float SmokeRadius { get; set; }
     // ---- arty3 포병 · 중화기 묶음 (사용자 2026-10-21, ROADMAP_LONG 3 · 9 · 14)
     /// <summary>직사 + 간접 (야전포): 사선이 막혔거나 직사 표적이 없을 때, 아군 관측 유닛 (장교 · 정찰병) 이 보는 사거리 안 표적에 간접 사격 (퍼짐 = ScatterAt, 사선 무시).</summary>
     public bool SpotterIndirect { get; set; }
@@ -171,6 +173,10 @@ public sealed class UnitDef
     // ---- 교전 4차 (ROADMAP 기병 · 수류탄 · 행진 사격 · 곡사포 관측)
     /// <summary>수류탄 보유 수 (시작 · 최대). 0 = 없음. grenade 규칙은 balance.json "grenade".</summary>
     public int Grenades { get; set; }
+    /// <summary>연막 수류탄 보유 수 (N65, 시작 · 최대). 0 = 없음. 규칙은 balance.json "breach" (Breach.cs).</summary>
+    public int SmokeGrenades { get; set; }
+    /// <summary>철조망 절단 가능 (N59 — 돌격보병이 공병 역할): 철조망 칸 옆에서 breach.wireCutSec 초 → 통과 가능 (Breach.cs).</summary>
+    public bool WireCutter { get; set; }
     /// <summary>한국군 전용 유닛 (N21): 미션 로드 시 en = "korean" 이 아닌 세력의 편성에 있으면 오류 (MissionDef.Validate).</summary>
     public bool KoreaOnly { get; set; }
     /// <summary>[N26] 세력 제한 목록 (map factions[].en, 대소문자 무시). 있으면 이 세력만 편성 가능 (koreaOnly 의 일반화: koreaOnly = ["korean"]). 예: 마적 유닛 ["bandit"].</summary>
@@ -792,6 +798,8 @@ public sealed class GrenadeDef
 public sealed class Defs
 {
     public GrenadeDef Grenade { get; set; } = new();
+    /// <summary>참호 돌파 묶음 (balance.json "breach", Breach.cs): 연막 · 철조망 절단.</summary>
+    public BreachDef Breach { get; set; } = new();
     public StartDef Start { get; set; } = new();
     public SupplyRulesDef Supply { get; set; } = new();
     public TerrainRulesDef Terrain { get; set; } = new();
