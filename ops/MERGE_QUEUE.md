@@ -26,6 +26,7 @@
 | 53712e9 · 4d19119 | - | 도구 정리 · 결정 장부 D01~D22 |
 | b5918a8 · a4c79c7 | docs-ops · docs-roles | 문서 재정비 (ops/tasks, 헌장/역할/절차) |
 | 562e578 | docs-fable | PIPELINE v1 · STATE/QUEUE 현행화 · T13 |
+| bfe5641 | fix/n12-forest | 낡은 시험 4건 수정 (N12/Forest/GapFill 시험 3파일만; 사용자 승인 예외 2026-10-22) |
 
 ## 병합 순서 (wip-ready 가 된 것만 처리; 예정 순서)
 | 순 | 브랜치 | 카드 | R | 상태 | 비고 |
