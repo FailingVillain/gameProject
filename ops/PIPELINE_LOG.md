@@ -178,6 +178,7 @@
 | 14:3x | T42b wip-ready(sonnet, 143k, 325초; t42b-promotion 51b92c3, t42a 위): 진급 후보·적용(탭 9), 스키마 v5(추가만, v3/v4 이행), promotionManual 기본 꺼짐(에이전트 판단), 임시 문턱 JSON, savecompat 13건 추가·골든 일치. 미확인: 탭 9 화면 스크린샷/퍼즈 도달 | 완료 ~71 |
 | 14:4x | T42c wip-ready(sonnet, 131k, 296초; t42c-prisoners 66e7637, t42b 위): 포로 장부·송환/수용(탭 7), 스키마 v6(추가만, v3~v5 이행), 기존 Surrendered 집계 재사용(시뮬·FV 불변), 항복 꺼짐 기본에서 0. savecompat 15건 추가·골든 일치. **갭**: uifuzz --fuzz-menu 가 캠페인 홈에 도달 못함(캠페인 화면 퍼즈 미커버) → T38g 후속 카드 후보 | 완료 ~72 |
 | 14:4x | T42d wip-ready(sonnet, 123k, 246초; t42d-schedule-log 0d5a676, t42c 위): 스키마 v7(Day·Timeline 200건, v3~v6 이행), 첫 승리 정산 시 일수(missionDays 임시 1), 탭 14 연표(읽기 전용)·탭 12 [N일] 접두, savecompat 10건·골든 일치. T42a~d 체인 완료 → 체인 리뷰 발주(sonnet) | 완료 ~73 |
+| 14:4x | T42a~d 체인 리뷰(sonnet, 94k, 76초): 차단 0, 병합 가능. 비차단 7: ①항복자 EnemyKills·포로 이중 계산(항복 켤 때; 사용자 결정) ②패배 분기 죽은 코드 ③마지막 미션 재승리 시 진급 정원 초기화 ④장교 XP 미소모로 연속 진급 ⑤Day/Timeline 상한 없음 ⑥첫 미션 전 이벤트 Day=0 ⑦경제 JSON null 원소 시 전체 폴백. → ③⑤⑥ 수정 발주(sonnet, t42d 위); ①②④⑦ 은 카드에 미결로 기록 | 리뷰 완료 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
