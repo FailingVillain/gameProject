@@ -690,7 +690,10 @@ public sealed partial class TacticalAi
         }
         if (front == float.MinValue) { front = Vector2.Dot(g.TaskPoint, dir); lo = hi = Vector2.Dot(g.TaskPoint, side); }
         float R = s.RifleRange > 0 ? s.RifleRange : 16f;
-        float keep = A.ObserverMinEnemyDist;   // T24 ②
+        // T24 ② 예외: 도하 (화력 기반 · 도하 · 교두보) 중에는 끔 — 강 건너 방어선은 관측자가 15칸 안에 있어야만 보여, 물러나면 곡사포 사격이 멎고 도하가 막힌다 (crossing 시험 FAIL 의 원인)
+        bool crossing = false;
+        foreach (var rg in s.Regiments) if (rg.CrossPhase is CpFireBase or CpCrossing or CpBridgehead) { crossing = true; break; }
+        float keep = crossing ? 0f : A.ObserverMinEnemyDist;   // T24 ②
         float standoff = MathF.Max(R * A.ObserverStandoff, keep);
         int n = mem.Count;
         bool any = false;

@@ -694,3 +694,7 @@
 - ② `artilleryAi.observerMinEnemyDist` (15, tactics.json): 보이는 적이 관측자 15칸 안이면 엄폐 (N22 Cover) 중이라도 AI 가 물러나게 하고, 고른 관측 지점이 보이는 적 15칸 안이면 지점 대신 지금 자리에서 적 무게중심 반대로 곧장 물러남 (`ObserverThink`). 첫 시도 (Cover 건너뛰기 해제 + 반경만) 는 D 관측반 생존 7→5 로 효과 없음 — 원인은 전선 기준 지점 · 엄폐 찾기가 적 쪽을 지나가게 한 것.
 - ③ `chargeMinSuppression` (기본 0 = 끔, 사용자 2026-10-22 결정; 켤 때 후보 0.2; ai_profiles default tactics + tactics.json drill): 공격 돌격 (AI TryAssault attack · 기동조 TryDrillCharge 의 chargeRange 밖) 이 수 우세 (chargeOdds) 만으로 넘을 때도 표적 둘레 적 평균 제압 ≥ 값. 역습 · 근접 (chargeRange 안) 은 그대로.
 - tactics-obs 시각: TacticsObs [관측반] 사망 항목에 마지막 표본 상태 (정찰 상태/명령/보이는 적 거리/종류) 추가 (읽기 전용).
+
+## T24 ② 도하 예외 (2026-10-22, kd/t24-crossing-fix)
+- 원인: observerMinEnemyDist 15 가 도하 시나리오 (CrossingSelfTest 단일 다리) 에서 관측자를 강 건너 방어선 15칸 밖으로 물려 곡사포가 표적을 못 봄 (도하 전 적 감소 155→153 vs 142→130) → 교두보 불성립 · 도하 미완 (crossing FAIL 2).
+- 수정: ObserverThink 에서 연대 도하 국면이 FireBase · Crossing · Bridgehead 인 동안 keep = 0 (②끔). 키 · 기본값 불변, detcheck golden 불변 (ccfbd1dd…/beefbe5c…).
