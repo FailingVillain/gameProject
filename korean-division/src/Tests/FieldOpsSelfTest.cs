@@ -77,9 +77,9 @@ public static class FieldOpsSelfTest
         check(!f.CounterBattery.Enabled && !f.Flare.Enabled && !f.MarchFatigue.Enabled, "fieldops.json: 대포병 · 조명탄 · 행군 피로 기본 끔");
         var d = DifficultyDefs.Current;
         bool lv = d.IsKnown("easy") && d.IsKnown("normal") && d.IsKnown("hard");
-        bool cap = !d.Get("easy").Comms.CourierCapture && d.Get("normal").Comms.CourierCapture && d.Get("hard").Comms.CourierCapture;
+        bool cap = d.Get("easy").Comms.CourierCapture && d.Get("normal").Comms.CourierCapture && d.Get("hard").Comms.CourierCapture;
         bool ai = d.Levels.Values.All(l => l.Ai.AccuracyMul == 1f && l.Ai.AmmoMul == 1f && l.Ai.ReinforceMul == 1f);
-        check(lv && cap && ai, $"난이도 D15 A: 3종 있음 {lv} · 쉬움 전령 사로잡힘 끔 (보통 · 어려움 켬) {cap} · AI 배수 모두 1.0 (어려움 후보는 승인 전) {ai}");
+        check(lv && cap && ai, $"난이도 D15 A: 3종 있음 {lv} · 전 난이도 전령 사로잡힘 가능 (D15) {cap} · AI 배수 모두 1.0 (어려움 후보는 승인 전) {ai}");
     }
 
     /// <summary>기본 끔: 포가 쏴도 탐지 없음, 조명탄 명령은 무시, 걷기는 회복.</summary>

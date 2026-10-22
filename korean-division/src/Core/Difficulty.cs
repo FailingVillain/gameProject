@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace KoreanDivision.Core;
 
@@ -11,6 +12,10 @@ public sealed class DifficultyDefs
 {
     public string Default { get; set; } = "easy";
     public Dictionary<string, DifficultyLevel> Levels { get; set; } = new();
+    /// <summary>전령 사로잡힘 · 유선 끊김 판정 규칙 (T10b, 초안 — 기본 끔). 난이도의 courierCapture · wireCut 은 이 규칙이 켜졌을 때만 소비된다.</summary>
+    public CommsRulesDef CommsRules { get; set; } = new();
+    /// <summary>로드 경고 (파싱 실패 · 범위 밖 값). 비어 있으면 정상. 데이터 파일 쪽이라 JSON 에 쓰지 않는다.</summary>
+    [JsonIgnore] public List<string> Warnings { get; set; } = new();
 
     static DifficultyDefs? current;
     public static DifficultyDefs Current => current ??= Load(Path.Combine(AppContext.BaseDirectory, "assets", "data", "difficulty.json"));
@@ -19,17 +24,57 @@ public sealed class DifficultyDefs
 
     public static DifficultyDefs Load(string path)
     {
+        string? text = null;
+        try { if (File.Exists(path)) text = File.ReadAllText(path); }
+        catch (IOException) { }
+        return Parse(text, path);
+    }
+
+    /// <summary>JSON 문자열 → 정의 (Load · 테스트 공용). 파싱 실패 = 기본값 + 경고 · commsRules 범위 밖 값 = 범위 안으로 고정 + 경고 (Warnings · stderr). 던지지 않는다.</summary>
+    public static DifficultyDefs Parse(string? json, string src = "difficulty.json")
+    {
         DifficultyDefs d = new();
-        try
+        if (json != null)
         {
-            if (File.Exists(path) && JsonSerializer.Deserialize<DifficultyDefs>(File.ReadAllText(path), DataJson.Opts) is { } r) d = r;
+            try
+            {
+                if (JsonSerializer.Deserialize<DifficultyDefs>(json, DataJson.Opts) is { } r) d = r;
+            }
+            catch (JsonException ex)
+            {
+                d = new DifficultyDefs();
+                d.Warn($"{src} 파싱 실패 (기본값 사용): {ex.Message}");
+            }
         }
-        catch (Exception ex) when (ex is JsonException or IOException) { }
         // 키는 소문자로 통일 (JSON 대소문자 무시와 맞춤)
         d.Levels = d.Levels.ToDictionary(kv => kv.Key.ToLowerInvariant(), kv => kv.Value);
         d.Default = (d.Default ?? "easy").ToLowerInvariant();
         if (!d.Levels.ContainsKey(d.Default)) d.Levels[d.Default] = new DifficultyLevel();
+        d.CommsRules ??= new CommsRulesDef();
+        var c = d.CommsRules;
+        var def = new CommsRulesDef();
+        c.CaptureRadius = Fix(d, "captureRadius", c.CaptureRadius, def.CaptureRadius, 1f, 50f);
+        c.CaptureChance = Fix(d, "captureChance", c.CaptureChance, def.CaptureChance, 0f, 1f);
+        c.CheckSec = Fix(d, "checkSec", c.CheckSec, def.CheckSec, 1f, float.MaxValue);
+        c.CutRadius = Fix(d, "cutRadius", c.CutRadius, def.CutRadius, 1f, 50f);
+        c.CutChance = Fix(d, "cutChance", c.CutChance, def.CutChance, 0f, 1f);
         return d;
+    }
+
+    /// <summary>범위 검사 · 고정. NaN = 기본값, 범위 밖 = 가장 가까운 경계 (둘 다 경고).</summary>
+    static float Fix(DifficultyDefs d, string key, float v, float def, float lo, float hi)
+    {
+        if (float.IsNaN(v)) { d.Warn($"commsRules.{key} = NaN → 기본값 {def}"); return def; }
+        float c = Math.Clamp(v, lo, hi);
+        if (c != v) d.Warn($"commsRules.{key} = {v} 범위 밖 → {c} (허용 {lo}~{hi})");
+        return c;
+    }
+
+    /// <summary>경고 기록 + stderr 한 줄 (기존 AiProfile · MissionDef 와 같은 방식).</summary>
+    void Warn(string msg)
+    {
+        Warnings.Add(msg);
+        Console.Error.WriteLine("[난이도 경고] " + msg);
     }
 
     /// <summary>키 → 난이도 (모르는 키 · null = 기본 난이도).</summary>
@@ -62,6 +107,22 @@ public sealed class CommsLevelDef
     public bool CourierCapture { get; set; } = true;
     /// <summary>전달 · 분실된 항목을 '전달 중' 목록에 남겨 두는 시간 (초, 표시 · 알림용).</summary>
     public float KeepSec { get; set; } = 10f;
+}
+
+/// <summary>
+/// 전령 사로잡힘 · 유선 끊김 판정 (T10b 초안, 시간 모형 — 실제 기마 전령 유닛 · 전선 칸은 조각 ②). enabled=false = 기존 동작.
+/// 전령: 출발점 = 보내는 세력의 첫 사령부 건물 (Buildings 순서, 살아 있는 것), 도착점 = 받는 대대의 현재 중심. 진행률 (보낸 틱 → 도착 틱) 로 선형 보간한 위치에서
+///   checkSec 마다 captureRadius 칸 안에 적대 유닛이 있으면 captureChance (해시 난수) 로 사로잡힘 → 분실 (CourierCaptured). 사령부가 없으면 판정 안 함.
+/// 유선: 발송 순간 받는 대대 중심에서 cutRadius 칸 안에 적대 유닛이 있으면 cutChance 로 끊김 → 즉시 분실 (WireCut).
+/// </summary>
+public sealed class CommsRulesDef
+{
+    public bool Enabled { get; set; }
+    public float CaptureRadius { get; set; } = 8f;
+    public float CaptureChance { get; set; } = 0.25f;
+    public float CheckSec { get; set; } = 1f;
+    public float CutRadius { get; set; } = 15f;
+    public float CutChance { get; set; } = 0.5f;
 }
 
 /// <summary>AI 배수 (값은 사용자 승인 뒤 — 지금은 모두 1.0).</summary>

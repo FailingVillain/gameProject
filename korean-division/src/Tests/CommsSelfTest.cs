@@ -30,6 +30,10 @@ public static class CommsSelfTest
             TestDefaultHash();
             TestRoundTrip();
             TestReplay(opt);
+            TestCaptureCut();
+            TestAiIgnoresCouriers();
+            TestRangeClamp();
+            TestBrokenJson();
         }
         catch (Exception e) { check(false, $"comms 테스트 중 예외: {e.GetType().Name}: {e.Message}\n{e.StackTrace}"); }
     }
@@ -67,6 +71,8 @@ public static class CommsSelfTest
         check(d.Default == "easy" && d.IsKnown("easy") && d.IsKnown("Normal") && d.IsKnown("hard") && !d.IsKnown("insane"), $"difficulty.json: 기본 {d.Default} · 난이도 {string.Join("/", d.Levels.Keys)}");
         check(e.WireMinSec == 1 && e.WireMaxSec == 3 && e.CourierMinSec == 10 && e.CourierMaxSec == 20 && !e.WireCut && nm.WireCut && h.WireCut,
             $"통신 규칙: 유선 {e.WireMinSec}~{e.WireMaxSec}초 · 전령 {e.CourierMinSec}~{e.CourierMaxSec}초 · 쉬움 유선 안 끊김 ({e.WireCut}/{nm.WireCut}/{h.WireCut})");
+        check(e.CourierCapture && nm.CourierCapture && h.CourierCapture && !d.CommsRules.Enabled,
+            $"D15: 전 난이도 전령 사로잡힘 가능 ({e.CourierCapture}/{nm.CourierCapture}/{h.CourierCapture}) · commsRules 기본 끔 ({d.CommsRules.Enabled})");
         bool ai1 = d.Levels.Values.All(l => l.Ai.AccuracyMul == 1f && l.Ai.AmmoMul == 1f && l.Ai.ReinforceMul == 1f);
         check(ai1, "AI 배수 (정확도 · 탄약 · 증원) 모두 1.0 — 값은 사용자 승인 뒤");
         var w = Bare();
@@ -158,6 +164,86 @@ public static class CommsSelfTest
         bool json = cmd != null && JsonSerializer.Deserialize<GameCommand>(JsonSerializer.Serialize<GameCommand>(cmd, CommandJson.Options), CommandJson.Options) is DispatchOrderCommand back
             && back.Battalion == cmd.Battalion && back.Via == cmd.Via && back.Order is AttackMoveCommand am && am.Target == new Vector2(55, 55) && am.Sel == 8;
         check(json, "리플레이: 발송 명령 (안의 명령 포함) JSON 왕복");
+    }
+
+    /// <summary>T10b: 전령 사로잡힘 · 유선 끊김 — commsRules 꺼짐 = 기존 동작 (보통에서도 전달), 켜짐 = 보통 사로잡힘/끊김 · 쉬움 (courierCapture · wireCut false) 전달.</summary>
+    static void TestCaptureCut()
+    {
+        var dd = DifficultyDefs.Current;
+        var saved = dd.CommsRules;
+        try
+        {
+            (DispatchState St, DispatchLoss Loss) Run(string lv, CommsVia via, bool on)
+            {
+                dd.CommsRules = new CommsRulesDef { Enabled = on, CaptureChance = 1f, CutChance = 1f, CaptureRadius = 8f, CutRadius = 15f, CheckSec = 1f };
+                var w = Bare();
+                w.Difficulty = lv;
+                var (b, _) = Battalion(w, 1, new Vector2(40, 40));
+                // 적 1 명: 전령 길 (사령부 → 대대) 가운데 · 유선은 대대 둘레 15칸 안
+                w.SpawnUnit(defs.Units["infantry"], 2, via == CommsVia.Courier ? new Vector2(20, 20) : new Vector2(40, 52));
+                w.Step();
+                w.DispatchOrder(1, b, via, new HoldCommand(1, Array.Empty<int>()));
+                w.Step();
+                var d = w.Dispatches.Single();
+                for (int i = 0; i < Sec(22) && d.State == DispatchState.Transit; i++) w.Step();
+                return (d.State, d.Loss);
+            }
+            var offC = Run("normal", CommsVia.Courier, false); var offW = Run("normal", CommsVia.Wire, false);
+            check(offC.St == DispatchState.Delivered && offW.St == DispatchState.Delivered, $"commsRules 꺼짐 (기본) = 기존 동작: 보통 전령 {offC.St} · 유선 {offW.St}");
+            var nC = Run("normal", CommsVia.Courier, true); var hC = Run("hard", CommsVia.Courier, true); var eC = Run("easy", CommsVia.Courier, true);
+            check(nC == (DispatchState.Lost, DispatchLoss.CourierCaptured) && hC == (DispatchState.Lost, DispatchLoss.CourierCaptured) && eC == (DispatchState.Lost, DispatchLoss.CourierCaptured),
+                $"전령 사로잡힘 (켜짐, D15 쉬움 포함): 보통 {nC.Loss} · 어려움 {hC.Loss} · 쉬움 {eC.Loss}");
+            var nW = Run("normal", CommsVia.Wire, true); var eW = Run("easy", CommsVia.Wire, true);
+            check(nW == (DispatchState.Lost, DispatchLoss.WireCut) && eW.St == DispatchState.Delivered, $"유선 끊김 (켜짐, 발송 시점 적 접촉): 보통 {nW.Loss} · 쉬움 wireCut=false {eW.St}");
+            // 저장 · 이어 돌리기: 전달 중에 저장 → 불러온 월드도 같은 틱에 사로잡힘 (숨은 상태 없음)
+            dd.CommsRules = new CommsRulesDef { Enabled = true, CaptureChance = 1f, CaptureRadius = 8f, CheckSec = 1f };
+            var x = Bare(); x.Difficulty = "normal";
+            var (xb, _) = Battalion(x, 1, new Vector2(40, 40));
+            x.SpawnUnit(defs.Units["infantry"], 2, new Vector2(20, 20));
+            x.Step();
+            x.DispatchOrder(1, xb, CommsVia.Courier, new HoldCommand(1, Array.Empty<int>()));
+            Steps(x, 3);
+            var y = Snapshot.Load(Snapshot.Save(x, Meta), defs).World;
+            for (int i = 0; i < Sec(22) && x.Dispatches[0].State == DispatchState.Transit; i++) { x.Step(); y.Step(); }
+            var dx = x.Dispatches.FirstOrDefault(); var dy = y.Dispatches.FirstOrDefault();
+            check(x.ComputeChecksum() == y.ComputeChecksum() && dx?.Loss == DispatchLoss.CourierCaptured && dx?.State == dy?.State && dx?.EndTick == dy?.EndTick,
+                $"사로잡힘 판정 저장 왕복: 이어 돌려도 같음 ({dx?.State}/{dx?.Loss} 틱 {dx?.EndTick} vs {dy?.State} 틱 {dy?.EndTick})");
+        }
+        finally { dd.CommsRules = saved; }
+    }
+
+    /// <summary>D15: AI 는 전령을 찾아 사냥하지 않는다 — src/AI 소스에 전령 · 발송 (Courier · Dispatch · CommsVia) 참조가 없어야 한다 (AI 표적 · 과제 선택이 전령을 모른다). 소스 폴더를 못 찾으면 건너뜀.</summary>
+    static void TestAiIgnoresCouriers()
+    {
+        string? dir = null;
+        for (var d = new System.IO.DirectoryInfo(AppContext.BaseDirectory); d != null && dir == null; d = d.Parent)
+            if (System.IO.Directory.Exists(System.IO.Path.Combine(d.FullName, "src", "AI"))) dir = System.IO.Path.Combine(d.FullName, "src", "AI");
+        if (dir == null) { check(true, "D15 AI 전령 비참조: src/AI 를 못 찾아 건너뜀"); return; }
+        var hits = new List<string>();
+        foreach (var f in System.IO.Directory.EnumerateFiles(dir, "*.cs", System.IO.SearchOption.AllDirectories))
+        {
+            var t = System.IO.File.ReadAllText(f);
+            foreach (var k in new[] { "Courier", "Dispatch", "CommsVia" }) if (t.Contains(k, StringComparison.OrdinalIgnoreCase)) hits.Add(System.IO.Path.GetFileName(f) + ":" + k);
+        }
+        check(hits.Count == 0, $"D15: AI (src/AI) 는 전령 · 발송을 참조하지 않음 — 전령 사냥 없음 ({(hits.Count == 0 ? "0" : string.Join(",", hits))})");
+    }
+
+    static void TestRangeClamp()
+    {
+        check(DifficultyDefs.Current.Warnings.Count == 0, "난이도 파일: 기본 파일은 경고 없음");
+        var d = DifficultyDefs.Parse("{\"commsRules\": {\"enabled\": true, \"captureRadius\": 999, \"captureChance\": 3, \"checkSec\": 0, \"cutRadius\": -5, \"cutChance\": -1}}");
+        var c = d.CommsRules;
+        check(c.Enabled && c.CaptureRadius == 50f && c.CaptureChance == 1f && c.CheckSec == 1f && c.CutRadius == 1f && c.CutChance == 0f && d.Warnings.Count == 5,
+            $"범위 밖 commsRules 고정: 반경 {c.CaptureRadius}/{c.CutRadius} 확률 {c.CaptureChance}/{c.CutChance} 점검 {c.CheckSec} (경고 {d.Warnings.Count})");
+    }
+
+    static void TestBrokenJson()
+    {
+        var d = DifficultyDefs.Parse("{ \"commsRules\": { \"enabled\": tru ");
+        var c = d.CommsRules;
+        check(d.Warnings.Count == 1 && d.Warnings[0].Contains("파싱 실패") && !c.Enabled && c.CaptureChance == 0.25f && c.CutRadius == 15f
+            && d.Default == "easy" && d.Levels.ContainsKey("easy"),
+            $"깨진 JSON: 경고 1 + 기본값 · 꺼짐 (경고 {d.Warnings.Count})");
     }
 
     static void TestReplay(GameOptions opt)
