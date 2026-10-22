@@ -8,11 +8,11 @@ using Raylib_cs;
 namespace MapEditor.App;
 
 /// <summary>
-/// 지도 편집기 (T33b/c). 사용: MapEditor [--map ID | --mission ID | --file PATH] [--savedir DIR] [--real-launch] [--script FILE] [--shot OUT.png] [--shotdir DIR] [--keep] [--theme ID]
+/// 지도 편집기 (T33b/c). 사용: MapEditor [--map ID | --mission ID | --file PATH] [--savedir DIR] [--allow-source-overwrite] [--real-launch] [--script FILE] [--shot OUT.png] [--shotdir DIR] [--keep] [--theme ID]
 ///   --script  입력 재생 (ScriptPlayer 문서 참고)   --shot  스크립트가 끝난 뒤 마지막 화면을 PNG 로 저장 (스크립트 안 shot 명령도 가능)
 ///   --selftest [스크립트 폴더]  창 없이 시험 (스크립트 재생 + 버튼 배치/덮개 + 저장 왕복)
 ///   --real-launch  스크립트 안의 테스트 실행(F5)도 실제로 게임 창을 띄움 (기본: 스크립트 · selftest 는 인자만 기록)
-/// 게임 지도 · 미션(assets)은 절대 덮어쓰지 않는다: 저장 위치 기본 = ./maps_edit/<id>.json (미션은 ./maps_edit/missions/<id>.json) (--savedir 로 변경; run_game.ps1 은 --out 을 PowerShell 공통 인자로 오해함).
+/// 게임 지도 · 미션(assets)은 기본으로 덮어쓰지 않는다 (--file 로 원본 경로를 열어 저장해도 거부됨; --allow-source-overwrite 를 줘야 허용): 저장 위치 기본 = ./maps_edit/<id>.json (미션은 ./maps_edit/missions/<id>.json) (--savedir 로 변경; run_game.ps1 은 --out 을 PowerShell 공통 인자로 오해함).
 /// </summary>
 public static class EditorMain
 {
@@ -33,6 +33,7 @@ public static class EditorMain
                 case "--savedir": case "--out": outDir = Path.GetFullPath(args[++i]); break;
                 case "--script": script = args[++i]; break;
                 case "--shot": shot = Path.GetFullPath(args[++i]); break;
+                case "--allow-source-overwrite": EditorPaths.AllowSourceOverwrite = true; break;
                 case "--keep": keep = true; break;
                 case "--real-launch": realLaunch = true; break;
                 case "--shotdir": shotDir = Path.GetFullPath(args[++i]); break;

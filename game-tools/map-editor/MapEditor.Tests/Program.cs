@@ -86,6 +86,7 @@ static partial class Tests
         PlacementInsertAndEmbed();
         InspectorChecks();
         TestPlayFiles();
+        SourceGuardTests();
 
         Console.WriteLine($"map-editor tests: pass {passes} fail {fails}");
         return fails == 0 ? 0 : 1;

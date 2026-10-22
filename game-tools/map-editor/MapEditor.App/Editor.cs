@@ -49,7 +49,9 @@ public sealed class Editor
 {
     public const int TopH = 40, StatusH = 26, LeftW = 132, RightW = 200, BottomH = 116;
     public const int ListRows = 5, IssueRows = 4, PopupRows = 8;
-    public const string TestId = "_editor_test";
+    public static string TestId => EditorPaths.TestId;   // 프로세스마다 고유 (_editor_test_<pid>)
+    readonly List<string> testCopies = new();
+    static bool exitHooked;
     public static readonly string[] PaletteNames = MapDoc.TerrainNames.Concat(new[] { "high", "low" }).ToArray();
     public static readonly string[] PaletteLabels = { "풀", "흙", "모래", "물", "바위", "숲", "잔해", "집", "철조망", "참호", "구덩이", "선로", "여울", "다리", "고지 올림", "고지 내림" };
     public static readonly string[] ToolLabels = { "브러시 B", "선 L", "사각 R", "원 C", "채움 F", "지우개 E", "소품 P", "시설 S", "시작 T", "구역 Z", "배치구역 X", "유닛 U", "선로 N" };
@@ -681,6 +683,7 @@ public sealed class Editor
         try
         {
             string full = Path.GetFullPath(path);
+            if (!EditorPaths.AllowSourceOverwrite && EditorPaths.IsProtectedSource(full, MapFile.Folder, MissionDef.Folder)) { Status = EditorPaths.RefuseMessage(full); return false; }
             string text = Mission != null ? Mission.ToText() : Doc.ToFileText();
             if (Mission != null) MissionDef.Parse(text, Mission.Id);                        // 게임 미션 검증
             else loadText.Invoke(null, new object?[] { text, "check", Config.DefaultSeed, null });   // 게임 지도 검증
@@ -715,6 +718,7 @@ public sealed class Editor
             if (Mission != null)
             {
                 Directory.CreateDirectory(MissionDef.Folder);
+                Track(MissionDef.PathOf(TestId));
                 File.Copy(SavePath!, MissionDef.PathOf(TestId), true);
                 MissionDef.Load(TestId);   // 게임이 같은 위치에서 읽히는지 확인
                 args = new[] { "--mission", TestId, "--mission-start" };
@@ -722,6 +726,7 @@ public sealed class Editor
             else
             {
                 Directory.CreateDirectory(MapFile.Folder);
+                Track(MapFile.PathOf(TestId));
                 File.Copy(SavePath!, MapFile.PathOf(TestId), true);
                 MapFile.Load(TestId, Config.DefaultSeed);
                 args = new[] { "--map", TestId };
@@ -731,6 +736,22 @@ public sealed class Editor
         }
         catch (Exception e) { Status = "테스트 실행 실패: " + (e.InnerException?.Message ?? e.Message); }
     }
+
+    void Track(string p)
+    {
+        if (!testCopies.Contains(p)) testCopies.Add(p);
+        lock (live) if (!live.Contains(this)) live.Add(this);
+        if (!exitHooked) { exitHooked = true; AppDomain.CurrentDomain.ProcessExit += (_, _) => CleanupTestCopies(); }
+    }
+    static readonly List<Editor> live = new();
+
+    /// <summary>테스트 실행 임시 사본 삭제 (편집기 종료 때 자동; 게임은 시작할 때 읽으므로 실행 직후엔 지우지 않음).</summary>
+    public void CleanupTestPlay()
+    {
+        foreach (var p in testCopies) { try { if (File.Exists(p)) File.Delete(p); } catch { } }
+        testCopies.Clear();
+    }
+    static void CleanupTestCopies() { lock (live) foreach (var e in live) e.CleanupTestPlay(); }
 
     /// <summary>스크립트 · selftest 용: 게임을 띄우지 않고 인자만 기록.</summary>
     public static string RecordLaunch(string[] args) => "실행 기록만 (창 안 띄움): " + string.Join(" ", args);

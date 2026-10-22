@@ -32,3 +32,4 @@ rail 브랜치 TerrainSelfTest + 편집기 왕복 시험
 - RailTests 의 게임 대조는 rail 을 아는 게임에서만 자동으로 켜짐 (모르면 건너뜀 문구).
 - 알려진 선행 이슈 (T33c 시험 vs river 브랜치 자산): assets/missions/test_river_crossing.json 은 `"map"` 참조 미션이라 PlacementTests 의 "편집 없이 ToText = 원문 바이트 동일" / mapData 가정이 깨짐 (미션 쪽 T33c 시험, rail/ford 와 무관) -- 병합 때 시험 쪽에서 map 참조 미션을 건너뛰게 고칠 것.
 - 지도에 `line` 을 쓰면 rail 브랜치가 없는 main 게임은 그 지도를 못 읽음 (선로 도구는 rail 병합 후에만 쓸 것).
+- 리뷰 수정 (9b72f2f 후속): (1) 게임 원본 에셋 경로(`korean-division/assets/`, assets/maps · missions)에 대한 저장은 `--allow-source-overwrite` 없이는 거부 (`--file` 로 원본을 열어도 안전); (2) 테스트 실행 임시 id = `_editor_test_<pid>` 프로세스 고유, 편집기 종료 때 사본 삭제; (3) 문구 정정: 지도는 저장 때 정규화(바이트 보존 아님), 미션은 mapData 등 바뀐 속성 밖 바이트 유지 · 바뀐 속성 안 주석은 사라지며 상태줄 경고.
