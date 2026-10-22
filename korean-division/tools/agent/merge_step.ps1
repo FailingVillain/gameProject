@@ -14,6 +14,8 @@
 #   -Progress <file>     default <repo top>/ops/MERGE_PROGRESS.md (appended, not committed).
 #   -Out <dir>           build output (default bin/merge). Runs `dotnet <Out>/KoreanDivision.dll`.
 #   -Priority            pass -Priority to heavy_gate (only while holding the merge lock). -NoGate skips the gate call.
+#   -GuardBranch <ref>   stage 0: run queue_guard.ps1 on the branch being merged (QUEUE/STATE/MERGE_QUEUE edits => WARN line,
+#                        STOP with -GuardStrict). -GuardBase default main.
 #   -DryRun              print the plan, run nothing, tag nothing, write nothing. With -Feed <dir> the stages read
 #                        detcheck.txt / selftest_<group>.txt / snaptest.txt from that dir instead (tests the STOP logic).
 [CmdletBinding(PositionalBinding = $false)]
@@ -30,7 +32,10 @@ param(
     [switch]$Priority,
     [switch]$NoGate,
     [switch]$DryRun,
-    [string]$Feed = ''
+    [string]$Feed = '',
+    [string]$GuardBranch = '',
+    [string]$GuardBase = 'main',
+    [switch]$GuardStrict
 )
 $ErrorActionPreference = 'Stop'
 try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch { }
@@ -102,6 +107,17 @@ if (-not $DryRun) {
     $gd = (& git -C $Root rev-parse --git-dir).Trim()
     if (-not [System.IO.Path]::IsPathRooted($gd)) { $gd = Join-Path $Root $gd }
     if (Test-Path (Join-Path $gd 'MERGE_HEAD')) { Stop-Step 'git' 'merge in progress (MERGE_HEAD)' }
+}
+
+# 0 queue guard (work branches must not edit QUEUE/STATE/MERGE_QUEUE)
+if ($GuardBranch -ne '') {
+    $qg = Join-Path $PSScriptRoot 'queue_guard.ps1'
+    $qo = @(& powershell -NoProfile -ExecutionPolicy Bypass -File $qg -Branch $GuardBranch -Base $GuardBase -Top $Top 2>&1 | ForEach-Object { "$_" })
+    if ($LASTEXITCODE -ne 0) {
+        Say ("WARN queue_guard: " + ($qo -join ' ; ') + " -> keep the merge line's own copy of those files ('ours')")
+        $script:Log += 'queueguard=WARN'
+        if ($GuardStrict) { Stop-Step 'queue-guard' ($qo -join ' ; ') }
+    } else { $script:Log += 'queueguard=ok' }
 }
 
 # 1 gate + build

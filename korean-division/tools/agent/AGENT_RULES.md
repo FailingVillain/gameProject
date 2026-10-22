@@ -15,9 +15,9 @@ Repo `C:\gameProject\korean-division`. Report in Korean, short. Procedures: `doc
 - Context ~200k, or first mergeable slice done: merge / WIP-commit, then stop and report the rest.
 
 ## Docs / determinism
-- ENGINE_NOTES: append a short section, never rewrite others' text. Your task card: write only its 결과/상태 lines. ops/*.md: not yours (owners in ops/PIPELINE.md). Count lines (selftest totals, FormatVersion) are replaced, never appended. Per-merge CLAUDE.md / SELFTEST_HISTORY / BASELINE / HANDOFF updates are NOT yours - the release role does them at queue end.
+- ENGINE_NOTES / DECISIONS_PENDING: do NOT edit those files; write your short section / lines to your own one file `docs/engine_notes.d/<branch>.md` / `docs/decisions_pending.d/<branch>.md` (branch with `/`->`__`; optional first line `date: YYYY-MM-DD HH:mm`); the merge line assembles them (tools/agent/assemble_notes.ps1). Never rewrite others' text. Your task card: write only its 결과/상태 lines. ops/*.md: not yours (owners in ops/PIPELINE.md). Count lines (selftest totals, FormatVersion) are replaced, never appended. Per-merge CLAUDE.md / SELFTEST_HISTORY / BASELINE / HANDOFF updates are NOT yours - the release role does them at queue end.
 - Ambiguous instruction (value, direction, unit): ask in the report, or implement the safest reading behind a JSON switch and say so.
-- Determinism: DetMath, hash RNG, commands only; new state -> checksum + Audit + save + FormatVersion bump (check main's value at merge time).
+- Determinism: DetMath, hash RNG, commands only; new state -> checksum + Audit + save + FormatVersion bump: do not pick the final number - run `tools/agent/fv_claim.ps1 -Fv 1 [-Replay 1] -Reason ...` (writes ops/fv_claims/<branch>.txt) and use base FV+1 as the temporary number; the merge line assigns it (fv_assign.ps1). Never edit ops/QUEUE.md / STATE.md / MERGE_QUEUE.md (queue_guard.ps1 checks).
 - No test dodging: never change a test's seed/map/values to pass an invariant; fix the cause or report and stop.
 - Two real fix attempts failed: WIP-commit, report the diagnosis.
 
@@ -32,7 +32,7 @@ Repo `C:\gameProject\korean-division`. Report in Korean, short. Procedures: `doc
 - 스크린샷 검수용 이미지는 이미지 뷰어를 열지 말고 파일만 만든다(지휘자가 폴더로 안내).
 - 창은 `tools/agent/run_game.ps1` 로 보조 모니터에 띄운다.
 - (명확화 2026-10-22) `--uifuzz` 의 무작위 창 크기 변경(최대 1920x1080)은 **허용**: 창 모드·보조 모니터이고 전체화면/최대화가 아니기 때문. 금지 대상은 fullscreen/borderless/최대화와 settings.json Mode 변경.
-- (토큰 절약 2026-10-22) **최종 보고는 8~12줄 이내**(요약 + 경로 + 막힌 것). 긴 표·원인 설명은 커밋 메시지·카드 파일에 쓰고 보고에는 경로만. 백그라운드 작업이 끝나길 기다릴 때 '대기 중' 보고로 멈추지 말고 블로킹 대기(`Monitor` 또는 폴링 루프)로 끝까지 진행한다. 큰 컨텍스트(>150k) 에이전트에 SendMessage 로 재개시키지 않는다(전체 기록 재처리) — 후속은 새 에이전트 + 카드/커밋 인계.
+- (토큰 절약 2026-10-22) **최종 보고는 역할 카드의 줄 수(보통 <=8, reviewer <=12, 지휘자 지정 시 그 값)를 넘지 않는다**(요약 + 경로 + 막힌 것). 보고 끝에 **'임의 결정' 항목**: 카드가 정하지 않아 네가 임의로 정한 값·가정·해석·삭제·완화를 한 줄씩 전부 나열(없으면 '없음'; 지휘자가 AUTO_DEFAULTS_LOG 에 기록한다). 긴 표·원인 설명은 커밋 메시지·카드 파일에 쓰고 보고에는 경로만. 백그라운드 작업이 끝나길 기다릴 때 '대기 중' 보고로 멈추지 말고 블로킹 대기(`Monitor` 또는 폴링 루프)로 끝까지 진행한다. 큰 컨텍스트(>150k) 에이전트에 SendMessage 로 재개시키지 않는다(전체 기록 재처리) — 후속은 새 에이전트 + 카드/커밋 인계.
 - 창 위치: 환경변수 KD_MONITOR=secondary 가 이미 설정돼 있다(게임이 T38n 병합 뒤 따른다). 게임을 직접 실행할 땐 `tools/agent/run_game.ps1` 사용.
 
 ## Running the game window
@@ -45,3 +45,4 @@ Repo `C:\gameProject\korean-division`. Report in Korean, short. Procedures: `doc
 - Each group has its own `KD_TMP` / `KD_CAMPAIGN_DIR`; groups writing shared files go in `$SharedState` (one bucket). A new group needs no registration (parsed from SelfTest.cs); new inline test code outside a group is NOT run in parallel mode - add it to a `core_*` case.
 - Output: per-group PASS/FAIL + seconds, last 30 log lines of each failure, logs in `<OutDir>/logs/<group>.log`. Exit 0 pass, 1 fail, 2 partial. `-DetCheck` also runs `--detcheck` and prints the DETCHECK/GOLDEN lines.
 - `-SelfCheck` = 3 tiny groups in 2 jobs (~10 s) to prove the harness works.
+- (파이프라인 v2 2026-10-22) ops/QUEUE·STATE·MERGE_QUEUE 와 ops/ 전체는 작업 브랜치에서 수정하지 않는다(`tools/agent/queue_guard.ps1`). FV/Replay 를 올릴 때는 번호를 확정하지 말고 기반+1 임시값 + `fv_claim.ps1`. DECISIONS_PENDING·ENGINE_NOTES 는 `docs/decisions_pending.d/`·`docs/engine_notes.d/` 조각 파일에 쓴다. 한도 숫자는 프롬프트의 값이 아니라 `ops/LIMITS.md` 를 따른다. 병합 단계는 `merge_step.ps1` 만(snapshot + `--snaptest` 포함).

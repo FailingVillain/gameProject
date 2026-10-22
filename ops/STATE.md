@@ -2,12 +2,13 @@
 
 > 정본: 상태 = 이 파일 · 대기열 = QUEUE.md · 병합 = MERGE_QUEUE.md · 한도 = LIMITS.md · 결정 = DECISIONS.md · 흐름 = PIPELINE.md. 새 지휘자 세션은 이 파일 → QUEUE → DECISIONS → PIPELINE 만 읽고 시작(PIPELINE §4).
 > 쓰는 사람: 지휘자(점검·인계) + release(큐 끝 한 줄). 작업 에이전트는 쓰지 않는다.
+> **인계 규칙 (2026-10-22)**: 인계는 이 STATE.md 한 곳에만 쓴다. 해시·워크트리·잠금·heavy 수 같은 실측값은 직접 적지 말고 `tools/agent/state_snapshot.ps1` (-Write → ops/STATE_LIVE.md)를 인용한다. `ops/PIPELINE_LOG.md` 는 append 전용 — 세션 시작 때 읽지 않는다 (필요할 때만 Grep).
 
 ## 기준 (실시간 값은 명령으로 확인)
 - main: `562e578` (docs-fable 병합). 확인 `git -C C:/gameProject log -1 --format=%h main`.
 - Snapshot `FormatVersion = 52` (src/Core/Snapshot/Snapshot.cs:83) · Replay `19` (src/Core/Commands/Replay.cs:22). 병합 때마다 다시 읽는다.
 - 실행 중 에이전트: 0 (작성 시점; 실제는 harness `GET http://localhost:8500/api/state`). 병합 잠금: 없음.
-- 한도: 에이전트 24 · 上 5 · 무거운 작업 8 (LIMITS.md), 파도 ≤12 권장.
+- 한도: ops/LIMITS.md 참조 (값 정본), 파도 ≤12 권장.
 - 워크트리: kd-develop/crossingfix(8d22ad5, 변경 없음, 용도 확인 필요) · gate-lanes(병합됨, 제거 가능) · docs-fable(이 작업, 병합 후 제거).
 
 ## main 에 들어간 것 (상세 = MERGE_QUEUE 병합 완료 표, 옛 이력 = docs/legacy/GIT_HISTORY_DIGEST.md Grep)
@@ -84,7 +85,7 @@
 - 답변 한국어, 짧게. push 금지 (사용자 명령 시만). 병합은 병합 라인 경유만 (main 직접 병합 금지). main 은 최종 `--ff-only`, 사용자 확인 뒤.
 - 밸런스 최후 (0.3 one-shot), AI 개선 0.4. 웹 조회는 Gemini (`hub ask -w`) 만.
 - 창 모드만, 1280x720 이하, 전체화면·테두리없음 금지. 보조 모니터 = env `KD_MONITOR=secondary` (~/.claude/settings.json; T38n 병합 뒤 게임이 읽음).
-- 한도: 에이전트 ≤30 · opus ≤8 · heavy gate 12 (빈 RAM ≥6GB) · heavyRAM 14GB. 에이전트 최종 보고 ≤12줄. 큰 컨텍스트 에이전트는 재개하지 않고 새로 띄운다.
+- 한도: ops/LIMITS.md 참조 (값 정본; RAM 가드 포함). 에이전트 최종 보고 ≤12줄. 큰 컨텍스트 에이전트는 재개하지 않고 새로 띄운다.
 - 읽기 전용 리뷰어는 C:/gameProject 에서 git checkout 금지 (LESSONS 20).
 - 질문은 추천 기본값을 자동 적용하고 소수씩. 세션 교체는 하루 1회. 지휘자 세션은 컨텍스트가 크다 (이번 세션 724k, 전체 토큰 51%) → 답변·로그 줄을 짧게.
 

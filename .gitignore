@@ -19,3 +19,4 @@ game-tools/korean-division-image-out/
 # Python / tooling caches
 __pycache__/
 .claude/
+ops/CARD_REGISTRY.md.lock

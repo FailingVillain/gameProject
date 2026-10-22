@@ -14,3 +14,4 @@ tools/__pycache__/
 __pycache__/
 settings.json
 logs/
+dist-sc/
