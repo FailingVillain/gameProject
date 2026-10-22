@@ -146,8 +146,8 @@ public sealed class TrainTrack
 
     public long Wrap(long s) => Loop ? ((s % Length) + Length) % Length : s;
 
-    /// <summary>호장 s 의 위치 (칸 중심을 잇는 꺾은선) · 진행 방향 (단위 벡터).</summary>
-    public Vector2 PosAt(long s, out Vector2 dir)
+    /// <summary>호장 s 의 위치 (칸 중심을 잇는 꺾은선), 고정소수 (1칸 = Unit). 정수 연산뿐 — 플랫폼 무관 (선로 위 유닛 판정 · 체크섬 경로용).</summary>
+    public void PosFix(long s, out long px, out long py, out int dxs, out int dys)
     {
         s = Wrap(s);
         int n = TX.Length;
@@ -162,12 +162,21 @@ public sealed class TrainTrack
         }
         int j = i + 1 < n ? i + 1 : 0;
         long seg = (j == 0 ? Length : Cum[j]) - Cum[i];
-        float t = seg > 0 ? (float)(s - Cum[i]) / seg : 0f;
-        var a = new Vector2(TX[i] + 0.5f, TY[i] + 0.5f);
-        var b = new Vector2(TX[j] + 0.5f, TY[j] + 0.5f);
-        var d = b - a;
-        dir = d.LengthSquared() > 0 ? Vector2.Normalize(d) : Vector2.UnitX;
-        return a + d * t;
+        long ax = (long)TX[i] * Unit + Unit / 2, ay = (long)TY[i] * Unit + Unit / 2;
+        long ddx = ((long)TX[j] - TX[i]) * Unit, ddy = ((long)TY[j] - TY[i]) * Unit;
+        long off = s - Cum[i];
+        px = seg > 0 ? ax + ddx * off / seg : ax;   // long 나눗셈 = 0 쪽 버림 (결정적)
+        py = seg > 0 ? ay + ddy * off / seg : ay;
+        dxs = Math.Sign(ddx); dys = Math.Sign(ddy);
+    }
+
+    /// <summary>호장 s 의 위치 (칸 단위 float, PosFix 에서 변환 — 렌더 · 객차 Pos 용) · 진행 방향 (단위 벡터, 렌더용).</summary>
+    public Vector2 PosAt(long s, out Vector2 dir)
+    {
+        PosFix(s, out long px, out long py, out int dx, out int dy);
+        var d = new Vector2(dx, dy);
+        dir = d.LengthSquared() > 0 ? d / MathF.Sqrt(d.LengthSquared()) : Vector2.UnitX;
+        return new Vector2(px / (float)Unit, py / (float)Unit);
     }
 }
 
@@ -269,7 +278,7 @@ public sealed class Train
         int sgn = Math.Sign(V), sp = Math.Abs(V);
         int look = sgn != 0 ? sgn : want;
         if (look == 0) Blocked = false;
-        else if ((tick + Id) % BlockCheckTicks == 0 || (!Blocked && sp == 0)) Blocked = blockedAhead(this, look);   // 감지는 6틱마다 (열차마다 엇갈림) — 출발 직전엔 바로 본다
+        else if ((tick + Id) % BlockCheckTicks == 0 || sp == 0) Blocked = blockedAhead(this, look);   // 감지는 6틱마다 (열차마다 엇갈림) — 멈춰 있으면(출발 직전 · 방향 바꿈) 매 틱 바로 본다 — 지난 방향의 막힘 값이 남지 않음
         if (sgn != 0 && sgn != want)
         {
             sp = Math.Max(0, sp - r.Brk);   // 반대 방향 · 정지 명령: 먼저 제동
@@ -324,19 +333,25 @@ public sealed partial class World
     public Train SpawnTrain(MissionTrain spec)
     {
         var r = TrainRules;
+        if (spec == null) throw new InvalidDataException("열차 정의가 비어 있음 (null)");
         if (spec.Faction < 1 || spec.Faction >= Factions.Count) throw new InvalidDataException($"열차 세력 {spec.Faction} 없음");
+        if (spec.Cars == null) throw new InvalidDataException("열차 cars 가 null (객차 종류 목록 필요)");
         if (spec.Cars.Count < 1 || spec.Cars.Count > r.MaxCars) throw new InvalidDataException($"열차 객차 수 1~{r.MaxCars} (받은 {spec.Cars.Count})");
-        foreach (var k in spec.Cars) if (!r.Cars.ContainsKey(k)) throw new InvalidDataException($"열차 객차 종류 '{k}' 없음 (balance.json trains.cars)");
-        if (spec.Path.Any(p => p is not { Length: 2 })) throw new InvalidDataException("열차 path 는 [[x, y], ...]");
+        foreach (var k in spec.Cars) if (k == null || !r.Cars.ContainsKey(k)) throw new InvalidDataException($"열차 객차 종류 '{k}' 없음 (balance.json trains.cars)");
+        if (spec.Path == null || spec.Path.Any(p => p is not { Length: 2 })) throw new InvalidDataException("열차 path 는 [[x, y], ...]");
+        if (spec.Waits != null)
+            foreach (var wv in spec.Waits)
+                if (float.IsNaN(wv) || float.IsInfinity(wv) || wv < 0f || wv > 3600f) throw new InvalidDataException($"열차 waits 값 {wv} (0~3600 초)");
         var track = TrainTrack.Build(Map, spec.Path.Select(p => (p[0], p[1])).ToList(), spec.Loop);
         int n = track.Waypoints.Length;
-        if (spec.Start < 0 || spec.Start >= n) throw new InvalidDataException($"열차 start 0~{n - 1}");
+        if (spec.Start < 0 || spec.Start >= n) throw new InvalidDataException($"열차 start 0~{n - 1} (받은 {spec.Start})");
         if (spec.Waits != null && spec.Waits.Length > n) throw new InvalidDataException("열차 waits 가 경유점보다 많음");
         var waits = new int[n];
-        for (int i = 0; i < n; i++) waits[i] = spec.Waits != null && i < spec.Waits.Length ? Math.Max(0, (int)MathF.Round(spec.Waits[i] * TrainRulesDef.TicksPerSecond)) : 0;
+        for (int i = 0; i < n; i++) waits[i] = spec.Waits != null && i < spec.Waits.Length ? (int)MathF.Round(spec.Waits[i] * TrainRulesDef.TicksPerSecond) : 0;
         var t = new Train(nextId++, spec.Faction, spec.Tag, track, waits);
         for (int i = 0; i < spec.Cars.Count; i++) t.Cars.Add(new TrainCar(nextId++, spec.Faction, spec.Cars[i], r.Cars[spec.Cars[i]], i));
         if (!track.Loop && track.Length < t.TailOffset(r)) throw new InvalidDataException($"열차 경로가 열차보다 짧음 ({track.Length / (float)TrainTrack.Unit:0.0}칸)");
+        if (track.Loop && track.Length < t.Cars.Count * r.Pitch) throw new InvalidDataException($"열차 순환선이 열차보다 짧음 ({track.Length / (float)TrainTrack.Unit:0.0}칸)");
         t.S = t.StopArc(spec.Start, r);
         t.Next = spec.Start;
         if (!track.Loop && spec.Start == n - 1) t.ScriptDir = -1;
@@ -387,14 +402,22 @@ public sealed partial class World
         long front = sgn > 0 ? t.S + half : t.S - t.TailOffset(r) - half;
         long lo = t.Track.Loop ? long.MinValue : 0, hi = t.Track.Loop ? long.MaxValue : t.Track.Length;
         long step = TrainTrack.Unit / 2;
-        float rad = r.BlockRadius, query = rad + Defs.MaxUnitRadius;
+        long radFix = (long)MathF.Round(r.BlockRadius * TrainTrack.Unit);
+        float query = r.BlockRadius + Defs.MaxUnitRadius + 0.25f;   // 후보만 넓게 (공간 해시) — 판정은 아래 정수 거리
         for (long d = 0; d <= r.Look; d += step)
         {
             long s = front + sgn * d;
             if (s < lo || s > hi) break;
-            var p = t.Track.PosAt(s, out _);
+            t.Track.PosFix(s, out long px, out long py, out _, out _);
+            var p = new Vector2(px / (float)TrainTrack.Unit, py / (float)TrainTrack.Unit);
             foreach (var u in UnitsInRadius(p, query, t.buf))
-                if (u.Alive && Vector2.Distance(u.Pos, p) <= rad + u.Def.Radius) return true;
+            {
+                if (!u.Alive) continue;
+                long ux = (long)MathF.Floor(u.Pos.X * TrainTrack.Unit), uy = (long)MathF.Floor(u.Pos.Y * TrainTrack.Unit);   // ×2^16 은 float 에서 정확
+                long reach = radFix + (long)MathF.Round(u.Def.Radius * TrainTrack.Unit);
+                long ex = ux - px, ey = uy - py;
+                if (ex * ex + ey * ey <= reach * reach) return true;
+            }
         }
         return false;
     }
@@ -457,7 +480,8 @@ public sealed partial class World
         {
             h.Add(t.Id); h.Add(t.Owner); h.Add(t.S); h.Add(t.V); h.Add(t.Manual ? 1 : 0); h.Add(t.ManualDir);
             h.Add(t.Next); h.Add(t.ScriptDir); h.Add(t.WaitLeft); h.Add(t.Blocked ? 1 : 0);
-            foreach (var c in t.Cars) { h.Add(c.Id); h.Add(c.Hp); }
+            h.Add(t.Tag ?? ""); foreach (var wt in t.WaitTicks) h.Add(wt);
+            foreach (var c in t.Cars) { h.Add(c.Id); h.Add(c.Hp); h.Add(c.Kind); }
         }
     }
 }

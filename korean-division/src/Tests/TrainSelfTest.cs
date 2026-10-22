@@ -144,6 +144,18 @@ public static class TrainSelfTest
             for (int i = 0; i < 60 * 5; i++) w.Step();
             check(t.V > 0 && !t.Blocked && t.Cars[0].Pos.X > inf.Pos.X - 0.5f, $"보병이 없어지면 다시 출발 (V={t.V})");
         }
+        // ---- 4b. 막혀 멈춘 뒤 반대 방향 명령: 막힘 값이 남지 않고 바로 후진
+        {
+            var w = Make(Line3);
+            var t = w.Trains[0];
+            w.SpawnUnit(Defs.Current.Units["infantry"], 2, new Vector2(40.5f, 20.5f));
+            w.TrainMove(1, t.Id, 1);
+            for (int i = 0; i < 60 * 40; i++) w.Step();
+            bool was = t.Blocked && t.V == 0;
+            w.TrainMove(1, t.Id, -1);
+            w.Step(); w.Step();
+            check(was && !t.Blocked && t.V < 0, $"막혀 멈춘 뒤 후진 명령 → 2틱 안에 막힘 해제 · 후진 (막힘 {t.Blocked}, V={t.V})");
+        }
 
         // ---- 5. 저장 → 불러오기 왕복: 바이트 동일 + 이어 돌린 체크섬 동일 (움직이는 중 · 정차 중 · 순환)
         {
@@ -193,6 +205,29 @@ public static class TrainSelfTest
             try { Make("""{ "faction": 1, "cars": ["locomotive", "tank"], "path": [[2, 20], [97, 20]] }"""); }
             catch (InvalidDataException) { threw = true; }
             check(threw, "모르는 객차 종류 → 미션 오류");
+            // 입력 방어: 전부 InvalidDataException 으로만 거부 (다른 예외 · 통과 금지)
+            static string Rej(Func<World> f) { try { f(); return "통과"; } catch (InvalidDataException e) { return e.Message.Length > 0 ? "" : "빈 메시지"; } catch (Exception e) { return e.GetType().Name; } }
+            check(Rej(() => Make("""{ "faction": 1, "cars": null, "path": [[2, 20], [97, 20]] }""")) == "", "cars: null → 거부");
+            check(Rej(() => Make("""{ "faction": 1, "cars": [], "path": [[2, 20], [97, 20]] }""")) == "", "객차 0량 → 거부");
+            check(Rej(() => Make("""{ "faction": 1, "cars": ["wagon","wagon","wagon","wagon","wagon","wagon","wagon","wagon","wagon"], "path": [[2, 20], [97, 20]] }""")) == "", "객차 최대(8) 초과 → 거부");
+            check(Rej(() => Make("""{ "faction": 1, "cars": ["wagon", null], "path": [[2, 20], [97, 20]] }""")) == "", "객차 종류 null → 거부");
+            check(Rej(() => Make("""{ "faction": 1, "cars": ["wagon"], "path": null }""")) == "", "path: null → 거부");
+            check(Rej(() => Make("""{ "faction": 1, "cars": ["wagon"], "path": [[2, 20], null] }""")) == "", "path 원소 null → 거부");
+            check(Rej(() => Make("""{ "faction": 1, "cars": ["wagon"], "path": [[2, 20]] }""")) == "", "경유점 1개 → 거부");
+            check(Rej(() => Make("""{ "faction": 1, "cars": ["wagon"], "path": [[2, 20], [97, 20]], "start": 2 }""")) == "", "start 범위 밖 → 거부");
+            check(Rej(() => Make("""{ "faction": 1, "cars": ["wagon"], "path": [[2, 20], [97, 20]], "start": -1 }""")) == "", "start 음수 → 거부");
+            check(Rej(() => Make("""{ "faction": 1, "cars": ["wagon"], "path": [[2, 20], [97, 20]], "waits": [-1, 0] }""")) == "", "waits 음수 → 거부");
+            check(Rej(() => Make("""{ "faction": 1, "cars": ["wagon"], "path": [[2, 20], [97, 20]], "waits": [1, 2, 3] }""")) == "", "waits 가 경유점보다 많음 → 거부");
+            check(Rej(() => Make("""{ "faction": 1, "cars": ["wagon"], "path": [[2, 20], [97, 20]], "waits": [1e30, 0] }""")) == "", "waits 거대 값 → 거부");
+            check(Rej(() => Make("""{ "faction": 1, "cars": ["wagon"], "loop": true, "path": [[2, 20], [50, 20]] }""")) == "", "닫히지 않는 순환선(직선) → 거부");
+            check(Rej(() => Make("""{ "faction": 1, "cars": ["wagon"], "path": [[2, 20], [97, 20]] }, null""")) == "", "trains 원소 null → 거부");
+            {
+                var w0 = Make("");
+                string nan = "";
+                try { w0.SpawnTrain(new MissionTrain { Faction = 1, Cars = new() { "wagon" }, Path = new[] { new[] { 2, 20 }, new[] { 97, 20 } }, Waits = new[] { float.NaN, 0f } }); nan = "통과"; }
+                catch (InvalidDataException) { } catch (Exception e) { nan = e.GetType().Name; }
+                check(nan == "" && w0.Trains.Count == 0, "waits NaN → 거부 (열차 추가 안 됨)");
+            }
             var w = Make(Line3);
             ulong h1 = w.ComputeChecksum();
             w.Trains[0].S += 1;
