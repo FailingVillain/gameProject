@@ -184,6 +184,7 @@ public static class SquadIcons
             var st = StatusOf(w, q);
             if (st == Status.None) continue;
             bool sel = false; foreach (var m in q.Members) if (m.Alive && m.Selected) { sel = true; break; }
+            if (!OverlayRules.ShowSquadIcon(KoreanDivision.UI.UserSettings.Overlay, st, sel)) continue;   // T38m: 간결 = 선택 · 위험 상태만
             float minY = float.MaxValue, sx = 0; int n = 0;
             foreach (var m in q.Members)
             {

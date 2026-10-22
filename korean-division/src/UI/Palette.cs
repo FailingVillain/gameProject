@@ -30,6 +30,9 @@ public static class Palette
     public static readonly Color HpGood = new(70, 210, 90, 255);
     public static readonly Color HpMid = new(230, 200, 70, 255);
     public static readonly Color HpLow = new(220, 70, 60, 255);
+    public static readonly Color AmmoBar = new(225, 200, 90, 255);
+    public static readonly Color CargoBar = new(90, 160, 230, 255);
+    public static readonly Color BarLow = new(230, 90, 60, 255);
     public static readonly Color HpBg = new(16, 16, 18, 255);
     public static readonly Color MarkerMove = Select;
     public static readonly Color MarkerPatrol = Accent;

@@ -854,6 +854,7 @@ public sealed partial class Game : IDisposable
         if (ctrl && Input.IsKeyPressed(KeyboardKey.G)) ShowGrid = !ShowGrid;
         else if (!ctrl && !altKey && !Observer && Input.IsKeyPressed(KeyboardKey.G) && SelectedCompanies().Count > 0) MergeSelected();
         if (!ctrl && !altKey && Input.IsKeyPressed(KeyboardKey.I)) { SquadIcons.Enabled = !SquadIcons.Enabled; ShowNotice(SquadIcons.Enabled ? S.SquadIconsOn : S.SquadIconsOff); }   // 분대 상태 아이콘 켜고 끄기
+        if (!ctrl && !altKey && Input.IsKeyPressed(KeyboardKey.U)) { UserSettings.Overlay = UserSettings.NextOverlay(UserSettings.Overlay); UserSettings.Save(); ShowNotice(string.Format(S.OverlayNotice, S.OverlayName(UserSettings.Overlay))); }   // 머리 위 표시 단계 순환 (T38m)
         if (Input.IsKeyPressed(KeyboardKey.N)) { ToggleSound(); ShowNotice(Sfx.Muted ? S.MuteOn : S.MuteOff); }   // 소리 켜고 끄기 (교전 테스트 무음도 해제)
         if (!Observer && Input.IsKeyPressed(KeyboardKey.Tab))   // Tab: 카드 탭 순환 (명령 <-> 전투)
         {

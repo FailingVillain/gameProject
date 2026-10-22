@@ -456,6 +456,7 @@ public static class UnitRenderer
             for (int i = 0; i < n; i++)
             {
                 var u = sorted[i].U;
+                if (!OverlayRules.ShowTeamMarker(UserSettings.Overlay, u.Selected, u == hover)) continue;
                 Vector2 p = RP(u) * TS;
                 var body = sorted[i].Art.Body;
                 float top = sorted[i].Art.Dir ? p.Y - body!.Anchor.Y * body.Scale + 4 : p.Y - u.Radius * TS;
@@ -486,8 +487,9 @@ public static class UnitRenderer
             bool hasAmmo = own && SimView.AmmoRatio(u, out ammo), hasCargo = own && SimView.CargoRatio(u, out cargo);
             if (hasAmmo) ammoLow = ammo <= 0.2f;
             if (hasCargo) cargoLow = cargo <= 0.2f;
-            bool showBars = u.Selected && own || ammoLow || cargoLow;
-            bool showHp = u.Selected || u == hover || recent;
+            var lvl = UserSettings.Overlay;   // T38m: 머리 위 표시 단계 (OverlayRules)
+            bool showBars = OverlayRules.ShowAmmoCargo(lvl, u.Selected, own, ammoLow || cargoLow);
+            bool showHp = OverlayRules.ShowHp(lvl, u.Selected, u == hover, recent, own);
             if (!showHp && !showBars && !(own && SimView.Concealing(u))) continue;
             Vector2 p = RP(u) * TS;
             float r = u.Radius * TS;
@@ -506,8 +508,8 @@ public static class UnitRenderer
             if (showBars && (hasAmmo || hasCargo))
             {
                 float bh = MathF.Max(2f, 3f / zoom);
-                if (hasAmmo) { y -= bh + 1; MiniBar(new Rectangle(p.X - w / 2, y, w, bh), ammo, ammoLow ? new Color(230, 90, 60, 255) : new Color(225, 200, 90, 255)); }
-                if (hasCargo) { y -= bh + 1; MiniBar(new Rectangle(p.X - w / 2, y, w, bh), cargo, cargoLow ? new Color(230, 90, 60, 255) : new Color(90, 160, 230, 255)); }
+                if (hasAmmo) { y -= bh + 1; MiniBar(new Rectangle(p.X - w / 2, y, w, bh), ammo, ammoLow ? Palette.BarLow : Palette.AmmoBar); }
+                if (hasCargo) { y -= bh + 1; MiniBar(new Rectangle(p.X - w / 2, y, w, bh), cargo, cargoLow ? Palette.BarLow : Palette.CargoBar); }
             }
         }
 
