@@ -80,6 +80,12 @@ public sealed class CommanderFavorRules
             d.Warnings.Add("commander_favor.json 깨짐: 기본값 사용 (" + e.Message + ")");
             return d;
         }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException)   // 잠김 · 권한 없음: 정적 초기화에서 던지지 않는다
+        {
+            var d = new CommanderFavorRules();
+            d.Warnings.Add("commander_favor.json 읽을 수 없음: 기본값 사용 (" + e.Message + ")");
+            return d;
+        }
         return r;
     }
 }

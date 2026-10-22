@@ -105,6 +105,15 @@ public static class CommanderFavorSelfTest
             var broken = CommanderFavorRules.Load(rf);
             check(broken.Warnings.Count == 1 && broken.Tiers.Count == 4 && CommanderFavorRules.Load(rf + ".none").Tiers.Count == 4, "T48c 규칙 파일 깨짐/없음 = 기본값 + 경고");
 
+            // 6b) 읽기 실패 (다른 프로세스가 잠금) = 던지지 않고 기본값 + 한국어 경고
+            File.WriteAllText(rf, "{}");
+            using (var lk = new FileStream(rf, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+            {
+                CommanderFavorRules locked = null!; Exception? thrown = null;
+                try { locked = CommanderFavorRules.Load(rf); } catch (Exception e) { thrown = e; }
+                check(thrown == null && locked != null && locked.Tiers.Count == 4 && locked.Warnings.Count == 1 && locked.Warnings[0].Contains("읽을 수 없음"), $"T48c 규칙 파일 읽기 잠김(IOException) = 예외 없이 기본값 + 경고 {thrown?.GetType().Name}");
+            }
+
             // 7) 저장: v7 파일 로드는 호감 규칙과 무관, 호감은 v8 왕복에 실림
             var v7 = CampaignState.FromJson("{\"Version\":7,\"Day\":4}");
             check(v7 != null && v7.Version == 8 && v7.CommanderPool.All(c => c.Favor >= -20 && c.Favor <= 100), "T48c v7 로드 영향 없음 (풀은 T48a 동기화로 초기 호감)");
