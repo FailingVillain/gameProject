@@ -1,0 +1,40 @@
+{
+  "_doc": "C1E1-d2 E1 시작 상태 + 시작 편성 데이터 (TC-D 스키마: 수치는 JSON, 코드 박기 금지, DECISIONS D24). 원문: campaign/spec_c1e1.txt (spec/cards-c1e1) 의 '에피소드 입력' 블록 · R5 · 'E1 시작 편성'. 수치 임시 가능 - 밸런스 단계(보류)에서 조정. 명세에 없는 값은 '미정' (만들지 않음). 공용 상수(fundsStart 10 · episodeSupplyStart 4000 · regularControlCap 3000 · foreignSlotCap 800 · civilianReliefSupplyLoss 400)는 campaign_economy.json 기존 키를 쓰고 여기에 중복 기입하지 않음.",
+  "version": 1,
+  "e1Start": {
+    "_source": "spec 'E1 시작 편성 [제안, 사용자 3,200/200 제시]' + 중화기 [확정 2026-10-22]",
+    "regiments": 3,
+    "battalions": 9,
+    "infantryMen": 3200,
+    "infantryMenPerRegimentApprox": 1070,
+    "cavalryMen": 200,
+    "cavalryNote": "사단 기병 대대, 약 4개 중대",
+    "maximGuns": 12,
+    "maximPerRegiment": 4,
+    "maximCrewApprox": 48,
+    "infantryGuns": 8,
+    "infantryGunCrewApprox": "50~60",
+    "lmgNote": "경기관총은 보병 중대에 포함 (별도 수치 없음)",
+    "formationTotalApprox": 3500,
+    "controlMaxConcurrent": 3000,
+    "reserveApprox": 500,
+    "reserveNote": "손실 보충 · 치료 회전 · 후방 경계 (명세 [확정])",
+    "tutorialMenRemnant": 0,
+    "favorStart": 50,
+    "favorRange": "0~100",
+    "unlockStart": ["infantry", "heavy_maxim"],
+    "unlockStartNote": "챕터 0 해금 = 보병(infantry 진위대) · 중기관총병(heavy_maxim). 그 외 병종 잠금. 야전포(heavy_field_gun)는 BT1 첫 승리로 해금 (챕터 0 목록 제외)",
+    "foreignRemnantStart": true,
+    "foreignRemnantNote": "미션 사이에 생존 외인이 계속 잔존 (이월)",
+    "fundsStartRef": "fundsStart (campaign_economy.json) = 10 = 은 5,000냥",
+    "supplyStartRef": "episodeSupplyStart (campaign_economy.json) = 4000"
+  },
+  "op1SupplyCheck": {
+    "_doc": "R5 계산 시험 기대값 (명세 값 그대로). 영구 소모 값은 명세 추정(전사율 15% 가정). 시험 재현은 별도 테스트 카드 - 이 카드는 코드 변경 없음.",
+    "_estimateMissionPermanentUse": { "BT1": 155, "SK1": 43, "SK2": 25, "SK3": 100, "SK4": 43 },
+    "S1": { "route": "최속 강공: D02 없음 · SK1 + SK4 · D10 따름 · 강공", "days": "1+2+2=5", "funds": 0, "fairyOptional": true, "permanentUse": 240, "op1AvailableSupply": 3760 },
+    "S2": { "route": "무혈 3점: D02 A + C · SK2 + SK4 · D07 B · D10 설득 · 포위 · D15 철회", "days": "1+2+4=7", "funds": 6, "fairyOptional": true, "permanentUse": 623, "op1AvailableSupply": 3380 },
+    "S3": { "route": "전부 모으기: D02 A + B(100) + C · SK1 + SK2 · D07 B · D10 설득 · 포위", "days": "1+2+4=7", "funds": 9, "fairyOptional": false, "permanentUse": 623, "op1AvailableSupply": 3380 },
+    "S4": { "route": "최소 편성: D02 없음 · SK 0 · D10 지연 · 포위 + D16 대기", "days": "1+4+1=6", "funds": 10, "fairyOptional": true, "permanentUse": 155, "op1AvailableSupply": 3845, "note": "협상 0 → 전원 무장해제만" }
+  }
+}
