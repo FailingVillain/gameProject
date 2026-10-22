@@ -77,6 +77,7 @@ public static class ReplaySelfTest
             new ThrowSmokeCommand(1, new[] { 5 }, new Vector2(13.5f, 14.25f)), new CutWireCommand(1, new[] { 6 }, new Vector2(15, 16)),   // breach (N65 · N59)
             new FireFlareCommand(1, new[] { 7 }, new Vector2(17.5f, 18)),   // T10 조명탄
             new TrainMoveCommand(1, 5, -1),   // 열차 (T30a)
+            new MissionDecisionCommand(1, "D01", "a"),   // g3 미션 중 결정 응답
         };
 
         // GameCommand.cs 에 등록된 모든 파생 형식이 표본에 들어 있는지 (새 명령을 추가하고 표본을 빠뜨리면 여기서 걸림)
