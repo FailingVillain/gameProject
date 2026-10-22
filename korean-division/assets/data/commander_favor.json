@@ -1,0 +1,13 @@
+{
+  "_doc": "연대장 호감 규칙 (T48c, 전부 임시 - 0.3 밸런스에서 확정). 범위/해임 하락/재기용은 campaign_economy.json. 단계는 minFavor 오름차순, 호감이 넘는 마지막 단계가 적용. effectPermille = 특성 효과 배율 (1000 = 1.0배, 정수). scalingEnabled=false 면 배율 항상 1.0.",
+  "version": 1,
+  "scalingEnabled": true,
+  "deltaSizes": [1, 2, 3, 5],
+  "tagMatchDelta": 1,
+  "tiers": [
+    { "id": "cold",    "name": "냉담", "minFavor": -1000, "effectPermille": 500 },
+    { "id": "normal",  "name": "보통", "minFavor": 10,    "effectPermille": 1000 },
+    { "id": "good",    "name": "호의", "minFavor": 40,    "effectPermille": 1150 },
+    { "id": "trusted", "name": "신뢰", "minFavor": 70,    "effectPermille": 1300 }
+  ]
+}
