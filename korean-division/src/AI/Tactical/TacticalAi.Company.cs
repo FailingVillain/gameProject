@@ -821,6 +821,7 @@ public sealed partial class TacticalAi
         float es = st.Supp / st.Count;
         var CC = counter ? Ctr(w) : null;   // 역습 돌격: 조건 · 허가 예비 타이머는 역습 교리 수치 (TacticalAi.Counter.cs)
         if (es < (CC?.ChargeSuppression ?? T.ChargeSuppression) && chargers < (CC?.ChargeOdds ?? T.ChargeOdds) * st.Count) return false;
+        if (attack && CC == null && es < T.ChargeMinSuppression) return false;   // T24 ③: 수 우세만으로는 안 됨 — 제압 확인
         if (attack)
         {
             var co = g.CompanyId != 0 ? w.FindCompany(g.CompanyId) : null;

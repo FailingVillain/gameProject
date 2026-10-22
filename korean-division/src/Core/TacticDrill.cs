@@ -29,6 +29,8 @@ public sealed class DrillDef
     public float ChargeSuppression { get; set; } = 0.4f;
     public float ChargeMaxDist { get; set; } = 12f;
     public float ChargeOdds { get; set; } = 1.6f;
+    /// <summary>T24 ③ (D08): 기동조 돌격이 가깝지 않을 때 (chargeRange 밖) 수 우세 (chargeOdds) 만으로 넘어도 표적 둘레 적 평균 제압이 이 이상이어야. 0 = 끔.</summary>
+    public float ChargeMinSuppression { get; set; } = 0f;
     public float ChargeStatsRadius { get; set; } = 10f;
     public float ChargeMgRadius { get; set; } = 8f;
     public float ReplanDist { get; set; } = 5f;
@@ -519,7 +521,7 @@ public sealed partial class World
             float own = 0;
             foreach (var u in list) own += u.SuppressionRatio;
             var (supp, cnt) = EnemyAround(c.Owner, near.Pos, R.ChargeStatsRadius);
-            pinned = cnt > 0 && own / list.Count < 0.5f && (supp >= R.ChargeSuppression || chargers >= R.ChargeOdds * cnt) && !ActiveMgNear(c.Owner, near.Pos, R.ChargeMgRadius);
+            pinned = cnt > 0 && own / list.Count < 0.5f && (supp >= R.ChargeSuppression || chargers >= R.ChargeOdds * cnt && supp >= R.ChargeMinSuppression) && !ActiveMgNear(c.Owner, near.Pos, R.ChargeMgRadius);   // T24 ③
         }
         if (!close && !pinned) return false;
         // 결정 4: 거리 · 제압 조건을 넘어도 화력 우세 신호 · 엄호 확인 (+ 병력비) 이 있어야, 아니면 교전 assaultFallbackSec 뒤에만

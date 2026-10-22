@@ -126,6 +126,8 @@ public sealed class TacticsProfile
     public float ChargeRange = 7f;
     public float ChargeSuppression = 0.45f;
     public float ChargeOdds = 1.6f;
+    /// <summary>T24 ③ (D08): 공격 돌격이 수 우세 (chargeOdds) 로만 조건을 넘을 때도 표적 둘레 적 평균 제압이 이 이상이어야. 0 = 끔.</summary>
+    public float ChargeMinSuppression = 0f;
     public float EngageFrac = 0.6f;   // engage 2026-10-19 (반응 거리 0.7 안), tweak1 0.65 → 0.6
     public bool FireAndMovement = true;
     public float BoundLength = 0.35f;

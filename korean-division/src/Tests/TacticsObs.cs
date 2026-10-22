@@ -25,6 +25,7 @@ public static class TacticsObs
         public Dictionary<int, (int gid, double dist)> SpotLast = new();   // S3: 관측반 유닛 → (팀 그룹 id, 마지막 표본의 가장 가까운 적 거리)
         public Dictionary<int, HashSet<int>> SpotTeam = new();             // S3: 팀 그룹 id → 본 적 있는 유닛 id
         public List<(double t, int gid, int uid, double dist)> SpotDeaths = new();
+        public Dictionary<int, string> SpotInfo = new();   // T24 ②: 관측반 유닛 마지막 표본의 상태 (정찰 상태 · 명령 · 보이는 가장 가까운 적 거리 · 그 적 종류)
         public int MarchActs, Successions, HandoverSec, NcoSec, OfficerSec, NoneSec;
         public int CavOfficerSec, CavNcoSec, CavNoneSec, CavHandoverSec, CavSuccessions;   // cavcmd: 기병 중대 지휘
         public double ArtFireSec, ArtSec, ArtShootSec, RegFireTargetSec, RegLiftSec; public int ArtGroups;
@@ -415,6 +416,9 @@ public static class TacticsObs
                     if (!u.Alive) continue;
                     double nd = double.MaxValue;
                     foreach (var e in w.Units) if (e.Owner != f && e.Alive) nd = Math.Min(nd, Vector2.Distance(e.Pos, u.Pos));
+                    double vd = double.MaxValue; Unit? ve = null;
+                    foreach (var e in w.Units) if (e.Owner != f && e.Alive && w.Fog.CanSee(f, e)) { double dd = Vector2.Distance(e.Pos, u.Pos); if (dd < vd) { vd = dd; ve = e; } }
+                    sd.SpotInfo[u.Id] = $"{u.ScoutState}/{u.Order}/보임{(ve != null ? vd.ToString("0") : "-")}/{ve?.Def.Key}";
                     sd.SpotLast[u.Id] = (g.Id, nd); seen.Add(u.Id);
                     (sd.SpotTeam.TryGetValue(g.Id, out var hs) ? hs : sd.SpotTeam[g.Id] = new HashSet<int>()).Add(u.Id);
                 }
@@ -895,7 +899,7 @@ public static class TacticsObs
         foreach (var (gid, ids) in sd.SpotTeam.OrderBy(k => k.Key))
         {
             var ds = sd.SpotDeaths.Where(d => d.gid == gid).ToList();
-            sb.AppendLine($"[관측반] 팀 S{gid}: 편성 {ids.Count}명, 종료 생존 {ids.Count - ds.Count}" + (ds.Count > 0 ? ", 사망 " + string.Join(" ", ds.Select(d => $"t={d.t:0}/적{d.dist:0.0}칸")) : ""));
+            sb.AppendLine($"[관측반] 팀 S{gid}: 편성 {ids.Count}명, 종료 생존 {ids.Count - ds.Count}" + (ds.Count > 0 ? ", 사망 " + string.Join(" ", ds.Select(d => $"t={d.t:0}/적{d.dist:0.0}칸[{sd.SpotInfo.GetValueOrDefault(d.uid)}]")) : ""));
         }
         sb.AppendLine($"[기병지휘] 중대-초: 장교 {sd.CavOfficerSec} / 부사관 대리 {sd.CavNcoSec} / 없음 {sd.CavNoneSec}, 인계 중 {sd.CavHandoverSec}, 지휘관 교체 {sd.CavSuccessions}");
         sb.AppendLine("기병: " + (sd.Cav.Count == 0 ? "돌격 없음" : ""));
