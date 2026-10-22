@@ -1,0 +1,1 @@
+- (kd/flaky-isai-roundtrip, 2026-10-22) IsAi 스냅샷 왕복 간헐 실패 원인 = 시험이 파일 전체 바이트를 비교했고 머리말 `SavedAt = DateTime.Now ("yyyy-MM-dd HH:mm:ss")` (Snapshot.cs:105) 가 두 Save 사이에 초 경계를 넘으면 달라짐. 시뮬 비결정성 아님 (본문 · 체크섬 무관). 수정 = 시험만: 다른 왕복 시험 30여 곳과 같은 `Snapshot.RawBody` 비교 + SavedAt 만 비운 머리말 JSON 비교 (약화 아님 — 비교 범위는 벽시계 한 칸만 제외). 결정 필요 없음, 기록만.
