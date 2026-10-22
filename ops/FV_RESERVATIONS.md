@@ -25,3 +25,4 @@
 예약(2026-10-22 13:10, 사용자 승인으로 발주): IsAi 리플레이 머리말·스냅샷 복원(AF1) = FV 60 / Replay 24, 기반 main (병합 순서에서 breach2 계열 뒤). AI 난이도 배수 안 A(AE2)는 AF1 뒤 FV 61 / Replay 25 예정.
 
 예약 후보(카드 가정, 13:1x): T32b AI 연막 FV 62 · T32c AI 철조망 FV 63 (둘 다 새 AI 저장 상태가 필요할 때만; Replay 변경 없음). T35(IsAi) 60/24 뒤, AI 배수 안 A 61/25 앞뒤 재번호 필요.
+예약 후보: T34c TacRegiment 필드 1개 = FV 64 (Replay 변경 없음), 기반 ai3b2 스택.
