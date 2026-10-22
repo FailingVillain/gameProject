@@ -1,0 +1,100 @@
+# 구역(areas) 과 배치 구역(deployZones): 사각 / 원, 이름 입력, 목록 선택으로 모양 교체, 삭제, 참조 끊김 검사.
+open village_defense
+assert areas=3 zones=1 errors=0
+button tool_area
+assert tool=area
+button shape_toggle
+assert shape=circle
+button shape_toggle
+assert shape=rect
+button name_field
+assert textfocus=1
+key backspace
+key backspace
+key backspace
+key backspace
+key backspace
+key backspace
+assert area_name=
+type Ridge_A
+key enter
+assert textfocus=0 area_name=ridge_a
+drag 20 20 40 30
+assert areas=4 area(ridge_a)=r:20,20,21,11 area_name=area_1
+button shape_toggle
+name c_one
+drag 100 100 100 110
+assert areas=5 area(c_one)=c:100,100,10
+name edge_z
+drag 120 30 120 36
+assert areas=6 area(edge_z)=c:120,30,6
+drag 105 105 105 105             # 반지름 0 = 만들지 않음
+assert areas=6
+# 목록 쪽 넘기기 · 골라서 모양 교체
+button list_next
+assert listpage=1
+button area_item_0
+assert area_sel=edge_z
+button list_prev
+assert listpage=0
+button area_item_3
+assert area_sel=ridge_a area_name=ridge_a
+button shape_toggle
+drag 22 22 34 28
+assert areas=6 area(ridge_a)=r:22,22,13,7 undodepth=4
+button area_item_3               # 다시 누르면 선택 해제
+assert area_sel=none
+button area_item_0
+assert area_sel=village
+button sel_del                   # 목표가 가리키는 구역: 지우면 참조 끊김 오류
+assert areas=5 errors>=1 issue(0)=E:ref
+key ctrl+z
+assert areas=6 errors=0
+button area_item_1
+button area_item_2
+button area_item_4
+rclick 105 105                   # 지도에서 우클릭 = 그 자리 구역 지움
+assert areas=5
+key ctrl+z
+assert areas=6
+button area_item_4               # c_one 선택
+button sel_del
+assert areas=5
+key ctrl+z
+# 배치 구역
+button tool_zone
+assert tool=zone zones=1 zone(0)=f1:r:48,48,48,45
+button own_inc
+assert zfaction=2
+button own_dec
+button own_inc
+drag 10 10 30 20
+assert zones=2 zone(1)=f2:r:10,10,21,11
+button zone_item_1
+assert zone_sel=1
+button shape_toggle
+drag 100 20 100 28
+assert zones=2 zone(1)=f2:c:100,20,8
+button zone_item_1               # 해제
+assert zone_sel=-1
+button sel_del                   # 선택 없음: 아무것도 안 지움
+assert zones=2
+button zone_item_1
+button sel_del
+assert zones=1 zone_sel=-1
+rclick 60 60                     # 지도에서 우클릭 = 그 자리 배치 구역 지움
+assert zones=0
+key ctrl+z
+assert zones=1
+button zone_item_0
+button zone_item_2
+button zone_item_3
+button zone_item_4
+button list_next
+button list_prev
+key x
+assert tool=zone
+key z
+assert tool=area
+button area_item_3
+shot zones_areas.png

@@ -1,0 +1,38 @@
+# 검사 패널: 시작이 물 위 / 갇힘, 소품이 물 위, 시설 겹침 -> 항목 클릭 시 그 자리로 이동 · 되돌리면 사라짐.
+open village_defense
+assert errors=0 warnings>=0
+button tool_rect
+button pal_3                     # 물
+drag 66 63 78 75
+assert errors>=1 issue(0)=E:start
+button issue_0
+assert issue_sel=0
+drag 66 6 78 18                  # 시작 2 둘레도 물
+button pal_0                     # 풀
+drag 71 11 73 13                 # 3x3 섬 위에 시작 2
+assert errors>=2 issue(1)=E:start
+button tool_prop
+click 66 64                      # 물 위 소품 -> 경고
+assert warnings>=1
+button tool_site
+pick city
+click 30 30
+pick village
+click 31 31                      # 시설 겹침 경고
+button issue_1
+button issue_2
+button issue_3
+button insp_down
+assert isspage>=0
+button insp_up
+assert isspage=0
+shot inspect.png
+key ctrl+z
+key ctrl+z
+key ctrl+z
+key ctrl+z
+key ctrl+z
+key ctrl+z
+assert errors=0
+expect 0DD2B05F94283DC0   # 전부 되돌리면 원본 지도 해시
+assert dirty=0

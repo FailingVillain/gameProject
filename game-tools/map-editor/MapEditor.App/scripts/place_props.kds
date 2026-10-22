@@ -1,0 +1,58 @@
+# 소품 배치: 미션을 열고 소품 도구 -- 종류 고르기 · 놓기 · 우클릭 지우기 · 되돌리기 · 흩뿌리기 숫자 · 미리보기 (같은 시드 = 같은 소품)
+new 64 64
+key p
+assert tool=prop mission=0 props=-1
+click 10 10
+assert props=-1 undo=0           # 지도 파일에는 소품이 없다: 미션 JSON 에서만
+open village_defense
+assert mission=1 props=0 scatter=on density=4 cell=6 errors=0 dirty=0
+button tool_prop
+assert tool=prop prop_sel=rock_l
+button type_next
+assert prop_sel=rock_m
+button type_next
+button type_prev
+assert prop_sel=rock_m
+click 40 100
+assert props=1 prop(0)=rock_m@40.5,100.5 dirty=1 undodepth=1
+click 40 100                     # 같은 자리 = 이미 있음
+assert props=1 undodepth=1
+pick tree_pine
+click 44 100
+click 48 100
+assert props=3 prop(2)=tree_pine@48.5,100.5
+rclick 44 100
+assert props=2 prop(1)=tree_pine@48.5,100.5
+rclick 20 20                     # 아무것도 없는 곳
+assert props=2
+key ctrl+z
+assert props=3
+key ctrl+y
+assert props=2
+# 흩뿌리기 켬/끔 · 숫자 · 미리보기
+button scatter_view
+assert scatterview=on scatterlist>=20
+button dens_inc
+assert density=4.5
+button dens_dec
+button dens_dec
+assert density=3.5
+button cell_inc
+assert cell=7
+button cell_dec
+button cell_dec
+assert cell=5
+button scatter_toggle
+assert scatter=off scatterlist=0
+button scatter_toggle
+assert scatter=on scatterlist>=20
+button scatter_view
+assert scatterview=off scatterlist=0
+button scatter_view
+assert scatterview=on
+button dens_inc                  # 3.5 -> 4.0 (원본 숫자로 복귀: 미리보기 = 게임이 이 미션에서 만드는 흩뿌리기 (병력 둘레 비우기만 근사))
+button cell_inc                  # 5 -> 6
+assert density=4 cell=6 scatterlist>=20
+zoom 0.8
+center 44 100
+shot props.png

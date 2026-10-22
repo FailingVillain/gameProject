@@ -13,4 +13,4 @@ drag 5 40 50 40
 assert t(5,40)=trench t(50,40)=trench t(30,40)=trench t(30,42)=grass paint=2 undo=2 size=1
 shot brush.png
 hash
-expect D46B815BF2C70335   # 결과 지도 해시 고정 (편집 의미/직렬화가 바뀌면 의도적으로 갱신)
+expect B329372840B667EE   # 결과 지도 해시 고정 (편집 의미/직렬화가 바뀌면 의도적으로 갱신; T33c 에서 지도 영역이 줄어 배율이 바뀌며 꺾은선 표본 칸이 달라져 갱신)

@@ -16,5 +16,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\**\*" CopyToOutputDirectory="PreserveNewest" />
+    <!-- font atlas: copy this tool's sources (and the game files whose messages show in the status bar) so every Korean glyph in them is loaded (Editor.AllText) -->
+    <None Include="*.cs" Link="srcmirror\app\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\MapEditor.Model\*.cs" Link="srcmirror\model\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\..\korean-division\src\Core\MapFile.cs" Link="srcmirror\game\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\..\korean-division\src\Core\Mission\MissionDef.cs" Link="srcmirror\game\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
