@@ -120,6 +120,23 @@ public static partial class SelfTest
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "formations") { Tests.FormationTemplateSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "human") { Tests.HumanSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "form") { Tests.FormationSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+        // 전체 selftest 의 인라인 구간을 묶음으로 노출 (tools/selftest_parallel.ps1 이 전체를 N 개 프로세스로 나눠 돌릴 때 필요; 전체 실행은 그대로).
+        {
+            string only = Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") ?? "";
+            bool core = true;
+            switch (only)
+            {
+                case "core_map": TestMapGeneration(opt); TestMultiplayerMaps(opt); TestMapFiles(opt); break;
+                case "core_sim": TestMovement(opt); TestCombat(opt); TestVehicles(opt); TestCapture(opt); TestVictory(opt); TestCoreV2(opt); break;
+                case "core_ai": TestAiMatch(opt); break;
+                case "core_det": TestDeterminism(opt); TestCheats(opt); Tests.DetCheck.SelfTest(Check); break;
+                case "core_fog": Tests.FogSelfTest.Run(opt, Check); break;
+                case "core_nav": Tests.NavSelfTest.Run(opt, Check); break;
+                case "perf": TestPerformance(opt); break;
+                default: core = false; break;
+            }
+            if (core) { Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+        }
         TestMapGeneration(opt);
         TestMultiplayerMaps(opt);
         TestMapTiers(opt);
