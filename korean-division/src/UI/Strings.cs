@@ -7,7 +7,7 @@ namespace KoreanDivision.UI;
 public static partial class S
 {
     // 부대 기호 (UnitSymbols)
-    public const string SymBranches = "보병|기관총|대전차|포병|기병|기갑|보급|지휘|정찰|돌격";
+    public const string SymBranches = "보병|기관총|대전차|포병|기병|기갑|보급|지휘|정찰|돌격|곡사포|저격";
     public const string SymCompany = "제{0}중대";
     public const string SymBattalion = "제{0}대대";
     public const string SymStrength = "병력";
