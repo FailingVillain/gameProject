@@ -9,7 +9,7 @@ Add the new (schema, commit) pair below when a card raises CampaignState.SchemaV
 import json, re, subprocess, sys, pathlib
 
 # schema -> commit that introduced it (last entry = current; its sample is the unfiltered dump)
-COMMITS = {1: "a1a35e6", 2: "06424c8", 3: "622db02", 4: "ba621fe", 5: "51b92c3", 6: "66e7637", 7: "0d5a676", 8: "e31406d", 9: "fa8dff1", 10: "fa8dff1", 11: "0b98b10", 12: "bd1dc11"}   # 10 = skipped schema (no real v10 format; same shape as 9, gate requires every number)
+COMMITS = {1: "a1a35e6", 2: "06424c8", 3: "622db02", 4: "ba621fe", 5: "51b92c3", 6: "66e7637", 7: "0d5a676", 8: "e31406d", 9: "fa8dff1", 10: "fa8dff1", 11: "0b98b10", 12: "bd1dc11", 13: "2dbada7"}   # 10 = skipped schema (no real v10 format; same shape as 9, gate requires every number)
 FILES = ["korean-division/src/Core/Campaign/CampaignState.cs", "korean-division/src/Core/Mission/MissionResults.cs"]
 PROP = re.compile(r"public\s+[\w<>\?,\.\[\] ]+?\s+(\w+)\s*\{\s*get;")
 

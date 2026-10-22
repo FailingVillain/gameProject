@@ -103,6 +103,7 @@ public static class CompatGateSelfTest
         s.NextOfficerKey = 2;
         s.Funds = 7; s.EpisodePermanentSupplyLoss = 3f; s.Pending.EpisodeSupplyReserved = 50f;   // v11 (TC-D)
         s.Episode = new EpisodeState { EpisodeId = "c1e1", NodeId = "OP1", SelectNode = "sk1", DaysUsed = 2, Selected = new() { "sk1" }, FailedSk = new() { "sk2" }, Variant = "a", Waited = true, DeadlineDay = 14, Outcomes = new() { new EpisodeOutcome { Node = "BT1", Outcome = "win" } }, Checkpoint = new EpisodeCheckpoint { Supply = 1200f } };   // v12 (C1E1-g1)
+        s.Decisions = new DecisionLog { Answers = new() { new DecisionAnswer { Id = "D01", Choices = new() { "a" }, Outcome = "ok", Quantity = 2, Day = 5 } }, Pending = new() { "D02" }, Checkpoint = new DecisionCheckpoint { Vars = new() { new CampaignVarEntry { Key = "rep.local", Value = 3 } }, Answers = 1, Funds = 7, PermanentLoss = 1f, Supply = 900f, Pending = new() { "D02" } } };   // v13 (TC-E)
         s.LastDebrief = new CampaignState.DebriefReport { MissionId = "c1_01_hoeryong", Title = "1-1", TotalLost = 5, EnemyKills = 40, ShellsFired = new() { ["field"] = 10 }, LootedShells = new() { ["field"] = 2 }, PrisonersTaken = 4 };
         return s;
     }
