@@ -337,9 +337,20 @@ public static class SquadSelfTest
         var free = Grid(w, 6, new Vector2(30, 100), 6);
         var tank = w.SpawnUnit(defs.Units["tank_ft_female"], 1, new Vector2(80, 100));
         var soldiersA = a.Where(u => !u.IsOfficer).ToList();
+        // T37 (U4 승인): 대리 지휘관 (T24 ① actingMinRank ≥ 0) 이 있는 중대는 분대에 부사관이 없어도 Nco 단계. 임시 분대장 (Acting) 단계는
+        // 대리 지휘관이 없을 때 (actingMinRank −1 · 인계 중) 만 — 그 경우를 따로 확인한다.
+        var offRules = defs.Officers;
+        int savedActingMin = offRules.ActingMinRank;
+        bool ccActingNco = w.ActingNco(cc) != null;
+        bool ccTierWithActing = cc.Members.All(u => w.ChainTierOf(u) == (ccActingNco ? ChainTier.Nco : ChainTier.Acting));
+        offRules.ActingMinRank = -1;
+        w.Step();   // 대리 캐시는 틱 단위
+        bool ccTierNoActing = cc.Members.All(u => w.ChainTierOf(u) == ChainTier.Acting);
+        offRules.ActingMinRank = savedActingMin;
+        w.Step();
         check(soldiersA.All(u => w.ChainTierOf(u) == ChainTier.Officer) && cb.Members.All(u => w.ChainTierOf(u) == ChainTier.Nco)
-              && cc.Members.All(u => w.ChainTierOf(u) == ChainTier.Acting) && free.All(u => w.ChainTierOf(u) == ChainTier.Isolated) && w.ChainTierOf(tank) == ChainTier.None,
-            "지휘 계통 단계: 장교 범위 안 · 부사관 분대 · 임시 분대장 · 분대 없음 · 차량 (지연 없음)");
+              && ccTierWithActing && ccTierNoActing && free.All(u => w.ChainTierOf(u) == ChainTier.Isolated) && w.ChainTierOf(tank) == ChainTier.None,
+            $"지휘 계통 단계: 장교 범위 안 · 부사관 분대 · 임시 분대장 (대리 지휘관 {(ccActingNco ? "있음 → Nco" : "없음 → Acting")}, 대리 끔 → Acting) · 분대 없음 · 차량 (지연 없음)");
         var lone = cc.Members[0];
         foreach (var u in cc.Members.Skip(1)) u.Hp = 0;
         w.Step();
@@ -355,11 +366,22 @@ public static class SquadSelfTest
         check(InRange(soldiersA, 0, 0) && InRange(cb.Members, cd.NcoMin, cd.NcoMax) && InRange(free, cd.IsolatedMin, cd.IsolatedMax) && tank.ReactDelay <= 3,
             $"공격 이동 지연 (틱): 장교 {string.Join(",", soldiersA.Select(u => u.ReactDelay))} · 부사관 {string.Join(",", cb.Members.Select(u => u.ReactDelay))} · 고립 {string.Join(",", free.Select(u => u.ReactDelay))} · 차량 {tank.ReactDelay}");
         check(free.Select(u => u.ReactDelay).Distinct().Count() > 1, "유닛마다 지연이 다름 (해시)");
-        // 임시 분대장 단계: 새 분대
-        var ce = Form(w, Grid(w, 6, new Vector2(130, 120), 6));
-        w.AttackMove(1, ce.Members, new Vector2(130, 140));
-        w.Step();
-        check(InRange(ce.Members, cd.ActingMin, cd.ActingMax), $"임시 분대장 분대 지연 {string.Join(",", ce.Members.Select(u => u.ReactDelay))} 틱 ({cd.ActingMin}~{cd.ActingMax}초)");
+        // 임시 분대장 단계: 새 분대 — 대리 지휘관 없음 (actingMinRank −1) 이면 Acting 지연, 있으면 (T37) Nco 지연
+        try
+        {
+            offRules.ActingMinRank = -1;
+            var ce = Form(w, Grid(w, 6, new Vector2(130, 120), 6));
+            w.AttackMove(1, ce.Members, new Vector2(130, 140));
+            w.Step();
+            check(InRange(ce.Members, cd.ActingMin, cd.ActingMax), $"임시 분대장 분대 지연 (대리 지휘관 없음) {string.Join(",", ce.Members.Select(u => u.ReactDelay))} 틱 ({cd.ActingMin}~{cd.ActingMax}초)");
+            offRules.ActingMinRank = 0;
+            var cf = Form(w, Grid(w, 6, new Vector2(130, 150), 6));
+            w.AttackMove(1, cf.Members, new Vector2(130, 158));
+            w.Step();
+            check(w.ActingNco(cf) != null && InRange(cf.Members, cd.NcoMin, cd.NcoMax),
+                $"T37: 대리 지휘관 있는 분대 (부사관 없음) 지연 = 부사관 단계 {string.Join(",", cf.Members.Select(u => u.ReactDelay))} 틱 ({cd.NcoMin}~{cd.NcoMax}초)");
+        }
+        finally { offRules.ActingMinRank = savedActingMin; }
         // 후퇴 (이동 명령) = 절반
         Steps(w, 120);
         w.Move(1, free, new Vector2(30, 140));
