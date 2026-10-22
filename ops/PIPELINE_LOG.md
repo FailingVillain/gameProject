@@ -229,6 +229,7 @@
 | 16:1x | T38l wip-ready(haiku, 82k, 197초; t38l-title-strings fa03891, t38a 위): 창 제목 'KOREAN DIVISION : MARCH ON MANCHURIA', 메뉴 72px KOREAN DIVISION+26px MARCH ON MANCHURIA+26px '대한 사단 : 북벌 1920', HUD 약칭, S.UnitNameKo='제17 대한 사단'(화면 미사용), uiicons·골든 PASS, 1280x720 메뉴 샷(미커밋, 눈 확인 안 함). 발주: 연대장·T49 체인 리뷰(sonnet), STATE 인계·LESSONS 갱신(haiku), T50d 성능 벤치 하네스(sonnet, main 위 tools/perf-bench) | 완료 ~99 |
 | 16:1x | 사용자: 유닛 머리 위 파랑/빨강 표시가 지저분 → 코드 확인(UnitRenderer 470~515): HP 바(선택·호버·최근 피격 3초), 탄약 바(노랑, ≤20% 빨강)·적재량 바(파랑, 낮으면 빨강)는 아군 선택 시 또는 부족하면 상시 표시, 진행 막대, 분대 상태 아이콘, 줌 아웃 시 중대 휘장. 발주 T38m(sonnet, t38a 위): 3단계 설정 간결/보통/상세, 기본 간결(탄약·적재량 바는 선택 시만, 위험 상태는 분대 아이콘이 경고), 전후 스크린샷 | 진행 |
 | 16:1x | 사용자 정정: 머리 위 '다이아몬드 모양, 파랑/빨강, 유닛마다' — 코드(main) 읽기로는 SquadIcons 에 마름모 없음(7x7 도트 아이콘), UnitSymbols 는 줌<0.5 중대 NATO 틀 → 원인 요소 미확정. T38m 에이전트에 요소 식별(전 코드·브랜치 grep, 줌 4종 라벨 스크린샷) 후 기본 간결에서 선택/호버 때만 표시하도록 통보 | 진행 |
+| 16:1x | T55m wip-ready(haiku, 111k, 279초; t55m-house-data bb081b6, main 위): house_classes.json(한국 21종·변형 30 + 만주·중국 21종·변형 36; 발자국 3x3 16/3x4 14/4x4 8/3x5 4 — 종별 배정은 에이전트 제안, 확인 필요), importer 키 building_art.house.<style>.<id>.<tone>(--only/--dst/--standin), housedata 시험(그림 없음 66 경고, orphan 주입 FAIL 확인), 골든 불변. 주의: 워크트리에서 importer 는 --src C:/gameProject/game-tools/korean-division-image-out 명시 | 완료 ~100 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
