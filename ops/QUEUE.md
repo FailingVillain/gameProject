@@ -34,6 +34,9 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T26 | 레거시 이메일 차단 git 훅 설치 (D20 A) | docs | D下 R1 S H0 Wlight | 없음 | done (훅 설치됨 .git/hooks pre-commit·commit-msg; 2026-10-22) |
 | T20 | 저장소 이동 마무리 (옛 폴더 삭제 = 사용자 U02) | docs | D下 R1 S H0 Wlight | U02 | blocked(U02) |
 | T35 | IsAi 리플레이 머리말·체크섬 복원 (AF1, FV 60 / Replay 24) | sim | D上 R3 S H2 Wlight | 없음 (main) | wip-ready (kd/isai-restore 5c08a38) |
+| T32a | 전투공병 유닛 데이터 infantry_pioneer (wireCutter·수류탄2·한국군 전용) | feature | D中 R1 S H1 Wlight | ai3b2 위 스택 | wip-ready (kd/t32a-pioneer 26cc9fd) |
+| T43 | 병종 기호 곡사포·저격 추가 | feature | D下 R1 S H0 Wlight | 없음 (main) | wip-ready (kd/t43-branch-symbols b9c97a9) |
+| T39c | 하천 렌더(합성 여울 타일)·test_river 지도/미션 | feature | D中 R1 S H0 Wlight | river-r2 위 스택 | wip-ready (river-r3 26df7f6) |
 
 **정책 (사용자 2026-10-22, 강조): WIP 는 병합하지 않는다. WIP 작업은 재개해서 완료(wip-ready)까지만 한다.** merger 는 발주하지 않는다. 선행이 '병합'인 카드는 선행 카드의 wip 브랜치 위에 쌓아(스택) 진행한다. main 에는 WIP 가 들어가지 않는다(사용자 지시 전까지).
 
