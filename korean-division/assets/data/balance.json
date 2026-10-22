@@ -616,6 +616,44 @@
       "weapon": "mg", "armor": "basic", "category": "armored", "suppressResist": 0.2,
       "factions": ["fengtian"], "marchFire": true, "canCapture": true, "autoAttack": true,
     },
+    // ---- C1E1-u2 (2026-10-22): C1E1 명세가 쓰는데 없던 유닛 정의 5종. 수치는 가장 가까운 기존 유닛 복사 (밸런스 보류), 그림은 artAs 자리표시 (새 그림은 재렌더 뒤 별도 카드). 새 메카닉 없음.
+    // 봉천 기마 (OP1 안동 수비 기마 100, 명세 spec_c1e1): 기병 (cavalry_default) 수치 그대로, 봉천 전용, 그림 = 기병 봉천 변형 (마적 기병과 같은 대용).
+    "cavalry_fengtian": {
+      "name": "봉천 기마", "description": "봉천 지방군의 기병 (봉천 전용). 성능은 일반 기병과 같습니다 (카빈, 군도 돌격, 이동 보병의 1.5배).",
+      "hp": 180, "speed": 4.8, "radius": 0.45, "sight": 35, "sightNear": 23, "sightFar": 35, "accuracy": 1.0,
+      "weapon": "carbine", "melee": "sabre", "armor": "none", "category": "infantry", "suppressResist": 0.75,
+      "mounted": true, "chargeSpeedMul": 1.6, "staminaMul": 3,
+      "factions": ["fengtian"], "artAs": "cavalry_default", "artVariant": "fengtian", "canCapture": true, "autoAttack": true,
+    },
+    // 봉천 야포 (진강산 · 안동 성벽 수비 야포 4문, 명세): 야전포 (heavy_field_gun) 수치 그대로, 봉천 전용, 그림 = 야전포.
+    "heavy_field_gun_fengtian": {
+      "name": "봉천 야포", "description": "봉천 지방군의 야전포 (봉천 전용). 성능은 일반 야전포와 같습니다 (직사, 방열 15초 후 사격, 철수 12초).",
+      "hp": 300, "speed": 1.8, "radius": 0.6, "sight": 37, "sightNear": 23, "sightFar": 37, "accuracy": 1.0,
+      "weapon": "gun_field", "armor": "basic", "category": "gun", "suppressResist": 0.75, "setupTime": 15, "packTime": 12, "turnRate": 30,
+      "factions": ["fengtian"], "artAs": "heavy_field_gun", "canCapture": false, "autoAttack": true,
+    },
+    // 일본 철도수비대 (철도 부속지 중대 약 150, 중립 구역 [제안], 명세): 일본 보병 (infantry_japanese) 수치 그대로. 일본 전용 — 부속지가 별도 중립 세력 슬롯이면 그 슬롯의 En 이 japanese 여야 편성 가능 (엔진 카드 참고).
+    "infantry_railway_guard_japanese": {
+      "name": "일본 철도수비대", "description": "만철 부속지를 지키는 일본 철도수비대 (일본 전용). 성능은 일본 보병과 같고 아리사카 38식 소총에 착검으로 싸웁니다.",
+      "hp": 100, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
+      "weapon": "rifle_mosin", "melee": "bayonet", "armor": "none", "category": "infantry", "suppressResist": 0.75, "marchFire": true, "bayonetPreFixed": true,
+      "factions": ["japanese"], "artAs": "infantry", "artVariant": "japanese", "canCapture": true, "autoAttack": true,
+    },
+    // 피난민 (SK3 호송 대상, 명세 / C1E1-g5): 비전투 — 무기 · 근접 없음 (기수와 같은 무장 없음 규칙), 자동 사격 · 점령 없음. 속도는 보병보다 느림 (2.6 = 보급 마차), 체력 60 (민간인), 제압 취약 1.5.
+    // 도주 · 공포 AI 는 없음 (범위 밖). 공용 = 한국 편성 · 중립 어느 쪽 배치도 검증 통과. 그림 = 보병 자리표시.
+    "civilian_refugee": {
+      "name": "피난민", "description": "전장에서 달아나는 민간인 (공용, 비무장). 사격도 점령도 하지 못합니다. 호송 임무의 대상입니다.",
+      "hp": 60, "speed": 2.6, "radius": 0.35, "sight": 21, "sightNear": 11, "sightFar": 21, "accuracy": 1.0,
+      "armor": "none", "category": "infantry", "suppressResist": 1.5,
+      "common": true, "artAs": "infantry", "canCapture": false, "autoAttack": false,
+    },
+    // 의용병 (SK1 합류 100, 외인 2, 명세; 열린 점 해소 2026-10-22: id = common_volunteer, 임시 자리표시자 common_volunteer_tmp 와는 별개). 수치 = 서간도 의용군 / 민단 자위대 (베르단 II · 정확도 0.9 · 제압 1.25), 공용.
+    "common_volunteer": {
+      "name": "의용병", "description": "SK1 소탕 뒤 합류하는 서간도 한인 의용병 (공용). 지방대 수준의 무장 (베르단 II 소총)에 제압에 약합니다 (제압 1.25배). 추가 이점은 없습니다.",
+      "hp": 100, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 0.9,
+      "weapon": "rifle_berdan2", "melee": "bayonet", "armor": "none", "category": "infantry", "suppressResist": 1.25, "marchFire": true,
+      "common": true, "artAs": "infantry_reserve", "canCapture": true, "autoAttack": true,
+    },
     // 보급 마차 (ROADMAP §0-1, 2026-10-19): 비무장. 주변 6칸 아군의 탄약 회복 ×3 (적재량 소모), 아군 도시 근처에서 다시 싣는다. 그림은 차량 별칭 (theme.json)
     "supply_wagon": {
       "name": "보급 마차", "description": "탄약을 싣고 다니는 비무장 마차. 주변 6칸 아군의 탄약 회복을 3배로 빠르게 하고 그만큼 적재량이 줄어듭니다. 아군 도시 근처에서 다시 싣습니다.",
