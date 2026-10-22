@@ -55,7 +55,7 @@ public sealed class EpisodeDef
 /// <summary>[C1E1-g1] 에피소드 정의 로더 + 검증. 실패 = null + 한국어 오류 목록 (크래시 없음).</summary>
 public static class EpisodeDefs
 {
-    public static string PathFor(string episodeId) => Path.Combine(AppContext.BaseDirectory, "assets", "data", "episodes", episodeId + ".json");
+    public static string PathFor(string episodeId) => PathGuard.Resolve(Path.Combine(AppContext.BaseDirectory, "assets", "data", "episodes"), episodeId);   // T51a: id 검사 + 폴더 밖 거부
 
     public static EpisodeDef? Load(string path, List<string> errors)
     {

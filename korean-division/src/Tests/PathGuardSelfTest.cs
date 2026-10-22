@@ -14,6 +14,14 @@ public static class PathGuardSelfTest
         foreach (var id in MapFile.Available()) { n++; same &= MapFile.PathOf(id) == Path.Combine(MapFile.Folder, id + ".json") && File.Exists(MapFile.PathOf(id)); }
         check(n > 20 && same, $"pathguard: 동봉 미션 · 지도 {n}개 PathOf 불변");
 
+        // PathFor (에피소드) · SaveManager.Sanitize 재사용
+        string epDir = Path.Combine(AppContext.BaseDirectory, "assets", "data", "episodes");
+        check(EpisodeDefs.PathFor("c1e1") == Path.Combine(epDir, "c1e1.json") && Path.GetFileName(EpisodeDefs.PathFor("../x")) == PathGuard.InvalidFileName
+              && Path.GetFileName(EpisodeDefs.PathFor("CON")) == PathGuard.InvalidFileName, "pathguard: EpisodeDefs.PathFor 정상 id 불변 · 탈출 · 예약 이름 거부");
+        check(UI.SaveManager.Sanitize("autosave_1") == "autosave_1" && UI.SaveManager.Sanitize("my.save-2") == "my.save-2" && UI.SaveManager.Sanitize(null) == "save"
+              && UI.SaveManager.Sanitize("CON") == "_CON" && UI.SaveManager.Sanitize("nul.x") == "_nul.x" && UI.SaveManager.Sanitize("COM1") == "_COM1" && UI.SaveManager.Sanitize("console") == "console",
+              "pathguard: SaveManager.Sanitize 정상 이름 불변 · 예약 이름 거름");
+
         var evil = new List<string?> { "..", "../x", "..\\x", "..\\..\\Windows\\win", "a/b", "a\\b", "/etc/passwd", "C:\\Windows\\win", "C:foo", "\\\\server\\share\\x",
             "", null, " ", "a b", "a.b", "x.", ".hidden", "a\0b", "m01\u202e", "미션", new string('a', 65), new string('a', 5000),
             "CON", "con", "NUL", "aux", "PRN", "COM1", "lpt9", "mission%2e%2e", "a:stream", "x\n" };

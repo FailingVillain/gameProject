@@ -13,6 +13,9 @@ public static class PathGuard
     /// <summary>존재할 수 없는 파일 이름 ('?' 는 윈도우 파일 이름에 못 쓴다) — 잘못된 id 의 PathOf 결과. File.Exists 는 false, 읽기는 실패.</summary>
     public const string InvalidFileName = "?invalid-id?.json";
 
+    /// <summary>윈도우 예약 이름인가 (첫 '.' 앞 부분 기준: CON.txt 도 예약). 저장 이름 정리(SaveManager.Sanitize)가 재사용.</summary>
+    public static bool IsReservedName(string name) { int d = name.IndexOf('.'); return ReservedRx.IsMatch(d < 0 ? name : name[..d]); }
+
     /// <summary>id 형식만 검사 (한국어 사유). 통과하면 reason 은 빈 문자열.</summary>
     public static bool IsSafeId(string? id, out string reason)
     {

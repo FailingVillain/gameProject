@@ -181,6 +181,7 @@ public static partial class SelfTest
         Tests.C1e1MapsSelfTest.Run(opt, Check);
         Tests.ArmourSelfTest.Run(opt, Check);
         Tests.S4SelfTest.Run(opt, Check);
+        Tests.PathGuardSelfTest.Run(opt, Check);   // T51a
         Tests.F4SelfTest.Run(opt, Check);
         Tests.N61SelfTest.Run(opt, Check);
         Tests.UnitsSelfTest.Run(opt, Check);
