@@ -35,3 +35,4 @@ Lock .git/kd-merge.lock released on stop.
 - B13b kd/t32d-pioneer-art af357ce (plan said 2118f9b; tip moved) -> 5a9e0bb (ops/QUEUE ours; no src). FV 57/22, detcheck b7c3761c unchanged. pioneer/units/snapshot/crossing PASS, snaptest 0 FAIL. Tag post-B set at 5a9e0bb (before this progress commit). t34a NOT merged (E tail).
 - Post-B: uifuzz 30 = 1979 frames, 0 exceptions. Tag post-B placed. pre-merge-C tag = same commit.
 - C1 rail 9f513e7 -> c7929fe (Snapshot.cs from rehearsal 16a63bc; ENGINE_NOTES union; ops ours). FV 58/22. detcheck b7c3761c unchanged. terrain/savecompat/snapshot/crossing PASS, snaptest 0 FAIL.
+- C2 t28-cover-forest c577c0f -> 6a5f199 (ops ours). FV 58/22, detcheck b7c3761c unchanged. props/forest/snapshot/crossing PASS, snaptest 0 FAIL. Tag post-C = 6a5f199. Group D next (pre-merge-D = post-C).
