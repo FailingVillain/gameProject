@@ -1,0 +1,30 @@
+// C1E1 노드 데이터 (d1) — g1 그래프(c1e1.json)의 노드 id 에 붙는 내용. 그래프 구조 · 기한표 · 일수는 c1e1.json 이 정본이라 여기서 복제하지 않는다.
+// 결정 16개 본체(선택지 · 조건 · 소비처)는 campaign_decisions.json (TC-E). 여기는 "어느 노드에서 어떤 결정을 묻는가"와 화면 키만.
+// 서사 문구는 층 3 (사용자 몫): texts 의 "[층3]" 은 자리표시.
+{
+  "episode": "c1e1",
+  "placements": {
+    "EV1": ["D01"], "CH1": ["D02"], "BT1": ["D03", "D04"], "SEL1": ["D05"], "SEL2": ["D06"],
+    "SK2": ["D07"], "SK3": ["D08"], "CH2": ["D09"], "EV2": ["D10"], "IL2": ["D16"],
+    "OP1": ["D11", "D12", "D13", "D15"], "D14": ["D14"]
+  },
+  "nodes": [
+    { "id": "EV1", "kind": "EV", "titleKey": "c1e1.ev1.title", "bodyKey": "c1e1.ev1.body" },
+    { "id": "CH1", "kind": "CH", "titleKey": "c1e1.ch1.title", "bodyKey": "c1e1.ch1.body" },
+    { "id": "IL1", "kind": "IL", "titleKey": "c1e1.il1.title", "bodyKey": "c1e1.il1.body", "supplyGauge": true },
+    { "id": "CH2", "kind": "CH", "titleKey": "c1e1.ch2.title", "bodyKey": "c1e1.ch2.body" },
+    { "id": "EV2", "kind": "EV", "titleKey": "c1e1.ev2.title", "bodyKey": "c1e1.ev2.body" },
+    { "id": "IL2", "kind": "IL", "titleKey": "c1e1.il2.title", "bodyKey": "c1e1.il2.body", "supplyGauge": true, "deadlineWarning": true },
+    { "id": "EV3", "kind": "EV", "titleKey": "c1e1.ev3.title", "bodyKey": "c1e1.ev3.body",
+      "setOnEnter": [ { "var": "flag.siwidaeDispatched", "value": 1 }, { "var": "flag.namLetter", "value": 1 } ] }
+  ],
+  "texts": {
+    "c1e1.ev1.title": "[층3]", "c1e1.ev1.body": "[층3]",
+    "c1e1.ch1.title": "[층3]", "c1e1.ch1.body": "[층3]",
+    "c1e1.il1.title": "[층3]", "c1e1.il1.body": "[층3]",
+    "c1e1.ch2.title": "[층3]", "c1e1.ch2.body": "[층3]",
+    "c1e1.ev2.title": "[층3]", "c1e1.ev2.body": "[층3]",
+    "c1e1.il2.title": "[층3]", "c1e1.il2.body": "[층3]",
+    "c1e1.ev3.title": "[층3]", "c1e1.ev3.body": "[층3]"
+  }
+}

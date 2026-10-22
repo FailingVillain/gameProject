@@ -157,6 +157,7 @@ public static class SaveCompatSelfTest
         CampaignVariantsSelfTest.Run(check);   // TC-F 미션 변형 (D02 B 이탈 · SK 플래그 3종 · 구역/소품) · pow.bandit · D15 협상 -1 · 결과 표
         CampaignUnlocksSelfTest.Run(check);   // C1E1-g6 unlock.* 편성 해금 (저장 형식 변화 없음)
         CampaignDesertionSelfTest.Run(check);   // M2 사기 · 호감 · 민심 0~100/50 · 탈영 · 보급 단가
+        C1e1NodeDataSelfTest.Run(check);   // C1E1-d1 노드 데이터 JSON 로드 검증
         CampaignHomeViewsSelfTest.Run(check);   // T38f 읽기 전용 탭 (기록 · 장비 · 편제) 표시 자료
         MapZoomSelfTest.Run(check);   // T47 작전 지도 확대 (배율 · 중심 범위 · 클릭 좌표 · 상태 불변)
         string cdir = TestTemp.Child("kd_compat_campaign");

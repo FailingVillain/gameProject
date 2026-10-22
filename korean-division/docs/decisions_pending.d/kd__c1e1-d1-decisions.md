@@ -1,0 +1,4 @@
+- C1E1-d1: 노드 데이터는 g1 그래프(episodes/c1e1.json)를 건드리지 않고 별도 파일 episodes/c1e1_nodes.json 로 둠 (이 브랜치는 g1 없는 tce 위라 병합 충돌 회피). 결정 16개 본체는 TC-E 의 campaign_decisions.json 그대로 (중복 안 함).
+- C1E1-d1: g1 그래프의 SK3 노드에 D08 이 빠져 있음 — 배치는 c1e1_nodes.json placements 가 정본(SK3=D08), 병합 때 g1 그래프에 D08 추가 여부 확인 필요.
+- C1E1-d1: EV3 진입 시 flag.siwidaeDispatched=1, flag.namLetter=1 (spec 에 값 명시 없음, 플래그이므로 1). 소비는 g2/g3.
+- C1E1-d1: IL1/IL2 supplyGauge, IL2 deadlineWarning 필드 추가 (계획 §2 #25 IL 보급 게이지 · TC-E D16 '⚠' 표시에서 가져옴; 동작 구현은 g2).
