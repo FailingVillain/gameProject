@@ -75,6 +75,18 @@ public sealed class MissionDef
     public static IEnumerable<string> Available() =>
         Directory.Exists(Folder) ? Directory.GetFiles(Folder, "*.json").Select(Path.GetFileNameWithoutExtension).OfType<string>().OrderBy(n => n, StringComparer.Ordinal) : Array.Empty<string>();
 
+    /// <summary>관전 미션 (spectate:true = AI 대 AI) id · 제목. 시작 화면 '관전' 탭의 목록 (T45). 읽기 실패한 파일은 뺀다 (미션 메뉴가 '고장'으로 보여 준다).</summary>
+    public static List<(string Id, string Title)> AvailableSpectate()
+    {
+        var list = new List<(string, string)>();
+        foreach (var id in Available())
+        {
+            try { var d = Load(id); if (d.Spectate) list.Add((id, d.Title)); }
+            catch (Exception e) when (e is IOException or InvalidDataException or JsonException or InvalidOperationException or KeyNotFoundException) { }
+        }
+        return list;
+    }
+
     public static MissionDef Load(string id)
     {
         string path = PathOf(id);

@@ -56,8 +56,8 @@ public sealed class MainMenu
         aiIndex = Math.Max(0, Array.IndexOf(aiKeys, AiRegistry.Default));
         switch (initialPage)
         {
-            case "setup": page = Page.Setup; break;
-            case "setup-gen": page = Page.Setup; mapIndex = -1; break;   // 스크린샷용: 생성 맵 (지도 크기 줄)
+            case "setup": page = Page.Setup; DevMenu = true; break;   // 숨긴 '플레이' 설정 화면도 개발 경로로는 열린다
+            case "setup-gen": page = Page.Setup; mapIndex = -1; DevMenu = true; break;   // 스크린샷용: 생성 맵 (지도 크기 줄)
             case "spectate": page = Page.Setup; spectate = true; break;
             case "replays": OpenReplays(); break;
             case "battle": page = Page.Battle; break;
@@ -74,6 +74,23 @@ public sealed class MainMenu
     }
 
     public const string DefaultMapId = "corners4";
+
+    /// <summary>개발 메뉴 (T45): 켜면 메인 메뉴에 '플레이'(다자간 자유전) 가 보이고, 관전 설정에 인원 · 다자간 맵 선택이 남는다.
+    /// 끄면(기본) 플레이어에게는 숨김 - 코드는 그대로. 켜는 법: 인자 --dev-menu / 환경 KD_DEV_MENU=1 / --menu-page setup · setup-gen.</summary>
+    public static bool DevMenu { get; set; } = Environment.GetEnvironmentVariable("KD_DEV_MENU") == "1";
+
+    /// <summary>관전 설정에서 다자간 선택(인원 / 3인 이상 지도)을 숨기는가: 관전 + 개발 메뉴 꺼짐.</summary>
+    bool HideMulti => spectate && !DevMenu;
+    /// <summary>메인 메뉴의 '플레이' 버튼 표시 여부 (= DevMenu). 시험용.</summary>
+    public static bool PlayButtonVisible => DevMenu;
+    public const int SpectateDefaultPlayers = 2;
+
+    List<(string Id, string Title)>? spectateMissions;
+    /// <summary>관전 탭의 AI 대 AI 미션 목록 (spectate:true 미션). 시험용.</summary>
+    public IReadOnlyList<(string Id, string Title)> SpectateMissions => spectateMissions ??= MissionDef.AvailableSpectate();
+
+    /// <summary>관전 설정에 보이는 지도 칩의 고정 지도 id (hideMulti 이면 2인 이하 지도만). 시험용.</summary>
+    public IReadOnlyList<string> VisibleFixedMapIds(bool hideMulti) => fixedMaps.Where(m => !hideMulti || m.Players <= SpectateDefaultPlayers).Select(m => m.Id).ToList();
 
     int FactionCount => mapIndex >= 0 ? fixedMaps[mapIndex].Players : players;
 
@@ -195,8 +212,11 @@ public sealed class MainMenu
         y += h + gap;
         if (Button(new Rectangle(x, y, w, h), S.MenuMissions, size: 26)) { page = Page.Missions; if (missions is { Practice: true }) { missions.Dispose(); missions = null; } missions ??= new MissionMenu(); }
         y += h + gap;
-        if (Button(new Rectangle(x, y, w, h), S.MenuPlay, size: 26)) { page = Page.Setup; spectate = false; }
-        y += h + gap;
+        if (PlayButtonVisible)   // 다자간 자유전 진입점: 플레이어 메뉴에서는 숨김 (T45, 사용자 결정 AQ)
+        {
+            if (Button(new Rectangle(x, y, w, h), S.MenuPlay, size: 26)) { page = Page.Setup; spectate = false; }
+            y += h + gap;
+        }
         if (Button(new Rectangle(x, y, w, h), S.MenuSpectate, size: 26)) { page = Page.Setup; spectate = true; }
         y += h + gap;
         float lw = (w - gap) / 2;   // 불러오기 · 리플레이 한 줄 (미션 버튼 자리)
@@ -324,7 +344,26 @@ public sealed class MainMenu
     void DrawSetup()
     {
         string title = spectate ? S.MenuSetupSpectate : S.MenuSetupPlay;
-        float pw = MathF.Min(760, screenW - 40), ph = spectate ? 430 + RowH : 478 + RowH;
+        bool hideMulti = HideMulti;
+        if (hideMulti)   // 관전은 AI 대 AI 2자 기본: 인원 고정, 3인 이상 지도는 칩에서 뺀다
+        {
+            players = SpectateDefaultPlayers;
+            if (mapIndex >= 0 && fixedMaps[mapIndex].Players > SpectateDefaultPlayers) mapIndex = -1;
+        }
+        var visibleMaps = Enumerable.Range(0, fixedMaps.Count).Where(i => !hideMulti || fixedMaps[i].Players <= SpectateDefaultPlayers).ToList();
+        var spectateList = spectate ? SpectateMissions : null;
+        const float missionRowH = 36, missionHead = 28;
+        float missionH = spectateList is { Count: > 0 } ? missionHead + ((spectateList.Count + 1) / 2) * missionRowH : spectate ? missionHead + 24 : 0;
+        float pw = MathF.Min(760, screenW - 40);
+        // 맵 칩이 몇 줄로 접히는가 (패널 높이에 반영); 칩 영역 폭 = 패널 폭 - 146 (cx 오프셋) - 24
+        int chipRows = 1;
+        {
+            float areaW = pw - 146 - 24, xx = 0;
+            var lab = new List<string> { S.MenuGenerated };
+            lab.AddRange(visibleMaps.Select(i => $"{fixedMaps[i].Id}  {string.Format(S.MenuMapPlayers, fixedMaps[i].Players)}"));
+            foreach (var l in lab) { float bw = Ui.Measure(l, 16).X + 28; if (xx + bw > areaW) { xx = 0; chipRows++; } xx += bw + 8; }
+        }
+        float ph = (spectate ? 430 + RowH : 478 + RowH) - (hideMulti ? RowH : 0) + (chipRows - 1) * 38 + (spectate ? missionH - 44 : 0);
         var panel = new Rectangle((screenW - pw) / 2, MathF.Max(16, (screenH - ph) / 2 - 10), pw, ph);
         Ui.Panel(panel, Palette.Alpha(Palette.PanelDark, 235), Palette.HudTrim);
         Ui.Text(title, panel.X + 24, panel.Y + 16, 26, Palette.Accent);
@@ -336,28 +375,33 @@ public sealed class MainMenu
         Ui.Text(S.MenuMap, lx, y + 6, 16, Palette.TextDim);
         float x = cx;
         var labels = new List<string> { S.MenuGenerated };
-        labels.AddRange(fixedMaps.Select(m => $"{m.Id}  {string.Format(S.MenuMapPlayers, m.Players)}"));
+        var chipMap = new List<int> { -1 };   // 칩 -> mapIndex
+        chipMap.AddRange(visibleMaps);
+        labels.AddRange(visibleMaps.Select(i => $"{fixedMaps[i].Id}  {string.Format(S.MenuMapPlayers, fixedMaps[i].Players)}"));
         float rowY = y;
         for (int i = 0; i < labels.Count; i++)
         {
             float bw = Ui.Measure(labels[i], 16).X + 28;
             if (x + bw > panel.X + panel.Width - 24) { x = cx; rowY += 38; }
-            if (Button(new Rectangle(x, rowY, bw, 32), labels[i], true, mapIndex == i - 1)) mapIndex = i - 1;
+            if (Button(new Rectangle(x, rowY, bw, 32), labels[i], true, mapIndex == chipMap[i])) mapIndex = chipMap[i];
             x += bw + 8;
         }
         y = rowY + 52;
         fixedMap = mapIndex >= 0;
 
-        // 인원
-        Ui.Text(S.MenuPlayers, lx, y + 6, 16, Palette.TextDim);
-        if (fixedMap) Ui.Text($"{fixedMaps[mapIndex].Players}   ·   {S.MenuFixedNote}", cx, y + 6, 16, Palette.TextDim);
-        else
+        // 인원 (관전 + 개발 메뉴 꺼짐이면 숨김: 2자 고정)
+        if (!hideMulti)
         {
-            if (Button(new Rectangle(cx, y, 36, 32), "-")) players = Math.Max(2, players - (Input.IsKeyDown(KeyboardKey.LeftShift) ? 4 : 1));
-            Ui.TextCentered(players.ToString(), new Rectangle(cx + 40, y, 60, 32), 16, Palette.Text);
-            if (Button(new Rectangle(cx + 104, y, 36, 32), "+")) players = Math.Min(Config.MaxPlayers, players + (Input.IsKeyDown(KeyboardKey.LeftShift) ? 4 : 1));
+            Ui.Text(S.MenuPlayers, lx, y + 6, 16, Palette.TextDim);
+            if (fixedMap) Ui.Text($"{fixedMaps[mapIndex].Players}   ·   {S.MenuFixedNote}", cx, y + 6, 16, Palette.TextDim);
+            else
+            {
+                if (Button(new Rectangle(cx, y, 36, 32), "-")) players = Math.Max(2, players - (Input.IsKeyDown(KeyboardKey.LeftShift) ? 4 : 1));
+                Ui.TextCentered(players.ToString(), new Rectangle(cx + 40, y, 60, 32), 16, Palette.Text);
+                if (Button(new Rectangle(cx + 104, y, 36, 32), "+")) players = Math.Min(Config.MaxPlayers, players + (Input.IsKeyDown(KeyboardKey.LeftShift) ? 4 : 1));
+            }
+            y += RowH;
         }
-        y += RowH;
 
         // 지도 크기 (생성 맵만): 자동 (인원 기준) · 초소형 200 · 소형 400 · 중형 800 · 대형 1200 · 초대형 1500
         Ui.Text(S.MenuMapSize, lx, y + 6, 16, Palette.TextDim);
@@ -405,6 +449,23 @@ public sealed class MainMenu
         // 안개
         Ui.Text(S.MenuFog, lx, y + 6, 16, Palette.TextDim);
         if (Button(new Rectangle(cx, y, 100, 32), fog ? S.On : S.Off, true, fog)) fog = !fog;
+        y += RowH + 4;
+
+        // AI 대 AI 미션 (관전 탭, T45): 클릭하면 그 미션을 관전 모드로 시작 (GameOptions.MissionId - 미션의 spectate 플래그가 관전 모드를 켠다)
+        if (spectateList != null)
+        {
+            Ui.Text(S.MenuSpectateMissions, lx, y, 16, Palette.Accent);
+            y += missionHead;
+            if (spectateList.Count == 0) Ui.Text(S.MenuSpectateMissionsNone, lx, y + 4, 16, Palette.TextDim);
+            float colW = (panel.Width - 48 - 8) / 2;
+            for (int i = 0; i < spectateList.Count; i++)
+            {
+                var r = new Rectangle(lx + (i % 2) * (colW + 8), y + (i / 2) * missionRowH, colW, 32);
+                string lab = spectateList[i].Title;
+                while (lab.Length > 4 && Ui.Measure(lab, 16).X > colW - 16) lab = lab[..^4] + "...";
+                if (Button(r, lab)) Chosen = new GameOptions { MissionId = spectateList[i].Id, FromMenu = true };
+            }
+        }
 
         // 하단 버튼
         float by = panel.Y + panel.Height - 62;
@@ -414,6 +475,7 @@ public sealed class MainMenu
 
     void StartGame()
     {
+        if (HideMulti) { players = SpectateDefaultPlayers; if (mapIndex >= 0 && fixedMaps[mapIndex].Players > SpectateDefaultPlayers) mapIndex = -1; }
         var opt = new GameOptions { Spectate = spectate, FromMenu = true, Faction = Math.Clamp(faction, 1, FactionCount), Ai = aiKeys[aiIndex], NoFog = !fog };
         opt.Seed = seed ?? Random.Shared.Next(1, 1_000_000);
         if (mapIndex >= 0)
