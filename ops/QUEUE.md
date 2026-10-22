@@ -39,7 +39,7 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T43 | 병종 기호 곡사포·저격 추가 | feature | D下 R1 S H0 Wlight | 없음 (main) | wip-ready (kd/t43-branch-symbols b9c97a9) |
 | T48a | 연대장 데이터 · 스키마 v8 · 로더 · 샘플 (연대장 풀) | feature | D中 R2 S H2 Wlight | T42d 위 스택 (06ee9bd) | wip-ready (브랜치 t48a-commander-data, 스택 base t42d 06ee9bd) |
 | T48b | 장교 신원 영속 · 진급 종착 · 배정 · 연대장 기용/해임 · 전사/항상부상 | sim | D上 R3 M H2 Wlight | T48a | queued |
-| T48c | 연대장 호감도 + 해임 시 소폭 하락 | feature | D中 R2 S H2 Wlight | T48b | queued |
+| T48c | 연대장 호감도 + 해임 시 소폭 하락 | feature | D中 R2 S H2 Wlight | T48b | wip-ready (t48c-favor c24c423, T48a 위 스택, 병합 보류) |
 | T48d | 연대장·대대장·참모 관리 UI (탭 8/9/12/14) | feature | D中 R1 M H2 Wlight | T48b T48c | queued |
 | T48e | 2단계 전투 연결 (기본 꺼짐 키 4개, FV 예약 필요) | sim | D上 R3 M H3 Wheavy | T48d · T10 · T24 | queued (blocked) |
 | T39c | 하천 렌더(합성 여울 타일)·test_river 지도/미션 | feature | D中 R1 S H0 Wlight | river-r2 위 스택 | wip-ready (river-r3 26df7f6) |
@@ -149,6 +149,6 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 우선순위: ① 재렌더(T11) ② 기능 구현(스택: 전투공병·AI 연막/철조망·지도 편집기·UI 백로그·열차·IsAi·캠페인 후속) ③ 통합 리허설/병합 준비 ④ (보류) 밸런스.
 
 버전 마일스톤(사용자 2026-10-22): 0.2 = 밸런스 패치 이전(기능 완료·병합) → 0.3 = 밸런스 패치 이후(한 번에) → 0.4 = AI 개선. 상세 = ops/VERSIONS.md. 남은 AI 카드(T32c, T34b~e)는 0.4 로 미룸.
-| T49a | 저장 호환 정책 적용 1 (메시지 · 이행 .bak · 목록 회색 표시, ops/SAVE_COMPAT_POLICY.md) | feature | D中 R2 S H1 Wlight | 없음 | queued |
+| T49a | 저장 호환 정책 적용 1 (메시지 · 이행 .bak · 목록 회색 표시, ops/SAVE_COMPAT_POLICY.md) | feature | D中 R2 S H1 Wlight | 없음 | wip-ready (브랜치 t49a-save-messages, 스택 base t48a e31406d) |
 | T49b | 저장 호환 정책 적용 2 (설정 관대 읽기 · 사용자 지도/지휘관 건너뛰기 · 테스트) | feature | D中 R2 S H1 Wlight | T48a | queued |
 | T49c | 저장 호환 출시 게이트 (캠페인 v1..현재 옛 샘플 테스트) | feature | D下 R2 S H1 Wlight | T49a | queued |
