@@ -39,9 +39,10 @@ public static class CampaignHomeViews
     /// <summary>현재 일수 + 연표 (최신이 위, 최대 ScheduleMax). 이벤트 문구는 id 로 찾고 없으면 id 그대로 (스토리 TBD — 문구를 새로 쓰지 않음). 예외 없음.</summary>
     public static ScheduleView Schedule(CampaignState? s)
     {
-        var tl = (s?.Timeline ?? new()).Where(e => e != null && e.Kind is "mission" or "event").ToList();   // T48a: 'commander' 등 다른 종류는 이 탭에서 건너뜀 (T48d 가 표시)
+        var tl = (s?.Timeline ?? new()).Where(e => e != null && e.Kind is "mission" or "event" or "commander").ToList();   // T48d: commander 줄도 표시 (문구는 id 로 찾음)
         var rows = tl.AsEnumerable().Reverse().Take(ScheduleMax).Select(e =>
         {
+            if (e.Kind == "commander") return new ScheduleRow(e.Day, false, CommanderHomeModel.TimelineText(s, e));
             if (e.Kind == "event")
             {
                 string title = CampaignEvents.Current.FirstOrDefault(d => d.Id == e.Id)?.Title ?? "";

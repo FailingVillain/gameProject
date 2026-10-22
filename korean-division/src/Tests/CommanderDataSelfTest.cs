@@ -96,11 +96,11 @@ public static class CommanderDataSelfTest
             CommanderPools.Sync(emptySt, Array.Empty<CommanderDef>());
             check(emptySt.CommanderPool.Count == 0 && emptySt.ToJson().Length > 0, "T48a 데이터 0명: 풀 0명으로 정상 동작");
 
-            // 7) 연표 'commander' 줄이 있어도 일정 탭이 그대로 (모르는 종류를 미션으로 세지 않음)
+            // 7) 연표 'commander' 줄은 일정 탭에 보이되 작전/이벤트로 세지 않음 (T48d)
             var tl = new CampaignState { Day = 3 };
             tl.AddTimeline("mission", "m1", "첫 작전"); tl.AddTimeline("commander", "cmd_placeholder_a");
             var view = CampaignHomeViews.Schedule(tl);
-            check(view.Missions == 1 && view.Events == 0 && view.Rows.Count == 1, "T48a 연표 Kind=\"commander\" 허용: 일정 탭은 건너뜀 (표시는 T48d)");
+            check(view.Missions == 1 && view.Events == 0 && view.Rows.Count == 2, "T48a 연표 Kind=\"commander\" 허용: 일정 탭은 줄로 표시하되 작전/이벤트 건수에는 안 셈 (T48d)");
         }
         finally { CampaignEconomyDefs.Override(savedEco); CommanderCatalog.Override(savedCmd); }
     }

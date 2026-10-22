@@ -74,6 +74,7 @@ public sealed partial class CampaignMenu
         Screen? scr = parts[0] switch { "left" => Screen.Left, "center" => Screen.Center, "right" => Screen.Right, _ => null };
         if (scr is { } sc) SelectScreen(sc);
         if (parts.Length > 1 && int.TryParse(parts[1], out int n) && Enum.IsDefined(typeof(Tab), n)) SelectTab((Tab)n);
+        ApplyCommanderSubOverride();
     }
 
     // ---------------------------------------------------------------- 화면 띠 · 탭 열
