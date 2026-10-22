@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "set": "zhb1",
+  "houses": [
+    {"id": "zh-todam-01", "label": "토담 초가 4x3", "footprint": [4, 3], "seed": 121,
+     "wall": {"mat": "earth", "pattern": "rammed", "height": 7.4},
+     "base": {"height": 0.5, "mat": "stone"},
+     "roof": {"type": "gable_plain", "mat": "thatch", "alt_mat": "thatch_old", "rise": 4.8, "eave": 2.0, "ridge_mat": "thatch_old"},
+     "chimney": {"type": "box", "side": "B", "mat": "earth"},
+     "front": {"bays": ["slit", "arch", "slit", "slit"], "porch": "none"},
+     "addons": [{"type": "haystack", "x": 16}]},
+    {"id": "zh-todam-02", "label": "토담 낮은 편지붕 담 4x3", "footprint": [4, 3], "seed": 122,
+     "wall": {"mat": "earth_pale", "pattern": "rammed", "height": 7.0},
+     "base": {"height": 0.0, "mat": "stone"},
+     "roof": {"type": "shed", "mat": "thatch_old", "alt_mat": "mud_dark", "rise": 3.2, "eave": 1.6},
+     "chimney": {"type": "flue", "side": "R"},
+     "front": {"bays": ["arch", "lattice", "slit", "blank"], "porch": "none"},
+     "addons": [{"type": "yard_wall", "mat": "earth_pale", "height": 4.0, "cover": "thatch_old"}, {"type": "jars", "n": 3, "side": "L"}, {"type": "stakes", "n": 5}]},
+    {"id": "zh-todam-03", "label": "검은 토담 집 3x3", "footprint": [3, 3], "seed": 123,
+     "wall": {"mat": "mud_dark", "pattern": "rammed", "height": 7.2},
+     "base": {"height": 0.6, "mat": "stone"},
+     "roof": {"type": "gable_plain", "mat": "thatch_gold", "alt_mat": "thatch", "rise": 5.0, "eave": 2.0, "ridge_mat": "thatch"},
+     "chimney": {"type": "jar", "side": "L"},
+     "front": {"bays": ["slit", "plank", "lattice"], "porch": "none"},
+     "addons": [{"type": "firewood", "x": 14}, {"type": "hang", "n": 3, "mat": "clay"}]}
+  ]
+}
