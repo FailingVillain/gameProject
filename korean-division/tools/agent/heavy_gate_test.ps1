@@ -1,55 +1,62 @@
-# Unit test for heavy_gate.ps1 lane classification and gate decisions.
+# Unit + dry-run tests for heavy_gate.ps1 v2 (pools, waiters not counted, wait log). No real heavy processes needed.
 . "$PSScriptRoot\heavy_gate.ps1"
 $fail = 0
 function Ok($cond, $msg) { if (-not $cond) { "FAIL: $msg"; $script:fail++ } else { "ok: $msg" } }
-function C($v, $m, $r) { @{ validate = $v; measure = $m; render = $r } }
-Ok ((Get-HeavyLane 'KoreanDivision.exe' 'x --selftest') -eq 'validate') 'selftest=validate'
-Ok ((Get-HeavyLane 'KoreanDivision.exe' 'x --detcheck') -eq 'validate') 'detcheck=validate'
-Ok ((Get-HeavyLane 'KoreanDivision.exe' 'x --tactics-obs a') -eq 'measure') 'tactics-obs=measure'
-Ok ((Get-HeavyLane 'KoreanDivision.exe' 'x --bunch') -eq 'measure') 'bunch=measure'
-Ok ($null -eq (Get-HeavyLane 'KoreanDivision.exe' 'C:\a\dist\KoreanDivision.exe --stress')) 'dist excluded'
-Ok ((Get-HeavyLane 'dotnet.exe' 'dotnet build x.csproj') -eq 'validate') 'dotnet build=validate'
-Ok ((Get-HeavyLane 'dotnet.exe' 'dotnet KoreanDivision.dll --collide') -eq 'measure') 'dll collide=measure'
-Ok ((Get-HeavyLane 'python.exe' 'python make_unit.py') -eq 'render') 'make_unit=render'
-Ok ($null -eq (Get-HeavyLane 'python.exe' 'python rerender96.py')) 'rerender96 driver is not heavy (child make_unit is)'
-Ok ($null -eq (Get-HeavyLane 'python.exe' 'python other.py')) 'other python ignored'
-Ok (Test-GateOpen (C 3 3 1) 'render' 8 $false) 'render below limit passes when others full'
-Ok (-not (Test-GateOpen (C 3 3 2) 'validate' 8 $false)) 'total 8 blocks'
-Ok (Test-GateOpen (C 3 0 0) 'validate' 8 $false) 'validate borrows free slots'
-Ok (-not (Test-GateOpen (C 3 0 0) 'validate' 8 $false @('measure'))) 'borrower yields to waiting owner'
-Ok (Test-GateOpen (C 2 3 2) 'validate' 8 $false) 'validate below limit passes'
-Ok (-not (Test-GateOpen (C 3 3 2) 'validate' 8 $true) -eq $false) 'priority passes at 8 (limit+3)'
-Ok (-not (Test-GateOpen (C 4 4 3) 'validate' 8 $true)) 'priority blocked at 11'
-# RAM-dependent limit via KD_GATE_FREEGB_OVERRIDE
-Ok ((Get-GateLimit 5) -eq 10) 'limit 10 at 5 GB'
-Ok ((Get-GateLimit 7) -eq 12) 'limit 12 at 7 GB'
-Ok ((Get-GateLimit 6) -eq 12) 'limit 12 at exactly 6 GB'
-Ok ((Get-GateLimit 7 8) -eq 8) 'fixed -Max overrides'
-$env:KD_GATE_FREEGB_OVERRIDE = '7'; Ok ((Get-FreeGB) -eq 7) 'env override read'
-Ok (Test-GateOpen (C 3 3 2) 'validate' (Get-GateLimit (Get-FreeGB)) $false) 'open at total 8 with limit 12'
-$env:KD_GATE_FREEGB_OVERRIDE = '5'
-Ok (-not (Test-GateOpen (C 4 4 2) 'validate' (Get-GateLimit (Get-FreeGB)) $false)) 'blocked at total 10 with limit 10'
-Ok (Test-GateOpen (C 4 4 1) 'render' (Get-GateLimit (Get-FreeGB)) $false) 'render lane guarantee (below 2) passes at 9/10'
-# end-to-end script runs (status line + closed gate)
+function C($a, $b, $h) { @{ art = $a; build = $b; heavy = $h } }
+Ok ((Get-HeavyKind 'KoreanDivision.exe' 'x --selftest') -eq 'heavy') 'selftest=heavy'
+Ok ((Get-HeavyKind 'KoreanDivision.exe' 'x --stress') -eq 'heavy') 'stress=heavy'
+Ok ($null -eq (Get-HeavyKind 'KoreanDivision.exe' 'C:\a\dist\KoreanDivision.exe --stress')) 'dist excluded'
+Ok ((Get-HeavyKind 'dotnet.exe' 'dotnet build x.csproj') -eq 'build') 'dotnet build=build'
+Ok ((Get-HeavyKind 'dotnet.exe' 'dotnet C:\sdk\MSBuild.dll /nodemode:1') -eq 'child') 'msbuild node=child (RAM only)'
+Ok ((Get-HeavyKind 'dotnet.exe' 'dotnet KoreanDivision.dll --collide') -eq 'heavy') 'dll run=heavy'
+Ok ((Get-HeavyKind 'python.exe' 'python make_unit.py') -eq 'art') 'make_unit=art'
+Ok ($null -eq (Get-HeavyKind 'python.exe' 'python rerender96.py')) 'rerender96 driver not counted'
+Ok ($null -eq (Get-HeavyKind 'powershell.exe' 'powershell -File heavy_gate.ps1 -Render')) 'waiting gate script not counted'
+# pools
+Ok (Test-PoolOpen (C 8 0 0) 'build' 7 10 $false) 'art full does not block build'
+Ok (-not (Test-PoolOpen (C 8 0 0) 'art' 7 10 $false)) 'art at 8 closed'
+Ok (Test-PoolOpen (C 7 0 0) 'art' 7 12 $false) 'art 8th open at 7 GB free'
+Ok (-not (Test-PoolOpen (C 7 0 0) 'art' 5 12 $false)) 'art 8th closed below 6 GB free'
+Ok (Test-PoolOpen (C 6 0 0) 'art' 5 12 $false) 'art 7th open at 5 GB free'
+Ok (-not (Test-PoolOpen (C 7 2 0) 'art' 5 10 $false)) 'art cannot take last combined slot (9/10)'
+Ok (Test-PoolOpen (C 0 0 1) 'heavy' 7 10 $false) 'heavy 2nd open'
+Ok (-not (Test-PoolOpen (C 0 0 2) 'heavy' 7 10 $false)) 'heavy capped at 2 (build reserve)'
+Ok (Test-PoolOpen (C 0 0 2) 'build' 7 10 $false) 'build uses reserved slot'
+Ok (-not (Test-PoolOpen (C 0 1 2) 'build' 7 10 $false)) 'non-art pool 3 full'
+Ok (-not (Test-PoolOpen (C 0 2 0) 'heavy' 7 10 $false) -eq $false) 'heavy open with 2 builds, 0 heavy'
+Ok (Test-PoolOpen (C 0 0 3) 'build' 7 10 $true) 'priority build passes at 3'
+Ok (Test-PoolOpen (C 0 0 2) 'heavy' 7 10 $true) 'priority heavy ignores reserve'
+Ok (-not (Test-PoolOpen (C 0 0 0) 'build' 2.5 10 $false)) 'free < 3 GB closes'
+Ok ((Get-GateLimit 5) -eq 10 -and (Get-GateLimit 6) -eq 12 -and (Get-GateLimit 7 8) -eq 8) 'combined limit 10/12/fixed'
+Ok (-not (Test-BudgetOk 15 14) -and (Test-BudgetOk 14 14)) 'heavy RAM budget 14'
+# fake process list: waiters hold no slot
+$w = (1..6 | ForEach-Object { "$($_ + 100)|powershell.exe|powershell -File heavy_gate.ps1 -Render" }) -join ';'
+$env:KD_GATE_FAKEPROCS = $w + ';200|python.exe|python rerender96.py;201|python.exe|python make_unit.py'
+$c = Get-HeavyCounts
+Ok ($c.art -eq 1 -and $c.build -eq 0 -and $c.heavy -eq 0) "6 waiters + driver not counted, 1 real render: art=$($c.art)"
+# end-to-end dry runs
 $gate = "$PSScriptRoot\heavy_gate.ps1"
-$env:KD_GATE_FREEGB_OVERRIDE = '5'; $o = (& powershell -NoProfile -ExecutionPolicy Bypass -File $gate -TimeoutMin 1 | Out-String)
-Ok ($o -match 'gate open: heavy=\d+/limit 10 free=5(\.0)? GB') "status 5GB: $($o.Trim())"
-$env:KD_GATE_FREEGB_OVERRIDE = '7'; $o = (& powershell -NoProfile -ExecutionPolicy Bypass -File $gate -TimeoutMin 1 | Out-String)
-Ok ($o -match 'gate open: heavy=\d+/limit 12 free=7(\.0)? GB') "status 7GB: $($o.Trim())"
-$env:KD_GATE_FREEGB_OVERRIDE = '2.5'; $o = (& powershell -NoProfile -ExecutionPolicy Bypass -File $gate -TimeoutMin 0 | Out-String)
-Ok ($o -match 'gate timeout: free RAM 2.5 GB') "closed at 2.5GB: $($o.Trim())"
-# memory budget (default 14 GB, env KD_GATE_BUDGET_GB / -BudgetGB)
-Ok ((Get-BudgetGB) -eq 14) 'budget default 14 GB'
-Ok ((Get-BudgetGB 20) -eq 20) 'fixed budget overrides'
-Ok (-not (Test-BudgetOk 15 14)) 'budget: 15 GB heavy RAM closes'
-Ok (Test-BudgetOk 13 14) 'budget: 13 GB heavy RAM open'
-Ok (Test-BudgetOk 14 14) 'budget: exactly 14 GB open'
-$env:KD_GATE_FREEGB_OVERRIDE = '7'; $env:KD_GATE_HEAVYRAM_OVERRIDE = '15'
-$o = (& powershell -NoProfile -ExecutionPolicy Bypass -File $gate -TimeoutMin 0 | Out-String)
-Ok ($o -match 'gate timeout: .*heavyRAM=15 GB') "heavy RAM 15GB closed: $($o.Trim())"
-$env:KD_GATE_HEAVYRAM_OVERRIDE = '13'
-$o = (& powershell -NoProfile -ExecutionPolicy Bypass -File $gate -TimeoutMin 1 | Out-String)
-Ok ($o -match 'gate open: heavy=\d+/limit 12 free=7(\.0)? GB heavyRAM=13(\.0)? GB') "heavy RAM 13GB open: $($o.Trim())"
-Remove-Item Env:KD_GATE_HEAVYRAM_OVERRIDE
-Remove-Item Env:KD_GATE_FREEGB_OVERRIDE
+$env:KD_GATE_FREEGB_OVERRIDE = '7'
+$o = (& powershell -NoProfile -ExecutionPolicy Bypass -File $gate -DryRun -Build | Out-String)
+Ok ($o -match 'DRYRUN gate open: kind=build art=1') "dryrun build open with waiters: $($o.Trim())"
+$env:KD_GATE_FAKEPROCS = (1..8 | ForEach-Object { "$($_ + 300)|python.exe|python make_unit.py" }) -join ';'
+$o = (& powershell -NoProfile -ExecutionPolicy Bypass -File $gate -DryRun -Render | Out-String)
+Ok ($o -match 'DRYRUN gate closed: kind=art art=8' -and $o -match 'art:301:python.exe') 'dryrun art full closed, occupants listed'
+$o = (& powershell -NoProfile -ExecutionPolicy Bypass -File $gate -DryRun -Build | Out-String)
+Ok ($o -match 'DRYRUN gate open: kind=build art=8') 'dryrun build still open while art pool full'
+$env:KD_GATE_FAKEPROCS = '401|KoreanDivision.exe|x --selftest;402|KoreanDivision.exe|x --stress;403|dotnet.exe|dotnet build a'
+$o = (& powershell -NoProfile -ExecutionPolicy Bypass -File $gate -DryRun | Out-String)
+Ok ($o -match 'DRYRUN gate closed: kind=heavy art=0 build=1 heavy=2' -and $o -match 'heavy:402:KoreanDivision.exe') 'dryrun heavy closed (pool 3 full)'
+# wait log + stdout occupancy (about 4 s of real waiting)
+$log = Join-Path $env:TEMP "kd-gate-test-$PID.log"; $env:KD_GATE_LOG = $log
+$o = (& powershell -NoProfile -ExecutionPolicy Bypass -File $gate -TimeoutSec 3 -PollSec 1 -ShowAfterSec 1 | Out-String)
+$lg = Get-Content $log -Raw
+Ok ($o -match 'gate timeout' -and $o -match 'build:403:dotnet.exe') "timeout prints occupants: $($o.Trim())"
+Ok ($o -match 'gate waiting') 'waiting occupancy printed to stdout'
+Ok ($lg -match 'WAIT_START' -and $lg -match 'TIMEOUT' -and $lg -match 'pid=\d+' -and $lg -match 'build:403:dotnet.exe') 'wait log has start, timeout, occupants'
+Remove-Item $log -ErrorAction SilentlyContinue
+$env:KD_GATE_FREEGB_OVERRIDE = '2.5'; $env:KD_GATE_FAKEPROCS = ''
+$o = (& powershell -NoProfile -ExecutionPolicy Bypass -File $gate -DryRun -Build | Out-String)
+Ok ($o -match 'DRYRUN gate closed: .*free=2.5') 'dryrun closed at 2.5 GB free'
+Remove-Item Env:KD_GATE_FAKEPROCS, Env:KD_GATE_FREEGB_OVERRIDE, Env:KD_GATE_LOG -ErrorAction SilentlyContinue
 if ($fail) { "FAILED $fail"; exit 1 } else { 'ALL PASS' }
