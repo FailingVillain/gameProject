@@ -31,3 +31,4 @@ Lock .git/kd-merge.lock released on stop.
 - B10 kd/t10-comms-b 1c91c96 -> 578ef29 (Snapshot.cs/Replay.cs from rehearsal be04a5b; ENGINE_NOTES union; ops ours). FV 57/22. detcheck b7c3761c573cad25 unchanged. fieldops/replay/snapshot/savecompat/crossing PASS, snaptest 0 FAIL, uiicons 1 expected FAIL.
 - B11 kd/t10b-difficulty 4d74ce9 -> 60be399 (clean). FV 57/22, detcheck b7c3761c unchanged. comms/fieldops/snapshot/crossing PASS, snaptest 0 FAIL, uiicons expected FAIL.
 - B12 kd/t16-trench 2cb118c -> c907fa5 (ops/QUEUE ours). FV 57/22, detcheck b7c3761c unchanged. missions/n32/snapshot/crossing PASS, snaptest 0 FAIL.
+- B13a kd/t32a-pioneer 26cc9fd -> 6f2d146 (ENGINE_NOTES + SelfTest.cs registration lines union). FV 57/22, detcheck b7c3761c unchanged. pioneer/units/ai3b/tactical/combat4/missions/snapshot/crossing PASS, snaptest 0 FAIL.
