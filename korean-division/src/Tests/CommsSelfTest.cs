@@ -31,6 +31,7 @@ public static class CommsSelfTest
             TestRoundTrip();
             TestReplay(opt);
             TestCaptureCut();
+            TestAiIgnoresCouriers();
             TestRangeClamp();
             TestBrokenJson();
         }
@@ -70,8 +71,8 @@ public static class CommsSelfTest
         check(d.Default == "easy" && d.IsKnown("easy") && d.IsKnown("Normal") && d.IsKnown("hard") && !d.IsKnown("insane"), $"difficulty.json: 기본 {d.Default} · 난이도 {string.Join("/", d.Levels.Keys)}");
         check(e.WireMinSec == 1 && e.WireMaxSec == 3 && e.CourierMinSec == 10 && e.CourierMaxSec == 20 && !e.WireCut && nm.WireCut && h.WireCut,
             $"통신 규칙: 유선 {e.WireMinSec}~{e.WireMaxSec}초 · 전령 {e.CourierMinSec}~{e.CourierMaxSec}초 · 쉬움 유선 안 끊김 ({e.WireCut}/{nm.WireCut}/{h.WireCut})");
-        check(!e.CourierCapture && nm.CourierCapture && h.CourierCapture && !d.CommsRules.Enabled,
-            $"D15 A: 쉬움 전령 사로잡힘 끔 ({e.CourierCapture}/{nm.CourierCapture}/{h.CourierCapture}) · commsRules 기본 끔 ({d.CommsRules.Enabled})");
+        check(e.CourierCapture && nm.CourierCapture && h.CourierCapture && !d.CommsRules.Enabled,
+            $"D15: 전 난이도 전령 사로잡힘 가능 ({e.CourierCapture}/{nm.CourierCapture}/{h.CourierCapture}) · commsRules 기본 끔 ({d.CommsRules.Enabled})");
         bool ai1 = d.Levels.Values.All(l => l.Ai.AccuracyMul == 1f && l.Ai.AmmoMul == 1f && l.Ai.ReinforceMul == 1f);
         check(ai1, "AI 배수 (정확도 · 탄약 · 증원) 모두 1.0 — 값은 사용자 승인 뒤");
         var w = Bare();
@@ -190,8 +191,8 @@ public static class CommsSelfTest
             var offC = Run("normal", CommsVia.Courier, false); var offW = Run("normal", CommsVia.Wire, false);
             check(offC.St == DispatchState.Delivered && offW.St == DispatchState.Delivered, $"commsRules 꺼짐 (기본) = 기존 동작: 보통 전령 {offC.St} · 유선 {offW.St}");
             var nC = Run("normal", CommsVia.Courier, true); var hC = Run("hard", CommsVia.Courier, true); var eC = Run("easy", CommsVia.Courier, true);
-            check(nC == (DispatchState.Lost, DispatchLoss.CourierCaptured) && hC == (DispatchState.Lost, DispatchLoss.CourierCaptured) && eC.St == DispatchState.Delivered,
-                $"전령 사로잡힘 (켜짐): 보통 {nC.Loss} · 어려움 {hC.Loss} · 쉬움 courierCapture=false {eC.St}");
+            check(nC == (DispatchState.Lost, DispatchLoss.CourierCaptured) && hC == (DispatchState.Lost, DispatchLoss.CourierCaptured) && eC == (DispatchState.Lost, DispatchLoss.CourierCaptured),
+                $"전령 사로잡힘 (켜짐, D15 쉬움 포함): 보통 {nC.Loss} · 어려움 {hC.Loss} · 쉬움 {eC.Loss}");
             var nW = Run("normal", CommsVia.Wire, true); var eW = Run("easy", CommsVia.Wire, true);
             check(nW == (DispatchState.Lost, DispatchLoss.WireCut) && eW.St == DispatchState.Delivered, $"유선 끊김 (켜짐, 발송 시점 적 접촉): 보통 {nW.Loss} · 쉬움 wireCut=false {eW.St}");
             // 저장 · 이어 돌리기: 전달 중에 저장 → 불러온 월드도 같은 틱에 사로잡힘 (숨은 상태 없음)
@@ -209,6 +210,22 @@ public static class CommsSelfTest
                 $"사로잡힘 판정 저장 왕복: 이어 돌려도 같음 ({dx?.State}/{dx?.Loss} 틱 {dx?.EndTick} vs {dy?.State} 틱 {dy?.EndTick})");
         }
         finally { dd.CommsRules = saved; }
+    }
+
+    /// <summary>D15: AI 는 전령을 찾아 사냥하지 않는다 — src/AI 소스에 전령 · 발송 (Courier · Dispatch · CommsVia) 참조가 없어야 한다 (AI 표적 · 과제 선택이 전령을 모른다). 소스 폴더를 못 찾으면 건너뜀.</summary>
+    static void TestAiIgnoresCouriers()
+    {
+        string? dir = null;
+        for (var d = new System.IO.DirectoryInfo(AppContext.BaseDirectory); d != null && dir == null; d = d.Parent)
+            if (System.IO.Directory.Exists(System.IO.Path.Combine(d.FullName, "src", "AI"))) dir = System.IO.Path.Combine(d.FullName, "src", "AI");
+        if (dir == null) { check(true, "D15 AI 전령 비참조: src/AI 를 못 찾아 건너뜀"); return; }
+        var hits = new List<string>();
+        foreach (var f in System.IO.Directory.EnumerateFiles(dir, "*.cs", System.IO.SearchOption.AllDirectories))
+        {
+            var t = System.IO.File.ReadAllText(f);
+            foreach (var k in new[] { "Courier", "Dispatch", "CommsVia" }) if (t.Contains(k, StringComparison.OrdinalIgnoreCase)) hits.Add(System.IO.Path.GetFileName(f) + ":" + k);
+        }
+        check(hits.Count == 0, $"D15: AI (src/AI) 는 전령 · 발송을 참조하지 않음 — 전령 사냥 없음 ({(hits.Count == 0 ? "0" : string.Join(",", hits))})");
     }
 
     static void TestRangeClamp()

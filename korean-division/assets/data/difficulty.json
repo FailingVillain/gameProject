@@ -2,13 +2,13 @@
   // 난이도 구조 (사용자 2026-10-22 승인, docs/COMMS_ALPHA_PLAN.md). 미션 · 캠페인은 키 (easy|normal|hard) 만 받는다.
   // comms: 통신 현실성 (사용자 2026-10-21 확정 — 유선 1~3초 · 전령 통상 10~20초 · 쉬움 = 유선 안 끊김).
   // ai: AI 정확도 · 탄약 · 증원 배수 — 값은 사용자 승인 뒤 (지금은 모두 1.0 = 현재 동작).
-  // D15 A (사용자 2026-10-22): 쉬움 = 전령 사로잡힘 끔 · 보통 = AI 배수 1.0 · 어려움 = 후보만 (tasks/T10-comms-b.md), 확정 전 1.0 유지.
+  // D15 (사용자 2026-10-22, A 를 대체): 전령은 모든 난이도 (쉬움 포함) 에서 사로잡힐 수 있다 — 단 AI 는 전령을 찾아 사냥하지 않는다. 보통 = AI 배수 1.0 · 어려움 = 후보만 (tasks/T10-comms-b.md), 확정 전 1.0 유지.
   "default": "easy",
   // T10b 전령 사로잡힘 · 유선 끊김 판정 (초안, 사용자 승인 전 — 기본 끔 = 기존 동작). 켜면 난이도별 courierCapture · wireCut 이 실제로 쓰인다. 규칙 = src/Core/Difficulty.cs CommsRulesDef.
   "commsRules": { "enabled": false, "captureRadius": 8, "captureChance": 0.25, "checkSec": 1, "cutRadius": 15, "cutChance": 0.5 },
   "levels": {
     "easy": {
-      "comms": { "wireMinSec": 1, "wireMaxSec": 3, "courierMinSec": 10, "courierMaxSec": 20, "wireCut": false, "courierCapture": false, "keepSec": 10 },
+      "comms": { "wireMinSec": 1, "wireMaxSec": 3, "courierMinSec": 10, "courierMaxSec": 20, "wireCut": false, "courierCapture": true, "keepSec": 10 },
       "ai": { "accuracyMul": 1.0, "ammoMul": 1.0, "reinforceMul": 1.0 }
     },
     "normal": {

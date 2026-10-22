@@ -4,7 +4,8 @@
 - 만질 파일: Comms.cs · Difficulty.cs · difficulty.json · CommsSelfTest.cs (핫스팟 Snapshot/SelfTest/Defs/Combat/Replay 안 건드림)
 - 브랜치: `kd/t10b-difficulty` (kd/t10-comms-b 위 스택) | 상태: wip-ready (리뷰 수정 커밋 추가) | 담당 에이전트: sim (Opus)
 ## 확정 결정 (사용자 원문+날짜, 변경 금지)
-- D15 A (2026-10-22): 쉬움 전령 사로잡힘 끔 · 보통 AI 1.0 · 어려움 후보는 카드에서, 보류. ops/DECISIONS Q1 → T10b 발주.
+- D15 (사용자 2026-10-22, 아래 'D15 A' 를 대체 — 최신): "쉬움에서도 전령은 사로잡히지만, AI가 전령을 찾으려 하지 않는다" = easy 포함 전 난이도 courierCapture=true, AI 는 전령 사냥 안 함 (src/AI 에 전령 참조 0 — 셀프테스트가 지킴).
+- (대체됨) D15 A (2026-10-22): 쉬움 전령 사로잡힘 끔 · 보통 AI 1.0 · 어려움 후보는 카드에서, 보류. ops/DECISIONS Q1 → T10b 발주.
 ## 조사 결과: 난이도는 리플레이 · 스냅샷 안전
 - `World.difficulty` = `[SnapExt]` + `WriteComms` 저장 + `HashComms` 체크섬 (기본 easy 면 생략), 리플레이 머리말 `Difficulty` (Replay.cs:135 틱 0 전 적용, 스냅샷 시작이면 스냅샷 값). → 시뮬이 `DiffLevel` 을 결정적으로 읽어도 됨. 규칙 수치 (difficulty.json) 는 balance.json 과 같은 데이터 파일 취급.
 ## 구현 (소비처)
@@ -25,3 +26,5 @@
 - `DifficultyDefs.Parse` (Load 공용): JSON 파싱 실패 = 기본값 + 경고 (`Warnings` · stderr `[난이도 경고]`, 던지지 않음). commsRules 범위: captureRadius · cutRadius 1~50, captureChance · cutChance 0~1, checkSec >=1, NaN = 기본값 (범위 밖 = 경계로 고정 + 경고). 정상 파일 = 경고 0, 값 불변.
 - 테스트 +2 (CommsSelfTest): 범위 밖 값 고정 (경고 5) · 깨진 JSON = 경고 1 + 기본값 꺼짐. comms PASS · fieldops · savecompat PASS · detcheck GOLDEN match.
 - 상태: wip-ready (병합 잠금 안 잡음).
+## D15 대체 반영 (2026-10-22)
+- difficulty.json easy courierCapture=true. commsRules 기본 끔 그대로 → 골든 불변 (detcheck GOLDEN 19501757040f0d62). 테스트: comms 'easy: 캡처 끔' 단언 → 전 난이도 캡처, 쉬움 켜짐 시 CourierCaptured. 새 테스트 TestAiIgnoresCouriers (src/AI 소스에 Courier/Dispatch/CommsVia 0건). AI 전령 사냥 코드는 원래 없음 → 데이터 키 불필요.
