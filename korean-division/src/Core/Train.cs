@@ -27,10 +27,12 @@ public sealed class TrainRulesDef
     public float Lookahead { get; set; } = 5f;
     /// <summary>선로 위 유닛 판정 반경 (칸, 선로 중심선에서).</summary>
     public float BlockRadius { get; set; } = 0.7f;
-    /// <summary>객차 종류. 1차(T30a)는 이름 · HP · 장갑만 (무기 = T30b).</summary>
+    /// <summary>객차 종류 (T30a 이름 · HP · 장갑, T30b 무기 · 병과 · 기관차 표시). 기본값 = balance.json 과 같게.</summary>
     public Dictionary<string, TrainCarDef> Cars { get; set; } = new()
     {
-        ["locomotive"] = new() { Name = "기관차", Hp = 400, Armor = "heavy" },
+        ["locomotive"] = new() { Name = "기관차", Hp = 400, Armor = "heavy", Engine = true, Sight = 24 },
+        ["guncar"] = new() { Name = "포차", Hp = 300, Armor = "heavy", Weapons = new() { "gun_field" }, Sight = 24 },
+        ["mgcar"] = new() { Name = "기관총차", Hp = 300, Armor = "heavy", Weapons = new() { "hmg", "hmg" }, Sight = 24 },
         ["wagon"] = new() { Name = "화차", Hp = 200, Armor = "basic" },
     };
 
@@ -49,6 +51,22 @@ public sealed class TrainCarDef
     /// <summary>balance.json armors 키.</summary>
     public string Armor { get; set; } = "basic";
     public int Sight { get; set; } = 6;
+    /// <summary>T30b: 무기 (balance.json weapons 키, 한 항목 = 한 문/정). 포차 = 기존 야전포 gun_field, 기관총차 = 기존 중기관총 hmg. 탄약 무제한 · 사계 360°.</summary>
+    public List<string> Weapons { get; set; } = new();
+    /// <summary>T30b: 무기 bonus 판정 병과 — 장갑차(tank_armored_car)와 같은 "armored" (소총 · 기관총 면역, 대전차소총 ×3.5, 근접 불가).</summary>
+    public string Category { get; set; } = "armored";
+    /// <summary>T30b: 기관차. 열차의 기관차가 모두 파괴되면 열차 전체가 멈춘다 (Q-B1). 다른 객차 파괴는 잔해로 남아 끌려간다 (분리 없음).</summary>
+    public bool Engine { get; set; }
+}
+
+/// <summary>객차 무기 한 문/정 (T30b). 표적은 Id (객차 · 유닛 · 건물 — World.Find), 냉각 · 조준은 틱.</summary>
+public sealed class TrainGun
+{
+    public readonly WeaponDef W;
+    public int TargetId;
+    public int Cooldown;
+    public int AimLeft;
+    public TrainGun(WeaponDef w) { W = w; }
 }
 
 /// <summary>미션 json "trains" 한 줄. path = 경유점 칸 [[x, y], ...] (모두 rail 칸, 사이는 선로 칸을 따라 BFS), waits = 경유점마다 정차 초.</summary>
@@ -180,25 +198,30 @@ public sealed class TrainTrack
     }
 }
 
-/// <summary>객차 하나. 위치 · 방향은 열차 호장에서 매 틱 다시 계산 (저장 안 함).</summary>
+/// <summary>객차 하나. 위치 · 방향은 열차 호장에서 매 틱 다시 계산 (저장 안 함).
+/// T30b: HP 0 = 잔해 (Alive false — 표적 · 시야 · 사격에서 빠지고, 열차 목록에 남아 선로 위 제자리 / 끌려감; 그림 = T30d train-wreck).</summary>
 public sealed class TrainCar : Entity
 {
+    public const float HalfLen = 0.6f;       // 사거리 판정 반경 (EdgeDistance)
     public readonly string Kind;
     public readonly TrainCarDef Def;
     public readonly int Index;               // 0 = 선두
+    public readonly TrainGun[] Guns;         // T30b 무기 (Def.Weapons 순서)
     public Vector2 Dir;                      // 진행 방향 (선로 접선, 렌더용)
 
-    public TrainCar(int id, int owner, string kind, TrainCarDef def, int index) : base(id, owner, Vector2.Zero)
+    public TrainCar(int id, int owner, string kind, TrainCarDef def, int index, WeaponDef[] weapons) : base(id, owner, Vector2.Zero)
     {
         Kind = kind; Def = def; Index = index; Hp = def.Hp;
+        Guns = weapons.Select(w => new TrainGun(w)).ToArray();
     }
 
+    public bool Wreck => !Alive;
     public override string Name => Def.Name;
     public override float MaxHp => Def.Hp;
     public override float ArmorValue => Defs.Current.Armor(Def.Armor)?.Armor ?? 0;
     public override int Sight => Def.Sight;
     public override bool Indestructible => false;
-    public override float EdgeDistance(Vector2 p) => MathF.Max(0f, Vector2.Distance(p, Pos) - 0.6f);
+    public override float EdgeDistance(Vector2 p) => MathF.Max(0f, Vector2.Distance(p, Pos) - HalfLen);
 }
 
 /// <summary>열차 한 대 (저장 · 체크섬 · Audit).</summary>
@@ -226,6 +249,17 @@ public sealed class Train
     }
 
     public long TailOffset(TrainRulesDef r) => (Cars.Count - 1) * r.Pitch;
+
+    /// <summary>T30b Q-B1: 기관차(Def.Engine)가 있었고 모두 파괴됨 → 열차 전체 정지 (제동 후 움직이지 않음, 명령 무시). HP 에서 파생 — 저장 필드 없음.</summary>
+    public bool Stalled
+    {
+        get
+        {
+            bool any = false;
+            foreach (var c in Cars) if (c.Def.Engine) { if (c.Alive) return false; any = true; }
+            return any;
+        }
+    }
     long SMin(TrainRulesDef r) => Track.Loop ? long.MinValue : TailOffset(r);
     long SMax => Track.Loop ? long.MaxValue : Track.Length;
     /// <summary>경유점 k 에 선두를 둘 호장 (선로 끝에서는 열차 전체가 선로 안에 있게 당김).</summary>
@@ -249,7 +283,8 @@ public sealed class Train
         int want = 0;
         long dist = long.MaxValue;   // 원하는 방향으로 멈춰야 할 지점까지
         bool targetStop = false;
-        if (Manual)
+        if (Stalled) { }   // T30b: 기관차 파괴 → want 0 (제동만)
+        else if (Manual)
         {
             want = Math.Sign(ManualDir);
             if (!Track.Loop) dist = want > 0 ? SMax - S : want < 0 ? S - SMin(r) : 0;
@@ -349,7 +384,15 @@ public sealed partial class World
         var waits = new int[n];
         for (int i = 0; i < n; i++) waits[i] = spec.Waits != null && i < spec.Waits.Length ? (int)MathF.Round(spec.Waits[i] * TrainRulesDef.TicksPerSecond) : 0;
         var t = new Train(nextId++, spec.Faction, spec.Tag, track, waits);
-        for (int i = 0; i < spec.Cars.Count; i++) t.Cars.Add(new TrainCar(nextId++, spec.Faction, spec.Cars[i], r.Cars[spec.Cars[i]], i));
+        for (int i = 0; i < spec.Cars.Count; i++)
+        {
+            var def = r.Cars[spec.Cars[i]];
+            if (def == null || def.Weapons == null || def.Weapons.Count > 2 || !(def.Hp > 0) || float.IsInfinity(def.Hp) || Defs.Armor(def.Armor) == null || def.Sight < 0)
+                throw new InvalidDataException($"열차 객차 정의 '{spec.Cars[i]}' 잘못됨 (hp > 0, armor = armors 키, weapons 0~2개, sight ≥ 0)");
+            var ws = def.Weapons.Select(k => Defs.Weapon(k) ?? throw new InvalidDataException($"열차 객차 '{spec.Cars[i]}' 무기 '{k}' 없음 (balance.json weapons)")).ToArray();
+            t.Cars.Add(new TrainCar(nextId++, spec.Faction, spec.Cars[i], def, i, ws));
+        }
+        trainMask |= 1u << (spec.Faction & 31);
         if (!track.Loop && track.Length < t.TailOffset(r)) throw new InvalidDataException($"열차 경로가 열차보다 짧음 ({track.Length / (float)TrainTrack.Unit:0.0}칸)");
         if (track.Loop && track.Length < t.Cars.Count * r.Pitch) throw new InvalidDataException($"열차 순환선이 열차보다 짧음 ({track.Length / (float)TrainTrack.Unit:0.0}칸)");
         t.S = t.StopArc(spec.Start, r);
@@ -392,7 +435,105 @@ public sealed partial class World
             t.Step(r, Tick, TrackBlocked);
             t.PlaceCars(r);
         }
+        foreach (var t in Trains)   // T30b 객차 무기 (이동 뒤 — 이번 틱 위치에서 쏜다)
+            foreach (var c in t.Cars)
+                if (c.Alive)
+                    for (int k = 0; k < c.Guns.Length; k++) StepTrainGun(c, k, c.Guns[k]);
     }
+
+    // ============================================================ T30b 무기 · 피해 (FormatVersion 59)
+    // 객차는 Units 밖이라 전술 AI · 군집에는 안 끼고, 전투 경로만 공유: FindTarget (표적 후보) · Fire (사격 1회 — 직사포 = FireGun 포탄, 중기관총 = FireSpray)
+    // · Damage (장갑 감소 · 최소 1) · Explode (포탄 폭발 반경) · Find (Id → 객차 대비). 병과 = TrainCarDef.Category (기본 "armored" = 장갑차 규칙).
+
+    uint trainMask;   // 열차 객차 소유 세력 비트 (FindTarget 의 '적이 없으면 바로 끝' 판정)
+
+    /// <summary>무기 bonus 판정 병과: 유닛 = Def.Category, 객차 = TrainCarDef.Category, 건물 = null (bonus 1).</summary>
+    internal static string? CategoryOf(Entity e) => e is Unit u ? u.Def.Category : e is TrainCar c ? c.Def.Category : null;
+
+    /// <summary>사격자 가장자리 반경 (유닛 = Radius, 객차 = HalfLen, 건물 0).</summary>
+    internal static float ShooterRadius(Entity e) => e is Unit u ? u.Radius : e is TrainCar ? TrainCar.HalfLen : 0f;
+
+    /// <summary>Id 로 살아 있는 객차 (World.Find 대비 — 열차 없으면 바로 null).</summary>
+    internal TrainCar? FindCar(int id, bool deadOk = false)
+    {
+        if (Trains.Count == 0) return null;
+        foreach (var t in Trains) foreach (var c in t.Cars) if (c.Id == id) return c.Alive || deadOk ? c : null;
+        return null;
+    }
+
+    bool TrainGunTargetOk(TrainCar c, Entity t, WeaponDef w)
+    {
+        if (!t.Alive || t.Indestructible || t is Unit { Surrendered: true } || !IsHostile(c.Owner, t.Owner)) return false;
+        if (!w.CanDamage(CategoryOf(t)) || !Fog.CanSee(c.Owner, t)) return false;
+        float d = t.EdgeDistance(c.Pos) - TrainCar.HalfLen;
+        return d <= w.Range && d >= w.MinRange;
+    }
+
+    /// <summary>객차 무기 한 틱: 표적 유지 검사 → (없으면 AcquireInterval 주기로) FindTarget → 조준 틱 → 냉각 끝나면 사선 확인 후 Fire.</summary>
+    void StepTrainGun(TrainCar c, int k, TrainGun g)
+    {
+        var w = g.W;
+        if (g.Cooldown > 0) g.Cooldown--;
+        Entity? tgt = g.TargetId != 0 ? Find(g.TargetId) : null;
+        if (tgt != null && !TrainGunTargetOk(c, tgt, w)) tgt = null;
+        if (tgt == null && (Tick + c.Id + k * 7) % Math.Max(1, Defs.CombatRules.AcquireInterval) == 0)
+        {
+            tgt = FindTarget(c.Owner, c.Pos, w.Range + TrainCar.HalfLen, w.MinRange, w.Los ? c : null, c.Id, 0f, w);
+            if (tgt != null && !TrainGunTargetOk(c, tgt, w)) tgt = null;
+        }
+        int id = tgt?.Id ?? 0;
+        if (id != g.TargetId) { g.TargetId = id; g.AimLeft = id != 0 ? w.AimTicks : 0; }
+        if (tgt == null) return;
+        if (g.AimLeft > 0) { g.AimLeft--; return; }
+        if (g.Cooldown > 0) return;
+        if (!HasFiringLine(c, tgt, w)) { g.TargetId = 0; g.AimLeft = 0; return; }
+        float sec = w.RandomCooldown ? w.CooldownMin + (w.CooldownMax - w.CooldownMin) * Roll(c.Id, 0x7A11 + k) : w.Cooldown;
+        g.Cooldown = Math.Max(1, (int)MathF.Round(sec / Config.SimDt));
+        Fire(c, c.Pos, tgt, w, MathF.Max(0, tgt.EdgeDistance(c.Pos) - TrainCar.HalfLen));
+    }
+
+    /// <summary>FindTarget 의 객차 후보 (유닛 뒤 · 건물 앞). 점수 = 거리 (무장 객차) / +100 (비무장) — 유닛 규칙과 같게, PreferCategory −1000.</summary>
+    void FindTrainTarget(int faction, Vector2 pos, float radius, float minRange, Entity? losFrom, WeaponDef? weapon, Unit? arcFrom, bool spotterOnly, Unit? fpl, ref Entity? best, ref float bestScore)
+    {
+        foreach (var t in Trains)
+        {
+            if (!IsHostile(faction, t.Owner)) continue;
+            foreach (var c in t.Cars)
+            {
+                if (!c.Alive) continue;
+                float d = c.EdgeDistance(pos);
+                if (d > radius || d < minRange) continue;
+                if (weapon != null && !weapon.CanDamage(c.Def.Category)) continue;
+                if (fpl != null && !OnFinalLine(fpl, c.Pos)) continue;
+                float score = d + (c.Guns.Length > 0 ? 0 : 100);
+                if (arcFrom != null) { float sh = TraverseShiftTo(arcFrom, c.Pos); if (sh > 0) { if (sh >= RedeployRad) continue; score += 5000 + sh; } }
+                if (weapon?.PreferCategory != null && c.Def.Category == weapon.PreferCategory) score -= 1000;
+                if (score >= bestScore) continue;
+                if (!Fog.CanSee(faction, c)) continue;
+                if (spotterOnly && !SeenBySpotter(faction, c)) continue;
+                if (losFrom != null && !Map.HasFiringLine(losFrom.Pos, c.Pos, losFrom.Id, c.Id)) continue;
+                (best, bestScore) = (c, score);
+            }
+        }
+    }
+
+    /// <summary>포탄 폭발 반경 안 객차 (Explode 뒤): 건물 규칙과 같게 자기 세력 제외 · 적대 또는 지정 표적, 피해 × 병과 bonus.</summary>
+    internal void SplashTrains(int owner, Vector2 impact, int targetId, WeaponDef w, Entity? shooter)
+    {
+        if (Trains.Count == 0) return;
+        foreach (var t in Trains)
+            foreach (var c in t.Cars)
+            {
+                if (!c.Alive || c.Owner == owner) continue;
+                if (c.Id != targetId && !IsHostile(owner, c.Owner)) continue;
+                float d = c.EdgeDistance(impact);
+                if (d > w.Splash) continue;
+                Damage(c, w.Damage * SplashFactor(w, d) * w.BonusAgainst(c.Def.Category), shooter, w.Key);
+            }
+    }
+
+    /// <summary>시야 (FogOfWar.Run): 살아 있는 객차 = 시야 Def.Sight × 날씨.</summary>
+    internal int TrainCarSight(TrainCar c) => WeatherSight(c.Def.Sight, WeatherSightMul);
 
     /// <summary>열차 앞쪽 (진행 부호 sgn) 선로 위에 살아 있는 유닛이 있는가. 선두(후진이면 꼬리) 객차 끝에서 Lookahead 까지 0.5칸 간격으로 본다.</summary>
     bool TrackBlocked(Train t, int sgn)
@@ -435,7 +576,12 @@ public sealed partial class World
             w.I(k.Waypoints.Length);
             for (int i = 0; i < k.Waypoints.Length; i++) { w.I(k.Waypoints[i]); w.I(t.WaitTicks[i]); }
             w.I(t.Cars.Count);
-            foreach (var c in t.Cars) { w.I(c.Id); w.Str(c.Kind); w.I(c.Owner); w.F(c.Hp); w.L(c.LastDamagedTick); }
+            foreach (var c in t.Cars)
+            {
+                w.I(c.Id); w.Str(c.Kind); w.I(c.Owner); w.F(c.Hp); w.L(c.LastDamagedTick);
+                w.I(c.Guns.Length);   // T30b 무기 (FV59)
+                foreach (var g in c.Guns) { w.Str(g.W.Key); w.I(g.TargetId); w.I(g.Cooldown); w.I(g.AimLeft); }
+            }
             w.L(t.S); w.I(t.V); w.Bool(t.Manual); w.I(t.ManualDir); w.I(t.Next); w.I(t.ScriptDir); w.I(t.WaitLeft); w.Bool(t.Blocked);
         }
     }
@@ -444,6 +590,7 @@ public sealed partial class World
     {
         var rules = TrainRules;
         Trains.Clear();
+        trainMask = 0;
         int n = r.Count(20);
         for (int ti = 0; ti < n; ti++)
         {
@@ -464,8 +611,21 @@ public sealed partial class World
                 int cid = r.I();
                 string kind = r.Str() ?? "";
                 if (!rules.Cars.TryGetValue(kind, out var def)) throw new SnapshotException(string.Format(SnapMsg.Invalid, "train car " + kind));
-                var c = new TrainCar(cid, r.I(), kind, def, i) { Hp = r.F(), LastDamagedTick = r.L() };
+                int cown = r.I();
+                float hp = r.F(); long ldt = r.L();
+                if (float.IsNaN(hp) || hp > def.Hp) throw new SnapshotException(string.Format(SnapMsg.Invalid, "train car hp"));
+                int ng = r.Count(2);
+                var ws = new WeaponDef[ng]; var gs = new (int T, int C, int A)[ng];
+                for (int k = 0; k < ng; k++)
+                {
+                    ws[k] = Defs.Weapon(r.Str()) ?? throw new SnapshotException(string.Format(SnapMsg.Invalid, "train gun weapon"));
+                    gs[k] = (r.I(), r.I(), r.I());
+                    if (gs[k].C < 0 || gs[k].A < 0) throw new SnapshotException(string.Format(SnapMsg.Invalid, "train gun timer"));
+                }
+                var c = new TrainCar(cid, cown, kind, def, i, ws) { Hp = hp, LastDamagedTick = ldt };
+                for (int k = 0; k < ng; k++) (c.Guns[k].TargetId, c.Guns[k].Cooldown, c.Guns[k].AimLeft) = gs[k];
                 t.Cars.Add(c);
+                trainMask |= 1u << (cown & 31);
             }
             t.S = r.L(); t.V = r.I(); t.Manual = r.Bool(); t.ManualDir = r.I(); t.Next = r.I(); t.ScriptDir = r.I(); t.WaitLeft = r.I(); t.Blocked = r.Bool();
             t.PlaceCars(rules);
@@ -481,7 +641,11 @@ public sealed partial class World
             h.Add(t.Id); h.Add(t.Owner); h.Add(t.S); h.Add(t.V); h.Add(t.Manual ? 1 : 0); h.Add(t.ManualDir);
             h.Add(t.Next); h.Add(t.ScriptDir); h.Add(t.WaitLeft); h.Add(t.Blocked ? 1 : 0);
             h.Add(t.Tag ?? ""); foreach (var wt in t.WaitTicks) h.Add(wt);
-            foreach (var c in t.Cars) { h.Add(c.Id); h.Add(c.Hp); h.Add(c.Kind); }
+            foreach (var c in t.Cars)
+            {
+                h.Add(c.Id); h.Add(c.Hp); h.Add(c.Kind);
+                foreach (var g in c.Guns) { h.Add(g.W.Key); h.Add(g.TargetId); h.Add(g.Cooldown); h.Add(g.AimLeft); }   // T30b
+            }
         }
     }
 }

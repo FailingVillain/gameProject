@@ -39,6 +39,7 @@ internal sealed class SnapCtx
     {
         if (e == null) { w.Byte(0); return; }
         if (World.IsInWorld(e)) { w.Byte(1); w.I(e.Id); return; }
+        if (e is TrainCar tc) { w.Byte(3); w.I(tc.Id); return; }   // T30b: 열차 객차 (잔해 포함 — 열차 목록에 계속 있음, ENTS 끝에서 먼저 읽힘)
         if (!tombIds.TryGetValue(e, out int t)) { t = Tombs.Count; Tombs.Add(e); tombIds[e] = t; }
         w.Byte(2);
         w.I(t);
@@ -64,6 +65,11 @@ internal sealed class SnapCtx
                 int t = r.I();
                 if ((uint)t >= (uint)ReadTombs.Length) throw new SnapshotException(string.Format(SnapMsg.Invalid, "tomb index"));
                 return ReadTombs[t];
+            }
+            case 3:
+            {
+                int id = r.I();
+                return World.FindCar(id, deadOk: true) ?? throw new SnapshotException(string.Format(SnapMsg.Invalid, "missing train car " + id));
             }
             default: throw new SnapshotException(string.Format(SnapMsg.Invalid, "entity ref tag"));
         }

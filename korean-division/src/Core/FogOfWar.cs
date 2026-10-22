@@ -108,6 +108,9 @@ public sealed partial class FogOfWar
                 if (u.Alive && u.Owner == f) Stamp(g, u.Pos, world.SightOf(u));
             foreach (var b in world.Buildings)
                 if (b.Alive && b.Owner == f) Stamp(g, b.Pos, world.BuildingSight(b));
+            foreach (var t in world.Trains)   // T30b 열차 객차 시야 (잔해 제외)
+                foreach (var c in t.Cars)
+                    if (c.Alive && c.Owner == f) Stamp(g, c.Pos, world.TrainCarSight(c));
         }
         bool shared = ShareAlliedVision();
         for (int f = 1; f < grids.Length; f++)

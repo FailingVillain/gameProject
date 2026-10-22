@@ -246,7 +246,7 @@ public sealed partial class World
     {
         dist = 0;
         if (!t.Alive || t.Indestructible || !IsHostile(u.Owner, t.Owner) || !Fog.CanSee(u.Owner, t)) return false;
-        if (t is Unit tu && !w.CanDamage(tu.Def.Category)) return false;
+        if (!w.CanDamage(CategoryOf(t))) return false;   // 유닛 · 열차 객차 (건물 = 항상 가능)
         dist = MathF.Max(0, t.EdgeDistance(u.Pos) - u.Radius);
         if (dist > rad || dist < w.MinRange) return false;
         return HasFiringLine(u, t, w);

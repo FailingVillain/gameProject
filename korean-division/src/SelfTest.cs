@@ -79,6 +79,7 @@ public static partial class SelfTest
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "s2") { Tests.S2SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "pursuit2") { Tests.Pursuit2SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "ai412") { Tests.Ai412SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+        if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "trainweapons") { Tests.TrainWeaponsSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }   // T30b 열차 무기
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "train") { Tests.TrainSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }   // T30a 열차
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "replay") { Tests.ReplaySelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "tweak1") { Tests.Tweak1SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
@@ -131,6 +132,7 @@ public static partial class SelfTest
         Console.WriteLine("[명령 · 리플레이]");
         Tests.ReplaySelfTest.Run(opt, Check);
         Tests.TrainSelfTest.Run(opt, Check);   // T30a 열차
+        Tests.TrainWeaponsSelfTest.Run(opt, Check);   // T30b 열차 무기
         Console.WriteLine("[기본 4인 맵 · 세력 선택 · 부대 지정]");
         Tests.FactionsSelfTest.Run(opt, Check);
         Tests.ArmourSelfTest.Run(opt, Check);

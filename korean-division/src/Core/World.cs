@@ -163,7 +163,7 @@ public sealed partial class World
 
     internal sealed record StartJob(int F, List<Unit> Spawned, StartGroupDef G, Vector2 Base, Vector2 Dir, Vector2 Side, float Row);
     public Faction Faction(int id) => Factions[id];
-    public Entity? Find(int id) => byId.TryGetValue(id, out var e) && e.Alive ? e : null;
+    public Entity? Find(int id) => byId.TryGetValue(id, out var e) ? (e.Alive ? e : null) : FindCar(id);   // T30b: 열차 객차는 byId 밖 (Train.cs, 열차 없으면 바로 null)
     /// <summary>[호환] 적대 여부 — IsHostile 과 같음 (정적 팀).</summary>
     public bool AreEnemies(int a, int b) => IsHostile(a, b);
 

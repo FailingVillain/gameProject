@@ -374,7 +374,7 @@ public sealed partial class World
             uint hm = 0;
             for (int f = 0; f < Factions.Count; f++)
                 if (IsHostile(faction, f)) hm |= 1u << (f & 31);
-            if (((unitMask | bldgMask) & hm) == 0) return null;
+            if (((unitMask | bldgMask | trainMask) & hm) == 0) return null;
 
             Entity? best = null;
             float bestScore = float.MaxValue;
@@ -425,6 +425,7 @@ public sealed partial class World
                     }
                 }
             }
+            if ((trainMask & hm) != 0) FindTrainTarget(faction, pos, radius, minRange, losFrom, weapon, arcFrom, spotterOnly, fpl, ref best, ref bestScore);   // T30b 열차 객차 (Train.cs)
             if ((bldgMask & hm) != 0)
             {
                 foreach (var b in Buildings)
@@ -481,7 +482,7 @@ public sealed partial class World
         if (IsIndirect(w)) { FireArtillery(shooter, from, target, w); return; }
         if (w.Splash > 0 && w.SpotterIndirect && shooter is Unit gu && !HasFiringLine(gu, target, w)) { Stats.SpotterIndirectShots++; FireArtillery(shooter, from, target, w); return; }   // arty3 야전포 간접 사격: 퍼짐 = ScatterAt (Combat2.cs)
         if (w.Splash > 0) { FireGun(shooter, from, target, w, dist); return; }   // 직사포 폭발 (Combat4.cs)
-        if (w.Spray > 0 && shooter is Unit mg) { FireSpray(mg, from, target, w, dist); return; }   // 기관총 흩뿌림 (Combat3.cs)
+        if (w.Spray > 0) { FireSpray(shooter, from, target, w, dist); return; }   // 기관총 흩뿌림 (Combat3.cs)
         Suppress(target, w, from);   // 제압: 자신을 노린 공격 (명중 무관, Combat3.cs)
         bool hit = Roll(shooter.Id, target.Id) < ShotChance(shooter, target, w, dist);
         Vector2 to = target.Pos;
@@ -494,7 +495,7 @@ public sealed partial class World
         }
         Shots.Add((from, to, shooter.Owner, Tick, hit, shooter.Id));
         // 대상 병과 보너스 (바주카 vs 차량 등) 는 장갑 감소 전에 곱한다. 건물에는 보너스 없음.
-        if (hit) Damage(target, w.Damage * (target is Unit tu ? w.BonusAgainst(tu.Def.Category) : 1f), shooter, w.Key);
+        if (hit) Damage(target, w.Damage * w.BonusAgainst(CategoryOf(target)), shooter, w.Key);   // CategoryOf: 유닛 · 열차 객차 병과, 건물 null = 1
         else
         {
             MarkAlert(target.Owner, target.Pos);   // 총격을 받으면 (빗나가도) 경계

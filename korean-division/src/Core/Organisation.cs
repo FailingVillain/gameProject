@@ -430,7 +430,6 @@ public sealed partial class World
         WriteRally(w);            // N79a 집결 지점 · 포격 종류 (Rally.cs, FormatVersion 43)
         WriteChoke(w);            // 길목 통과 큐 (Choke.cs, FormatVersion 45)
         WriteComms(w);            // 통신 · 난이도 (Comms.cs, comms)
-        WriteTrains(w);           // 열차 (Train.cs, T30a, FormatVersion 58)
     }
 
     static void WriteSlots(SnapWriter w, Dictionary<int, Vector2> d)
@@ -538,7 +537,6 @@ public sealed partial class World
         ReadRally(r);
         ReadChoke(r);
         ReadComms(r);
-        ReadTrains(r);
     }
 
     CompanyAnchor ReadAnchor(SnapReader r, SnapCtx ctx, Defs defs, Company c)

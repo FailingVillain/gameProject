@@ -143,6 +143,7 @@ public sealed partial class World
             w.I(b.Id); w.Str(b.Def.Key); w.I(b.Owner); w.I(b.TileX); w.I(b.TileY); w.F(b.Hp); w.L(b.LastDamagedTick);
             w.I(b.CaptureFaction); w.F(b.CaptureProgress); w.Bool(b.Contested);
         }
+        WriteTrains(w);   // 열차 (Train.cs, T30a · T30b FV59: ORG_ 끝 → ENTS 끝 — 유닛 표적 참조(LINK)가 객차를 찾도록 먼저)
     }
 
     void WriteLinks(SnapWriter w, SnapCtx ctx)
@@ -332,6 +333,7 @@ public sealed partial class World
             byId[id] = b;
             Map.RestoreOccupant(tx, ty, bd.Size, id, bd.City);
         }
+        ReadTrains(r);   // 열차 (Train.cs, FV59 ENTS 끝)
         return units;
     }
 
