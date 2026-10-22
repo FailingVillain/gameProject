@@ -24,6 +24,7 @@ public static class ReplaySelfTest
             CommandJsonRoundTrip(check);
             CommandSemantics(opt, check);
             RecordAndReplay(opt, check);
+            IsAiReplaySelfTest.Run(opt, check);   // AF1: 리플레이 머리말 AiFactions · 스냅샷 IsAi
         }
         catch (Exception e)
         {

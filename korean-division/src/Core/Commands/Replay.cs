@@ -19,7 +19,7 @@ public readonly record struct ChecksumRecord(long Tick, ulong Checksum);
 /// </summary>
 public sealed class ReplayFile
 {
-    public const int FormatVersion = 19;   // 19: comms 대대장 앞 명령 전달 (dispatch) + 머리말 Difficulty · 18: arty3 최후 저지선 명령 (finalline) · 17: 참호 돌격 명령 (trenchassault, N32) · 16: 집결 지점 · 포격 종류 명령 (rally · groundfireex · retreat UseRally, N79a) · 15: 중대 대형 유지 명령 (keepform, F1 2차) · 14: 기병 하마/승마 명령 (mount, N61) · 13: 중대 자세 명령 (posture, tweak1) · 12: 명령 선택 인원 Sel (N37, 플레이어 명령 지연 곡선) · 11: 진지 점유 명령 (occupy, engage) · 10: 대열 정비 명령 (closeranks, gapfill) · 9: 돌격 사격 켜기 명령 (marchfire) · 8: 참호 파기 · 참호선 명령 삭제 (dig · digline — 건설 제거 2026-10-19) · 7: 미션 (머리말 Mission = 미션 JSON + 배치 단계 결과, MissionEndCommand) · 6: 연대 → 대대 이름 변경 (battalion · batnumber · batform 명령) · 5: 외교 명령 삭제 (정적 팀) · 4: 교전 4차 (수류탄 · 돌격만 명령, 유닛 id 이름 규칙 변경) · 3: 방향 변경 (생산 · 건설 · 자원 명령 삭제, 참호 파기 추가)
+    public const int FormatVersion = 24;   // 24: 머리말 AiFactions (자유전 · 미션 리플레이에 Faction.IsAi 복원, AF1; 20~23 은 WIP 스택 예약) · 19: comms 대대장 앞 명령 전달 (dispatch) + 머리말 Difficulty · 18: arty3 최후 저지선 명령 (finalline) · 17: 참호 돌격 명령 (trenchassault, N32) · 16: 집결 지점 · 포격 종류 명령 (rally · groundfireex · retreat UseRally, N79a) · 15: 중대 대형 유지 명령 (keepform, F1 2차) · 14: 기병 하마/승마 명령 (mount, N61) · 13: 중대 자세 명령 (posture, tweak1) · 12: 명령 선택 인원 Sel (N37, 플레이어 명령 지연 곡선) · 11: 진지 점유 명령 (occupy, engage) · 10: 대열 정비 명령 (closeranks, gapfill) · 9: 돌격 사격 켜기 명령 (marchfire) · 8: 참호 파기 · 참호선 명령 삭제 (dig · digline — 건설 제거 2026-10-19) · 7: 미션 (머리말 Mission = 미션 JSON + 배치 단계 결과, MissionEndCommand) · 6: 연대 → 대대 이름 변경 (battalion · batnumber · batform 명령) · 5: 외교 명령 삭제 (정적 팀) · 4: 교전 4차 (수류탄 · 돌격만 명령, 유닛 id 이름 규칙 변경) · 3: 방향 변경 (생산 · 건설 · 자원 명령 삭제, 참호 파기 추가)
     public const int ChecksumInterval = 600;   // 10초마다 체크섬 기록
 
     public int Format { get; set; } = FormatVersion;
@@ -33,6 +33,8 @@ public sealed class ReplayFile
     /// <summary>사람이 조작한 세력 (0 = 없음 · 관전 · 오래된 파일). 재생 화면의 "(플레이어)" 표시용 — 시뮬레이션에는 영향 없음.</summary>
     public int HumanFaction { get; set; }
     public bool CheatsUsed { get; set; }
+    /// <summary>AI 세력 id (Faction.IsAi — 시뮬이 읽는다: Surrender.cs). 틱 0 전에 적용 (스냅샷 시작이면 스냅샷 값). IsAi 는 시작 뒤 바뀌지 않는다.</summary>
+    public int[] AiFactions { get; set; } = Array.Empty<int>();
     /// <summary>교전 테스트 설정 (있으면 이 설정으로 월드를 만든다 — 건물 · 경제 없음).</summary>
     public BattleSetup? Battle { get; set; }
     /// <summary>미션 설정 (있으면 미션 정의 + 배치 결과로 월드를 만든다).</summary>
@@ -63,6 +65,7 @@ public sealed class ReplayFile
         Seed = w.Map.Seed,
         FactionCount = w.Factions.Count - 1,
         CheatsUsed = w.CheatsUsed,
+        AiFactions = w.Factions.Where(f => f.Id > 0 && f.IsAi).Select(f => f.Id).ToArray(),
         Battle = w.Battle,
         Mission = MissionReplayInfo.From(w),
         FogEnabled = w.Fog.Enabled,
@@ -132,6 +135,8 @@ public sealed class ReplayFile
             var t = TimeOfDay != null ? WeatherState.ParseTime(TimeOfDay) : world.Weather.Time;
             if (k != world.Weather.Kind || t != world.Weather.Time) world.SetupWeather(k, t);
         }
+        if (StartSnapshot == null)
+            for (int f = 1; f < world.Factions.Count; f++) world.Faction(f).IsAi = Array.IndexOf(AiFactions ?? Array.Empty<int>(), f) >= 0;   // AI 세력 (Surrender.cs) — 생성 경로(자유전 · 교전 · 미션)는 AI 를 붙이지 않으므로 머리말이 정본
         if (StartSnapshot == null && Difficulty != null) world.Difficulty = Difficulty;   // 난이도 (Comms.cs — 스냅샷 시작이면 스냅샷 값)
         world.Fog.Enabled = FogEnabled;
         world.RecordCommands = false;

@@ -24,6 +24,7 @@ public sealed partial class World
             h.Add(f.RevealAll ? 1 : 0);
             h.Add(f.NoHqTime);
             h.Add(f.Team);
+            if (f.IsAi) h.Add(0x4149);   // AI 세력 (Surrender.cs 가 읽음; FV 60 · 리플레이 머리말 AiFactions) — 사람 세력은 섞지 않아 AI 없는 골든은 그대로
         }
         HashCombatSettings(ref h);
         HashWeather(ref h);   // 날씨 · 시간대 (Weather.cs)
