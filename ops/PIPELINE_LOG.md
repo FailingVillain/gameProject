@@ -189,6 +189,7 @@
 | 15:0x | T33c wip-ready(sonnet, **406k 토큰 — 컨텍스트 한도 크게 초과 사용**, 3999초; kd/t33c-placement c514821): 배치 도구(소품·시설·시작·구역·유닛)·검사 패널·미션 열기/저장(원문 바이트 보존)·F5 시험 실행, MapEditor.Tests 582·편집기 selftest 69341 PASS, 실제 창 실행 확인, 게임 코드 불변(Q3 --map-file 플래그는 미채택·승인 시 알려 달라). 스크린샷 docs/art_review/t33c/. 발주: T33d(철도 도구, t33c 위) + Bridge 지형 목록 | 완료 ~80 |
 | 15:1x | T32b/T34a/t24-crossing-fix 리뷰(sonnet, 121k, 192초): **T34a 차단 1** = TacticsProfile 필드 7개 추가(ObjCodec 순서 저장)인데 FV 미상승 → 옛 저장 오독 위험(T32b 는 55→56 올림). T32b·crossing-fix 병합 OK. 비차단: crossing-fix 가 세력 전체 판정(비도하 연대 관측반도 15칸 보존 상실), T34a CoverRelease 가 FallbackUntil−StateTick 길이로 엄호 판별(취약), m.Contains O(n²), 코드 브랜치가 ops/QUEUE.md 수정(충돌 위험), T32b 연막 vs 도하 AI 상호작용 미검증. 교훈 후보: AI 프로필(ObjCodec 대상) 키 추가는 기본 꺼짐이어도 FV 상승. → T34a FV 수정 발주(sonnet) | 리뷰 완료 |
 | 15:1x | T43b 병종 기호 기병 판정 수정 완료(haiku, 73k, 205초; kd/t43-branch-symbols d45b18f): Mounted→Cavalry(승마 정찰은 Scout 유지, 지시 위치에서 조정), cavalry_default/cossack/mongol 정상, uiicons·골든 PASS. 공병(수류탄+wireCutter)은 Assault 로 남음(카드 기록). 시트 PNG 미갱신 | 완료 ~81 |
+| 15:1x | 사용자: T33c 검수 스크린샷 통과. '컨텍스트 15만 중간 저장 규칙' 제안은 넘김(세션 교체 하루 1회 정책 유지) — 큰 카드는 사전 분할로만 대응 | 기록 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
