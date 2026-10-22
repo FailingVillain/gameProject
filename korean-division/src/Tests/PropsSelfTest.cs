@@ -225,6 +225,7 @@ public static class PropsSelfTest
         var bad = new List<string>(); int n = 0;
         foreach (var id in MissionDef.Available())
         {
+            if (id.StartsWith("test_")) continue;   // 시험 전용 지형 미션 (test_river_crossing 등): 소품 없이 지형만 시험 — 흩뿌리기 대상 아님
             var def = MissionDef.Load(id);
             if (!def.PropScatter) { bad.Add(id + "(옵션 없음)"); continue; }
             var w = World.CreateMissionWorld(def, defs);
