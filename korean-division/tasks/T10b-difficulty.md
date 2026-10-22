@@ -2,7 +2,7 @@
 - id: T10b | 역할: sim | 등급: D上 H1 (선택 메모: R2 S Wlight)
 - 선행: T10 (`kd/t10-comms-b` 1c91c96) | 후행: AI 배수 구현 카드 (사용자 결정 뒤)
 - 만질 파일: Comms.cs · Difficulty.cs · difficulty.json · CommsSelfTest.cs (핫스팟 Snapshot/SelfTest/Defs/Combat/Replay 안 건드림)
-- 브랜치: `kd/t10b-difficulty` (kd/t10-comms-b 위 스택) | 상태: wip-ready | 담당 에이전트: sim (Opus)
+- 브랜치: `kd/t10b-difficulty` (kd/t10-comms-b 위 스택) | 상태: wip-ready (리뷰 수정 커밋 추가) | 담당 에이전트: sim (Opus)
 ## 확정 결정 (사용자 원문+날짜, 변경 금지)
 - D15 A (2026-10-22): 쉬움 전령 사로잡힘 끔 · 보통 AI 1.0 · 어려움 후보는 카드에서, 보류. ops/DECISIONS Q1 → T10b 발주.
 ## 조사 결과: 난이도는 리플레이 · 스냅샷 안전
@@ -21,3 +21,7 @@
 - 검증: 빌드 오류 0 (변경 파일 경고 0) · comms 18/18 (새 5: D15 값, 꺼짐=기존, 보통/어려움 사로잡힘 · 쉬움 전달, 보통 유선 끊김 · 쉬움 전달, 저장 왕복 뒤 같은 틱 사로잡힘) · fieldops · replay · snapshot · savecompat PASS · detcheck GOLDEN 일치 19501757040f0d62 (골든 불변: 기본 commsRules 꺼짐 + 골든 게임은 Dispatch 를 안 씀) · snaptest quick FAIL 0 (81 OK).
 - 기존 실패 (내 변경 무관): `KD_SELFTEST_ONLY=gapfill` 단독 실행 시 예외 "Sequence contains no elements" — T10 기준 빌드 (1c91c96) 에서도 같음.
 - 결정 필요: commsRules 켜기 · 수치 승인, AI 배수 안 A/B.
+## 리뷰 지적 수정 (2026-10-22, 커밋 추가)
+- `DifficultyDefs.Parse` (Load 공용): JSON 파싱 실패 = 기본값 + 경고 (`Warnings` · stderr `[난이도 경고]`, 던지지 않음). commsRules 범위: captureRadius · cutRadius 1~50, captureChance · cutChance 0~1, checkSec >=1, NaN = 기본값 (범위 밖 = 경계로 고정 + 경고). 정상 파일 = 경고 0, 값 불변.
+- 테스트 +2 (CommsSelfTest): 범위 밖 값 고정 (경고 5) · 깨진 JSON = 경고 1 + 기본값 꺼짐. comms PASS · fieldops · savecompat PASS · detcheck GOLDEN match.
+- 상태: wip-ready (병합 잠금 안 잡음).

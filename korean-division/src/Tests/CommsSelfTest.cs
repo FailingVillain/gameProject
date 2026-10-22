@@ -31,6 +31,8 @@ public static class CommsSelfTest
             TestRoundTrip();
             TestReplay(opt);
             TestCaptureCut();
+            TestRangeClamp();
+            TestBrokenJson();
         }
         catch (Exception e) { check(false, $"comms 테스트 중 예외: {e.GetType().Name}: {e.Message}\n{e.StackTrace}"); }
     }
@@ -207,6 +209,24 @@ public static class CommsSelfTest
                 $"사로잡힘 판정 저장 왕복: 이어 돌려도 같음 ({dx?.State}/{dx?.Loss} 틱 {dx?.EndTick} vs {dy?.State} 틱 {dy?.EndTick})");
         }
         finally { dd.CommsRules = saved; }
+    }
+
+    static void TestRangeClamp()
+    {
+        check(DifficultyDefs.Current.Warnings.Count == 0, "난이도 파일: 기본 파일은 경고 없음");
+        var d = DifficultyDefs.Parse("{\"commsRules\": {\"enabled\": true, \"captureRadius\": 999, \"captureChance\": 3, \"checkSec\": 0, \"cutRadius\": -5, \"cutChance\": -1}}");
+        var c = d.CommsRules;
+        check(c.Enabled && c.CaptureRadius == 50f && c.CaptureChance == 1f && c.CheckSec == 1f && c.CutRadius == 1f && c.CutChance == 0f && d.Warnings.Count == 5,
+            $"범위 밖 commsRules 고정: 반경 {c.CaptureRadius}/{c.CutRadius} 확률 {c.CaptureChance}/{c.CutChance} 점검 {c.CheckSec} (경고 {d.Warnings.Count})");
+    }
+
+    static void TestBrokenJson()
+    {
+        var d = DifficultyDefs.Parse("{ \"commsRules\": { \"enabled\": tru ");
+        var c = d.CommsRules;
+        check(d.Warnings.Count == 1 && d.Warnings[0].Contains("파싱 실패") && !c.Enabled && c.CaptureChance == 0.25f && c.CutRadius == 15f
+            && d.Default == "easy" && d.Levels.ContainsKey("easy"),
+            $"깨진 JSON: 경고 1 + 기본값 · 꺼짐 (경고 {d.Warnings.Count})");
     }
 
     static void TestReplay(GameOptions opt)

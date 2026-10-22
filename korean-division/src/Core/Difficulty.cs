@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace KoreanDivision.Core;
 
@@ -13,6 +14,8 @@ public sealed class DifficultyDefs
     public Dictionary<string, DifficultyLevel> Levels { get; set; } = new();
     /// <summary>전령 사로잡힘 · 유선 끊김 판정 규칙 (T10b, 초안 — 기본 끔). 난이도의 courierCapture · wireCut 은 이 규칙이 켜졌을 때만 소비된다.</summary>
     public CommsRulesDef CommsRules { get; set; } = new();
+    /// <summary>로드 경고 (파싱 실패 · 범위 밖 값). 비어 있으면 정상. 데이터 파일 쪽이라 JSON 에 쓰지 않는다.</summary>
+    [JsonIgnore] public List<string> Warnings { get; set; } = new();
 
     static DifficultyDefs? current;
     public static DifficultyDefs Current => current ??= Load(Path.Combine(AppContext.BaseDirectory, "assets", "data", "difficulty.json"));
@@ -21,17 +24,57 @@ public sealed class DifficultyDefs
 
     public static DifficultyDefs Load(string path)
     {
+        string? text = null;
+        try { if (File.Exists(path)) text = File.ReadAllText(path); }
+        catch (IOException) { }
+        return Parse(text, path);
+    }
+
+    /// <summary>JSON 문자열 → 정의 (Load · 테스트 공용). 파싱 실패 = 기본값 + 경고 · commsRules 범위 밖 값 = 범위 안으로 고정 + 경고 (Warnings · stderr). 던지지 않는다.</summary>
+    public static DifficultyDefs Parse(string? json, string src = "difficulty.json")
+    {
         DifficultyDefs d = new();
-        try
+        if (json != null)
         {
-            if (File.Exists(path) && JsonSerializer.Deserialize<DifficultyDefs>(File.ReadAllText(path), DataJson.Opts) is { } r) d = r;
+            try
+            {
+                if (JsonSerializer.Deserialize<DifficultyDefs>(json, DataJson.Opts) is { } r) d = r;
+            }
+            catch (JsonException ex)
+            {
+                d = new DifficultyDefs();
+                d.Warn($"{src} 파싱 실패 (기본값 사용): {ex.Message}");
+            }
         }
-        catch (Exception ex) when (ex is JsonException or IOException) { }
         // 키는 소문자로 통일 (JSON 대소문자 무시와 맞춤)
         d.Levels = d.Levels.ToDictionary(kv => kv.Key.ToLowerInvariant(), kv => kv.Value);
         d.Default = (d.Default ?? "easy").ToLowerInvariant();
         if (!d.Levels.ContainsKey(d.Default)) d.Levels[d.Default] = new DifficultyLevel();
+        d.CommsRules ??= new CommsRulesDef();
+        var c = d.CommsRules;
+        var def = new CommsRulesDef();
+        c.CaptureRadius = Fix(d, "captureRadius", c.CaptureRadius, def.CaptureRadius, 1f, 50f);
+        c.CaptureChance = Fix(d, "captureChance", c.CaptureChance, def.CaptureChance, 0f, 1f);
+        c.CheckSec = Fix(d, "checkSec", c.CheckSec, def.CheckSec, 1f, float.MaxValue);
+        c.CutRadius = Fix(d, "cutRadius", c.CutRadius, def.CutRadius, 1f, 50f);
+        c.CutChance = Fix(d, "cutChance", c.CutChance, def.CutChance, 0f, 1f);
         return d;
+    }
+
+    /// <summary>범위 검사 · 고정. NaN = 기본값, 범위 밖 = 가장 가까운 경계 (둘 다 경고).</summary>
+    static float Fix(DifficultyDefs d, string key, float v, float def, float lo, float hi)
+    {
+        if (float.IsNaN(v)) { d.Warn($"commsRules.{key} = NaN → 기본값 {def}"); return def; }
+        float c = Math.Clamp(v, lo, hi);
+        if (c != v) d.Warn($"commsRules.{key} = {v} 범위 밖 → {c} (허용 {lo}~{hi})");
+        return c;
+    }
+
+    /// <summary>경고 기록 + stderr 한 줄 (기존 AiProfile · MissionDef 와 같은 방식).</summary>
+    void Warn(string msg)
+    {
+        Warnings.Add(msg);
+        Console.Error.WriteLine("[난이도 경고] " + msg);
     }
 
     /// <summary>키 → 난이도 (모르는 키 · null = 기본 난이도).</summary>
