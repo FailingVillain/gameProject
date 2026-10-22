@@ -167,6 +167,7 @@
 | 14:4x | T38b wip-ready(sonnet, 115k, 360초; t38b-help-overlay 93ce79f, t38g 위): F1 도움말 오버레이(Bindings.All 기반, CONTROLS.md §13 동기 시험), 퍼즈·골든 PASS. 스크롤은 정적 캡처로 미확인. 발주: T38a(t38b 위) | 완료 ~64 |
 | 14:5x | T32d wip-ready(sonnet, 117k, 1799초; kd/t32d-pioneer-art 2118f9b, t32a 위): 전투공병 그림(진위대 모델+장대 와이어커터·공구 주머니), units/pioneer PASS, 시트 pioneer_t32d.png 사용자 검수 대기(Q1/Q3 기본값). uiicons 단축키 충돌 1건 FAIL — 베이스 t32a 에서도 동일(기존 결함, 별도 확인 필요) | 완료 ~65 |
 | 14:24 | 자율 점검: 가동 = T34a·T32b·T38a·T38f·T33c·리허설·release·T44·재렌더. 발주: 리뷰 2건(river-r2/r3; t32a/t32d/t43 + uiicons 단축키 충돌 원인) | 리뷰 진행 |
+| 14:3x | **release 첫 실가동 완료**(sonnet, 79k, 77분; main ec9f713, 문서 b25d185): 전체 selftest 2008 OK/FAIL 0(약 12분), detcheck 8변형 골든 일치, snaptest OK, dist 새로 생성. 환경 이슈: bin apphost 가 .NET 런타임을 못 찾아 `dotnet x.dll` 로 실행, tools/detcheck.ps1 실패(코드 불변, STATE 기록). gate 첫 호출 'timeout heavy=11' 후 진행 | 병합 단계 검증 1회 통과 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
