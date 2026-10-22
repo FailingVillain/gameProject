@@ -30,6 +30,17 @@ public sealed class CampaignState
         public int ToRank { get; set; }
     }
 
+    /// <summary>[v7 · T42d] 연표 한 줄: 몇 일째에 무슨 일 (Kind = "mission" 작전 승리 정산 / "event" 본국 이벤트 발동). 문구는 저장하지 않고 id 로 표시 때 찾는다 (이벤트 문구 = 스토리 TBD).</summary>
+    public sealed class TimelineEntry
+    {
+        public int Day { get; set; }
+        public string Kind { get; set; } = "";
+        public string Id { get; set; } = "";
+        /// <summary>mission: 작전 제목 (없으면 id). event: 고른 선택지 번호 (1부터).</summary>
+        public string Title { get; set; } = "";
+        public int Choice { get; set; }
+    }
+
     public sealed class MissionRecord
     {
         public string MissionId { get; set; } = "";
@@ -145,7 +156,9 @@ public sealed class CampaignState
     /// 4 (T42a): 중대 피로 · 사기 계정 — RosterCompany.Fatigue/Morale (추가만, v3 는 Fatigue 0 · Morale 70 으로 이행).
     /// 5 (T42b): 진급 기록 · 정원 — PromotionLog / PromotionsThisBreak (추가만, v3 · v4 는 빈 목록 · 0 으로 이행).
     /// 6 (T42c): 포로 장부 — Stock.Prisoners · PrisonersRepatriated/PrisonersInterned · DebriefReport.PrisonersTaken (추가만, v3~v5 는 0 으로 이행).</summary>
-    public const int SchemaVersion = 6;
+    /// 7 (T42d): 작전 일수 · 연표 — Day / Timeline (추가만, v3~v6 은 Day = 1 + 치른 작전 수 × missionDays · 빈 연표로 이행).
+    public const int SchemaVersion = 7;
+    public const int TimelineMax = 200;
     public int Version { get; set; } = SchemaVersion;
     public string CampaignId { get; set; } = "c1";
     /// <summary>다음에 할 미션 id (파일이 없으면 '준비 중' 화면).</summary>
@@ -159,6 +172,16 @@ public sealed class CampaignState
     /// <summary>[v6 · T42c] 지금까지 송환 · 수용한 포로 누계 (처리 결과 표시용).</summary>
     public int PrisonersRepatriated { get; set; }
     public int PrisonersInterned { get; set; }
+    /// <summary>[v7 · T42d] 작전 일수 (1일째 시작, 첫 승리 정산마다 campaign_economy.json missionDays 만큼 증가). 계절 · 시간 효과 없음 — 카운터만 (규칙 7). 0 = 옛 파일 (EnsureInitialized 가 채움).</summary>
+    public int Day { get; set; }
+    /// <summary>[v7 · T42d] 연표 (오래된 것이 앞, 최대 TimelineMax).</summary>
+    public List<TimelineEntry> Timeline { get; set; } = new();
+    /// <summary>연표 한 줄을 더한다 (최대 TimelineMax 넘으면 가장 오래된 것부터 버린다).</summary>
+    public void AddTimeline(string kind, string id, string title = "", int choice = 0)
+    {
+        Timeline.Add(new TimelineEntry { Day = Day, Kind = kind, Id = id, Title = title, Choice = choice });
+        if (Timeline.Count > TimelineMax) Timeline.RemoveRange(0, Timeline.Count - TimelineMax);
+    }
     /// <summary>이월 사병 (계급 · 사살 수 · 병력 id).</summary>
     public List<MissionResults.UnitLine> Units { get; set; } = new();
     /// <summary>이월 장교 (OfficerRank · Xp · Post).</summary>
@@ -263,6 +286,8 @@ public sealed class CampaignState
         Stock.Prisoners = Math.Max(0, Stock.Prisoners);   // T42c
         PrisonersRepatriated = Math.Max(0, PrisonersRepatriated);
         PrisonersInterned = Math.Max(0, PrisonersInterned);
+        Timeline ??= new(); Timeline.RemoveAll(e => e == null);   // T42d
+        if (Day <= 0) Day = 1 + (History?.Count ?? 0) * CampaignEconomyDefs.Current.MissionDays;
         foreach (var c in Roster)
         {
             c.MaxStrength = Math.Max(1, c.MaxStrength);

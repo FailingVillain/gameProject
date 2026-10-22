@@ -59,6 +59,10 @@ public sealed class CampaignEconomyDefs
     /// <summary>[임시] 포로 1명을 수용할 때 드는 보급품 (송환은 무료). 편입(병력화)은 없음.</summary>
     public float PrisonerAcceptSupply { get; set; } = 2f;
 
+    // ---- [T42d] 일정 — 임시 (Q6 가정: 작전당 고정 일수). 카운터만, 계절 · 시간 효과 없음.
+    /// <summary>[임시] 첫 승리 정산 한 번에 늘어나는 작전 일수 (0 = 일수 안 늘림).</summary>
+    public int MissionDays { get; set; } = 1;
+
     static CampaignEconomyDefs? current;
     public static CampaignEconomyDefs Current => current ??= Load(Path.Combine(AppContext.BaseDirectory, "assets", "data", "campaign_economy.json"));
     /// <summary>[테스트] 정의를 갈아 끼운다 (null = 파일 다시 읽기).</summary>
@@ -111,6 +115,7 @@ public sealed class CampaignEconomyDefs
         MoraleLoss = Math.Clamp(MoraleLoss, 0, 100);
         MoraleCasualtyScale = Math.Clamp(MoraleCasualtyScale, 0, 100);
         MoraleRestRecovery = Math.Clamp(MoraleRestRecovery, 0, 100);
+        MissionDays = Math.Clamp(MissionDays, 0, 365);
         PrisonerAcceptSupply = F(PrisonerAcceptSupply, 0f, 1000f, d.PrisonerAcceptSupply);
         PromoSoldierMaxRank = Math.Clamp(PromoSoldierMaxRank, 0, 8);
         PromoMaxPerBreak = Math.Clamp(PromoMaxPerBreak, 0, 10_000);

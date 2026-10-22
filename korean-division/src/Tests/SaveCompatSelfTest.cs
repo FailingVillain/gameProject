@@ -135,6 +135,7 @@ public static class SaveCompatSelfTest
         CampaignFatigueSelfTest.Run(check);   // T42a 피로 · 사기 계정 (저장 v4 · 정산 · 홈 요약)
         CampaignPromotionSelfTest.Run(check);   // T42b 진급 후보 · 적용 (저장 v5 · 후보 · 정원 · 이월)
         CampaignPrisonersSelfTest.Run(check);   // T42c 포로 장부 · 송환/수용 (저장 v6 · 정산 · 처리)
+        CampaignScheduleSelfTest.Run(check);   // T42d 일정 · 연표 (저장 v7 · 일수 · 이벤트 기록 · 표시)
         CampaignHomeViewsSelfTest.Run(check);   // T38f 읽기 전용 탭 (기록 · 장비 · 편제) 표시 자료
         string cdir = TestTemp.Child("kd_compat_campaign");
         string? oldEnv = Environment.GetEnvironmentVariable("KD_CAMPAIGN_DIR");

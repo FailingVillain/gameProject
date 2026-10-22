@@ -30,6 +30,8 @@
   "promoMaxPerBreak": 8,
   "_prisoners": "T42c 임시값 - 0.3 밸런스에서 확정. 포로 발생은 항복(기본 꺼짐)에 의존, 꺼져 있으면 0. 수용 = 1인당 보급 소모, 편입(병력화) 없음",
   "prisonerAcceptSupply": 2,
+  "_schedule": "T42d 임시값 - Q6 가정: 첫 승리 정산마다 고정 일수. 0 이면 일수 안 늘림. 계절 · 시간 효과 없음(카운터만)",
+  "missionDays": 1,
   "shellWeapons": { "gun_infantry": "infGun", "gun_field": "field", "howitzer_heavy": "howitzer" },
   "lootShellsPerKill": { "infGun": 0.1, "field": 0.05, "howitzer": 0.02 }
 }

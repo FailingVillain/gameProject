@@ -251,6 +251,7 @@ public sealed partial class CampaignMenu
             case Tab.Map: DrawTabMap(body); break;
             case Tab.Events: DrawTabEvents(body); break;
             case Tab.Staff: DrawTabStaff(body); break;
+            case Tab.Schedule: DrawTabSchedule(body); break;      // T42d
             case Tab.Records: DrawTabRecords(body); break;        // T38f 읽기 전용
             case Tab.Equipment: DrawTabEquipment(body); break;
             case Tab.Organization: DrawTabOrganization(body); break;

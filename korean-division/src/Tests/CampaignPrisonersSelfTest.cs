@@ -22,7 +22,7 @@ public static class CampaignPrisonersSelfTest
             // 1) 옛 저장 (v3 · v5) -> v6: 포로 0, 새 필드 왕복
             var v3 = CampaignState.FromJson("{\"Version\":3,\"Roster\":[{\"Id\":\"a\",\"Kind\":\"infantry\",\"Strength\":60,\"MaxStrength\":60}]}");
             var v5 = CampaignState.FromJson("{\"Version\":5,\"Stock\":{\"Horses\":7},\"PromotionsThisBreak\":2}");
-            check(v3 != null && v3.Version == 6 && v3.Stock.Prisoners == 0 && v3.PrisonersRepatriated == 0 && v5 != null && v5.Version == 6 && v5.Stock.Prisoners == 0 && v5.Stock.Horses == 7 && v5.PromotionsThisBreak == 2,
+            check(v3 != null && v3.Version == 7 && v3.Stock.Prisoners == 0 && v3.PrisonersRepatriated == 0 && v5 != null && v5.Version == 7 && v5.Stock.Prisoners == 0 && v5.Stock.Horses == 7 && v5.PromotionsThisBreak == 2,
                 "T42c 저장 이행: v3 · v5 파일 -> v6, 포로 0 (다른 필드 보존)");
             var s = new CampaignState();
             s.Stock.Prisoners = 5; s.PrisonersRepatriated = 3; s.PrisonersInterned = 4;

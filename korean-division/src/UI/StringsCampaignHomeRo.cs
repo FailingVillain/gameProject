@@ -9,6 +9,17 @@ public static partial class S
     public const string CmRecSummary = "치른 작전 {0}회 · 누적 적 사살 {1:N0} · 누적 손실 {2:N0}";
     public const string CmRecRecentHead = "작전 일지 (최근 {0}건)";
     public const string CmRecRow = "{0}  -  사살 {1:N0} · 손실 {2:N0} · 생존 {3:N0}";
+    public const string CmRecDay = "[{0}일] ";
+    // T42d 탭 14 일정 (이벤트 문구는 스토리 TBD — 제목은 이벤트 정의에서 읽기만)
+    public const string CmSchTitle = "14. 일정 · 연표";
+    public const string CmSchDay = "작전 {0}일째";
+    public const string CmSchCounts = "치른 작전 {0}회 · 발동한 이벤트 {1}건";
+    public const string CmSchHead = "연표 (최근 {0}건, 최신이 위)";
+    public const string CmSchRowDay = "{0}일째";
+    public const string CmSchMission = "작전 완료: {0}";
+    public const string CmSchEvent = "이벤트: {0} (선택 {1})";
+    public const string CmSchEmpty = "(아직 기록이 없습니다)";
+    public const string CmSchLater = "계절 · 날씨 · 명령 기한은 후속 (지금은 일수 카운터만, 효과 없음).";
     public const string CmRecEmpty = "(아직 치른 작전이 없습니다)";
     public const string CmRecTopHead = "이월 사병 사살 상위";
     public const string CmRecTopRow = "{0}  -  사살 {1:N0}";

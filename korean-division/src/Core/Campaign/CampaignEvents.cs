@@ -245,6 +245,7 @@ public static class CampaignEvents
         }
 
         s.Flags["ev_" + eventId] = choiceIndex + 1;
+        s.AddTimeline("event", eventId, "", choiceIndex + 1);   // T42d: 발동 기록
         return result;
     }
 

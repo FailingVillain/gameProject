@@ -10,7 +10,7 @@ public static class CampaignHomeViews
 {
     // ---------------------------------------------------------------- 12 부대 기록
 
-    public sealed record RecordRow(string Title, int Kills, int Lost, int Survivors, string SavedAt);
+    public sealed record RecordRow(string Title, int Kills, int Lost, int Survivors, string SavedAt, int Day = 0);
     public sealed record KillerRow(string Name, int Kills);
     public sealed record RecordsView(int Missions, int TotalKills, int TotalLost, List<RecordRow> Recent, List<KillerRow> Top, CampaignState.DebriefReport? Debrief);
 
@@ -20,10 +20,36 @@ public static class CampaignHomeViews
     {
         var hist = (s?.History ?? new()).Where(h => h != null).ToList();
         var recent = hist.AsEnumerable().Reverse().Take(RecentMax)
-            .Select(h => new RecordRow(string.IsNullOrEmpty(h.Title) ? h.MissionId ?? "" : h.Title, h.EnemyKills, h.Lost, h.Survivors, h.SavedAt ?? "")).ToList();
+            .Select(h => new RecordRow(string.IsNullOrEmpty(h.Title) ? h.MissionId ?? "" : h.Title, h.EnemyKills, h.Lost, h.Survivors, h.SavedAt ?? "", DayOfMission(s, h.MissionId))).ToList();
         var top = (s?.Units ?? new()).Where(u => u != null && u.Kills > 0).OrderByDescending(u => u.Kills).ThenBy(u => u.Id)
             .Take(TopMax).Select(u => new KillerRow(string.IsNullOrEmpty(u.Name) ? u.Unit ?? "" : u.Name, u.Kills)).ToList();
         return new RecordsView(hist.Count, hist.Sum(h => h.EnemyKills), hist.Sum(h => h.Lost), recent, top, s?.LastDebrief);
+    }
+
+    /// <summary>[T42d] 그 작전을 정산한 일수 (연표에 없으면 0 = 표시 안 함).</summary>
+    static int DayOfMission(CampaignState? s, string? id) =>
+        (s?.Timeline ?? new()).LastOrDefault(e => e != null && e.Kind == "mission" && e.Id == id)?.Day ?? 0;
+
+    // ---------------------------------------------------------------- 14 일정 (T42d)
+
+    public sealed record ScheduleRow(int Day, bool IsEvent, string Text);
+    public sealed record ScheduleView(int Day, int Missions, int Events, List<ScheduleRow> Rows);
+    public const int ScheduleMax = 14;
+
+    /// <summary>현재 일수 + 연표 (최신이 위, 최대 ScheduleMax). 이벤트 문구는 id 로 찾고 없으면 id 그대로 (스토리 TBD — 문구를 새로 쓰지 않음). 예외 없음.</summary>
+    public static ScheduleView Schedule(CampaignState? s)
+    {
+        var tl = (s?.Timeline ?? new()).Where(e => e != null).ToList();
+        var rows = tl.AsEnumerable().Reverse().Take(ScheduleMax).Select(e =>
+        {
+            if (e.Kind == "event")
+            {
+                string title = CampaignEvents.Current.FirstOrDefault(d => d.Id == e.Id)?.Title ?? "";
+                return new ScheduleRow(e.Day, true, string.Format(S.CmSchEvent, title.Length > 0 ? title : e.Id, e.Choice));
+            }
+            return new ScheduleRow(e.Day, false, string.Format(S.CmSchMission, string.IsNullOrEmpty(e.Title) ? e.Id : e.Title));
+        }).ToList();
+        return new ScheduleView(Math.Max(1, s?.Day ?? 1), tl.Count(e => e.Kind == "mission"), tl.Count(e => e.Kind == "event"), rows);
     }
 
     // ---------------------------------------------------------------- 5 장비 재고
