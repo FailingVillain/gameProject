@@ -112,6 +112,7 @@
 | 12:4x | T30c wip-ready (opus, 199k — 한도 근접, 1123초, 82회): t30c-freight-objective f5fa49a. 새 상태 없음(ObjProgress 재사용) → FV59/R23 유지. freight 21검사·train·trainweapons·missions·snapshot·savecompat·replay PASS, GOLDEN 일치. 작성자가 덧붙인 실패 조건 2개(화차 전멸→탈취 실패, 기관차 상실→호송 실패)는 확인 요청. 발주: T30e(sonnet, t30c 위, 승리 가능 설계 지시)·T30c 리뷰(sonnet) | 완료 33/50 |
 | 12:5x | T15 측정 완료(measure sonnet, 140k, 4338초=72분): 스택=main 195/196판, 회귀 0; artillery_spotters·trench_assault 낮음(n=8)→재확인. T31a 완료(opus, 128k, 2944초): 키 구현, 수용 기준 미달(손실 1~3%p, 종료선이 바닥) → T31b 측정 발주. 발주: T31b(sonnet)·artillery_spotters n=24 재확인(haiku) | 완료 35/52 |
 | 12:4x | T30c 리뷰 완료(sonnet, 74k, 102초): 차단 0. 지적 — AI 가 안 보이는 적 화차 위치를 앎(FreightCentroid viewer=0, 정보 누출) · escort 열차가 비루프 선로 끝에서 멈추면 실패 판정 없음(시간제한 필요) · 전멸 판정이 Units 만 봄(T30b 이월). 수정 에이전트 발주(sonnet), 진행 중 T30e 에 SendMessage | 리뷰 17/17 |
+| 12:4x | T30c 리뷰 수정 완료(sonnet, 55k, 114초): t30c 3de60d5 — 점령·차단은 자기 세력 시야(안개) 적용, 안 보이면 과제 없음, 시험 2, 호송 시간제한·전멸 판정 주의 문서화. 전부 PASS, GOLDEN 일치. T30e 에 3de60d5 체리픽 지시 | 리뷰→수정 10회째 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
