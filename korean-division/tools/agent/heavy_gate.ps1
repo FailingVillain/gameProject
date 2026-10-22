@@ -3,7 +3,7 @@
 #  (lane mode) Guaranteed limits: validate 3 / measure 3 / render 2 (total Max=8). A lane below its limit passes if total < Max.
 #  A lane at its limit may borrow free slots (total < Max) unless another lane that is below its limit is waiting.
 #  -Render == -Lane render. -Priority (merge-lock holder): limits and Max +3.
-param([int]$Max = 8, [int]$TimeoutMin = 60, [string]$Lane = 'validate', [switch]$Render, [switch]$Priority)
+param([int]$Max = 10, [int]$TimeoutMin = 60, [string]$Lane = 'validate', [switch]$Render, [switch]$Priority)
 
 $script:LaneLimits = @{ validate = 3; measure = 3; render = 2 }
 
@@ -59,6 +59,9 @@ if (-not $laneMode) {
   $deadline0 = (Get-Date).AddMinutes($TimeoutMin)
   while ($true) {
     $c0 = Get-HeavyCounts
+    # RAM guard (user decision AO1 2026-10-22): below 3 GB free physical memory the gate stays closed
+    $freeGB = [math]::Round((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory / 1MB, 1)
+    if ($freeGB -lt 3) { if ((Get-Date) -gt $deadline0) { "gate timeout: free RAM $freeGB GB - proceed carefully"; exit 1 }; Start-Sleep -Seconds 20; continue }
     $n = $c0.validate + $c0.measure + $c0.render
     if ($n -lt $Max) { "gate open: heavy=$n"; exit 0 }
     if ((Get-Date) -gt $deadline0) { "gate timeout: heavy=$n - proceed carefully"; exit 1 }
