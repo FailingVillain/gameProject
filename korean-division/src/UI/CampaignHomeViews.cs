@@ -4,7 +4,7 @@ namespace KoreanDivision.UI;
 
 /// <summary>
 /// [T38f] 캠페인 홈 읽기 전용 탭 (12 기록 · 5 장비 · 3 편제) 의 표시 자료. 이미 있는 CampaignState 만 읽고 아무것도 바꾸지 않는다
-/// (새 규칙 · 새 저장 필드 없음, 스키마 불변). 그리기와 분리한 순수 함수라 selftest 가 직접 검사한다. state 가 비어 있거나 목록에 null 이 섞여도 예외 없음.
+/// (읽기만 — T42a 부터 중대 피로 · 사기 평균도 읽는다). 그리기와 분리한 순수 함수라 selftest 가 직접 검사한다. state 가 비어 있거나 목록에 null 이 섞여도 예외 없음.
 /// </summary>
 public static class CampaignHomeViews
 {
@@ -44,7 +44,21 @@ public static class CampaignHomeViews
 
     // ---------------------------------------------------------------- 3 편제 트리 (연대 > 대대 > 중대)
 
-    public sealed record BattalionNode(int Number, string Name, int Companies, int Strength, int MaxStrength, int Wounded, int Available);
+    public sealed record BattalionNode(int Number, string Name, int Companies, int Strength, int MaxStrength, int Wounded, int Available, int Fatigue = 0, int Morale = 0, int Tired = 0);
+
+    // ---------------------------------------------------------------- [T42a] 피로 · 사기 요약 (탭 1)
+
+    public sealed record FatigueMoraleView(int Companies, int AvgFatigue, int AvgMorale, int Tired);
+
+    /// <summary>중대 평균 피로 · 사기 (정수 반올림) + 지침 중대 수. 중대 없음 = 0 / 기본 사기.</summary>
+    public static FatigueMoraleView FatigueMorale(CampaignState? s)
+    {
+        var cs = (s?.Roster ?? new()).Where(c => c != null).ToList();
+        if (cs.Count == 0) return new FatigueMoraleView(0, 0, CampaignState.RosterCompany.MoraleStart, 0);
+        return new FatigueMoraleView(cs.Count, (int)MathF.Round((float)cs.Average(c => c.Fatigue)), (int)MathF.Round((float)cs.Average(c => c.Morale)), cs.Count(CampaignEconomy.IsTired));
+    }
+
+    static int Avg(IEnumerable<int> v) { var l = v.ToList(); return l.Count == 0 ? 0 : (int)MathF.Round((float)l.Average()); }
     public sealed record RegimentNode(int Regiment, List<BattalionNode> Battalions)
     {
         public int Companies => Battalions.Sum(b => b.Companies);
@@ -62,9 +76,10 @@ public static class CampaignHomeViews
             if (cs.Count == 0) continue;
             var bats = new List<BattalionNode>();
             foreach (var g in cs.Where(c => c.BattalionNumber > 0).GroupBy(c => c.BattalionNumber).OrderBy(g => g.Key))
-                bats.Add(new BattalionNode(g.Key, g.First().BattalionName ?? "", g.Count(), g.Sum(c => c.Strength), g.Sum(c => c.MaxStrength), g.Sum(c => c.Wounded), g.Count(c => c.Available)));
+                bats.Add(new BattalionNode(g.Key, g.First().BattalionName ?? "", g.Count(), g.Sum(c => c.Strength), g.Sum(c => c.MaxStrength), g.Sum(c => c.Wounded), g.Count(c => c.Available),
+                    Avg(g.Select(c => c.Fatigue)), Avg(g.Select(c => c.Morale)), g.Count(CampaignEconomy.IsTired)));
             foreach (var c in cs.Where(c => c.BattalionNumber <= 0))
-                bats.Add(new BattalionNode(0, c.Name ?? "", 1, c.Strength, c.MaxStrength, c.Wounded, c.Available ? 1 : 0));
+                bats.Add(new BattalionNode(0, c.Name ?? "", 1, c.Strength, c.MaxStrength, c.Wounded, c.Available ? 1 : 0, c.Fatigue, c.Morale, CampaignEconomy.IsTired(c) ? 1 : 0));
             res.Add(new RegimentNode(r, bats));
         }
         return res;

@@ -78,6 +78,11 @@ public sealed class CampaignState
         public string Caliber { get; set; } = StockKeys.Ru;
         /// <summary>[T19c · Q9] 배속 연대 1~9 (0 = 사단 직할 · 미배속, 옛 파일 기본값). 추가만 — SchemaVersion 그대로. 규칙: CampaignRegiments.</summary>
         public int Regiment { get; set; }
+        /// <summary>[v4 · T42a] 피로 0..100 (0 = 쌩쌩). 작전 정산 때만 변한다: 투입 +, 미투입 −. 옛 파일 = 0.</summary>
+        public int Fatigue { get; set; }
+        /// <summary>[v4 · T42a] 사기 0..100. 작전 정산 때만 변한다 (승패 · 손실률). 옛 파일 = <see cref="MoraleStart"/>.</summary>
+        public int Morale { get; set; } = MoraleStart;
+        public const int MoraleStart = 70;
     }
 
     public sealed class PendingOperation
@@ -122,8 +127,9 @@ public sealed class CampaignState
     /// <summary>캠페인 저장 스키마 버전. 규칙 (ENGINE_NOTES 저장 호환): 필드는 추가만 한다 — 새 필드는 C# 기본값이 곧 "옛 파일에 없을 때의 값"
     /// 이라 옛 파일 (Version 1, 또는 Version 필드가 없는 파일 — 없으면 기본값 = 현재 버전으로 읽는다) 은 변환 없이 열고 모자란 필드는 기본값으로 채운다. Version 0 · 음수는 깨진 파일로 거부한다. 필드를 지우거나 뜻을 바꾸면 SchemaVersion 을 올리고
     /// 그 옛 파일은 거부한다. 현재보다 큰 Version (더 새 게임이 만든 파일) 과 깨진 파일도 거부 (사유는 LastLoadError, 한국어).
-    /// 3 (T19b): 구경별 탄약 · 포탄 정산 — RosterCompany.Caliber · Pending.AmmoByCaliber/ShellsLoaded/ShellScale · DebriefReport.ShellsFired/LootedShells (추가만, v2 는 기본값으로 이행).</summary>
-    public const int SchemaVersion = 3;
+    /// 3 (T19b): 구경별 탄약 · 포탄 정산 — RosterCompany.Caliber · Pending.AmmoByCaliber/ShellsLoaded/ShellScale · DebriefReport.ShellsFired/LootedShells (추가만, v2 는 기본값으로 이행).
+    /// 4 (T42a): 중대 피로 · 사기 계정 — RosterCompany.Fatigue/Morale (추가만, v3 는 Fatigue 0 · Morale 70 으로 이행).</summary>
+    public const int SchemaVersion = 4;
     public int Version { get; set; } = SchemaVersion;
     public string CampaignId { get; set; } = "c1";
     /// <summary>다음에 할 미션 id (파일이 없으면 '준비 중' 화면).</summary>
@@ -234,6 +240,8 @@ public sealed class CampaignState
             c.Strength = Math.Clamp(c.Strength, 0, c.MaxStrength);
             c.Wounded = Math.Max(0, c.Wounded);
             c.UnhealedOps = Math.Max(0, c.UnhealedOps);
+            c.Fatigue = Math.Clamp(c.Fatigue, 0, 100);   // T42a
+            c.Morale = Math.Clamp(c.Morale, 0, 100);
         }
         if (Pending != null && (string.IsNullOrEmpty(Pending.MissionId) || Pending.DeployedCompanyIds == null)) Pending = null;
         if (Pending != null) Pending.AmmoScale = float.IsFinite(Pending.AmmoScale) ? Math.Clamp(Pending.AmmoScale, 0f, 1f) : 1f;

@@ -85,12 +85,26 @@ public sealed partial class CampaignMenu
                 string line = b.Number > 0
                     ? string.Format(S.CmOrgBat, string.IsNullOrEmpty(b.Name) ? $"{b.Number}" : b.Name, b.Companies, b.Strength, b.MaxStrength, b.Wounded, b.Available)
                     : string.Format(S.CmOrgDirectCo, b.Name, b.Strength, b.MaxStrength, b.Wounded, b.Available > 0 ? "" : S.CmOrgDirectUnavail);
-                Ui.Text(line, x + 24, y, 14, Palette.Text); y += 20; shown++;
+                Ui.Text(line, x + 24, y, 14, Palette.Text);
+                DrawMeter(body.X + body.Width - 330, y + 3, S.CmOrgBarFatigue, b.Fatigue, b.Fatigue >= CampaignEconomyDefs.Current.FatigueWarnThreshold ? Palette.Warning : Palette.HpGood);   // T42a 읽기 막대
+                DrawMeter(body.X + body.Width - 170, y + 3, S.CmOrgBarMorale, b.Morale, Palette.Accent);
+                y += 20; shown++;
             }
             y += 6;
         }
         if (shown < total) Ui.Text(string.Format(S.CmOrgMore, total - shown), x, limit + 4, 13, Palette.TextDim);
         ReadonlyFooter(body, S.CmOrgLater);
+    }
+
+    /// <summary>[T42a] 라벨 + 0..100 막대 (읽기 전용, 폭 150).</summary>
+    static void DrawMeter(float x, float y, string label, int value, Color fill)
+    {
+        value = Math.Clamp(value, 0, 100);
+        Ui.Text(label, x, y - 2, 12, Palette.TextDim);
+        var bar = new Rectangle(x + 32, y, 90, 10);
+        Raylib.DrawRectangleRec(bar, Palette.Alpha(Palette.PanelDark, 200));
+        Raylib.DrawRectangleRec(new Rectangle(bar.X, bar.Y, bar.Width * value / 100f, bar.Height), fill);
+        Ui.Text($"{value}", bar.X + bar.Width + 4, y - 2, 12, Palette.Text);
     }
 
     void ReadonlyFooter(Rectangle body, string later)

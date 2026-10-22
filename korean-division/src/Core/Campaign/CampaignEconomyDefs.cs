@@ -28,6 +28,21 @@ public sealed class CampaignEconomyDefs
     /// <summary>[T19b Q6] 승리 시 적 손실 1명당 노획 포탄 (종류별, 내림).</summary>
     public Dictionary<string, float> LootShellsPerKill { get; set; } = new() { [StockKeys.InfGun] = 0.1f, [StockKeys.Field] = 0.05f, [StockKeys.Howitzer] = 0.02f };
 
+    // ---- [T42a] 피로 · 사기 계정 — 모든 수치 임시 (0.3 밸런스에서 확정). 홈 계정만, 전투 시뮬과 무관.
+    /// <summary>[임시] 작전에 투입된 중대의 피로 증가.</summary>
+    public int FatiguePerDeploy { get; set; } = 20;
+    /// <summary>[임시] 작전에 투입되지 않은 중대의 피로 회복 (쉼).</summary>
+    public int FatigueRestRecovery { get; set; } = 15;
+    /// <summary>[임시] 피로가 이 값 이상이면 '지침' 표시 + 투입 경고 (잠금 없음 — Q1 답 전).</summary>
+    public int FatigueWarnThreshold { get; set; } = 70;
+    /// <summary>[임시] 투입 중대 사기: 승리 + / 패배 −.</summary>
+    public int MoraleWin { get; set; } = 5;
+    public int MoraleLoss { get; set; } = 10;
+    /// <summary>[임시] 투입 중대 사기에서 손실률 (잃은 수 / 투입 수, 0..1) 1.0 당 추가로 빼는 값.</summary>
+    public int MoraleCasualtyScale { get; set; } = 20;
+    /// <summary>[임시] 미투입 중대 사기 회복 (쉼).</summary>
+    public int MoraleRestRecovery { get; set; } = 3;
+
     static CampaignEconomyDefs? current;
     public static CampaignEconomyDefs Current => current ??= Load(Path.Combine(AppContext.BaseDirectory, "assets", "data", "campaign_economy.json"));
     /// <summary>[테스트] 정의를 갈아 끼운다 (null = 파일 다시 읽기).</summary>
@@ -64,6 +79,13 @@ public sealed class CampaignEconomyDefs
         RecruitAssignCostPerMan = F(RecruitAssignCostPerMan, 0.01f, 1000f, d.RecruitAssignCostPerMan);
         HowitzerCompanyStrength = Math.Clamp(HowitzerCompanyStrength, 1, 100_000);
         ShortLoadRatio = F(ShortLoadRatio, 0f, 1f, d.ShortLoadRatio);
+        FatiguePerDeploy = Math.Clamp(FatiguePerDeploy, 0, 100);
+        FatigueRestRecovery = Math.Clamp(FatigueRestRecovery, 0, 100);
+        FatigueWarnThreshold = Math.Clamp(FatigueWarnThreshold, 1, 100);
+        MoraleWin = Math.Clamp(MoraleWin, 0, 100);
+        MoraleLoss = Math.Clamp(MoraleLoss, 0, 100);
+        MoraleCasualtyScale = Math.Clamp(MoraleCasualtyScale, 0, 100);
+        MoraleRestRecovery = Math.Clamp(MoraleRestRecovery, 0, 100);
         // [T19b] 포탄 사전: null 이면 기본값, 값은 알려진 포탄 재고 키만 (모르는 키 · null 항목은 버림), 노획은 0..1000 으로 자름.
         if (ShellWeapons == null) ShellWeapons = d.ShellWeapons;
         else ShellWeapons = ShellWeapons.Where(kv => kv.Key != null && kv.Value != null && Array.IndexOf(StockKeys.AllShells, kv.Value) >= 0)

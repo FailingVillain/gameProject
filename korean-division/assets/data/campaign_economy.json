@@ -14,6 +14,14 @@
   "recruitAssignCostPerMan": 0.5,
   "howitzerCompanyStrength": 40,
   "shortLoadRatio": 0.5,
+  "_fatigueMorale": "T42a 임시값 - 0.3 밸런스에서 확정",
+  "fatiguePerDeploy": 20,
+  "fatigueRestRecovery": 15,
+  "fatigueWarnThreshold": 70,
+  "moraleWin": 5,
+  "moraleLoss": 10,
+  "moraleCasualtyScale": 20,
+  "moraleRestRecovery": 3,
   "shellWeapons": { "gun_infantry": "infGun", "gun_field": "field", "howitzer_heavy": "howitzer" },
   "lootShellsPerKill": { "infGun": 0.1, "field": 0.05, "howitzer": 0.02 }
 }

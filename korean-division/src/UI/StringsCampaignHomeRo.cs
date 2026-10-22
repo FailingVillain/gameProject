@@ -38,6 +38,11 @@ public static partial class S
     public const string CmOrgBat = "{0}  {1}개 중대 · 병력 {2:N0}/{3:N0} · 부상 {4:N0} · 가용 {5}";
     public const string CmOrgDirectCo = "{0}  병력 {1:N0}/{2:N0} · 부상 {3:N0}{4}";
     public const string CmOrgDirectUnavail = " · 출전 불가";
+    // ---- [T42a] 피로 · 사기 (읽기 표시)
+    public const string CmSumFatigueMorale = "피로 평균 {0} · 사기 평균 {1} · 지침 {2}개 중대";
+    public const string CmOrgBarFatigue = "피로", CmOrgBarMorale = "사기";
+    public const string CmOrgTired = "지침 {0}";
+    public const string CmStatusTired = "지침 (피로)";
     public const string CmOrgMore = "... 외 {0}줄 (화면 밖)";
     public const string CmOrgLater = "분대 · 중대 편제 틀 편집은 후속 (연대 배속은 2 신병/부대 탭).";
 }
