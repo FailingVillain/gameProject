@@ -43,10 +43,20 @@ Helper: heavy_gate -Max 12 -TimeoutMin 15; lock .git/kd-merge-b.lock held during
 | step | branch@tip | commit | notes |
 |---|---|---|---|
 | 1 G7 | kd/t45-menu-hide 88735b1 | ed4b7f2 | Program.cs arg list: HEAD list + --dev-menu; ops ours; menuhide PASS |
-| 2 | t38k-fonts 07cb63f | (see log) | SelfTest.cs both registrations kept; fonts PASS; assets/fonts 15M |
+| 2 | t38k-fonts 07cb63f | 61041d8 | SelfTest.cs both registrations kept; fonts PASS; assets/fonts 15M |
+| 3 | t38l-title-strings fa03891 | d1158c9 | MainMenu.DrawTitle: t38l 3 lines + Heading role on main title only (sub lines body) |
+| 4 | t47-campaign-map-zoom 921f715 (cherry-pick, t38i eea5d65 already in) | ead14ae | ancestry mismatch as expected; ops ours |
+| 5 | t48a-commander-data e31406d | fc19995 | clean; commanders/savecompat PASS; snaptest QUICK 0 |
+| 6 | t48c-favor b543fd4 | 3ef7942 | clean |
+| 7 | t49a-save-messages 4896113 | 43d8397 | clean; message-only edits in Snapshot.cs/Replay.cs (FormatVersion untouched); snaptest 0 |
+| 8 | t49bc-compat-tests 11e7a7b | 20132b4 | SelfTest.cs: commanders line (with Favor) + compatgate; SaveCompatSelfTest both calls; UserSettings.Load auto-merged cleanly (read=t49bc, clamp/keys/Sanitize=t38a); compatgate+savecompat+commanders+crossing+full selftest(unknown group name) PASS |
+| 9 | tools/perf-bench 0355c89 (cherry-pick; branch carries main ops history) | cc967ed | tools/gate-12 SKIPPED: identical to main |
+| 10 | t38e-unitlist-codex 2afc472 | SKIPPED | ops/QUEUE.md + CARD_INDEX = queued; commit says "partial" |
+| 11 H2 | t39i-ruined-houses 66d6b95 | SKIPPED | only game-tools/image (house art, render lane) |
+| 11 H3 | spec docs (tag ui-pre-merge-H3) | 76bafda 52b7a78 7dd2d5e d7e8ef4 d61570b 13b1949 54e17bf 63a3fda e20ef16 2a92ff0 14ad13d 01349cb | docs only; ops/tasks ours, DECISIONS_PENDING union (conflict at top = both blocks); spec/cards-t32 has src (skipped); cards-commanders/c1e1/house-variety not in plan (skipped) |
+Final: HEAD detcheck 8aa6448b9690b922 GOLDEN match. Phase 2 lock released.
 
 ## Not done / next
-- G7 kd/t45-menu-hide 88735b1: not in the order given to line 2 -> NOT merged (plan G7, needs menuhide, uifuzz 30, missions).
 - T33d (kd/t33d-rail 022647f): final combine only (needs rail/river terrains from line 1). Editor terrain list has no Bridge/Ford/Rail yet (Terrain.cs) - expected until river merges.
 - H2 t39i-ruined-houses, H3 spec/* docs not done.
 - Final combine of merge/0.2 + merge/0.2-ui is by the commander (campaign-side files overlap with sim: Snapshot/Replay FV lines untouched here).
