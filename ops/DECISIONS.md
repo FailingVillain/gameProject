@@ -138,3 +138,8 @@ Q-A1 새 Entity(TrainCar, Units 밖 World.Trains) · Q-A2 단선·순환선만(�
 
 ## Z 갱신. T16b 중간 결과 (2026-10-22 13:1x; 원본 T16b 에이전트 진행 중, 확정 아님)
 trench_assault 시드 101~120 한국 승/20: 구 main 92ac51c5 N32 켬 5·끔 11 / formation 병합 직전 c6b99041 끔 11 / **formation 병합 1ea925d8 끔 4** / main·breach2 끔 4 / breach2 + `formRelax:false` 켬 5·끔 11 / `relaxMoveTolerance` 0.5 끔 11 / `restAlignSec` 0 끔 10 / `formDeadband` 0 끔 5 / `shortMoveDist` 0 끔 7. → **돌파(breach)는 원인이 아님**; 'N32 끔 효과'가 사라진 지점은 formation 병합(`formRelax`, 특히 `relaxMoveTolerance` 1.5). 단 시드 121~160 에서는 breach2 끔 21/40 이라 101~120 이 효과를 과장했을 수 있음 → 원본 에이전트가 확인 중. 확정되면 카드(T16b)로 올라옴.
+
+## Y 갱신. T11 재렌더 현황·가속안 (scout 13:06)
+27/81 유닛 완료(카드는 70이라 하나 스크립트 큐는 81 — SKIP 집합이 큐에 적용 안 됨: 어느 쪽이 맞나?). 남은 54유닛 ≈ 13~14시간(2레인). `rerender96.py --shard K/N` 으로 임의 분할 가능(동적 claim). 렌더는 Blender 아님(Python numpy voxel), 자식 1개당 CPU 1코어·RAM 250~380MB. PC = Ryzen 7 9800X3D 16논리/RX 9070 XT/RAM 31GB(여유 ~8GB). `standard-bearer-fengtian` collide_hits=5(rc=0 이나 0 아님) 재확인 필요.
+- **Y2** 렌더 레인 수: A★ 4레인(`--shard K/4`, 낮은 우선순위로 실행 → 약 7시간) / B 3레인(약 9시간) / C 현행 2레인(약 13시간). 메모리 규칙 'heavy 동시 2'(PC 멈춤 사고)를 렌더에 한해 완화하는 결정이라 사용자 승인 필요. 무응답 시 현행 2레인.
+- **Y3** 카드 70 vs 큐 81 유닛: 어느 쪽이 정본인지.
