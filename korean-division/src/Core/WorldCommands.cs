@@ -92,6 +92,7 @@ public sealed partial class World
             case MountCommand mc: foreach (var u in Resolve(f, mc.Units)) ExecMount(u, mc.Mount); break;   // N61
             case ChargeOnlyCommand c: foreach (var u in Resolve(f, c.Units)) if (u.CanCharge && u.Def.Mounted) u.ChargeOnly = c.On; break;
             case SetScoutAutoCommand c: ExecSetScoutAuto(f, Resolve(f, c.Units), c.On); break;   // 정찰병 자율 토글 (Scouts.cs)
+            case MissionDecisionCommand c: if (f == Mission?.Player) ExecMissionDecision(c.Decision, c.Choice); break;   // [g3] 미션 중 결정 응답
             case MissionEndCommand c: ExecMissionEnd(c.Won); break;   // [치트] 미션 즉시 종료 (Mission/WorldMission.cs)
             case CloseRanksCommand c: ExecCloseRanks(f, c.Companies); break;   // 대열 정비 (CloseRanks.cs)
             case SetFireModeCommand c: ExecSetFireMode(f, c.Units, c.Mode); break;   // N73 사격 통제 (FireControl.cs)

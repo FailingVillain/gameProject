@@ -324,4 +324,22 @@ public sealed class CampaignDecisions
         for (int i = cp.Answers; i < s.Decisions.Answers.Count; i++) s.Decisions.Answers[i].Day = Math.Max(s.Day, 1);
         s.Decisions.Checkpoint = null;
     }
+
+    // ---------- [g3] 미션 중 결정 정산 ----------
+    /// <summary>미션 중 응답한 결정과 변수를 캠페인에 반영한다 (승리 정산용; 패배면 부르지 않고 RetryMission). 결정은 id 순으로 Raise → Answer (비활성 · 자금 부족 등 오류는 문장으로 모아 돌려주고, 그 결정은 건너뜀).
+    /// 변수는 결정 효과보다 먼저 대입한다 (결정 효과가 그 위에 더해짐).</summary>
+    public List<string> ApplyMissionOutcome(CampaignState s, IReadOnlyDictionary<string, string>? decisions, IReadOnlyDictionary<string, int>? vars)
+    {
+        var errors = new List<string>();
+        CampaignVars.ApplyMissionVars(s, vars);
+        if (decisions == null) return errors;
+        foreach (var kv in decisions.OrderBy(k => k.Key, StringComparer.Ordinal))
+        {
+            if (IsAnswered(s, kv.Key)) continue;   // 이미 응답됨 (재정산 방지)
+            string e = Raise(s, kv.Key);
+            if (e.Length == 0) e = Answer(s, kv.Key, new[] { kv.Value }, 0, out _);
+            if (e.Length != 0) errors.Add(kv.Key + ": " + e);
+        }
+        return errors;
+    }
 }

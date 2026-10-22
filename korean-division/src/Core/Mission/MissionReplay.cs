@@ -10,11 +10,13 @@ public sealed class MissionReplayInfo
     public string Hash { get; set; } = "";
     public string Json { get; set; } = "";
     public List<DeployEntry> Deployment { get; set; } = new();
+    /// <summary>[g3] 미션 시작 변수 (캠페인 변수 → 미션; 비어 있으면 머리말에 안 씀). 시작 상태의 일부.</summary>
+    public Dictionary<string, int>? StartVars { get; set; }
 
     public static MissionReplayInfo? From(World w) => w.Mission is not { } m ? null : new MissionReplayInfo
     {
-        Id = m.Def.Id, Hash = m.Def.Hash, Json = m.Def.Json, Deployment = new List<DeployEntry>(m.Deployment),
+        Id = m.Def.Id, Hash = m.Def.Hash, Json = m.Def.Json, Deployment = new List<DeployEntry>(m.Deployment), StartVars = m.StartVars.Count > 0 ? new Dictionary<string, int>(m.StartVars) : null,
     };
 
-    public World CreateWorld(Defs defs, int seed) => World.CreateMissionWorld(MissionDef.Parse(Json, Id), defs, seed, Deployment);
+    public World CreateWorld(Defs defs, int seed) => World.CreateMissionWorld(MissionDef.Parse(Json, Id), defs, seed, Deployment, StartVars);
 }

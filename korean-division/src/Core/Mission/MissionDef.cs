@@ -186,10 +186,25 @@ public sealed class MissionDef
             {
                 Require(a.Spawn == null || Reinforcements.Any(r => r.Id == a.Spawn), $"사건 '{e.Id}': 증원 '{a.Spawn}' 없음");
                 Require(a.Reveal == null || oids.Contains(a.Reveal), $"사건 '{e.Id}': 목표 '{a.Reveal}' 없음");
+                Require(a.End == null || a.End is "win" or "lose", $"사건 '{e.Id}': end 는 win · lose");
+                Require(a.Decision == null || ValidName(a.Decision), $"사건 '{e.Id}': 결정 id 형식");
+                Require(a.SetVar == null || (ValidName(a.SetVar) && (a.Value != null) != (a.Delta != null)), $"사건 '{e.Id}': setVar 는 이름 + value 또는 delta 중 하나");
             }
+            var w = e.When;
+            Require(w.Objectives == null || w.Objectives.All(oids.Contains), $"사건 '{e.Id}': objectives 에 없는 목표");
+            Require(w.Delay == null || (float.IsFinite(w.Delay.Value) && w.Delay >= 0), $"사건 '{e.Id}': delay 는 0 이상");
+            Require(w.Var == null || (ValidName(w.Var) && Array.IndexOf(MissionCondition.Ops, w.Op ?? ">=") >= 0), $"사건 '{e.Id}': var 조건 형식");
+            Require(w.Decision == null || ValidName(w.Decision), $"사건 '{e.Id}': decision 형식");
+            Require(w.Choice == null || (w.Decision != null && ValidName(w.Choice)), $"사건 '{e.Id}': choice 는 decision 과 함께");
         }
         Require(Objectives.Any(o => o.Primary), "주 목표(primary)가 하나 이상 필요");
     }
+
+    /// <summary>[g3] 변수 · 결정 · 선택지 이름: 1~64자, 영숫자 . _ -.</summary>
+    internal static bool ValidName(string? n) => !string.IsNullOrEmpty(n) && n.Length <= 64 && n.All(c => char.IsAsciiLetterOrDigit(c) || c is '.' or '_' or '-');
+
+    /// <summary>[g3] 사건이 읽거나 쓰는 미션 변수 이름 (중복 없음, 이름 순).</summary>
+    public IEnumerable<string> VarNames() => Events.SelectMany(e => e.Do.Select(a => a.SetVar).Append(e.When.Var)).OfType<string>().Distinct().OrderBy(n => n, StringComparer.Ordinal);
 
     static void Require(bool ok, string msg)
     {
@@ -416,6 +431,19 @@ public sealed class MissionCondition
     public string? State { get; set; }
     /// <summary>태그 유닛이 모두 죽음.</summary>
     public string? Killed { get; set; }
+    /// <summary>[g3] 여러 목표가 모두 state (done · failed, 기본 done) — objective 와 함께 쓰면 둘 다 (AND).</summary>
+    public List<string>? Objectives { get; set; }
+    /// <summary>[g3] 지연 (초): 나머지 조건이 처음 참이 된 시점부터 N초 뒤에 발동 (한 번 참이 되면 유지).</summary>
+    public float? Delay { get; set; }
+    /// <summary>[g3] 미션 변수 조건: var (op: >= <= == != > <, 기본 >=) value. 없는 변수 = 0.</summary>
+    public string? Var { get; set; }
+    public string? Op { get; set; }
+    public int Value { get; set; }
+    /// <summary>[g3] 미션 중 결정 id 가 응답됨 (choice 가 있으면 그 선택지로).</summary>
+    public string? Decision { get; set; }
+    public string? Choice { get; set; }
+
+    public static readonly string[] Ops = { ">=", "<=", "==", "!=", ">", "<" };
 }
 
 public sealed class MissionAction
@@ -425,4 +453,12 @@ public sealed class MissionAction
     public string? Weather { get; set; }
     public string? Time { get; set; }
     public string? Reveal { get; set; }
+    /// <summary>[g3] 사건으로 미션 종료: "win" · "lose" (예: 두목 사살 조기 승리).</summary>
+    public string? End { get; set; }
+    /// <summary>[g3] 미션 중 결정 팝업 (id = campaign_decisions.json 의 결정). 응답 전까지 UI 가 일시정지.</summary>
+    public string? Decision { get; set; }
+    /// <summary>[g3] 미션 변수 쓰기: setVar 이름 + value (대입) 또는 delta (증감).</summary>
+    public string? SetVar { get; set; }
+    public int? Value { get; set; }
+    public int? Delta { get; set; }
 }

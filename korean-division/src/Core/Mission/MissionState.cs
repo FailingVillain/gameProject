@@ -32,6 +32,17 @@ public sealed class MissionState
     public bool[] ObjRevealed = Array.Empty<bool>();
     public bool[] EventFired = Array.Empty<bool>();
     public bool[] ReinforcementSpawned = Array.Empty<bool>();
+    /// <summary>[g3 · FV 54] 사건별 지연 조건 시작 틱 + 1 (0 = 아직 아님). delay 가 있는 사건만 쓴다.</summary>
+    public long[] EventArmed = Array.Empty<long>();
+    /// <summary>[g3] 미션 변수 (setVar · 시작 변수). 없는 변수 = 0. 캠페인 정산이 승리 시 읽는다.</summary>
+    public readonly SortedDictionary<string, int> Vars = new(StringComparer.Ordinal);
+    /// <summary>[g3] 응답을 기다리는 미션 중 결정 (제기 순). UI 는 비어 있지 않으면 시뮬을 멈춘다.</summary>
+    public readonly List<string> PendingDecisions = new();
+    /// <summary>[g3] 응답한 미션 중 결정 id → 선택지 id.</summary>
+    public readonly SortedDictionary<string, string> Decisions = new(StringComparer.Ordinal);
+    /// <summary>[g3] 시작 때 받은 변수 (리플레이 머리말용 — Vars 의 초기값).</summary>
+    public readonly SortedDictionary<string, int> StartVars = new(StringComparer.Ordinal);
+    public const int VarLimit = 1_000_000;
     /// <summary>세력별 지금까지 생긴 유닛 수 (손실 = 생긴 수 − 살아 있는 수).</summary>
     public int[] Spawned = Array.Empty<int>();
     /// <summary>사건 메시지 기록 (틱, 글). HUD 가 최근 것을 띄운다.</summary>
@@ -53,12 +64,16 @@ public sealed class MissionState
         ObjRevealed = def.Objectives.Select(o => !o.Hidden).ToArray();
         EventFired = new bool[def.Events.Count];
         ReinforcementSpawned = new bool[def.Reinforcements.Count];
+        EventArmed = new long[def.Events.Count];
         Spawned = new int[def.FactionCount + 1];
         Weather = def.Weather;
         TimeOfDay = def.Time;
     }
 
     public int Player => Def.Player;
+
+    public int Var(string name) => Vars.TryGetValue(name, out var v) ? v : 0;
+    internal void SetVar(string name, int v) => Vars[name] = Math.Clamp(v, -VarLimit, VarLimit);
 
     public IReadOnlyList<int> TagUnits(string? tag) => tag != null && Tags.TryGetValue(tag, out var l) ? l : Array.Empty<int>();
 
@@ -84,6 +99,11 @@ public sealed class MissionState
         w.I(Result); w.L(EndTick); w.I(FailReason);
         w.I(OfficerKey.Count);   // FormatVersion 53 (T48b1)
         foreach (var (k, v) in OfficerKey) { w.I(k); w.I(v); }
+        foreach (var t in EventArmed) w.L(t);   // FormatVersion 54 (g3)
+        w.I(Vars.Count); foreach (var (k, v) in Vars) { w.Str(k); w.I(v); }
+        w.I(StartVars.Count); foreach (var (k, v) in StartVars) { w.Str(k); w.I(v); }
+        w.I(PendingDecisions.Count); foreach (var d in PendingDecisions) w.Str(d);
+        w.I(Decisions.Count); foreach (var (k, v) in Decisions) { w.Str(k); w.Str(v); }
     }
 
     static void WriteMap(SnapWriter w, SortedDictionary<string, List<int>> m)
@@ -142,6 +162,40 @@ public sealed class MissionState
             int k = r.I(), v = r.I();
             if (v <= 0) throw new SnapshotException(string.Format(SnapMsg.Invalid, "officer key"));
             s.OfficerKey[k] = v;
+        }
+        for (int i = 0; i < s.EventArmed.Length; i++)   // FormatVersion 54 (g3)
+        {
+            long t = r.L();
+            if (t < 0) throw new SnapshotException(string.Format(SnapMsg.Invalid, "event armed"));
+            s.EventArmed[i] = t;
+        }
+        int nv = r.Count(2);
+        for (int i = 0; i < nv; i++)
+        {
+            string k = r.Str() ?? ""; int v = r.I();
+            if (!MissionDef.ValidName(k) || Math.Abs(v) > VarLimit) throw new SnapshotException(string.Format(SnapMsg.Invalid, "mission var"));
+            s.Vars[k] = v;
+        }
+        int nsv = r.Count(2);
+        for (int i = 0; i < nsv; i++)
+        {
+            string k = r.Str() ?? ""; int v = r.I();
+            if (!MissionDef.ValidName(k) || Math.Abs(v) > VarLimit) throw new SnapshotException(string.Format(SnapMsg.Invalid, "mission start var"));
+            s.StartVars[k] = v;
+        }
+        int np = r.Count(1);
+        for (int i = 0; i < np; i++)
+        {
+            string d = r.Str() ?? "";
+            if (!MissionDef.ValidName(d)) throw new SnapshotException(string.Format(SnapMsg.Invalid, "mission decision"));
+            s.PendingDecisions.Add(d);
+        }
+        int nd2 = r.Count(2);
+        for (int i = 0; i < nd2; i++)
+        {
+            string d = r.Str() ?? "", c = r.Str() ?? "";
+            if (!MissionDef.ValidName(d) || !MissionDef.ValidName(c)) throw new SnapshotException(string.Format(SnapMsg.Invalid, "mission decision answer"));
+            s.Decisions[d] = c;
         }
         return s;
     }

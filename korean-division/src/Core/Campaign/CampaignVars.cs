@@ -123,4 +123,21 @@ public static class CampaignVars
         foreach (var d in defs!)
             if (s.Flags.TryGetValue(d.StoreKey, out var v)) s.Flags[d.StoreKey] = Math.Clamp(v, d.Min, d.Max);
     }
+
+    // ---------- [g3] 미션 변수 ↔ 캠페인 변수 ----------
+    /// <summary>미션 사건이 읽거나 쓰는 변수 중 레지스트리에 있는 것의 지금 값 (World.CreateMissionWorld 의 startVars). 이름 순.</summary>
+    public static SortedDictionary<string, int> StartVarsFor(CampaignState s, MissionDef def)
+    {
+        var r = new SortedDictionary<string, int>(StringComparer.Ordinal);
+        foreach (var n in def.VarNames()) if (Has(n)) r[n] = Get(s, n);
+        return r;
+    }
+
+    /// <summary>미션 끝의 변수를 캠페인에 반영한다 (대입 — 시작값을 받은 변수라 미션이 곧 최종값). 모르는 키는 무시. 반영한 개수.</summary>
+    public static int ApplyMissionVars(CampaignState s, IReadOnlyDictionary<string, int>? vars)
+    {
+        int n = 0;
+        if (vars != null) foreach (var kv in vars.OrderBy(k => k.Key, StringComparer.Ordinal)) if (Set(s, kv.Key, kv.Value)) n++;
+        return n;
+    }
 }

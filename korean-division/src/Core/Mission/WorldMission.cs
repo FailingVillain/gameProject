@@ -39,7 +39,7 @@ public sealed partial class World
     // ================================================================ 생성
 
     /// <summary>미션 월드: 지도 + 세력 (팀 · 이름) + 시설 + 시작 병력 (+ 배치 단계 결과). 대도시 없음 — 승패는 목표로.</summary>
-    public static World CreateMissionWorld(MissionDef def, Defs defs, int? seed = null, IEnumerable<DeployEntry>? deployment = null)
+    public static World CreateMissionWorld(MissionDef def, Defs defs, int? seed = null, IEnumerable<DeployEntry>? deployment = null, IReadOnlyDictionary<string, int>? startVars = null)
     {
         int s = seed ?? def.Seed;
         GameMap map = def.MapData is { ValueKind: JsonValueKind.Object } md
@@ -56,6 +56,9 @@ public sealed partial class World
         MapFile.SetMissionFactions(map, def.Factions.Select(f => new FactionDef { Name = f.Name, En = f.En, Color = f.Color, Lang = f.Lang, Team = f.Team }).ToList());
         var w = new World(map, defs, def.FactionCount);
         w.Mission = new MissionState(def);
+        if (startVars != null)   // [g3] 캠페인 변수 → 미션 변수 (이름 순으로 결정적)
+            foreach (var kv in startVars.OrderBy(k => k.Key, StringComparer.Ordinal))
+                if (MissionDef.ValidName(kv.Key)) { w.Mission.SetVar(kv.Key, kv.Value); w.Mission.StartVars[kv.Key] = w.Mission.Var(kv.Key); }
         for (int f = 1; f <= def.FactionCount; f++) w.AssignTeam(f, def.Factions[f - 1].Team);
         MapFile.ApplyFactions(w);
         if (def.Weather != null || def.Time != null)   // 미션 시작 날씨 · 시간대 = 지도 설정을 덮어쓴다 (틱 0 전, Weather.cs 의 같은 길)
@@ -470,10 +473,11 @@ public sealed partial class World
                 EvalObjective(m, i, t, dt);
 
         for (int i = 0; i < def.Events.Count; i++)
-            if (!m.EventFired[i] && EventReady(m, def.Events[i].When, t))
+            if (!m.EventFired[i] && EventReady(m, i, t))
             {
                 m.EventFired[i] = true;
                 foreach (var a in def.Events[i].Do) RunAction(m, a);
+                if (m.Result != MissionState.Running) return;   // [g3] end 행동이 미션을 끝냄 — 아래 승패 판정이 덮어쓰지 않게
             }
 
         // 승패
@@ -593,7 +597,20 @@ public sealed partial class World
         }
     }
 
-    bool EventReady(MissionState m, MissionCondition c, float t)
+    /// <summary>[g3] 사건 발동 판정: 조건이 모두 참이고 (delay 가 있으면) 처음 참이 된 때부터 N초가 지남.</summary>
+    bool EventReady(MissionState m, int idx, float t)
+    {
+        var c = m.Def.Events[idx].When;
+        if (c.Delay is not float delay) return EventCondition(m, c, t);
+        if (m.EventArmed[idx] == 0)
+        {
+            if (!EventCondition(m, c, t)) return false;
+            m.EventArmed[idx] = Tick + 1;
+        }
+        return (Tick + 1 - (m.EventArmed[idx] - 1)) * Config.SimDt >= delay;
+    }
+
+    bool EventCondition(MissionState m, MissionCondition c, float t)
     {
         if (c.Time is float ct && t < ct) return false;
         if (c.Area != null)
@@ -610,10 +627,30 @@ public sealed partial class World
             int want = (c.State ?? "done").ToLowerInvariant() == "failed" ? MissionState.Failed : MissionState.Done;
             if (idx < 0 || m.ObjState[idx] != want) return false;
         }
+        if (c.Objectives != null)
+        {
+            int want = (c.State ?? "done").ToLowerInvariant() == "failed" ? MissionState.Failed : MissionState.Done;
+            foreach (var oid in c.Objectives)
+            {
+                int idx = m.Def.Objectives.FindIndex(o => o.Id == oid);
+                if (idx < 0 || m.ObjState[idx] != want) return false;
+            }
+        }
         if (c.Killed != null)
         {
             var ids = m.TagUnits(c.Killed);
             if (ids.Count == 0 || AliveOf(ids) > 0) return false;
+        }
+        if (c.Var != null)
+        {
+            int v = m.Var(c.Var);
+            bool ok = (c.Op ?? ">=") switch { ">=" => v >= c.Value, "<=" => v <= c.Value, "==" => v == c.Value, "!=" => v != c.Value, ">" => v > c.Value, "<" => v < c.Value, _ => false };
+            if (!ok) return false;
+        }
+        if (c.Decision != null)
+        {
+            if (!m.Decisions.TryGetValue(c.Decision, out var chosen)) return false;
+            if (c.Choice != null && chosen != c.Choice) return false;
         }
         return true;
     }
@@ -637,6 +674,19 @@ public sealed partial class World
             int i = m.Def.Objectives.FindIndex(o => o.Id == a.Reveal);
             if (i >= 0 && !m.ObjRevealed[i]) { m.ObjRevealed[i] = true; m.Messages.Add((Tick, string.Format(S.MsNewObjective, m.Def.Objectives[i].Text ?? m.Def.Objectives[i].Id))); }
         }
+        if (a.SetVar != null)   // [g3] 미션 변수 (사건은 틱 안에서 돌므로 명령 경유와 같은 결정성)
+            m.SetVar(a.SetVar, a.Delta is int d ? m.Var(a.SetVar) + d : a.Value ?? 0);
+        if (a.Decision != null && !m.Decisions.ContainsKey(a.Decision) && !m.PendingDecisions.Contains(a.Decision))
+            m.PendingDecisions.Add(a.Decision);
+        if (a.End != null && m.Result == MissionState.Running) EndMission(m, a.End == "win", -1);
+    }
+
+    /// <summary>[g3] 플레이어의 미션 중 결정 응답 (명령 MissionDecisionCommand). 대기 중이 아니거나 형식이 틀리면 무시.</summary>
+    void ExecMissionDecision(string decision, string choice)
+    {
+        if (Mission is not { } m || !m.PendingDecisions.Contains(decision) || !MissionDef.ValidName(choice)) return;
+        m.PendingDecisions.Remove(decision);
+        m.Decisions[decision] = choice;
     }
 
     bool FailureTriggered(MissionState m, MissionFailure f, float t, bool allDone)
@@ -711,6 +761,11 @@ public sealed partial class World
         foreach (var d in m.Deployment) { h.Add(d.Force); h.Add(d.At.X); h.Add(d.At.Y); h.Add(d.Facing); }
         foreach (var (k, l) in m.Tags) { h.Add(k); h.Add(l.Count); }
         if (m.OfficerKey.Count > 0) { h.Add(m.OfficerKey.Count); foreach (var (k, v) in m.OfficerKey) { h.Add(k); h.Add(v); } }   // T48b1 (없으면 기존 체크섬 그대로)
+        // g3: 쓰이지 않았으면 해시에 아무것도 더하지 않는다 (기존 미션 골든 불변)
+        foreach (var at in m.EventArmed) if (at != 0) h.Add(at);
+        if (m.Vars.Count > 0) { h.Add(m.Vars.Count); foreach (var (k, v) in m.Vars) { h.Add(k); h.Add(v); } }
+        if (m.PendingDecisions.Count > 0) { h.Add(m.PendingDecisions.Count); foreach (var d in m.PendingDecisions) h.Add(d); }
+        if (m.Decisions.Count > 0) { h.Add(m.Decisions.Count); foreach (var (k, v) in m.Decisions) { h.Add(k); h.Add(v); } }
     }
 }
 
@@ -734,3 +789,6 @@ public sealed partial class MapFile
 
 /// <summary>[치트 · 테스트] 미션을 즉시 끝낸다 (콘솔 "mission win|lose", UI 퍼즈).</summary>
 public sealed record MissionEndCommand(int Faction, bool Won) : GameCommand(Faction);
+
+/// <summary>[g3] 미션 중 결정 응답 (팝업에서 고른 선택지). 리플레이에 기록되어 같은 응답열이면 같은 해시.</summary>
+public sealed record MissionDecisionCommand(int Faction, string Decision, string Choice) : GameCommand(Faction);

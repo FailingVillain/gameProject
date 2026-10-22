@@ -44,6 +44,9 @@ public static partial class S
     public const string DpOutside = "배치 구역 밖에는 놓을 수 없습니다";
     public const string DpMoved = "{0} 배치";
     public const string DpLocked = "고정 부대 (옮길 수 없음)";
+    // 미션 중 결정 팝업 (g3)
+    public const string DcTitle = "결정 필요 (일시정지)";
+    public const string DcHint = "선택지를 클릭하거나 번호 키를 누르세요";
     // 미션 HUD
     public const string MsHudTime = "경과 {0}";
     public const string MsHudLeft = "남은 시간 {0}";

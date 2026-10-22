@@ -34,6 +34,7 @@ namespace KoreanDivision.Core;
 [JsonDerivedType(typeof(SetMarchFireCommand), "marchfire")]
 [JsonDerivedType(typeof(SetBattalionFormCommand), "batform")]
 [JsonDerivedType(typeof(MissionEndCommand), "missionend")]
+[JsonDerivedType(typeof(MissionDecisionCommand), "missiondecision")]
 [JsonDerivedType(typeof(SetScoutAutoCommand), "scoutauto")]
 [JsonDerivedType(typeof(SetCompanyTacticCommand), "cotactic")]
 [JsonDerivedType(typeof(SetSquadFormCommand), "sqform")]

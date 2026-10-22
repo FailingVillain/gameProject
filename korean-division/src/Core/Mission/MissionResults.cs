@@ -49,6 +49,9 @@ public sealed class MissionResults
     public List<DeployEntry> Deployment { get; set; } = new();
     /// <summary>[T48b1] 키 장교 전사 · 포로 (Key 순).</summary>
     public List<OfficerDeath> Deaths { get; set; } = new();
+    /// <summary>[g3] 미션 끝의 미션 변수 · 미션 중 결정 응답 (결정 id → 선택지) — 캠페인 정산 입력 (CampaignDecisions.ApplyMissionOutcome). 표시 전용, 저장 · 체크섬 무관.</summary>
+    public Dictionary<string, int> Vars { get; set; } = new();
+    public Dictionary<string, string> Decisions { get; set; } = new();
 
     public static MissionResults From(World w)
     {
@@ -62,6 +65,7 @@ public sealed class MissionResults
             Seed = w.Map.Seed, CheatsUsed = w.CheatsUsed, PlayerFaction = m.Player,
             SavedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
             Deployment = new List<DeployEntry>(m.Deployment),
+            Vars = new Dictionary<string, int>(m.Vars), Decisions = new Dictionary<string, string>(m.Decisions),
         };
         if ((uint)m.Player < MoveStats.MaxF) foreach (var (k, v) in w.Stats.GunShots[m.Player]) r.PlayerGunShots[k] = v;
         foreach (var (k, v) in w.Stats.FriendlyFire) r.FriendlyFire[k] = new FriendlyFireEntry { Hits = v.Hits, Kills = v.Kills, Damage = Math.Round(v.Damage, 1) };

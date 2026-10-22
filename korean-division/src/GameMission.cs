@@ -22,6 +22,48 @@ public sealed partial class Game
 
     /// <summary>배치 단계인가: 미션 · 첫 틱 전 · 사람이 조작 · 아직 '작전 개시' 전.</summary>
     public bool DeployPhase => World.Mission is { Started: false } && World.Tick == 0 && !Observer && !deployDone;
+    string? decisionSent;   // 응답 명령을 낸 결정 id (다음 틱에 대기열에서 빠질 때까지 시뮬을 풀어 준다)
+    /// <summary>[g3] 미션 중 결정 응답 대기: 사람이 조작하는 진행 중 미션이고 대기 결정이 있으며 아직 응답 명령을 안 냈다. 리플레이 · 관전은 해당 없음 (응답은 명령으로 재생).</summary>
+    public bool DecisionBlocked => World.Mission is { Result: MissionState.Running, PendingDecisions.Count: > 0 } dm && !Observer && !IsReplay && decisionSent != dm.PendingDecisions[0];
+
+    (string Id, string Label)[] DecisionChoices(string id) =>
+        CampaignDecisions.Current.Find(id) is { Choices.Count: > 0 } d ? d.Choices.Select(c => (c.Id, c.Label)).ToArray() : new[] { ("A", "A"), ("B", "B") };
+
+    Rectangle DecisionPanel(int n) { var vp = Hud.Viewport; float w = MathF.Min(520, vp.Width - 40), h = 96 + n * 46; return new(vp.X + (vp.Width - w) / 2, vp.Y + (vp.Height - h) / 2, w, h); }
+    Rectangle DecisionRow(int n, int i) { var p = DecisionPanel(n); return new(p.X + 20, p.Y + 76 + i * 46, p.Width - 40, 38); }
+
+    void UpdateDecision()
+    {
+        var m = World.Mission!;
+        string id = m.PendingDecisions[0];
+        var ch = DecisionChoices(id);
+        for (int i = 0; i < ch.Length; i++)
+            if ((Input.IsMouseButtonPressed(MouseButton.Left) && Ui.Contains(DecisionRow(ch.Length, i), mouse)) || (i < 9 && Input.IsKeyPressed(KeyboardKey.One + i)))
+            {
+                World.Issue(new MissionDecisionCommand(Me, id, ch[i].Id));
+                decisionSent = id;
+                return;
+            }
+    }
+
+    void DrawDecisionPopup()
+    {
+        var m = World.Mission!;
+        string id = m.PendingDecisions[0];
+        var ch = DecisionChoices(id);
+        var d = CampaignDecisions.Current.Find(id);
+        Raylib.DrawRectangleRec(Hud.Viewport, Palette.Alpha(Color.Black, 120));
+        var p = DecisionPanel(ch.Length);
+        Ui.Panel(p, Palette.Alpha(Palette.PanelDark, 245), Palette.HudTrim);
+        Ui.Text(S.DcTitle, p.X + 20, p.Y + 12, 20, Palette.Accent);
+        Ui.Text((d?.Label ?? id) + "  -  " + S.DcHint, p.X + 20, p.Y + 44, 16, Palette.TextDim);
+        for (int i = 0; i < ch.Length; i++)
+        {
+            var r = DecisionRow(ch.Length, i);
+            Ui.Button(r, $"{i + 1}. {ch[i].Label}", Ui.Contains(r, mouse), false);
+        }
+    }
+
     /// <summary>[퍼즈 · 테스트] 배치를 끝내고 시작한다.</summary>
     public void StartMission() { if (DeployPhase) { deployDone = true; Paused = false; ShowNotice(S.DpStart); } }
     public MissionResults? MissionResult => missionResults;
@@ -273,6 +315,7 @@ public sealed partial class Game
             Ui.Button(sr, S.DpStart, hov, false);
         }
 
+        if (DecisionBlocked) DrawDecisionPopup();
         if (World.Winner != 0) DrawMissionResults(m);
     }
 

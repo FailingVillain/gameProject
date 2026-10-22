@@ -38,6 +38,7 @@ public static class MissionSelfTest
     public static void Run(GameOptions opt, Action<bool, string> check)
     {
         var defs = Defs.Current;
+        MissionEventsSelfTest.Run(check);   // C1E1-g3 이벤트 행동 확장
         CampaignChecks(defs, check);
         Campaign2Checks(defs, check);
         CampaignHomeChecks(defs, check);
