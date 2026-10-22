@@ -197,6 +197,7 @@
 | 15:2x | T38c 재작업 wip-ready(sonnet, 120k, 391초; t38c-on-ui 85e6658, t38a 위; kd/t46-card-overflow 를 대체): T27 쪽 넘김을 N쪽(쪽당 8·'.' 키)으로 일반화, 모든 쪽 단축키, '.' Bindings/CONTROLS 등록·재지정 불가 시험, 9개 이하 옛 배치. uiicons·uifuzz·골든 PASS. throwaway 체리픽(리허설 984c404): Game/Bindings/Strings 무충돌, CONTROLS/UiIconsSelfTest/QUEUE 충돌(T38a/b 가 리허설에 없어서). 실창 클릭 미검증. throwaway 워크트리 kd-throwaway-t38c 정리는 사용자 몫(--force 필요) → UI 체인 병합 가능, 병합 계획서 UI 그룹에서 kd/t46-card-overflow 를 t38c-on-ui 로 교체 | 완료 ~83 · 차단 해소 |
 | 15:2x | 사용자 결정 AU(연대장·대대장 시스템) + 병합 계획서 질문 2~4 승인 → 연대장/대대장 설계서·카드 작성 발주(spec), 임시 틀(작성 템플릿) 포함. 계획서 최종 확인 대기 | 기록 |
 | 15:2x | T38h wip-ready(sonnet, 113k, 781초; t38h-fuzz-campaign f126551, t42d 위 + t38g 체리픽 e5f76ec): --fuzz-campaign(합성 캠페인 자료 주입·15탭·슬롯 창·전과 보고 클릭), 3해상도 퍼즈 예외 0·방문 탭 15/15, 골든 8변형 일치, UI 크래시 수정 없음. 한계: 슬롯 확인 버튼·연대 [-][+] 전 분기 보장 없음. **병합 계획서 정정 필요**: t38h 는 e5f76ec(t38g 중복, 드롭)+f126551(실작업, 포함해야 함) | 완료 ~84 |
+| 15:2x | T33d wip-ready(sonnet, 155k, 707초; kd/t33d-rail ceaa067/9b72f2f, t33c 위): 선로 도구(꺾임점·Enter/우클릭 확정·undo 1단계, paint line 저장), rail(11)·ford(12)·bridge(13) 팔레트, width 1~6 읽기/쓰기만, MapEditor.Tests 599·selftest fail 0, 임시 통합본에서 게임 격자 일치. 병합 전 남은 일: rail·river r1~r4 선병합 필요(지금은 칠하면 미리보기 로드 실패), T33c 시험의 test_river_crossing('map' 참조 미션) 실패는 시험 쪽에서 건너뛰게 수정 필요. 비교 시트는 눈 비교만 | 완료 ~85 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
