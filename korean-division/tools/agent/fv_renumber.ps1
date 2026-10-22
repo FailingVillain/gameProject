@@ -169,7 +169,9 @@ function Show-Plan {
 }
 
 function Invoke-Gate {
-    $gate = Join-Path $PSScriptRoot 'heavy_gate.ps1'
+    # prefer the main checkout's gate (always the newest fixes), else this worktree's own copy
+    $gate = 'C:/gameProject/korean-division/tools/agent/heavy_gate.ps1'
+    if (-not (Test-Path $gate)) { $gate = Join-Path $PSScriptRoot 'heavy_gate.ps1' }
     & powershell -NoProfile -ExecutionPolicy Bypass -File $gate
     if ($LASTEXITCODE -ne 0) { throw "heavy_gate failed ($LASTEXITCODE)" }
 }
