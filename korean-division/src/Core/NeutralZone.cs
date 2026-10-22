@@ -65,6 +65,9 @@ public sealed partial class World
                 QueuedKind.Attack => Find(c.TargetId) is { } t && InNeutralZone(t.Pos),
                 _ => false,
             },
+            RetreatCommand c => player && !(c.UseRally && c.Target == Vector2.Zero) && EntersNeutral(f, c.Units, c.Target),   // 집결지 후퇴 (목표 0) = 집결지는 지정 때 이미 검사
+            SetRallyCommand c => player && !c.Clear && RallyEntersNeutral(f, c.Companies, c.Point),
+            TrenchAssaultCommand c => player && c.On && !c.Ai && RallyEntersNeutral(f, c.Companies, c.Target),
             AttackCommand c => Find(c.TargetId) is { } t && InNeutralZone(t.Pos),
             GroundFireCommand c => InNeutralZone(c.Target),
             GroundFireExCommand c => InNeutralZone(c.Target),
@@ -73,6 +76,17 @@ public sealed partial class World
         };
         if (bad) Notify(f, CommandResult.NotAllowed);
         return bad;
+    }
+
+    /// <summary>[읽기] 중대 단위 (집결지 지정 · 참호 돌격) 목표가 구역 안이거나, 중대원 무게중심 → 목표 직선이 구역에 닿는가.</summary>
+    bool RallyEntersNeutral(int f, int[] companies, Vector2 target)
+    {
+        if (InNeutralZone(target)) return true;
+        Vector2 sum = Vector2.Zero; int n = 0;
+        foreach (int id in companies)
+            if (OwnCompany(f, id) is { } co)
+                foreach (var u in Units) if (u.Alive && u.Owner == f && u.Company == co) { sum += u.Pos; n++; }
+        return n > 0 && SegmentTouchesNeutral(sum / n, target);
     }
 
     /// <summary>[읽기] 이 유닛들의 무게중심 → 목표 직선이 중립 구역에 닿는가 (닿으면 플레이어가 경유점으로 직접 돌아가야 한다).</summary>

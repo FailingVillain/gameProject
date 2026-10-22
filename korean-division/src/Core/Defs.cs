@@ -880,6 +880,7 @@ public sealed class Defs
         foreach (var (k, v) in defs.Buildings) v.Key = k;
         defs.Validate();
         string dir = Path.GetDirectoryName(Path.GetFullPath(path)) ?? ".";
+        if (File.Exists(Path.Combine(dir, "props.json"))) PropDefs.Load(Path.Combine(dir, "props.json")).Validate();   // 소품 정의 검증 (PropDefs.Validate)
         RankNames.Load(Path.Combine(dir, "ranks.json"));   // 계급 이름 (표시 전용)
         defs.Formations = FormationRules.Load(Path.Combine(dir, "formations.json"));   // 전투 대형 · 전술 틀 (시뮬레이션 자료 — 없으면 내장 기본값)
         defs.Tactics = TacticRules.Load(Path.Combine(dir, "tactics.json"));
