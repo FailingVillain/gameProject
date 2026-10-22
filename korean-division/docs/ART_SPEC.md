@@ -120,7 +120,7 @@
 
 ## 소품 그림 규격 · 외형 변형 (PR3, 2026-10-22, 렌더 전용)
 - **키 = 폴더 이름 = props.json `types` 키 = 파일 접두**: `assets/themes/kd1920/props/<키>/<키>.png` (+ `@64` `@32` `_shadow*.png` `_layout.json`). 소문자 snake_case, 부서진 모습은 `<키>_cracked` / `<키>_fallen` (기존 규칙).
-- **PR1 새 종류 키 (PR2 아트가 이 이름으로 낸다)**: 덤불 `bush`, 수수밭 `sorghum_field`, 그루터기 `stump`, 통나무 더미 `log_pile`, 암반 노두 `rock_outcrop`, 고사목 `tree_dead`, 흙 둔덕 `dirt_mound`, 버드나무 `tree_willow`, 갈대 `reed`, 눈더미 `snow_drift`. PR1 이 다른 키를 확정하면 그 키가 우선 (폴더 이름만 맞추면 된다).
+- **PR1 새 종류 키 (PR2 아트가 이 이름으로 낸다, kd/pr1-props-v2 b6fc8ec 의 props.json 확정 키)**: 덤불 `bush`, 수수밭 `sorghum`, 그루터기 `stump`, 통나무 더미 `log_pile`, 흩어진 통나무 더미 `log_pile_scattered`, 암반 노두 `rock_outcrop`, 고사목 `dead_tree`, 쓰러진 고사목 `dead_tree_fallen`, 흙 둔덕 `dirt_mound`, 버드나무 `willow`, 쓰러진 버드나무 `willow_fallen`, 갈대 `reed`, 눈더미 `snow_mound`. 기존 키 `rock_s/m/l`, `tree_birch/larch/pine/oak` 는 그대로 유지. PR1 이 다른 키를 확정하면 그 키가 우선 (폴더 이름만 맞추면 된다).
 - **외형 변형**: 기존 파일 = 0번, 추가는 `props/<키>/var_01/ .. var_07/` 폴더에 **같은 파일 이름 규칙** (`<키>.png`, `<키>@64.png`, `<키>@32.png`, `<키>_shadow*.png`, `<키>_layout.json`). 목표 종류당 6~8 (0번 포함), 코드 상한 `PropVariants.MaxVariants` = 8. 폴더가 연속이어야 하고 끊기면 거기까지만 읽는다. 폴더가 없으면 단일 외형 (현재 화면과 동일).
 - **변형 조건**: 게임플레이 속성(cover · losBlock · radius · hp)은 종류 단위 — 변형은 그림만 다르다. 발밑 기준점(anchor)은 변형마다 `_layout.json` 에 따로 적고, 충돌 반경(radius) 안에 몸통이 들어오게 그린다. 크기 차이는 ±15% 이내 권장.
 - **고르는 법**: `PropVariants.Pick(x, y, n)` = 소품 위치(1/64 타일)의 정수 해시 % n. 렌더에서만 계산 — sim · 저장 · 체크섬 · 리플레이 영향 없음. 부서진 변종은 자기 종류의 변형 수로 따로 고른다.
