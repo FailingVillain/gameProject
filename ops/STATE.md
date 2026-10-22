@@ -36,30 +36,63 @@
 - 진행 중: 없음(에이전트 0, wip-ready 0, 병합 큐 비어 있음).
 - 다음: 선행 없는 queued 카드 발주 — T03(sim: wip-resolved/breach 에 main 병합·검증 → reviewer → wip-ready), T01(feature: 패치 복원), T07, T18. T08/T09 는 T01 뒤. 보류형 결정 D01 D02 D07 D08 D12 D15 D19 D20 은 사용자 답 대기.
 
-## 인계 (2026-10-22 16:1x 실측 · 지휘자 세션 교체용 — 새 세션은 이 절 → QUEUE 상태 실측 표 → DECISIONS BF → PIPELINE_LOG 마지막 20줄 순)
-- 기준: main `6baacd5` (ops: T38l logged). 확인 `git -C C:/gameProject log -1 --format=%h main`. 워크트리 = `git worktree list`. 병합 잠금 보유 중: `.git/kd-merge.lock`(라인 1), `.git/kd-merge-b.lock`(라인 2) — 남의 잠금 지우지 않음.
-- 정책: 병합 정책 해제(사용자 AT, 15:0x). WIP 병합은 병합 라인 경유만 (main 직접 병합 금지), main 은 마지막에 `--ff-only`, 계획 = ops/MERGE_PLAN.md.
-- 병합 라인 1 (sim): `kd-develop/kd-merge`, branch `merge/0.2` (tip 4a5d322 = actingCache 분류 fixup). A1–A6, B1–B9 완료 (태그 pre-merge-A · post-A · pre-merge-B). B9 snaptest FAIL(T37 actingCache 미분류) → 지휘자 결정 (b) fixup 후 계속. 재개 = B10 kd/t10-comms-b 1c91c96 (FV 57/22 예상). 상세 = `kd-develop/kd-merge/ops/MERGE_PROGRESS.md`.
-- 병합 라인 2 (캠페인+UI): `kd-develop/kd-merge-b`, branch `merge/0.2-ui` (base main d1eaf2e). F1–F8 완료 (태그 ui-post-F = e5fba3a). G 계획: G1 t08 2e9aef5 · G2 t17 0eb92e8 · G3 t27 4cf5c45 · G4 t38g f5a76d4 · G4b t38h f126551(체리픽만) · G5 t38b·t38a → t38c-on-ui 85e6658(uiicons 블로커 해소) · H t43 d45b18f · t38i 3e41444 · T33a–c (T33d 는 최종 합치기 때). G 진행 기록 없음 → 확인 필요 (`kd-merge-b/ops/MERGE_PROGRESS_UI.md`).
-- 최종 합치기: 라인 1+2 → 골든 재생성(사용자 OK 후 1회; T36/T37 골든 변경) → 전체 selftest · detcheck 8변형 · release → 사용자 "진행" 뒤 main ff-only. FV 재번호 계획: rail 58 · t30a 59 · t30b 60 · IsAi 61 · river 63 · 다리 64 · 연막(T32b) 65 · T34a 66 (AE2 62 비움).
-- 한도: 에이전트 30 · opus 8 · heavy gate 12 (빈 RAM ≥6GB 일 때, 기존 10) · heavyRAM 14GB (heavy 프로세스 WorkingSet 합). 렌더 레인 6개(E/F 포함) — 멈춤 시 E·F 먼저 중단.
-- 진행 중 흐름 (실측):
-  - 공병 엎드려쏴 총구 잘림: 원인 = 192x240 칸 폭(LodAtlas 가 칸 크기 미독해). 임시 회피 kd-t32d af357ce. 근본 수정 = opus art, 넓은 칸 지원 kd/prone-wide-cells (기반 gt-prone-fix 8a1794d; E/W 정확 직각·총구 ≤0.5°). 공병 재렌더 후속.
-  - 지휘관(연대장·대대장) T48: 설계 spec/cards-commanders 89b2e5f. wip-ready = T48a e31406d · T48b1 fa8dff1(opus, FV 53) · T48c c24c423 · T49a 4896113 · T49b+c 11e7a7b. T48b2 발주 기록 — 상태 확인. T48d/e 는 T48b2 뒤. 연결 필요: ApplyDismissPenalty · CanRehire · ApplyMissionTags.
-  - T38 UI + 종이 UI: wip-ready = T38a 7274c71 · T38b 93ce79f · T38c-on-ui 85e6658 · T38f b622d1d · T38g f5a76d4 · T38i 3e41444 · T38l fa03891. T38e 미커밋 10건(kd-t38e). T38d(종이 스킨, Palette 토큰, 전 화면: a/b/e/f/h/i 포함) queued. 시안 gt-paper-ui-v2 e689cf5 + 활성 탭 3갈래 tabs-a 922b5f7 · tabs-b 4ff6382 · tabs-c 24b5fee (사용자 "추후 한 번에" 검토; 폴더 C:/works/_review_sheets_2026-10-22/paper_ui_v2_tabs). 글꼴 OFL ui/fonts-ofl c4a4006 (T38k).
-  - 캠페인: T47 지도 줌 921f715 wip-ready. C1E1 안동 점령전 = 명세 → 카드 분해 spec/cards-c1e1 f31fc42.
-  - 민가 다양화 1차 42종 (BF): 계획 spec/house-variety c731b37. 1단계 발주 기록 T55g(생성기) · T55s(66d6b95 위) · T55m(323c2da) — 상태 확인. T55a/b 는 T55g 뒤.
-  - 성능 T50: 계획 ops/PERF_OPT_PLAN.md (eac7b55), 기준 ops/PERF_BASELINE_2026-10-22.md. 순서 T50d(벤치) → T50a → T50c → T50b → T50e(조건부), 골든 동일 필수. 표적 캐시·탐색 반경 축소는 사용자 결정 전 미발주.
-  - 재렌더 T11 (kd-rerender e589068): 48/81 완료 (15:4x). T39e/f/g/h/j 는 T11 뒤. rerender96 편집 금지(완료 전).
-- 제목 (BC/BE 확정): 창 'KOREAN DIVISION : MARCH ON MANCHURIA' · 메뉴 한글 '대한 사단 : 북벌 1920' · 약칭 KOREAN DIVISION / 코리안 디비전 · 극중 부대 '제17 대한 사단'. 제목 교체 T38l wip-ready.
-- 사용자 결정 대기 (DECISIONS A2·B·E~BF): 답 없는 항목 = 괄호 기본값 적용, 자동 기본값 기록 = ops/AUTO_DEFAULTS_LOG.md (이 세션에서 읽지 않음). 주요: M1 fix/n12-forest 병합 여부 · J1/J2 T06 보류 · Q1 난이도 소비처 · N1~N4 통신 알파(꺼짐) · R01 함성 방침 잠정 B(재보고).
-- 사용자 행동 (결정 아님): U01 GitHub 작성자 확인 · U02 옛 폴더 삭제 · T26 .git/hooks 쓰기 권한 · 시트 검수(T08/T22/T28/T19c/T11, 종이 시안) · kd-throwaway-t38c 정리(--force, 사용자 몫).
-- 사용자 standing rules: push 금지(명령 시만) · WIP 는 병합 라인 경유만 · 밸런스 최후순위 · 웹 검색은 Gemini (`hub ask -w`) · 게임 창 = 창 모드 ≤1280x720, 전체화면·테두리없음 금지, run_game.ps1 로 보조 모니터 · 질문은 추천 기본값 자동 적용·소수씩 · 세션 교체 하루 1회 · 큰 카드는 사전 분할 · 답변 한국어.
-- 다음 단계 (순서):
-  1. 라인 1: B10 → B11~B13 → 그룹 C(철도·덮개숲) → D(열차) → E(FV 꼬리). 단계마다 snapshot+snaptest. 체크섬 예상 밖·비기계 충돌 = 멈추고 보고.
-  2. 라인 2: G1~G5 확인 → H → 라인 2 완료 표 갱신.
-  3. 두 라인 합치기 → 골든 재생성(사용자 OK) → selftest·detcheck 8변형 → release 기록 → 사용자 "진행" 시 main ff-only.
-  4. 병합 뒤: T38e 미커밋 정리 · T38d 종이 스킨 · T48b2 → T48d/e · T49 연결 · T55 1단계 확인 · C1E1 카드 발주.
-  5. 성능 T50d→a→c→b · 재렌더 T11 완료 → T39e/f/g/h/j · 공병 근본 수정 완료 → 공병 재렌더.
+## 인계 (2026-10-22 18:00 · 지휘자 세션 교체용 — 새 세션은 이 절 → QUEUE → DECISIONS(BG 이후) → LESSONS 순)
+> 이 절이 최신이다. 위 '기준'·'지금 진행 중' 절의 main 해시(562e578)·에이전트 수는 낡았다. 실측 명령: `git -C C:/gameProject log -1 --format=%h main` · `git worktree list` · `git branch -v`.
+> 이전 인계 원문 16:1x = ops/PIPELINE_LOG.md 끝 "인계 (2026-10-22 16:1x 원문" 절 · 08:50 원문 = "이전 인계 보관" 절.
 
-(보고서: ops/REPORT_2026-10-22.md — 2026-10-22 13:00 기준 전체 보고·로드맵 미큐 목록·역제안. 이전 인계 절 원문 = ops/PIPELINE_LOG.md 끝 "이전 인계 보관".)
+### 1. 상태 (18:00 실측)
+- 실행 중 에이전트 0 · 병합 잠금 없음(.git/kd-merge.lock, kd-merge-b.lock 모두 없음) · 모든 작업은 로컬 브랜치에 커밋 · push 없음.
+- main = de2f7cf (ops 문서 커밋만 추가, 코드 불변).
+
+### 2. 병합 라인 1 (sim) — 진행 중, WIP 병합 사용자 승인(AX)
+- 워크트리 `C:/gameProject/kd-develop/kd-merge` · 브랜치 `merge/0.2` · HEAD `c8ecf90`.
+- 완료 태그: pre-merge-A · post-A · pre-merge-B · post-B(5a9e0bb) · pre-merge-C · post-C(6a5f199) · pre-merge-D · post-D(7611a0d).
+- 다음 = 그룹 E (FV 꼬리). 번호 예약 IsAi 61 · river 63 · 다리 64 · 연막(T32b) 65 · T34a 66 (62 비움).
+  - E1 kd/isai-restore `5c08a38` (FV 61 / Replay 24; `korean-division/tools/agent/fv_renumber.ps1 -Report` 후 `-Set`)
+  - E2 river `r1 5b7b9f1` → `r2 8ada7a9` → `r3 26df7f6` → `r4 9d4b7be`(river-r4-bridge) + balance.json `terrain.waterBlocksFire: true` 1줄 추가 (r2 리뷰 비차단 지적)
+  - E3 T32b `33284fa` (FV 65) + T34a `29c2479` (FV 66)
+- 기대 detcheck: `672804207fc4e486 3c42aea49324248e` (units=29 shots=3237, D 이후 값).
+- 기대 FAIL: uiicons (최종 합치기 전까지 정상) · traindemo (골든 재생성 때 해소). 그 밖의 FAIL 은 멈추고 보고.
+- 매 단계 snapshot + `--snaptest` 실행 (LESSONS 28). selftest 는 `--selftest` 와 `KD_SELFTEST_ONLY` 함께 (없으면 게임이 뜬다).
+- 진행 기록: kd-merge/ops/MERGE_QUEUE.md 완료 표. kd-merge/ops/MERGE_PROGRESS.md 의 "RESUME POINT (after D6)" 는 낡음 — D6 은 7611a0d 로 완료됨.
+
+### 3. 병합 라인 2 (캠페인 + UI) — 2단계까지 완료
+- 워크트리 `C:/gameProject/kd-develop/kd-merge-b` · 브랜치 `merge/0.2-ui` · HEAD `2093a74` · 태그 `ui-post-phase2`.
+- 완료: F1–F8, G 단계 t45 ed4b7f2 · t38k 61041d8 · t38l d1158c9 · t47 ead14ae · t48a fc19995 · t48c 3ef7942 · t49a 43d8397 · t49bc 20132b4 · perf-bench cc967ed (t38e 보류: ops 충돌·'partial'; t39i 건너뜀: 이미지만) · spec 문서 H3 병합(태그 ui-pre-merge-H3).
+- 검증: detcheck `8aa6448b9690b922` = main 골든과 일치. 기록 = kd-merge-b/ops/MERGE_PROGRESS_UI.md.
+- 남음: T33d 는 최종 합치기 때(라인 1 의 rail·river 지형 필요). 편집기 지형 목록에 Bridge/Ford/Rail 은 강 병합 뒤 들어간다.
+
+### 4. 최종 합치기 (라인 1 의 E 끝난 뒤)
+- 순서: merge/0.2-ui → merge/0.2 → t38e `e9e1642` → t38m `2ca199c` → t38n `a13672a`(KD_MONITOR) → T33d `022647f` + T33e `3dfab34` → 연대장 체인 t48b1 `3fcdacf`(FV 53→67, campaign_v9 샘플) · t48b2 `80c11fb` · t48d `b5a10af` → C1E1 tcd `0b98b10` · g1 `bd1dc11` · m1 `638c172` · m2 `fd1108a` · u2 `8061b9a`(캠페인 스키마 v11/v12; 시뮬 라인 불변) → kd/prone-wide-assets `bdd8d9a`(T11b) → 민가 t55m `bb081b6` · t55s `51b2fe8` · gt-house-gen `bd6e885` · a1 `b4a53db` · a2 `14f20e2` · b1 `cdef9f8` · b2 `e5a4db5` (T55i 임포트 카드 아직 없음) → tools/selftest-parallel `cfaaa0a` → tools/perf-bench (cc967ed 로 이미 들어감, 중복 확인만).
+- 그 다음: 골든 재생성(T36/T37 등, 사용자 AX 승인분) → 전체 selftest `tools/selftest_parallel.ps1 -Jobs 4` (~268초) → main `--ff-only` 는 **사용자에게 보고 후** 조건 확인 (DECISIONS AX). push 는 절대 없음.
+
+### 5. 다음 카드 (에이전트 없음 · 기능 먼저, 밸런스 최후)
+- T38d 종이 UI 전 화면 (게임 전체 UI 종이 질감, Palette 토큰; 시안 `C:/works/_review_sheets_2026-10-22/paper_ui_v2_tabs`). 제목은 BC/BE 확정 (아래 4번 결정 참조).
+- C1E1 2차 (wave 2): `spec/cards-c1e1` 의 C1E1_IMPLEMENTATION_PLAN.md · C1E1_WAVE1_PROMPTS.md — 미션·엔진 g2–g6·데이터 d1·텍스트. FV 예약 = ops/FV_RESERVATIONS.md.
+- T48e 커맨더 전투 연결 (기본 꺼짐). T50a–c 성능 (병합 뒤; ops/PERF_OPT_PLAN.md, 벤치 tools/perf-bench; 골든 동일 필수. T50d 완료).
+- T56a–e 스프라이트 칸 B (ops/SPRITE_CELL_PLAN.md; T56b 는 T01 + T55s 병합 뒤).
+- T39e–j 아트 (T11 재렌더 뒤): kd-rerender 브랜치 `e589068` (467dafc 포함, 15:36 시점 48/81). 완료 여부 확인 필요.
+- 공병 엎드려쏴 62° 재작업 (임시 회피 kd-t32d af357ce; 근본 수정 gt-prone-fix 는 완료 → 공병 재렌더 후속).
+- 교전 테스트 BattlePanel 접기 (상시 개발 패널) · AQ2 제거 검토 · T55i 민가 임포트 · 생성기 v2 희망 목록 · 편집기 증분 렌더러 결정.
+
+### 6. 사용자 결정 (기본값 적용 중 · DECISIONS BA–BG · ops/AUTO_DEFAULTS_LOG.md 는 append-only, routine 로 읽지 않음)
+- 한글 제목 BE 확정: 창 'KOREAN DIVISION : MARCH ON MANCHURIA' · 메뉴 '대한 사단 : 북벌 1920' · 극중 '제17 대한 사단'.
+- 기본값 적용: ColorBlind 설정 확인 (T38m) · 간결 모드 색각 도형 · 엎드려쏴 칸(prone cells) · save-compat 정책 (자동 기본값) · CoverSeek 군집 = 0.3 밸런스 항목.
+- 사용자 몫: 커맨더 템플릿 작성 (C:/works/commanders_authoring) · 상표 검증 KIPRIS/USPTO (출시 전 필수) · U01 GitHub 작성자 확인 · U02 옛 폴더 삭제 · T26 .git/hooks 쓰기 권한 · 시트 검수 (T08/T22/T28/T19c/T11, 종이 시안).
+
+### 7. 고정 규칙
+- 답변 한국어, 짧게. push 금지 (사용자 명령 시만). 병합은 병합 라인 경유만 (main 직접 병합 금지). main 은 최종 `--ff-only`, 사용자 확인 뒤.
+- 밸런스 최후 (0.3 one-shot), AI 개선 0.4. 웹 조회는 Gemini (`hub ask -w`) 만.
+- 창 모드만, 1280x720 이하, 전체화면·테두리없음 금지. 보조 모니터 = env `KD_MONITOR=secondary` (~/.claude/settings.json; T38n 병합 뒤 게임이 읽음).
+- 한도: 에이전트 ≤30 · opus ≤8 · heavy gate 12 (빈 RAM ≥6GB) · heavyRAM 14GB. 에이전트 최종 보고 ≤12줄. 큰 컨텍스트 에이전트는 재개하지 않고 새로 띄운다.
+- 읽기 전용 리뷰어는 C:/gameProject 에서 git checkout 금지 (LESSONS 20).
+- 질문은 추천 기본값을 자동 적용하고 소수씩. 세션 교체는 하루 1회. 지휘자 세션은 컨텍스트가 크다 (이번 세션 724k, 전체 토큰 51%) → 답변·로그 줄을 짧게.
+
+### 8. 알려진 문제
+- 게이트 대기가 1시간 넘게 걸린 적이 여러 번 (렌더 레인이 풀을 채우면 병합 빌드를 굶긴다). 다음 세션은 먼저 조사: 렌더 lane 6 · RAM 예산 (LESSONS 25).
+- 병합 중 체크섬이 예상과 다르거나 비기계적 충돌이 나면 그 단계에서 멈추고 보고 (임의 해결 금지). crossing 은 B5b 이후 PASS 가 정상.
+- 실행 파일 apphost 가 .NET 런타임을 못 찾는 환경 이슈 → release 기록 참조 (`dotnet bin/main/...` 로 실행).
+
+### 9. 검수 자료 · 보고서
+- 리뷰 시트 `C:/works/_review_sheets_2026-10-22` (항목 01–24, paper_ui_v2_tabs/) · 로드맵 PDF `C:/works/KoreanDivision_roadmap_2026-10-22.pdf`. 사용자의 그래픽 검토는 나중에 한 번에.
+- 보고서: ops/REPORT_2026-10-22.md (2026-10-22 13:00 기준 전체 보고·로드맵 미큐 목록·역제안).

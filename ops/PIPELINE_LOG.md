@@ -284,3 +284,31 @@ v2 후보(사용자 확인 후 PIPELINE.md 반영): ① 리뷰 단계 표준화 
 - 지휘자 세션은 컨텍스트가 큼 → /clear 후 이 STATE → QUEUE → DECISIONS → PIPELINE_LOG(v1 점검 표) 순으로 읽고 시작.
 
 (보고서: ops/REPORT_2026-10-22.md — 2026-10-22 13:00 기준 전체 보고·로드맵 미큐 목록·역제안)
+
+## 인계 (2026-10-22 16:1x 원문 · 18:00 세션 교체 때 STATE 인계 절에서 이동)
+- 기준: main `6baacd5` (ops: T38l logged). 확인 `git -C C:/gameProject log -1 --format=%h main`. 워크트리 = `git worktree list`. 병합 잠금 보유 중: `.git/kd-merge.lock`(라인 1), `.git/kd-merge-b.lock`(라인 2) — 남의 잠금 지우지 않음.
+- 정책: 병합 정책 해제(사용자 AT, 15:0x). WIP 병합은 병합 라인 경유만 (main 직접 병합 금지), main 은 마지막에 `--ff-only`, 계획 = ops/MERGE_PLAN.md.
+- 병합 라인 1 (sim): `kd-develop/kd-merge`, branch `merge/0.2` (tip 4a5d322 = actingCache 분류 fixup). A1–A6, B1–B9 완료 (태그 pre-merge-A · post-A · pre-merge-B). B9 snaptest FAIL(T37 actingCache 미분류) → 지휘자 결정 (b) fixup 후 계속. 재개 = B10 kd/t10-comms-b 1c91c96 (FV 57/22 예상). 상세 = `kd-develop/kd-merge/ops/MERGE_PROGRESS.md`.
+- 병합 라인 2 (캠페인+UI): `kd-develop/kd-merge-b`, branch `merge/0.2-ui` (base main d1eaf2e). F1–F8 완료 (태그 ui-post-F = e5fba3a). G 계획: G1 t08 2e9aef5 · G2 t17 0eb92e8 · G3 t27 4cf5c45 · G4 t38g f5a76d4 · G4b t38h f126551(체리픽만) · G5 t38b·t38a → t38c-on-ui 85e6658(uiicons 블로커 해소) · H t43 d45b18f · t38i 3e41444 · T33a–c (T33d 는 최종 합치기 때). G 진행 기록 없음 → 확인 필요 (`kd-merge-b/ops/MERGE_PROGRESS_UI.md`).
+- 최종 합치기: 라인 1+2 → 골든 재생성(사용자 OK 후 1회; T36/T37 골든 변경) → 전체 selftest · detcheck 8변형 · release → 사용자 "진행" 뒤 main ff-only. FV 재번호 계획: rail 58 · t30a 59 · t30b 60 · IsAi 61 · river 63 · 다리 64 · 연막(T32b) 65 · T34a 66 (AE2 62 비움).
+- 한도: 에이전트 30 · opus 8 · heavy gate 12 (빈 RAM ≥6GB 일 때, 기존 10) · heavyRAM 14GB (heavy 프로세스 WorkingSet 합). 렌더 레인 6개(E/F 포함) — 멈춤 시 E·F 먼저 중단.
+- 진행 중 흐름 (실측):
+  - 공병 엎드려쏴 총구 잘림: 원인 = 192x240 칸 폭(LodAtlas 가 칸 크기 미독해). 임시 회피 kd-t32d af357ce. 근본 수정 = opus art, 넓은 칸 지원 kd/prone-wide-cells (기반 gt-prone-fix 8a1794d; E/W 정확 직각·총구 ≤0.5°). 공병 재렌더 후속.
+  - 지휘관(연대장·대대장) T48: 설계 spec/cards-commanders 89b2e5f. wip-ready = T48a e31406d · T48b1 fa8dff1(opus, FV 53) · T48c c24c423 · T49a 4896113 · T49b+c 11e7a7b. T48b2 발주 기록 — 상태 확인. T48d/e 는 T48b2 뒤. 연결 필요: ApplyDismissPenalty · CanRehire · ApplyMissionTags.
+  - T38 UI + 종이 UI: wip-ready = T38a 7274c71 · T38b 93ce79f · T38c-on-ui 85e6658 · T38f b622d1d · T38g f5a76d4 · T38i 3e41444 · T38l fa03891. T38e 미커밋 10건(kd-t38e). T38d(종이 스킨, Palette 토큰, 전 화면: a/b/e/f/h/i 포함) queued. 시안 gt-paper-ui-v2 e689cf5 + 활성 탭 3갈래 tabs-a 922b5f7 · tabs-b 4ff6382 · tabs-c 24b5fee (사용자 "추후 한 번에" 검토; 폴더 C:/works/_review_sheets_2026-10-22/paper_ui_v2_tabs). 글꼴 OFL ui/fonts-ofl c4a4006 (T38k).
+  - 캠페인: T47 지도 줌 921f715 wip-ready. C1E1 안동 점령전 = 명세 → 카드 분해 spec/cards-c1e1 f31fc42.
+  - 민가 다양화 1차 42종 (BF): 계획 spec/house-variety c731b37. 1단계 발주 기록 T55g(생성기) · T55s(66d6b95 위) · T55m(323c2da) — 상태 확인. T55a/b 는 T55g 뒤.
+  - 성능 T50: 계획 ops/PERF_OPT_PLAN.md (eac7b55), 기준 ops/PERF_BASELINE_2026-10-22.md. 순서 T50d(벤치) → T50a → T50c → T50b → T50e(조건부), 골든 동일 필수. 표적 캐시·탐색 반경 축소는 사용자 결정 전 미발주.
+  - 재렌더 T11 (kd-rerender e589068): 48/81 완료 (15:4x). T39e/f/g/h/j 는 T11 뒤. rerender96 편집 금지(완료 전).
+- 제목 (BC/BE 확정): 창 'KOREAN DIVISION : MARCH ON MANCHURIA' · 메뉴 한글 '대한 사단 : 북벌 1920' · 약칭 KOREAN DIVISION / 코리안 디비전 · 극중 부대 '제17 대한 사단'. 제목 교체 T38l wip-ready.
+- 사용자 결정 대기 (DECISIONS A2·B·E~BF): 답 없는 항목 = 괄호 기본값 적용, 자동 기본값 기록 = ops/AUTO_DEFAULTS_LOG.md (이 세션에서 읽지 않음). 주요: M1 fix/n12-forest 병합 여부 · J1/J2 T06 보류 · Q1 난이도 소비처 · N1~N4 통신 알파(꺼짐) · R01 함성 방침 잠정 B(재보고).
+- 사용자 행동 (결정 아님): U01 GitHub 작성자 확인 · U02 옛 폴더 삭제 · T26 .git/hooks 쓰기 권한 · 시트 검수(T08/T22/T28/T19c/T11, 종이 시안) · kd-throwaway-t38c 정리(--force, 사용자 몫).
+- 사용자 standing rules: push 금지(명령 시만) · WIP 는 병합 라인 경유만 · 밸런스 최후순위 · 웹 검색은 Gemini (`hub ask -w`) · 게임 창 = 창 모드 ≤1280x720, 전체화면·테두리없음 금지, run_game.ps1 로 보조 모니터 · 질문은 추천 기본값 자동 적용·소수씩 · 세션 교체 하루 1회 · 큰 카드는 사전 분할 · 답변 한국어.
+- 다음 단계 (순서):
+  1. 라인 1: B10 → B11~B13 → 그룹 C(철도·덮개숲) → D(열차) → E(FV 꼬리). 단계마다 snapshot+snaptest. 체크섬 예상 밖·비기계 충돌 = 멈추고 보고.
+  2. 라인 2: G1~G5 확인 → H → 라인 2 완료 표 갱신.
+  3. 두 라인 합치기 → 골든 재생성(사용자 OK) → selftest·detcheck 8변형 → release 기록 → 사용자 "진행" 시 main ff-only.
+  4. 병합 뒤: T38e 미커밋 정리 · T38d 종이 스킨 · T48b2 → T48d/e · T49 연결 · T55 1단계 확인 · C1E1 카드 발주.
+  5. 성능 T50d→a→c→b · 재렌더 T11 완료 → T39e/f/g/h/j · 공병 근본 수정 완료 → 공병 재렌더.
+
+(보고서: ops/REPORT_2026-10-22.md — 2026-10-22 13:00 기준 전체 보고·로드맵 미큐 목록·역제안. 이전 인계 절 원문 = ops/PIPELINE_LOG.md 끝 "이전 인계 보관".)
