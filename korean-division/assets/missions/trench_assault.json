@@ -23,6 +23,7 @@
    ],
    "team": 1,
    "posture": "attack",
+   "aiProfile": "korean+notrenchassault",
    "area": "trench"
   },
   {
