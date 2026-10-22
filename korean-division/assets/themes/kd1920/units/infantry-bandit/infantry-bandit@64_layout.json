@@ -1,10 +1,10 @@
 {
  "frame": [
-  64,
+  88,
   80
  ],
  "anchor": [
-  32,
+  44,
   72
  ],
  "dirs": [
@@ -269,29 +269,8 @@
     "dead_c"
    ],
    "size": [
-    2368,
+    3256,
     400
-   ]
-  },
-  {
-   "file": "infantry-bandit@64_prone.png",
-   "team": "infantry-bandit@64_prone_team.png",
-   "columns": [
-    "go_prone",
-    "aim_prone",
-    "fire_prone"
-   ],
-   "size": [
-    240,
-    500
-   ],
-   "frame": [
-    80,
-    100
-   ],
-   "anchor": [
-    40,
-    90
    ]
   }
  ],
@@ -409,16 +388,16 @@
    "col": 27
   },
   "go_prone": {
-   "sheet": "infantry-bandit@64_prone.png",
-   "col": 0
+   "sheet": "infantry-bandit@64.png",
+   "col": 28
   },
   "aim_prone": {
-   "sheet": "infantry-bandit@64_prone.png",
-   "col": 1
+   "sheet": "infantry-bandit@64.png",
+   "col": 29
   },
   "fire_prone": {
-   "sheet": "infantry-bandit@64_prone.png",
-   "col": 2
+   "sheet": "infantry-bandit@64.png",
+   "col": 30
   },
   "stagger_b": {
    "sheet": "infantry-bandit@64.png",

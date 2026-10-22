@@ -1,10 +1,10 @@
 {
  "frame": [
-  128,
+  192,
   160
  ],
  "anchor": [
-  64,
+  96,
   144
  ],
  "dirs": [
@@ -21,6 +21,10 @@
   "walk_2",
   "walk_3",
   "walk_4",
+  "walk_quick_1",
+  "walk_quick_2",
+  "walk_quick_3",
+  "walk_quick_4",
   "walk_shoulder_1",
   "walk_shoulder_2",
   "walk_shoulder_3",
@@ -85,6 +89,16 @@
     "walk_4"
    ],
    "ms": 130,
+   "shared_fit": false
+  },
+  "walk_quick": {
+   "frames": [
+    "walk_quick_1",
+    "walk_quick_2",
+    "walk_quick_3",
+    "walk_quick_4"
+   ],
+   "ms": 95,
    "shared_fit": false
   },
   "walk_shoulder": {
@@ -310,6 +324,10 @@
     "walk_2",
     "walk_3",
     "walk_4",
+    "walk_quick_1",
+    "walk_quick_2",
+    "walk_quick_3",
+    "walk_quick_4",
     "walk_shoulder_1",
     "walk_shoulder_2",
     "walk_shoulder_3",
@@ -321,7 +339,17 @@
     "aim_a",
     "fire_a",
     "aim_b",
-    "fire_b",
+    "fire_b"
+   ],
+   "size": [
+    4032,
+    800
+   ]
+  },
+  {
+   "file": "standard-bearer-russian-white_2.png",
+   "team": "standard-bearer-russian-white_2_team.png",
+   "columns": [
     "aim_c",
     "fire_c",
     "idle_alt",
@@ -336,23 +364,23 @@
     "melee_1",
     "melee_2",
     "melee_3",
-    "meleeb_1"
-   ],
-   "size": [
-    4096,
-    800
-   ]
-  },
-  {
-   "file": "standard-bearer-russian-white_2.png",
-   "team": "standard-bearer-russian-white_2_team.png",
-   "columns": [
+    "meleeb_1",
     "meleeb_2",
     "idle_lean",
     "go_prone",
     "aim_prone",
     "fire_prone",
-    "fixb_1",
+    "fixb_1"
+   ],
+   "size": [
+    4032,
+    800
+   ]
+  },
+  {
+   "file": "standard-bearer-russian-white_3.png",
+   "team": "standard-bearer-russian-white_3_team.png",
+   "columns": [
     "fixb_2",
     "fixb_3",
     "surrender_1",
@@ -369,7 +397,7 @@
     "wave_flag_4"
    ],
    "size": [
-    2560,
+    2688,
     800
    ]
   }
@@ -395,193 +423,209 @@
    "sheet": "standard-bearer-russian-white_1.png",
    "col": 4
   },
-  "walk_shoulder_1": {
+  "walk_quick_1": {
    "sheet": "standard-bearer-russian-white_1.png",
    "col": 5
+  },
+  "walk_quick_2": {
+   "sheet": "standard-bearer-russian-white_1.png",
+   "col": 6
+  },
+  "walk_quick_3": {
+   "sheet": "standard-bearer-russian-white_1.png",
+   "col": 7
+  },
+  "walk_quick_4": {
+   "sheet": "standard-bearer-russian-white_1.png",
+   "col": 8
+  },
+  "walk_shoulder_1": {
+   "sheet": "standard-bearer-russian-white_1.png",
+   "col": 9
   },
   "walk_shoulder_2": {
    "sheet": "standard-bearer-russian-white_1.png",
-   "col": 6
+   "col": 10
   },
   "walk_shoulder_3": {
    "sheet": "standard-bearer-russian-white_1.png",
-   "col": 7
+   "col": 11
   },
   "walk_shoulder_4": {
    "sheet": "standard-bearer-russian-white_1.png",
-   "col": 8
+   "col": 12
   },
   "walk_fire_1": {
    "sheet": "standard-bearer-russian-white_1.png",
-   "col": 9
+   "col": 13
   },
   "walk_fire_2": {
    "sheet": "standard-bearer-russian-white_1.png",
-   "col": 10
+   "col": 14
   },
   "walk_fire_3": {
    "sheet": "standard-bearer-russian-white_1.png",
-   "col": 11
+   "col": 15
   },
   "walk_fire_4": {
    "sheet": "standard-bearer-russian-white_1.png",
-   "col": 12
+   "col": 16
   },
   "aim_a": {
    "sheet": "standard-bearer-russian-white_1.png",
-   "col": 13
+   "col": 17
   },
   "fire_a": {
    "sheet": "standard-bearer-russian-white_1.png",
-   "col": 14
+   "col": 18
   },
   "aim_b": {
    "sheet": "standard-bearer-russian-white_1.png",
-   "col": 15
+   "col": 19
   },
   "fire_b": {
    "sheet": "standard-bearer-russian-white_1.png",
-   "col": 16
-  },
-  "aim_c": {
-   "sheet": "standard-bearer-russian-white_1.png",
-   "col": 17
-  },
-  "fire_c": {
-   "sheet": "standard-bearer-russian-white_1.png",
-   "col": 18
-  },
-  "idle_alt": {
-   "sheet": "standard-bearer-russian-white_1.png",
-   "col": 19
-  },
-  "hit": {
-   "sheet": "standard-bearer-russian-white_1.png",
    "col": 20
   },
-  "fall": {
-   "sheet": "standard-bearer-russian-white_1.png",
-   "col": 21
-  },
-  "dead": {
-   "sheet": "standard-bearer-russian-white_1.png",
-   "col": 22
-  },
-  "spare": {
-   "sheet": "standard-bearer-russian-white_1.png",
-   "col": 23
-  },
-  "charge_1": {
-   "sheet": "standard-bearer-russian-white_1.png",
-   "col": 24
-  },
-  "charge_2": {
-   "sheet": "standard-bearer-russian-white_1.png",
-   "col": 25
-  },
-  "charge_3": {
-   "sheet": "standard-bearer-russian-white_1.png",
-   "col": 26
-  },
-  "charge_4": {
-   "sheet": "standard-bearer-russian-white_1.png",
-   "col": 27
-  },
-  "melee_1": {
-   "sheet": "standard-bearer-russian-white_1.png",
-   "col": 28
-  },
-  "melee_2": {
-   "sheet": "standard-bearer-russian-white_1.png",
-   "col": 29
-  },
-  "melee_3": {
-   "sheet": "standard-bearer-russian-white_1.png",
-   "col": 30
-  },
-  "meleeb_1": {
-   "sheet": "standard-bearer-russian-white_1.png",
-   "col": 31
-  },
-  "meleeb_2": {
+  "aim_c": {
    "sheet": "standard-bearer-russian-white_2.png",
    "col": 0
   },
-  "idle_lean": {
+  "fire_c": {
    "sheet": "standard-bearer-russian-white_2.png",
    "col": 1
   },
-  "go_prone": {
+  "idle_alt": {
    "sheet": "standard-bearer-russian-white_2.png",
    "col": 2
   },
-  "aim_prone": {
+  "hit": {
    "sheet": "standard-bearer-russian-white_2.png",
    "col": 3
   },
-  "fire_prone": {
+  "fall": {
    "sheet": "standard-bearer-russian-white_2.png",
    "col": 4
   },
-  "fixb_1": {
+  "dead": {
    "sheet": "standard-bearer-russian-white_2.png",
    "col": 5
   },
-  "fixb_2": {
+  "spare": {
    "sheet": "standard-bearer-russian-white_2.png",
    "col": 6
   },
-  "fixb_3": {
+  "charge_1": {
    "sheet": "standard-bearer-russian-white_2.png",
    "col": 7
   },
-  "surrender_1": {
+  "charge_2": {
    "sheet": "standard-bearer-russian-white_2.png",
    "col": 8
   },
-  "surrender_2": {
+  "charge_3": {
    "sheet": "standard-bearer-russian-white_2.png",
    "col": 9
   },
-  "stagger_b": {
+  "charge_4": {
    "sheet": "standard-bearer-russian-white_2.png",
    "col": 10
   },
-  "kneel_b": {
+  "melee_1": {
    "sheet": "standard-bearer-russian-white_2.png",
    "col": 11
   },
-  "dead_b": {
+  "melee_2": {
    "sheet": "standard-bearer-russian-white_2.png",
    "col": 12
   },
-  "stagger_c": {
+  "melee_3": {
    "sheet": "standard-bearer-russian-white_2.png",
    "col": 13
   },
-  "slump_c": {
+  "meleeb_1": {
    "sheet": "standard-bearer-russian-white_2.png",
    "col": 14
   },
-  "dead_c": {
+  "meleeb_2": {
    "sheet": "standard-bearer-russian-white_2.png",
    "col": 15
   },
-  "wave_flag_1": {
+  "idle_lean": {
    "sheet": "standard-bearer-russian-white_2.png",
    "col": 16
   },
-  "wave_flag_2": {
+  "go_prone": {
    "sheet": "standard-bearer-russian-white_2.png",
    "col": 17
   },
-  "wave_flag_3": {
+  "aim_prone": {
    "sheet": "standard-bearer-russian-white_2.png",
    "col": 18
   },
-  "wave_flag_4": {
+  "fire_prone": {
    "sheet": "standard-bearer-russian-white_2.png",
    "col": 19
+  },
+  "fixb_1": {
+   "sheet": "standard-bearer-russian-white_2.png",
+   "col": 20
+  },
+  "fixb_2": {
+   "sheet": "standard-bearer-russian-white_3.png",
+   "col": 0
+  },
+  "fixb_3": {
+   "sheet": "standard-bearer-russian-white_3.png",
+   "col": 1
+  },
+  "surrender_1": {
+   "sheet": "standard-bearer-russian-white_3.png",
+   "col": 2
+  },
+  "surrender_2": {
+   "sheet": "standard-bearer-russian-white_3.png",
+   "col": 3
+  },
+  "stagger_b": {
+   "sheet": "standard-bearer-russian-white_3.png",
+   "col": 4
+  },
+  "kneel_b": {
+   "sheet": "standard-bearer-russian-white_3.png",
+   "col": 5
+  },
+  "dead_b": {
+   "sheet": "standard-bearer-russian-white_3.png",
+   "col": 6
+  },
+  "stagger_c": {
+   "sheet": "standard-bearer-russian-white_3.png",
+   "col": 7
+  },
+  "slump_c": {
+   "sheet": "standard-bearer-russian-white_3.png",
+   "col": 8
+  },
+  "dead_c": {
+   "sheet": "standard-bearer-russian-white_3.png",
+   "col": 9
+  },
+  "wave_flag_1": {
+   "sheet": "standard-bearer-russian-white_3.png",
+   "col": 10
+  },
+  "wave_flag_2": {
+   "sheet": "standard-bearer-russian-white_3.png",
+   "col": 11
+  },
+  "wave_flag_3": {
+   "sheet": "standard-bearer-russian-white_3.png",
+   "col": 12
+  },
+  "wave_flag_4": {
+   "sheet": "standard-bearer-russian-white_3.png",
+   "col": 13
   }
  },
  "anchors": "standard-bearer-russian-white_anchors.json"

@@ -1,10 +1,10 @@
 {
  "frame": [
-  128,
+  176,
   160
  ],
  "anchor": [
-  64,
+  88,
   144
  ],
  "dirs": [
@@ -252,7 +252,17 @@
     "spare",
     "charge_1",
     "charge_2",
-    "charge_3",
+    "charge_3"
+   ],
+   "size": [
+    4048,
+    800
+   ]
+  },
+  {
+   "file": "infantry-fengtian_2.png",
+   "team": "infantry-fengtian_2_team.png",
+   "columns": [
     "charge_4",
     "melee_1",
     "melee_2",
@@ -261,17 +271,7 @@
     "go_prone",
     "aim_prone",
     "fire_prone",
-    "stagger_b"
-   ],
-   "size": [
-    4096,
-    800
-   ]
-  },
-  {
-   "file": "infantry-fengtian_2.png",
-   "team": "infantry-fengtian_2_team.png",
-   "columns": [
+    "stagger_b",
     "kneel_b",
     "dead_b",
     "stagger_c",
@@ -279,7 +279,7 @@
     "dead_c"
    ],
    "size": [
-    640,
+    2464,
     800
    ]
   }
@@ -378,60 +378,60 @@
    "col": 22
   },
   "charge_4": {
-   "sheet": "infantry-fengtian_1.png",
-   "col": 23
-  },
-  "melee_1": {
-   "sheet": "infantry-fengtian_1.png",
-   "col": 24
-  },
-  "melee_2": {
-   "sheet": "infantry-fengtian_1.png",
-   "col": 25
-  },
-  "melee_3": {
-   "sheet": "infantry-fengtian_1.png",
-   "col": 26
-  },
-  "idle_lean": {
-   "sheet": "infantry-fengtian_1.png",
-   "col": 27
-  },
-  "go_prone": {
-   "sheet": "infantry-fengtian_1.png",
-   "col": 28
-  },
-  "aim_prone": {
-   "sheet": "infantry-fengtian_1.png",
-   "col": 29
-  },
-  "fire_prone": {
-   "sheet": "infantry-fengtian_1.png",
-   "col": 30
-  },
-  "stagger_b": {
-   "sheet": "infantry-fengtian_1.png",
-   "col": 31
-  },
-  "kneel_b": {
    "sheet": "infantry-fengtian_2.png",
    "col": 0
   },
-  "dead_b": {
+  "melee_1": {
    "sheet": "infantry-fengtian_2.png",
    "col": 1
   },
-  "stagger_c": {
+  "melee_2": {
    "sheet": "infantry-fengtian_2.png",
    "col": 2
   },
-  "slump_c": {
+  "melee_3": {
    "sheet": "infantry-fengtian_2.png",
    "col": 3
   },
-  "dead_c": {
+  "idle_lean": {
    "sheet": "infantry-fengtian_2.png",
    "col": 4
+  },
+  "go_prone": {
+   "sheet": "infantry-fengtian_2.png",
+   "col": 5
+  },
+  "aim_prone": {
+   "sheet": "infantry-fengtian_2.png",
+   "col": 6
+  },
+  "fire_prone": {
+   "sheet": "infantry-fengtian_2.png",
+   "col": 7
+  },
+  "stagger_b": {
+   "sheet": "infantry-fengtian_2.png",
+   "col": 8
+  },
+  "kneel_b": {
+   "sheet": "infantry-fengtian_2.png",
+   "col": 9
+  },
+  "dead_b": {
+   "sheet": "infantry-fengtian_2.png",
+   "col": 10
+  },
+  "stagger_c": {
+   "sheet": "infantry-fengtian_2.png",
+   "col": 11
+  },
+  "slump_c": {
+   "sheet": "infantry-fengtian_2.png",
+   "col": 12
+  },
+  "dead_c": {
+   "sheet": "infantry-fengtian_2.png",
+   "col": 13
   }
  },
  "anchors": "infantry-fengtian_anchors.json"

@@ -1,10 +1,10 @@
 {
  "frame": [
-  64,
+  96,
   80
  ],
  "anchor": [
-  32,
+  48,
   72
  ],
  "dirs": [
@@ -21,6 +21,10 @@
   "walk_2",
   "walk_3",
   "walk_4",
+  "walk_quick_1",
+  "walk_quick_2",
+  "walk_quick_3",
+  "walk_quick_4",
   "walk_shoulder_1",
   "walk_shoulder_2",
   "walk_shoulder_3",
@@ -85,6 +89,16 @@
     "walk_4"
    ],
    "ms": 130,
+   "shared_fit": false
+  },
+  "walk_quick": {
+   "frames": [
+    "walk_quick_1",
+    "walk_quick_2",
+    "walk_quick_3",
+    "walk_quick_4"
+   ],
+   "ms": 95,
    "shared_fit": false
   },
   "walk_shoulder": {
@@ -302,14 +316,18 @@
  },
  "sheets": [
   {
-   "file": "standard-bearer@64.png",
-   "team": "standard-bearer@64_team.png",
+   "file": "standard-bearer@64_1.png",
+   "team": "standard-bearer@64_1_team.png",
    "columns": [
     "idle",
     "walk_1",
     "walk_2",
     "walk_3",
     "walk_4",
+    "walk_quick_1",
+    "walk_quick_2",
+    "walk_quick_3",
+    "walk_quick_4",
     "walk_shoulder_1",
     "walk_shoulder_2",
     "walk_shoulder_3",
@@ -342,7 +360,17 @@
     "go_prone",
     "aim_prone",
     "fire_prone",
-    "fixb_1",
+    "fixb_1"
+   ],
+   "size": [
+    4032,
+    400
+   ]
+  },
+  {
+   "file": "standard-bearer@64_2.png",
+   "team": "standard-bearer@64_2_team.png",
+   "columns": [
     "fixb_2",
     "fixb_3",
     "surrender_1",
@@ -359,219 +387,235 @@
     "wave_flag_4"
    ],
    "size": [
-    3328,
+    1344,
     400
    ]
   }
  ],
  "cells": {
   "idle": {
-   "sheet": "standard-bearer@64.png",
+   "sheet": "standard-bearer@64_1.png",
    "col": 0
   },
   "walk_1": {
-   "sheet": "standard-bearer@64.png",
+   "sheet": "standard-bearer@64_1.png",
    "col": 1
   },
   "walk_2": {
-   "sheet": "standard-bearer@64.png",
+   "sheet": "standard-bearer@64_1.png",
    "col": 2
   },
   "walk_3": {
-   "sheet": "standard-bearer@64.png",
+   "sheet": "standard-bearer@64_1.png",
    "col": 3
   },
   "walk_4": {
-   "sheet": "standard-bearer@64.png",
+   "sheet": "standard-bearer@64_1.png",
    "col": 4
   },
-  "walk_shoulder_1": {
-   "sheet": "standard-bearer@64.png",
+  "walk_quick_1": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 5
   },
-  "walk_shoulder_2": {
-   "sheet": "standard-bearer@64.png",
+  "walk_quick_2": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 6
   },
-  "walk_shoulder_3": {
-   "sheet": "standard-bearer@64.png",
+  "walk_quick_3": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 7
   },
-  "walk_shoulder_4": {
-   "sheet": "standard-bearer@64.png",
+  "walk_quick_4": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 8
   },
-  "walk_fire_1": {
-   "sheet": "standard-bearer@64.png",
+  "walk_shoulder_1": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 9
   },
-  "walk_fire_2": {
-   "sheet": "standard-bearer@64.png",
+  "walk_shoulder_2": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 10
   },
-  "walk_fire_3": {
-   "sheet": "standard-bearer@64.png",
+  "walk_shoulder_3": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 11
   },
-  "walk_fire_4": {
-   "sheet": "standard-bearer@64.png",
+  "walk_shoulder_4": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 12
   },
-  "aim_a": {
-   "sheet": "standard-bearer@64.png",
+  "walk_fire_1": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 13
   },
-  "fire_a": {
-   "sheet": "standard-bearer@64.png",
+  "walk_fire_2": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 14
   },
-  "aim_b": {
-   "sheet": "standard-bearer@64.png",
+  "walk_fire_3": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 15
   },
-  "fire_b": {
-   "sheet": "standard-bearer@64.png",
+  "walk_fire_4": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 16
   },
-  "aim_c": {
-   "sheet": "standard-bearer@64.png",
+  "aim_a": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 17
   },
-  "fire_c": {
-   "sheet": "standard-bearer@64.png",
+  "fire_a": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 18
   },
-  "idle_alt": {
-   "sheet": "standard-bearer@64.png",
+  "aim_b": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 19
   },
-  "hit": {
-   "sheet": "standard-bearer@64.png",
+  "fire_b": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 20
   },
-  "fall": {
-   "sheet": "standard-bearer@64.png",
+  "aim_c": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 21
   },
-  "dead": {
-   "sheet": "standard-bearer@64.png",
+  "fire_c": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 22
   },
-  "spare": {
-   "sheet": "standard-bearer@64.png",
+  "idle_alt": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 23
   },
-  "charge_1": {
-   "sheet": "standard-bearer@64.png",
+  "hit": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 24
   },
-  "charge_2": {
-   "sheet": "standard-bearer@64.png",
+  "fall": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 25
   },
-  "charge_3": {
-   "sheet": "standard-bearer@64.png",
+  "dead": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 26
   },
-  "charge_4": {
-   "sheet": "standard-bearer@64.png",
+  "spare": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 27
   },
-  "melee_1": {
-   "sheet": "standard-bearer@64.png",
+  "charge_1": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 28
   },
-  "melee_2": {
-   "sheet": "standard-bearer@64.png",
+  "charge_2": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 29
   },
-  "melee_3": {
-   "sheet": "standard-bearer@64.png",
+  "charge_3": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 30
   },
-  "meleeb_1": {
-   "sheet": "standard-bearer@64.png",
+  "charge_4": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 31
   },
-  "meleeb_2": {
-   "sheet": "standard-bearer@64.png",
+  "melee_1": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 32
   },
-  "idle_lean": {
-   "sheet": "standard-bearer@64.png",
+  "melee_2": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 33
   },
-  "go_prone": {
-   "sheet": "standard-bearer@64.png",
+  "melee_3": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 34
   },
-  "aim_prone": {
-   "sheet": "standard-bearer@64.png",
+  "meleeb_1": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 35
   },
-  "fire_prone": {
-   "sheet": "standard-bearer@64.png",
+  "meleeb_2": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 36
   },
-  "fixb_1": {
-   "sheet": "standard-bearer@64.png",
+  "idle_lean": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 37
   },
-  "fixb_2": {
-   "sheet": "standard-bearer@64.png",
+  "go_prone": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 38
   },
-  "fixb_3": {
-   "sheet": "standard-bearer@64.png",
+  "aim_prone": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 39
   },
-  "surrender_1": {
-   "sheet": "standard-bearer@64.png",
+  "fire_prone": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 40
   },
-  "surrender_2": {
-   "sheet": "standard-bearer@64.png",
+  "fixb_1": {
+   "sheet": "standard-bearer@64_1.png",
    "col": 41
   },
+  "fixb_2": {
+   "sheet": "standard-bearer@64_2.png",
+   "col": 0
+  },
+  "fixb_3": {
+   "sheet": "standard-bearer@64_2.png",
+   "col": 1
+  },
+  "surrender_1": {
+   "sheet": "standard-bearer@64_2.png",
+   "col": 2
+  },
+  "surrender_2": {
+   "sheet": "standard-bearer@64_2.png",
+   "col": 3
+  },
   "stagger_b": {
-   "sheet": "standard-bearer@64.png",
-   "col": 42
+   "sheet": "standard-bearer@64_2.png",
+   "col": 4
   },
   "kneel_b": {
-   "sheet": "standard-bearer@64.png",
-   "col": 43
+   "sheet": "standard-bearer@64_2.png",
+   "col": 5
   },
   "dead_b": {
-   "sheet": "standard-bearer@64.png",
-   "col": 44
+   "sheet": "standard-bearer@64_2.png",
+   "col": 6
   },
   "stagger_c": {
-   "sheet": "standard-bearer@64.png",
-   "col": 45
+   "sheet": "standard-bearer@64_2.png",
+   "col": 7
   },
   "slump_c": {
-   "sheet": "standard-bearer@64.png",
-   "col": 46
+   "sheet": "standard-bearer@64_2.png",
+   "col": 8
   },
   "dead_c": {
-   "sheet": "standard-bearer@64.png",
-   "col": 47
+   "sheet": "standard-bearer@64_2.png",
+   "col": 9
   },
   "wave_flag_1": {
-   "sheet": "standard-bearer@64.png",
-   "col": 48
+   "sheet": "standard-bearer@64_2.png",
+   "col": 10
   },
   "wave_flag_2": {
-   "sheet": "standard-bearer@64.png",
-   "col": 49
+   "sheet": "standard-bearer@64_2.png",
+   "col": 11
   },
   "wave_flag_3": {
-   "sheet": "standard-bearer@64.png",
-   "col": 50
+   "sheet": "standard-bearer@64_2.png",
+   "col": 12
   },
   "wave_flag_4": {
-   "sheet": "standard-bearer@64.png",
-   "col": 51
+   "sheet": "standard-bearer@64_2.png",
+   "col": 13
   }
  },
  "anchors": "standard-bearer@64_anchors.json"
