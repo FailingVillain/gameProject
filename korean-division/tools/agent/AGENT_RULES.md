@@ -31,3 +31,6 @@ Repo `C:\gameProject\korean-division`. Report in Korean, short. Procedures: `doc
 - 게임·편집기 창을 **전체화면/테두리 없는 전체화면/최대화로 띄우지 않는다.** 항상 창 모드(windowed), 크기는 1280x720 이하(해상도 시험은 `--size WxH` 로 캡처하되 최대화 금지). `settings.json` 의 `Mode` 를 fullscreen/borderless 로 바꾸지 말 것(바꿨다면 원복).
 - 스크린샷 검수용 이미지는 이미지 뷰어를 열지 말고 파일만 만든다(지휘자가 폴더로 안내).
 - 창은 `tools/agent/run_game.ps1` 로 보조 모니터에 띄운다.
+
+## Running the game window
+- Whenever the game window opens (visual check, screenshot, uifuzz, manual run) launch it via `powershell -File tools/agent/run_game.ps1 <KoreanDivision.exe | project dir> [game args]`: it moves the window to the SECONDARY monitor (primary if only one); `KD_MONITOR=primary|secondary|<index>` overrides; exit code is the game's. Headless flags (`--selftest`, `--detcheck`) need no launcher.
