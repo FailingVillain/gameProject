@@ -112,25 +112,24 @@ public static class UnitsSelfTest
             int hFire = -1;
             for (int i = 0; i < 15 * 60 && hFire < 0; i++) { w4.Step(); if (hg.Cooldown > 0) hFire = i; }
             check(hFire >= 0 && hFire < 10 * 60 && hg.Deployed, $"units: 기마 포병 방열 뒤 사격 (첫 사격 {hFire} 틱)");
-            // C1E1-u2: 봉천 기마 · 봉천 야포 · 일본 철도수비대 · 피난민 · 의용병 정의
+            // C1E1-u2: 봉천 기마 · 봉천 야포 · 피난민 · 의용병 정의 (철도수비대는 일본 보병 infantry_japanese 사용)
             string[] ens6 = { "korean", "japanese", "fengtian", "bandit", "russian", "soviet" };
-            string[] ck = { "cavalry_fengtian", "heavy_field_gun_fengtian", "infantry_railway_guard_japanese", "civilian_refugee", "common_volunteer" };
-            check(ck.All(k => U.TryGetValue(k, out var d) && d.Name.Length > 0 && d.Description.Length > 0 && (d.Weapon == null || defs.Weapon(d.Weapon) != null) && d.ArtAs != null && U.ContainsKey(d.ArtAs)), "units: C1E1 유닛 5종 정의 로드 (이름 · 설명 · 무기 · artAs 가 실재 유닛)");
+            string[] ck = { "cavalry_fengtian", "heavy_field_gun_fengtian", "civilian_refugee", "common_volunteer" };
+            check(ck.All(k => U.TryGetValue(k, out var d) && d.Name.Length > 0 && d.Description.Length > 0 && (d.Weapon == null || defs.Weapon(d.Weapon) != null) && d.ArtAs != null && U.ContainsKey(d.ArtAs)), "units: C1E1 유닛 4종 정의 로드 (이름 · 설명 · 무기 · artAs 가 실재 유닛)");
             check(ens6.Where(e => U["cavalry_fengtian"].AllowedFor(e)).SequenceEqual(new[] { "fengtian" }) && ens6.Where(e => U["heavy_field_gun_fengtian"].AllowedFor(e)).SequenceEqual(new[] { "fengtian" }), "units: 봉천 기마 · 봉천 야포 = 봉천 전용");
-            check(ens6.Where(e => U["infantry_railway_guard_japanese"].AllowedFor(e)).SequenceEqual(new[] { "japanese" }), "units: 일본 철도수비대 = 일본 전용");
             check(ens6.All(e => U["civilian_refugee"].AllowedFor(e) && U["common_volunteer"].AllowedFor(e)), "units: 피난민 · 의용병 = 공용 (모든 세력 편성 가능)");
             var rf = U["civilian_refugee"];
             check(rf.Weapon == null && rf.Melee == null && !rf.CanCapture && !rf.AutoAttack && rf.Hp < U["infantry"].Hp && rf.Speed < U["infantry"].Speed, "units: 피난민 = 비무장 · 점령 불가 · 자동 사격 없음 · 보병보다 약하고 느림");
-            var cf = U["cavalry_fengtian"]; var cd = U["cavalry_default"]; var fgF = U["heavy_field_gun_fengtian"]; var fgD = U["heavy_field_gun"]; var rg = U["infantry_railway_guard_japanese"]; var ij = U["infantry_japanese"];
-            check(cf.Hp == cd.Hp && cf.Speed == cd.Speed && cf.Weapon == cd.Weapon && cf.Mounted && fgF.Hp == fgD.Hp && fgF.Weapon == fgD.Weapon && fgF.SetupTime == fgD.SetupTime && fgF.Heavy && rg.Hp == ij.Hp && rg.Weapon == ij.Weapon && rg.Melee == ij.Melee,
-                "units: 봉천 기마 = 기병 · 봉천 야포 = 야전포 · 철도수비대 = 일본 보병 수치");
+            var cf = U["cavalry_fengtian"]; var cd = U["cavalry_default"]; var fgF = U["heavy_field_gun_fengtian"]; var fgD = U["heavy_field_gun"];
+            check(cf.Hp == cd.Hp && cf.Speed == cd.Speed && cf.Weapon == cd.Weapon && cf.Mounted && fgF.Hp == fgD.Hp && fgF.Weapon == fgD.Weapon && fgF.SetupTime == fgD.SetupTime && fgF.Heavy,
+                "units: 봉천 기마 = 기병 · 봉천 야포 = 야전포");
             var vm = U["common_volunteer"]; var vt = U["common_village_militia"];
             check(vm.Weapon == vt.Weapon && vm.Accuracy == vt.Accuracy && vm.SuppressResist == vt.SuppressResist && U.ContainsKey("common_volunteer_tmp"), "units: 의용병(common_volunteer) = 민단 · 의용군 수치, 자리표시자 _tmp 는 그대로");
             // 미션 편성 검증 (MissionDef.Validate → AllowedFor)
             string mtxt = File.ReadAllText(MissionDef.PathOf("bandit_raid"));
             bool Bad(string t) { try { MissionDef.Parse(t, "bad"); return false; } catch (InvalidDataException) { return true; } }
             check(!Bad(mtxt.Replace("\"infantry\": 28", "\"civilian_refugee\": 28").Replace("\"bandit_thug\": 14", "\"common_volunteer\": 14")), "units: 피난민 · 의용병 편성 = 미션 검증 통과 (공용)");
-            check(Bad(mtxt.Replace("\"infantry\": 28", "\"cavalry_fengtian\": 28")) && Bad(mtxt.Replace("\"infantry\": 28", "\"infantry_railway_guard_japanese\": 28")) && Bad(mtxt.Replace("\"bandit_thug\": 14", "\"heavy_field_gun_fengtian\": 14")), "units: 봉천 기마 · 야포 · 철도수비대를 한국 · 마적 편성에 넣으면 로드 오류");
+            check(Bad(mtxt.Replace("\"infantry\": 28", "\"cavalry_fengtian\": 28")) && Bad(mtxt.Replace("\"bandit_thug\": 14", "\"heavy_field_gun_fengtian\": 14")), "units: 봉천 기마 · 야포를 한국 · 마적 편성에 넣으면 로드 오류");
         }
         catch (Exception e) { check(false, $"units 테스트 예외: {e.GetType().Name}: {e.Message}\n{e.StackTrace}"); }
     }
