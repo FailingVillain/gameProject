@@ -132,6 +132,7 @@ public static class TrainWeaponsSelfTest
             for (int i = 0; i < 4; i++) foes.Add(w.SpawnUnit(defs.Units["heavy_at_rifleman"], 2, new Vector2(46.5f + 2 * i, 30.5f)));
             for (int i = 0; i < 4; i++) foes.Add(w.SpawnUnit(defs.Units["infantry"], 2, new Vector2(46.5f + 2 * i, 36.5f)));
             w.Damage(t.Cars[3], 100000, null);   // 화차 잔해
+            w.Issue(new AttackCommand(2, foes.Skip(4).Select(u => u.Id).ToArray(), t.Cars[1].Id));   // T36: 소총병은 스스로 객차를 노리지 않음 → 플레이어 명령으로 유닛→객차 표적 참조를 만든다
             int k = 0;
             for (; k < 60 * 60; k++) { w.Step(); if (k > 300 && foes.Any(u => u.Alive && u.Target is TrainCar) && t.Cars.Any(c => c.Guns.Any(g => g.TargetId != 0 && g.Cooldown > 0))) break; }
             bool refCar = foes.Any(u => u.Alive && u.Target is TrainCar);
@@ -160,6 +161,28 @@ public static class TrainWeaponsSelfTest
             bool same = true;
             for (int i = 0; i < 60 * 60; i++) { a.Step(); b.Step(); if (i % 300 == 0) same &= a.ComputeChecksum() == b.ComputeChecksum(); }
             check(same && a.ComputeChecksum() == b.ComputeChecksum(), "같은 시드 교전 2회: 체크섬 동일 (열차 사격 포함)");
+        }
+
+        // ---- 8. T36 면역 표적: 소총 보병은 객차에게 맞아도 (반격) 객차를 표적으로 잡지 않음, 플레이어 공격 명령은 그대로 유지, 대전차소총은 반격
+        {
+            var w = Make(Armored);
+            var riflemen = new List<Unit>();
+            for (int i = 0; i < 6; i++) riflemen.Add(w.SpawnUnit(defs.Units["infantry"], 2, new Vector2(46.5f + i, 33.5f)));
+            bool rifleTargetedCar = false;
+            for (int i = 0; i < 60 * 25; i++) { w.Step(); rifleTargetedCar |= riflemen.Any(u => u.Alive && u.Target is TrainCar); }
+            check(!rifleTargetedCar && riflemen.Any(u => u.Hp < u.MaxHp), "T36: 객차에게 맞는 소총 보병은 객차를 표적으로 잡지 않음 (반격 · 자동 표적 모두 면역 표적 제외)");
+
+            var w2 = Make(Armored);
+            var rf = w2.SpawnUnit(defs.Units["infantry"], 2, new Vector2(46.5f, 33.5f));
+            w2.Issue(new AttackCommand(2, new[] { rf.Id }, w2.Trains[0].Cars[1].Id));
+            w2.Step();
+            check(rf.Order == UnitOrder.Attack && rf.Target is TrainCar, "T36: 플레이어 공격 명령은 면역 표적이어도 그대로 (명령 유지)");
+
+            var w3 = Make(Armored);
+            var at = w3.SpawnUnit(defs.Units["heavy_at_rifleman"], 2, new Vector2(46.5f, 33.5f));
+            bool atTargetedCar = false;
+            for (int i = 0; i < 60 * 25; i++) { w3.Step(); atTargetedCar |= at.Alive && at.Target is TrainCar; }
+            check(atTargetedCar || !at.Alive, "T36: 대전차소총은 객차를 표적으로 잡음 (대조)");
         }
 
         // ---- 7. 소규모 교전 (측정 · 보고용): 보병 중대 (장교 1 · 소총 24 · 대전차소총 4) 가 장갑열차로 공격 이동, 시드 8개 × 3분
