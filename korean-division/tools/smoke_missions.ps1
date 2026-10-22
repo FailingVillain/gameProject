@@ -5,7 +5,7 @@
 param([string]$Exe = '', [int]$Wall = 240, [int]$Stall = 300, [string]$Only = '')
 $root = Split-Path -Parent $PSScriptRoot
 if (-not $Exe) { $Exe = Join-Path $root 'bin\t44\KoreanDivision.exe' }   # own build dir (build with -p:OutputPath=bin/t44/), never the shared bin/Debug
-if (-not (Test-Path $Exe)) { Write-Error "exe not found: $Exe (build first)"; exit 2 }
+if (-not (Test-Path ([IO.Path]::ChangeExtension($Exe, '.dll')))) { Write-Error "exe not found: $Exe (build first)"; exit 2 }
 $dir = Split-Path -Parent $Exe
 $ids = Get-ChildItem (Join-Path $dir 'assets\missions') -Filter *.json | Sort-Object Name | ForEach-Object { $_.BaseName }
 if ($Only) { $ids = $ids | Where-Object { $_ -eq $Only } }
@@ -14,7 +14,8 @@ $rows = @(); $hard = 0; $t0 = Get-Date
 foreach ($id in $ids) {
   & powershell -ExecutionPolicy Bypass -File $gate | Out-Null
   $env:KD_SELFTEST_ONLY = 'smoke'; $env:KD_SMOKE_ID = $id; $env:KD_SMOKE_WALL = "$Wall"; $env:KD_SMOKE_STALL = "$Stall"
-  $out = & $Exe 2>&1 | Out-String
+  $dll = [IO.Path]::ChangeExtension($Exe, '.dll')   # console host so stdout is captured and the call blocks (the .exe is a GUI-subsystem binary)
+  $out = & dotnet $dll 2>&1 | Out-String
   $exit = $LASTEXITCODE
   $line = ($out -split "`n" | Where-Object { $_ -match '^\[smoke\] ' + [regex]::Escape($id) + ' \|' } | Select-Object -First 1)
   if (-not $line) { $line = "[smoke] $id | LOAD_FAIL | NO_OUTPUT (exit $exit)"; }

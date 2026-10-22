@@ -25,3 +25,5 @@ KD_SELFTEST_ONLY=smoke · tools/smoke_missions.ps1 (reports/smoke_<날짜>.md)
 | 미션 | 상태 |
 |---|---|
 | (미측정) | - |
+
+- 2차 시도: 게이트 열림 직후 1회 실행에서 `.exe`(GUI 서브시스템)가 stdout 없이 즉시 반환해 NO_OUTPUT 로 나옴 -> 스크립트를 `dotnet <dll>` 호출로 수정(콘솔 호스트, 블록). 수정 뒤 재실행은 게이트 재점유(kd-rerender -Render 대기자)로 대기 중 중단 — 표는 여전히 미측정.
