@@ -153,3 +153,4 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T49a | 저장 호환 정책 적용 1 (메시지 · 이행 .bak · 목록 회색 표시, ops/SAVE_COMPAT_POLICY.md) | feature | D中 R2 S H1 Wlight | 없음 | wip-ready (브랜치 t49a-save-messages, 스택 base t48a e31406d) |
 | T49b | 저장 호환 정책 적용 2 (설정 관대 읽기 · 사용자 지도/지휘관 건너뛰기 · 테스트) | feature | D中 R2 S H1 Wlight | T48a | queued |
 | T49c | 저장 호환 출시 게이트 (캠페인 v1..현재 옛 샘플 테스트) | feature | D下 R2 S H1 Wlight | T49a | queued |
+| T55m | 민가 import · 테마 키 · 42종 레지스트리 (housedata) | art/docs → merger | D下 H0 | T55s 필드 정의 | wip-ready (t55m-house-data · kd-develop/kd-t55m-house-data · 무병합) |

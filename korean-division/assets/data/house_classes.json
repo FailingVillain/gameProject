@@ -1,0 +1,487 @@
+{
+ "version": 1,
+ "doc": "T55m: 민가 기본 42종 (한국 21 + 만주·중국 21). 종마다 구운 변형 수(tones)와 발자국(footprint, 칸). 그림이 없는 종/변형은 theme.json 키가 없어도 된다 (검증 경고). 색 변형 수는 docs/HOUSE_VARIETY_PLAN.md 2.2 와 같다.",
+ "tone_keys": "building_art.house.<style>.<id>.<tone> (tone = a, b, ...; 폐허는 tone a 시트의 두 번째 칸)",
+ "styles": {
+  "korean": {
+   "label": "한국",
+   "classes": 21,
+   "tones": 30
+  },
+  "manchu": {
+   "label": "만주·중국",
+   "classes": 21,
+   "tones": 36
+  }
+ },
+ "footprint_totals": {
+  "3x3": 16,
+  "3x4": 14,
+  "4x4": 8,
+  "3x5": 4
+ },
+ "classes": [
+  {
+   "id": "ko-cho-01",
+   "style": "korean",
+   "family": "choga",
+   "footprint": [
+    3,
+    3
+   ],
+   "tones": 1,
+   "ruin": true
+  },
+  {
+   "id": "ko-cho-02",
+   "style": "korean",
+   "family": "choga",
+   "footprint": [
+    3,
+    3
+   ],
+   "tones": 1,
+   "ruin": true
+  },
+  {
+   "id": "ko-cho-03",
+   "style": "korean",
+   "family": "choga",
+   "footprint": [
+    3,
+    3
+   ],
+   "tones": 1,
+   "ruin": true
+  },
+  {
+   "id": "ko-cho-04",
+   "style": "korean",
+   "family": "choga",
+   "footprint": [
+    3,
+    4
+   ],
+   "tones": 1,
+   "ruin": true
+  },
+  {
+   "id": "ko-cho-05",
+   "style": "korean",
+   "family": "choga",
+   "footprint": [
+    3,
+    4
+   ],
+   "tones": 1,
+   "ruin": true
+  },
+  {
+   "id": "ko-cho-06",
+   "style": "korean",
+   "family": "choga",
+   "footprint": [
+    3,
+    4
+   ],
+   "tones": 1,
+   "ruin": true
+  },
+  {
+   "id": "ko-giwa-01",
+   "style": "korean",
+   "family": "giwa",
+   "footprint": [
+    3,
+    3
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "ko-giwa-02",
+   "style": "korean",
+   "family": "giwa",
+   "footprint": [
+    3,
+    3
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "ko-giwa-03",
+   "style": "korean",
+   "family": "giwa",
+   "footprint": [
+    3,
+    3
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "ko-giwa-04",
+   "style": "korean",
+   "family": "giwa",
+   "footprint": [
+    3,
+    4
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "ko-giwa-05",
+   "style": "korean",
+   "family": "giwa",
+   "footprint": [
+    3,
+    4
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "ko-giwa-06",
+   "style": "korean",
+   "family": "giwa",
+   "footprint": [
+    3,
+    4
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "ko-giwa-07",
+   "style": "korean",
+   "family": "giwa",
+   "footprint": [
+    4,
+    4
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "ko-giwa-08",
+   "style": "korean",
+   "family": "giwa",
+   "footprint": [
+    3,
+    5
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "ko-giwa-09",
+   "style": "korean",
+   "family": "giwa",
+   "footprint": [
+    3,
+    5
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "ko-bar-01",
+   "style": "korean",
+   "family": "heotgan",
+   "footprint": [
+    3,
+    3
+   ],
+   "tones": 1,
+   "ruin": true
+  },
+  {
+   "id": "ko-bar-02",
+   "style": "korean",
+   "family": "heotgan",
+   "footprint": [
+    3,
+    3
+   ],
+   "tones": 1,
+   "ruin": true
+  },
+  {
+   "id": "ko-bar-03",
+   "style": "korean",
+   "family": "heotgan",
+   "footprint": [
+    3,
+    4
+   ],
+   "tones": 1,
+   "ruin": true
+  },
+  {
+   "id": "ko-bar-04",
+   "style": "korean",
+   "family": "heotgan",
+   "footprint": [
+    4,
+    4
+   ],
+   "tones": 1,
+   "ruin": true
+  },
+  {
+   "id": "ko-inn-01",
+   "style": "korean",
+   "family": "inn",
+   "footprint": [
+    4,
+    4
+   ],
+   "tones": 1,
+   "ruin": true
+  },
+  {
+   "id": "ko-inn-02",
+   "style": "korean",
+   "family": "inn",
+   "footprint": [
+    4,
+    4
+   ],
+   "tones": 1,
+   "ruin": true
+  },
+  {
+   "id": "zh-mud-01",
+   "style": "manchu",
+   "family": "mud-brick",
+   "footprint": [
+    3,
+    3
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "zh-mud-02",
+   "style": "manchu",
+   "family": "mud-brick",
+   "footprint": [
+    3,
+    3
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "zh-mud-03",
+   "style": "manchu",
+   "family": "mud-brick",
+   "footprint": [
+    3,
+    3
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "zh-mud-04",
+   "style": "manchu",
+   "family": "mud-brick",
+   "footprint": [
+    3,
+    3
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "zh-mud-05",
+   "style": "manchu",
+   "family": "mud-brick",
+   "footprint": [
+    3,
+    4
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "zh-mud-06",
+   "style": "manchu",
+   "family": "mud-brick",
+   "footprint": [
+    3,
+    4
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "zh-mud-07",
+   "style": "manchu",
+   "family": "mud-brick",
+   "footprint": [
+    3,
+    4
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "zh-mud-08",
+   "style": "manchu",
+   "family": "mud-brick",
+   "footprint": [
+    4,
+    4
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "zh-mud-09",
+   "style": "manchu",
+   "family": "mud-brick",
+   "footprint": [
+    4,
+    4
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "zh-mud-10",
+   "style": "manchu",
+   "family": "mud-brick",
+   "footprint": [
+    3,
+    5
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "zh-giwa-01",
+   "style": "manchu",
+   "family": "giwa",
+   "footprint": [
+    3,
+    3
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "zh-giwa-02",
+   "style": "manchu",
+   "family": "giwa",
+   "footprint": [
+    3,
+    3
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "zh-giwa-03",
+   "style": "manchu",
+   "family": "giwa",
+   "footprint": [
+    3,
+    4
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "zh-giwa-04",
+   "style": "manchu",
+   "family": "giwa",
+   "footprint": [
+    4,
+    4
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "zh-giwa-05",
+   "style": "manchu",
+   "family": "giwa",
+   "footprint": [
+    3,
+    5
+   ],
+   "tones": 2,
+   "ruin": true
+  },
+  {
+   "id": "zh-todam-01",
+   "style": "manchu",
+   "family": "todam",
+   "footprint": [
+    3,
+    4
+   ],
+   "tones": 1,
+   "ruin": true
+  },
+  {
+   "id": "zh-todam-02",
+   "style": "manchu",
+   "family": "todam",
+   "footprint": [
+    3,
+    4
+   ],
+   "tones": 1,
+   "ruin": true
+  },
+  {
+   "id": "zh-todam-03",
+   "style": "manchu",
+   "family": "todam",
+   "footprint": [
+    3,
+    3
+   ],
+   "tones": 1,
+   "ruin": true
+  },
+  {
+   "id": "zh-bar-01",
+   "style": "manchu",
+   "family": "heotgan",
+   "footprint": [
+    3,
+    3
+   ],
+   "tones": 1,
+   "ruin": true
+  },
+  {
+   "id": "zh-bar-02",
+   "style": "manchu",
+   "family": "heotgan",
+   "footprint": [
+    3,
+    4
+   ],
+   "tones": 1,
+   "ruin": true
+  },
+  {
+   "id": "zh-bar-03",
+   "style": "manchu",
+   "family": "heotgan",
+   "footprint": [
+    4,
+    4
+   ],
+   "tones": 1,
+   "ruin": true
+  }
+ ]
+}
