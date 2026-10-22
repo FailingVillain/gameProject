@@ -134,3 +134,7 @@ V1 연대 배속 규칙: 대대 소속 중대는 대대 단위로 함께 배속,
 - 지휘자 기본 규칙대로 `assets/missions/trench_assault.json` 한국 세력에 `aiProfile: korean+notrenchassault` 를 넣었으나 **승수 개선 없음**(4/20) → 되돌려도 무방.
 - **Z1** A★ 그 미션 변경을 되돌림(tactics.json 은 원래 안 바뀜) + 원인 재조사 카드(上; main 에서 재현되는지·breach 가 바꾼 것 비교부터) / B 변경 유지 / C 보류. 무응답 시 변경 유지(영향은 이 미션 하나, 되돌리기 쉬움).
 - 부수 발견: **heavy gate = `tools/agent/heavy_gate.ps1`** (무거운 프로세스 전체 풀 8 초과 시 대기). T16 첫 에이전트가 1시간 50분 멈춘 원인은 T11 렌더 드라이버가 풀을 점유했기 때문으로 추정.
+
+## AA. 구현 여부 확인 결과 (scout, 2026-10-22)
+공병(철조망 절단·돌격대 겸임)·경박격포(사거리 36, heavy_mortar 3종)·연막 수류탄(플레이어 측)은 **wip/breach2 에만 구현**, main 에는 없음(병합 안 하는 정책이라 breach2 가 정본). AI 의 연막·철조망 사용은 D18 보류(tactics.json wireCutHook/smokeHook false). 하천은 코드 없음(설계 제안 문서 발주함 → docs/RIVER_DESIGN.md). 간도 의용대 복식·가옥 폐허 그림은 부분 완료로 보이나 미검증 — T11 시트 검수 때 사용자 확인.
+- **AA1** 전투공병 `infantry-pioneer` 는 로드맵상 보류(ROADMAP_LONG:243) — 착수 시기? 무응답 시 보류.
