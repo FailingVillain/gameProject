@@ -345,10 +345,24 @@ public sealed partial class World
     {
         var avoidAt = new List<Vector2>();
         foreach (var f in def.Reinforcements) avoidAt.Add(MissionDef.ForceCenterOf(def, f));
+        var ug = new PointGrid(Map.Width, Map.Height, 2.5f);
+        if (!GameMap.LegacyAvoid) foreach (var u in Units) if (u.Alive) ug.Add(u.Pos.X, u.Pos.Y);
         bool Avoid(float x, float y)
         {
             var p = new Vector2(x, y);
-            foreach (var u in Units) if (u.Alive && Vector2.DistanceSquared(u.Pos, p) < 6.25f) return true;
+            if (GameMap.LegacyAvoid)   // 시험용 참조 구현
+            {
+                foreach (var u in Units) if (u.Alive && Vector2.DistanceSquared(u.Pos, p) < 6.25f) return true;
+            }
+            else
+            {
+                // PR5: 유닛 격자 - 후보만 좁히고 거리식은 그대로 (격자는 호출 시작 때 한 번 만든다)
+                ug.Range(x, y, out int x0, out int y0, out int x1, out int y1);
+                for (int cy = y0; cy <= y1; cy++)
+                for (int cx = x0; cx <= x1; cx++)
+                    for (int i = ug.Head(cx, cy); i >= 0; i = ug.Next(i))
+                        if (Vector2.DistanceSquared(ug.Pos[i], p) < 6.25f) return true;
+            }
             foreach (var c in avoidAt) if (Vector2.DistanceSquared(c, p) < 16f) return true;
             foreach (var z in def.DeployZones) if (z.Contains(p)) return true;
             return false;

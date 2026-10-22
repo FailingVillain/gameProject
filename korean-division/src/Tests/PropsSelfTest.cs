@@ -30,6 +30,7 @@ public static class PropsSelfTest
             TestSnapshot();
             TestCoverClusterForest();
             TestPropsV2();
+            TestScatterGrid();
         }
         catch (Exception e) { check(false, $"props 테스트 중 예외: {e.GetType().Name}: {e.Message}\n{e.StackTrace}"); }
     }
@@ -355,6 +356,64 @@ public static class PropsSelfTest
             check(det && prefix && added && nOn > nOff, $"PR1 propsV2: 같은 시드 -> 같은 소품 {det} · 켜도 기존 소품 그대로(앞부분 동일) {prefix} · 새 종류 놓임 {added} · 총 {nOff} -> {nOn}");
         }
         finally { rules.Scatter.PropsV2 = v0; }
+    }
+
+    static string SeedSha(GameMap m)
+    {
+        using var ms = new MemoryStream();
+        using (var bw = new BinaryWriter(ms, System.Text.Encoding.UTF8, true))
+            foreach (var p in m.PropSeeds) { bw.Write(BitConverter.SingleToInt32Bits(p.X)); bw.Write(BitConverter.SingleToInt32Bits(p.Y)); bw.Write(p.Type); }
+        return Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(ms.ToArray()))[..16];
+    }
+
+    /// <summary>PR5: Crowded / Avoid 공간 격자 - 옛 선형 순회 (참조 구현, GameMap.LegacyCrowded / LegacyAvoid) 와 PropSeeds 배열 (순서 포함) 이 비트 단위로 같아야 한다.</summary>
+    static void TestScatterGrid()
+    {
+        var rules = PropDefs.Current.Rules;
+        var bad = new List<string>(); int cases = 0, total = 0; string sample = "";
+        GameMap Make(string map, int seed, float dens, int cell, bool v2)
+        {
+            var m = MapFile.Load(map, seed); m.ClearProps();
+            m.ScatterProps(false, null, dens, cell, v2);
+            return m;
+        }
+        try
+        {
+            var configs = new List<(string map, int seed, float dens, int cell, bool v2)>();
+            foreach (var map in new[] { "battle_city", "battle_terrain", "test_river", "corners4", "terrain_demo" })
+            {
+                configs.Add((map, 1, 1f, 0, false));
+                configs.Add((map, 2, 4f, 6, false));
+                configs.Add((map, 3, 4f, 6, true));
+            }
+            configs.Add(("battle_city", 5, 16f, 6, true));   // 아주 큰 밀도
+            foreach (var c in configs)
+            {
+                GameMap.LegacyCrowded = true; var a = Make(c.map, c.seed, c.dens, c.cell, c.v2);
+                GameMap.LegacyCrowded = false; var b = Make(c.map, c.seed, c.dens, c.cell, c.v2);
+                cases++; total += b.PropSeeds.Count;
+                if (!a.PropSeeds.SequenceEqual(b.PropSeeds) || SeedSha(a) != SeedSha(b)) bad.Add($"{c.map}/s{c.seed}/d{c.dens}/v2={c.v2}");
+                if (sample.Length == 0) sample = $"{c.map}:{b.PropSeeds.Count}:{SeedSha(b)}";
+            }
+            foreach (int seed in new[] { 11, 12 })   // 생성기 (회전 대칭 mirror 경로)
+            {
+                GameMap.LegacyCrowded = true; var a = GameMap.Generate(200, 200, seed);
+                GameMap.LegacyCrowded = false; var b = GameMap.Generate(200, 200, seed);
+                cases++; total += b.PropSeeds.Count;
+                if (!a.PropSeeds.SequenceEqual(b.PropSeeds)) bad.Add($"Generate/s{seed}");
+            }
+            // 미션 경로 (Avoid 유닛 격자 포함): Crowded + Avoid 둘 다 옛 방식 vs 둘 다 새 방식
+            foreach (var id in new[] { "ai_bn_meeting", "ai_kr_vs_ft_1000", "village_defense", "yalu_crossing" })
+            {
+                var def = MissionDef.Load(id); def.PropScatter = true; def.PropDensity = 4f; def.PropCell = 6;
+                GameMap.LegacyCrowded = GameMap.LegacyAvoid = true; var a = World.CreateMissionWorld(def, defs);
+                GameMap.LegacyCrowded = GameMap.LegacyAvoid = false; var b = World.CreateMissionWorld(def, defs);
+                cases++; total += b.Map.PropSeeds.Count;
+                if (!a.Map.PropSeeds.SequenceEqual(b.Map.PropSeeds) || a.ComputeChecksum() != b.ComputeChecksum()) bad.Add("mission/" + id);
+            }
+        }
+        finally { GameMap.LegacyCrowded = GameMap.LegacyAvoid = false; }
+        check(bad.Count == 0 && total > 1000, $"PR5 산포 공간 격자: 옛 선형 순회와 PropSeeds (순서 포함) · 미션 체크섬 동일 {cases - bad.Count}/{cases} 건 (총 {total}개; 예 {sample}) {string.Join(",", bad)}");
     }
 
     static long TerrainHash(GameMap m) { long h = 17; for (int y = 0; y < m.Height; y++) for (int x = 0; x < m.Width; x++) h = h * 31 + (int)m.Get(x, y) + (m.IsHigh(x, y) ? 100 : 0); return h; }

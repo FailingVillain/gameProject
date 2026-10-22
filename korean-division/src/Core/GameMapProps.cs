@@ -15,6 +15,9 @@ public sealed partial class GameMap
         Version++;
     }
 
+    /// <summary>시험용: true 면 Crowded / Avoid 가 PR5 이전의 선형 순회 (참조 구현, 결과 비교 · 시간 전후 측정용).</summary>
+    internal static bool LegacyCrowded, LegacyAvoid;
+
     static readonly string[] TreeKinds = { "tree_birch", "tree_larch", "tree_pine", "tree_oak" };
 
     /// <summary>
@@ -81,11 +84,27 @@ public sealed partial class GameMap
             }
             return true;
         }
+        PointGrid? grid = null; int gridDone = 0;
         bool Crowded(float x, float y)
         {
             float sp2 = sr.Spacing * sr.Spacing;
-            foreach (var p in PropSeeds)
-                if ((p.X - x) * (p.X - x) + (p.Y - y) * (p.Y - y) < sp2) return true;
+            if (LegacyCrowded)   // 시험용 참조 구현 (PR5 이전 선형 순회)
+            {
+                foreach (var p in PropSeeds)
+                    if ((p.X - x) * (p.X - x) + (p.Y - y) * (p.Y - y) < sp2) return true;
+                return false;
+            }
+            // PR5: 공간 해시로 후보만 - 같은 식 (판정은 any 라 순서 무관). 새로 쌓인 PropSeeds 는 질의 직전에 따라잡는다
+            grid ??= new PointGrid(Width, Height, sr.Spacing);
+            for (; gridDone < PropSeeds.Count; gridDone++) grid.Add(PropSeeds[gridDone].X, PropSeeds[gridDone].Y);
+            grid.Range(x, y, out int x0, out int y0, out int x1, out int y1);
+            for (int cy = y0; cy <= y1; cy++)
+            for (int cx = x0; cx <= x1; cx++)
+                for (int i = grid.Head(cx, cy); i >= 0; i = grid.Next(i))
+                {
+                    var p = grid.Pos[i];
+                    if ((p.X - x) * (p.X - x) + (p.Y - y) * (p.Y - y) < sp2) return true;
+                }
             return false;
         }
         bool Put(float x, float y, string type)
