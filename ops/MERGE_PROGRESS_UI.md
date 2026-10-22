@@ -38,6 +38,13 @@ Flag syntax: `--uifuzz 30 --fuzz-menu` and `--uifuzz 30 --fuzz-campaign` (modifi
 | H1 | kd/t33a-map-model c5b30f4 / t33b-map-ui 5207b8f / t33c-placement c514821 | d55a0a0 / 3ab7c21 / fa5805a | game code untouched; `dotnet run --project game-tools/map-editor/MapEditor.Tests -- <korean-division root>` pass 604 fail 0 |
 Tags: ui-pre-merge-G, ui-post-G (060b4c8... before t38i), ui-pre-merge-H.
 
+## Phase 2 (operator Sonnet; all steps detcheck 8aa6448b9690b922 GOLDEN match, uiicons/missions PASS, uifuzz 30 --fuzz-menu --fuzz-campaign 0 exceptions)
+Helper: heavy_gate -Max 12 -TimeoutMin 15; lock .git/kd-merge-b.lock held during phase 2.
+| step | branch@tip | commit | notes |
+|---|---|---|---|
+| 1 G7 | kd/t45-menu-hide 88735b1 | ed4b7f2 | Program.cs arg list: HEAD list + --dev-menu; ops ours; menuhide PASS |
+| 2 | t38k-fonts 07cb63f | (see log) | SelfTest.cs both registrations kept; fonts PASS; assets/fonts 15M |
+
 ## Not done / next
 - G7 kd/t45-menu-hide 88735b1: not in the order given to line 2 -> NOT merged (plan G7, needs menuhide, uifuzz 30, missions).
 - T33d (kd/t33d-rail 022647f): final combine only (needs rail/river terrains from line 1). Editor terrain list has no Bridge/Ford/Rail yet (Terrain.cs) - expected until river merges.
