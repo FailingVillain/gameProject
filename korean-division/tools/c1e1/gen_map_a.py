@@ -90,7 +90,7 @@ def build(W, H):
     for i in range(10):
         houses.append((sx(430) + (i % 5) * 14, sy(295) + (i // 5) * 14, 5, 4))
     # 소초(SK2): 창고 + 연락소
-    houses += [(sx(290), sy(270), 8, 5), (sx(302), sy(270), 4, 4)]
+    houses += [(sx(290), sy(270), 6, 5), (sx(302), sy(270), 4, 4)]
     # 내륙 마을 (가옥 10)
     seed = 12345
     for i in range(10):

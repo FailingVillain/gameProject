@@ -236,7 +236,7 @@
     {"terrain": "house", "rect": [458, 309, 5, 4]},
     {"terrain": "house", "rect": [472, 309, 5, 4]},
     {"terrain": "house", "rect": [486, 309, 5, 4]},
-    {"terrain": "house", "rect": [290, 270, 8, 5]},
+    {"terrain": "house", "rect": [290, 270, 6, 5]},
     {"terrain": "house", "rect": [302, 270, 4, 4]},
     {"terrain": "house", "rect": [398, 110, 5, 4]},
     {"terrain": "house", "rect": [414, 111, 5, 4]},
