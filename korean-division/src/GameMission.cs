@@ -74,6 +74,8 @@ public sealed partial class Game
         var w = World.CreateMissionWorld(def, Defs.Current, opt.MissionSeed);
         w.Fog.Enabled = !opt.NoFog;
         ApplyDifficultyOption(w, opt, CampaignState.IsCampaignMission(def.Id));   // 난이도 (GameComms.cs)
+        // M3: 캠페인 출격이면 플레이어 세력 사기 = 중대 사기 평균 (틱 0 전). 단독 · 연습은 기본 50 그대로, 적 세력은 건드리지 않음 (BH1).
+        if (human > 0 && CampaignEconomy.MissionStartMorale(CampaignState.Load(), def.Id) is int mo) w.SetFactionMorale(human, mo);
         if (opt.Ai != "none" || spectate) World.AttachMissionAi(w, human, spectate);
         return w;
     }

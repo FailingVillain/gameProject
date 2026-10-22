@@ -318,8 +318,17 @@ public static class CampaignEconomy
         return total;
     }
 
-    // TODO(M1 연결): 미션 시작 때 캠페인 사기(CampaignVars.Get(s, "morale.troops"), 또는 중대별 RosterCompany.Morale)를 sim 에 넘기는 진입점은
-    // kd/m1-morale-suppress 가 제공한다 (예: MissionLauncher.SetCampaignMorale(int)). 이 카드에서는 자리만 남기고 구현하지 않는다.
+    /// <summary>
+    /// [M3 · BH] 캠페인 전체 사기 = morale.troops (CampaignVars 의 파생값 RosterMoraleAverage: 병력 0 중대 제외, 내림). 평균 정의는 한 곳(CampaignVars)에만 둔다.
+    /// </summary>
+    public static int AverageCompanyMorale(CampaignState s) => CampaignVars.Get(s, "morale.troops");
+
+    /// <summary>
+    /// [M3] 미션 시작 사기: 캠페인 출격(Pending.MissionId 일치)일 때만 로스터 평균, 아니면 null (연습 · 단독 미션 · 자유전은 기본 50 유지 — 호출 안 함).
+    /// 적 세력은 설정하지 않는다 (BH1). 호출처: GameMission.CreateMissionGameWorld (틱 0 전, World.SetFactionMorale).
+    /// </summary>
+    public static int? MissionStartMorale(CampaignState? s, string missionId) =>
+        s?.Pending is { } p && p.MissionId == missionId ? AverageCompanyMorale(s) : null;
 
     /// <summary>[T42a] 지침 (피로 문턱 이상) 인가 — 홈 표시 · 투입 경고용. 잠금 아님.</summary>
     public static bool IsTired(CampaignState.RosterCompany c) => c.Fatigue >= CampaignEconomyDefs.Current.FatigueWarnThreshold;

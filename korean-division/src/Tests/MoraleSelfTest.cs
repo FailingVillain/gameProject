@@ -25,6 +25,7 @@ public static class MoraleSelfTest
             TestNeutral();
             TestRoundTrip();
             TestReplay(opt);
+            TestCampaignLink(opt);
         }
         catch (Exception e) { check(false, $"morale 테스트 중 예외: {e.GetType().Name}: {e.Message}\n{e.StackTrace}"); }
     }
@@ -119,5 +120,51 @@ public static class MoraleSelfTest
         loaded.Morale = null;
         long bad2 = loaded.Verify(defs, out _);
         check(rep.Morale is [80, 50] && bad < 0 && bad2 >= 0, $"리플레이: 머리말 사기 [{string.Join(",", rep.Morale ?? Array.Empty<int>())}] 재현 ({report}) · 머리말 빼면 어긋남 {bad2 >= 0}");
+    }
+
+    static CampaignState CampWith(params int[] morales)
+    {
+        var s = new CampaignState();
+        s.Roster.Clear();
+        for (int i = 0; i < morales.Length; i++) s.Roster.Add(new CampaignState.RosterCompany { Id = "c" + i, Strength = 1, Morale = morales[i] });
+        return s;
+    }
+
+    /// <summary>M3 캠페인 사기 평균 → 미션 시작 사기 → 제압 감소 배수 경로, 단독 미션 = 설정 안 함, 저장 · 리플레이 왕복.</summary>
+    static void TestCampaignLink(GameOptions opt)
+    {
+        // 1) 평균 (morale.troops 내림, 병력 0 제외): 40/50/61 = 151/3 = 50.33 -> 50 · 50/51 = 50.5 -> 50 · 빈 로스터 50 · 범위 밖은 자름
+        int a1 = CampaignEconomy.AverageCompanyMorale(CampWith(40, 50, 61)), a2 = CampaignEconomy.AverageCompanyMorale(CampWith(50, 51));
+        int a3 = CampaignEconomy.AverageCompanyMorale(CampWith()), a4 = CampaignEconomy.AverageCompanyMorale(CampWith(0, 0, 0)), a5 = CampaignEconomy.AverageCompanyMorale(CampWith(100, 200));
+        check(a1 == 50 && a2 == 50 && a3 == 50 && a4 == 0 && a5 == 100, $"캠페인 사기 평균: 40/50/61 -> {a1} · 50/51 -> {a2} · 빈 {a3} · 전부 0 -> {a4} · 100/200 -> {a5}");
+
+        // 2) 미션 시작 사기: 출격 기록(Pending) 이 그 미션일 때만. 단독 · 다른 미션 · 상태 없음 = null (SetFactionMorale 호출 안 함)
+        var camp = CampWith(0, 0); camp.Pending = new CampaignState.PendingOperation { MissionId = "m_x" };
+        int? start = CampaignEconomy.MissionStartMorale(camp, "m_x");
+        bool none = CampaignEconomy.MissionStartMorale(camp, "m_y") == null && CampaignEconomy.MissionStartMorale(CampWith(0), "m_x") == null && CampaignEconomy.MissionStartMorale(null, "m_x") == null;
+        check(start == 0 && none, $"미션 시작 사기: 출격 미션 {start} · 단독/다른 미션/상태 없음 null {none}");
+
+        // 3) 통합: 평균 0 -> SetFactionMorale -> 제압 회복이 기본 50 보다 느림, 평균 100 은 빠름
+        int dCamp0 = DecayTicks(start), dDefault = DecayTicks(null), dCamp100 = DecayTicks(CampaignEconomy.AverageCompanyMorale(CampWith(100, 100)));
+        check(dCamp0 > dDefault && dDefault > dCamp100, $"통합: 캠페인 사기 0 제압 회복 {dCamp0}틱 > 기본 50 {dDefault}틱 > 캠페인 100 {dCamp100}틱");
+
+        // 4) 저장 왕복 + 적 세력은 기본 50 그대로
+        var w = Bare(); w.SetFactionMorale(1, start!.Value);
+        var u = w.SpawnUnit(defs.Units["infantry"], 1, new Vector2(20, 20)); w.Step(); u.Suppression = 700; w.Step();
+        var bytes = Snapshot.Save(w, Meta);
+        var y = Snapshot.Load(bytes, defs).World;
+        for (int t = 0; t < 200; t++) { w.Step(); y.Step(); }
+        check(y.Faction(1).Morale == 0 && y.Faction(2).Morale == Faction.MoraleDefault && w.ComputeChecksum() == y.ComputeChecksum(), $"저장 왕복: 아군 {y.Faction(1).Morale} · 적 {y.Faction(2).Morale} (미설정) · 이어 돌려도 체크섬 같음");
+
+        // 5) 리플레이: 캠페인 사기 0 머리말 재현
+        var rw = World.CreateStandard(GameMap.Generate(64, 64, opt.Seed, 2), defs);
+        rw.RecordCommands = true; rw.SetFactionMorale(1, start.Value);
+        rw.Issue(new DebugSpawnCommand(1, "infantry", new Vector2(20, 20), 4));
+        for (int i = 0; i < 120; i++) rw.Step();
+        var rep = ReplayFile.FromWorld(rw);
+        string path = TestTemp.Child("morale_m3.kdr.json");
+        rep.Save(path);
+        long bad = ReplayFile.Load(path).Verify(defs, out var report);
+        check(rep.Morale is [0, 50] && bad < 0, $"리플레이: 머리말 사기 [{string.Join(",", rep.Morale ?? Array.Empty<int>())}] 일치 ({report})");
     }
 }
