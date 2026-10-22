@@ -18,6 +18,8 @@ public sealed partial class CampaignMenu
     enum ViewMode { Home, PreOp, Debrief }
 
     CampaignState state;        // 슬롯 불러오기 시 교체 (T19a)
+    /// <summary>[TC-A] 캠페인 변수 읽기 (브리핑 정보 단계). 슬롯 교체 후에도 현재 state 를 본다.</summary>
+    public int Flag(string key) => state.Flags.GetValueOrDefault(key, 0);
     string? loadError;
     ViewMode currentView = ViewMode.Home;
     Tab currentTab = Tab.Summary;
@@ -773,7 +775,7 @@ public sealed partial class CampaignMenu
 
         if (def?.Briefing != null)
         {
-            foreach (var l in WrapText(def.Briefing, w, 14).Take(2))
+            foreach (var l in WrapText(def.BriefingFor(Flag), w, 14).Take(2))
             {
                 Ui.Text(l, x, y, 14, Palette.TextDim); y += 18;
             }

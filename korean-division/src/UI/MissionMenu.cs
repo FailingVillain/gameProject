@@ -34,9 +34,12 @@ public sealed class MissionMenu : IDisposable
     public bool Practice => practice;
     readonly bool practice;   // 연습 출격: 결과 json · 캠페인 정산을 하지 않는다 (GameOptions.NoResultsFile)
 
-    public MissionMenu(string? openBriefing = null, bool practice = false)
+    readonly Func<string, int>? intel;   // [TC-A] 캠페인 변수 읽기 (정보 단계 문구용). null = 0단계
+
+    public MissionMenu(string? openBriefing = null, bool practice = false, Func<string, int>? intel = null)
     {
         this.practice = practice;
+        this.intel = intel;
         foreach (var id in MissionDef.Available())
         {
             try { var def = MissionDef.Load(id); if (!def.Spectate) entries.Add(new Entry(id, def, null)); }   // AI 대 AI 관전 미션은 시작 화면 '관전' 탭으로 옮겼다 (T45)
@@ -209,7 +212,7 @@ public sealed class MissionMenu : IDisposable
         // 왼쪽: 브리핑 글 · 목표 · 패배 조건 · 병력
         float textW = mapArea.X - lx - 20;
         y += 6;
-        foreach (var line in Wrap(d.Briefing, textW, 16)) { Ui.Text(line, lx, y, 16, Palette.Text); y += 20; }
+        foreach (var line in Wrap(d.BriefingFor(intel), textW, 16)) { Ui.Text(line, lx, y, 16, Palette.Text); y += 20; }
         y += 10;
         Ui.Text(S.MsObjectives, lx, y, 16, Palette.Accent); y += 22;
         bool hidden = false;

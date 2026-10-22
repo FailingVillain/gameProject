@@ -17,6 +17,17 @@ public sealed partial class MissionDef
     public string Date { get; set; } = "";
     public string Location { get; set; } = "";
     public string Briefing { get; set; } = "";
+    /// <summary>[TC-A · R9 대체안] 브리핑에 보이는 적 규모를 실제 배치(Forces)와 분리하는 정보 단계별 문구 (0 = 브리핑 시점의 (오)정보, 1 = 정찰 뒤, 2 = 확정). 비어 있으면 Briefing 만 쓴다. 표시 전용 — sim 에 영향 없음.</summary>
+    public List<string> BriefingTiers { get; set; } = new();
+    /// <summary>[TC-A] 정보 단계를 읽을 캠페인 변수 이름 (CampaignState.Flags 키, 예 "intel.andong"). 비어 있으면 0단계.</summary>
+    public string? IntelVar { get; set; }
+    /// <summary>브리핑 본문: 단계 문구가 있으면 그것 (단계는 0..마지막으로 자름), 없으면 Briefing. flags = 캠페인 변수 읽기 (null = 0단계).</summary>
+    public string BriefingFor(Func<string, int>? flags)
+    {
+        if (BriefingTiers.Count == 0) return Briefing;
+        int lv = string.IsNullOrEmpty(IntelVar) || flags == null ? 0 : flags(IntelVar);
+        return BriefingTiers[Math.Clamp(lv, 0, BriefingTiers.Count - 1)];
+    }
     /// <summary>기존 지도 id (assets/maps/<id>.json). MapData 가 있으면 무시.</summary>
     public string? Map { get; set; }
     /// <summary>인라인 지도 (지도 파일과 같은 형식의 객체).</summary>
@@ -131,7 +142,7 @@ public sealed partial class MissionDef
             {
                 var d = JsonSerializer.Deserialize<MissionDef>(File.ReadAllText(PathOf(id)), Opts);
                 if (d == null) continue;
-                list.Add(d.Title); list.Add(d.Date); list.Add(d.Location); list.Add(d.Briefing);
+                list.Add(d.Title); list.Add(d.Date); list.Add(d.Location); list.Add(d.Briefing); list.AddRange(d.BriefingTiers);
                 list.AddRange(d.Factions.Select(f => f.Name));
                 list.AddRange(d.Forces.Concat(d.Reinforcements).Select(f => f.Name ?? ""));
                 list.AddRange(d.Objectives.Select(o => o.Text ?? ""));

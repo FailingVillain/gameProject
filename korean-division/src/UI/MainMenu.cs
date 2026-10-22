@@ -148,7 +148,7 @@ public sealed class MainMenu
             case Page.Campaign:
                 campaign ??= new CampaignMenu();
                 campaign.Draw(screenW, screenH);
-                if (campaign.OpenMission != null) { missions?.Dispose(); missions = new MissionMenu(campaign.OpenMission); campaign.OpenMission = null; page = Page.Missions; }
+                if (campaign.OpenMission != null) { missions?.Dispose(); missions = new MissionMenu(campaign.OpenMission, intel: campaign.Flag); campaign.OpenMission = null; page = Page.Missions; }
                 else if (campaign.OpenPractice != null) { missions?.Dispose(); missions = new MissionMenu(campaign.OpenPractice, practice: true); campaign.OpenPractice = null; page = Page.Missions; }
                 else if (campaign.BackRequested) { campaign.BackRequested = false; page = Page.Main; }
                 break;
