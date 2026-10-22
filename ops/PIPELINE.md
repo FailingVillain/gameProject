@@ -61,6 +61,9 @@ queued(지휘자/spec) → assigned(지휘자, 발주 시) → running(에이전
 | `preflight.ps1 <카드id|브랜치>` | **발주 전** 지휘자 | QUEUE 상태 · MERGE_QUEUE(이미 병합/대기) · worktree/branch 중복 · 해당 워크트리 미커밋 · FV 예약표를 대조. 중복·병합완료·미커밋이면 종료코드 1 + 사유(BLOCK), FV 겹침은 WARN. 예: `preflight.ps1 T38j` (LESSONS 1·24·30) |
 | `merge_step.ps1 -Step E1 -Expected "<a> <b>" -AllowFail uiicons,traindemo [-Groups g1,g2] [-Priority]` | **병합 한 단계** 끝마다 merger/병합 에이전트 | 게이트+빌드 → detcheck(불일치 즉시 STOP) → `snapshot` 묶음 → `--snaptest` → 자기 묶음 → 허용 외 FAIL 이면 STOP → 태그(`post-<Step>`) → `ops/MERGE_PROGRESS.md` 한 줄 append → 끝에 `PASS`/`STOP` 한 줄. 단계 생략 옵션 없음(LESSONS 23·28). `-DryRun`(+`-Feed <dir>`)은 계획만 출력·모의 입력으로 STOP 논리 시험 |
 | `state_snapshot.ps1 [-Write]` | 인계·세션 시작·점검 | main 해시 · 워크트리 수 · 병합 잠금(만료 표시) · 병합 라인별 HEAD/최신 태그/미커밋 수 · FV/Replay · 실행 중 heavy 프로세스 수를 마크다운으로. `-Write` = 이 체크아웃의 `ops/STATE_LIVE.md` 덮어쓰기 |
+| `watchdog.ps1 [<워크트리>...] [-StallMin 30] [-RecentHours 6]` | 에이전트가 멈춰 보일 때 · 주기 점검 지휘자 | 워크트리별 `OK` / `WAITING_GATE` / `SUSPECT_STALL`(30분+ 무변화) + 근거(최근 커밋·변경 파일·러너 dotnet/KoreanDivision/make_unit/blender CPU 변화·경로에 워크트리명이 든 스크래치패드 파일·heavy_gate 대기 로그 `ops/gate_wait.log`). 인자 없으면 최근 6시간 활동 워크트리. **프로세스를 종료하지 않는다(보고만)**; 의심이면 종료코드 2 (LESSONS 8·18·25). `-Fake "commit=45;file=50;scratch=none;runner=0;cpu=0;gate=wait"` 로 판정만 모의 |
+| `stack_depth.ps1 [<브랜치>...] [-Line merge/0.2] [-Max 3]` | **발주 전**(스택 카드) · 병합 대기열 점검 | 각 브랜치 아래에 쌓인 '병합 라인에 아직 안 들어간' 선행 브랜치 사슬 깊이 계산, 3단 초과면 `WARN`(종료코드 3) + 라인에 안 들어간 선행 목록(낮은 쪽 먼저). 인자 없으면 QUEUE.md 의 wip-ready 브랜치 |
+검증: `watchdog_test.ps1` (판정 3종 모의 + 임시 저장소 스택 시험, 전부 PASS 해야 함).
 병합 단계는 이 도구 하나로 끝내고, 직접 명령을 풀어 쓰지 않는다. 세부 절차 정본 = docs/procedures/merge-procedure.md.
 
 ## 5. 버전 기록
