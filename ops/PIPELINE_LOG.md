@@ -100,6 +100,7 @@
 | 11:5x | 후속 카드 T31a·b·c 완료(spec, 84k, 135초): 재정비는 이미 regroup 키로 구현, 70% 종료는 엔진 규칙이 아니라 측정 시나리오 설정, 항복은 구현돼 있으나 조건이 엄해 대대전 0건 → 카드 3장(키 기본 꺼짐). 발주: T31c(sonnet, main 위)·T31a(opus, ai3b2 위). T31b(측정 전용)는 heavy 풀 여유 시 | 동시 8, 上 4 |
 | 11:5x | T30d wip-ready (art sonnet, 139k, 1004초): t30d-train-art 8e51e5a, 블록아웃 5종×5방향×평상/파괴, ART_SPEC 열차 절, outroute train-*. 크기 값은 카드에 없어 임의 설정(T30a 확정 후 대조 필요) | 완료 27/42 |
 | 11:56(실측) | 자동 점검(2차 1회): 진행 중 T15·T16b·T10b·T30a·T31a·T31c(워크트리 생성 완료, harness working 1·나머지 idle = 시험/측정 대기 추정; 발주 후 10~30분이라 정지 판정 안 함). 신규 발주 없음(T31b 는 heavy 풀 여유 대기) | 대기 |
+| 12:0x | T30a wip-ready (opus, 203k — 한도 근접, 1648초, 70회): t30a-train-move 1800d5a (rail 위). 새 파일 Train.cs, TrainCar 는 Units 밖 World.Trains, 정수 호장, 스크립트 이동, FV58/R23, train 26검사·replay·snapshot·savecompat PASS, 열차 없는 지도 골든 불변, 틱 비용 잡음 수준. 발주: T30b(opus, t30a 위, FV59)·T30a 리뷰(sonnet) | 완료 28/43 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
