@@ -1,10 +1,10 @@
 {
  "frame": [
-  128,
+  176,
   160
  ],
  "anchor": [
-  64,
+  88,
   144
  ],
  "dirs": [
@@ -322,7 +322,17 @@
     "aim_b",
     "fire_b",
     "aim_c",
-    "fire_c",
+    "fire_c"
+   ],
+   "size": [
+    4048,
+    800
+   ]
+  },
+  {
+   "file": "infantry-russian-white_2.png",
+   "team": "infantry-russian-white_2_team.png",
+   "columns": [
     "idle_alt",
     "hit",
     "fall",
@@ -331,17 +341,7 @@
     "charge_1",
     "charge_2",
     "charge_3",
-    "charge_4"
-   ],
-   "size": [
-    4096,
-    800
-   ]
-  },
-  {
-   "file": "infantry-russian-white_2.png",
-   "team": "infantry-russian-white_2_team.png",
-   "columns": [
+    "charge_4",
     "melee_1",
     "melee_2",
     "melee_3",
@@ -355,7 +355,17 @@
     "fixb_2",
     "fixb_3",
     "surrender_1",
-    "surrender_2",
+    "surrender_2"
+   ],
+   "size": [
+    4048,
+    800
+   ]
+  },
+  {
+   "file": "infantry-russian-white_3.png",
+   "team": "infantry-russian-white_3_team.png",
+   "columns": [
     "stagger_b",
     "kneel_b",
     "dead_b",
@@ -364,7 +374,7 @@
     "dead_c"
    ],
    "size": [
-    2560,
+    1056,
     800
    ]
   }
@@ -463,120 +473,120 @@
    "col": 22
   },
   "idle_alt": {
-   "sheet": "infantry-russian-white_1.png",
-   "col": 23
-  },
-  "hit": {
-   "sheet": "infantry-russian-white_1.png",
-   "col": 24
-  },
-  "fall": {
-   "sheet": "infantry-russian-white_1.png",
-   "col": 25
-  },
-  "dead": {
-   "sheet": "infantry-russian-white_1.png",
-   "col": 26
-  },
-  "spare": {
-   "sheet": "infantry-russian-white_1.png",
-   "col": 27
-  },
-  "charge_1": {
-   "sheet": "infantry-russian-white_1.png",
-   "col": 28
-  },
-  "charge_2": {
-   "sheet": "infantry-russian-white_1.png",
-   "col": 29
-  },
-  "charge_3": {
-   "sheet": "infantry-russian-white_1.png",
-   "col": 30
-  },
-  "charge_4": {
-   "sheet": "infantry-russian-white_1.png",
-   "col": 31
-  },
-  "melee_1": {
    "sheet": "infantry-russian-white_2.png",
    "col": 0
   },
-  "melee_2": {
+  "hit": {
    "sheet": "infantry-russian-white_2.png",
    "col": 1
   },
-  "melee_3": {
+  "fall": {
    "sheet": "infantry-russian-white_2.png",
    "col": 2
   },
-  "meleeb_1": {
+  "dead": {
    "sheet": "infantry-russian-white_2.png",
    "col": 3
   },
-  "meleeb_2": {
+  "spare": {
    "sheet": "infantry-russian-white_2.png",
    "col": 4
   },
-  "idle_lean": {
+  "charge_1": {
    "sheet": "infantry-russian-white_2.png",
    "col": 5
   },
-  "go_prone": {
+  "charge_2": {
    "sheet": "infantry-russian-white_2.png",
    "col": 6
   },
-  "aim_prone": {
+  "charge_3": {
    "sheet": "infantry-russian-white_2.png",
    "col": 7
   },
-  "fire_prone": {
+  "charge_4": {
    "sheet": "infantry-russian-white_2.png",
    "col": 8
   },
-  "fixb_1": {
+  "melee_1": {
    "sheet": "infantry-russian-white_2.png",
    "col": 9
   },
-  "fixb_2": {
+  "melee_2": {
    "sheet": "infantry-russian-white_2.png",
    "col": 10
   },
-  "fixb_3": {
+  "melee_3": {
    "sheet": "infantry-russian-white_2.png",
    "col": 11
   },
-  "surrender_1": {
+  "meleeb_1": {
    "sheet": "infantry-russian-white_2.png",
    "col": 12
   },
-  "surrender_2": {
+  "meleeb_2": {
    "sheet": "infantry-russian-white_2.png",
    "col": 13
   },
-  "stagger_b": {
+  "idle_lean": {
    "sheet": "infantry-russian-white_2.png",
    "col": 14
   },
-  "kneel_b": {
+  "go_prone": {
    "sheet": "infantry-russian-white_2.png",
    "col": 15
   },
-  "dead_b": {
+  "aim_prone": {
    "sheet": "infantry-russian-white_2.png",
    "col": 16
   },
-  "stagger_c": {
+  "fire_prone": {
    "sheet": "infantry-russian-white_2.png",
    "col": 17
   },
-  "slump_c": {
+  "fixb_1": {
    "sheet": "infantry-russian-white_2.png",
    "col": 18
   },
-  "dead_c": {
+  "fixb_2": {
    "sheet": "infantry-russian-white_2.png",
    "col": 19
+  },
+  "fixb_3": {
+   "sheet": "infantry-russian-white_2.png",
+   "col": 20
+  },
+  "surrender_1": {
+   "sheet": "infantry-russian-white_2.png",
+   "col": 21
+  },
+  "surrender_2": {
+   "sheet": "infantry-russian-white_2.png",
+   "col": 22
+  },
+  "stagger_b": {
+   "sheet": "infantry-russian-white_3.png",
+   "col": 0
+  },
+  "kneel_b": {
+   "sheet": "infantry-russian-white_3.png",
+   "col": 1
+  },
+  "dead_b": {
+   "sheet": "infantry-russian-white_3.png",
+   "col": 2
+  },
+  "stagger_c": {
+   "sheet": "infantry-russian-white_3.png",
+   "col": 3
+  },
+  "slump_c": {
+   "sheet": "infantry-russian-white_3.png",
+   "col": 4
+  },
+  "dead_c": {
+   "sheet": "infantry-russian-white_3.png",
+   "col": 5
   }
  },
  "anchors": "infantry-russian-white_anchors.json"

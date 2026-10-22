@@ -1,10 +1,10 @@
 {
  "frame": [
-  64,
+  88,
   80
  ],
  "anchor": [
-  32,
+  44,
   72
  ],
  "dirs": [
@@ -476,7 +476,17 @@
     "fixb_2",
     "fixb_3",
     "surrender_1",
-    "surrender_2",
+    "surrender_2"
+   ],
+   "size": [
+    4048,
+    400
+   ]
+  },
+  {
+   "file": "infantry-default@64_2.png",
+   "team": "infantry-default@64_2_team.png",
+   "columns": [
     "stagger_b",
     "kneel_b",
     "dead_b",
@@ -494,17 +504,7 @@
     "salute",
     "present_arms",
     "crawl_1",
-    "crawl_2"
-   ],
-   "size": [
-    4096,
-    400
-   ]
-  },
-  {
-   "file": "infantry-default@64_2.png",
-   "team": "infantry-default@64_2_team.png",
-   "columns": [
+    "crawl_2",
     "crawl_3",
     "drag_1",
     "drag_2",
@@ -516,29 +516,8 @@
     "trench_fire_2"
    ],
    "size": [
-    576,
+    2376,
     400
-   ]
-  },
-  {
-   "file": "infantry-default@64_prone.png",
-   "team": "infantry-default@64_prone_team.png",
-   "columns": [
-    "go_prone",
-    "aim_prone",
-    "fire_prone"
-   ],
-   "size": [
-    240,
-    500
-   ],
-   "frame": [
-    80,
-    100
-   ],
-   "anchor": [
-    40,
-    90
    ]
   }
  ],
@@ -696,16 +675,16 @@
    "col": 37
   },
   "go_prone": {
-   "sheet": "infantry-default@64_prone.png",
-   "col": 0
+   "sheet": "infantry-default@64_1.png",
+   "col": 38
   },
   "aim_prone": {
-   "sheet": "infantry-default@64_prone.png",
-   "col": 1
+   "sheet": "infantry-default@64_1.png",
+   "col": 39
   },
   "fire_prone": {
-   "sheet": "infantry-default@64_prone.png",
-   "col": 2
+   "sheet": "infantry-default@64_1.png",
+   "col": 40
   },
   "fixb_1": {
    "sheet": "infantry-default@64_1.png",
@@ -728,112 +707,112 @@
    "col": 45
   },
   "stagger_b": {
-   "sheet": "infantry-default@64_1.png",
-   "col": 46
-  },
-  "kneel_b": {
-   "sheet": "infantry-default@64_1.png",
-   "col": 47
-  },
-  "dead_b": {
-   "sheet": "infantry-default@64_1.png",
-   "col": 48
-  },
-  "stagger_c": {
-   "sheet": "infantry-default@64_1.png",
-   "col": 49
-  },
-  "slump_c": {
-   "sheet": "infantry-default@64_1.png",
-   "col": 50
-  },
-  "dead_c": {
-   "sheet": "infantry-default@64_1.png",
-   "col": 51
-  },
-  "idle_rest_1": {
-   "sheet": "infantry-default@64_1.png",
-   "col": 52
-  },
-  "idle_rest_2": {
-   "sheet": "infantry-default@64_1.png",
-   "col": 53
-  },
-  "idle_look_1": {
-   "sheet": "infantry-default@64_1.png",
-   "col": 54
-  },
-  "idle_look_2": {
-   "sheet": "infantry-default@64_1.png",
-   "col": 55
-  },
-  "idle_adjust_1": {
-   "sheet": "infantry-default@64_1.png",
-   "col": 56
-  },
-  "idle_adjust_2": {
-   "sheet": "infantry-default@64_1.png",
-   "col": 57
-  },
-  "idle_stretch_1": {
-   "sheet": "infantry-default@64_1.png",
-   "col": 58
-  },
-  "idle_stretch_2": {
-   "sheet": "infantry-default@64_1.png",
-   "col": 59
-  },
-  "salute": {
-   "sheet": "infantry-default@64_1.png",
-   "col": 60
-  },
-  "present_arms": {
-   "sheet": "infantry-default@64_1.png",
-   "col": 61
-  },
-  "crawl_1": {
-   "sheet": "infantry-default@64_1.png",
-   "col": 62
-  },
-  "crawl_2": {
-   "sheet": "infantry-default@64_1.png",
-   "col": 63
-  },
-  "crawl_3": {
    "sheet": "infantry-default@64_2.png",
    "col": 0
   },
-  "drag_1": {
+  "kneel_b": {
    "sheet": "infantry-default@64_2.png",
    "col": 1
   },
-  "drag_2": {
+  "dead_b": {
    "sheet": "infantry-default@64_2.png",
    "col": 2
   },
-  "wave_flag_1": {
+  "stagger_c": {
    "sheet": "infantry-default@64_2.png",
    "col": 3
   },
-  "wave_flag_2": {
+  "slump_c": {
    "sheet": "infantry-default@64_2.png",
    "col": 4
   },
-  "wave_flag_3": {
+  "dead_c": {
    "sheet": "infantry-default@64_2.png",
    "col": 5
   },
-  "wave_flag_4": {
+  "idle_rest_1": {
    "sheet": "infantry-default@64_2.png",
    "col": 6
   },
-  "trench_fire_1": {
+  "idle_rest_2": {
    "sheet": "infantry-default@64_2.png",
    "col": 7
   },
-  "trench_fire_2": {
+  "idle_look_1": {
    "sheet": "infantry-default@64_2.png",
    "col": 8
+  },
+  "idle_look_2": {
+   "sheet": "infantry-default@64_2.png",
+   "col": 9
+  },
+  "idle_adjust_1": {
+   "sheet": "infantry-default@64_2.png",
+   "col": 10
+  },
+  "idle_adjust_2": {
+   "sheet": "infantry-default@64_2.png",
+   "col": 11
+  },
+  "idle_stretch_1": {
+   "sheet": "infantry-default@64_2.png",
+   "col": 12
+  },
+  "idle_stretch_2": {
+   "sheet": "infantry-default@64_2.png",
+   "col": 13
+  },
+  "salute": {
+   "sheet": "infantry-default@64_2.png",
+   "col": 14
+  },
+  "present_arms": {
+   "sheet": "infantry-default@64_2.png",
+   "col": 15
+  },
+  "crawl_1": {
+   "sheet": "infantry-default@64_2.png",
+   "col": 16
+  },
+  "crawl_2": {
+   "sheet": "infantry-default@64_2.png",
+   "col": 17
+  },
+  "crawl_3": {
+   "sheet": "infantry-default@64_2.png",
+   "col": 18
+  },
+  "drag_1": {
+   "sheet": "infantry-default@64_2.png",
+   "col": 19
+  },
+  "drag_2": {
+   "sheet": "infantry-default@64_2.png",
+   "col": 20
+  },
+  "wave_flag_1": {
+   "sheet": "infantry-default@64_2.png",
+   "col": 21
+  },
+  "wave_flag_2": {
+   "sheet": "infantry-default@64_2.png",
+   "col": 22
+  },
+  "wave_flag_3": {
+   "sheet": "infantry-default@64_2.png",
+   "col": 23
+  },
+  "wave_flag_4": {
+   "sheet": "infantry-default@64_2.png",
+   "col": 24
+  },
+  "trench_fire_1": {
+   "sheet": "infantry-default@64_2.png",
+   "col": 25
+  },
+  "trench_fire_2": {
+   "sheet": "infantry-default@64_2.png",
+   "col": 26
   }
  },
  "anchors": "infantry-default@64_anchors.json"
