@@ -91,15 +91,17 @@ public static class CompatGateSelfTest
         var s = new CampaignState { NextMission = "c1_02_tumen", Completed = new() { "c0_01_bandits", "c1_01_hoeryong" }, Day = 12, Supply = 2500f, Difficulty = "normal", HowitzerCompany = true, EntryMission = "c1_01_hoeryong", PrisonersRepatriated = 3, PrisonersInterned = 2, PromotionsThisBreak = 1 };
         s.History.Add(new CampaignState.MissionRecord { MissionId = "c1_01_hoeryong", Title = "1-1", DurationSeconds = 931.5f, EnemyKills = 40, Lost = 5, Survivors = 55, SavedAt = "2026-10-22T10:00:00" });
         var u1 = new MissionResults.UnitLine { Id = 7, Unit = "rifleman", Name = "김 일병", Kills = 4, Rank = 1, StartRank = 0 };
-        var o1 = new MissionResults.UnitLine { Id = 2, Unit = "officer", Name = "박 참위", Kills = 1, Rank = 0, StartRank = 0, OfficerRank = 2, Xp = 30, Post = "company" };
+        var o1 = new MissionResults.UnitLine { Id = 2, Unit = "officer", Name = "박 참위", Kills = 1, Rank = 0, StartRank = 0, OfficerRank = 2, Xp = 30, Post = "company", Key = 1 };
         s.Units.Add(u1); s.Officers.Add(o1); s.EntryUnits.Add(u1); s.EntryOfficers.Add(o1);
-        foreach (var c in s.Roster) { c.Regiment = 1; c.Fatigue = 20; c.Morale = 65; c.Wounded = 2; c.UnhealedOps = 1; }
+        foreach (var c in s.Roster) { c.Regiment = 1; c.Foreign = true; c.Fatigue = 20; c.Morale = 65; c.Wounded = 2; c.UnhealedOps = 1; }
         s.PromotionLog.Add(new CampaignState.PromotionRecord { AfterMission = "c1_01_hoeryong", Officer = false, UnitId = 7, FromRank = 0, ToRank = 1 });
         s.Timeline.Add(new CampaignState.TimelineEntry { Day = 6, Kind = "mission", Id = "c1_01_hoeryong", Title = "1-1" });
         s.CommanderPool.Add(new CampaignState.CommanderSlot { Id = "sample_a", Status = "hired", Regiment = 1, Favor = 40, FavorLastMission = "c1_01_hoeryong", HiredDay = 3, TimesHired = 1 });
-        s.CampaignOfficers.Add(new CampaignState.CampaignOfficer { Key = 1, Name = "이 참위" });
+        s.CampaignOfficers.Add(new CampaignState.CampaignOfficer { Key = 1, Name = "이 참위", Merits = 12, Traits = new() { "brave" } });
         s.Stock.Prisoners = 4; s.Stock.RecentLog.Add("보급 +100");
         s.Pending = new CampaignState.PendingOperation { MissionId = "c1_02_tumen", DeployedCompanyIds = new() { "b1_c1" }, SupplySpent = 100f, AmmoLoaded = 6000, AmmoByCaliber = new() { ["ru"] = 6000 }, ShellsLoaded = new() { ["field"] = 30 }, ShellScale = new() { ["field"] = 1f } };
+        s.NextOfficerKey = 2;
+        s.Funds = 7; s.EpisodePermanentSupplyLoss = 3f; s.Pending.EpisodeSupplyReserved = 50f;   // v11 (TC-D)
         s.LastDebrief = new CampaignState.DebriefReport { MissionId = "c1_01_hoeryong", Title = "1-1", TotalLost = 5, EnemyKills = 40, ShellsFired = new() { ["field"] = 10 }, LootedShells = new() { ["field"] = 2 }, PrisonersTaken = 4 };
         return s;
     }
