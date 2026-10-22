@@ -30,6 +30,20 @@ public static class UiIconsSelfTest
             check(missing == 0, $"병종 이미지 파일 모두 있음 (누락 {missing}, {themeDir})");
             bool defsOk = defs.Units.Values.All(d => UnitSymbols.Of(d) is var b && UnitSymbols.IconName(b) != null);
             check(defsOk, "모든 유닛 정의가 병종 이미지에 대응");
+            // T43: 곡사포 · 저격은 자료(무기 속성)로 판정, 이름 하드코딩 없음. 유닛 -> 병종 전체 목록 (누락 0).
+            var unitBranch = string.Join(", ", defs.Units.Values.Select(d => $"{d.Key}={UnitSymbols.Of(d)}"));
+            Console.WriteLine("  [병종 매핑] " + unitBranch);
+            check(defs.Units.Values.Any(d => UnitSymbols.Of(d) == UnitSymbols.Branch.Howitzer && d.Category == "gun" && d.Weapon != null && defs.Weapons[d.Weapon].Indirect),
+                "곡사 무기 포 = Howitzer (곡사포 이미지)");
+            check(defs.Units.Values.Any(d => UnitSymbols.Of(d) == UnitSymbols.Branch.Sniper && d.Weapon != null && defs.Weapons[d.Weapon].PreferOfficer),
+                "장교 우선 표적 직사 무기 = Sniper (저격 이미지)");
+            check(defs.Units.Values.Where(d => d.Category == "gun" && d.Weapon != null && !defs.Weapons[d.Weapon].Indirect).All(d => UnitSymbols.Of(d) == UnitSymbols.Branch.Artillery),
+                "직사 포 = Artillery 유지");
+            // T43b: 승마 유닛 = 기병 (category 가 infantry 인 기병 정의도 포함, 예: cavalry_default · cavalry_cossack). 지휘관 제외.
+            check(defs.Units.Values.Any(d => d.Mounted && d.Category == "infantry"),
+                "승마 보병 정의가 있음 (기병 판정 시험 대상)");
+            check(defs.Units.Values.Where(d => d.Mounted && !d.IsOfficer && !d.Scout).All(d => UnitSymbols.Of(d) == UnitSymbols.Branch.Cavalry),
+                "승마 유닛 = Cavalry (category 무관, 장교 · 승마 정찰 제외)");
 
             // 1b) 카드 칸: 어떤 선택 조합 (유닛 종류 1~2종) 에서도 두 버튼이 같은 칸을 쓰지 않는다 (N15-2)
             var all = defs.Units.Values.ToList();
