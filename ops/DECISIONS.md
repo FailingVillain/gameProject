@@ -173,3 +173,4 @@ Q-A1 새 Entity(TrainCar, Units 밖 World.Trains) · Q-A2 단선·순환선만(�
 ## AJ. T15·T31a 측정 결과 (2026-10-22)
 - **T15** (measure/t15 0ab1c6e..): 스택(T03+T04+T05)과 main 196판 중 195판 동일 → 회귀 0. 의심: artillery_spotters 90%→5/8(p≈0.04)·trench_assault 1/8 (n=8, 표준오차 17%p) → 재확인 발주(n=24). 신기능 개별: breach·orderq 는 AI 가 안 써서 효과 0 · 3B2 manReplace 켜면 +3승/88판이나 A 시간 초과 증가 → **기본 꺼짐 유지 권장(R2 와 관련)** · T24 는 승패 악화 확인 안 됨. 메모: main c0_02_yalu 시드 103 빈 로그 exit 1 이 392회 중 1회 일시 오류.
 - **T31a** (kd/t31a-regroup 97ed026, ai3b2 위): 재투입 제한 키(`regroup.noRejoinBelow` 기본 0=꺼짐; `rejoinStrength` 기존)로는 대대 손실을 1~3%p 밖에 못 줄임 — 측정 미션이 '진 쪽 70% 손실 시 종료'라 평균 손실의 바닥이 70%. 0.67 은 손실 −9%p 이나 시간 초과 5/8 이라 기각. **수용 기준(손실 20~40%) 미달** → T31b(종료선 측정, 발주함)가 관건. wip-ready 이나 켜지 말 것.
+- **AJ 갱신** artillery_spotters 재확인(n=24, 시드 101~124): 스택·main 모두 18/24(75%), 시간 초과 0, 24판 승패·시각 동일 → T15 의 5/8 은 노이즈, **뚜렷한 하락 아님**. (남은 의심은 trench_assault 1/8 — T16b 진행 중.)
