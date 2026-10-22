@@ -32,6 +32,11 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T25 | 착검 멈춤 범위 = 모든 돌격 (D02 A); 전환 거리 3칸 유지 (D01 B, 코드 변경 없음) | sim | D中 R3 S H3 Wlight | T03 위 스택 | assigned |
 | T26 | 레거시 이메일 차단 git 훅 설치 (D20 A) | docs | D下 R1 S H0 Wlight | 없음 | assigned |
 | T20 | 저장소 이동 마무리 (옛 폴더 삭제 = 사용자 U02) | docs | D下 R1 S H0 Wlight | U02 | blocked(U02) |
+| T30a | 장갑열차 ① 열차 객체 + 선로 이동 (조종 · 스크립트, 결정성/저장/Replay) | sim | D上 R3 SM H3 Wheavy | T07(rail) 위 스택 | queued |
+| T30b | 장갑열차 ② 야포 + 중기관총 · 객차별 피해/파괴 | sim | D上 R3 SM H3 Wheavy | T30a 위 스택 | queued |
+| T30c | 화물열차 = 미션 목표 (호송 · 탈취 · 파괴) + 미션/UI 연결 | sim+feature | D上 R3 SM H2 Wlight | T30b 위 스택 | queued |
+| T30d | 열차 그림 규격 · 스프라이트 계획 (코드 없음) | art | D中 R1 S H0 Wheavy | 없음 (T30a Q-A4 수치 받으면 확정) | queued |
+| T30e | 열차 시연 미션 1개 | feature | D中 R2 S H1 Wlight | T30c 위 스택 | queued |
 
 **정책 (사용자 2026-10-22, 강조): WIP 는 병합하지 않는다. WIP 작업은 재개해서 완료(wip-ready)까지만 한다.** merger 는 발주하지 않는다. 선행이 '병합'인 카드는 선행 카드의 wip 브랜치 위에 쌓아(스택) 진행한다. main 에는 WIP 가 들어가지 않는다(사용자 지시 전까지).
 
