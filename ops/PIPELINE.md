@@ -30,6 +30,11 @@
 - 출력이 계속 커지면 대기 중일 수 있음(heavy_gate, 측정). 정지 판정 전 tools/agent/heavy_gate.ps1 풀 점유를 확인. 무거운 잡(렌더·측정)은 에이전트 수명과 분리.
 - 재발주 전 원 에이전트가 살아 있는지 확인(T16: 5.5시간 뒤 정상 완료, 66k 중복).
 
+### 1-c 리뷰 체크리스트 — 고정 항목 (reviewer 는 매 리뷰에서 아래 3개를 명시적으로 답한다; 2026-10-22)
+1. **FV 상승** (LESSONS 21): 저장 프로필(ObjCodec 대상)·Snapshot/Replay 필드를 추가·변경했는가? 기본값이 꺼져 있어도 `FormatVersion` 을 올렸고 FV_RESERVATIONS 에 적었는가? (측정 전용 통계는 제외, LESSONS 14)
+2. **저장 필드**: 새 상태가 체크섬 · `SnapshotSelfTest.Audit` · 저장/불러오기 · 엔티티 참조 태그에 모두 들어갔는가? (T37 actingCache · T40 AliveCars 누락 전례)
+3. **snapshot 분류** (LESSONS 23·28): 새 필드를 snapshot 과 `--snaptest` 가 다루도록 분류했는가(저장 대상 / 파생 캐시 / 표현 전용)? 분류 근거 한 줄을 리뷰 보고에 적는다.
+
 ## 2. 문서 쓰기 소유권
 | 파일 | 쓰는 사람 | 그 외 |
 |---|---|---|
@@ -49,6 +54,14 @@ queued(지휘자/spec) → assigned(지휘자, 발주 시) → running(에이전
 
 ## 4. 지휘자 세션 재개 5단계
 1. `ops/STATE.md`: main 해시 · 에이전트 · 잠금 · 워크트리 · "다음 한 걸음". 2. `ops/QUEUE.md`: running/wip-ready 행 확인, 선행 해소된 queued 선별. 3. `ops/DECISIONS.md`: 보류형 ID 와 새 답. 4. 이 파일 §1~3 으로 역할·소유권 확인. 5. harness `/api/state` 로 실제 에이전트 수 확인(정지 의심 시 §1-b) 뒤 발주; STATE 갱신. (다른 문서는 카드가 가리킬 때만.)
+
+## 도구 (tools/agent, PowerShell 5.1; 2026-10-22 추가)
+| 도구 | 언제 | 사용 |
+|---|---|---|
+| `preflight.ps1 <카드id|브랜치>` | **발주 전** 지휘자 | QUEUE 상태 · MERGE_QUEUE(이미 병합/대기) · worktree/branch 중복 · 해당 워크트리 미커밋 · FV 예약표를 대조. 중복·병합완료·미커밋이면 종료코드 1 + 사유(BLOCK), FV 겹침은 WARN. 예: `preflight.ps1 T38j` (LESSONS 1·24·30) |
+| `merge_step.ps1 -Step E1 -Expected "<a> <b>" -AllowFail uiicons,traindemo [-Groups g1,g2] [-Priority]` | **병합 한 단계** 끝마다 merger/병합 에이전트 | 게이트+빌드 → detcheck(불일치 즉시 STOP) → `snapshot` 묶음 → `--snaptest` → 자기 묶음 → 허용 외 FAIL 이면 STOP → 태그(`post-<Step>`) → `ops/MERGE_PROGRESS.md` 한 줄 append → 끝에 `PASS`/`STOP` 한 줄. 단계 생략 옵션 없음(LESSONS 23·28). `-DryRun`(+`-Feed <dir>`)은 계획만 출력·모의 입력으로 STOP 논리 시험 |
+| `state_snapshot.ps1 [-Write]` | 인계·세션 시작·점검 | main 해시 · 워크트리 수 · 병합 잠금(만료 표시) · 병합 라인별 HEAD/최신 태그/미커밋 수 · FV/Replay · 실행 중 heavy 프로세스 수를 마크다운으로. `-Write` = 이 체크아웃의 `ops/STATE_LIVE.md` 덮어쓰기 |
+병합 단계는 이 도구 하나로 끝내고, 직접 명령을 풀어 쓰지 않는다. 세부 절차 정본 = docs/procedures/merge-procedure.md.
 
 ## 5. 버전 기록
 | 버전 | 날짜 | 바뀐 것 | 근거 숫자 | 점수 |

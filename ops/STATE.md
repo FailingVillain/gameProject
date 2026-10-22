@@ -2,6 +2,7 @@
 
 > 정본: 상태 = 이 파일 · 대기열 = QUEUE.md · 병합 = MERGE_QUEUE.md · 한도 = LIMITS.md · 결정 = DECISIONS.md · 흐름 = PIPELINE.md. 새 지휘자 세션은 이 파일 → QUEUE → DECISIONS → PIPELINE 만 읽고 시작(PIPELINE §4).
 > 쓰는 사람: 지휘자(점검·인계) + release(큐 끝 한 줄). 작업 에이전트는 쓰지 않는다.
+> **인계 규칙 (2026-10-22)**: 인계는 이 STATE.md 한 곳에만 쓴다. 해시·워크트리·잠금·heavy 수 같은 실측값은 직접 적지 말고 `tools/agent/state_snapshot.ps1` (-Write → ops/STATE_LIVE.md)를 인용한다. `ops/PIPELINE_LOG.md` 는 append 전용 — 세션 시작 때 읽지 않는다 (필요할 때만 Grep).
 
 ## 기준 (실시간 값은 명령으로 확인)
 - main: `562e578` (docs-fable 병합). 확인 `git -C C:/gameProject log -1 --format=%h main`.

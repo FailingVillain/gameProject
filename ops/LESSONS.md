@@ -35,3 +35,4 @@
 28. 병합 단계마다 snapshot + `--snaptest` 를 돌린다 — T37 actingCache(B6~B9)와 T40 AliveCars/TotalCars(D6)를 두 번 놓쳐 단계가 멈췄다.
 29. 지휘자 컨텍스트 비대 = main 토큰 누수 — 세션이 커질수록 모든 답변·로그가 비싸진다 → 파도 단위로 교체하고 로그 줄은 짧게 쓴다.
 30. 발주 전 관련 워크트리의 `git status` 를 확인한다 — T38j 가 t38e 의 미커밋 변경과 중복 발주됐다 (T38e 에 이미 구현).
+31. 도구화됨 (2026-10-22): 1·24·30 = `tools/agent/preflight.ps1`, 23·28 = `tools/agent/merge_step.ps1`, 인계 실측 = `tools/agent/state_snapshot.ps1` (ops/PIPELINE.md '도구' 절).
