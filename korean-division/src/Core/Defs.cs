@@ -745,7 +745,7 @@ public sealed class CombatRulesDef
     public float CavalryDrawSec { get; set; } = 0.5f;              // 기병 군도
     public float FixVeteranMul { get; set; } = 0.7f;               // 착검: 노병 (사병 계급 ≥ closeVeteranRank) ×
     public float FixRecruitMul { get; set; } = 1.3f;               // 착검: 신병 (사병 계급 < closeRegularRank) ×
-    public bool BayonetFixOrderedOnly { get; set; } = true;        // true = 돌격 명령에만 멈춤 (자동 · 행진 · 역돌격은 즉시 착검 처리), false = 모든 돌격
+    public bool BayonetFixOrderedOnly { get; set; } = false;       // false (D02 A, T25) = 모든 돌격에 멈춤, true = 돌격 명령에만 (자동 · 행진 · 역돌격은 즉시 착검 처리)
     // ---- 기병 돌격 충격 (2026-10-19 개정): 피해 보너스 없음 · 이동 · 근접은 일반. 2초 이상 달린 뒤 첫 적중 (보병) = 충격 이벤트
     // ---- N61 기병 하마 사격 (Dismount.cs)
     public bool AutoDismount { get; set; } = true;             // 사격하려 멈춘 기병은 자동 하마
