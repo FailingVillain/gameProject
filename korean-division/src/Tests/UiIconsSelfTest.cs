@@ -39,6 +39,11 @@ public static class UiIconsSelfTest
                 "장교 우선 표적 직사 무기 = Sniper (저격 이미지)");
             check(defs.Units.Values.Where(d => d.Category == "gun" && d.Weapon != null && !defs.Weapons[d.Weapon].Indirect).All(d => UnitSymbols.Of(d) == UnitSymbols.Branch.Artillery),
                 "직사 포 = Artillery 유지");
+            // T43b: 승마 유닛 = 기병 (category 가 infantry 인 기병 정의도 포함, 예: cavalry_default · cavalry_cossack). 지휘관 제외.
+            check(defs.Units.Values.Any(d => d.Mounted && d.Category == "infantry"),
+                "승마 보병 정의가 있음 (기병 판정 시험 대상)");
+            check(defs.Units.Values.Where(d => d.Mounted && !d.IsOfficer && !d.Scout).All(d => UnitSymbols.Of(d) == UnitSymbols.Branch.Cavalry),
+                "승마 유닛 = Cavalry (category 무관, 장교 · 승마 정찰 제외)");
 
             // 1b) 카드 칸: 어떤 선택 조합 (유닛 종류 1~2종) 에서도 두 버튼이 같은 칸을 쓰지 않는다 (N15-2)
             var all = defs.Units.Values.ToList();

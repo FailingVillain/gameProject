@@ -19,4 +19,6 @@ KD_SELFTEST_ONLY=uiicons · --uifuzz 30 · 시트 (tools/contact_sheet.py)
 - Branch 에 Howitzer(곡사 무기 + category gun) · Sniper(무기 PreferOfficer, 직사) 추가, 이름 하드코딩 없음. 기호 틀 NATO 폴백 · 툴팁 이름(곡사포|저격) 추가. 아이콘 파일/테마 키는 이미 있어 신규 그리기 없음.
 - 가정한 답: Q1 = 무기 속성 (PreferOfficer), Q2 = 다수결 1종 유지(동수는 낮은 열거값), Q3 = 열차/공병 후속 카드.
 - 검증: build 0 오류 · uiicons PASS (누락 0) · uifuzz 30 크래시 0 · detcheck GOLDEN 일치 8변형. 시트 docs/art_review/t43_branch_symbols_sheet.png.
-- 미확인: 수용 4(ColorBlind 겹침) = t27-cmd-ui2 미병합이라 확인 불가. cavalry_default 등 category cavalry 아닌 기병 정의가 Infantry 로 나옴(범위 밖, 제안).
+- 미확인: 수용 4(ColorBlind 겹침) = t27-cmd-ui2 미병합이라 확인 불가.
+- T43b (Haiku, 2026-10-22): `Of` 에 `d.Mounted ? Cavalry` 추가 (정찰 분기 뒤, 승마 정찰 cavalry_scout 은 정찰 유지). cavalry_default · cavalry_cossack · cavalry_mongol = Cavalry. 테스트 2개 (uiicons). detcheck GOLDEN 일치, build 0 오류, uiicons PASS. 시트 png 는 갱신 안 함 (아이콘 그림 자체는 불변, 판정만 바뀜).
+- 노트 (병합 후 확인): 무기 `wireCutter` 보유 + 수류탄 보병 (infantry_pioneer, t32a-pioneer) 은 기존 규칙 (수류탄 보병 = Assault) 으로 Assault 가 된다. 이름 특례 없음 (자료 기준). 공병 아이콘이 필요하면 후속 카드 (질문 3).

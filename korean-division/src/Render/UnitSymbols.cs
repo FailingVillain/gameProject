@@ -32,6 +32,7 @@ public static class UnitSymbols
           : w != null && w.IsAntiArmor ? Branch.AntiTank
           : w != null && w.Spray > 0 ? Branch.MachineGun
           : d.Scout ? Branch.Scout
+          : d.Mounted ? Branch.Cavalry   // 승마 = 기병 (category 가 infantry 인 기병 정의 포함, 자료 판정). 승마 정찰은 위의 정찰 유지
           : d.Grenades > 0 && d.Category == "infantry" ? Branch.Assault
           : Branch.Infantry;
         cache[d] = b;
