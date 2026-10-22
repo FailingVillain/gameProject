@@ -58,10 +58,20 @@ queued(지휘자/spec) → assigned(지휘자, 발주 시) → running(에이전
 ## 도구 (tools/agent, PowerShell 5.1; 2026-10-22 추가)
 | 도구 | 언제 | 사용 |
 |---|---|---|
-| `preflight.ps1 <카드id|브랜치>` | **발주 전** 지휘자 | QUEUE 상태 · MERGE_QUEUE(이미 병합/대기) · worktree/branch 중복 · 해당 워크트리 미커밋 · FV 예약표를 대조. 중복·병합완료·미커밋이면 종료코드 1 + 사유(BLOCK), FV 겹침은 WARN. 예: `preflight.ps1 T38j` (LESSONS 1·24·30) |
+| `preflight.ps1 <카드id|브랜치>` | **발주 전** 지휘자 | (card_id 충돌=BLOCK · 제목 키워드 roadmap_check 요약=WARN 포함) QUEUE 상태 · MERGE_QUEUE(이미 병합/대기) · worktree/branch 중복 · 해당 워크트리 미커밋 · FV 예약표를 대조. 중복·병합완료·미커밋이면 종료코드 1 + 사유(BLOCK), FV 겹침은 WARN. 예: `preflight.ps1 T38j` (LESSONS 1·24·30) |
 | `merge_step.ps1 -Step E1 -Expected "<a> <b>" -AllowFail uiicons,traindemo [-Groups g1,g2] [-Priority]` | **병합 한 단계** 끝마다 merger/병합 에이전트 | 게이트+빌드 → detcheck(불일치 즉시 STOP) → `snapshot` 묶음 → `--snaptest` → 자기 묶음 → 허용 외 FAIL 이면 STOP → 태그(`post-<Step>`) → `ops/MERGE_PROGRESS.md` 한 줄 append → 끝에 `PASS`/`STOP` 한 줄. 단계 생략 옵션 없음(LESSONS 23·28). `-DryRun`(+`-Feed <dir>`)은 계획만 출력·모의 입력으로 STOP 논리 시험 |
 | `state_snapshot.ps1 [-Write]` | 인계·세션 시작·점검 | main 해시 · 워크트리 수 · 병합 잠금(만료 표시) · 병합 라인별 HEAD/최신 태그/미커밋 수 · FV/Replay · 실행 중 heavy 프로세스 수를 마크다운으로. `-Write` = 이 체크아웃의 `ops/STATE_LIVE.md` 덮어쓰기 |
+| `card_id.ps1 -Prefix T -Count 3 [-Series] -Title "..."` / `-Check <id>` / `-Id T58x -Title ...` | **카드 id 를 붙이기 전** 지휘자·spec 에이전트 | 모든 브랜치·워크트리의 tasks/ + QUEUE · CARD_INDEX + `ops/CARD_REGISTRY.md` 에서 쓰인 id 를 모아 접두어별 다음 빈 번호를 예약(장부에 한 줄 append, 파일 락으로 동시 호출 안전)하고 id 를 출력. 이미 쓰인 id 는 거부(종료 2). `-Series` = 한 번호에 a,b,c(T58a~c), 없으면 T58 T59 T60. `-Check` 종료 0=비어 있음 · 3=사용 중(주인 1) · 1=충돌(서로 다른 카드 파일이 같은 id). 번호를 직접 짓지 않는다 (T51a~e·T49a~c 충돌 사고) |
+| `roadmap_check.ps1 -Keywords "날씨","weather" [-Card <id>]` | **로드맵·카드·설계서에 항목을 넣기 전** | ROADMAP_SHORT/LONG · 레거시 문서 · ops 문서 · 모든 브랜치의 docs/specs·tasks · 병합 라인 코드(src, assets/data)에서 키워드를 찾아 출처별로 <=40줄 표시. 히트가 있으면 종료 1 + 결론 '구현 존재 가능 / 문서 계획만 / 히트 없음'. 이미 있는 기능(날씨 WeatherFx, T38e·T38h·T49b/c)을 또 계획하는 일을 막는다 |
 병합 단계는 이 도구 하나로 끝내고, 직접 명령을 풀어 쓰지 않는다. 세부 절차 정본 = docs/procedures/merge-procedure.md.
+
+### 로드맵/카드 추가 전 절차 (필수, 사용자 2026-10-22)
+(i) **중복 점검**: `roadmap_check.ps1 -Keywords <한글>,<영문 식별자 후보>` 를 실행한다. 히트(코드 포함)를 실제로 읽고, 카드 머리말에 `중복 점검: <키워드> → <결론 한 줄: 구현 있음/문서 계획과 합침/히트 없음> (roadmap_check 날짜)` 한 줄을 기록한다. 구현이 있으면 카드를 만들지 않고 기존 구현 위 확장으로 범위를 줄인다.
+(ii) **id 예약**: 카드·로드맵 id 는 `card_id.ps1` 로만 받는다 (`-Count`/`-Series`). 출력된 id 를 그대로 쓰고, 설계서 여러 개를 병렬로 쓸 때도 각자 호출한다 (락으로 안 겹친다). 장부 = ops/CARD_REGISTRY.md (append-only, 직접 편집 금지).
+(iii) **프롬프트 템플릿**: 설계서·spec 에이전트 발주문에 아래 두 줄을 그대로 넣는다.
+> 1. 카드/로드맵 항목을 쓰기 전에 `tools/agent/roadmap_check.ps1 -Keywords ...` 를 돌려 결과를 읽고, 각 카드 머리말에 '중복 점검' 줄을 적는다 (이미 구현된 기능이면 카드 대신 보고).
+> 2. 카드 id 는 `tools/agent/card_id.ps1 -Prefix T -Count N -Title "..."` (한 번호에 a~c 는 `-Series`) 로만 예약한다. 임의 번호 금지.
+발주 전 `preflight.ps1` 이 id 충돌(BLOCK)과 키워드 요약(WARN)을 한 번 더 확인한다. 시험: `tools/agent/pipe_ids_test.ps1`.
 
 ## 5. 버전 기록
 | 버전 | 날짜 | 바뀐 것 | 근거 숫자 | 점수 |

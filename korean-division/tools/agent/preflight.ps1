@@ -7,7 +7,8 @@
 [CmdletBinding(PositionalBinding = $true)]
 param(
     [Parameter(Mandatory = $true, Position = 0)][string]$Id,
-    [string]$Top = ''
+    [string]$Top = '',
+    [switch]$Quick   # skip the card_id / roadmap_check cross-checks (they take ~5-10 s)
 )
 $ErrorActionPreference = 'Stop'
 try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch { }
@@ -85,6 +86,30 @@ foreach ($l in $fv) {
     }
 }
 foreach ($k in $nums.Keys) { if ($nums[$k].Count -gt 1 -and (($nums[$k] -join ' ').ToLower() -match $tokRe)) { $warn += ("FV {0} reserved by several rows: {1} (renumber at merge time)" -f $k, ($nums[$k] -join ' / ')) } }
+
+# 6. card id uniqueness (card_id.ps1 -Check: CONFLICT = BLOCK) and duplicate-work summary (roadmap_check.ps1: WARN only)
+if ($isCard -and -not $Quick) {
+    $cid = Join-Path $PSScriptRoot 'card_id.ps1'
+    $rc = Join-Path $PSScriptRoot 'roadmap_check.ps1'
+    if (Test-Path $cid) {
+        $o = @(& powershell -NoProfile -ExecutionPolicy Bypass -File $cid -Check $Id -Top $Top 2>&1 | ForEach-Object { "$_" })
+        $code = $LASTEXITCODE
+        if ($code -eq 1) { $block += ("card id CONFLICT: " + ($o -join ' ')) }
+        elseif ($code -ne 0 -and $code -ne 3) { $warn += ("card_id -Check failed (exit $code): " + ($o -join ' ')) }
+        else { $info += ("card_id: " + ($o -join ' ')) }
+    }
+    if ((Test-Path $rc) -and $rows.Count -gt 0) {
+        $title = ($rows[0].Split('|'))[2]
+        $title = ($title -replace '\(.*?\)', ' ') -replace '[^\p{L}\p{N}_.-]+', ' '
+        $stop = 'wip', 'feature', 'sim', 'merger', 'spec', 'docs'
+        $kw = @($title.Split(' ') | Where-Object { $_.Length -ge 2 -and $_ -notmatch '^\d+$' -and ($stop -notcontains $_.ToLower()) } | Select-Object -First 3)
+        if ($kw.Count -gt 0) {
+            $ro = @(& powershell -NoProfile -ExecutionPolicy Bypass -File $rc -Keywords ($kw -join ',') -Card $Id -Top $Top -RefTimeSec 15 2>&1 | ForEach-Object { "$_" })
+            $sec = @($ro | Where-Object { $_ -match '^\[\d ' }) -join ' / '
+            $warn += ("roadmap_check kw=" + ($kw -join ',') + " : " + $sec + " (title keywords are a heuristic; run roadmap_check.ps1 yourself with real keywords)")
+        }
+    }
+}
 
 foreach ($i in $info) { Write-Host ("  info  {0}" -f $i) }
 foreach ($w in $warn) { Write-Host ("  WARN  {0}" -f $w) }

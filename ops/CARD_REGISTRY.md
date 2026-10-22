@@ -1,0 +1,189 @@
+# CARD_REGISTRY - 카드 id 예약 장부 (append-only)
+
+> 한 줄 = `- <id> · <제목> · <예약자> · <날짜> · <브랜치>`. 제목 앞 `[충돌]` = 스캔 시 서로 다른 카드 파일이 같은 id 를 쓰고 있었다는 표시(이동·개명 뒤에도 장부에는 남는다; 현재 충돌 여부는 `card_id.ps1 -Check <id>`).
+> 줄을 고치거나 지우지 않는다. id 는 `tools/agent/card_id.ps1` 로만 예약한다 (직접 번호 붙이기 금지 - ops/PIPELINE.md '로드맵/카드 추가 전 절차').
+> 예약자 `scan` = 도구가 기존 카드 파일/QUEUE/CARD_INDEX 에서 발견해 장부에 옮긴 id.
+
+- C1E1-d1 · decisions-data · scan · 2026-10-22 · spec/cards-c1e1
+- C1E1-d2 · start-economy · scan · 2026-10-22 · spec/cards-c1e1
+- C1E1-g1 · episode-graph · scan · 2026-10-22 · merge/0.2-final
+- C1E1-g2 · episode-ui · scan · 2026-10-22 · spec/cards-c1e1
+- C1E1-g3 · mission-actions · scan · 2026-10-22 · spec/cards-c1e1
+- C1E1-g4 · objectives · scan · 2026-10-22 · spec/cards-c1e1
+- C1E1-g5 · refugee-unit · scan · 2026-10-22 · spec/cards-c1e1
+- C1E1-g6 · unlock-hook · scan · 2026-10-22 · kd/c1e1-g6-unlock
+- C1E1-m1 · map-a · scan · 2026-10-22 · merge/0.2-final
+- C1E1-m2 · map-b · scan · 2026-10-22 · merge/0.2-final
+- C1E1-p1 · portraits · scan · 2026-10-22 · spec/cards-c1e1
+- C1E1-q1 · e2e-smoke · scan · 2026-10-22 · spec/cards-c1e1
+- C1E1-q2 · perf-op1 · scan · 2026-10-22 · spec/cards-c1e1
+- C1E1-s1 · bt1 · scan · 2026-10-22 · spec/cards-c1e1
+- C1E1-s2 · sk1 · scan · 2026-10-22 · spec/cards-c1e1
+- C1E1-s3 · sk2 · scan · 2026-10-22 · spec/cards-c1e1
+- C1E1-s4 · sk3 · scan · 2026-10-22 · spec/cards-c1e1
+- C1E1-s5 · sk4 · scan · 2026-10-22 · spec/cards-c1e1
+- C1E1-s6 · op1a · scan · 2026-10-22 · spec/cards-c1e1
+- C1E1-s7 · op1b · scan · 2026-10-22 · spec/cards-c1e1
+- C1E1-t1 · strings · scan · 2026-10-22 · spec/cards-c1e1
+- C1E1-u1 · unit-audit · scan · 2026-10-22 · spec/cards-c1e1
+- C1E1-u2 · units · scan · 2026-10-22 · merge/0.2-final
+- C1E1-v1 · variants · scan · 2026-10-22 · spec/cards-c1e1
+- M1 · morale-suppress · scan · 2026-10-22 · kd/m3-morale-link
+- RP1 · battle-timeline · scan · 2026-10-22 · spec/replay-aar
+- RP2 · aar-pages · scan · 2026-10-22 · spec/replay-aar
+- RP3 · aar-to-viewer · scan · 2026-10-22 · spec/replay-aar
+- RV1 · replay-controls · scan · 2026-10-22 · spec/replay-aar
+- RV2 · replay-cursor · scan · 2026-10-22 · spec/replay-aar
+- RV3 · replay-seek-follow · scan · 2026-10-22 · spec/replay-aar
+- T01 · gemini-import · scan · 2026-10-22 · spec/house-variety
+- T02 · bigbldg · scan · 2026-10-22 · spec/house-variety
+- T03 · breach · scan · 2026-10-22 · spec/house-variety
+- T04 · orderq · scan · 2026-10-22 · spec/house-variety
+- T05 · ai3b2 · scan · 2026-10-22 · spec/house-variety
+- T06 · casualty · scan · 2026-10-22 · spec/house-variety
+- T06b · remeasure · scan · 2026-10-22 · measure/t06b
+- T07 · rail · scan · 2026-10-22 · spec/house-variety
+- T08 · ui-bundle · scan · 2026-10-22 · spec/house-variety
+- T09 · camp-slice · scan · 2026-10-22 · spec/house-variety
+- T10 · comms-b · scan · 2026-10-22 · spec/house-variety
+- T10b · difficulty · scan · 2026-10-22 · merge/0.2-final
+- T11 · rerender · scan · 2026-10-22 · spec/house-variety
+- T11b · prone-wide-assets · scan · 2026-10-22 · merge/0.2-final
+- T12 · integ-measure · scan · 2026-10-22 · spec/house-variety
+- T13 · release · scan · 2026-10-22 · spec/house-variety
+- T14 · (QUEUE/CARD_INDEX row) · scan · 2026-10-22 · QUEUE.md
+- T15 · night-soak · scan · 2026-10-22 · measure/t15
+- T16 · trench-assault · scan · 2026-10-22 · merge/0.2-final
+- T16b · rootcause · scan · 2026-10-22 · kd/t16b-rootcause
+- T17 · cmd-convenience · scan · 2026-10-22 · ui-post-H-partial
+- T18 · (QUEUE/CARD_INDEX row) · scan · 2026-10-22 · QUEUE.md
+- T19 · (QUEUE/CARD_INDEX row) · scan · 2026-10-22 · QUEUE.md
+- T19a · save-slots · scan · 2026-10-22 · ui-post-H-partial
+- T19b · ammo-shells · scan · 2026-10-22 · ui-post-H-partial
+- T19b2 · (QUEUE/CARD_INDEX row) · scan · 2026-10-22 · QUEUE.md
+- T19c · home-tabs · scan · 2026-10-22 · ui-post-H-partial
+- T19d · doctrines · scan · 2026-10-22 · ui-post-H-partial
+- T20 · (QUEUE/CARD_INDEX row) · scan · 2026-10-22 · QUEUE.md
+- T21 · sfxnew · scan · 2026-10-22 · merge/0.2-final
+- T22 · face-proto · scan · 2026-10-22 · merge/0.2-final
+- T23 · (QUEUE/CARD_INDEX row) · scan · 2026-10-22 · QUEUE.md
+- T24 · s1s3 · scan · 2026-10-22 · merge/0.2-final
+- T24x · (QUEUE/CARD_INDEX row) · scan · 2026-10-22 · CARD_INDEX.md
+- T25 · bayonet-all · scan · 2026-10-22 · merge/0.2-final
+- T26 · (QUEUE/CARD_INDEX row) · scan · 2026-10-22 · QUEUE.md
+- T27 · cmd-ui2 · scan · 2026-10-22 · ui-post-H-partial
+- T28 · cover-forest · scan · 2026-10-22 · merge/0.2-final
+- T29 · campaign-economy-json · scan · 2026-10-22 · ui-post-H-partial
+- T29b · restack · scan · 2026-10-22 · ui-post-H-partial
+- T30a · train-move · scan · 2026-10-22 · merge/0.2-final
+- T30b · train-weapons · scan · 2026-10-22 · merge/0.2-final
+- T30c · freight-objective · scan · 2026-10-22 · merge/0.2-final
+- T30d · train-art-plan · scan · 2026-10-22 · merge/0.2-final
+- T30e · train-demo-mission · scan · 2026-10-22 · merge/0.2-final
+- T31a · regroup-limit · scan · 2026-10-22 · merge/0.2-final
+- T31b · [충돌] T31b-endline50.md | T31b-mission-end-review.md · scan · 2026-10-22 · measure/t31b
+- T31c · ai-surrender · scan · 2026-10-22 · merge/0.2-final
+- T32a · pioneer-unit · scan · 2026-10-22 · merge/0.2-final
+- T32b · ai-smoke · scan · 2026-10-22 · merge/0.2-final
+- T32c · ai-wirecut · scan · 2026-10-22 · spec/cards-t32
+- T32d · pioneer-art · scan · 2026-10-22 · merge/0.2-final
+- T33a · mapedit-model · scan · 2026-10-22 · ui-post-H-partial
+- T33b · mapedit-ui · scan · 2026-10-22 · ui-post-H-partial
+- T33c · mapedit-place · scan · 2026-10-22 · ui-post-H-partial
+- T33d · mapedit-rail · scan · 2026-10-22 · ui-post-H-partial
+- T33e · map-size · scan · 2026-10-22 · merge/0.2-final
+- T34a · suppthr-coverwd · scan · 2026-10-22 · merge/0.2-final
+- T34b · template-pick · scan · 2026-10-22 · merge/0.2-final
+- T34c · combined-arms · scan · 2026-10-22 · merge/0.2-final
+- T34d · cav-flank-strength · scan · 2026-10-22 · merge/0.2-final
+- T34e · idle-difficulty · scan · 2026-10-22 · merge/0.2-final
+- T35 · isai-restore · scan · 2026-10-22 · merge/0.2-final
+- T36 · immune-target · scan · 2026-10-22 · merge/0.2-final
+- T37 · acting-delay · scan · 2026-10-22 · merge/0.2-final
+- T38a · settings-keys · scan · 2026-10-22 · ui-post-H-partial
+- T38b · help-overlay · scan · 2026-10-22 · ui-post-H-partial
+- T38c · cmdcard-overflow · scan · 2026-10-22 · ui-post-H-partial
+- T38d · paper-ui-phase2 · scan · 2026-10-22 · merge/0.2-final
+- T38e · unitlist-codex-tips · scan · 2026-10-22 · merge/0.2-final
+- T38f · home-tabs-readonly · scan · 2026-10-22 · ui-post-H-partial
+- T38g · ui-harness · scan · 2026-10-22 · ui-post-H-partial
+- T38h · fuzz-campaign · scan · 2026-10-22 · ui-post-H-partial
+- T38i · tutorial-link · scan · 2026-10-22 · ui-post-H-partial
+- T38k · fonts-in-game · scan · 2026-10-22 · merge/0.2-final
+- T38l · title-strings · scan · 2026-10-22 · merge/0.2-final
+- T38m · overlay-declutter · scan · 2026-10-22 · merge/0.2-final
+- T38n · monitor-env · scan · 2026-10-22 · merge/0.2-final
+- T39a · river-ford · scan · 2026-10-22 · river-r2
+- T39b · river-pathing · scan · 2026-10-22 · river-r2
+- T39c · river-render · scan · 2026-10-22 · merge/0.2-final
+- T39d · river-bridge · scan · 2026-10-22 · merge/0.2-final
+- T39e · marchfire-muzzle · scan · 2026-10-22 · merge/0.2-final
+- T39f · kr-ft-colour · scan · 2026-10-22 · merge/0.2-final
+- T39g · gando-dress · scan · 2026-10-22 · merge/0.2-final
+- T39h · infantry-motion-r2 · scan · 2026-10-22 · merge/0.2-final
+- T39i · ruined-house · scan · 2026-10-22 · merge/0.2-final
+- T39j · prone-recheck · scan · 2026-10-22 · merge/0.2-final
+- T40 · trains-annihilation · scan · 2026-10-22 · merge/0.2-final
+- T41 · crash-log · scan · 2026-10-22 · merge/0.2-final
+- T42a · fatigue-morale · scan · 2026-10-22 · ui-post-H-partial
+- T42b · promotion · scan · 2026-10-22 · ui-post-H-partial
+- T42c · prisoners · scan · 2026-10-22 · ui-post-H-partial
+- T42d · schedule-log · scan · 2026-10-22 · ui-post-H-partial
+- T43 · branch-symbols · scan · 2026-10-22 · ui-post-H-partial
+- T44 · mission-smoke · scan · 2026-10-22 · merge/0.2-final
+- T45 · menu-legacy-hide · scan · 2026-10-22 · merge/0.2-final
+- T46 · (QUEUE/CARD_INDEX row) · scan · 2026-10-22 · CARD_INDEX.md
+- T47 · campaign-map-zoom · scan · 2026-10-22 · merge/0.2-final
+- T48a · commander-data · scan · 2026-10-22 · spec/cards-commanders
+- T48b · commander-assign · scan · 2026-10-22 · spec/cards-commanders
+- T48b1 · officer-identity · scan · 2026-10-22 · merge/0.2-final
+- T48b2 · (QUEUE/CARD_INDEX row) · scan · 2026-10-22 · QUEUE.md
+- T48c · commander-favor · scan · 2026-10-22 · spec/cards-commanders
+- T48d · commander-ui · scan · 2026-10-22 · merge/0.2-final
+- T48e · commander-battle-link · scan · 2026-10-22 · spec/cards-commanders
+- T49a · (QUEUE/CARD_INDEX row) · scan · 2026-10-22 · QUEUE.md
+- T49b · tolerant-read · scan · 2026-10-22 · merge/0.2-final
+- T49c · compat-gate · scan · 2026-10-22 · merge/0.2-final
+- T50d · perf-bench · scan · 2026-10-22 · merge/0.2-final
+- T51a · path-guard-limits · scan · 2026-10-22 · spec/mapeditor-share
+- T51b · mission-package · scan · 2026-10-22 · spec/mapeditor-share
+- T51c · editor-export-import · scan · 2026-10-22 · spec/mapeditor-share
+- T51d · editor-gaps · scan · 2026-10-22 · spec/mapeditor-share
+- T51e · incremental-renderer · scan · 2026-10-22 · spec/mapeditor-share
+- T52a · alert-log · scan · 2026-10-22 · spec/ui-alerts-photo
+- T52b · minimap-pings · scan · 2026-10-22 · spec/ui-alerts-photo
+- T52c · photo-mode · scan · 2026-10-22 · spec/ui-alerts-photo
+- T52d · difficulty-campaign-keys · scan · 2026-10-22 · spec/ui-alerts-photo
+- T52e · difficulty-ui · scan · 2026-10-22 · spec/ui-alerts-photo
+- T55 · house-variety · scan · 2026-10-22 · spec/house-variety
+- T55a · house-korean · scan · 2026-10-22 · spec/house-variety
+- T55b · house-manchu · scan · 2026-10-22 · spec/house-variety
+- T55g · housegen · scan · 2026-10-22 · spec/house-variety
+- T55i · house-import · scan · 2026-10-22 · t55i-house-import
+- T55m · house-import-data · scan · 2026-10-22 · spec/house-variety
+- T55s · house-select · scan · 2026-10-22 · spec/house-variety
+- T56a · pack-sheets · scan · 2026-10-22 · kd/t56a-pack-sheets
+- T57a · delegate-core · scan · 2026-10-22 · spec/regiment-delegation
+- T57b · delegate-doctrine · scan · 2026-10-22 · spec/regiment-delegation
+- T57c · delegate-ui · scan · 2026-10-22 · spec/regiment-delegation
+- TC-A · briefing-split · scan · 2026-10-22 · spec/house-variety
+- TC-B · alert-state · scan · 2026-10-22 · spec/house-variety
+- TC-C · event-command · scan · 2026-10-22 · spec/house-variety
+- TC-D · funds-slots · scan · 2026-10-22 · spec/house-variety
+- TC-E · favor-decisions · scan · 2026-10-22 · spec/house-variety
+- TC-F · mission-variants · scan · 2026-10-22 · spec/house-variety
+- TC-G · annex-nofire · scan · 2026-10-22 · spec/house-variety
+- TF-A · campaign-graph · scan · 2026-10-22 · spec/campaign-flow
+- TF-B · advance · scan · 2026-10-22 · spec/campaign-flow
+- TF-C · ending-screen · scan · 2026-10-22 · spec/campaign-flow
+- TF-D · hint-engine · scan · 2026-10-22 · spec/campaign-flow
+- TF-E · hint-content · scan · 2026-10-22 · spec/campaign-flow
+- TI1 · i18n-core · scan · 2026-10-22 · spec/i18n
+- TI2 · i18n-strings-bulk · scan · 2026-10-22 · spec/i18n
+- TI3 · i18n-nonS · scan · 2026-10-22 · spec/i18n
+- TI4 · i18n-data-text · scan · 2026-10-22 · spec/i18n
+- TI5 · i18n-translate · scan · 2026-10-22 · spec/i18n
+- TI6 · i18n-layout-verify · scan · 2026-10-22 · spec/i18n
+- TW1 · weather-conceal · scan · 2026-10-22 · spec/weather
+- TW2 · weather-blizzard · scan · 2026-10-22 · spec/weather
+- TW3 · weather-fx-fade · scan · 2026-10-22 · spec/weather
