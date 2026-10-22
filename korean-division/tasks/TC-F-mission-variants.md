@@ -2,7 +2,7 @@
 - id: TC-F | 역할: feature | 등급: D中 H2
 - 선행: TC-D · TC-E · T09 | 후행: -
 - 핫스팟/만질 파일: 미션 정의(MissionFile 적 배치 변형) · CampaignState 변수 · Snapshot(FV 예약)
-- 브랜치: 발주 시 지정 | 상태: queued | 담당 에이전트: -
+- 브랜치: kd/tcf-variants (base kd/tce-vars) | 상태: wip-ready | 담당 에이전트: -
 ## 확정 결정 (사용자 원문+날짜, 변경 금지)
 - 2026-10-22 SK 효용(승인, spec R4): SK1 성공 → flag.flankPath(OP1 외곽 참호 측면 우회로 1곳 개방, 강공 시 시작 위치 선택지 +1) · SK3 성공 → flag.dockIntel(포위 시 부두 차단 지점 적 경비 없음) · SK4 성공 → flag.andongCavalryCut(OP1 기마 −40%, 실패 확정 시 +20%) · SK2 → intel.andong(D07 B).
 - 2026-10-22 D02 B 이점(승인, spec R13): 마적 초모 100명당 BT1 적 마적 약 25명 이탈(최대 −75). 소총 · 대도 잡병에서 우선 차감, 기마 · 중기관총 거점 유지(제안).
@@ -16,4 +16,6 @@
 ## 측정 (도구 · 기준선 docs/BASELINE_CURRENT.md)
 selftest + snaptest.
 ## 결과 (에이전트가 끝에 3~5줄만 기록; 에이전트는 자기 카드의 결과/상태만 수정)
--
+- 미션 JSON `variants` 절 (MissionVariants: 조건 var/decision + 조작 removeUnits·scaleUnits·removeForces·addDeployZone·removeProps) 을 MissionDef.Load 가 적용 — 적용된 텍스트가 스냅샷/리플레이에 실려 sim FV 불변 (detcheck 골든 8aa6448b/262d0252 일치). 결과 표 assets/data/campaign_variants.json (SK 플래그 3종 · SK4 실패확정 flag.andongCavalryBoost 신설 · pow.bandit = 승리한 BT1/SK1 의 bandit 세력 항복 인원) + CampaignVariants.OnResult (SettleBattle 이 부름, 실패 확정은 g1 이 부를 것). D15 협상 -1 은 negotiation 출처 `needs`(D11 B).
+- 새 저장 필드 없음 (Flags 재사용) -> 스키마/FV 번호 예약 불필요. 시험 CampaignVariantsSelfTest (savecompat 그룹) 통과, snapshot 그룹 · snaptest OK.
+- 가정: D02 B 이탈은 100명 블록 내림(25/블록, 최대 75) · 변수 19개로 늘림. 실제 BT1/OP1 JSON 의 variants 는 v1 카드 몫.

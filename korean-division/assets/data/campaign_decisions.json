@@ -5,7 +5,8 @@
     "sources": [
       { "decision": "D02", "all": ["A", "C"], "delta": 1 },
       { "decision": "D07", "all": ["B"], "delta": 1 },
-      { "var": "flag.andongCavalryCut", "atLeast": 1, "delta": 1 }
+      { "var": "flag.andongCavalryCut", "atLeast": 1, "delta": 1 },
+      { "decision": "D15", "all": ["A"], "needs": { "decision": "D11", "all": ["B"] }, "delta": -1 }
     ]
   },
   "decisions": [

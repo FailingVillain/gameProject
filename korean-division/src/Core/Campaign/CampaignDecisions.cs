@@ -56,6 +56,14 @@ public sealed class NegotiationSource
     public string Var { get; set; } = "";
     public int AtLeast { get; set; }
     public int Delta { get; set; }
+    /// <summary>[TC-F] 이 출처가 성립하려면 다른 결정 응답도 필요 (예: D15 추인 -1 은 D11 이 포위일 때만). 비면 조건 없음.</summary>
+    public NegotiationNeed? Needs { get; set; }
+}
+
+public sealed class NegotiationNeed
+{
+    public string Decision { get; set; } = "";
+    public List<string> All { get; set; } = new();
 }
 
 // ---------- 저장 상태 (CampaignState.Decisions, 스키마 v13) ----------
@@ -201,11 +209,18 @@ public sealed class CampaignDecisions
             if (src.Decision.Length > 0)
             {
                 var a = s.Decisions.Answers.LastOrDefault(x => x.Id == src.Decision);
-                if (a != null && src.All.Count > 0 && src.All.All(c => a.Choices.Contains(c))) sum += src.Delta;
+                if (a != null && src.All.Count > 0 && src.All.All(c => a.Choices.Contains(c)) && NeedOk(s, src.Needs)) sum += src.Delta;
             }
             else if (src.Var.Length > 0 && CampaignVars.Get(s, src.Var) >= src.AtLeast) sum += src.Delta;
         }
         return Math.Clamp(sum, 0, NegotiationMax);
+    }
+
+    static bool NeedOk(CampaignState s, NegotiationNeed? n)
+    {
+        if (n == null || n.Decision.Length == 0) return true;
+        var a = s.Decisions.Answers.LastOrDefault(x => x.Id == n.Decision);
+        return a != null && n.All.All(c => a.Choices.Contains(c));
     }
 
     int ValueOf(CampaignState s, string key) => key == "negotiation" ? Negotiation(s) : CampaignVars.Get(s, key);

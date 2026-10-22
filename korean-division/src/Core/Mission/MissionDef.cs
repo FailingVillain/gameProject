@@ -111,6 +111,7 @@ public sealed partial class MissionDef
         string text = File.ReadAllText(path);
         var cs = CampaignState.Load();
         if (CampaignCarry.WantsCarry(text) || CampaignCarry.WantsPending(id, cs)) text = CampaignCarry.Patch(text, id, cs);
+        if (MissionVariants.Wants(text)) text = MissionVariants.Patch(text, cs);   // TC-F: 캠페인 상태로 적 배치 · 배치 구역 변형 (적용이 끝난 텍스트가 스냅샷 · 리플레이에 실린다)
         return Parse(text, id);
     }
 
