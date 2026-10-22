@@ -233,6 +233,8 @@ def _tuned(frame, p):
         if T.get("ne_swing", {}).get("prone"): p["ne_swing"] = tuple(T["ne_swing"]["prone"])
     if frame in ("aim_prone", "fire_prone") and T.get("e_view_yaw", {}).get("prone"):
         p["e_view_yaw"] = T["e_view_yaw"]["prone"]
+    if frame in ("aim_prone", "fire_prone") and T.get("ne_view_yaw", {}).get("prone"):
+        p["ne_view_yaw"] = T["ne_view_yaw"]["prone"]
     if frame in ("aim_prone", "fire_prone") and T.get("e_slide", {}).get("prone"):
         p["e_slide"] = T["e_slide"]["prone"]
     return p
@@ -246,6 +248,9 @@ def apply_e_view(p, d, e_extra=0.0):
     vyaw = p.pop("e_view_yaw", 0.0)              # prone E: whole figure turned toward the camera so the 128 px cell holds boots + muzzle flash
     if vyaw and d == "e":
         p["view_yaw"] = p.get("view_yaw", 0.0) + vyaw
+    nvyaw = p.pop("ne_view_yaw", 0.0)            # prone NE (opt-in per unit via tune): same idea, for units whose long prone overflows the cell diagonally
+    if nvyaw and d == "ne":
+        p["view_yaw"] = p.get("view_yaw", 0.0) + nvyaw
     sfield = p.pop("e_swing_field", "yaw")
     slide = p.pop("e_slide", 0.0)                # prone: rifle slid back toward the feet in the E view (muzzle flash would leave the frame)
     long_only = p.pop("e_long_only", False)      # pose with no base pull: only rifles longer than the standard one (e_extra above E_LONG std) get pulled in

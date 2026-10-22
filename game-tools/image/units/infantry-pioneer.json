@@ -35,5 +35,18 @@
   "belt_pouches": false,
   "e_pull_extra": 3.0,
   "dirs": "all",
-  "frames": "all"
+  "frames": "all",
+  "tune": {
+    "_doc": "prone E/NE: whole figure turned toward the camera so boots + muzzle flash fit the 192x240 cell (the long prone of design 08 is wider than the cell side-on)",
+    "poses": {
+      "infantry": {
+        "e_view_yaw": {
+          "prone": 62
+        },
+        "ne_view_yaw": {
+          "prone": 20
+        }
+      }
+    }
+  }
 }
