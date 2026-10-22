@@ -175,6 +175,7 @@
 | 14:3x | T42a wip-ready(sonnet, 117k, 240초; t42a-fatigue-morale ba621fe, t38f 위): 중대 피로·사기 계정(스키마 v4, v3 이행), 임시값 campaign_economy.json(0.3 확정), 홈 읽기 전용 표시, 전투 시뮬 불변, savecompat 8건 추가·골든 일치. 발주: T42b(t42a 위) | 완료 ~68 |
 | 14:3x | T38c(=T46) wip-ready(sonnet, 91k, 203초; kd/t46-card-overflow 54e8a54, wip/breach2 위): 명령 카드 9칸 초과 시 쪽당 8개+쪽 버튼(. 키), 단축키 불변, breach2 에서 uiicons PASS(1431), t32a(10버튼) 체리픽 PASS(1485). 한계: 동적 버튼(firecontrol 등) 수동 확인, 시트는 개략도, 실창 클릭 미확인. → **병합 큐 uiicons 블로커 해소 경로 확보**(breach2 직후 병합) | 완료 ~69 |
 | 14:3x | T34a wip-ready(sonnet, 209k — 한도 근접, 4813초; kd/t34a-suppress 3d0f4de, ai3b2 위): 3C-1(제압 문턱·엄호 철수) 키 7개 기본 꺼짐(0.4 AI 소관), 키 끔=no3c 체크섬 동일, 회귀 묶음 PASS, 골든 일치, 측정·튜닝 생략(n=8 동작 확인만). 설계 발견: 엔진 틀(TacticDrill) 문턱은 AI 겹침으로 못 바꿈(AF1) → 전역 tactics.json 변경 필요(골든 변동) → DECISIONS_PENDING 항목. 교훈 후보: 카드 작성 시 'AI 층 키 vs 엔진 전역 키' 구분. A/B 는 KD_AI_OVERLAY 로만 | 완료 ~70 |
+| 14:3x | T42b wip-ready(sonnet, 143k, 325초; t42b-promotion 51b92c3, t42a 위): 진급 후보·적용(탭 9), 스키마 v5(추가만, v3/v4 이행), promotionManual 기본 꺼짐(에이전트 판단), 임시 문턱 JSON, savecompat 13건 추가·골든 일치. 미확인: 탭 9 화면 스크린샷/퍼즈 도달 | 완료 ~71 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
