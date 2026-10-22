@@ -216,6 +216,7 @@
 | 15:4x | 사용자: 제목 확정(KOREAN DIVISION/코리안 디비전, 극중 '제17 대한 사단') + 이름 중복·브랜드 검토 요청 → Gemini 웹 검색 1차(정확 일치 없음; Steel Division(Eugen) 혼동 위험 '높음'·Ubisoft The Division 낮음·SEO '한반도 분단' 노이즈 → 대안 제시) + web-fetch 로 Steam/itch/GOG 직접 검증 발주. 글꼴·시안 3갈래 에이전트에 제목 정정 통보 | 진행 |
 | 15:5x | 이름 검증: Gemini 1차 후 web-fetch 에이전트로 재검증(61k) — 사용자 지적: 웹 검색은 Gemini 로(규칙 재확인, 메모리 강화). 결과: Steam 검색 API 'korean division'/'코리안 디비전' 0건, GOG 무결과, itch/Google 검증 불가. OFL 글꼴 완료(general sonnet, 82k; ui/fonts-ofl 832b592·20899b3: Nanum Myeongjo/Gothic/Gothic Coding OFL, 한글 11,172자·두부 0, T38k 카드+제목 문자열 목록; 시안 604f6f1 재생성). tabs-a 시안 완료(c87a559, 시스템 글꼴) → OFL 재렌더·최종 제목 통보 | 기록 |
 | 15:5x | 제목 최종 반영 완료(font agent): gt-paper-ui-v2 e689cf5·ui/fonts-ofl c4a4006 — '제17 대한 사단'(게임 소스에 0건 → 제목 교체 카드에서 신규 추가). T44 커밋(8df1bea, 카드 wip-ready) — 게이트 25분+ 막혀 스모크 미실행(구 재렌더 대기 영향), 현재 게이트 열림 heavy=5/10 → 스모크 실행 재개 통보 | 기록 |
+| 15:5x | T48c wip-ready(sonnet, 99k, 256초; t48c-favor c24c423, t48a 위): 호감 4단계(냉담<10/보통/호의 40/신뢰 70, 배율 0.5·1.0·1.15·1.3, scalingEnabled), 태그 ±1·이벤트 증감 {1,2,3,5}, 해임 -2·쿨다운 1·재기용 최소 호감 -5 초과(economy JSON 값 읽음), 규칙은 commander_favor.json 별도, 저장 스키마 v8 불변(Favor 는 기존 풀 항목). commanders 22건·savecompat·missions·골든·퍼즈 PASS. T48b 연결 필요: ApplyDismissPenalty·CanRehire·ApplyMissionTags(태그 산출 기준 미정), 쿨다운=해임일+쿨다운×missionDays | 완료 ~92 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
