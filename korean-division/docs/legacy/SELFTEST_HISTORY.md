@@ -8,3 +8,4 @@
 - 2026-10-21 · cossack (코사크 모자 검정) 병합 후 main 전체 1882 OK (골든 불변).
 - 2026-10-21 · pronemove (엎드림 이동 · 도하 교두보 집계, FV 48) 병합 전 브랜치 전체 1905 OK (골든 갱신).
 - 2026-10-22 · arty3 (포병 · 중화기 묶음, FV 50 · Replay 18) 병합 — 전체 selftest 생략 (병합 큐 규칙), arty3 · combat3/4 · shells · groundfire · n73 · arty2 · artyai · snapshot · type3 · tactical · command · units 묶음 OK, detcheck 8 변형 동일 32639a67 (골든 갱신), snaptest OK.
+- 2026-10-22 · formation (대형 완화 기본 켬, choke · 산개 파상 기본 끔, FV 51) 병합 — 전체 selftest 생략 (병합 큐 규칙), formrelax · choke · snapshot · units · missions 묶음 OK, detcheck 8 변형 동일 8aa6448b (골든 갱신), snaptest OK.

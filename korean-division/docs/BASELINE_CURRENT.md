@@ -56,3 +56,6 @@ golden 갱신 (8 변형 동일 32639a67...), snaptest QUICK OK, 전체 selftest 
 
 ## S4 소총 대 기병 (측정, a0216911 = main, 2026-10-22, 돌격보병 강화 · 하마 사격 N61 · 포병 묶음 반영)
 `--balance sim infantry:30 cavalry_default:30 flat` 시드 1-5 x 좌우 교대 10판, 600초 상한, 양쪽 전술 AI. 소총 승 1 / 기병 승 0 / 무승부(600초 시간 초과) 9. 손실 합계: 소총 64 · 기병 122 (판당 6.4 대 12.2, 교환비 약 1.9 소총 우세). 시간 초과 판은 기병이 한 번 돌격(제압으로 꺾임 10-11회, 자동 막음 54) 뒤 멀리 물러나 대치 - 승부가 안 남. 원본 /tmp/s4 (보관 안 함).
+
+## ec9f713 (2026-10-22, release 첫 실 가동 — fix/n12-forest bfe5641 병합 뒤)
+sim unchanged: detcheck golden 일치 (8 variants identical 8aa6448b9690b922), snaptest QUICK OK, 전체 selftest 2008 OK / FAIL 0 (≈12분; 성능 유닛 200 평균 0.499ms · 1000 평균 1.891ms). 밸런스 측정 없음. FormatVersion 52 · Replay 19.

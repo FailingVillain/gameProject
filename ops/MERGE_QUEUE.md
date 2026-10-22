@@ -28,6 +28,8 @@
 | 562e578 | docs-fable | PIPELINE v1 · STATE/QUEUE 현행화 · T13 |
 | bfe5641 | fix/n12-forest | 낡은 시험 4건 수정 (N12/Forest/GapFill 시험 3파일만; 사용자 승인 예외 2026-10-22) |
 
+**큐 닫음 (release, 2026-10-22)**: fix/n12-forest 큐 — 전체 selftest 2008 OK/FAIL 0 · detcheck 8변형 동일 · snaptest OK · dist 발행. (T03~T05 큐의 T13 은 별도, 아직 queued.)
+
 ## 병합 순서 (wip-ready 가 된 것만 처리; 예정 순서)
 | 순 | 브랜치 | 카드 | R | 상태 | 비고 |
 |---|---|---|---|---|---|

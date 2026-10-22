@@ -49,7 +49,7 @@
 - 실행: `dotnet run` (인자 없음 = 시작 화면). 플래그: `--map WxH|<mapId>` `--players N` `--faction n|이름` `--seed N` `--ai tactical|tactical:<프로필>|standard|passive|rush|battle|none` (기본 tactical = 전술 AI) `--nofog` `--weather clear|overcast|fog|rain|snow` `--time dawn|day|dusk|night` `--demo` `--exec "<콘솔 명령>"` `--shot f.png --shot-frame N` `--quick-battle [n]` `--battle "종류:수,.." --vs "..."` `--spectate` `--replay f` `--mute` (교전 테스트는 기본 무음, 게임 중 N = 소리 켜고 끄기 — 교전 테스트 무음도 풂).
 - 배포: `powershell -ExecutionPolicy Bypass -File publish.ps1` → `dist/KoreanDivision.exe` (단일 파일).
 - 검증: `--selftest` · `--detcheck [--update]` (골든 체크섬; 시뮬 변경 시 갱신, `tools/detcheck.ps1` = CPU 변형) · `--snaptest` (`KD_SNAP_QUICK=1`) · `--uifuzz` · `--stress` · `--balance`. 테스트 임시 파일 = `%TEMP%/KoreanDivision/run-<pid>-<ticks>/` (`TestTemp.Child(name)` 로만 씀; 정상 종료 시 삭제, 실패 시 보존하고 경로 출력; 환경변수 `KD_TMP` 로 폴더 지정 · 자식 프로세스에 상속). 병렬 실행 안전. 골든 · 에셋은 임시 아님.
-- 알려진 실패: 없음. 최신: 2026-10-22 · formation (대형 완화 기본 켬, choke · 산개 파상 기본 끔, FV 51) 병합 — 전체 selftest 생략 (병합 큐 규칙), formrelax · choke · snapshot · units · missions 묶음 OK, detcheck 8 변형 동일 8aa6448b (골든 갱신), snaptest OK. 지난 기록 = `docs/legacy/SELFTEST_HISTORY.md` (Grep 만).
+- 알려진 실패: 없음. 최신: 2026-10-22 · release 첫 실 가동 (main ec9f713, fix/n12-forest bfe5641 병합 뒤) — 전체 selftest PASS 2008 OK / FAIL 0 (≈12분), detcheck 8 변형 동일 8aa6448b (골든 일치), snaptest QUICK OK, dist 재발행. 지난 기록 = `docs/legacy/SELFTEST_HISTORY.md` (Grep 만).
 
 ### 규칙
 - 상태 변경은 명령으로만 (`WorldCommands.cs` → 리플레이 기록). AI 는 `World` 를 직접 바꾸지 않고 `FogOfWar.CanSee` 로만 본다.
