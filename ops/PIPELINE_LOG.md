@@ -190,6 +190,7 @@
 | 15:1x | T32b/T34a/t24-crossing-fix 리뷰(sonnet, 121k, 192초): **T34a 차단 1** = TacticsProfile 필드 7개 추가(ObjCodec 순서 저장)인데 FV 미상승 → 옛 저장 오독 위험(T32b 는 55→56 올림). T32b·crossing-fix 병합 OK. 비차단: crossing-fix 가 세력 전체 판정(비도하 연대 관측반도 15칸 보존 상실), T34a CoverRelease 가 FallbackUntil−StateTick 길이로 엄호 판별(취약), m.Contains O(n²), 코드 브랜치가 ops/QUEUE.md 수정(충돌 위험), T32b 연막 vs 도하 AI 상호작용 미검증. 교훈 후보: AI 프로필(ObjCodec 대상) 키 추가는 기본 꺼짐이어도 FV 상승. → T34a FV 수정 발주(sonnet) | 리뷰 완료 |
 | 15:1x | T43b 병종 기호 기병 판정 수정 완료(haiku, 73k, 205초; kd/t43-branch-symbols d45b18f): Mounted→Cavalry(승마 정찰은 Scout 유지, 지시 위치에서 조정), cavalry_default/cossack/mongol 정상, uiicons·골든 PASS. 공병(수류탄+wireCutter)은 Assault 로 남음(카드 기록). 시트 PNG 미갱신 | 완료 ~81 |
 | 15:1x | 사용자: T33c 검수 스크린샷 통과. '컨텍스트 15만 중간 저장 규칙' 제안은 넘김(세션 교체 하루 1회 정책 유지) — 큰 카드는 사전 분할로만 대응 | 기록 |
+| 15:1x | UI 체인 리뷰(sonnet, 121k, 284초): t38g→b→a 스택·t38f 병합 OK. **차단 1** = T38c(t46)와 T27 계열이 Game.cs 에 서로 다른 쪽 넘김 구현(PaginateCard/CardPage) → merge-tree 충돌. 비차단: '.' 키가 Bindings/CONTROLS/F1 에 없음, t38g --size 가 UserSettings 를 덮어써 저장될 수 있음, PNG 재커밋(저장소 비대), t38f 기록·장비 탭 스크롤/높이 제한 없음, 도움말 중 시뮬 미정지(의도 확인). 사고: 검토 에이전트가 C:/gameProject 에서 git checkout --detach 후 main 복귀(작업 트리 이상 없음, 현재 main). 교훈: 읽기 전용 검토는 checkout 금지. 사용자: '전체화면으로 띄우지 마' → AGENT_RULES 창 규칙·메모리·가동 중 에이전트 4곳 통보. 발주: t38c-on-ui(T27 쪽 넘김 위에 T38c 재구현) | 리뷰 완료 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
