@@ -1,6 +1,6 @@
 # Heavy-job gate v2 (separate pools). Replaces the lane/legacy modes.
 # Usage: heavy_gate.ps1 [-Render | -Build] [-Priority] [-Max N] [-TimeoutMin 60] [-DryRun]
-#   -Render  art pool (make_unit render children). Limit 8 (8th slot only when free RAM >= 6 GB, else 7).
+#   -Render  art pool (make_unit render children). Limit 2 by default (1 when free RAM < 6 GB); env KD_GATE_ART_LIMIT overrides.
 #   -Build   non-art pool, may use the reserved build slot. Default (no switch) = non-art "heavy" (selftest/stress/measure).
 #   Non-art pool (build + heavy) limit 3; heavy (no -Build) may fill at most 2 of them -> 1 slot is always reserved for builds.
 #   Art may never take the last combined slot (combined limit 10, 12 when free RAM >= 6 GB; -Max N fixes it): art needs total < limit-1.
@@ -14,7 +14,9 @@
 param([int]$Max = 0, [int]$TimeoutMin = 60, [int]$TimeoutSec = 0, [int]$PollSec = 20, [int]$ShowAfterSec = 120,
       [switch]$Render, [switch]$Build, [switch]$Priority, [switch]$DryRun, [double]$BudgetGB = 0, [string]$Lane = '')
 
+# art pool cap: default 2 while merge rounds run (user 2026-10-23, builds were waiting up to ~1085 s behind renders); KD_GATE_ART_LIMIT overrides (tests use 8).
 $script:ArtLimit = 8
+if ($env:KD_GATE_ART_LIMIT) { $script:ArtLimit = [int]$env:KD_GATE_ART_LIMIT } else { $script:ArtLimit = 2 }
 $script:NonArtLimit = 3
 $script:BuildReserve = 1
 

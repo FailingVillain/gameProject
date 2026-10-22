@@ -1,4 +1,5 @@
 # Unit + dry-run tests for heavy_gate.ps1 v2 (pools, waiters not counted, wait log). No real heavy processes needed.
+$env:KD_GATE_ART_LIMIT = '8'   # the pool-logic tests below assume the original art limit 8; the new default (2) is checked at the end
 . "$PSScriptRoot\heavy_gate.ps1"
 $fail = 0
 function Ok($cond, $msg) { if (-not $cond) { "FAIL: $msg"; $script:fail++ } else { "ok: $msg" } }
@@ -60,3 +61,11 @@ $o = (& powershell -NoProfile -ExecutionPolicy Bypass -File $gate -DryRun -Build
 Ok ($o -match 'DRYRUN gate closed: .*free=2.5') 'dryrun closed at 2.5 GB free'
 Remove-Item Env:KD_GATE_FAKEPROCS, Env:KD_GATE_FREEGB_OVERRIDE, Env:KD_GATE_LOG -ErrorAction SilentlyContinue
 if ($fail) { "FAILED $fail"; exit 1 } else { 'ALL PASS' }
+
+# default art limit = 2 (user 2026-10-23); env override = 8
+Remove-Item Env:KD_GATE_ART_LIMIT -ErrorAction SilentlyContinue
+. "$PSScriptRoot\heavy_gate.ps1"
+Ok ($script:ArtLimit -eq 2) 'default art limit is 2'
+Ok ((Get-ArtLimit 7) -eq 2 -and (Get-ArtLimit 5) -eq 1) 'art limit 2 (1 when free RAM < 6 GB)'
+$env:KD_GATE_ART_LIMIT = '8'; . "$PSScriptRoot\heavy_gate.ps1"
+Ok ($script:ArtLimit -eq 8) 'KD_GATE_ART_LIMIT overrides'

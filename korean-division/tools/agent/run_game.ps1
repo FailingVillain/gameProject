@@ -66,6 +66,8 @@ if ((Test-Path -LiteralPath $Target -PathType Container) -or $Target -like '*.cs
     $psi.FileName = $exe; $psi.WorkingDirectory = Split-Path $exe
 }
 foreach ($a in $GameArgs) { $argList += (Q $a) }
+# muted by default (user 2026-10-23); KD_SOUND=1 keeps sound
+if ($env:KD_SOUND -ne '1' -and ($GameArgs -notcontains '--mute')) { $argList += '--mute' }
 $psi.Arguments = $argList -join ' '
 $proc = [System.Diagnostics.Process]::Start($psi)
 
