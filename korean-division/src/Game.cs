@@ -1863,6 +1863,7 @@ public sealed partial class Game : IDisposable
     public void ShowNotice(string text)
     {
         notice = text;
+        KoreanDivision.UI.CrashLog.Note(text);   // 충돌 로그용 최근 알림 (T41, UI 스레드 전용)
         noticeUntil = Now + 2.5;
     }
 

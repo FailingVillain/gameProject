@@ -4,6 +4,7 @@ using KoreanDivision.Core;
 using KoreanDivision.UI;
 using KoreanDivision.Tests;
 
+KoreanDivision.UI.CrashLog.Install();   // T41 충돌 로그: 처리 안 된 예외를 사용자 데이터 폴더 crash/ 에 기록 (종료 코드 · 전파는 그대로)
 // 유닛 수 스트레스 테스트 (창 없음): KoreanDivision --stress [A|B|C|D|E|F] [k=1000,5000] [ticks=900] ... (src/Tests/StressTest.cs)
 if (args.Length > 0 && args[0] == "--detcheck") return KoreanDivision.Tests.DetCheck.Run(args);   // a1: 결정성 체크섬 (tools/detcheck.ps1)
 if (args.Length > 0 && args[0] == "--stress") return KoreanDivision.Tests.StressTest.Run(args[1..]);
@@ -143,7 +144,11 @@ if (opt.Battle != null)
 }
 if (args.Contains("--probe") && Environment.GetEnvironmentVariable("KD_PROBE_SNAP") == "1") { KoreanDivision.Tests.DesyncProbe.RunSnap(opt.Seed, int.TryParse(Environment.GetEnvironmentVariable("KD_PROBE_PRE"), out var ppre) ? ppre : 3600); return 0; }
 if (args.Contains("--probe")) { KoreanDivision.Tests.DesyncProbe.Run(opt.Seed); return 0; }
-if (selfTest) return SelfTest.Run(opt);
+if (selfTest)
+{
+    try { return SelfTest.Run(opt); }
+    catch (Exception e) { KoreanDivision.UI.CrashLog.Write(e, "selftest-fatal"); throw; }
+}
 if (verifyReplay != null)
 {
     // 창 없이 리플레이를 처음부터 다시 돌려 기록된 체크섬과 비교
@@ -165,6 +170,8 @@ Ui.LoadFonts(defs.AllText().Concat(MissionDef.AllText()));   // 미션 파일의
 KoreanDivision.Render.Theme.Use(opt.Theme);   // 이미지 세트 (assets/themes/<id>, "none" = 도형 그림)
 Sfx.Init(opt.Theme == "none" ? "ww2" : opt.Theme);   // 효과음 (assets/sounds/<id>)
 
+KoreanDivision.UI.CrashLog.Context = () => ("menu", null, 0, opt.Seed);
+KoreanDivision.UI.CrashLog.MaybeInjectTestCrash();   // 시험 전용 (KD_TEST_CRASH=1): 처리 안 된 예외 경로 확인
 UiFuzz? fuzz = fuzzSeconds > 0 ? new UiFuzz(fuzzSeconds, opt.Seed) : null;
 bool running = true;
 double updMs = 0, drawMs = 0;
@@ -210,6 +217,7 @@ while (running)
     if (created == null) { menu?.ShowMain(cur.FromMenu ? string.Format(S.StartFailed, startError) : null); continue; }
     cur.Loaded = null;   // 월드는 게임이 가져갔다 (다시 시작 · 메뉴 복귀가 옛 저장 월드를 다시 쓰지 않게)
     using var game = created;
+    KoreanDivision.UI.CrashLog.Context = () => ("game", cur.MissionId, game.World.Tick, cur.Seed);
     int frame = 0;
     while (true)
     {

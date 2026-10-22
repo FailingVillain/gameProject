@@ -19,6 +19,7 @@ public static partial class SelfTest
         opt = new GameOptions { MapWidth = 100, MapHeight = 100, Players = 2, Seed = opt.Seed, Ai = opt.Ai };
         try { Console.OutputEncoding = System.Text.Encoding.UTF8; } catch (IOException) { }
 
+        if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "crashlog") { Tests.CrashLogSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "s4") { Tests.S4SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "assaultinf") { Tests.AssaultInfSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "units") { Tests.UnitsSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
