@@ -505,7 +505,7 @@ public static class MissionSelfTest
     static void KoreaOnlyScan(Action<bool, string> check)
     {
         var defs = Defs.Current;
-        check(defs.Units["infantry_assault"].KoreaOnly && defs.Units.Values.Count(u => u.KoreaOnly) == 1, "돌격보병 = 한국군 전용 (koreaOnly 정의 1개)");
+        check(defs.Units["infantry_assault"].KoreaOnly && defs.Units.Values.Where(u => u.KoreaOnly).Select(u => u.Key).OrderBy(k => k, StringComparer.Ordinal).SequenceEqual(new[] { "infantry_assault", "infantry_pioneer" }), "돌격보병 · 전투공병(T32a) = 한국군 전용 (koreaOnly 정의 2개)");
         string txt = File.ReadAllText(MissionDef.PathOf("ai_kr_vs_ft_1000"));
         int at = txt.IndexOf("\"infantry_fengtian\": 19", StringComparison.Ordinal);
         bool threw = false;
