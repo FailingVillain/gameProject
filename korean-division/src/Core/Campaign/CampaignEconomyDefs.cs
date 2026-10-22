@@ -55,6 +55,10 @@ public sealed class CampaignEconomyDefs
     /// <summary>[임시] 작전 사이 한 번에 낼 수 있는 진급 수 (사병 + 장교 합계 정원).</summary>
     public int PromoMaxPerBreak { get; set; } = 8;
 
+    // ---- [T42c] 포로 장부 · 처리 — 임시 (0.3 밸런스에서 확정). 홈 계정만.
+    /// <summary>[임시] 포로 1명을 수용할 때 드는 보급품 (송환은 무료). 편입(병력화)은 없음.</summary>
+    public float PrisonerAcceptSupply { get; set; } = 2f;
+
     static CampaignEconomyDefs? current;
     public static CampaignEconomyDefs Current => current ??= Load(Path.Combine(AppContext.BaseDirectory, "assets", "data", "campaign_economy.json"));
     /// <summary>[테스트] 정의를 갈아 끼운다 (null = 파일 다시 읽기).</summary>
@@ -107,6 +111,7 @@ public sealed class CampaignEconomyDefs
         MoraleLoss = Math.Clamp(MoraleLoss, 0, 100);
         MoraleCasualtyScale = Math.Clamp(MoraleCasualtyScale, 0, 100);
         MoraleRestRecovery = Math.Clamp(MoraleRestRecovery, 0, 100);
+        PrisonerAcceptSupply = F(PrisonerAcceptSupply, 0f, 1000f, d.PrisonerAcceptSupply);
         PromoSoldierMaxRank = Math.Clamp(PromoSoldierMaxRank, 0, 8);
         PromoMaxPerBreak = Math.Clamp(PromoMaxPerBreak, 0, 10_000);
         PromoSoldierKills = FixArray(PromoSoldierKills, d.PromoSoldierKills, 9);

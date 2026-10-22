@@ -68,6 +68,8 @@ public sealed class CampaignState
         };
         public Dictionary<string, int> Heavy { get; set; } = new();
         public int Horses { get; set; } = 100;
+        /// <summary>[v6 · T42c] 아직 처리 안 한 포로 (송환 · 수용으로 줄어든다). 옛 파일 = 0.</summary>
+        public int Prisoners { get; set; }
         public List<string> RecentLog { get; set; } = new();
     }
 
@@ -131,6 +133,8 @@ public sealed class CampaignState
         /// <summary>[v3 · Q6] 포탄 종류별 실제 발사로 재고에서 뺀 수 · 노획으로 더한 수.</summary>
         public Dictionary<string, int> ShellsFired { get; set; } = new();
         public Dictionary<string, int> LootedShells { get; set; } = new();
+        /// <summary>[v6 · T42c] 이번 정산으로 포로 장부에 더한 수.</summary>
+        public int PrisonersTaken { get; set; }
         public string? TriggeredEventId { get; set; }
     }
 
@@ -139,8 +143,9 @@ public sealed class CampaignState
     /// 그 옛 파일은 거부한다. 현재보다 큰 Version (더 새 게임이 만든 파일) 과 깨진 파일도 거부 (사유는 LastLoadError, 한국어).
     /// 3 (T19b): 구경별 탄약 · 포탄 정산 — RosterCompany.Caliber · Pending.AmmoByCaliber/ShellsLoaded/ShellScale · DebriefReport.ShellsFired/LootedShells (추가만, v2 는 기본값으로 이행).
     /// 4 (T42a): 중대 피로 · 사기 계정 — RosterCompany.Fatigue/Morale (추가만, v3 는 Fatigue 0 · Morale 70 으로 이행).
-    /// 5 (T42b): 진급 기록 · 정원 — PromotionLog / PromotionsThisBreak (추가만, v3 · v4 는 빈 목록 · 0 으로 이행).</summary>
-    public const int SchemaVersion = 5;
+    /// 5 (T42b): 진급 기록 · 정원 — PromotionLog / PromotionsThisBreak (추가만, v3 · v4 는 빈 목록 · 0 으로 이행).
+    /// 6 (T42c): 포로 장부 — Stock.Prisoners · PrisonersRepatriated/PrisonersInterned · DebriefReport.PrisonersTaken (추가만, v3~v5 는 0 으로 이행).</summary>
+    public const int SchemaVersion = 6;
     public int Version { get; set; } = SchemaVersion;
     public string CampaignId { get; set; } = "c1";
     /// <summary>다음에 할 미션 id (파일이 없으면 '준비 중' 화면).</summary>
@@ -151,6 +156,9 @@ public sealed class CampaignState
     public List<PromotionRecord> PromotionLog { get; set; } = new();
     /// <summary>[v5 · T42b] 이번 작전 사이에 이미 낸 진급 수 (정원 계산용). 이월 병력이 새로 정해지면 (CampaignState.Apply) 0 으로 돌아간다.</summary>
     public int PromotionsThisBreak { get; set; }
+    /// <summary>[v6 · T42c] 지금까지 송환 · 수용한 포로 누계 (처리 결과 표시용).</summary>
+    public int PrisonersRepatriated { get; set; }
+    public int PrisonersInterned { get; set; }
     /// <summary>이월 사병 (계급 · 사살 수 · 병력 id).</summary>
     public List<MissionResults.UnitLine> Units { get; set; } = new();
     /// <summary>이월 장교 (OfficerRank · Xp · Post).</summary>
@@ -252,6 +260,9 @@ public sealed class CampaignState
         foreach (var d in new[] { Stock.Rifles, Stock.Ammo, Stock.Shells, Stock.Heavy })
             foreach (var k in d.Keys.ToList()) if (d[k] < 0) d[k] = 0;
         Stock.Horses = Math.Max(0, Stock.Horses);
+        Stock.Prisoners = Math.Max(0, Stock.Prisoners);   // T42c
+        PrisonersRepatriated = Math.Max(0, PrisonersRepatriated);
+        PrisonersInterned = Math.Max(0, PrisonersInterned);
         foreach (var c in Roster)
         {
             c.MaxStrength = Math.Max(1, c.MaxStrength);

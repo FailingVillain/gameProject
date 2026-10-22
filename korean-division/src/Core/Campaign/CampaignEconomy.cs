@@ -393,6 +393,7 @@ public static class CampaignEconomy
         int lootedAmmo = 0;
         int lootedHorses = 0;
         var lootedShells = new Dictionary<string, int>();
+        int prisoners = 0;
         if (r.Result == "won")
         {
             lootedSupply = r.EnemyKills * CampaignEconomyDefs.Current.LootSupplyPerKill;
@@ -402,6 +403,8 @@ public static class CampaignEconomy
             s.Supply += lootedSupply;
             s.Stock.Rifles[enemyCaliber] = s.Stock.Rifles.GetValueOrDefault(enemyCaliber, 0) + lootedRifles;
             s.Stock.Ammo[enemyCaliber] = s.Stock.Ammo.GetValueOrDefault(enemyCaliber, 0) + lootedAmmo;
+            prisoners = Math.Max(0, r.EnemyCaptured);   // T42c: 포로 = 항복한 적 (꺼져 있으면 0)
+            s.Stock.Prisoners += prisoners;
             foreach (var shell in StockKeys.AllShells)   // 노획 포탄 = 적 손실 비례 (Q6)
             {
                 int n = (int)(r.EnemyKills * CampaignEconomyDefs.Current.LootShellsPerKill.GetValueOrDefault(shell, 0f));
@@ -422,7 +425,7 @@ public static class CampaignEconomy
         s.Manpower.Recruits = Math.Min(CampaignState.ManpowerState.MaxRecruits, s.Manpower.Recruits + regularRecruits);
 
         // 6) 입고 로그 갱신 (최대 5건)
-        string logEntry = $"[{r.MissionId}] 정산: 보급 +{regularSupply:0}(노획 +{lootedSupply:0}), 신병 +{regularRecruits}, 탄약환원 +{ammoRefunded}, 포탄 발사 -{shellsFired.Values.Sum()} 노획 +{lootedShells.Values.Sum()}";
+        string logEntry = $"[{r.MissionId}] 정산: 보급 +{regularSupply:0}(노획 +{lootedSupply:0}), 신병 +{regularRecruits}, 탄약환원 +{ammoRefunded}, 포탄 발사 -{shellsFired.Values.Sum()} 노획 +{lootedShells.Values.Sum()}" + (prisoners > 0 ? $", 포로 +{prisoners}" : "");
         s.Stock.RecentLog.Add(logEntry);
         while (s.Stock.RecentLog.Count > 5) s.Stock.RecentLog.RemoveAt(0);
 
@@ -446,7 +449,8 @@ public static class CampaignEconomy
             LootedHorses = lootedHorses,
             AmmoRefunded = ammoRefunded,
             ShellsFired = shellsFired,
-            LootedShells = lootedShells
+            LootedShells = lootedShells,
+            PrisonersTaken = prisoners
         };
         s.Pending = null;
     }

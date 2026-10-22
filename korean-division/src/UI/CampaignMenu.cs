@@ -255,6 +255,7 @@ public sealed partial class CampaignMenu
             case Tab.Equipment: DrawTabEquipment(body); break;
             case Tab.Organization: DrawTabOrganization(body); break;
             case Tab.Promotion: DrawTabPromotion(body); break;       // T42b
+            case Tab.Diplomacy: DrawTabPrisoners(body); break;       // T42c
             default: DrawTabPlaceholder(body, currentTab); break;   // 후속 탭 (틀만)
         }
     }
@@ -952,6 +953,9 @@ public sealed partial class CampaignMenu
         {
             Ui.Text(string.Format(S.CmDebriefShells, fired.Values.Sum(), fired.GetValueOrDefault(StockKeys.InfGun), fired.GetValueOrDefault(StockKeys.Field), fired.GetValueOrDefault(StockKeys.Howitzer), lootSh.Values.Sum()), x, y, 15, Palette.Text); y += 22;
         }
+
+        // 포로 (T42c): 있을 때만
+        if (d.PrisonersTaken > 0) { Ui.Text(string.Format(S.CmDebriefPrisoners, d.PrisonersTaken), x, y, 15, Palette.Accent); y += 22; }
 
         // 정기 보급 도착
         Ui.Text(string.Format(S.CmDebriefRegular, d.RegularSupplyAdded, d.RecruitsAdded), x, y, 15, Palette.HpGood); y += 22;

@@ -28,6 +28,8 @@
   "promoSoldierMaxRank": 7,
   "promoOfficerXp": [0, 60, 180, 420, 900, 0, 0],
   "promoMaxPerBreak": 8,
+  "_prisoners": "T42c 임시값 - 0.3 밸런스에서 확정. 포로 발생은 항복(기본 꺼짐)에 의존, 꺼져 있으면 0. 수용 = 1인당 보급 소모, 편입(병력화) 없음",
+  "prisonerAcceptSupply": 2,
   "shellWeapons": { "gun_infantry": "infGun", "gun_field": "field", "howitzer_heavy": "howitzer" },
   "lootShellsPerKill": { "infGun": 0.1, "field": 0.05, "howitzer": 0.02 }
 }

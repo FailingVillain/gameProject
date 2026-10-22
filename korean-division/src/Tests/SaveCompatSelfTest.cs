@@ -134,6 +134,7 @@ public static class SaveCompatSelfTest
         CampaignHomeSelfTest.Run(check);    // T19c 연대 배속 (Q9) 저장 왕복 · 투입 비용 공용 함수
         CampaignFatigueSelfTest.Run(check);   // T42a 피로 · 사기 계정 (저장 v4 · 정산 · 홈 요약)
         CampaignPromotionSelfTest.Run(check);   // T42b 진급 후보 · 적용 (저장 v5 · 후보 · 정원 · 이월)
+        CampaignPrisonersSelfTest.Run(check);   // T42c 포로 장부 · 송환/수용 (저장 v6 · 정산 · 처리)
         CampaignHomeViewsSelfTest.Run(check);   // T38f 읽기 전용 탭 (기록 · 장비 · 편제) 표시 자료
         string cdir = TestTemp.Child("kd_compat_campaign");
         string? oldEnv = Environment.GetEnvironmentVariable("KD_CAMPAIGN_DIR");
