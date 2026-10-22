@@ -1,0 +1,22 @@
+# T33a 지도 편집 문서 모델 + 직렬화 + undo (헤드리스)
+- id: T33a | 역할: feature | 등급: D中 H1 (R1 S Wlight)
+- 선행: 없음 (설계 docs/MAP_EDITOR_DESIGN.md) | 후행: T33b
+- 핫스팟/만질 파일: game-tools/map-editor/ (신규 csproj + Core 소스 링크, 게임 csproj 불변); src/Core/MapFile.cs 는 읽기만 (접근 노출 최소)
+- 브랜치: kd/t33a-mapedit-model (main 기준) | 상태: queued | 담당: -
+## 확정 결정 (사용자 원문+날짜, 변경 금지)
+- "게임 안 기능이 아니라 별도 도구로 만든다" (사용자 2026-10-19, game-tools/mission-editor/DESIGN.md) -- 질문 1 에서 재확인 중
+- "가벼운 지도 편집기 = 로드맵: 자동 생성 지도를 사용자가 조금 수정 -- 지형 칠하기 · 참호/철조망 · 목표 · 시작 위치 · 저장" (사용자 2026-10-21); 보류 해제 2026-10-22 (지휘자 전달, 원문 확인 필요)
+- 편집기 출력은 데이터 JSON 뿐: 시뮬 · FormatVersion · 리플레이 · 체크섬 불변
+## 범위 밖
+창/UI · 소품/시설 · 열차 · 미션 forces/events · line/rail (T33d) · 게임 코드 변경
+## 수용 기준 (측정 가능)
+- 문서 모델: paint op (rect/circle/tiles/high) + 선 래스터(tiles) + 채우기 + base; 연산 = 가역 레코드, undo/redo
+- assets/maps/*.json 6개 전부 열기 -> 저장 -> MapFile.LoadText 한 타일/고지/시작/시설 격자가 원본과 동일
+- 같은 연산열 -> 같은 출력 바이트 (골든 해시), undo 전부 = 원본 해시
+- 미션 mapData 치환 (c0_02_yalu): 나머지 필드 불변, MissionDef.Load 통과
+- 헤드리스 시험 통과, 게임 빌드/detcheck 불변
+## 측정 (도구 · 기준선 docs/BASELINE_CURRENT.md)
+dotnet build 게임 + 편집기 · 새 시험 · 게임 --detcheck 불변
+## 결과 (3~5줄)
+-
+시작 전: ops/MERGE_QUEUE.md 병합 완료 표 + docs/legacy/GIT_HISTORY_DIGEST.md 를 grep 해 이미 구현됐는지 확인.
