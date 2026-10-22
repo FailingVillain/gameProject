@@ -53,6 +53,7 @@ namespace KoreanDivision.Core;
 [JsonDerivedType(typeof(TrenchAssaultCommand), "trenchassault")]
 [JsonDerivedType(typeof(DispatchOrderCommand), "dispatch")]
 [JsonDerivedType(typeof(QueueOrderCommand), "queue")]
+[JsonDerivedType(typeof(TrainMoveCommand), "trainmove")]
 public abstract record GameCommand(int Faction)
 {
     /// <summary>N37 (2026-10-19): 플레이어가 직접 내린 명령의 선택 인원 (0 = AI · 옛 기록 → 지연 배수 1). 명령 반응 · 지휘 계통 지연이 balance.json command.playerSel* 곡선으로 줄어든다.

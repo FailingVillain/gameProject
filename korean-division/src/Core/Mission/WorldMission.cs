@@ -52,6 +52,7 @@ public sealed partial class World
         foreach (var force in def.Forces) w.SpawnForce(force, ForceCenter(def, force), MissionDef.DirOf(force.Facing));
         foreach (var pr in def.Props) w.AddProp(pr.X, pr.Y, pr.Type);   // F6 소품 (손으로)
         if (def.PropScatter) w.ScatterMissionProps(def);
+        foreach (var tr in def.Trains) w.SpawnTrain(tr);   // 열차 (Train.cs, T30a) — 병력 · 소품 뒤 (유닛 id 불변)
         w.Fog.Update();   // 배치 적용 전에 (배치 단계에서 옮긴 월드와 같은 안개 기억이 되도록 — 안개는 첫 틱부터 다시 찍힌다)
         w.Nav.Sync();
         if (deployment != null)

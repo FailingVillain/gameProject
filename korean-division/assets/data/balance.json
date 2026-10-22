@@ -166,6 +166,10 @@
   // 철조망 절단 (unit.wireCutter = 돌격보병): 칸 옆에서 wireCutSec 초 → 흙 (통과 가능), 절단 중 칸 중심까지 wireCutReach 칸 안, 명령 지점 둘레 wireCutSearch 칸에서 철조망을 찾는다.
   "breach": { "smokeGrenadeRadius": 2.5, "smokeGrenadeSec": 30, "smokeShellSec": 45, "smokeRounds": 3, "smokeSeeDepth": 1.0, "wireCutSec": 4, "wireCutReach": 2.0, "wireCutSearch": 4 },
   "grenade": { "range": 5, "fuse": 1.5, "radius": 1.5, "damage": 60, "edgeDamage": 20, "suppress": 300, "tankDamage": 40, "autoCoverRange": 4, "autoTankRange": 3, "regenSeconds": 180, "scatter": 0.5 },
+  // 열차 (T30a, Train.cs): 선로(rail) 위만 이동. 속도 칸/초 · 가속/제동 칸/초² (최고 속도 정지 거리 = maxSpeed²/(2·brake) = 3.75칸 < lookahead 5칸).
+  // carSpacing = 객차 중심 간격 칸, lookahead = 앞쪽 선로 위 유닛 감지 거리 (있으면 정지), blockRadius = 선로 중심선에서 유닛 판정 반경. 객차 hp · armor 는 T30b 피해 전 자리값.
+  "trains": { "maxSpeed": 3, "accel": 0.4, "brake": 1.2, "carSpacing": 1.5, "maxCars": 8, "lookahead": 5, "blockRadius": 0.7,
+    "cars": { "locomotive": { "name": "기관차", "hp": 400, "armor": "heavy" }, "wagon": { "name": "화차", "hp": 200, "armor": "basic" } } },
   // [N54] 세력별 소총 분배 (map factions[].en → {무기 → 가중치 %}). 소총 칸 (weapon = rifle_mosin) 보병이 생성될 때 유닛 id · 지도 시드의 해시로 결정적으로 고른다. 없는 세력 = 모신나강. 공용 유닛은 분배 안 함 (모신나강).
   "factionRifles": {
     "fengtian": { "rifle_arisaka38": 60, "rifle_hanyang88": 30, "rifle_lebel86": 10 },

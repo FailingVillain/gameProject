@@ -2,7 +2,7 @@
 - id: T30a | 역할: sim | 등급: D上 H3 (R3 S=M W=heavy)
 - 선행: T07 `rail` wip-ready (kd-develop/kd-rail) | 후행: T30b T30c
 - 핫스팟: 신규 Core/Train*.cs, Entity/World(목록), Snapshot(FV+1,[SnapExt]), WorldChecksum, GameCommand+Replay(번호+1), Nav 는 만지지 않음, SelfTest/Audit, Config 필요 시
-- 브랜치 `kd/t30a-train-move` (rail 위, main 아님) | 상태: queued | 담당: -
+- 브랜치 `kd/t30a-train-move` (rail 위, main 아님) | 상태: wip-ready | 담당: sim (Opus 5.5)
 ## 확정 결정
 docs/TRAIN_PLAN.md '확정 결정' 그대로: 조종 + 스크립트 이동 둘 다, 선로 위 전진 · 정지 · 후진, 선로 파괴 없음(선로 = 지형).
 ## 범위 밖
@@ -21,4 +21,10 @@ SelfTest 전체 + snaptest + replay 시험 + golden. 기준선 docs/BASELINE_CUR
 - Q-A4 속도·간격·최대 객차 수 값(밸런스)? (권장: balance.json 신규 키, 값은 에이전트가 제안).
 - Q-A5 철도 소품이 필요하면 T28 위 재스택?
 ## 결과
--
+- 브랜치 `t30a-train-move` (rail 9f513e7 위), worktree kd-develop/kd-t30a. **번호 예약: FV 58 · Replay 23** (rail=53 와 충돌 회피, ops/FV_RESERVATIONS.md 반영 요청).
+- 구현: `src/Core/Train.cs` (TrainRulesDef · TrainTrack · TrainCar : Entity · Train · TrainMoveCommand "trainmove" · World.Trains/SpawnTrain/StepTrains/저장/체크섬). 미션 json `trains` (MissionTrain), balance.json `trains`. 핫스팟 편집은 한두 줄씩 (World.Step · WorldChecksum · Organisation ORG_ 끝 · GameCommand · WorldCommands · MissionDef · WorldMission · Defs · Snapshot/Replay 번호 · SnapshotSelfTest Audit 3줄 · ReplaySelfTest 표본 1줄 · SelfTest 묶음).
+- 임시 답 (사용자 승인 대기, 권장안 채택): Q-A1 새 Entity 하위 `TrainCar` (Units/byId 밖 World.Trains — 군집·충돌·AI·길찾기·표적 비간섭, Audit/[SnapExt] 틀 그대로). Q-A2 단선/순환선만, 경유점 BFS 로 경로 고정(분기 선택 없음, 이미 지난 칸 재방문 금지). Q-A3 앞쪽 선로 위 유닛(세력 무관) → 제동 정지, 비키면 출발 (치임 없음). Q-A4 maxSpeed 3칸/s · accel 0.4 · brake 1.2 (정지거리 3.75칸) · carSpacing 1.5 · maxCars 8 · lookahead 5 · blockRadius 0.7, 객차 hp/armor 자리값. Q-A5 T28 재스택 불필요.
+- 검증: 빌드 경고 0 · `train` 26검사 PASS · replay · terrain · snapshot(Audit Train/TrainCar/TrainTrack) · missions · savecompat · command PASS · snaptest(QUICK) OK · detcheck GOLDEN match 8aa6448b (열차 없는 지도 불변). 전체 selftest 생략(release 몫).
+- 틱 비용: 유닛 213 미션, 열차 3대 vs 없음 +0.19% (2회째 −3.8%, 잡음 범위). 감지 6틱 주기.
+- 남은 것: 그림(T30d) 없음 → 게임 화면에 열차가 안 보임, 조종 UI 없음(명령 API `World.TrainMove` 만), 객차 피해(T30b).
+- 리뷰 수정 (후속 커밋): PosAt/TrackBlocked 를 정수 기하로 (PosFix: 타일 중심 + 호장 65536 고정소수, 제곱 정수 거리 — float/Normalize/Distance 제거, Blocked 해시 플랫폼 무관). 멈춰 있으면(V=0) 막힘을 매 틱 재계산 (방향 바꿔도 지난 값 안 남음). 입력 방어: cars null/0량/초과/종류 null, path null/원소 null, waits NaN·음수·거대·초과, start 범위, 순환선 안 닫힘·열차보다 짧음 → InvalidDataException(명확한 메시지), 시험 17개 추가. 해시에 Tag·WaitTicks·Kind 추가 (열차 있을 때만 → 열차 없는 지도 골든 불변, FV 58 유지: FV58/Replay23 은 미병합 예약 번호이고 열차 있는 저장 · 체크섬은 아직 어디에도 배포 전). 검증: build 0 오류, train/replay/snapshot/savecompat/missions PASS, snaptest OK, detcheck GOLDEN 8aa6448b 불변, 틱 비용 −3.5% (잡음).

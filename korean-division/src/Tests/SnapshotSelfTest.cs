@@ -670,6 +670,9 @@ public static class SnapshotSelfTest
         Audit1(typeof(TrenchAssaultState), "Stage Sub Result Flags Target Dir FirePoint StartTick StageTick ReadyTick SubTick BoundTick CooldownUntil BoundGroup", "");   // N32 (TrenchAssault.cs)
         Audit1(typeof(Squad), "Id Number Company Members MarchUntil Form", "");
         Audit1(typeof(OrderQueue), "Id Faction Sel Units Legs HasCurrent Current", "");   // N74 (OrderQueue.cs)
+        Audit1(typeof(Train), "Id Owner Tag Track Cars WaitTicks S V Manual ManualDir Next ScriptDir WaitLeft Blocked", "buf");   // 열차 (Train.cs, T30a — ORG_ 끝 WriteTrains); buf = 선로 감지 작업 버퍼
+        Audit1(typeof(TrainCar), "Id Owner Hp LastDamagedTick Kind Def Index", "Selected Pos Dir");   // Def = Kind 로 다시 찾음, Index = 목록 순서, Pos · Dir = 열차 호장에서 다시 계산
+        Audit1(typeof(TrainTrack), "TX TY Waypoints Loop", "Cum Length");   // 누적 호장 = 칸 열에서 다시 계산
         Audit1(typeof(DrillState), "Phase Passive PhaseTick ContactTick Enemy Home BoundSquad BoundLast BoundTick Man ManTick ManGoal ManWay FollowGoal LiftUntil LiftPos", "");   // ORG_ 전술 틀 구역 (TacticDrill.cs)
         Audit1(typeof(Battalion), "Id Owner Number Form Companies Commander HandoverUntil", "");
         Audit1(typeof(MissionState), "Def Started Deployment ForceUnits Tags StartRank ObjState ObjProgress ObjRevealed EventFired ReinforcementSpawned Spawned Messages Weather TimeOfDay Result EndTick FailReason", "Alive");   // Alive = 매 틱 다시 세는 작업 버퍼

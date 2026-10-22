@@ -107,6 +107,7 @@ public sealed partial class World
             case SetKeepFormationCommand c: ExecKeepFormation(f, c.Companies, c.On); break;   // 중대 대형 유지 (ContactF2.cs, F1 2차)
             case OccupyPositionsCommand c: ExecOccupyPositions(f, ResolveOrder(f, c.Units), c.Target, c.Dir, c.Radius, c.CoverMaxHit); break;   // 진지 점유 (CoverSeek.cs, engage)
             case DispatchOrderCommand c: ExecDispatchOrder(f, c); break;   // 대대장 앞 명령 전달 지연 (Comms.cs)
+            case TrainMoveCommand c: ExecTrainMove(f, c); break;   // 열차 전진 · 정지 · 후진 (Train.cs, T30a)
             default:
                 ExecuteOrganisation(command);   // 편제 (Organisation.cs)
                 break;
