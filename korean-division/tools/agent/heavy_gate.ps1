@@ -1,47 +1,70 @@
-# Heavy-job gate. DEFAULT = legacy single pool (lanes OFF). Lanes apply only with explicit -Lane or env KD_GATE_LANES=1.
-# Usage: heavy_gate.ps1 [-Lane validate|measure|render] [-Render] [-Priority] [-Max N] [-TimeoutMin 60]
-#  (lane mode) Guaranteed limits: validate 3 / measure 3 / render 2 (total Max=8). A lane below its limit passes if total < Max.
-#  A lane at its limit may borrow free slots (total < Max) unless another lane that is below its limit is waiting.
-#  -Render == -Lane render. -Priority (merge-lock holder): limits and Max +3.
-# Limit: 10 by default, 12 when free physical RAM >= 6 GB (re-evaluated every check); free < 3 GB closes the gate. -Max N forces a fixed limit.
-# Memory budget: summed WorkingSet of the heavy processes above 14 GB closes the gate (env KD_GATE_BUDGET_GB or -BudgetGB overrides).
-param([int]$Max = 0, [int]$TimeoutMin = 60, [string]$Lane = 'validate', [switch]$Render, [switch]$Priority, [double]$BudgetGB = 0)
+# Heavy-job gate v2 (separate pools). Replaces the lane/legacy modes.
+# Usage: heavy_gate.ps1 [-Render | -Build] [-Priority] [-Max N] [-TimeoutMin 60] [-DryRun]
+#   -Render  art pool (make_unit render children). Limit 8 (8th slot only when free RAM >= 6 GB, else 7).
+#   -Build   non-art pool, may use the reserved build slot. Default (no switch) = non-art "heavy" (selftest/stress/measure).
+#   Non-art pool (build + heavy) limit 3; heavy (no -Build) may fill at most 2 of them -> 1 slot is always reserved for builds.
+#   Art may never take the last combined slot (combined limit 10, 12 when free RAM >= 6 GB; -Max N fixes it): art needs total < limit-1.
+#   -Priority (merge-lock holder): non-art caps and combined limit +3, reservation ignored.
+#   Only RUNNING heavy processes are counted (art = python make_unit, build = dotnet build, heavy = KoreanDivision exe/dll runs).
+#   Processes that merely wait (heavy_gate.ps1 itself, rerender96 drivers) hold no slot; MSBuild node children add RAM only.
+#   Free RAM < 3 GB closes the gate. Summed WorkingSet of heavy processes above 14 GB closes it (KD_GATE_BUDGET_GB / -BudgetGB).
+#   Waits are logged to C:\gameProject\ops\gate_wait.log (KD_GATE_LOG overrides): start, every 60 s, open/timeout, with occupant kind:PID:name.
+#   After 120 s of waiting the occupancy is printed to stdout every 60 s. This script NEVER kills any process.
+#   -DryRun: evaluate once, print decision and occupants, no waiting, no log; KD_GATE_FAKEPROCS="pid|name|cmdline;..." fakes the process list.
+param([int]$Max = 0, [int]$TimeoutMin = 60, [int]$TimeoutSec = 0, [int]$PollSec = 20, [int]$ShowAfterSec = 120,
+      [switch]$Render, [switch]$Build, [switch]$Priority, [switch]$DryRun, [double]$BudgetGB = 0, [string]$Lane = '')
 
-$script:LaneLimits = @{ validate = 3; measure = 3; render = 2 }
+$script:ArtLimit = 8
+$script:NonArtLimit = 3
+$script:BuildReserve = 1
 
-# Classify a process (name + command line) into a lane, or $null if not heavy.
-function Get-HeavyLane([string]$Name, [string]$CmdLine) {
+# Classify a process: 'art' | 'build' | 'heavy' | 'child' (RAM only, no slot) | $null.
+function Get-HeavyKind([string]$Name, [string]$CmdLine) {
   if ($null -eq $CmdLine) { $CmdLine = '' }
+  if ($CmdLine -match 'heavy_gate') { return $null }   # waiting gate scripts hold no slot
   if ($Name -eq 'KoreanDivision.exe') {
     if ($CmdLine -match '[\\]dist[\\]') { return $null }
-    if ($CmdLine -match '--(tactics-obs|collide|balance|stress|bunch)') { return 'measure' }
-    return 'validate'
+    return 'heavy'
   }
   if ($Name -eq 'dotnet.exe') {
-    if ($CmdLine -match 'KoreanDivision\.dll' -and $CmdLine -match '--(tactics-obs|collide|balance|stress|bunch)') { return 'measure' }
-    if ($CmdLine -match 'build|KoreanDivision\.dll|MSBuild\.dll') { return 'validate' }
+    if ($CmdLine -match 'KoreanDivision\.dll') { return 'heavy' }
+    if ($CmdLine -match 'MSBuild\.dll|VBCSCompiler|csc\.dll') { return 'child' }
+    if ($CmdLine -match '\sbuild(\s|$)|\spublish(\s|$)|\stest(\s|$)') { return 'build' }
     return $null
   }
-  # Only the actual render child (make_unit) is heavy; the rerender96 driver just waits on it. Counting both double-counted every lane (2026-10-22: 4 lanes = 8 heavy -> gate closed for all builds).
-  if ($Name -eq 'python.exe' -and $CmdLine -match 'make_unit') { return 'render' }
+  # Only the actual render child (make_unit) is heavy; the rerender96 driver just waits on it.
+  if ($Name -eq 'python.exe' -and $CmdLine -match 'make_unit') { return 'art' }
   return $null
 }
 
-# counts: hashtable lane->running count; waiting: lanes (other than own) that have a waiter.
-function Test-GateOpen([hashtable]$Counts, [string]$Lane, [int]$Max, [bool]$Priority, [string[]]$WaitingLanes = @()) {
-  $bonus = 0; if ($Priority) { $bonus = 3 }
-  $total = 0; foreach ($l in $script:LaneLimits.Keys) { $total += [int]$Counts[$l] }
-  if ($total -ge ($Max + $bonus)) { return $false }
-  if ([int]$Counts[$Lane] -lt ($script:LaneLimits[$Lane] + $bonus)) { return $true }
-  # at own limit: borrowing, only if no under-limit lane is waiting for its slot
-  if ($Priority) { return $true }
-  foreach ($w in $WaitingLanes) {
-    if ($w -ne $Lane -and [int]$Counts[$w] -lt $script:LaneLimits[$w]) { return $false }
+function Get-ProcList {
+  if ($null -ne $env:KD_GATE_FAKEPROCS) {
+    $o = @()
+    foreach ($e in ($env:KD_GATE_FAKEPROCS -split ';')) {
+      if (-not $e.Trim()) { continue }
+      $f = $e.Split('|')
+      $cl = ''; if ($f.Count -gt 2) { $cl = $f[2] }
+      $o += [pscustomobject]@{ ProcessId = [int]$f[0]; Name = $f[1]; CommandLine = $cl; WorkingSetSize = [double]0 }
+    }
+    return $o
   }
-  return $true
+  return @(Get-CimInstance Win32_Process)
 }
 
-# Free physical RAM in GB; env KD_GATE_FREEGB_OVERRIDE injects a value (tests).
+# counts: art/build/heavy running; occ = occupant strings "kind:pid:name"; ramBytes of heavy + child.
+function Get-HeavyCounts {
+  $c = @{ art = 0; build = 0; heavy = 0; ramBytes = [double]0; occ = @() }
+  foreach ($p in (Get-ProcList)) {
+    $k = Get-HeavyKind $p.Name $p.CommandLine
+    if (-not $k) { continue }
+    $c.ramBytes += [double]$p.WorkingSetSize
+    if ($k -eq 'child') { continue }
+    $c[$k]++
+    $c.occ += ('{0}:{1}:{2}' -f $k, $p.ProcessId, $p.Name)
+  }
+  return $c
+}
+
 function Get-FreeGB {
   if ($env:KD_GATE_FREEGB_OVERRIDE) { return [double]$env:KD_GATE_FREEGB_OVERRIDE }
   return [math]::Round((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory / 1MB, 1)
@@ -51,17 +74,7 @@ function Get-GateLimit([double]$FreeGB, [int]$Fixed = 0) {
   if ($FreeGB -ge 6) { return 12 }
   return 10
 }
-
-function Get-HeavyCounts {
-  $c = @{ validate = 0; measure = 0; render = 0; ramBytes = [double]0 }
-  foreach ($p in @(Get-CimInstance Win32_Process)) {
-    $l = Get-HeavyLane $p.Name $p.CommandLine
-    if ($l) { $c[$l]++; $c.ramBytes += [double]$p.WorkingSetSize }
-  }
-  return $c
-}
-
-# Summed WorkingSet of heavy processes in GB; env KD_GATE_HEAVYRAM_OVERRIDE injects a value (tests).
+function Get-ArtLimit([double]$FreeGB) { if ($FreeGB -ge 6) { return $script:ArtLimit }; return ($script:ArtLimit - 1) }
 function Get-HeavyRAMGB([hashtable]$Counts) {
   if ($env:KD_GATE_HEAVYRAM_OVERRIDE) { return [double]$env:KD_GATE_HEAVYRAM_OVERRIDE }
   return [math]::Round([double]$Counts.ramBytes / 1GB, 1)
@@ -71,61 +84,75 @@ function Get-BudgetGB([double]$Fixed = 0) {
   if ($env:KD_GATE_BUDGET_GB) { return [double]$env:KD_GATE_BUDGET_GB }
   return 14
 }
-# Budget closes the gate only when heavy RAM is strictly above the budget.
 function Test-BudgetOk([double]$HeavyGB, [double]$BudgetGB) { return ($HeavyGB -le $BudgetGB) }
+
+# Pool decision. Kind = art|build|heavy. Limit = combined limit (already incl. fixed -Max).
+function Test-PoolOpen([hashtable]$Counts, [string]$Kind, [double]$FreeGB, [int]$Limit, [bool]$Priority) {
+  if ($FreeGB -lt 3) { return $false }
+  $bonus = 0; if ($Priority) { $bonus = 3 }
+  $nonart = [int]$Counts.build + [int]$Counts.heavy
+  $total = $nonart + [int]$Counts.art
+  if ($Kind -eq 'art') {
+    if ([int]$Counts.art -ge (Get-ArtLimit $FreeGB)) { return $false }
+    return ($total -lt ($Limit - $script:BuildReserve))   # art never takes the last combined slot
+  }
+  if ($total -ge ($Limit + $bonus)) { return $false }
+  $poolCap = $script:NonArtLimit + $bonus
+  if ($nonart -ge $poolCap) { return $false }
+  if ($Kind -eq 'heavy' -and -not $Priority) { return ([int]$Counts.heavy -lt ($script:NonArtLimit - $script:BuildReserve)) }
+  return $true
+}
+
+function Write-GateLog([string]$Msg) {
+  $f = $env:KD_GATE_LOG; if (-not $f) { $f = 'C:\gameProject\ops\gate_wait.log' }
+  try { Add-Content -Path $f -Value ('{0} pid={1} {2}' -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss'), $PID, $Msg) -ErrorAction Stop } catch {}
+}
 
 if ($MyInvocation.InvocationName -eq '.') { return }   # dot-sourced by tests: functions only
 
-$FixedMax = $Max
-$laneMode = $PSBoundParameters.ContainsKey('Lane') -or ($env:KD_GATE_LANES -eq '1')
-if ($Render) { $Lane = 'render' }
-if (-not $laneMode) {
-  # legacy single pool: render sees limit, others limit-1, priority +3
-  $deadline0 = (Get-Date).AddMinutes($TimeoutMin)
-  $budget = Get-BudgetGB $BudgetGB
-  while ($true) {
-    $c0 = Get-HeavyCounts
-    # RAM guard (user decision AO1 2026-10-22): below 3 GB free physical memory the gate stays closed
-    $freeGB = Get-FreeGB
-    if ($freeGB -lt 3) { if ((Get-Date) -gt $deadline0) { "gate timeout: free RAM $freeGB GB - proceed carefully"; exit 1 }; Start-Sleep -Seconds 20; continue }
-    $limit = Get-GateLimit $freeGB $Max
-    $eff = $limit
-    if (-not $Render) { $eff = $eff - 1 }
-    if ($Priority) { $eff = $eff + 3 }
-    $n = $c0.validate + $c0.measure + $c0.render
-    $heavyGB = Get-HeavyRAMGB $c0
-    $budgetOk = Test-BudgetOk $heavyGB $budget
-    if ($n -lt $eff -and $budgetOk) { "gate open: heavy=$n/limit $limit free=$freeGB GB heavyRAM=$heavyGB GB"; exit 0 }
-    if ((Get-Date) -gt $deadline0) { "gate timeout: heavy=$n/limit $limit free=$freeGB GB heavyRAM=$heavyGB GB budget=$budget GB - proceed carefully"; exit 1 }
-    Start-Sleep -Seconds 20
-  }
-}
-if (-not $script:LaneLimits.ContainsKey($Lane)) { "gate: unknown lane '$Lane' (validate|measure|render)"; exit 2 }
-$dir = Join-Path $env:TEMP 'kd-gate'
-New-Item -ItemType Directory -Force $dir | Out-Null
-$marker = Join-Path $dir "$Lane.$PID"
-$deadline = (Get-Date).AddMinutes($TimeoutMin)
+$Kind = 'heavy'
+if ($Render -or $Lane -eq 'render') { $Kind = 'art' } elseif ($Build) { $Kind = 'build' }
 $budget = Get-BudgetGB $BudgetGB
-try {
-  while ($true) {
-    $c = Get-HeavyCounts
-    $freeGB = Get-FreeGB
-    if ($freeGB -lt 3) { if ((Get-Date) -gt $deadline) { "gate timeout: free RAM $freeGB GB - proceed carefully"; exit 1 }; Start-Sleep -Seconds 20; continue }
-    $Max = Get-GateLimit $freeGB $FixedMax
-    $heavyGB = Get-HeavyRAMGB $c
-    $budgetOk = Test-BudgetOk $heavyGB $budget
-    # live waiters of other lanes (stale markers >2h or dead pids are ignored)
-    $waiting = @()
-    foreach ($f in @(Get-ChildItem $dir -ErrorAction SilentlyContinue)) {
-      $parts = $f.Name.Split('.')
-      if ($parts.Count -eq 2 -and $parts[0] -ne $Lane -and (Get-Process -Id ([int]$parts[1]) -ErrorAction SilentlyContinue)) { $waiting += $parts[0] }
-    }
-    if ($budgetOk -and (Test-GateOpen $c $Lane $Max ([bool]$Priority) $waiting)) {
-      "gate open: lane=$Lane heavy=$($c.validate + $c.measure + $c.render)/limit $Max free=$freeGB GB heavyRAM=$heavyGB GB (validate=$($c.validate) measure=$($c.measure) render=$($c.render))"
-      exit 0
-    }
-    Set-Content $marker '' -ErrorAction SilentlyContinue
-    if ((Get-Date) -gt $deadline) { "gate timeout: lane=$Lane validate=$($c.validate) measure=$($c.measure) render=$($c.render) heavyRAM=$heavyGB GB budget=$budget GB - proceed carefully"; exit 1 }
-    Start-Sleep -Seconds 20
+$tmo = $TimeoutMin * 60; if ($TimeoutSec -gt 0) { $tmo = $TimeoutSec }
+$t0 = Get-Date
+$lastShow = 0
+$lastPrint = -99999
+$waiting = $false
+
+while ($true) {
+  $c = Get-HeavyCounts
+  $freeGB = Get-FreeGB
+  $limit = Get-GateLimit $freeGB $Max
+  $heavyGB = Get-HeavyRAMGB $c
+  $open = (Test-BudgetOk $heavyGB $budget) -and (Test-PoolOpen $c $Kind $freeGB $limit ([bool]$Priority))
+  $st = "kind=$Kind art=$($c.art) build=$($c.build) heavy=$($c.heavy) limit=$limit free=$freeGB GB heavyRAM=$heavyGB GB"
+  $waited = [int]((Get-Date) - $t0).TotalSeconds
+  if ($DryRun) {
+    if ($open) { "DRYRUN gate open: $st"; exit 0 }
+    "DRYRUN gate closed: $st occupants=[$($c.occ -join ' ')]"; exit 1
   }
-} finally { Remove-Item $marker -ErrorAction SilentlyContinue }
+  if ($open) {
+    if ($waiting) { Write-GateLog "OPEN waited=${waited}s $st" }
+    "gate open: $st waited=${waited}s"
+    exit 0
+  }
+  if (-not $waiting) {
+    $waiting = $true
+    Write-GateLog "WAIT_START $st occupants=[$($c.occ -join ' ')]"
+    $lastShow = $waited - 60
+  }
+  if (($waited - $lastShow) -ge 60) {
+    Write-GateLog "WAIT waited=${waited}s $st occupants=[$($c.occ -join ' ')]"
+    $lastShow = $waited
+  }
+  if ($waited -ge $ShowAfterSec -and ($waited - $lastPrint) -ge 60) {
+    "gate waiting ${waited}s: $st occupants=[$($c.occ -join ' ')]"
+    $lastPrint = $waited
+  }
+  if ($waited -ge $tmo) {
+    Write-GateLog "TIMEOUT waited=${waited}s $st"
+    "gate timeout: $st waited=${waited}s occupants=[$($c.occ -join ' ')] - proceed carefully"
+    exit 1
+  }
+  Start-Sleep -Seconds $PollSec
+}
