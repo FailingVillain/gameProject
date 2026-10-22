@@ -72,6 +72,14 @@ public sealed class MoveStats
     public readonly SortedDictionary<string, int> KillSources = new(StringComparer.Ordinal);   // [측정 전용] 사살 원인 (Combat3.CountKill)
     public readonly SortedDictionary<string, FriendlyFireLine> FriendlyFire = new(StringComparer.Ordinal);
     public sealed class FriendlyFireLine { public int Hits; public int Kills; public double Damage; }
+    /// <summary>[측정 전용 · T19b] 포 (병과 gun) 발사 수 — 세력별 (0..MaxF-1) 무기 키 → 발수. 캠페인 포탄 정산 (MissionResults.PlayerGunShots) 이 읽는다. 시뮬은 읽지 않음 — 저장 · 체크섬 없음 (불러오면 0 부터, FriendlyFire 와 같음).</summary>
+    public readonly SortedDictionary<string, int>[] GunShots = Enumerable.Range(0, MaxF).Select(_ => new SortedDictionary<string, int>(StringComparer.Ordinal)).ToArray();
+    internal void AddGunShot(Unit u)
+    {
+        if (u.Def.Category != "gun" || u.Weapon == null || (uint)u.Owner >= MaxF) return;
+        var d = GunShots[u.Owner];
+        d[u.Weapon.Key] = d.GetValueOrDefault(u.Weapon.Key) + 1;
+    }
 }
 
 public sealed partial class World

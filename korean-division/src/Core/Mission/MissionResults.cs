@@ -29,6 +29,8 @@ public sealed class MissionResults
     public int EnemyKills { get; set; }
     /// <summary>[측정] 아군 오사 — 무기 종류별 (명중 · 사살 · 피해량). 저장 · 체크섬과 무관한 부가 계수기.</summary>
     public Dictionary<string, FriendlyFireEntry> FriendlyFire { get; set; } = new();
+    /// <summary>[T19b] 플레이어 세력 포 (병과 gun) 의 무기 키별 발사 수 — 캠페인 포탄 정산 (실제 발사 수 차감). 미션 중 불러오기를 하면 그 뒤 발사만 센다.</summary>
+    public Dictionary<string, int> PlayerGunShots { get; set; } = new();
     public sealed class FriendlyFireEntry { public int Hits { get; set; } public int Kills { get; set; } public double Damage { get; set; } }
     public string SavedAt { get; set; } = "";
     public List<FactionLine> Factions { get; set; } = new();
@@ -53,6 +55,7 @@ public sealed class MissionResults
             SavedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
             Deployment = new List<DeployEntry>(m.Deployment),
         };
+        if ((uint)m.Player < MoveStats.MaxF) foreach (var (k, v) in w.Stats.GunShots[m.Player]) r.PlayerGunShots[k] = v;
         foreach (var (k, v) in w.Stats.FriendlyFire) r.FriendlyFire[k] = new FriendlyFireEntry { Hits = v.Hits, Kills = v.Kills, Damage = Math.Round(v.Damage, 1) };
         if (m.FailReason >= 0 && m.FailReason < m.Def.Failures.Count) r.FailReason = m.Def.Failures[m.FailReason].Type;
         else if (m.Result == MissionState.Lost) r.FailReason = "objective";

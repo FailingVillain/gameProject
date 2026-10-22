@@ -553,7 +553,7 @@ public static class MissionSelfTest
         }
         """;
         var s1 = CampaignState.FromJson(v1Json);
-        check(s1 != null && s1.Version == 2, "v1 JSON 읽기: Version=2 마이그레이션");
+        check(s1 != null && s1.Version == CampaignState.SchemaVersion, $"v1 JSON 읽기: Version={CampaignState.SchemaVersion} 마이그레이션");
         check(s1!.Supply == 3000f, $"v1 읽기: Supply = 3000 (실제 {s1.Supply})");
         check(s1.Manpower.Recruits == 2000 && s1.Manpower.Wounded == 0, $"v1 읽기: Recruits = 2000, Wounded = 0");
         check(s1.Stock.Rifles.GetValueOrDefault("ru") == 3000, "v1 읽기: Rifles['ru'] = 3000");
@@ -598,6 +598,13 @@ public static class MissionSelfTest
                 check(o.WoundReturnRatio == 1f && o.PenaltyCap == 0f && o.HealCostPerMan >= 0.01f && o.RecruitAssignCostPerMan >= 0.01f
                     && o.AmmoPerInfantry == 0 && o.AmmoPerMg == 0 && o.RegularRecruits == 0 && o.RegularSupply == 0f && o.LootAmmoPerKill == 0
                     && o.HowitzerCompanyStrength >= 1 && o.LargeDeployScaleMul >= 1f, "경제 JSON 범위 밖 값 → 정상 범위로 자름");
+                string oor2 = Path.Combine(td, "oor2.json");   // T19b 새 키: 범위 밖 · null · 모르는 포탄 키
+                File.WriteAllText(oor2, "{\"shortLoadRatio\":7,\"shellWeapons\":{\"gun_field\":\"field\",\"bad\":\"nope\",\"nul\":null},\"lootShellsPerKill\":{\"infGun\":-3,\"howitzer\":99999,\"zzz\":1}}");
+                var o2 = CampaignEconomyDefs.Load(oor2);
+                check(o2.ShortLoadRatio == 1f && o2.ShellWeapons.Count == 1 && o2.ShellWeapons["gun_field"] == "field" && o2.LootShellsPerKill[StockKeys.InfGun] == 0f
+                    && o2.LootShellsPerKill[StockKeys.Howitzer] == 1000f && !o2.LootShellsPerKill.ContainsKey("zzz"), "경제 JSON T19b 새 키(포탄 휴대 · 노획) 범위 보정");
+                string nul = Path.Combine(td, "nul.json"); File.WriteAllText(nul, "{\"shellWeapons\":null,\"lootShellsPerKill\":null}");
+                check(CampaignEconomyDefs.Load(nul).ShellWeapons.Count == dflt.ShellWeapons.Count, "경제 JSON 포탄 사전 null → 기본값");
                 check(World.ToPermille(0.5f) == 500 && World.ToPermille(0.333f) == 333 && World.ToPermille(2f) == 1000 && World.ToPermille(-1f) == 0 && World.ToPermille(float.NaN) == 1000
                     && World.ScaleAmmoPermille(7, 500) == 4, "탄약 배율 천분율 정수 변환");
             }

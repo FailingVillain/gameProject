@@ -12,5 +12,8 @@
   "largeDeployScaleMul": 1.5,
   "healCostPerMan": 0.5,
   "recruitAssignCostPerMan": 0.5,
-  "howitzerCompanyStrength": 40
+  "howitzerCompanyStrength": 40,
+  "shortLoadRatio": 0.5,
+  "shellWeapons": { "gun_infantry": "infGun", "gun_field": "field", "howitzer_heavy": "howitzer" },
+  "lootShellsPerKill": { "infGun": 0.1, "field": 0.05, "howitzer": 0.02 }
 }

@@ -303,7 +303,8 @@ public sealed partial class World
             var u = SpawnUnit(def, f.Faction, WalkablePos(pos));
             u.Facing = facing;
             if (comps[block].Weapon is { } ow && u.Def.Weapon == Defs.RifleSlot) u.Weapon = Defs.Weapon(ow);   // 미션이 소총을 고정 (N54)
-            if (comps[block].AmmoScale is float asc && u.Ammo > 0) u.Ammo = ScaleAmmo(u.Ammo, asc);
+            if (u.Ammo > 0 && f.Faction == m.Player && u.Weapon != null && m.Def.AmmoScaleByWeapon is { } bw && bw.TryGetValue(u.Weapon.Key, out float wsc)) u.Ammo = ScaleAmmo(u.Ammo, wsc);   // 캠페인 포탄 재고 (T19b)
+            else if (comps[block].AmmoScale is float asc && u.Ammo > 0) u.Ammo = ScaleAmmo(u.Ammo, asc);
             if (comps[block].Rank is { } mr && !u.IsOfficer)   // 명시 계급 (0 = 훈련병 허용); 없으면 SpawnUnit 의 기본 1
             {
                 int rank = RankNames.Snap(FactionEn(f.Faction), mr);   // 미사용 계급은 아래로 (ranks.json null)

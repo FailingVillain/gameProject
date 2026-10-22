@@ -948,6 +948,14 @@ public sealed class CampaignMenu
         int ammoRefunded = CountFrom(d.AmmoRefunded);
         Ui.Text(string.Format(S.CmDebriefAmmoRefund, ammoRefunded), x, y, 15, Palette.Text); y += 22;
 
+        // 포탄 정산 (T19b Q6): 포를 쏘았거나 노획했을 때만
+        var fired = d.ShellsFired ?? new Dictionary<string, int>();
+        var lootSh = d.LootedShells ?? new Dictionary<string, int>();
+        if (fired.Count > 0 || lootSh.Count > 0)
+        {
+            Ui.Text(string.Format(S.CmDebriefShells, fired.Values.Sum(), fired.GetValueOrDefault(StockKeys.InfGun), fired.GetValueOrDefault(StockKeys.Field), fired.GetValueOrDefault(StockKeys.Howitzer), lootSh.Values.Sum()), x, y, 15, Palette.Text); y += 22;
+        }
+
         // 정기 보급 도착
         Ui.Text(string.Format(S.CmDebriefRegular, d.RegularSupplyAdded, d.RecruitsAdded), x, y, 15, Palette.HpGood); y += 22;
 

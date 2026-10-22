@@ -182,6 +182,7 @@ public static partial class S
     public const string CmDebriefKills = "적군 사살: {0}명";
     public const string CmDebriefLoot = "노획 전리품: 보급 +{0:N0} · 소총 +{1:N0}정 · 탄약 +{2:N0}발 · 군마 +{3:N0}두";
     public const string CmDebriefAmmoRefund = "미소비 탄약 군수 환원: +{0:N0}발";
+    public const string CmDebriefShells = "포탄 정산: 발사 -{0:N0}발 (보병포 {1} · 야전포 {2} · 곡사포 {3}) · 노획 +{4:N0}발";
     public const string CmDebriefRegular = "본국 정기 보급 도착: 보급 +{0:N0} · 신병 +{1:N0}명";
     public const string CmDebriefSupplyChange = "사단 보급고 정산: {0:N0} → {1:N0}";
     public const string CmDebriefNewEvent = "통신 참모: 새로운 본국 전문이 접수되었습니다! ([본국] 탭 확인)";

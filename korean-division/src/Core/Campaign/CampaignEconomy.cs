@@ -116,40 +116,87 @@ public static class CampaignEconomy
         return n;
     }
 
+    /// <summary>재고에서 휴대량 채우기 (Q5 · Q6, 탄약 · 포탄 같은 규칙): 재고가 기본 휴대량 이상이면 전부, 모자라면 기본 휴대량의 ShortLoadRatio (50%) — 재고가 그보다도 적으면 남은 재고만큼.</summary>
+    public static int FillLoad(int need, int stock)
+    {
+        if (need <= 0) return 0;
+        stock = Math.Max(0, stock);
+        if (stock >= need) return need;
+        int part = (int)Math.Ceiling(need * (double)Math.Clamp(CampaignEconomyDefs.Current.ShortLoadRatio, 0f, 1f));
+        return Math.Min(stock, part);
+    }
+
+    /// <summary>중대의 탄약 기본 휴대량 (보병 1명당 60발, 기관총 200발; 그 외 병과 0).</summary>
+    public static int CompanyAmmoNeed(CampaignState.RosterCompany c) => c.Kind switch
+    {
+        "infantry" or "recruit" or "guard" or "assault" or "sniper" => c.Strength * CampaignEconomyDefs.Current.AmmoPerInfantry,
+        "mg" => c.Strength * CampaignEconomyDefs.Current.AmmoPerMg,
+        _ => 0
+    };
+
+    /// <summary>[Q6] 미션의 플레이어 포 (시작 병력 + 증원) 기본 포탄 휴대량 — 포탄 종류별 (포 수 × 그 무기 balance.json ammo). 포 없는 미션 = 빈 표.</summary>
+    public static Dictionary<string, int> ShellBaseLoad(MissionDef def)
+    {
+        var res = new Dictionary<string, int>();
+        var map = CampaignEconomyDefs.Current.ShellWeapons;
+        foreach (var f in def.Forces.Concat(def.Reinforcements))
+        {
+            if (f.Faction != def.Player) continue;
+            foreach (var c in f.AllCompanies())
+                foreach (var (unitKey, n) in c.Units)
+                {
+                    if (n <= 0 || !Defs.Current.Units.TryGetValue(unitKey, out var ud) || ud.Weapon is not { } wk) continue;
+                    if (!map.TryGetValue(wk, out var shell) || !Defs.Current.Weapons.TryGetValue(wk, out var wd) || wd.Ammo <= 0) continue;
+                    res[shell] = res.GetValueOrDefault(shell) + n * wd.Ammo;
+                }
+        }
+        return res;
+    }
+
+    /// <summary>미션 파일의 기본 포탄 휴대량 (파일이 없거나 깨졌으면 빈 표 = 포탄 무영향).</summary>
+    public static Dictionary<string, int> ShellBaseLoad(string missionId)
+    {
+        try { return ShellBaseLoad(MissionDef.Parse(File.ReadAllText(MissionDef.PathOf(missionId)), missionId)); }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException or InvalidDataException or System.Text.Json.JsonException or InvalidOperationException) { return new(); }
+    }
+
     /// <summary>
-    /// 작전 개시: 투입 비용 차감, 탄약 적재, 의무 중대 거부 패널티, PendingOperation 기록.
+    /// 작전 개시: 투입 비용 · 구경별 탄약 적재 (Q5) · 포탄 종류별 적재 (Q6) · 의무 중대 거부 패널티를 PendingOperation 에 기록.
+    /// shellBase = 포탄 기본 휴대량 (null 이면 미션 파일에서 ShellBaseLoad).
     /// </summary>
-    public static void BeginOperation(CampaignState s, string missionId, IReadOnlyList<string> deployedIds, int maxDeploy = 0)
+    public static void BeginOperation(CampaignState s, string missionId, IReadOnlyList<string> deployedIds, int maxDeploy = 0, IReadOnlyDictionary<string, int>? shellBase = null)
     {
         var selected = s.Roster.Where(c => deployedIds.Contains(c.Id)).ToList();
 
-        // 의무 포함 중대(Mandatory) 미포함 여부 확인
-        // 출격 직전에는 상태를 바꾸지 않는다: 비용 · 탄약 · 거부 패널티는 Pending 에 기록만 하고
+        // 출격 직전에는 상태를 바꾸지 않는다: 비용 · 탄약 · 포탄 · 거부 패널티는 Pending 에 기록만 하고
         // 전투 결과가 확정될 때 SettleBattle 이 한 번에 반영한다 (출격 후 강제 종료 · 포기해도 자원이 사라지지 않음).
         bool refusedMandatory = s.Roster.Any(c => c.Mandatory && !deployedIds.Contains(c.Id));
 
         float scaleMul = (maxDeploy > 0 && selected.Sum(c => c.Strength) > CampaignEconomyDefs.Current.LargeDeployThreshold) ? CampaignEconomyDefs.Current.LargeDeployScaleMul : 1.0f;
         float cost = Math.Min(s.Supply, TotalDeployCost(selected, scaleMul));
 
-        // 소총탄 기본 휴대량 (보병 1명당 60발, 기관총 200발)
-        int neededAmmo = selected.Where(c => c.Kind is "infantry" or "recruit" or "guard" or "assault" or "sniper").Sum(c => c.Strength) * CampaignEconomyDefs.Current.AmmoPerInfantry;
-        neededAmmo += selected.Where(c => c.Kind is "mg").Sum(c => c.Strength) * CampaignEconomyDefs.Current.AmmoPerMg;
-
-        int availAmmo = s.Stock.Ammo.GetValueOrDefault(StockKeys.Ru, 0);
-        int ammoLoaded = 0;
-        float ammoScale = 1.0f;
-        if (neededAmmo > 0)
+        // 구경별 탄약 (전투 안에서는 구경 구분 없음 → 미션에는 합친 비율 하나)
+        var ammoBy = new Dictionary<string, int>();
+        int neededAmmo = 0, ammoLoaded = 0;
+        foreach (var cal in StockKeys.AllCalibers)
         {
-            if (availAmmo >= neededAmmo)
-            {
-                ammoLoaded = neededAmmo;
-                ammoScale = 1.0f;
-            }
-            else
-            {
-                ammoLoaded = availAmmo;
-                ammoScale = (float)availAmmo / neededAmmo;
-            }
+            int need = selected.Where(c => c.Caliber == cal).Sum(CompanyAmmoNeed);
+            if (need <= 0) continue;
+            int load = FillLoad(need, s.Stock.Ammo.GetValueOrDefault(cal, 0));
+            neededAmmo += need; ammoLoaded += load;
+            ammoBy[cal] = load;
+        }
+        float ammoScale = neededAmmo > 0 ? (float)ammoLoaded / neededAmmo : 1.0f;
+
+        // 포탄 종류별
+        var shellsLoaded = new Dictionary<string, int>();
+        var shellScale = new Dictionary<string, float>();
+        foreach (var (shell, need) in shellBase ?? ShellBaseLoad(missionId))
+        {
+            if (need <= 0) continue;
+            int load = FillLoad(need, s.Stock.Shells.GetValueOrDefault(shell, 0));
+            shellsLoaded[shell] = load;
+            shellScale[shell] = (float)load / need;
         }
 
         s.Pending = new CampaignState.PendingOperation
@@ -159,6 +206,9 @@ public static class CampaignEconomy
             SupplySpent = cost,
             AmmoLoaded = ammoLoaded,
             AmmoScale = ammoScale,
+            AmmoByCaliber = ammoBy,
+            ShellsLoaded = shellsLoaded,
+            ShellScale = shellScale,
             RefusedMandatory = refusedMandatory
         };
     }
@@ -205,13 +255,23 @@ public static class CampaignEconomy
         s.Pending = null;
     }
 
+    /// <summary>[Q6] 전투 결과의 플레이어 포 발사 수 → 포탄 종류별 (무기 → 종류 표 = campaign_economy.json shellWeapons).</summary>
+    public static Dictionary<string, int> ShellsFired(MissionResults r)
+    {
+        var res = new Dictionary<string, int>();
+        foreach (var (wk, n) in r.PlayerGunShots)
+            if (n > 0 && CampaignEconomyDefs.Current.ShellWeapons.TryGetValue(wk, out var shell)) res[shell] = res.GetValueOrDefault(shell) + n;
+        return res;
+    }
+
     public static void SettleBattle(CampaignState s, MissionResults r)
     {
         // 0) 출격 때 기록해 둔 비용 · 탄약 · 거부 패널티를 결과 확정 시점에 반영 (원자적 커밋)
         if (s.Pending != null && s.Pending.MissionId == r.MissionId)
         {
             s.Supply = Math.Max(0f, s.Supply - s.Pending.SupplySpent);
-            s.Stock.Ammo[StockKeys.Ru] = Math.Max(0, s.Stock.Ammo.GetValueOrDefault(StockKeys.Ru, 0) - s.Pending.AmmoLoaded);
+            foreach (var (cal, n) in s.Pending.AmmoByCaliber)
+                s.Stock.Ammo[cal] = Math.Max(0, s.Stock.Ammo.GetValueOrDefault(cal, 0) - n);
             if (s.Pending.RefusedMandatory)
             {
                 s.Flags["heir_mood"] = Math.Clamp(s.Flags.GetValueOrDefault("heir_mood", 60) - 10, 0, 100);
@@ -265,13 +325,34 @@ public static class CampaignEconomy
             s.Manpower.Wounded += woundedReturned;
         }
 
-        // 3) 탄약 환원: Pending 에 적재된 탄약 중 생존 비율만큼 복귀
+        // 3) 탄약 환원: Pending 에 적재된 탄약 중 생존 비율만큼 같은 구경으로 복귀
         int ammoRefunded = 0;
         if (s.Pending != null && s.Pending.AmmoLoaded > 0)
         {
             float survRatio = (me != null && me.Spawned > 0) ? Math.Clamp((float)me.Alive / me.Spawned, 0f, 1f) : 1f;
-            ammoRefunded = (int)MathF.Round(s.Pending.AmmoLoaded * survRatio);
-            s.Stock.Ammo[StockKeys.Ru] = s.Stock.Ammo.GetValueOrDefault(StockKeys.Ru, 0) + ammoRefunded;
+            foreach (var (cal, n) in s.Pending.AmmoByCaliber)
+            {
+                int back = (int)MathF.Round(n * survRatio);
+                s.Stock.Ammo[cal] = s.Stock.Ammo.GetValueOrDefault(cal, 0) + back;
+                ammoRefunded += back;
+            }
+        }
+
+        // 3-1) 포탄 (Q6): 실제 발사 수를 재고에서 뺀다 (실은 수가 한도 — 전투 안 회복분은 재고 밖). 포 없는 미션 = 발사 0 → 무영향
+        var shellsFired = new Dictionary<string, int>();
+        if (s.Pending != null)
+        {
+            var fired = ShellsFired(r);
+            foreach (var shell in StockKeys.AllShells)
+            {
+                int n = fired.GetValueOrDefault(shell);
+                if (s.Pending.ShellsLoaded.TryGetValue(shell, out int loaded)) n = Math.Min(n, loaded);
+                if (n <= 0) continue;
+                int stock = s.Stock.Shells.GetValueOrDefault(shell, 0);
+                n = Math.Min(n, stock);
+                s.Stock.Shells[shell] = stock - n;
+                shellsFired[shell] = n;
+            }
         }
 
         // 4) 노획 (승리 시)
@@ -279,6 +360,7 @@ public static class CampaignEconomy
         int lootedRifles = 0;
         int lootedAmmo = 0;
         int lootedHorses = 0;
+        var lootedShells = new Dictionary<string, int>();
         if (r.Result == "won")
         {
             lootedSupply = r.EnemyKills * CampaignEconomyDefs.Current.LootSupplyPerKill;
@@ -288,6 +370,13 @@ public static class CampaignEconomy
             s.Supply += lootedSupply;
             s.Stock.Rifles[enemyCaliber] = s.Stock.Rifles.GetValueOrDefault(enemyCaliber, 0) + lootedRifles;
             s.Stock.Ammo[enemyCaliber] = s.Stock.Ammo.GetValueOrDefault(enemyCaliber, 0) + lootedAmmo;
+            foreach (var shell in StockKeys.AllShells)   // 노획 포탄 = 적 손실 비례 (Q6)
+            {
+                int n = (int)(r.EnemyKills * CampaignEconomyDefs.Current.LootShellsPerKill.GetValueOrDefault(shell, 0f));
+                if (n <= 0) continue;
+                s.Stock.Shells[shell] = s.Stock.Shells.GetValueOrDefault(shell, 0) + n;
+                lootedShells[shell] = n;
+            }
         }
 
         // 5) 정기 보급 (기본 보급 +1500, 신병 +1000, 패널티 상한 30%)
@@ -301,7 +390,7 @@ public static class CampaignEconomy
         s.Manpower.Recruits = Math.Min(CampaignState.ManpowerState.MaxRecruits, s.Manpower.Recruits + regularRecruits);
 
         // 6) 입고 로그 갱신 (최대 5건)
-        string logEntry = $"[{r.MissionId}] 정산: 보급 +{regularSupply:0}(노획 +{lootedSupply:0}), 신병 +{regularRecruits}, 탄약환원 +{ammoRefunded}";
+        string logEntry = $"[{r.MissionId}] 정산: 보급 +{regularSupply:0}(노획 +{lootedSupply:0}), 신병 +{regularRecruits}, 탄약환원 +{ammoRefunded}, 포탄 발사 -{shellsFired.Values.Sum()} 노획 +{lootedShells.Values.Sum()}";
         s.Stock.RecentLog.Add(logEntry);
         while (s.Stock.RecentLog.Count > 5) s.Stock.RecentLog.RemoveAt(0);
 
@@ -323,7 +412,9 @@ public static class CampaignEconomy
             LootedRifles = lootedRifles,
             LootedAmmo = lootedAmmo,
             LootedHorses = lootedHorses,
-            AmmoRefunded = ammoRefunded
+            AmmoRefunded = ammoRefunded,
+            ShellsFired = shellsFired,
+            LootedShells = lootedShells
         };
         s.Pending = null;
     }
