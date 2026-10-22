@@ -246,7 +246,7 @@ public sealed partial class Game
         {
             if (!m.ObjRevealed[i]) continue;
             var o = m.Def.Objectives[i];
-            Color c = m.ObjState[i] == MissionState.Done ? Palette.HpGood : m.ObjState[i] == MissionState.Failed ? Palette.HpLow : o.Primary ? Palette.Text : Palette.TextDim;
+            Color c = m.ObjState[i] == MissionState.Done ? Palette.GoodInk : m.ObjState[i] == MissionState.Failed ? Palette.BadInk : o.Primary ? Palette.Text : Palette.TextDim;
             string mark = m.ObjState[i] == MissionState.Done ? "[v] " : m.ObjState[i] == MissionState.Failed ? "[x] " : o.Primary ? "[ ] " : "( ) ";
             Ui.Text(mark + MissionText.Objective(o), x + 8, ly, 16, c);
             string pr = MissionText.Progress(World, m, i);
@@ -312,7 +312,7 @@ public sealed partial class Game
         Raylib.DrawRectangleRec(Hud.Viewport, Palette.Alpha(Color.Black, 120));
         Ui.Panel(p, Palette.Alpha(Palette.PanelDark, 245), Palette.HudTrim);
         bool won = m.Result == MissionState.Won;
-        Ui.Text(won ? S.RsVictory : S.RsDefeat, p.X + 24, p.Y + 16, 26, won ? Palette.HpGood : Palette.HpLow);
+        Ui.Text(won ? S.RsVictory : S.RsDefeat, p.X + 24, p.Y + 16, 26, won ? Palette.GoodInk : Palette.BadInk);
         Ui.Text(m.Def.Title + (World.CheatsUsed ? "  " + S.RsCheat : ""), p.X + 24, p.Y + 50, 16, Palette.TextDim);
         float y = p.Y + 80, x1 = p.X + 24, x2 = p.X + p.Width / 2 + 8;
         Ui.Text($"{S.RsDuration}  {MissionText.Clock(r.DurationSeconds)}", x1, y, 16, Palette.Text);
@@ -338,12 +338,12 @@ public sealed partial class Game
             var o = m.Def.Objectives[i];
             if (!m.ObjRevealed[i] && m.ObjState[i] != MissionState.Done) continue;
             string st = m.ObjState[i] == MissionState.Done ? S.ObjStateDone : m.ObjState[i] == MissionState.Failed ? S.ObjStateFailed : S.ObjStateActive;
-            Color c = m.ObjState[i] == MissionState.Done ? Palette.HpGood : m.ObjState[i] == MissionState.Failed ? Palette.HpLow : Palette.TextDim;
+            Color c = m.ObjState[i] == MissionState.Done ? Palette.GoodInk : m.ObjState[i] == MissionState.Failed ? Palette.BadInk : Palette.TextDim;
             Ui.Text($"{(o.Primary ? S.MsPrimary : S.MsSecondary)}: {MissionText.Objective(o)} — {st}", x2, yr, 16, c);
             yr += 20;
         }
         if (missionResultsPath != null) Ui.Text(string.Format(S.RsSaved, Path.GetFileName(missionResultsPath)), x1, p.Y + p.Height - 44, 16, Palette.TextDim);
-        if (campaignSaved) Ui.Text(S.CmSaved, x2, p.Y + p.Height - 44, 16, Palette.HpGood);
+        if (campaignSaved) Ui.Text(S.CmSaved, x2, p.Y + p.Height - 44, 16, Palette.GoodInk);
         if (campaignUnsaved != null) Ui.Button(CampaignRetryRect, S.CmSaveFailedResult, Ui.Contains(CampaignRetryRect, mouse), false);
         if (campaignUnsaved != null && discardArmed) Ui.Text(S.CmDiscardUnsaved, x1, p.Y + p.Height - 92, 15, Palette.Warning);
         if (!IsReplay) Ui.Button(ResultButton(0), S.RsRetry, Ui.Contains(ResultButton(0), mouse), false);

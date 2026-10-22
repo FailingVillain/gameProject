@@ -222,7 +222,7 @@ public sealed partial class CampaignMenu
 
         if (CampaignState.TakeMigrationNotice() is { } mn) { migratedNote = mn; migratedUntil = Raylib.GetTime() + 12; }
         if (migratedNote != null && Raylib.GetTime() > migratedUntil) migratedNote = null;
-        if (migratedNote != null && loadError == null) Ui.Text(migratedNote, panel.X + 160, panel.Y + panel.Height - 30, 16, Palette.HpGood);
+        if (migratedNote != null && loadError == null) Ui.Text(migratedNote, panel.X + 160, panel.Y + panel.Height - 30, 16, Palette.GoodInk);
         if (loadError != null)   // 저장을 못 읽었다: 조용히 새 캠페인으로 덮어쓰지 않도록 사유를 보인다 (저장 호환)
         {
             Ui.Text(loadError, panel.X + 160, panel.Y + panel.Height - 52, 16, Palette.Warning);
@@ -231,7 +231,7 @@ public sealed partial class CampaignMenu
 
         var resetRect = new Rectangle(tabX, by - 44, tabW, 36);
         string resetLabel = resetArmed ? S.CmResetConfirm : S.CmReset;
-        if (Button(resetRect, resetLabel, true, 14, resetArmed ? Palette.HpLow : Palette.TextDim))
+        if (Button(resetRect, resetLabel, true, 14, resetArmed ? Palette.BadInk : Palette.TextDim))
         {
             if (resetArmed)
             {
@@ -306,6 +306,11 @@ public sealed partial class CampaignMenu
         if (Button(slotsBtnRect, S.CmTopSaves, true, 14)) OpenSlots();
         rEnd -= 140;
 
+        // 좁은 창 (T38d): 자원 줄 오른쪽 끝과 겹치면 '다음 작전 · 전문' 은 한 줄 아래 (구분선 위)로 내린다
+        float resEnd = rx + Ui.Measure(resText, 15).X + 14;
+        float needW = Ui.Measure(string.Format(S.CmTopNextOp, nextName), 14).X + (pendingEvents.Count > 0 ? Ui.Measure(string.Format(S.CmTopEvents, pendingEvents.Count), 14).X + 20 : 0);
+        if (rEnd - needW < resEnd) rightY = y + 28;
+
         if (pendingEvents.Count > 0)
         {
             string evBadge = string.Format(S.CmTopEvents, pendingEvents.Count);
@@ -347,7 +352,7 @@ public sealed partial class CampaignMenu
         Ui.Text($"야전 부상자: {state.Manpower?.Wounded ?? 0:N0}명 (치료 대기)", leftX + 10, ly, 15, Palette.Text); ly += 20;
         Ui.Text($"보급품 잔고: {state.Supply:N0} (작전 승리 시 +1,500 보충)", leftX + 10, ly, 15, Palette.Text); ly += 20;
 
-        Color rifleCol = rifleRate >= 100 ? Palette.HpGood : rifleRate >= 70 ? Palette.Warning : Palette.HpLow;
+        Color rifleCol = rifleRate >= 100 ? Palette.GoodInk : rifleRate >= 70 ? Palette.Warning : Palette.BadInk;
         Ui.Text(string.Format(S.CmSumRifleRate, rifleRate, totalRifles, totalInfantry), leftX + 10, ly, 15, rifleCol); ly += 20;
         var fm = CampaignHomeViews.FatigueMorale(state);   // [T42a] 읽기 전용 한 줄
         Ui.Text(string.Format(S.CmSumFatigueMorale, fm.AvgFatigue, fm.AvgMorale, fm.Tired), leftX + 10, ly, 15, fm.Tired > 0 ? Palette.Warning : Palette.Text); ly += 30;
@@ -466,13 +471,13 @@ public sealed partial class CampaignMenu
             Color stCol = c.Strength < c.MaxStrength ? Palette.Warning : Palette.Text;
             Ui.Text($"{c.Strength} / {c.MaxStrength}", rx, ry + 7, 14, stCol); rx += colStrength;
             // 부상
-            Color wCol = c.Wounded > 0 ? Palette.HpLow : Palette.TextDim;
+            Color wCol = c.Wounded > 0 ? Palette.BadInk : Palette.TextDim;
             Ui.Text($"{c.Wounded}", rx, ry + 7, 14, wCol); rx += colWounded;
             // 상태 / 의무
             if (c.Mandatory) Ui.Text(S.CmStatusMandatory, rx, ry + 7, 14, Palette.Accent);
             else if (c.Available && CampaignEconomy.IsTired(c)) Ui.Text(S.CmStatusTired, rx, ry + 7, 14, Palette.Warning);   // T42a: 경고만, 잠금 없음
-            else if (c.Available) Ui.Text(S.CmStatusAvailable, rx, ry + 7, 14, Palette.HpGood);
-            else Ui.Text(S.CmStatusUnavailable, rx, ry + 7, 14, Palette.HpLow);
+            else if (c.Available) Ui.Text(S.CmStatusAvailable, rx, ry + 7, 14, Palette.GoodInk);
+            else Ui.Text(S.CmStatusUnavailable, rx, ry + 7, 14, Palette.BadInk);
             rx += colStatus;
             if (ry >= listArea.Y && ry + rowH <= listArea.Y + listArea.Height) DrawRegimentCell(c, rx, ry, rowH);   // 연대 배속 (가려진 행은 클릭 안 받음)
             rx += colRegiment;
@@ -501,7 +506,7 @@ public sealed partial class CampaignMenu
                 if (hover && !canAssign)
                 {
                     // 마우스 호버 시 부족 이유 툴팁
-                    Ui.Text(S.CmAssignLackRes, listArea.X + listArea.Width - 160, ry + 7, 12, Palette.HpLow);
+                    Ui.Text(S.CmAssignLackRes, listArea.X + listArea.Width - 160, ry + 7, 12, Palette.BadInk);
                 }
             }
         }
@@ -540,7 +545,7 @@ public sealed partial class CampaignMenu
 
         if (logisticsNotice != null)
         {
-            Ui.Text(logisticsNotice, leftX + 10, ly, 13, Palette.HpGood); ly += 20;
+            Ui.Text(logisticsNotice, leftX + 10, ly, 13, Palette.GoodInk); ly += 20;
         }
 
         // 소총 총 보유량 및 구경별 소총
@@ -639,7 +644,7 @@ public sealed partial class CampaignMenu
             Ui.Text(m.Desc, rowRect.X + 14, rowRect.Y + 24, 13, Palette.TextDim);
 
             string statusTag = done ? S.CmMapStatusDone : isNext ? S.CmMapStatusCurrent : S.CmMapStatusLocked;
-            Color tagCol = done ? Palette.HpGood : isNext ? Palette.Accent : Palette.TextDim;
+            Color tagCol = done ? Palette.GoodInk : isNext ? Palette.Accent : Palette.TextDim;
             Ui.Text(statusTag, rowRect.X + rowRect.Width - 220, rowRect.Y + 12, 14, tagCol);
 
             var prepBtn = new Rectangle(rowRect.X + rowRect.Width - 110, rowRect.Y + 7, 96, 30);
@@ -664,7 +669,7 @@ public sealed partial class CampaignMenu
         if (events.Count == 0)
         {
             Ui.Text(S.CmEventNone, x, y, 16, Palette.TextDim);
-            if (eventNotice != null) Ui.Text(eventNotice, x, y + 30, 15, Palette.HpGood);
+            if (eventNotice != null) Ui.Text(eventNotice, x, y + 30, 15, Palette.GoodInk);
             return;
         }
 
@@ -735,7 +740,7 @@ public sealed partial class CampaignMenu
 
         if (eventNotice != null)
         {
-            Ui.Text(eventNotice, cx, cy + 6, 14, Palette.HpGood);
+            Ui.Text(eventNotice, cx, cy + 6, 14, Palette.GoodInk);
         }
     }
 
@@ -832,7 +837,7 @@ public sealed partial class CampaignMenu
             Ui.Text($"{c.Strength}명", cx, ry + 5, 14, Palette.Text); cx += 80;
 
             if (c.Mandatory) Ui.Text(S.CmStatusMandatory, cx, ry + 5, 13, Palette.Accent);
-            else if (!c.Available) Ui.Text(S.CmStatusUnavailable, cx, ry + 5, 13, Palette.HpLow);
+            else if (!c.Available) Ui.Text(S.CmStatusUnavailable, cx, ry + 5, 13, Palette.BadInk);
         }
         Raylib.EndScissorMode();
 
@@ -843,7 +848,7 @@ public sealed partial class CampaignMenu
         int totalStrength = selectedComps.Sum(c => c.Strength);
         float deployCost = CampaignEconomy.TotalDeployCost(selectedComps);
 
-        Ui.Text(string.Format(S.CmPreDeployCap, totalStrength, maxDeploy), x, y, 16, totalStrength > maxDeploy ? Palette.HpLow : Palette.Text);
+        Ui.Text(string.Format(S.CmPreDeployCap, totalStrength, maxDeploy), x, y, 16, totalStrength > maxDeploy ? Palette.BadInk : Palette.Text);
         y += 24;
 
         // 보급 비용 게이지 (바 그래프)
@@ -852,12 +857,12 @@ public sealed partial class CampaignMenu
         var gaugeBg = new Rectangle(x, y, maxSupplyBarW, 20);
         var gaugeFill = new Rectangle(x, y, maxSupplyBarW * supplyRatio, 20);
 
-        Color gaugeCol = deployCost > state.Supply ? Palette.HpLow : Palette.HpGood;
+        Color gaugeCol = deployCost > state.Supply ? Palette.BadInk : Palette.GoodInk;
         Raylib.DrawRectangleRec(gaugeBg, Palette.Alpha(Palette.PanelDark, 200));
         Raylib.DrawRectangleRec(gaugeFill, gaugeCol);
         Raylib.DrawRectangleLinesEx(gaugeBg, 1, Palette.PanelBorder);
 
-        Ui.Text(string.Format(S.CmPreSupplyGauge, deployCost, state.Supply), x + maxSupplyBarW + 14, y + 2, 14, deployCost > state.Supply ? Palette.HpLow : Palette.Text);
+        Ui.Text(string.Format(S.CmPreSupplyGauge, deployCost, state.Supply), x + maxSupplyBarW + 14, y + 2, 14, deployCost > state.Supply ? Palette.BadInk : Palette.Text);
         y += 28;
 
         // 경고 메시지 표시
@@ -866,8 +871,8 @@ public sealed partial class CampaignMenu
         bool noDeploy = totalStrength <= 0;
         bool mandatoryRefused = state.Roster.Any(c => c.Mandatory && !preOpSelectedCompanyIds.Contains(c.Id));
 
-        if (overSupply) { Ui.Text(S.CmWarnOverSupply, x, y, 14, Palette.HpLow); y += 18; }
-        if (overCap) { Ui.Text(S.CmWarnOverCap, x, y, 14, Palette.HpLow); y += 18; }
+        if (overSupply) { Ui.Text(S.CmWarnOverSupply, x, y, 14, Palette.BadInk); y += 18; }
+        if (overCap) { Ui.Text(S.CmWarnOverCap, x, y, 14, Palette.BadInk); y += 18; }
         if (noDeploy) { Ui.Text(S.CmWarnNoSelection, x, y, 14, Palette.Warning); y += 18; }
         if (mandatoryRefused) { Ui.Text(S.CmWarnMandatoryRefused, x, y, 14, Palette.Warning); y += 18; }
 
@@ -916,7 +921,7 @@ public sealed partial class CampaignMenu
         // 인명 손실
         Ui.Text(string.Format(S.CmDebriefLosses, d.TotalLost, d.Dead, d.WoundedReturned, d.DischargedWounded), x, y, 15, Palette.Text); y += 22;
         // 적군 사살
-        Ui.Text(string.Format(S.CmDebriefKills, d.EnemyKills), x, y, 15, Palette.HpGood); y += 26;
+        Ui.Text(string.Format(S.CmDebriefKills, d.EnemyKills), x, y, 15, Palette.GoodInk); y += 26;
 
         // 전리품 노획
         int lootedRifles = CountFrom(d.LootedRifles);
@@ -939,7 +944,7 @@ public sealed partial class CampaignMenu
         if (d.PrisonersTaken > 0) { Ui.Text(string.Format(S.CmDebriefPrisoners, d.PrisonersTaken), x, y, 15, Palette.Accent); y += 22; }
 
         // 정기 보급 도착
-        Ui.Text(string.Format(S.CmDebriefRegular, d.RegularSupplyAdded, d.RecruitsAdded), x, y, 15, Palette.HpGood); y += 22;
+        Ui.Text(string.Format(S.CmDebriefRegular, d.RegularSupplyAdded, d.RecruitsAdded), x, y, 15, Palette.GoodInk); y += 22;
 
         // 보급고 변화
         Ui.Text(string.Format(S.CmDebriefSupplyChange, d.SupplyBefore, d.SupplyAfter), x, y, 15, Palette.TextDim); y += 26;
@@ -1043,7 +1048,7 @@ public sealed partial class CampaignMenu
         if (hoverReason != null) { string hr = hoverReason; while (hr.Length > 4 && Ui.Measure(hr, 13).X > modal.Width - 48) hr = hr[..^4] + "..."; Ui.Text(hr, x, by - 46, 13, Palette.Warning); }
         if (loadError != null) Ui.Text(S.CmSlotNoSaveBroken, x, by - 26, 13, Palette.Warning);
         else if (slotInfo.Any(i => i.Error != null)) Ui.Text(S.CmSlotBrokenKept, x, by - 26, 13, Palette.Warning);
-        if (slotNotice != null) Ui.Text(slotNotice, x, by + 10, 14, Palette.HpGood);
+        if (slotNotice != null) Ui.Text(slotNotice, x, by + 10, 14, Palette.GoodInk);
         if (Button(new Rectangle(modal.X + modal.Width - 24 - 140, by, 140, 36), S.CmSlotClose, true, 15))
         {
             slotsOpen = false;
@@ -1076,8 +1081,8 @@ public sealed partial class CampaignMenu
         Raylib.DrawRectangle(0, 0, screenW, screenH, Palette.Alpha(Color.Black, 160));
         float dw = MathF.Min(560, screenW - 32), dh = 170;
         var modal = new Rectangle((screenW - dw) / 2, (screenH - dh) / 2, dw, dh);
-        Ui.Panel(modal, Palette.Alpha(Palette.PanelDark, 252), Palette.HpLow);
-        Ui.Text(S.CmSaveFailedTitle, modal.X + 24, modal.Y + 16, 20, Palette.HpLow);
+        Ui.Panel(modal, Palette.Alpha(Palette.PanelDark, 252), Palette.BadInk);
+        Ui.Text(S.CmSaveFailedTitle, modal.X + 24, modal.Y + 16, 20, Palette.BadInk);
         foreach (var (l, i) in WrapText(S.CmSaveFailedText, dw - 48, 14).Select((l, i) => (l, i)))
             Ui.Text(l, modal.X + 24, modal.Y + 52 + i * 18, 14, Palette.Text);
         float by = modal.Y + modal.Height - 52;

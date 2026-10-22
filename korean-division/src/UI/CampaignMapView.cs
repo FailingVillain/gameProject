@@ -104,7 +104,7 @@ public sealed partial class CampaignMenu
         float lw = mapView.LineWidth();
         for (int i = 0; i < names.Length - 1; i++)
         {
-            Color lineCol = RouteDone(i) ? Palette.HpGood : Palette.PanelBorder;
+            Color lineCol = RouteDone(i) ? Palette.GoodInk : Palette.PanelBorder;
             Raylib.DrawLineEx(mapView.ToScreen(MapZoomView.NodePos[i], vp), mapView.ToScreen(MapZoomView.NodePos[i + 1], vp), lw, lineCol);
         }
 
@@ -120,7 +120,7 @@ public sealed partial class CampaignMenu
             if (p.X < vp.X - 40 || p.X > vp.X + vp.Width + 40 || p.Y < vp.Y - 40 || p.Y > vp.Y + vp.Height + 40) continue;
             bool isDone = RouteDone(i);
             bool isCurrent = !isDone && (i == 0 || RouteDone(i - 1)) && i < RouteMissionIds.Length;
-            Color circleCol = isDone ? Palette.HpGood : isCurrent ? Palette.Accent : Palette.PanelBorder;
+            Color circleCol = isDone ? Palette.GoodInk : isCurrent ? Palette.Accent : Palette.PanelBorder;
             Raylib.DrawCircleV(p, rad, circleCol);
             Raylib.DrawCircleLinesV(p, rad, i == hover ? Palette.Accent : Palette.PanelDark);
 

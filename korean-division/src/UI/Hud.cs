@@ -539,12 +539,17 @@ public sealed class Hud : IDisposable
             Ui.Text(S.NoSelection, Info.X + 16, Info.Y + 14, 26, Palette.TextDim);
             // 관전 · 리플레이는 조작 안내 대신 관전 안내
             var hints = game.Observer ? new[] { S.ObsHint1, S.ObsHint2, S.ObsHint3 } : new[] { S.Hint1, S.Hint2, S.Hint3, S.Hint4 };
-            for (int i = 0; i < hints.Length; i++) Ui.Text(hints[i], Info.X + 16, Info.Y + 64 + i * 26, 16, Palette.TextDim);
+            for (int i = 0; i < hints.Length; i++) Ui.TextFit(hints[i], Info.X + 16, Info.Y + 64 + i * 26, 16, Palette.TextDim, Info.Width - 32, 10);
             return;
         }
         if (sel.Count > 1 && CardList() != null) DrawCompanies(mouse);
         else if (sel.Count > 1) DrawMulti(sel);
-        else if (sel[0] is Unit u) DrawUnit(u);
+        else if (sel[0] is Unit u)
+        {
+            Raylib.BeginScissorMode((int)Info.X + 1, (int)Info.Y + 1, (int)Info.Width - 2, (int)Info.Height - 2);   // T38d: 소해상도에서 안쪽 글이 칸 밖으로 새지 않게
+            DrawUnit(u);
+            Raylib.EndScissorMode();
+        }
         else if (sel[0] is Building b) DrawBuilding(b, mouse);
     }
 
@@ -580,15 +585,15 @@ public sealed class Hud : IDisposable
         var (ammo, fuel) = SupplyBars(u);
         float bx = x + 250;
         if (ammo is float af) { Ui.Text(S.AmmoLabel, bx, y, 16, Palette.TextDim); BuildingRenderer.DrawProgress(new Rectangle(bx + 44, y + 3, 90, 10), af, AmmoColor); }
-        if (fuel is float ff) { Ui.Text(S.FuelLabel, bx, y + 21, 16, Palette.TextDim); BuildingRenderer.DrawProgress(new Rectangle(bx + 44, y + 24, 90, 10), ff, FuelColor); }
-        if (u.HasStamina && fuel == null) { Ui.Text(S.StaminaLabel, bx, y + 21, 16, Palette.TextDim); BuildingRenderer.DrawProgress(new Rectangle(bx + 44, y + 24, 90, 10), u.StaminaRatio, StaminaColor); }   // 스태미나 (ROADMAP §4)
+        if (fuel is float ff) { Ui.Text(S.FuelLabel, bx, y + 63, 16, Palette.TextDim); BuildingRenderer.DrawProgress(new Rectangle(bx + 44, y + 66, 90, 10), ff, FuelColor); }
+        if (u.HasStamina && fuel == null) { Ui.Text(S.StaminaLabel, bx, y + 63, 16, Palette.TextDim); BuildingRenderer.DrawProgress(new Rectangle(bx + 44, y + 66, 90, 10), u.StaminaRatio, StaminaColor); }   // 스태미나 (ROADMAP §4)
         // 제압 (ROADMAP §2-4b 6차: 화면 표시) · 계급 (§2-4c 14차)
         float sx = bx + 150;
         if (u.Def.SuppressResist > 0) { Ui.Text(S.SuppressLabel, sx, y, 16, Palette.TextDim); BuildingRenderer.DrawProgress(new Rectangle(sx + 44, y + 3, 90, 10), u.SuppressionRatio, SuppressColor); Ui.Text(u.Suppression.ToString(), sx + 140, y, 16, Palette.TextDim); }
         string rank = u.IsOfficer ? OfficerLine(u) : $"{RankName(u)} · {S.KillsLabel} {u.Kills}";
         if (u.Squad is { } sq && ReferenceEquals(sq.Leader, u)) rank += $" · {S.SquadLeaderTag}";
         string aura = game.World.NearOfficer(u) ? $" · {S.OfficerAura}" : game.World.NcoLeads(u) ? $" · {S.NcoAura}" : "";
-        if (u.Weapon != null) Ui.Text($"{S.RankLabel}: {rank}" + aura, sx, y + 21, 16, Palette.TextDim);
+        if (u.Weapon != null) Ui.Text($"{S.RankLabel}: {rank}" + aura, sx, y + 63, 16, Palette.TextDim);   // T38d: 무기 줄과 겹치지 않게 마지막(속도) 줄 오른쪽으로
         y += 21;
         string weapon = u.Weapon is WeaponDef w
             ? $"{w.Name}  ({w.Damage:0} · {S.RangeShort} {w.Range:0.#} · {(w.RandomCooldown ? $"{w.CooldownMin:0.0#}~{w.CooldownMax:0.0#}" : $"{w.Cooldown:0.0#}")}{S.Seconds} · {S.Accuracy} {(w.AccNear > 0 ? $"{w.AccNear * 100:0}~{w.AccFar * 100:0}" : $"{w.Accuracy * 100:0}")}%)"
@@ -602,7 +607,7 @@ public sealed class Hud : IDisposable
         string cat = u.Def.IsArmored ? S.CatArmored : S.CatInfantry;
         string line = $"{S.Speed}: {u.Def.Speed:0.0} · {S.Sight}: {u.Def.Sight} · {S.CategoryLabel}: {cat}";
         Ui.Text(line, x, y, 16, Palette.TextDim);
-        Ui.Text(u.Def.Description, hd ? x : Info.X + 12, Info.Y + Info.Height - 30, 16, Palette.TextDim);
+        Ui.TextFit(u.Def.Description, hd ? x : Info.X + 12, Info.Y + Info.Height - 30, 16, Palette.TextDim, Info.X + Info.Width - 12 - (hd ? x : Info.X + 12), 11);
     }
 
     void DrawBuilding(Building b, Vector2 mouse)
@@ -957,11 +962,12 @@ public sealed class Hud : IDisposable
             const bool afford = true;
             Color ink = c.Enabled && afford ? Palette.Text : Palette.TextDim;
             var iconRect = new Rectangle(r.X + r.Width * 0.27f, r.Y + r.Height * 0.14f, r.Width * 0.46f, r.Height * 0.46f);
-            if (c.Value != null) Ui.TextCentered(c.Value, new Rectangle(r.X, iconRect.Y, r.Width, iconRect.Height), 16, c.Active ? Palette.Select : Palette.Gold);
+            if (c.Value != null) Ui.TextCentered(c.Value, new Rectangle(r.X, iconRect.Y, r.Width, iconRect.Height), 16, c.Active ? Palette.SelectInk : Palette.GoldInk);
             else DrawIcon(c.Icon, iconRect, ink);
             if (c.HotkeyLabel.Length > 0) Ui.Text(c.HotkeyLabel, r.X + 4, r.Y + 2, 16, c.Enabled && afford ? Palette.Accent : Palette.TextDim);
-            Vector2 m = Ui.Measure(c.Label, 16);
-            Ui.Text(c.Label, r.X + (r.Width - m.X) / 2, r.Y + r.Height - m.Y - 3, 16, ink);
+            float lsz = Ui.Measure(c.Label, 16).X > r.Width - 4 ? MathF.Max(10, MathF.Floor(16 * (r.Width - 4) / Ui.Measure(c.Label, 16).X)) : 16;   // T38d: 칸 폭에 맞춰 줄임
+            Vector2 m = Ui.Measure(c.Label, lsz);
+            Ui.Text(c.Label, r.X + (r.Width - m.X) / 2, r.Y + r.Height - m.Y - 3, lsz, ink);
         }
 
         if (hovered == null && tabTip != null) DrawTooltipBox(tabTitle, tabTip, (string?)null, Card.X + Card.Width, Bottom.Y - 6, alignRight: true);
@@ -1007,7 +1013,7 @@ public sealed class Hud : IDisposable
         Ui.Panel(r, Palette.Alpha(Palette.PanelDark, 240), Palette.HudTrim);
         Ui.Text(title, r.X + 10, r.Y + 7, 16, Palette.Accent);
         Ui.Text(body, r.X + 10, r.Y + 28, 16, Palette.Text);
-        if (cost != null) Ui.Text(cost, r.X + 10, r.Y + 50, 16, Palette.Gold);
+        if (cost != null) Ui.Text(cost, r.X + 10, r.Y + 50, 16, Palette.GoldInk);
     }
 
     // ---------------------------------------------------------------- 게임 종료
@@ -1030,7 +1036,7 @@ public sealed class Hud : IDisposable
         }
         var panel = new Rectangle(c.X - 200, c.Y - 90, 400, 170);
         Ui.Panel(panel, Palette.Alpha(Palette.PanelDark, 240), Palette.HudTrim);
-        Ui.TextCentered(title, new Rectangle(panel.X, panel.Y + 14, panel.Width, 40), 26, won ? Palette.Gold : Palette.HpLow);
+        Ui.TextCentered(title, new Rectangle(panel.X, panel.Y + 14, panel.Width, 40), 26, won ? Palette.GoldInk : Palette.Accent);
         Ui.TextCentered(sub, new Rectangle(panel.X + 8, panel.Y + 60, panel.Width - 16, 30), 16, Palette.Text);
         Ui.Button(restartButton, game.Observer ? S.WatchAgain : S.Restart, Ui.Contains(restartButton, mouse), false);
         Ui.Button(quitButton, game.FromMenu ? S.ToMenu : S.Quit, Ui.Contains(quitButton, mouse), false);
