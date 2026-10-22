@@ -133,6 +133,12 @@ public static class TacticsObs
         if (E("KD_OBS_OFFSPREAD") is { } os) d.CombatRules.OfficerSpread = os;
         if (E("KD_OBS_NCOH") is { } nh) d.CombatRules.NcoHesitateMul = nh;
         if (E("KD_OBS_NCOD") is { } nd) d.CombatRules.NcoDecayMul = nd;
+        if (Environment.GetEnvironmentVariable("KD_OBS_SURR") is { Length: > 0 } sv)   // T31c: "aiCasualty,aiMaxLeft,aiChance,retreatBlockedMul,aiSuppAt,aiSuppSec" (도구 전용)
+        {
+            var q = sv.Split(','); float F(int i, float def) => q.Length > i ? float.Parse(q[i], CultureInfo.InvariantCulture) : def;
+            var r = d.CombatRules;
+            r.SurrenderAiCasualty = F(0, -1); r.SurrenderAiMaxLeft = (int)F(1, -1); r.SurrenderAiChance = F(2, -1); r.SurrenderRetreatBlockedMul = F(3, 1); r.SurrenderAiSuppAt = F(4, -1); r.SurrenderAiSuppSec = F(5, -1);
+        }
         switch (v)
         {
             case "V1": d.Tactics.Behaviour.SuperioritySupp = 0.30f; break;

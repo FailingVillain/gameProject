@@ -28,15 +28,19 @@ public sealed partial class World
     void UpdateSurrender(Unit u)
     {
         var c = Defs.CombatRules;
-        if (c.SurrenderChance <= 0) { u.SuppHighTicks = 0; return; }
-        if (u.Suppression >= c.SurrenderSuppAt * c.SuppressMax) { if (u.SuppHighTicks < 1_000_000) u.SuppHighTicks++; }
+        bool ai = Faction(u.Owner).IsAi;
+        float baseChance = ai && c.SurrenderAiChance >= 0 ? c.SurrenderAiChance : c.SurrenderChance;
+        if (baseChance <= 0 && c.SurrenderChance <= 0) { u.SuppHighTicks = 0; return; }
+        float suppAt = ai && c.SurrenderAiSuppAt >= 0 ? c.SurrenderAiSuppAt : c.SurrenderSuppAt;
+        float suppSec = ai && c.SurrenderAiSuppSec >= 0 ? c.SurrenderAiSuppSec : c.SurrenderSuppSec;
+        if (u.Suppression >= suppAt * c.SuppressMax) { if (u.SuppHighTicks < 1_000_000) u.SuppHighTicks++; }
         else u.SuppHighTicks = 0;
-        if (u.SuppHighTicks < (int)MathF.Round(c.SurrenderSuppSec / Config.SimDt)) return;
+        if (u.SuppHighTicks < (int)MathF.Round(suppSec / Config.SimDt)) return;
         int iv = Math.Max(1, (int)MathF.Round(c.SurrenderInterval / Config.SimDt));
         if ((Tick + u.Id) % iv != 0) return;
         if (!SurrenderEligible(u)) return;
         if (!CannotRetreat(u)) return;   // AI 는 퇴각 가능하면 항복하지 않음 (기존 후퇴 · 철수가 먼저)
-        float p = c.SurrenderChance * (Faction(u.Owner).IsAi ? 1f : c.SurrenderPlayerMul);
+        float p = ai ? baseChance : c.SurrenderChance * c.SurrenderPlayerMul;
         if (Roll(u.Id, 0x51D3) >= p) return;
         Surrender(u);
     }
@@ -47,7 +51,10 @@ public sealed partial class World
         var c = Defs.CombatRules;
         if (u.Surrendered || !u.Alive || !CanPin(u) || u.Company is not { InitialStrength: > 0 } co) return false;
         int left = co.Members.Count;
-        return left <= co.InitialStrength * (1f - c.SurrenderCasualty) && left <= c.SurrenderMaxLeft;
+        bool ai = Faction(u.Owner).IsAi;
+        float cas = ai && c.SurrenderAiCasualty >= 0 ? c.SurrenderAiCasualty : c.SurrenderCasualty;
+        int maxLeft = ai && c.SurrenderAiMaxLeft >= 0 ? c.SurrenderAiMaxLeft : c.SurrenderMaxLeft;
+        return left <= co.InitialStrength * (1f - cas) && left <= maxLeft;
     }
 
     /// <summary>
@@ -57,6 +64,7 @@ public sealed partial class World
     public bool CannotRetreat(Unit u)
     {
         var c = Defs.CombatRules;
+        float bm = Faction(u.Owner).IsAi ? c.SurrenderRetreatBlockedMul : 1f;   // T31c: AI 만 완화 (1 = 현행)
         UnitsInRadius(u.Pos, c.SurrenderThreatRadius, nearMissBuf);
         Vector2 sum = Vector2.Zero; float wsum = 0; int n = 0;
         for (int i = 0; i < nearMissBuf.Count; i++)
@@ -70,12 +78,12 @@ public sealed partial class World
         }
         if (n == 0 || wsum <= 0) { nearMissBuf.Clear(); return false; }
         bool result;
-        if (sum.Length() / wsum < 0.35f) result = true;   // 포위
+        if (sum.Length() / wsum < MathF.Min(0.9f, 0.35f * bm)) result = true;   // 포위
         else
         {
             Vector2 away = Vector2.Normalize(sum);
             float a = c.SurrenderProbeDeg * MathF.PI / 180f;
-            result = ProbeBlocked(u, away) && ProbeBlocked(u, Rot(away, a)) && ProbeBlocked(u, Rot(away, -a));
+            result = ProbeBlocked(u, away, bm) && ProbeBlocked(u, Rot(away, a), bm) && ProbeBlocked(u, Rot(away, -a), bm);
         }
         nearMissBuf.Clear();
         return result;
@@ -84,11 +92,11 @@ public sealed partial class World
     static Vector2 Rot(Vector2 v, float a) { float cs = DetMath.Cos(a), sn = DetMath.Sin(a); return new Vector2(v.X * cs - v.Y * sn, v.X * sn + v.Y * cs); }
 
     /// <summary>한 방향 퇴각로가 막혔나 (nearMissBuf 의 적 목록 사용).</summary>
-    bool ProbeBlocked(Unit u, Vector2 dir)
+    bool ProbeBlocked(Unit u, Vector2 dir, float mul = 1f)
     {
         var c = Defs.CombatRules;
-        float br2 = c.SurrenderBlockRadius * c.SurrenderBlockRadius;
-        int steps = Math.Max(1, (int)MathF.Ceiling(c.SurrenderProbeLen / 0.5f));
+        float br = c.SurrenderBlockRadius * mul, br2 = br * br;
+        int steps = Math.Max(1, (int)MathF.Ceiling(c.SurrenderProbeLen * mul / 0.5f));
         for (int s = 1; s <= steps; s++)
         {
             Vector2 q = u.Pos + dir * (s * 0.5f);
