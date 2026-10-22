@@ -73,10 +73,12 @@ public static class CampaignPrisonersSelfTest
             var w = World.CreateMissionWorld(def, Defs.Current);
             var enemies = w.Units.Where(u => u.Alive && w.IsHostile(def.Player, u.Owner) && u.Def.IsInfantry).Take(2).ToList();
             var mine = w.Units.FirstOrDefault(u => u.Alive && u.Owner == def.Player && u.Def.IsInfantry);
+            var resBefore = MissionResults.From(w);
             foreach (var u in enemies) w.SurrenderForTest(u);
             if (mine != null) w.SurrenderForTest(mine);
             var res = MissionResults.From(w);
             check(enemies.Count == 2 && res.EnemyCaptured == 2, $"T42c 결과 수집: 항복한 적대 유닛만 포로 (got {res.EnemyCaptured})");
+            check(res.EnemyKills == resBefore.EnemyKills && res.EnemyKills + res.EnemyCaptured == resBefore.EnemyKills + 2, $"T42c 포로는 사살 수에서 제외 (이중 계상 방지; 항복 꺼짐=기존과 동일): kills {resBefore.EnemyKills} -> {res.EnemyKills}");
         }
         finally { CampaignEconomyDefs.Override(saved); }
     }

@@ -20,3 +20,4 @@ build · savecompat · missions · --detcheck · --snaptest
 - 처리: 송환 = 무료, 수용 = 1인당 보급 prisonerAcceptSupply (임시 2, campaign_economy.json, 0.3 확정), 작전 사이(Pending 없음)에만, [1명]/[전부] 버튼. 처리하면 장부가 줄고 누계(PrisonersRepatriated/Interned)가 늘어 표시됨. 수용 후 효과(민심 · 편입)는 없음. 새 규칙 켜짐/꺼짐 스위치 없음 (장부는 항상 켜짐, 항복이 꺼진 기본에서는 값이 0이라 동작 변화 없음).
 - 스키마: SchemaVersion 5 -> 6 (추가만). Stock.Prisoners · CampaignState.PrisonersRepatriated/PrisonersInterned · DebriefReport.PrisonersTaken. v3~v5 는 0 으로 이행 (시험). T42a/T42b/T19b 시험의 버전 상수 5 -> 6 갱신.
 - 코드: Core/Campaign/CampaignPrisoners.cs · UI/CampaignHomePrisoners.cs (탭 7, Tab.Diplomacy) · StringsCampaignPrisoners.cs · 작전 보고 창에 포로 줄 (있을 때만) · Tests/CampaignPrisonersSelfTest.cs.
+- 후속 수정 (T42d 브랜치): 포로가 EnemyKills 에도 들어가 전리품이 이중 지급되던 문제를 MissionResults 에서 포로 제외로 수정 (열린 항목 해소).

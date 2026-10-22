@@ -19,4 +19,5 @@ build · savecompat · --detcheck · --uifuzz 30
 - 스키마 v6 -> v7 (추가만): Day · Timeline(Day/Kind/Id/Title/Choice, 최대 200). v3~v6 = Day 1 + 기록 수 x missionDays, 빈 연표 (시험). 새 상태에서 첫 정산 = 1일째 + missionDays. 반복 승리 · 패배는 일수 · 연표 불변.
 - 코드: 정산 끝(CampaignEconomy.SettleBattle)에서 일수 + 연표 "mission", CampaignEvents.ApplyChoice 에서 "event" 기록. 탭 14(Tab.Schedule) 읽기 전용 본문(현재 일수 · 연표 최신 위 14건) = CampaignHomeViews.Schedule + CampaignHomeReadonly.DrawTabSchedule; 탭 12 작전 일지 줄에 "[N일]" 접두. 새 규칙 스위치 없음 (카운터만). T42a~c 시험의 버전 상수 6 -> 7. Tests/CampaignScheduleSelfTest.cs.
 - 리뷰 수정 (t42a..d 적층 리뷰): (a) 마지막 미션 재승리 (이미 클리어 + 같은 EntryMission) 는 이월 사병 · 장교 · PromotionsThisBreak 를 건드리지 않음 (기존: 이월 병력 교체 + 정원 0 으로 -> 정원 8 우회 · 적용한 진급 소실). 최소 안전 동작 = 지난 미션 재승리와 동일하게 병력 유지, 재승리의 생존자 사살 수는 반영 안 함. (b) Sanitize: Day 상한 100000 (CampaignState.DayMax), 불러온 연표 200 으로 자름, Day 덧셈 long 으로 넘침 방지. (c) AddTimeline Day = max(Day,1). 시험: CampaignPromotionSelfTest 7b, CampaignScheduleSelfTest 5b.
-- 아직 열린 항목 (미수정): 포로 EnemyKills 이중 집계 (사용자 결정 대기) · 죽은 패배 분기 · 장교 XP 미소비 (설계 질문).
+- 포로 이중 집계 수정 (사용자 결정): MissionResults 에서 EnemyKills = 적 스폰 - 생존 - 항복 (포로는 포로로만 집계, 전리품은 EnemyKills 기준 그대로). 항복 꺼짐(기본)이면 결과 동일. 시험: CampaignPrisonersSelfTest 6.
+- 아직 열린 항목: 죽은 패배 분기. (장교 XP 미소비 = 사용자 결정 "숙련 느낌" 으로 현행 유지.)

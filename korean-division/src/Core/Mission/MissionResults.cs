@@ -68,7 +68,7 @@ public sealed class MissionResults
         {
             int sp = f < m.Spawned.Length ? m.Spawned[f] : 0;
             r.Factions.Add(new FactionLine { Id = f, Name = w.Faction(f).Name, Player = f == m.Player, Spawned = sp, Lost = Math.Max(0, sp - alive[f]), Alive = alive[f], Captured = captured[f] });
-            if (w.IsHostile(m.Player, f)) { r.EnemyKills += Math.Max(0, sp - alive[f]); r.EnemyCaptured += captured[f]; }
+            if (w.IsHostile(m.Player, f)) { r.EnemyKills += Math.Max(0, sp - alive[f] - captured[f]); r.EnemyCaptured += captured[f]; }
         }
         for (int i = 0; i < m.Def.Objectives.Count; i++)
         {
