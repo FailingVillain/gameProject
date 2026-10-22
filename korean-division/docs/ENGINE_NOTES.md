@@ -709,3 +709,6 @@
 - ③ 조명탄: `FireFlareCommand` (리플레이 "flare") — 장교만, 장교마다 `perOfficer` 발 (`Unit.FlaresUsed`), `range` 칸, 낮이면 무시. `World.Flares` 원 (`radius` · `sec`). 낮이 아닐 때 원 중심 `seeRange`+반경 안에 유닛이 있는 세력은 안개 갱신 때 원을 찍고 (`Stamp`), 원 안 표적의 명중 배수 = 날씨 × 낮 (`WeatherHitMulAt`). AI 사용 · 화면 표시 · 버튼은 아직 없음.
 - ④ 행군 피로: 켜면 걷기 이동 중 스태미나 회복 대신 `walkDrain`/초 소모 (`UpdateStamina`). 지침 효과는 기존 스태미나 규칙.
 - 저장 = CMB2 끝 `WriteFieldOps` (FormatVersion 57 예약값, Replay 22 예약값 — 병합 때 재예약), 체크섬 `HashFieldOps` (기본 상태면 생략). 시험 `KD_SELFTEST_ONLY=fieldops`.
+
+### 전투공병 infantry_pioneer (T32a, 2026-10-22, 브랜치 `kd/t32a-pioneer`, ai3b2 위 스택)
+- 철조망 절단 전용 병종 데이터 (규칙 15: 설치 · 폭파 · 참호 구축 제외). 기존 `wireCutter: true` (CutWireCommand, breach.wireCutSec) 만 사용 — 코드 · Defs 필드 · 저장 변경 없음 (FormatVersion/Replay 불변). hp 100 · 속도 3.2 · 소총 `rifle_mosin` + 총검 · 수류탄 2 · 연막 수류탄 0 · `koreaOnly` · 그림은 `artAs: infantry_regular` 임시 (T32d). 어떤 편성 · 미션에도 없음. 시험 `KD_SELFTEST_ONLY=pioneer` (PioneerSelfTest), Combat4 "수류탄 보유" 기대 목록에 전투공병 추가.

@@ -96,7 +96,7 @@ public static class Combat4SelfTest
         check(cav.Mounted && MathF.Abs(cav.Speed / inf.Speed - 1.5f) < 0.01f && cav.ChargeSpeedMul == 1.6f && cav.StaminaMul == 3 && cav.Weapon == "carbine" && cav.Melee == "sabre",
               "기병: 속도 보병 ×1.5, 돌격 ×1.6, 스태미나 ×3, 카빈 + 곡도 (돌격 충격 피해 보너스 없음)");
         var withGren = U.Values.Where(u => u.Grenades > 0).Select(u => u.Key).ToList();
-        check(withGren.Count == 1 && withGren[0] == "infantry_assault" && U["infantry_assault"].Grenades == 2, $"수류탄 보유: 돌격보병 2개만 ({string.Join(",", withGren)})");
+        check(withGren.Count == 2 && withGren.Contains("infantry_assault") && withGren.Contains("infantry_pioneer") && U["infantry_assault"].Grenades == 2 && U["infantry_pioneer"].Grenades == 2, $"수류탄 보유: 돌격보병 · 전투공병(T32a) 각 2개만 ({string.Join(",", withGren)})");
         var g = d.Grenade;
         check(g.Range == 5 && g.Fuse == 1.5f && g.Radius == 1.5f && g.Damage == 60 && g.EdgeDamage == 20 && g.Suppress == 300 && g.TankDamage == 40 && g.AutoCoverRange == 4 && g.AutoTankRange == 3 && g.RegenSeconds == 180,
               "수류탄 수치: 사거리 5 · 신관 1.5 · 반경 1.5 · 피해 60→20 · 제압 300 · 전차 40 · 자동 4/3 · 회복 180초");
