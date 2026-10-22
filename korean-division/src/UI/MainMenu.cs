@@ -132,6 +132,7 @@ public sealed class MainMenu
                 campaign ??= new CampaignMenu();
                 campaign.Draw(screenW, screenH);
                 if (campaign.OpenMission != null) { missions?.Dispose(); missions = new MissionMenu(campaign.OpenMission); campaign.OpenMission = null; page = Page.Missions; }
+                else if (campaign.OpenPractice != null) { missions?.Dispose(); missions = new MissionMenu(campaign.OpenPractice, practice: true); campaign.OpenPractice = null; page = Page.Missions; }
                 else if (campaign.BackRequested) { campaign.BackRequested = false; page = Page.Main; }
                 break;
             case Page.Missions:
@@ -192,7 +193,7 @@ public sealed class MainMenu
         float x = (screenW - w) / 2, y = screenH * 0.30f + 30;
         if (Button(new Rectangle(x, y, w, h), S.MenuCampaign, size: 26)) { page = Page.Campaign; campaign = new CampaignMenu(); }
         y += h + gap;
-        if (Button(new Rectangle(x, y, w, h), S.MenuMissions, size: 26)) { page = Page.Missions; missions ??= new MissionMenu(); }
+        if (Button(new Rectangle(x, y, w, h), S.MenuMissions, size: 26)) { page = Page.Missions; if (missions is { Practice: true }) { missions.Dispose(); missions = null; } missions ??= new MissionMenu(); }
         y += h + gap;
         if (Button(new Rectangle(x, y, w, h), S.MenuPlay, size: 26)) { page = Page.Setup; spectate = false; }
         y += h + gap;

@@ -11,6 +11,8 @@ namespace KoreanDivision.UI;
 public sealed partial class CampaignMenu
 {
     public string? OpenMission { get; set; }
+    /// <summary>튜토리얼 연습 (0장): 캠페인 상태 · 결과 파일을 건드리지 않는 출격 (MainMenu 가 MissionMenu practice 로 연다).</summary>
+    public string? OpenPractice { get; set; }
     public bool BackRequested { get; set; }
 
     enum ViewMode { Home, PreOp, Debrief }
@@ -593,7 +595,13 @@ public sealed partial class CampaignMenu
     {
         float x = body.X + 20, y = body.Y + 16;
         float w = body.Width - 40;
-        Ui.Text(S.CmMapTitle, x, y, 22, Palette.Accent); y += 30;
+        Ui.Text(S.CmMapTitle, x, y, 22, Palette.Accent);
+        // 튜토리얼 / 0장 연습: 항상 가능 · 캠페인 상태 · 경제 · 기록을 바꾸지 않는다 (결과 파일도 안 씀)
+        float tbw = 150, tby = y - 2;
+        if (Button(new Rectangle(x + w - tbw, tby, tbw, 28), S.CmBtnTutorial2, true, 13)) OpenPractice = CampaignState.Tutorial2;
+        if (Button(new Rectangle(x + w - tbw * 2 - 8, tby, tbw, 28), S.CmBtnTutorial1, true, 13)) OpenPractice = CampaignState.FirstMission;
+        Ui.Text(S.CmTutorialNote, x + w - tbw * 2 - 8 - Ui.Measure(S.CmTutorialNote, 12).X - 10, tby + 8, 12, Palette.TextDim);
+        y += 30;
 
         // 상단: 만주 북진 작전 경로 노선도 (도식 그리기)
         var mapBox = new Rectangle(x, y, w, 150);

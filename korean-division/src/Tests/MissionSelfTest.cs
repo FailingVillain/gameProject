@@ -362,6 +362,35 @@ public static class MissionSelfTest
             Steps(ws, 20);
             check(ws.Tick > 0 && ws.Winner == 0, "0-2: 단독 로드 20초 스모크 (예외 없음)");
         }
+
+        // ---- T38i: 캠페인 홈 [튜토리얼 연습] = NoResultsFile 출격. 정산해도 캠페인 저장 · 경제 · 기록이 바이트 단위로 같다
+        {
+            string tdir = TestTemp.Child("kd_tutorial_practice");
+            string? oldT = Environment.GetEnvironmentVariable("KD_CAMPAIGN_DIR");
+            Environment.SetEnvironmentVariable("KD_CAMPAIGN_DIR", tdir);
+            try
+            {
+                Directory.CreateDirectory(tdir);
+                var st = new CampaignState(); st.EnsureInitialized();
+                bool seeded = st.Save();
+                byte[] before = File.ReadAllBytes(CampaignState.FilePath);
+                string[] filesBefore = Directory.GetFiles(tdir, "*", SearchOption.AllDirectories).OrderBy(f => f, StringComparer.Ordinal).ToArray();
+                foreach (var id in new[] { CampaignState.FirstMission, CampaignState.Tutorial2 })
+                {
+                    var won = new MissionResults { MissionId = id, Title = id, Result = "won", EnemyKills = 30 };
+                    string? path = Game.SettleMission(won, false, true, false, out bool saved, out var unsaved);
+                    check(path == null && !saved && unsaved == null, $"튜토리얼 연습 '{id}': 정산 · 결과 파일 없음");
+                }
+                string[] filesAfter = Directory.GetFiles(tdir, "*", SearchOption.AllDirectories).OrderBy(f => f, StringComparer.Ordinal).ToArray();
+                check(seeded && before.SequenceEqual(File.ReadAllBytes(CampaignState.FilePath)) && filesBefore.SequenceEqual(filesAfter),
+                    "튜토리얼 연습: 캠페인 저장 바이트 동일 · 파일 목록 동일 (상태 · 경제 · 기록 불변)");
+                var cw = new MissionResults { MissionId = CampaignState.FirstMission, Title = "x", Result = "won" };
+                bool ctrl = CampaignState.CommitResult(cw) && !before.SequenceEqual(File.ReadAllBytes(CampaignState.FilePath));
+                check(ctrl, "튜토리얼 연습 대조: 일반 출격 정산은 캠페인 저장을 바꾼다 (시험이 변화를 감지함)");
+                check(new GameOptions { NoResultsFile = true }.NoResultsFile && KoreanDivision.UI.S.CmBtnTutorial1.Length > 0, "튜토리얼 연습 버튼 문자열");
+            }
+            finally { Environment.SetEnvironmentVariable("KD_CAMPAIGN_DIR", oldT); try { Directory.Delete(tdir, true); } catch (IOException) { } }
+        }
     }
 
     static void Check1(World w, Action<bool, string> check, string first, string second)

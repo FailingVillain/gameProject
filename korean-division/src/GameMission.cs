@@ -111,21 +111,24 @@ public sealed partial class Game
 
     // ---------------------------------------------------------------- 결과
 
+    /// <summary>결과 확정 한 곳. 리플레이 · 결과 파일 없음(연습 출격 · 퍼즈) 이면 아무것도 쓰지 않는다 = 캠페인 상태 · 경제 · 기록 불변 (T38i).</summary>
+    internal static string? SettleMission(MissionResults r, bool isReplay, bool noResultsFile, bool cheats, out bool saved, out CampaignState? unsaved)
+    {
+        saved = false; unsaved = null;
+        if (isReplay || noResultsFile) return null;
+        string path = r.Save();
+        // 저장 트랜잭션: 읽기 실패 (깨진 · 더 새 버전) 파일은 새 상태로 덮어쓰지 않는다. 확정 (Apply → Save) 은 결과가 정해진 이 한 곳에서만.
+        if (!cheats) saved = CampaignState.CommitResult(r, out unsaved);   // 정산 직후 자동 저장 (T19a) · 실패하면 [다시 시도] 용으로 보관
+        return path;
+    }
+
     void HandleMissionOver()
     {
         if (!missionResultsDone)
         {
             missionResultsDone = true;
             missionResults = MissionResults.From(World);
-            if (!IsReplay && !noResultsFile)
-            {
-                missionResultsPath = missionResults.Save();
-                if (!World.CheatsUsed)
-                {
-                    // 저장 트랜잭션: 읽기 실패 (깨진 · 더 새 버전) 파일은 새 상태로 덮어쓰지 않는다. 확정 (Apply → Save) 은 결과가 정해진 이 한 곳에서만.
-                    campaignSaved = CampaignState.CommitResult(missionResults, out campaignUnsaved);   // 정산 직후 자동 저장 (T19a) · 실패하면 [다시 시도] 용으로 보관
-                }   // 캠페인 미션 승리 → 이월 저장
-            }
+            missionResultsPath = SettleMission(missionResults, IsReplay, noResultsFile, World.CheatsUsed, out campaignSaved, out campaignUnsaved);
         }
         if (campaignUnsaved != null && Input.IsMouseButtonPressed(MouseButton.Left) && Ui.Contains(CampaignRetryRect, mouse))
         {   // 저장 실패 → 다시 시도 (같은 정산 결과를 다시 쓴다; 정산을 두 번 하지 않음)

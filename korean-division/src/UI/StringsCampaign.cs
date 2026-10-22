@@ -40,6 +40,9 @@ public static partial class S
     public const string CmTabMap = "[지도]";
     public const string CmTabEvents = "[본국]";
     public const string CmBtnOpStart = "[작전 개시]";
+    public const string CmBtnTutorial1 = "[튜토리얼 0-1 연습]";
+    public const string CmBtnTutorial2 = "[튜토리얼 0-2 연습]";
+    public const string CmTutorialNote = "연습 출격 · 캠페인 기록 없음";
     public const string CmBtnOpPrepare = "[출격 준비]";
 
     // ---- 1. 요약 탭 (일일 보고서)

@@ -28,8 +28,12 @@ public sealed class MissionMenu : IDisposable
     Vector2 mouse;
     bool click;
 
-    public MissionMenu(string? openBriefing = null)
+    public bool Practice => practice;
+    readonly bool practice;   // 연습 출격: 결과 json · 캠페인 정산을 하지 않는다 (GameOptions.NoResultsFile)
+
+    public MissionMenu(string? openBriefing = null, bool practice = false)
     {
+        this.practice = practice;
         foreach (var id in MissionDef.Available())
         {
             try { entries.Add(new Entry(id, MissionDef.Load(id), null)); }
@@ -243,9 +247,9 @@ public sealed class MissionMenu : IDisposable
         float by = panel.Y + ph - 54;
         if (Button(new Rectangle(panel.X + 22, by, 140, 40), S.MsBack)) briefing = false;
         if (Button(new Rectangle(panel.X + pw - 22 - 200, by, 200, 40), S.MsDeployStart, size: 26))
-            Chosen = new GameOptions { MissionId = id, FromMenu = true };
+            Chosen = new GameOptions { MissionId = id, FromMenu = true, NoResultsFile = practice };
         if (Button(new Rectangle(panel.X + pw - 22 - 200 - 12 - 160, by, 160, 40), S.MsQuickStart))
-            Chosen = new GameOptions { MissionId = id, FromMenu = true, MissionSkipDeploy = true };
+            Chosen = new GameOptions { MissionId = id, FromMenu = true, MissionSkipDeploy = true, NoResultsFile = practice };
     }
 
     public void Dispose()
