@@ -56,6 +56,23 @@ public sealed partial class TacticalAi
             int side = o.Faction > 0 ? o.Faction : m.Player;
             bool mine = side == f || w.Allied(f, side), hostile = !mine && w.IsHostile(f, side);
             var r = new AiObjective { Index = i, Seconds = o.Seconds };
+            if (o.Train != null && o.Type is "escort" or "capture")   // T30c 화물열차: 기존 호송 · 점령 과제 재사용, 기준점 = 화물 객차 중심 (적 쪽은 보이는 것만)
+            {
+                var fc = w.FreightCentroid(o.Train, o.Type == "escort" && mine ? 0 : f);   // 호송 (아군 열차) 만 전지; 점령 · 차단은 항상 자기 시야 (안개 적용, 안 보이면 과제 없음)
+                if (o.Type == "escort" && a != null)
+                {
+                    r.Aux = a.Center; r.Radius = a.Radius;
+                    if (mine) { r.Kind = fc != null ? AiObjectiveKind.Escort : AiObjectiveKind.None; r.Point = fc ?? a.Center; }
+                    else if (hostile) { r.Kind = AiObjectiveKind.Intercept; r.Point = fc ?? a.Center; }
+                }
+                else if (o.Type == "capture" && fc is Vector2 cp)
+                {
+                    r.Point = cp; r.Radius = o.Radius;
+                    r.Kind = mine ? AiObjectiveKind.Take : hostile ? AiObjectiveKind.Hold : AiObjectiveKind.None;
+                }
+                if (r.Kind == AiObjectiveKind.None) continue;
+                return r;
+            }
             switch (o.Type)
             {
                 case "capture":

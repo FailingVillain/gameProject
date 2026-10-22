@@ -180,6 +180,15 @@ public sealed partial class Game
             if (m.ObjRevealed[i] && m.ObjState[i] == MissionState.Active && m.Def.Objectives[i].Area is { } an) objAreas.Add(an);
         foreach (var an in objAreas.OrderBy(x => x, StringComparer.Ordinal))
             if (m.Def.Area(an) is { } a) DrawArea(a, Palette.Alpha(Palette.Accent, 26), Palette.Alpha(Palette.Accent, 170), th);
+        // T30c 화물열차 목표: 화물 객차 표식 (아군 열차 = 늘, 적 열차 = 보일 때만) · 탈취 = 확보 반경 원
+        foreach (var (car, o) in MissionText.FreightMarkers(World))
+        {
+            if (!World.Allied(Me, car.Owner) && !World.Fog.CanSee(Me, car)) continue;
+            var p = car.Pos * Config.TileSize;
+            if (o.Type == "capture") Raylib.DrawRing(p, o.Radius * Config.TileSize - th, o.Radius * Config.TileSize, 0, 360, 48, Palette.Alpha(Palette.Accent, 150));
+            Raylib.DrawRing(p, 14 / Camera.Zoom, 14 / Camera.Zoom + th * 1.5f, 0, 360, 24, Palette.Alpha(Palette.Accent, 230));
+            Raylib.DrawLineEx(p + new Vector2(0, -26 / Camera.Zoom), p + new Vector2(0, -16 / Camera.Zoom), th, Palette.Accent);
+        }
         if (!DeployPhase) return;
         foreach (var z in m.Def.DeployZones)
             if (z.Faction == Me) DrawArea(z, new Color(70, 140, 255, 30), new Color(90, 160, 255, 210), th);
@@ -292,6 +301,16 @@ public sealed partial class Game
             Color c = m.ObjState[i] == MissionState.Done ? Palette.HpGood : m.ObjState[i] == MissionState.Failed ? Palette.HpLow : Palette.TextDim;
             Ui.Text($"{(o.Primary ? S.MsPrimary : S.MsSecondary)}: {MissionText.Objective(o)} — {st}", x2, yr, 16, c);
             yr += 20;
+        }
+        if (r.Trains.Count > 0)   // T30c 열차 객차 · 화차 손실
+        {
+            yr += 8;
+            Ui.Text(S.RsTrains, x2, yr, 16, Palette.Accent); yr += 22;
+            foreach (var t in r.Trains)
+            {
+                Ui.Text(string.Format(S.RsTrainLine, t.Tag ?? "#" + t.Id, t.CarsLost, t.Cars, t.FreightLost, t.Freight), x2, yr, 16, Palette.Player(t.Owner));
+                yr += 20;
+            }
         }
         if (missionResultsPath != null) Ui.Text(string.Format(S.RsSaved, Path.GetFileName(missionResultsPath)), x1, p.Y + p.Height - 44, 16, Palette.TextDim);
         if (campaignSaved) Ui.Text(S.CmSaved, x2, p.Y + p.Height - 44, 16, Palette.HpGood);

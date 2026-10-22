@@ -513,6 +513,7 @@ public sealed partial class World
     {
         var o = m.Def.Objectives[i];
         int side = o.Faction > 0 ? o.Faction : m.Player;
+        if (o.Train != null) { EvalFreightObjective(m, i, o, side, dt); return; }   // T30c 화물열차 목표 (FreightObjective.cs)
         switch (o.Type)
         {
             case "capture":

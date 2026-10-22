@@ -174,7 +174,7 @@
       "cars": { "locomotive": { "name": "기관차", "hp": 400, "armor": "heavy", "engine": true, "sight": 24 },
                 "guncar": { "name": "포차", "hp": 300, "armor": "heavy", "weapons": ["gun_field"], "sight": 24 },
                 "mgcar": { "name": "기관총차", "hp": 300, "armor": "heavy", "weapons": ["hmg", "hmg"], "sight": 24 },
-                "wagon": { "name": "화차", "hp": 200, "armor": "basic" } } },
+                "wagon": { "name": "화차", "hp": 200, "armor": "basic", "freight": true } } },   // T30c freight = 화물 객차 (미션 화물열차 목표 대상)
   // [N54] 세력별 소총 분배 (map factions[].en → {무기 → 가중치 %}). 소총 칸 (weapon = rifle_mosin) 보병이 생성될 때 유닛 id · 지도 시드의 해시로 결정적으로 고른다. 없는 세력 = 모신나강. 공용 유닛은 분배 안 함 (모신나강).
   "factionRifles": {
     "fengtian": { "rifle_arisaka38": 60, "rifle_hanyang88": 30, "rifle_lebel86": 10 },
