@@ -228,7 +228,8 @@ public sealed partial class MapFile
         "crater" => TerrainType.Crater,
         "rail" => TerrainType.Rail,
         "ford" => TerrainType.Ford,
-        _ => throw new InvalidDataException($"알 수 없는 지형 '{name}' (grass, dirt, sand, water, rock, forest, rubble, house, wire, trench, crater, rail, ford / 높이만: high, low)"),
+        "bridge" => TerrainType.Bridge,
+        _ => throw new InvalidDataException($"알 수 없는 지형 '{name}' (grass, dirt, sand, water, rock, forest, rubble, house, wire, trench, crater, rail, ford, bridge / 높이만: high, low)"),
     };
 
     static void Require(bool ok, string msg)

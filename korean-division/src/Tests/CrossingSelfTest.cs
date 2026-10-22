@@ -26,6 +26,7 @@ public static class CrossingSelfTest
             TestRiverFire();
             TestRiverCrossingLanes();
             TestFordSlows();
+            TestBridgeTerrainCrossing();
             TestCounterPosture();
             TestBridgeCrossing();
             TestCrossingSnapshot();
@@ -189,6 +190,16 @@ public static class CrossingSelfTest
         float dg = g.Pos.X - 8.5f, df = f.Pos.X - 8.5f, ratio = df / MathF.Max(dg, 0.001f);
         float fm = defs.Terrain.FordMove;
         check(dg > 3f && df > 1f && df < dg && MathF.Abs(ratio - fm) < 0.12f, $"여울 감속 실측: 10초 이동 풀밭 {dg:0.0} · 여울 {df:0.0} (비 {ratio:0.00} ≈ fordMove {fm})");
+    }
+
+    /// <summary>T39d: Bridge 지형 다리도 건널 곳 (병목) 으로 잡히고 (흙 다리와 같은 결과), 직선 이동이 다리 칸을 지난다.</summary>
+    static void TestBridgeTerrainCrossing()
+    {
+        var C = defs.Tactics.Crossing;
+        string json = "{\"name\":\"bt\",\"width\":64,\"height\":64,\"base\":\"grass\",\"starts\":[[4,4],[60,60]],\"paint\":[{\"terrain\":\"water\",\"rect\":[30,0,5,64]},{\"terrain\":\"bridge\",\"rect\":[30,20,5,4]}]}";
+        var m = TestDefs.Strip(World.CreateStandard(MapFile.LoadText(json, "bt", 1), defs)).Map;
+        bool f = TacticalAi.FindCrossing(m, new Vector2(20.5f, 40.5f), new Vector2(45.5f, 40.5f), C, out var en, out var ex, out var n, out float wd);
+        check(f && wd == 4 && MathF.Abs(en.Y - 22f) < 0.6f, $"Bridge 다리: 건널 곳 폭 {wd} 입구 ({en.X:0.0},{en.Y:0.0}) - 하천 폭 5 + 다리 폭 4");
     }
 
     static void TestCounterPosture()

@@ -228,6 +228,7 @@ public static partial class S
     public const string TerrainCrater = "포탄 구덩이";
     public const string TerrainRail = "철도 선로";
     public const string TerrainFord = "여울";
+    public const string TerrainBridge = "다리";
     public const string HighGround = "고지";
     public const string Walkable = "이동 가능";
     public const string Blocked = "이동 불가";
