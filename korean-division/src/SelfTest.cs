@@ -30,6 +30,7 @@ public static partial class SelfTest
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "lmgtable") return Tests.LmgTable.Run();
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "lmgaim") { Tests.LmgAimSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "lmgorg") { Tests.LmgOrgSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+        if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "smoke") { Tests.MissionSmoke.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "type3") { Tests.Type3SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "aim") { Tests.AimSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "cmdext") { Tests.CommandExtSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
