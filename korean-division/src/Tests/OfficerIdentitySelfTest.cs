@@ -31,7 +31,7 @@ public static class OfficerIdentitySelfTest
             // 1) 옛 저장 v8 -> v9: 키 없음, NextOfficerKey = 1 (명부에 키가 있으면 최대 + 1)
             var v8 = CampaignState.FromJson("{\"Version\":8,\"CampaignOfficers\":[{\"Key\":7,\"Name\":\"갑\"}]}");
             var v7 = CampaignState.FromJson("{\"Version\":7}");
-            check(v8 != null && v8.Version == 9 && v8.NextOfficerKey == 8 && v8.CampaignOfficers[0].Status == "alive" && v8.CampaignOfficers[0].Traits.Count == 0
+            check(v8 != null && v8.Version == CampaignState.SchemaVersion && v8.NextOfficerKey == 8 && v8.CampaignOfficers[0].Status == "alive" && v8.CampaignOfficers[0].Traits.Count == 0
                 && v7 != null && v7.NextOfficerKey == 1 && v7.CampaignOfficers.Count == 0, "T48b1 저장 이행: v7 · v8 -> v9 (NextOfficerKey = 최대 키 + 1 · 기본값)");
 
             // 2) 첫 승리 정산: 키 없는 생존 장교에게 Id 순으로 키 발급 + 명부 · 종착 (상한 계급 = TerminalReady)

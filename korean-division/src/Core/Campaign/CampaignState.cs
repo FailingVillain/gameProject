@@ -197,7 +197,8 @@ public sealed class CampaignState
     /// 7 (T42d): 작전 일수 · 연표 — Day / Timeline (추가만, v3~v6 은 Day = 1 + 치른 작전 수 × missionDays · 빈 연표로 이행).
     /// 8 (T48a): 연대장 풀 · 장교 명부 — CommanderPool / CampaignOfficers (추가만, v3~v7 은 빈 목록으로 이행; 풀은 불러올 때 CommanderPools.Sync 가 데이터와 맞춘다).
     /// 9 (T48b1): 장교 신원 — UnitLine.Key · NextOfficerKey · CampaignOfficer.Merits/Traits/DeathMission/DeathDay · PromotionRecord.Key (추가만, v3~v8 은 키 없음 → 다음 승리 정산 때 생존 장교에게 발급).
-    public const int SchemaVersion = 9;
+    /// 12 (C1E1-g1): 에피소드 그래프 진행 — Episode (추가만, v3~v11 은 null = 에피소드 밖으로 이행; 10/11 은 T48b2/TC-D 예약 — 병합 때 정렬).
+    public const int SchemaVersion = 12;
     public const int TimelineMax = 200;
     /// <summary>Day 상한 (손상 저장 · 덧셈 넘침 방지).</summary>
     public const int DayMax = 100000;
@@ -252,6 +253,8 @@ public sealed class CampaignState
     public Dictionary<string, int> Flags { get; set; } = new() { ["heir_mood"] = 60, ["cmd_favor"] = 50 };
     public uint Seed { get; set; } = 19200401u;
     public PendingOperation? Pending { get; set; }
+    /// <summary>[v12 · C1E1-g1] 진행 중 에피소드 (null = 에피소드 밖 · 옛 파일). 규칙: EpisodeRuntime, docs/C1E1_EPISODE_SCHEMA.md.</summary>
+    public EpisodeState? Episode { get; set; }
     public DebriefReport? LastDebrief { get; set; }
 
     /// <summary>캠페인 첫 미션 = 챕터 0 튜토리얼 0-1 (T09 수직 슬라이스, Q10 압록강 시작 승인 2026-10-22).</summary>
@@ -365,6 +368,7 @@ public sealed class CampaignState
         PrisonersRepatriated = Math.Max(0, PrisonersRepatriated);
         PrisonersInterned = Math.Max(0, PrisonersInterned);
         Timeline ??= new(); Timeline.RemoveAll(e => e == null);   // T42d
+        Episode?.Sanitize();   // C1E1-g1
         SanitizeCommanders();
         if (Timeline.Count > TimelineMax) Timeline.RemoveRange(0, Timeline.Count - TimelineMax);
         if (Day <= 0) Day = (int)Math.Min(DayMax, 1L + (long)(History?.Count ?? 0) * CampaignEconomyDefs.Current.MissionDays);
