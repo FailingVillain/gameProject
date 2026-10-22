@@ -55,6 +55,8 @@ public sealed partial class MissionDef
     public float PropDensity { get; set; } = 1f;
     /// <summary>propScatter 군집 칸 크기 (타일, 기본 0 = props.json scatter.cell). 작을수록 같은 지도에 군집이 많다.</summary>
     public int PropCell { get; set; }
+    /// <summary>PR1: true = propScatter 에 자연 엄폐 소품 (props.json scatter.v2) 을 더한다 (기본 꺼짐; props.json scatter.propsV2 로도 켬).</summary>
+    public bool PropsV2 { get; set; }
 
     [JsonIgnore] public string Json { get; internal set; } = "";
     [JsonIgnore] public string Hash { get; internal set; } = "";

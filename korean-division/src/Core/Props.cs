@@ -25,6 +25,13 @@ public sealed class PropDef
     public string Destroyed { get; set; } = "";
 }
 
+/// <summary>propsV2 지형별 가중치 한 줄 (종류, 가중치 - 0 = 안 뽑음).</summary>
+public sealed class PropWeight
+{
+    public string Type { get; set; } = "";
+    public int W { get; set; }
+}
+
 public sealed class PropScatterRules
 {
     public int Cell { get; set; } = 12;
@@ -43,6 +50,15 @@ public sealed class PropScatterRules
     public float ClumpPctMul { get; set; } = 0.75f;
     public float ClumpCountMul { get; set; } = 1.8f;
     public float ClumpRadiusMul { get; set; } = 0.7f;
+    /// <summary>PR1 (기본 꺼짐): true = 기존 흩뿌리기 뒤에 자연 엄폐 소품 (덤불 · 수수밭 · 그루터기 · 통나무 · 노두 · 고사목 · 둔덕 · 버드나무 · 갈대 · 눈더미) 을 지형별로 더 놓는다. 미션 json "propsV2" 로도 켠다. false = 기존 지도 그대로 (비트 단위).</summary>
+    public bool PropsV2 { get; set; }
+    public int V2Cell { get; set; } = 14;
+    public int V2ClusterPct { get; set; } = 45;
+    public int V2ClusterMin { get; set; } = 2;
+    public int V2ClusterMax { get; set; } = 4;
+    public float V2ClusterRadius { get; set; } = 2.6f;
+    /// <summary>지형 군집 키 (forestEdge · field · river · highland · snow) -> 가중치 목록 (목록 순서대로 누적 - 열거 순서 무관).</summary>
+    public Dictionary<string, List<PropWeight>> V2 { get; set; } = new();
 }
 
 public sealed class PropRules
@@ -338,7 +354,7 @@ public sealed partial class World
             return false;
         }
         int from = Map.PropSeeds.Count;
-        int n = Map.ScatterProps(false, Avoid, def.PropDensity, def.PropCell);
+        int n = Map.ScatterProps(false, Avoid, def.PropDensity, def.PropCell, def.PropsV2);
         for (int i = from; i < Map.PropSeeds.Count; i++) Props.Append(Map.PropSeeds[i].X, Map.PropSeeds[i].Y, Map.PropSeeds[i].Type);
         return n;
     }
