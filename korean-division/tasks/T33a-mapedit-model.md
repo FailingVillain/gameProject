@@ -22,3 +22,7 @@ dotnet build 게임 + 편집기 · 새 시험 · 게임 --detcheck 불변
 - 시험 `dotnet build` 후 MapEditor.Tests.dll: pass 204 fail 0 (지도 6개 왕복 + 래스터=게임 격자, 미션 mapData 17개 치환/MissionDef.Parse, 편집 골든 5BDE9FE433DD6FD1, undo 전부=원본 해시). 게임 --detcheck GOLDEN match.
 - 설계 8질문 기본값: 1 별도 exe 2 paint 줄 앞 // 주석 보존, 나머지 주석은 DroppedComments 로 경고 3 게임 플래그 추가 안 함(T33c) 4 sites+House 만 5 units 는 지도 파일 units 만 6 tiles 로 굳히기 7 T33d 는 rail 위 스택 8 game-tools/map-editor/.
 시작 전: ops/MERGE_QUEUE.md 병합 완료 표 + docs/legacy/GIT_HISTORY_DIGEST.md 를 grep 해 이미 구현됐는지 확인.
+## 리뷰 수정 (2차 커밋)
+- 앞으로 호환: PaintOp/SiteDef/UnitDef 가 모르는 키 (rail line/width, ford 등) 를 원문 Extra 로 보존해 그대로 재출력; 모르는 지형 줄은 Raster 에서만 건너뜀 + Validate(warnings) 경고 (파일에서는 안 지움). 여분 키 안 // 주석은 보존으로 셈.
+- 입력 검증: 크기 1..1024 (Raster 도 거부), 원 반지름 0..1024 + long 연산, tiles 원소 길이 2, Parse 는 InvalidDataException 하나로만 실패 + TryParse, 중복 최상위 키 (대소문자 무시) Validate 오류.
+- 시험: battle_flat 인라인 fixture (CRLF 기준, 골든 5BDE9FE433DD6FD1 동일), 시험 264 pass 0 fail. 리플렉션 유지: InternalsVisibleTo 는 게임 csproj/MapFile 변경이 필요해 보류 (게임 불변 원칙).

@@ -17,16 +17,19 @@ public sealed class PaintOp
     public bool? High;
     /// <summary>이 줄 바로 앞의 // 주석 (파일에서 읽은 것, 다시 쓸 때 보존).</summary>
     public List<string> Comments = new();
+    /// <summary>이 단계가 모르는 키 (rail 의 line / width, 강의 ford 등) 의 원문. 읽은 순서대로 그대로 다시 쓴다.</summary>
+    public List<ExtraField> Extra = new();
 
     public PaintOp Clone() => new()
     {
         Terrain = Terrain, Rect = Rect?.ToArray(), Circle = Circle?.ToArray(),
-        Tiles = Tiles?.Select(t => t.ToArray()).ToList(), High = High, Comments = Comments.ToList(),
+        Tiles = Tiles?.Select(t => t.ToArray()).ToList(), High = High, Comments = Comments.ToList(), Extra = Extra.ToList(),
     };
 }
 
-public sealed record SiteDef(int X, int Y, string Type, int Owner);
-public sealed record UnitDef(string Unit, double X, double Y, int Faction, int Count);
+/// <summary>Extra = 이 단계가 모르는 키의 원문 (그대로 다시 씀).</summary>
+public sealed record SiteDef(int X, int Y, string Type, int Owner, IReadOnlyList<ExtraField>? Extra = null);
+public sealed record UnitDef(string Unit, double X, double Y, int Faction, int Count, IReadOnlyList<ExtraField>? Extra = null);
 
 /// <summary>이 단계에서 편집하지 않는 최상위 필드 (factions, weather, time, timeStep, schedule, 알 수 없는 키) 의 원문.</summary>
 public sealed record ExtraField(string Name, string RawJson);
@@ -88,8 +91,25 @@ public sealed class MapDoc
     // ---------------------------------------------------------------- 읽기
     static readonly JsonDocumentOptions DocOpts = new() { CommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true };
 
-    /// <summary>지도 JSON 텍스트 (// 주석, 끝 쉼표 허용) -> 문서. 형식 오류는 InvalidDataException.</summary>
+    public const int MaxDim = 1024;
+    readonly List<string> loadIssues = new();
+
+    /// <summary>Parse 의 예외 없는 판: 성공하면 (문서, 빈 목록), 실패하면 (null, 오류 문장).</summary>
+    public static (MapDoc? Doc, List<string> Errors) TryParse(string? text)
+    {
+        try { return (Parse(text ?? ""), new List<string>()); }
+        catch (Exception e) { return (null, new List<string> { e.Message }); }
+    }
+
+    /// <summary>지도 JSON 텍스트 (// 주석, 끝 쉼표 허용) -> 문서. 어떤 쓰레기 입력도 InvalidDataException 하나로만 실패한다.</summary>
     public static MapDoc Parse(string text)
+    {
+        try { return ParseCore(text); }
+        catch (InvalidDataException) { throw; }
+        catch (Exception e) { throw new InvalidDataException("지도 JSON 필드 형식 오류: " + e.Message, e); }
+    }
+
+    static MapDoc ParseCore(string text)
     {
         JsonDocument jd;
         try { jd = JsonDocument.Parse(text, DocOpts); }
@@ -101,11 +121,18 @@ public sealed class MapDoc
             var d = new MapDoc();
             var commentsByPaint = ScanPaintComments(text);
             int kept = 0;
-            try
+            var seenKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             {
                 foreach (var p in root.EnumerateObject())
                 {
-                    switch (p.Name.ToLowerInvariant())
+                    bool dup = !seenKeys.Add(p.Name);
+                    string lname = p.Name.ToLowerInvariant();
+                    if (dup)
+                    {
+                        d.loadIssues.Add($"최상위 키 '{p.Name}' 중복 (대소문자 무시)");
+                        if (lname is "name" or "width" or "height" or "base" or "paint" or "starts" or "sites" or "units") continue;
+                    }
+                    switch (lname)
                     {
                         case "name": d.Name = p.Value.GetString() ?? ""; break;
                         case "width": d.Width = p.Value.GetInt32(); break;
@@ -116,6 +143,7 @@ public sealed class MapDoc
                             foreach (var e in p.Value.EnumerateArray())
                             {
                                 var op = ReadPaint(e);
+                                foreach (var x in op.Extra) kept += CountComments(x.RawJson);
                                 if (commentsByPaint.TryGetValue(i, out var cs)) { op.Comments = cs; kept += cs.Count; }
                                 d.paint.Add(op);
                                 i++;
@@ -128,29 +156,30 @@ public sealed class MapDoc
                             foreach (var e in p.Value.EnumerateArray())
                             {
                                 var at = Find(e, "at");
+                                var ex = ReadExtras(e, "at", "type", "owner");
+                                foreach (var x in ex) kept += CountComments(x.RawJson);
                                 d.sites.Add(new SiteDef(at[0].GetInt32(), at[1].GetInt32(),
                                     Find(e, "type") is { ValueKind: JsonValueKind.String } t ? t.GetString()! : "village",
-                                    Find(e, "owner") is { ValueKind: JsonValueKind.Number } o ? o.GetInt32() : 0));
+                                    Find(e, "owner") is { ValueKind: JsonValueKind.Number } o ? o.GetInt32() : 0, ex.Count > 0 ? ex : null));
                             }
                             break;
                         case "units":
                             foreach (var e in p.Value.EnumerateArray())
                             {
                                 var at = Find(e, "at");
+                                var ex = ReadExtras(e, "unit", "at", "faction", "count");
+                                foreach (var x in ex) kept += CountComments(x.RawJson);
                                 d.units.Add(new UnitDef(Find(e, "unit").GetString() ?? "", at[0].GetDouble(), at[1].GetDouble(),
                                     Find(e, "faction") is { ValueKind: JsonValueKind.Number } f ? f.GetInt32() : 1,
-                                    Find(e, "count") is { ValueKind: JsonValueKind.Number } c ? c.GetInt32() : 1));
+                                    Find(e, "count") is { ValueKind: JsonValueKind.Number } c ? c.GetInt32() : 1, ex.Count > 0 ? ex : null));
                             }
                             break;
                         default:
                             d.extras.Add(new ExtraField(p.Name, p.Value.GetRawText()));
+                            kept += CountComments(p.Value.GetRawText());
                             break;
                     }
                 }
-            }
-            catch (Exception e) when (e is InvalidOperationException or FormatException or IndexOutOfRangeException or KeyNotFoundException)
-            {
-                throw new InvalidDataException("지도 JSON 필드 형식 오류: " + e.Message, e);
             }
             d.DroppedComments = CountComments(text) - kept;
             return d;
@@ -162,6 +191,15 @@ public sealed class MapDoc
         foreach (var p in obj.EnumerateObject())
             if (string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase)) return p.Value;
         return default;
+    }
+
+    static List<ExtraField> ReadExtras(JsonElement obj, params string[] known)
+    {
+        var list = new List<ExtraField>();
+        foreach (var p in obj.EnumerateObject())
+            if (Array.FindIndex(known, k => string.Equals(k, p.Name, StringComparison.OrdinalIgnoreCase)) < 0)
+                list.Add(new ExtraField(p.Name, p.Value.GetRawText()));
+        return list;
     }
 
     static PaintOp ReadPaint(JsonElement e)
@@ -176,6 +214,7 @@ public sealed class MapDoc
                 case "circle": op.Circle = p.Value.EnumerateArray().Select(v => v.GetInt32()).ToArray(); break;
                 case "tiles": op.Tiles = p.Value.EnumerateArray().Select(t => t.EnumerateArray().Select(v => v.GetInt32()).ToArray()).ToList(); break;
                 case "high": op.High = p.Value.ValueKind == JsonValueKind.Null ? null : p.Value.GetBoolean(); break;
+                default: op.Extra.Add(new ExtraField(p.Name, p.Value.GetRawText())); break;
             }
         }
         return op;
@@ -230,12 +269,16 @@ public sealed class MapDoc
         return i;
     }
 
+    static bool KnownTerrain(string name) { string t = name.ToLowerInvariant(); return t is "high" or "low" || Array.IndexOf(TerrainNames, t) >= 0; }
+
     /// <summary>현재 문서를 칸 격자로 만든다 (캐시: paint 가 바뀔 때만 다시 계산).</summary>
     public MapGrid Raster()
     {
         if (cache != null && cacheVersion == paintVersion) return cache;
+        if (Width < 1 || Height < 1 || Width > MaxDim || Height > MaxDim)
+            throw new InvalidDataException($"지도 크기 {Width}x{Height} (1..{MaxDim})");
         var g = new MapGrid(Width, Height);
-        Array.Fill(g.Terrain, (byte)TerrainIndex(Base));
+        Array.Fill(g.Terrain, (byte)Math.Max(0, Array.IndexOf(TerrainNames, Base.ToLowerInvariant())));   // 모르는 base 는 Validate 오류, 래스터는 grass
         foreach (var p in paint) Apply(g, p);
         cache = g; cacheVersion = paintVersion;
         return g;
@@ -243,6 +286,7 @@ public sealed class MapDoc
 
     static void Apply(MapGrid g, PaintOp p)
     {
+        if (!KnownTerrain(p.Terrain)) return;   // 이 단계가 모르는 지형 (rail 등): 래스터에서만 건너뜀, 파일에는 그대로 (Validate 경고)
         string tn = p.Terrain.ToLowerInvariant();
         bool heightOnly = tn is "high" or "low";
         bool? hi = heightOnly ? tn == "high" : p.High;
@@ -253,34 +297,51 @@ public sealed class MapDoc
             if (hi is bool h) g.High[y * g.Width + x] = h;
         }
         if (p.Rect is { Length: 4 } r)
-            for (int y = Math.Max(0, r[1]); y < Math.Min(g.Height, r[1] + r[3]); y++)
-            for (int x = Math.Max(0, r[0]); x < Math.Min(g.Width, r[0] + r[2]); x++) Put(x, y);
-        if (p.Circle is { Length: 3 } c)
-            for (int y = c[1] - c[2]; y <= c[1] + c[2]; y++)
-            for (int x = c[0] - c[2]; x <= c[0] + c[2]; x++)
-                if (g.InBounds(x, y) && (x - c[0]) * (x - c[0]) + (y - c[1]) * (y - c[1]) <= c[2] * c[2]) Put(x, y);
+        {
+            long y1 = Math.Min(g.Height, (long)r[1] + r[3]), x1 = Math.Min(g.Width, (long)r[0] + r[2]);
+            for (long y = Math.Max(0, r[1]); y < y1; y++)
+            for (long x = Math.Max(0, r[0]); x < x1; x++) Put((int)x, (int)y);
+        }
+        if (p.Circle is { Length: 3 } c && c[2] >= 0)
+        {
+            long rr = c[2], r2 = rr * rr;
+            long ya = Math.Max(0, c[1] - rr), yb = Math.Min(g.Height - 1, c[1] + rr);
+            long xa = Math.Max(0, c[0] - rr), xb = Math.Min(g.Width - 1, c[0] + rr);
+            for (long y = ya; y <= yb; y++)
+            for (long x = xa; x <= xb; x++)
+                if ((x - c[0]) * (x - c[0]) + (y - c[1]) * (y - c[1]) <= r2) Put((int)x, (int)y);
+        }
         if (p.Tiles != null)
             foreach (var tp in p.Tiles)
                 if (tp is { Length: 2 } && g.InBounds(tp[0], tp[1])) Put(tp[0], tp[1]);
     }
 
     // ---------------------------------------------------------------- 검사
-    /// <summary>기본 검사 (게임의 정식 검증은 MapFile.LoadText). 오류 문장 목록, 비면 통과.</summary>
-    public List<string> Validate()
+    /// <summary>기본 검사 (게임의 정식 검증은 MapFile.LoadText). 오류 문장 목록, 비면 통과. warnings 를 주면 경고 (모르는 지형 · 키) 를 거기 담는다.</summary>
+    public List<string> Validate(List<string>? warnings = null)
     {
-        var errs = new List<string>();
-        if (Width <= 0 || Height <= 0) errs.Add($"지도 크기 {Width}x{Height}");
+        var errs = new List<string>(loadIssues);
+        if (Width < 1 || Height < 1 || Width > MaxDim || Height > MaxDim) errs.Add($"지도 크기 {Width}x{Height} (1..{MaxDim})");
         if (Array.IndexOf(TerrainNames, Base.ToLowerInvariant()) < 0) errs.Add($"base '{Base}'");
+        int idx = 0;
         foreach (var p in paint)
         {
-            string tn = p.Terrain.ToLowerInvariant();
-            if (tn is not ("high" or "low") && Array.IndexOf(TerrainNames, tn) < 0) errs.Add($"지형 '{p.Terrain}'");
+            if (!KnownTerrain(p.Terrain))
+                warnings?.Add($"paint[{idx}] 지형 '{p.Terrain}' 은 이 편집기가 모름: 래스터에서 건너뜀, 파일에는 그대로 보존");
+            else if (p.Extra.Count > 0)
+                warnings?.Add($"paint[{idx}] 모르는 키 {string.Join(", ", p.Extra.Select(x => x.Name))}: 래스터에 반영 안 됨, 파일에는 그대로 보존");
             if (p.Rect != null && p.Rect.Length != 4) errs.Add("rect 는 [x,y,w,h]");
-            if (p.Circle != null && p.Circle.Length != 3) errs.Add("circle 은 [cx,cy,r]");
+            if (p.Circle != null)
+            {
+                if (p.Circle.Length != 3) errs.Add("circle 은 [cx,cy,r]");
+                else if (p.Circle[2] < 0 || p.Circle[2] > MaxDim) errs.Add($"circle 반지름 {p.Circle[2]} (0..{MaxDim})");
+            }
+            if (p.Tiles != null && p.Tiles.Any(t => t.Length != 2)) errs.Add("tiles 원소는 [x,y]");
+            idx++;
         }
         foreach (var s in starts) if (s.Length != 2 || !InMap(s[0], s[1])) errs.Add("시작 위치가 지도 밖");
         foreach (var s in sites) if (!InMap(s.X, s.Y)) errs.Add($"시설 {s.Type} 이 지도 밖");
-        foreach (var u in units) if (!InMap((int)u.X, (int)u.Y)) errs.Add($"유닛 {u.Unit} 이 지도 밖");
+        foreach (var u in units) if (!(u.X >= 0 && u.Y >= 0 && u.X < Width && u.Y < Height)) errs.Add($"유닛 {u.Unit} 이 지도 밖");
         return errs;
     }
 
@@ -315,12 +376,15 @@ public sealed class MapDoc
         props.Add(s.ToString());
         props.Add($"{i1}\"starts\": [{string.Join(", ", starts.Select(a => $"[{a[0]}, {a[1]}]"))}]");
         if (sites.Count > 0)
-            props.Add($"{i1}\"sites\": [\n" + string.Join(",\n", sites.Select(x => $"{i2}{{ \"at\": [{x.X}, {x.Y}], \"type\": {Q(x.Type)}, \"owner\": {x.Owner} }}")) + $"\n{i1}]");
+            props.Add($"{i1}\"sites\": [\n" + string.Join(",\n", sites.Select(x => $"{i2}{{ \"at\": [{x.X}, {x.Y}], \"type\": {Q(x.Type)}, \"owner\": {x.Owner}{ExtraJson(x.Extra)} }}")) + $"\n{i1}]");
         if (units.Count > 0)
-            props.Add($"{i1}\"units\": [\n" + string.Join(",\n", units.Select(u => $"{i2}{{ \"unit\": {Q(u.Unit)}, \"at\": [{N(u.X)}, {N(u.Y)}], \"faction\": {u.Faction}, \"count\": {u.Count} }}")) + $"\n{i1}]");
+            props.Add($"{i1}\"units\": [\n" + string.Join(",\n", units.Select(u => $"{i2}{{ \"unit\": {Q(u.Unit)}, \"at\": [{N(u.X)}, {N(u.Y)}], \"faction\": {u.Faction}, \"count\": {u.Count}{ExtraJson(u.Extra)} }}")) + $"\n{i1}]");
         foreach (var e in extras) props.Add($"{i1}{Q(e.Name)}: {e.RawJson}");
         return "{\n" + string.Join(",\n", props) + "\n" + i0 + "}";
     }
+
+    static string ExtraJson(IReadOnlyList<ExtraField>? ex) =>
+        ex == null ? "" : string.Concat(ex.Select(x => $", {Q(x.Name)}: {x.RawJson}"));
 
     static string PaintJson(PaintOp p)
     {
@@ -329,6 +393,7 @@ public sealed class MapDoc
         if (p.Circle != null) parts.Add($"\"circle\": [{string.Join(", ", p.Circle)}]");
         if (p.Tiles != null) parts.Add($"\"tiles\": [{string.Join(", ", p.Tiles.Select(t => $"[{string.Join(", ", t)}]"))}]");
         if (p.High is bool h) parts.Add($"\"high\": {(h ? "true" : "false")}");
+        foreach (var x in p.Extra) parts.Add($"{Q(x.Name)}: {x.RawJson}");
         return "{ " + string.Join(", ", parts) + " }";
     }
 
