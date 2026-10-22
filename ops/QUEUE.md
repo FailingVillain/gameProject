@@ -15,8 +15,8 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T07 | 철도 지형 (wip/rail 복원, 장갑열차 제외) | feature → merger | D上 R2 SM H2 Wlight | 없음 (T02 병합됨) | wip-ready (자기 브랜치 참조) |
 | T08 | 조작 UI 묶음 + UI 종이 질감 개편 | feature | D中 R1 SM H1 Wlight | T01 | wip-ready (자기 브랜치 참조) |
 | T09 | 캠페인 수직 슬라이스 (0-1→0-2→1-1 한 사이클) | feature | D上 R3 SM H2 Wlight | T01(저장 트랜잭션) | wip-ready (t09-camp-slice 0c82a47 · kd-t09 · base T01; T29b 가 대체) |
-| T10 | 통신 알파 ②~④ (대포병 · 야간 · 행군 피로) | sim | D上 R3 SM H3 Wheavy | 없음(D15 A 확정); H3 직렬: T03 wip-ready 뒤 스택 | assigned |
-| T10b | 난이도 소비처 (전령 사로잡힘 · 유선 끊김, commsRules 기본 끔) + AI 배수 적용 설계 | sim | D上 R2 S H1 Wlight | T10 위 스택 | wip-ready (kd/t10b-difficulty 4d74ce9 · kd-t10b · base T10) |
+| T10 | 통신 알파 ②~④ (대포병 · 야간 · 행군 피로) | sim | D上 R3 SM H3 Wheavy | 없음(D15 A 확정); H3 직렬: T03 wip-ready 뒤 스택 | merged (578ef29, 병합 라인 B10; FV 57/Replay 22 재번호) |
+| T10b | 난이도 소비처 (전령 사로잡힘 · 유선 끊김, commsRules 기본 끔) + AI 배수 적용 설계 | sim | D上 R2 S H1 Wlight | T10 위 스택 | merged (kd/t10b-difficulty 4d74ce9 는 main 조상) |
 | T11 | 전 유닛 재렌더 (rerender-1, gt-brender, gt-rerender-prep) | art | D中 R1 SM H0 Wheavy | 병합 큐 종료 뒤 렌더 3칸 예약 | running (재렌더 ~60/81, 남은 officer-russian-red 1 + deferred 10 · kd-rerender 467dafc · base main) |
 | T11b | 엎드려쏘기 넓은 칸 에셋 가져오기 (보병 25 유닛, frame_wide 176/192x160) | art | D中 R1 S H0 Wheavy | gt-prone-fix 2694c89 | wip-ready (kd/prone-wide-assets · kd-prone-wide-assets) |
 | T12 | 통합 밸런스 측정 (A/B/C 시나리오 시드 8) → BASELINE_CURRENT | measure | D中 R1 S H0 Wheavy | T03 T04 T05 (T06 은 D19 뒤 재측정) | wip-ready (measure/t12 e6122ac) |
@@ -31,7 +31,7 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T22 | wip/gt-face-proto 재개 (얼굴 프로토타입, game-tools) | art | D中 R1 S H0 Wlight | 없음 | wip-ready (자기 브랜치 참조) |
 | T23 | 캠페인 홈 설계 문서 (docs/CAMPAIGN_HOME_DESIGN.md, 코드 없음) | spec | D中 R1 S H0 Wlight | 없음 | wip-ready (자기 브랜치 참조) |
 | T24 | D08 수정안 S1~S3 (대리 지휘 범위 · 관측반 전진 한계 · 돌격 제압 확인) | sim | D上 R3 SM H3 Wheavy | T04 위 스택 | wip-ready (kd/t24-s1s3) |
-| T25 | 착검 멈춤 범위 = 모든 돌격 (D02 A); 전환 거리 3칸 유지 (D01 B, 코드 변경 없음) | sim | D中 R3 S H3 Wlight | T03 위 스택 | assigned |
+| T25 | 착검 멈춤 범위 = 모든 돌격 (D02 A); 전환 거리 3칸 유지 (D01 B, 코드 변경 없음) | sim | D中 R3 S H3 Wlight | T03 위 스택 | merged (97472a0, 병합 라인 B7) |
 | T26 | 레거시 이메일 차단 git 훅 설치 (D20 A) | docs | D下 R1 S H0 Wlight | 없음 | done (훅 설치됨 .git/hooks pre-commit·commit-msg; 2026-10-22) |
 | T20 | 저장소 이동 마무리 (옛 폴더 삭제 = 사용자 U02) | docs | D下 R1 S H0 Wlight | U02 | blocked(U02) |
 | T35 | IsAi 리플레이 머리말·체크섬 복원 (AF1, FV 60 / Replay 24) | sim | D上 R3 S H2 Wlight | 없음 (main) | merged (merge/0.2 E1 122bfff) |
@@ -105,8 +105,8 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T07 | wip-ready | rail @9f513e7 | kd-rail | main |
 | T08 | wip-ready | t08-ui-bundle @2e9aef5 | kd-t08 | T01 |
 | T09 | wip-ready | t09-camp-slice @0c82a47 | kd-t09 | T01 |
-| T10 | assigned (확인 필요) | kd/t10-comms-b @1c91c96 | kd-t10 | T03 |
-| T10b | wip-ready | kd/t10b-difficulty @4d74ce9 | kd-t10b | T10 |
+| T10 | merged (578ef29, 병합 라인 B10; FV 57/Replay 22 재번호) | kd/t10-comms-b @1c91c96 | kd-t10 | T03 |
+| T10b | merged (kd/t10b-difficulty 4d74ce9 는 main 조상) | kd/t10b-difficulty @4d74ce9 | kd-t10b | T10 |
 | T11 | running (재렌더 ~60/81, 남은 officer-russian-red 1 + deferred 10) | kd-rerender @467dafc | kd-rerender | main |
 | T12 | wip-ready (측정, 보류 0.3) | measure/t12 @e6122ac | kd-meas-t12 | ai3b2 스택 |
 | T13 | queued | - | - | T12 |
@@ -128,7 +128,7 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T23 | wip-ready (카드 설계 문서) | spec/t23-campaign-home @42fa456 | kd-t23 | main |
 | T24 | wip-ready | kd/t24-s1s3 @07ac80c | 없음 (kd-t24 는 T37 체크아웃) | ai3b2 |
 | T24x (crossing) | wip-ready | kd/t24-crossing-fix @390763a | kd-t24-crossing-fix | T24 |
-| T25 | assigned (확인 필요) | kd/t25-bayonet-all @29695c3 | kd-t25 | ai3b2 |
+| T25 | merged (97472a0, 병합 라인 B7) | kd/t25-bayonet-all @29695c3 | kd-t25 | ai3b2 |
 | T26 | closed (done) | - | - | main |
 | T27 | wip-ready | t27-cmd-ui2 @4cf5c45 | kd-t27 | main |
 | T28 | wip-ready | t28-cover-forest @c577c0f | kd-t28 | T07 rail |

@@ -187,3 +187,4 @@
 - TW1 · weather-conceal · scan · 2026-10-22 · spec/weather
 - TW2 · weather-blizzard · scan · 2026-10-22 · spec/weather
 - TW3 · weather-fx-fade · scan · 2026-10-22 · spec/weather
+- M3 · morale-link · scan · 2026-10-22 · kd/m3-morale-link
