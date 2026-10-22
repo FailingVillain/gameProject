@@ -167,7 +167,6 @@ if (verifyReplay != null)
     return bad < 0 ? 0 : 2;
 }
 
-CrashLog.Install();   // 처리 안 된 예외 → logs/crash-*.txt
 UserSettings.Load();   // 해상도 · 창 모드 · 음량 (settings.json)
 if (sizeArg != null)   // --size WxH (저장 안 함, 최소 해상도 아래로는 못 내림)
 {
@@ -233,7 +232,6 @@ while (running)
         startError = e.Message;
     }
     if (created == null) { menu?.ShowMain(cur.FromMenu ? string.Format(S.StartFailed, startError) : null); continue; }
-    CrashLog.Context = $"미션 {cur.MissionId ?? "-"}, 시드 {(cur.MissionId != null ? cur.MissionSeed ?? cur.Seed : cur.Seed)}, 지도 {cur.MapId ?? $"{cur.MapWidth}x{cur.MapHeight}"}, AI {cur.Ai}";
     cur.Loaded = null;   // 월드는 게임이 가져갔다 (다시 시작 · 메뉴 복귀가 옛 저장 월드를 다시 쓰지 않게)
     using var game = created;
     KoreanDivision.UI.CrashLog.Context = () => ("game", cur.MissionId, game.World.Tick, cur.Seed);
