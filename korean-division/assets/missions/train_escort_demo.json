@@ -1,0 +1,60 @@
+{
+  // T30e 시연 미션 — 장갑열차 + 화물열차 호송 (Q-E1 권장안: 호송). 캠페인 순서에는 연결하지 않는다 (사용자 결정 뒤).
+  // 단선 두 줄: 북쪽 선로(y=30) = 장갑열차, 남쪽 선로(y=36) = 화물열차. 둘 다 스크립트 이동 (플레이어가 장갑열차 명령을 내리면 조종으로 전환).
+  // 열차는 선로 위 유닛 앞에서 정지하므로, 장갑열차의 포 · 중기관총과 보병 호위대가 적 저지선을 치워야 한다.
+  "propScatter": true,
+  "id": "train_escort_demo",
+  "title": "장갑열차 호송 (시연)",
+  "date": "1920년 10월 초 새벽",
+  "location": "남만주 철도 지선",
+  "briefing": "군수품을 실은 화차 세 량을 동쪽 보급역까지 보낸다. 장갑열차가 앞길을 열지만, 선로 위의 마적 저지선과 고개 매복은 열차만으로는 치울 수 없다. 호위 중대와 함께 화차를 두 량 이상 보급역에 넣어라. 15분 안에 끝내야 한다.",
+  "seed": 3030,
+  "weather": "clear",
+  "time": "day",
+  "player": 1,
+  "factions": [
+    { "name": "한국", "en": "korean", "lang": "ko", "color": [60, 130, 235], "team": 1, "posture": "attack", "area": "depot" },
+    { "name": "마적단", "en": "fengtian", "lang": "zh", "color": [165, 95, 225], "team": 2, "posture": "hold" }
+  ],
+  "mapData": {
+    "name": "철도 지선",
+    "width": 150, "height": 64, "base": "grass",
+    "paint": [
+      { "terrain": "dirt", "rect": [0, 32, 150, 2] },
+      { "terrain": "rail", "rect": [4, 30, 142, 1] },
+      { "terrain": "rail", "rect": [4, 36, 142, 1] },
+      { "terrain": "forest", "rect": [66, 14, 20, 12] },
+      { "terrain": "forest", "rect": [66, 42, 20, 12] },
+      { "terrain": "forest", "rect": [98, 20, 14, 8] },
+      { "terrain": "high", "rect": [100, 38, 12, 10] },
+      { "terrain": "forest", "rect": [28, 44, 14, 10] }
+    ],
+    "starts": [ [8, 33], [142, 33] ],
+    "sites": [ { "at": [136, 33], "type": "city", "owner": 1 } ]
+  },
+  "areas": {
+    "depot": { "rect": [124, 26, 24, 16] },
+    "ridge": { "rect": [84, 24, 32, 18] }
+  },
+  "deployZones": [ { "faction": 1, "rect": [2, 24, 22, 18] } ],
+  "forces": [
+    { "id": "esc1", "faction": 1, "name": "호위 중대", "at": [14, 33], "facing": 90, "units": { "officer": 1, "infantry": 24, "heavy_machinegunner": 2, "heavy_at_rifleman": 4 }, "formation": "column" },
+    { "id": "blk_n", "faction": 2, "name": "북선 저지선", "at": [52, 30], "facing": 270, "units": { "infantry_fengtian": 10 }, "formation": "spread" },
+    { "id": "blk_s", "faction": 2, "name": "남선 저지선", "at": [46, 36], "facing": 270, "units": { "infantry_fengtian": 10 }, "formation": "spread" },
+    { "id": "amb", "faction": 2, "name": "고개 매복조", "at": [100, 33], "facing": 270, "units": { "officer_fengtian": 1, "infantry_fengtian": 24, "heavy_machinegunner_fengtian": 4, "heavy_at_rifleman": 6 }, "formation": "spread" },
+    { "id": "gate", "faction": 2, "name": "보급역 수비대", "at": [130, 32], "facing": 270, "units": { "infantry_fengtian": 20, "heavy_at_rifleman": 4 }, "formation": "spread" }
+  ],
+  "trains": [
+    { "tag": "armor", "faction": 1, "cars": ["locomotive", "guncar", "mgcar"], "path": [[18, 30], [40, 30], [84, 30], [140, 30]], "waits": [0, 12, 12, 0] },
+    { "tag": "freight", "faction": 1, "cars": ["locomotive", "wagon", "wagon", "wagon"], "path": [[12, 36], [34, 36], [78, 36], [140, 36]], "waits": [0, 20, 20, 0] }
+  ],
+  "objectives": [
+    { "id": "deliver", "type": "escort", "train": "freight", "area": "depot", "count": 2, "text": "화차 2량 이상을 동쪽 보급역으로" }
+  ],
+  "failures": [ { "type": "timeLimit", "seconds": 900 } ],
+  "events": [
+    { "id": "intro", "when": { "time": 1 }, "do": [ { "message": "화물열차를 보급역까지 호송하라. 장갑열차가 앞서 간다." } ] },
+    { "id": "ridge", "when": { "area": "ridge", "faction": 1 }, "do": [ { "message": "고개 구간이다 — 매복에 주의하라." } ] },
+    { "id": "arrive", "when": { "objective": "deliver" }, "do": [ { "message": "화차가 보급역에 도착했다!" } ] }
+  ]
+}
