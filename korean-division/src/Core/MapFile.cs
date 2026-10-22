@@ -71,7 +71,7 @@ public sealed partial class MapFile
     static MapFile? Deserialize(string text) => JsonSerializer.Deserialize<MapFile>(text, new JsonSerializerOptions { PropertyNameCaseInsensitive = true, ReadCommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true });
 
     public static string Folder => Path.Combine(AppContext.BaseDirectory, "assets", "maps");
-    public static string PathOf(string id) => Path.Combine(Folder, id + ".json");
+    public static string PathOf(string id) => PathGuard.Resolve(Folder, id);   // T51a: id 검사 + 폴더 밖 거부 (잘못된 id → 존재할 수 없는 경로)
     public static IEnumerable<string> Available() =>
         Directory.Exists(Folder) ? Directory.GetFiles(Folder, "*.json").Select(Path.GetFileNameWithoutExtension).OfType<string>().OrderBy(n => n) : Array.Empty<string>();
 
