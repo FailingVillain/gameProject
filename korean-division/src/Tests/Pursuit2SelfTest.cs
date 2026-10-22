@@ -130,11 +130,11 @@ public static class Pursuit2SelfTest
 
     // ---------------------------------------------------------------- ② 후퇴 뒤 재정비
 
-    static (int Readv, int Holds, float AdvMin, float AdvLate, bool Started, string Why, float AdvAfterFree) RegroupRun(bool enabled)
+    static (int Readv, int Holds, float AdvMin, float AdvLate, bool Started, string Why, float AdvAfterFree) RegroupRun(bool enabled, float noRejoinBelow = 0f, float rejoinStrength = -1f)
     {
         var R = defs.Tactics.Regroup;
-        bool old = R.Enabled;
-        R.Enabled = enabled;
+        bool old = R.Enabled; float oldNr = R.NoRejoinBelow, oldRs = R.RejoinStrength;
+        R.Enabled = enabled; R.NoRejoinBelow = noRejoinBelow; if (rejoinStrength >= 0) R.RejoinStrength = rejoinStrength;
         try
         {
             var w = Bare(160);
@@ -172,7 +172,7 @@ public static class Pursuit2SelfTest
             for (int i = 0; i < Ticks(30); i++) w.Step();
             return (readv, holds, advMin, advLate, true, "", y1 - Y());
         }
-        finally { R.Enabled = old; }
+        finally { R.Enabled = old; R.NoRejoinBelow = oldNr; R.RejoinStrength = oldRs; }
     }
 
     static void TestRegroup()
@@ -185,6 +185,15 @@ public static class Pursuit2SelfTest
         check(n.AdvAfterFree > 4f, $"제압이 풀리고 병력 · 병력비가 충분하면 재전진: 30초 동안 적 쪽 {n.AdvAfterFree:0.0}칸");
         var o = RegroupRun(false);
         check(o.Readv >= 1 && o.AdvMin > 4f, $"대조 (regroup 끔 = 옛 동작): 곧바로 재전진 {o.Readv}회, 최소 시간 안 적 쪽 {o.AdvMin:0.0}칸");
+        // T31a 재투입 제한 (무상태 키): noRejoinBelow 기본 0 = 끔, 켜면 병력 < 처음 × 값인 재정비 중대는 조건이 풀려도 재전진 안 함 (사수만)
+        var R0 = defs.Tactics.Regroup;
+        check(R0.NoRejoinBelow == 0f, $"tactics.json regroup.noRejoinBelow 기본 {R0.NoRejoinBelow} (0 = 끔, 옛 동작 · 골든 불변)");
+        var nb = RegroupRun(true, noRejoinBelow: 1.01f);   // 처음 병력 그대로라도 1.01 배 미만 → 항상 막힘
+        check(nb.Started && nb.Readv == 0 && nb.Holds > 0 && nb.AdvAfterFree < 3f, $"noRejoinBelow 1.01: 제압이 풀려도 재전진 {nb.Readv}회 · 사수 판단 {nb.Holds}회 · 30초 적 쪽 {nb.AdvAfterFree:0.0}칸 (3칸 미만)");
+        var na = RegroupRun(true, noRejoinBelow: 0.5f);   // 병력 충분 (처음 그대로) → 막지 않음 = 기본과 같은 재전진
+        check(na.Started && na.AdvAfterFree > 4f, $"noRejoinBelow 0.5 + 병력 충분: 재전진 그대로 {na.AdvAfterFree:0.0}칸 (기본 {n.AdvAfterFree:0.0}칸)");
+        var ns = RegroupRun(true, rejoinStrength: 1.01f);   // 옵션 A (기존 키 rejoinStrength 상향): 병력 문턱 미달 → 사수
+        check(ns.Started && ns.AdvAfterFree < 3f, $"rejoinStrength 1.01 (옵션 A 문턱 상향): 적이 접촉 거리 안이면 재전진 안 함, 30초 {ns.AdvAfterFree:0.0}칸");
     }
 
     // ---------------------------------------------------------------- ③ 포병만 아군 오사

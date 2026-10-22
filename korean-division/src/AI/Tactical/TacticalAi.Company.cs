@@ -527,6 +527,7 @@ public sealed partial class TacticalAi
     bool RejoinOk(World w, TacFaction s, TacGroup g, float range, float supp, Unit? e, float d, RegroupDef R)
     {
         if (w.Tick < g.RegroupUntil) return false;
+        if (R.NoRejoinBelow > 0 && g.Alive < Math.Max(1, g.Initial) * R.NoRejoinBelow) return false;   // T31a: 약해진 중대는 재투입 안 함 (Initial · Alive 만 — 무상태)
         float contactD = range + 14f * K;
         if (e == null || d > contactD) return true;   // 적이 접촉 거리에 없음 → 과제 위치로 (같은 적에게 다시 걸어 들어가는 것이 아님)
         if (supp > R.RejoinSupp) return false;

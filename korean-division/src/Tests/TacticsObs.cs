@@ -133,6 +133,8 @@ public static class TacticsObs
         if (E("KD_OBS_OFFSPREAD") is { } os) d.CombatRules.OfficerSpread = os;
         if (E("KD_OBS_NCOH") is { } nh) d.CombatRules.NcoHesitateMul = nh;
         if (E("KD_OBS_NCOD") is { } nd) d.CombatRules.NcoDecayMul = nd;
+        if (E("KD_OBS_REJOIN") is { } rj) d.Tactics.Regroup.RejoinStrength = rj;   // T31a 측정 (도구 전용): regroup.rejoinStrength
+        if (E("KD_OBS_NOREJOIN") is { } nr) d.Tactics.Regroup.NoRejoinBelow = nr;   // T31a 측정 (도구 전용): regroup.noRejoinBelow
         switch (v)
         {
             case "V1": d.Tactics.Behaviour.SuperioritySupp = 0.30f; break;

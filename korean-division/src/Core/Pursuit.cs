@@ -52,6 +52,8 @@ public sealed class RegroupDef
     public float MinSec { get; set; } = 20f;
     public float CheckSec { get; set; } = 5f;
     public float RejoinStrength { get; set; } = 0.5f;
+    /// <summary>T31a 재투입 제한 (무상태, 새 저장 필드 없음): 재정비 중 병력 &lt; 처음 병력 × 이 값이면 재전진하지 않고 그 자리 사수 (지원 사격 · 예비 대용) — 접촉 거리 밖 적 · 지원 조건도 무시. 증원으로 넘으면 다시 판단. 0 = 끔 (옛 동작).</summary>
+    public float NoRejoinBelow { get; set; } = 0f;
     public float RejoinSupp { get; set; } = 0.2f;
     public float RejoinOdds { get; set; } = 1.0f;
     public float ReinforceFrac { get; set; } = 0.15f;
