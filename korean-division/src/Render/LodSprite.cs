@@ -313,7 +313,7 @@ internal static class LodDraw
     /// feet = 기준점이 놓일 위치 (월드/화면 좌표), worldScale = LOD 0 시트 1px → 좌표 배율 (보통 sprite.Scale),
     /// screenScale = LOD 0 시트 1px 가 화면에서 차지하는 px (LOD 선택용). 칸이 없는 프레임이면 아무것도 그리지 않는다.
     /// </summary>
-    public static void Cell(LodSprite s, int row, bool flip, int frame, Vector2 feet, float worldScale, float screenScale, Color team, int alpha = 255)
+    public static void Cell(LodSprite s, int row, bool flip, int frame, Vector2 feet, float worldScale, float screenScale, Color team, int alpha = 255, bool plain = false)
     {
         if ((uint)frame >= (uint)s.FrameNames.Length || (uint)row >= (uint)Math.Max(1, s.DirCount)) { Miss(s, row, frame, -1, "범위 밖"); return; }
         // 원하는 LOD 가 아직 없으면 (작업자가 만드는 중 · 내려감) 다음 작은 LOD 로 그린다
@@ -337,7 +337,7 @@ internal static class LodDraw
         int ox = flip ? fwc - lv.COX[ci] - cw : lv.COX[ci];
         var src = new Rectangle(lv.CX[ci], lv.CY[ci], flip ? -cw : cw, lv.CH[ci]);
         var dest = new Rectangle(feet.X - ax * k + ox * k, feet.Y - an.Y * k + lv.COY[ci] * k, cw * k, lv.CH[ci] * k);
-        TeamShader.Enter();
+        if (plain) TeamShader.Leave(); else TeamShader.Enter();   // plain = 팀색 없는 그림 (민가): 기본 셰이더라 team 값이 곱해지는 색조가 된다
         Raylib.DrawTexturePro(lv.CellTex[ci], src, dest, Vector2.Zero, 0, new Color(team.R, team.G, team.B, (byte)alpha));
         if (lv.Group < Drawn.Length) Drawn[lv.Group]++;
     }
@@ -346,7 +346,7 @@ internal static class LodDraw
     /// 칸 (행 0) 의 그림 — 투명 여백을 잘라낸 부분 — 을 사각형 r (월드 좌표) 안에 비율을 지켜 맞춰 그린다: 가로 가운데 · 아래 맞춤.
     /// 여러 칸짜리 가옥 발자국 그리기용 (그림을 바꾸지 않고 배율로 크기를 맞춤). zoom = 카메라 줌 (LOD 선택).
     /// </summary>
-    public static void CellFit(LodSprite s, int frame, Rectangle r, float zoom, Color team)
+    public static void CellFit(LodSprite s, int frame, Rectangle r, float zoom, Color team, bool mirror = false, bool plain = false)
     {
         if ((uint)frame >= (uint)s.FrameNames.Length || s.Levels.Length == 0) return;
         var l0 = s.Levels[0];
@@ -359,8 +359,9 @@ internal static class LodDraw
         float k = MathF.Min(r.Width / cw, r.Height / ch);
         float w = cw * k, h = ch * k;
         var dest = new Rectangle(r.X + (r.Width - w) / 2, r.Y + r.Height - h, w, h);
-        TeamShader.Enter();
-        Raylib.DrawTexturePro(lv.CellTex[ci], new Rectangle(lv.CX[ci], lv.CY[ci], cw, ch), dest, Vector2.Zero, 0, team);
+        if (plain) TeamShader.Leave(); else TeamShader.Enter();
+        // mirror = 가로로 뒤집어 그리기 (음수 원본 폭, 아틀라스 항목 증가 0). plain = 기본 셰이더 (team 값이 곱해지는 색조) — 팀 셰이더는 불투명 픽셀에 정점 색을 안 곱한다
+        Raylib.DrawTexturePro(lv.CellTex[ci], new Rectangle(lv.CX[ci], lv.CY[ci], mirror ? -cw : cw, ch), dest, Vector2.Zero, 0, team);
         if (lv.Group < Drawn.Length) Drawn[lv.Group]++;
     }
 

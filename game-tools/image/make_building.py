@@ -25,6 +25,7 @@ from bcommon import frame_for, make_res, render, TILE_PX  # noqa: E402
 from common import composite  # noqa: E402
 import houses  # noqa: E402
 import village  # noqa: E402
+import ruins  # noqa: E402
 
 DEFAULT_OUT = r"C:\gameProject\game-tools\korean-division-image-out"
 GRASS = (78, 110, 64, 255)
@@ -35,7 +36,8 @@ SUFFIX = ["", "@64", "@32"]
 def registry():
     reg = {}
     for n, (fn, bbox, fp, label) in houses.HOUSES.items():
-        reg[n] = dict(states={"intact": lambda fn=fn: fn(ruin=False), "ruined": lambda fn=fn: fn(ruin=True)}, bbox=bbox, footprint=fp, label=label)
+        rf = ruins.RUINS[n][0]   # T39i: two ruin variants per house (ruins.py)
+        reg[n] = dict(states={"intact": lambda fn=fn: fn(ruin=False), "ruined": lambda rf=rf: rf(v="a"), "ruined_b": lambda rf=rf: rf(v="b")}, bbox=bbox, footprint=fp, label=label)
     for n, d in village.VILLAGES.items():
         reg[n] = d
     return reg

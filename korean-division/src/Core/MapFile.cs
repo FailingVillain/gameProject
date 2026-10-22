@@ -33,6 +33,8 @@ public sealed partial class MapFile
     /// <summary>날씨 (clear · overcast · fog · rain · snow, 생략 = clear) · 시간대 (dawn · day · dusk · night, 생략 = day).</summary>
     public string? Weather { get; set; }
     public string? Time { get; set; }
+    /// <summary>민가 그림 양식 (korean | manchu | mixed). 생략 = 예전 4종. 렌더 전용 (T55s).</summary>
+    public string? HouseStyle { get; set; }
     /// <summary>0 이 아니면 이 분마다 시간대가 한 단계 진행.</summary>
     public float TimeStep { get; set; }
     /// <summary>날씨 일정: [{ "at": 분, "weather": "rain", "time": "dusk" }, ...] (둘 중 하나만 써도 됨).</summary>
@@ -90,6 +92,7 @@ public sealed partial class MapFile
         map.Id = id;
         map.DisplayName = mf.Name;
         if (mf.Factions.Count > 0) factionTable.Add(map, mf.Factions);
+        if (!string.IsNullOrWhiteSpace(mf.HouseStyle)) houseStyleTable.AddOrUpdate(map, mf.HouseStyle.Trim().ToLowerInvariant());
         if (mf.BuildWeather() is { } ws) weatherTable.Add(map, ws);
         map.FileHash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(text)))[..16];
         return map;

@@ -54,6 +54,7 @@ public sealed partial class World
             map.StartTiles.Add((Math.Clamp((int)p.X, 0, map.Width - 1), Math.Clamp((int)p.Y, 0, map.Height - 1)));
         }
         MapFile.SetMissionFactions(map, def.Factions.Select(f => new FactionDef { Name = f.Name, En = f.En, Color = f.Color, Lang = f.Lang, Team = f.Team }).ToList());
+        MapFile.SetMissionHouseStyle(map, def.HouseStyle);   // 렌더 전용 (T55s)
         var w = new World(map, defs, def.FactionCount);
         w.Mission = new MissionState(def);
         for (int f = 1; f <= def.FactionCount; f++) w.AssignTeam(f, def.Factions[f - 1].Team);
@@ -724,6 +725,13 @@ public sealed partial class World
 public sealed partial class MapFile
 {
     /// <summary>미션 세력 정의를 지도에 붙인다 (지도 파일의 factions 대신 — 이름 · 색 · 언어 · 팀).</summary>
+    static readonly System.Runtime.CompilerServices.ConditionalWeakTable<GameMap, string> houseStyleTable = new();
+
+    /// <summary>민가 그림 양식 (지도 파일 houseStyle, 미션 houseStyle 이 우선). null = 예전 4종. 렌더 전용 — 스냅샷 · 체크섬에 없다 (T55s).</summary>
+    public static string? HouseStyleOf(GameMap map) => houseStyleTable.TryGetValue(map, out var s) ? s : null;
+
+    internal static void SetMissionHouseStyle(GameMap map, string? style) { if (!string.IsNullOrWhiteSpace(style)) houseStyleTable.AddOrUpdate(map, style.Trim().ToLowerInvariant()); }
+
     internal static void SetMissionFactions(GameMap map, List<FactionDef> defs) => factionTable.AddOrUpdate(map, defs);
 
     /// <summary>스냅샷 복원 뒤: 팀 정보까지 미션 정의에서 다시 (지도 구역에는 이름 · 색 · 언어만 저장된다).</summary>

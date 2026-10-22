@@ -751,3 +751,5 @@
 - 흐름: `CampaignCarry.Patch` 중대 `officerKeys` → `WorldMission` 스폰 `MissionState.OfficerKey` (유닛 Id → 키, MISN 끝, FV 53, 체크섬은 비어 있지 않을 때만 → 기존 골든 불변) → `MissionResults` 생존 줄 `Key` · `Deaths` → 명부 `CampaignOfficers` (스키마 v9).
 - 주입: 직책 company 뿐 아니라 battalion/assistant/staff 도 (대대장 먼저). 명부 dead · 부상 중 · 참모 배정은 제외. 키 주입 미션에서 출전 안 한 키 장교 이월 줄은 보존.
 - 전사 = dead 영구 (대대장만 연표 `commander` `dead:<키>`), AlwaysWounded = wounded + `WoundedUntilMission = 완료 작전 수 + 1` (연표 `wounded:<키>`). 항복 장교도 상실 (Captured 표시).
+## T55s 민가 양식 선택 (렌더 전용)
+`houseStyle` (지도 json / 미션 json, 미션 우선; korean | manchu | mixed, 생략 = 예전 4종) -> `HouseStyles.Assign` 이 지도 전체 조각을 순서대로 한 번에 배정 (좌표 해시, 왼쪽·위 2칸 안 같은 (키,구운 B) 면 salt 올려 최대 3회 재시도). 가중치·색조·42 키 등록 = assets/data/house_styles.json (키 = building_art.house.<prefix>NN, B 변형 = 키+".b", 없는 키는 건너뜀, 클래스에 하나도 없으면 fallback 예전 키). 반전 = CellFit/Cell 음수 원본 폭, 색조 = plain(기본 셰이더) 에서 정점 색 곱. 팀 셰이더는 불투명 픽셀에 정점 색을 곱하지 않으므로 색조엔 plain 필수. 폐허 칸 = 'ruined' / 'ruined_b' 프레임 (없으면 1번). 스냅샷·체크섬·FormatVersion 불변.
