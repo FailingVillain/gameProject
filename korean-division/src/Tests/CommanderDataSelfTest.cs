@@ -68,15 +68,15 @@ public static class CommanderDataSelfTest
 
             // 5) 저장 v7 -> v8 (빈 목록) · 왕복 · 손상 값
             var v7 = CampaignState.FromJson("{\"Version\":7,\"Day\":4,\"Completed\":[\"c1_01\"]}");
-            check(v7 != null && v7.Version == 8 && v7.CommanderPool.Count == 0 && v7.CampaignOfficers.Count == 0 && v7.Day == 4, "T48a 저장 이행: v7 -> v8 빈 풀 · 빈 장교 명부 (다른 필드 보존)");
+            check(v7 != null && v7.Version == 9 && v7.CommanderPool.Count == 0 && v7.CampaignOfficers.Count == 0 && v7.Day == 4, "T48a 저장 이행: v7 -> v8 빈 풀 · 빈 장교 명부 (다른 필드 보존)");
             var v3 = CampaignState.FromJson("{\"Version\":3}");
-            check(v3 != null && v3.Version == 8 && v3.CommanderPool.Count == 0, "T48a 저장 이행: v3 -> v8");
+            check(v3 != null && v3.Version == 9 && v3.CommanderPool.Count == 0, "T48a 저장 이행: v3 -> v8");
             var s = new CampaignState();
             s.CommanderPool.Add(new CampaignState.CommanderSlot { Id = "x", Status = CommanderStatus.Hired, Regiment = 2, Favor = 41, FavorLastMission = "m1", HiredDay = 3, DismissedDay = 0, TimesHired = 1 });
             s.CampaignOfficers.Add(new CampaignState.CampaignOfficer { Key = 7, Name = "오", Rank = 2, Xp = 90, School = "독일", Assignment = "battalion", Battalion = 3, Status = "wounded", WoundedUntilMission = 5, AlwaysWounded = true, TerminalReady = true });
             var back = CampaignState.FromJson(s.ToJson());
             var p = back?.CommanderPool.FirstOrDefault(); var o = back?.CampaignOfficers.FirstOrDefault();
-            check(back != null && back.Version == 8 && p != null && p.Id == "x" && p.Status == "hired" && p.Regiment == 2 && p.Favor == 41 && p.FavorLastMission == "m1" && p.HiredDay == 3 && p.TimesHired == 1
+            check(back != null && back.Version == 9 && p != null && p.Id == "x" && p.Status == "hired" && p.Regiment == 2 && p.Favor == 41 && p.FavorLastMission == "m1" && p.HiredDay == 3 && p.TimesHired == 1
                 && o != null && o.Key == 7 && o.Name == "오" && o.Rank == 2 && o.Xp == 90 && o.School == "독일" && o.Assignment == "battalion" && o.Battalion == 3 && o.Status == "wounded" && o.WoundedUntilMission == 5 && o.AlwaysWounded && o.TerminalReady, "T48a 저장 v8 왕복: 풀 · 장교 명부 모든 필드");
             var wild = CampaignState.FromJson("{\"Version\":8,\"CommanderPool\":[{\"Id\":\"a\",\"Status\":\"zzz\",\"Favor\":9999,\"TimesHired\":-4},{\"Id\":\"a\"},{\"Id\":\"\"}],\"CampaignOfficers\":[{\"Key\":1,\"Xp\":-5,\"Name\":null}]}");
             check(wild != null && wild.CommanderPool.Count == 1 && wild.CommanderPool[0].Status == "locked" && wild.CommanderPool[0].Favor == 100 && wild.CommanderPool[0].TimesHired == 0 && wild.CampaignOfficers[0].Xp == 0 && wild.CampaignOfficers[0].Name == "",

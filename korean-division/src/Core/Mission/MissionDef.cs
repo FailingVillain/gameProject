@@ -162,6 +162,7 @@ public sealed class MissionDef
                 Require(c.OfficerRanks == null || c.OfficerRanks.All(r => r >= 1 && r <= defs.Officers.MaxRank), $"병력 '{f.Id}': 장교 계급 (1~{defs.Officers.MaxRank})");
                 Require(c.InfantryRanks == null || c.InfantryRanks.All(r => r >= 0 && r <= defs.CombatRules.MaxRank), $"병력 '{f.Id}': 보병 계급 목록 (0~{defs.CombatRules.MaxRank})");
                 Require(c.OfficerXp >= 0, $"병력 '{f.Id}': 장교 경험치 {c.OfficerXp}");
+                Require(c.OfficerKeys == null || c.OfficerKeys.All(k => k >= 0), $"병력 '{f.Id}': 장교 신원 키 (0 이상)");   // T48b1
                 Require(c.SquadLeaderRank is null || (c.SquadLeaderRank >= 0 && c.SquadLeaderRank <= defs.CombatRules.MaxRank), $"병력 '{f.Id}': 분대장 계급 {c.SquadLeaderRank} (0~{defs.CombatRules.MaxRank})");
                 Require(MissionCompany.ParseForm(c.Formation ?? f.Formation) != null, $"병력 '{f.Id}': 대형 '{c.Formation ?? f.Formation}'");
             }
@@ -344,6 +345,8 @@ public sealed class MissionCompany
     public int[]? OfficerRanks { get; set; }
     /// <summary>장교 시작 경험치 (캠페인 계승).</summary>
     public int OfficerXp { get; set; }
+    /// <summary>[T48b1 캠페인 이월] 장교 신원 키 (officerRanks 와 나란히, 배치 순서대로; 0 = 키 없음). CampaignCarry 가 씀 — 시뮬 판정 무관, 결과 정산용.</summary>
+    public int[]? OfficerKeys { get; set; }
     /// <summary>[캠페인 이월] 소총 보병 (장교 · 중화기 · 정찰병 제외) 의 개별 계급, 배치 순서대로. 목록보다 보병이 많으면 나머지는 rank (없으면 기본). CampaignCarry 가 씀.</summary>
     public int[]? InfantryRanks { get; set; }
     /// <summary>태그 (목표 · 사건이 참조: officer · guns · wagon ...).</summary>

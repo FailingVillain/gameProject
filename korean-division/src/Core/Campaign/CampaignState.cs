@@ -26,6 +26,8 @@ public sealed class CampaignState
         public string AfterMission { get; set; } = "";
         public bool Officer { get; set; }
         public int UnitId { get; set; }
+        /// <summary>[v9 · T48b1] 장교 신원 키 (0 = 사병 · 키 없는 옛 기록).</summary>
+        public int Key { get; set; }
         public int FromRank { get; set; }
         public int ToRank { get; set; }
     }
@@ -70,6 +72,11 @@ public sealed class CampaignState
         public int WoundedUntilMission { get; set; }
         public bool AlwaysWounded { get; set; }
         public bool TerminalReady { get; set; }
+        /// <summary>[v9 · T48b1] 공적 (누적 사살 수 — 승리 정산마다 더함) · 특성 id (데이터/사건이 채움) · 사망 작전 id · 사망 일 (0 = 생존).</summary>
+        public int Merits { get; set; }
+        public List<string> Traits { get; set; } = new();
+        public string DeathMission { get; set; } = "";
+        public int DeathDay { get; set; }
     }
 
     public sealed class MissionRecord
@@ -189,7 +196,8 @@ public sealed class CampaignState
     /// 6 (T42c): 포로 장부 — Stock.Prisoners · PrisonersRepatriated/PrisonersInterned · DebriefReport.PrisonersTaken (추가만, v3~v5 는 0 으로 이행).</summary>
     /// 7 (T42d): 작전 일수 · 연표 — Day / Timeline (추가만, v3~v6 은 Day = 1 + 치른 작전 수 × missionDays · 빈 연표로 이행).
     /// 8 (T48a): 연대장 풀 · 장교 명부 — CommanderPool / CampaignOfficers (추가만, v3~v7 은 빈 목록으로 이행; 풀은 불러올 때 CommanderPools.Sync 가 데이터와 맞춘다).
-    public const int SchemaVersion = 8;
+    /// 9 (T48b1): 장교 신원 — UnitLine.Key · NextOfficerKey · CampaignOfficer.Merits/Traits/DeathMission/DeathDay · PromotionRecord.Key (추가만, v3~v8 은 키 없음 → 다음 승리 정산 때 생존 장교에게 발급).
+    public const int SchemaVersion = 9;
     public const int TimelineMax = 200;
     /// <summary>Day 상한 (손상 저장 · 덧셈 넘침 방지).</summary>
     public const int DayMax = 100000;
@@ -220,6 +228,8 @@ public sealed class CampaignState
     public List<CommanderSlot> CommanderPool { get; set; } = new();
     /// <summary>[v8 · T48a] 장교 명부 (대대장 · 참모 후보). 옛 파일 = 빈 목록. 로직은 T48b.</summary>
     public List<CampaignOfficer> CampaignOfficers { get; set; } = new();
+    /// <summary>[v9 · T48b1] 다음에 발급할 장교 키 (1부터, 단조 증가 — 사망 · 삭제된 키도 재사용하지 않음). 0 = 옛 파일 (EnsureInitialized 가 채움).</summary>
+    public int NextOfficerKey { get; set; }
     /// <summary>이월 사병 (계급 · 사살 수 · 병력 id).</summary>
     public List<MissionResults.UnitLine> Units { get; set; } = new();
     /// <summary>이월 장교 (OfficerRank · Xp · Post).</summary>
@@ -270,6 +280,7 @@ public sealed class CampaignState
         Manpower ??= new();
         PromotionLog ??= new();   // T42b
         CommanderPool ??= new(); CampaignOfficers ??= new();   // T48a
+        OfficerIdentity.EnsureNextKey(this);   // T48b1
         Stock ??= new();
         Stock.Rifles ??= new();
         if (!Stock.Rifles.ContainsKey(StockKeys.Ru)) Stock.Rifles[StockKeys.Ru] = 3000;
@@ -331,6 +342,8 @@ public sealed class CampaignState
         foreach (var o in CampaignOfficers)
         {
             o.Name ??= ""; o.School ??= ""; o.Assignment ??= ""; o.StaffSlot ??= ""; o.Status ??= "alive";
+            o.Traits ??= new(); o.Traits.RemoveAll(t => t == null); o.DeathMission ??= ""; o.Merits = Math.Max(0, o.Merits); o.DeathDay = Math.Clamp(o.DeathDay, 0, DayMax);   // T48b1
+            if (o.Status is not ("alive" or "wounded" or "dead")) o.Status = "alive";
             o.Rank = Math.Max(0, o.Rank); o.Xp = Math.Max(0, o.Xp); o.Battalion = Math.Max(0, o.Battalion); o.WoundedUntilMission = Math.Max(0, o.WoundedUntilMission);
         }
     }
@@ -433,6 +446,8 @@ public sealed class CampaignState
         // 전투 정산 (자원 / 부상 / 노획 / 정기보급 / LastDebrief) - 첫 승리만 (D23): 반복 승리는 결과만 기록하고 자원은 더하지 않는다
         if (!wasDone) CampaignEconomy.SettleBattle(s, r);
         else CampaignEconomy.RecordRepeatVictory(s, r);
+        // T48b1: 장교 신원 (키 발급 · 명부 갱신 · 전사/부상) — 이월 병력을 새로 정한 첫 승리만 (연표 Day = 정산 뒤)
+        if (!wasDone && !olderReplay) OfficerIdentity.Settle(s, r);
 
         return s;
     }
@@ -440,8 +455,9 @@ public sealed class CampaignState
     static MissionResults.UnitLine Copy(MissionResults.UnitLine u) => new()
     {
         Id = u.Id, Unit = u.Unit, Name = u.Name, Kills = u.Kills, Rank = CampaignPromotion.CarriedRank(u), StartRank = CampaignPromotion.CarriedRank(u), Force = u.Force,
-        OfficerRank = u.OfficerRank, TempRank = null, Xp = u.Xp, Post = u.Post,
+        OfficerRank = u.OfficerRank, TempRank = null, Xp = u.Xp, Post = u.Post, Key = u.Key,
     };
+    internal static MissionResults.UnitLine CopyLine(MissionResults.UnitLine u) => Copy(u);
 
     /// <summary>다음 미션이 읽을 이월 병력 (장교 먼저).</summary>
     public IEnumerable<MissionResults.UnitLine> Carry() => Officers.Concat(Units);

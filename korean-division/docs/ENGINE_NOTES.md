@@ -677,3 +677,9 @@
 - 산개 파상 횡대 (`formations.json lineShape = "line_waves"`) · choke (`combat.chokeEnabled`) 는 **기본 끔**. 측정 변형 `KD_OBS_VARIANT` = FMOFF · LWON · LWX(`KD_OBS_LW`) · CHOKE · RST0 등 (TacticsObs.ApplyVariant, --collide 도 같음). `--collide` 끝에 `[rev]` 역전 유닛 상태 분류.
 - 측정 (같은 빌드, 2026-10-22): --collide 역전/s 대형 완화 끔→켬 amove 1.63→1.29 · battle 0.77→0.71 · march 0.20→0.11. tactics-obs 5시드 B(ai_bn_assault) 승: 끔 5 · 켬 4 · 산개 파상 1 · 간격만 1.3 2 (넓은 횡대는 공격 측 불리). choke 켬: tactics-obs A 2→4/5 · B 4→5/5 이지만 --choke 다리 통과 틱 2193→2748 (w3 co3) · 2524→4641 (co5) · 역전/유닛-분 34→56 — 큐가 통과를 늦춤 → 끔 유지.
 - 테스트 `KD_SELFTEST_ONLY=formrelax` · `choke`, 측정 `--choke [w=3] [co=3] [terrain=bridge|ford] [off=1]`.
+
+## T48b1 장교 신원 키 (OfficerKey, 2026-10-22)
+- 미션 Unit Id 는 미션마다 새로 매겨진다 (SpawnForce, 출격 편성 Pending 이 중대 수를 줄이면 밀림) → 캠페인이 키를 발급 (`OfficerIdentity.Settle`, 첫 승리 정산, 생존 장교 Id 순, `NextOfficerKey` 단조 · 재사용 없음).
+- 흐름: `CampaignCarry.Patch` 중대 `officerKeys` → `WorldMission` 스폰 `MissionState.OfficerKey` (유닛 Id → 키, MISN 끝, FV 53, 체크섬은 비어 있지 않을 때만 → 기존 골든 불변) → `MissionResults` 생존 줄 `Key` · `Deaths` → 명부 `CampaignOfficers` (스키마 v9).
+- 주입: 직책 company 뿐 아니라 battalion/assistant/staff 도 (대대장 먼저). 명부 dead · 부상 중 · 참모 배정은 제외. 키 주입 미션에서 출전 안 한 키 장교 이월 줄은 보존.
+- 전사 = dead 영구 (대대장만 연표 `commander` `dead:<키>`), AlwaysWounded = wounded + `WoundedUntilMission = 완료 작전 수 + 1` (연표 `wounded:<키>`). 항복 장교도 상실 (Captured 표시).

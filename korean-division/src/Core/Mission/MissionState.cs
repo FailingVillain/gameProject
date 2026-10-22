@@ -25,6 +25,8 @@ public sealed class MissionState
     public readonly SortedDictionary<string, List<int>> Tags = new(StringComparer.Ordinal);
     /// <summary>유닛 Id → 시작 계급 (승진 집계용).</summary>
     public readonly SortedDictionary<int, int> StartRank = new();
+    /// <summary>[T48b1] 유닛 Id → 캠페인 장교 신원 키 (미션 텍스트 officerKeys, 스폰 때). 결과 정산 전용 — 시뮬 판정에 안 씀. FormatVersion 53.</summary>
+    public readonly SortedDictionary<int, int> OfficerKey = new();
     public int[] ObjState = Array.Empty<int>();
     public float[] ObjProgress = Array.Empty<float>();
     public bool[] ObjRevealed = Array.Empty<bool>();
@@ -80,6 +82,8 @@ public sealed class MissionState
         foreach (var (t, s) in Messages) { w.L(t); w.Str(s); }
         w.Str(Weather); w.Str(TimeOfDay);
         w.I(Result); w.L(EndTick); w.I(FailReason);
+        w.I(OfficerKey.Count);   // FormatVersion 53 (T48b1)
+        foreach (var (k, v) in OfficerKey) { w.I(k); w.I(v); }
     }
 
     static void WriteMap(SnapWriter w, SortedDictionary<string, List<int>> m)
@@ -132,6 +136,13 @@ public sealed class MissionState
         for (int i = 0; i < nm; i++) s.Messages.Add((r.L(), r.Str() ?? ""));
         s.Weather = r.Str(); s.TimeOfDay = r.Str();
         s.Result = r.I(); s.EndTick = r.L(); s.FailReason = r.I();
+        int nk = r.Count(2);   // FormatVersion 53 (T48b1)
+        for (int i = 0; i < nk; i++)
+        {
+            int k = r.I(), v = r.I();
+            if (v <= 0) throw new SnapshotException(string.Format(SnapMsg.Invalid, "officer key"));
+            s.OfficerKey[k] = v;
+        }
         return s;
     }
 }
