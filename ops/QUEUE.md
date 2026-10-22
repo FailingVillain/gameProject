@@ -33,6 +33,8 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T42b | 캠페인 진급 후보·적용 (탭 9, 스키마 v5, 기본 꺼짐) | feature | D中 H2 | T42a | wip-ready (t42b-promotion; 스택: t42a 위) |
 | T42c | 캠페인 포로 장부 · 송환/수용 (탭 7, 스키마 v6) | feature | D中 H2 | T42b | wip-ready (t42c-prisoners; 스택: t42b 위) |
 | T42d | 캠페인 일정 · 일지 (탭 14 · 12, 스키마 v7) | feature | D下~中 H1 | T42c | wip-ready (t42d-schedule-log; 스택: t42c 위) |
+| T49b | 저장 호환 2: 설정 관대 읽기 · 지휘관 JSON 건너뛰기 시험 | feature | D中 H1 | T48a | wip-ready (t49bc-compat-tests; 스택: t48a 위) |
+| T49c | 저장 호환 출시 게이트 (캠페인 v1..현재 샘플, compatgate) | feature | D下 H1 | T49a(독립) | wip-ready (t49bc-compat-tests; T49b 와 같은 브랜치) |
 
 카드가 있는 것 = T01~T13 (+_TEMPLATE). T15~T20 과 카드 없는 브랜치(wip/chokefix D14 보류 · wip/sfxnew 효과음 · wip/gt-face-proto)는 발주 직전 spec/지휘자가 카드를 쓴다.
 보류(이 표 밖): 장갑열차 · 하천 · 전술 AI 3C/3D · 지도 편집기 · 캠페인 순서 연결/챕터 1/엔딩.

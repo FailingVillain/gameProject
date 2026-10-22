@@ -1,0 +1,73 @@
+{
+  "Version": 1,
+  "CampaignId": "c1",
+  "NextMission": "c1_02_tumen",
+  "Completed": [
+    "c0_01_bandits",
+    "c1_01_hoeryong"
+  ],
+  "History": [
+    {
+      "MissionId": "c1_01_hoeryong",
+      "Title": "1-1",
+      "DurationSeconds": 931.5,
+      "EnemyKills": 40,
+      "Lost": 5,
+      "Survivors": 55,
+      "SavedAt": "2026-10-22T10:00:00"
+    }
+  ],
+  "Units": [
+    {
+      "Id": 7,
+      "Unit": "rifleman",
+      "Name": "김 일병",
+      "Kills": 4,
+      "Rank": 1,
+      "StartRank": 0
+    }
+  ],
+  "Officers": [
+    {
+      "Id": 2,
+      "Unit": "officer",
+      "Name": "박 참위",
+      "Kills": 1,
+      "Rank": 0,
+      "StartRank": 0,
+      "OfficerRank": 2,
+      "Xp": 30,
+      "Post": "company"
+    }
+  ],
+  "HowitzerCompany": true,
+  "Difficulty": "normal",
+  "EntryUnits": [
+    {
+      "Id": 7,
+      "Unit": "rifleman",
+      "Name": "김 일병",
+      "Kills": 4,
+      "Rank": 1,
+      "StartRank": 0
+    }
+  ],
+  "EntryOfficers": [
+    {
+      "Id": 2,
+      "Unit": "officer",
+      "Name": "박 참위",
+      "Kills": 1,
+      "Rank": 0,
+      "StartRank": 0,
+      "OfficerRank": 2,
+      "Xp": 30,
+      "Post": "company"
+    }
+  ],
+  "EntryMission": "c1_01_hoeryong",
+  "Seed": 19200401,
+  "NextAvailable": true,
+  "NextName": "두만강 도하",
+  "HasProgress": true
+}
