@@ -4,7 +4,7 @@
 - 핫스팟: WorldCombat.cs IsValidTarget · Retaliate, TrainWeaponsSelfTest, detcheck.golden
 - 브랜치 kd/immune-target-fix (kd-t30b 워크트리) | 상태 wip-ready | sim(Sonnet)
 ## 확정 결정
-소총 등이 피해를 줄 수 없는(면역) 표적에게 반격/자동 표적하지 않는다. 플레이어 공격 명령은 그대로. 밸런스 값 변경 금지.
+소총 등이 피해를 줄 수 없는(면역) 표적에게 반격/자동 표적하지 않는다. Order==Attack 인 유닛(플레이어 명령이든 AI 발령이든 출처 무관)은 면역 표적 제외를 적용하지 않고 그대로 공격한다 — 면제 기준은 "플레이어 명령"이 아니라 유닛의 현재 Order 이다. 밸런스 값 변경 금지.
 ## 수용 기준
 CanDamage(CategoryOf(t)) 거짓이면 Retaliate 무시, IsValidTarget 무효 (Order==Attack 제외). selftest T36 3건.
 ## 결과
