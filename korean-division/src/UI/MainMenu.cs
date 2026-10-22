@@ -168,6 +168,7 @@ public sealed class MainMenu
 
     bool Button(Rectangle r, string label, bool enabled = true, bool active = false, int size = 16)
     {
+        Ui.RegHit(r, label, enabled);
         bool hover = enabled && Ui.Contains(r, mouse);
         Color fill = !enabled ? Palette.PanelDark : active ? Palette.BtnActive : hover ? Palette.BtnHover : Palette.Btn;
         Raylib.DrawRectangleRounded(r, 0.2f, 4, fill);

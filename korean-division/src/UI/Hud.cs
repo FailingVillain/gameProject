@@ -876,6 +876,7 @@ public sealed class Hud : IDisposable
             foreach (var (r, dir) in new[] { (pr, -1), (nr, 1) })
             {
                 bool ok = dir < 0 ? multiPage > 0 : multiPage < pages - 1;
+                Ui.RegHit(r, dir < 0 ? "pager-" : "pager+", ok);
                 bool hv = ok && Ui.Contains(r, mouse);
                 Raylib.DrawRectangleRounded(r, 0.2f, 4, !ok ? Palette.PanelDark : hv ? Palette.BtnHover : Palette.Btn);
                 Raylib.DrawRectangleRoundedLinesEx(r, 0.2f, 4, 1, hv ? Palette.Accent : Palette.PanelBorder);
@@ -934,6 +935,7 @@ public sealed class Hud : IDisposable
             {
                 var tr = TabRect(i);
                 bool th = Ui.Contains(tr, mouse), on = (int)game.Tab == i;
+                Ui.RegHit(tr, names[i]);
                 Raylib.DrawRectangleRounded(tr, 0.25f, 4, on ? Palette.BtnActive : th ? Palette.BtnHover : Palette.Btn);
                 Raylib.DrawRectangleRoundedLinesEx(tr, 0.25f, 4, 1, on || th ? Palette.Accent : Palette.PanelBorder);
                 Ui.TextCentered(names[i], tr, 16, Palette.Text);
@@ -946,6 +948,7 @@ public sealed class Hud : IDisposable
         foreach (var c in game.CommandCard())
         {
             var r = SlotRect(c.Col, c.Row);
+            Ui.RegHit(r, "card:" + c.Label);
             bool hover = Ui.Contains(r, mouse);
             if (hover) hovered = c;
             Color fill = c.Active ? Palette.BtnActive : hover ? Palette.BtnHover : Palette.Btn;

@@ -85,6 +85,7 @@ public sealed partial class CampaignMenu
 
     bool Button(Rectangle r, string label, bool enabled = true, int size = 16, Color? textColor = null)
     {
+        Ui.RegHit(r, label, enabled);
         bool hover = enabled && Ui.Contains(r, mouse);
         Color fill = !enabled ? Palette.PanelDark : hover ? Palette.BtnHover : Palette.Btn;
         Raylib.DrawRectangleRounded(r, 0.2f, 4, fill);
@@ -95,6 +96,7 @@ public sealed partial class CampaignMenu
 
     bool Checkbox(Rectangle r, bool isChecked, bool enabled = true)
     {
+        Ui.RegHit(r, "checkbox", enabled);
         bool hover = enabled && Ui.Contains(r, mouse);
         Raylib.DrawRectangleRounded(r, 0.2f, 3, hover ? Palette.BtnHover : Palette.Btn);
         Raylib.DrawRectangleRoundedLinesEx(r, 0.2f, 3, 1, isChecked ? Palette.Accent : Palette.PanelBorder);

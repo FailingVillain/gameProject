@@ -83,8 +83,20 @@ public static class Ui
         Raylib.DrawRectangleLinesEx(r, 1, border);
     }
 
+    /// <summary>
+    /// 클릭 가능 사각형 등록부 (T38g, UI 하네스 전용): 퍼즈가 켜면 (<see cref="HitRecording"/>) 이번 프레임에 그려진 버튼의 사각형을 모아
+    /// 다음 프레임에 작은 버튼도 겨냥해 누를 수 있게 한다. 꺼져 있으면 아무것도 하지 않음 (게임 동작 무영향).
+    /// </summary>
+    public static bool HitRecording;
+    public static readonly List<(Rectangle R, string Label)> Hits = new();
+    public static void RegHit(Rectangle r, string label, bool enabled = true)
+    {
+        if (HitRecording && enabled && r.Width > 0 && r.Height > 0) Hits.Add((r, label));
+    }
+
     public static void Button(Rectangle r, string label, bool hover, bool active)
     {
+        RegHit(r, label);
         Color fill = active ? Palette.BtnActive : hover ? Palette.BtnHover : Palette.Btn;
         Raylib.DrawRectangleRounded(r, 0.2f, 4, fill);
         Raylib.DrawRectangleRoundedLinesEx(r, 0.2f, 4, 1, Palette.PanelBorder);

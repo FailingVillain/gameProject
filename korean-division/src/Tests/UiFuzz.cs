@@ -58,6 +58,7 @@ public sealed class UiFuzz
         Seconds = seconds;
         rng = new Random(seed);
         Input.Source = inp;
+        Ui.HitRecording = true;   // T38g: 그려진 버튼 사각형을 모아 겨냥 클릭에 쓴다
         PrepareSaves();
         // 멈춤 감시: 10초 넘게 프레임이 안 넘어가면 마지막 단계 · 상황을 출력 (무한 루프 · 교착 진단용)
         var wd = new Thread(() =>
@@ -140,6 +141,7 @@ public sealed class UiFuzz
     public int Report()
     {
         Console.Error.WriteLine($"[uifuzz] 선택 종류 {seenSelections.Count}가지: {string.Join(" ", seenSelections.OrderBy(x => x))}");
+        Console.Error.WriteLine($"[uifuzz] 겨냥 클릭: 서로 다른 버튼 {aimedLabels.Count}개 (작은 것 {aimedSmall.Count}개: {string.Join(" | ", aimedSmall.OrderBy(x => x).Take(12))})");
         Console.Error.WriteLine($"[uifuzz] 사건: {string.Join(", ", events.Select(kv => $"{kv.Key}={kv.Value}"))}");
         Console.Error.WriteLine(KoreanDivision.Render.LodAtlas.Summary());
         Console.Error.WriteLine($"[uifuzz] {frame} 프레임, 예외 {Exceptions}건, 고유 크래시 지점 {crashes.Count}곳");
@@ -161,14 +163,40 @@ public sealed class UiFuzz
             inp.Mouse = rng.Next(2) == 0 ? new Vector2(rng.Next(0, w), rng.Next(0, h)) : new Vector2(w / 2f + rng.Next(-420, 420), h * 0.3f + rng.Next(0, (int)(h * 0.6f)));
             stay = rng.Next(1, 4);
         }
-        if (rng.Next(14) == 0) inp.Pressed.Add(MouseButton.Left);
+        if (rng.Next(14) == 0) { if (!AimedClick()) inp.Pressed.Add(MouseButton.Left); }
         if (rng.Next(400) == 0) inp.KeyPress.Add(KeyboardKey.Escape);
         if (rng.Next(60) == 0) inp.Wheel = rng.Next(-3, 4);
         if (rng.Next(30) == 0) inp.KeyHeld.Add(KeyboardKey.LeftShift);
     }
 
+    // ---------------------------------------------------------------- 겨냥 클릭 (T38g)
+
+    (Rectangle R, string Label)[] targets = Array.Empty<(Rectangle, string)>();   // 직전 프레임에 그려진 클릭 가능 사각형
+    readonly HashSet<string> aimedLabels = new(), aimedSmall = new();
+    const float SmallPx = 40f;   // 이 이하(가로·세로 모두)면 작은 버튼 ([-][+] · 쪽 넘김 등)
+    static bool IsSmall(Rectangle r) => MathF.Max(r.Width, r.Height) <= SmallPx;
+
+    /// <summary>클릭 30% 는 작은 버튼, 20% 는 아무 등록 버튼을 정확히 겨냥한다 (나머지는 호출자의 무작위). 겨냥했으면 true.</summary>
+    bool AimedClick()
+    {
+        if (targets.Length == 0) return false;
+        int roll = rng.Next(10);
+        if (roll >= 5) return false;
+        bool wantSmall = roll < 3;
+        var pool = wantSmall ? targets.Where(t => IsSmall(t.R)).ToArray() : targets;
+        if (pool.Length == 0) { if (wantSmall) pool = targets; else return false; }
+        var (r, label) = pool[rng.Next(pool.Length)];
+        inp.Mouse = new Vector2(r.X + r.Width / 2, r.Y + r.Height / 2);
+        inp.Pressed.Add(MouseButton.Left);
+        bool small = IsSmall(r);
+        Ev(small ? "aim-small" : "aim-any");
+        aimedLabels.Add(label); if (small) aimedSmall.Add(label);
+        return true;
+    }
+
     void BeginFrame()
     {
+        targets = Ui.Hits.ToArray(); Ui.Hits.Clear();
         frame++;
         inp.Pressed.Clear(); inp.Released.Clear(); inp.KeyPress.Clear(); inp.KeyHeld.Clear();
         inp.Wheel = 0; inp.Delta = Vector2.Zero;
@@ -268,6 +296,8 @@ public sealed class UiFuzz
             }
         }
         if (g.DeployPhase && leftFrames > 0) inp.Mouse += new Vector2(rng.Next(-25, 26), rng.Next(-25, 26));
+        // ---- 겨냥 클릭: 등록된 버튼 중앙을 정확히 누른다 (작은 버튼 30% 예약)
+        if (leftFrames == 0 && !g.DeployPhase && rng.Next(8) == 0) AimedClick();
         // ---- 클릭 (드래그 포함)
         if (leftFrames > 0)
         {

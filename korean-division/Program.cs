@@ -23,10 +23,11 @@ if (args.Length > 1 && args[0] == "--tactics-obs") return KoreanDivision.Tests.T
 
 // 사용법:  KoreanDivision.exe [--map 100x100] [--seed N] [--ai tactical|tactical:<프로필>|standard|passive|rush|battle|none] [--nofog]
 //                      [--shot out.png [--shot-frame N] [--sim 초]] [--replay 파일] [--verify-replay 파일] [--selftest]
-const string Usage = "사용법: KoreanDivision [--players N] [--faction 번호|이름] [--map WxH|tiny|small|medium|large|huge|지도이름] [--seed N] [--ai 이름|none] [--nofog] [--weather clear|overcast|fog|rain|snow] [--time dawn|day|dusk|night] [--shot out.png] [--shot-frame N] [--sim 초] [--demo] [--exec 명령] [--theme kd1920|ww2|none] [--replay 파일] [--verify-replay 파일] [--no-replay] [--spectate [--view N]] [--mute] [--quick-battle [n]] [--battle \"종류:수,.. --vs \"종류:수,..\" [--battle-map flat|terrain|city] [--battle-ai-vs-ai] [--battle-distance N]] [--balance [suite]] [--selftest]  (인자 없이 실행하면 시작 화면)";
+const string Usage = "사용법: KoreanDivision [--players N] [--faction 번호|이름] [--map WxH|tiny|small|medium|large|huge|지도이름] [--seed N] [--ai 이름|none] [--nofog] [--weather clear|overcast|fog|rain|snow] [--time dawn|day|dusk|night] [--shot out.png] [--shot-frame N] [--sim 초] [--demo] [--exec 명령] [--theme kd1920|ww2|none] [--replay 파일] [--verify-replay 파일] [--no-replay] [--spectate [--view N]] [--mute] [--size WxH] [--quick-battle [n]] [--battle \"종류:수,.. --vs \"종류:수,..\" [--battle-map flat|terrain|city] [--battle-ai-vs-ai] [--battle-distance N]] [--balance [suite]] [--selftest]  (인자 없이 실행하면 시작 화면)";
 var opt = new GameOptions();
 bool selfTest = false, mapGiven = false, noVsync = false, fuzzMenu = false;
 double fuzzSeconds = 0;   // > 0 이면 UI 퍼즈 모드 (src/Tests/UiFuzz.cs)
+string? sizeArg = null;   // --size WxH: 이번 실행만 창 크기 (settings.json 은 건드리지 않음; UI 하네스용)
 string? factionArg = null, verifyReplay = null, menuShot = null, menuPage = null;
 string? battleA = null, battleB = null, battleMap = "flat";   // 교전 테스트: --battle "종류:수,..." --vs "..." [--battle-map flat|terrain|city] [--battle-ai-vs-ai] [--battle-distance N]
 bool battleAiVsAi = false;
@@ -38,7 +39,7 @@ try
 {
     for (int i = 0; i < args.Length; i++)
     {
-        if (args[i] is not ("--novsync" or "--menu-shot" or "--menu-page" or "--theme" or "--uifuzz" or "--fuzz-menu" or "--mute" or "--crash-test")) gameFlag = true;   // 테마만 바꿔도 시작 화면은 그대로
+        if (args[i] is not ("--novsync" or "--menu-shot" or "--menu-page" or "--theme" or "--uifuzz" or "--size" or "--fuzz-menu" or "--mute" or "--crash-test")) gameFlag = true;   // 테마만 바꿔도 시작 화면은 그대로
         switch (args[i])
         {
             case "--map":
@@ -80,6 +81,7 @@ try
             case "--no-replay": opt.SaveReplay = false; break;
             case "--spectate": opt.Spectate = true; break;
             case "--view": opt.ViewFaction = int.Parse(args[++i]); break;   // 관전 시작 시점 (0 = 전체)
+            case "--size": sizeArg = args[++i]; break;
             case "--menu-shot": menuShot = Path.GetFullPath(args[++i]); break;   // 시작 화면 스크린샷 (확인용)
             case "--menu-page": menuPage = args[++i].ToLowerInvariant(); break;   // main | setup | spectate | replays
             case "--selftest": selfTest = true; break;
@@ -159,6 +161,12 @@ if (verifyReplay != null)
 
 CrashLog.Install();   // 처리 안 된 예외 → logs/crash-*.txt
 UserSettings.Load();   // 해상도 · 창 모드 · 음량 (settings.json)
+if (sizeArg != null)   // --size WxH (저장 안 함, 최소 해상도 아래로는 못 내림)
+{
+    var sz = sizeArg.ToLowerInvariant().Split('x');
+    if (sz.Length == 2 && int.TryParse(sz[0], out int sw0) && int.TryParse(sz[1], out int sh0)) { UserSettings.Width = Math.Max(Config.MinScreenWidth, sw0); UserSettings.Height = Math.Max(Config.MinScreenHeight, sh0); UserSettings.Mode = UserSettings.WindowMode.Windowed; }
+    else { Console.Error.WriteLine("--size WxH"); return 1; }
+}
 Raylib.SetTraceLogLevel(TraceLogLevel.Warning);
 Raylib.SetConfigFlags(ConfigFlags.ResizableWindow | ConfigFlags.Msaa4xHint | (noVsync ? 0 : ConfigFlags.VSyncHint));
 Raylib.InitWindow(UserSettings.Width, UserSettings.Height, $"{Config.Title} {Config.Version}");

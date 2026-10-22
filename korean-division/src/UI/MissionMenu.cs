@@ -53,6 +53,7 @@ public sealed class MissionMenu : IDisposable
 
     bool Button(Rectangle r, string label, bool enabled = true, int size = 16)
     {
+        Ui.RegHit(r, label, enabled);
         bool hover = enabled && Ui.Contains(r, mouse);
         Raylib.DrawRectangleRounded(r, 0.2f, 4, !enabled ? Palette.PanelDark : hover ? Palette.BtnHover : Palette.Btn);
         Raylib.DrawRectangleRoundedLinesEx(r, 0.2f, 4, 1, hover ? Palette.Accent : Palette.PanelBorder);
