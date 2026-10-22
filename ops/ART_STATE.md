@@ -1,4 +1,5 @@
 # ART_STATE - 아트 보조 지휘자 현황 (2026-10-22 ~21:30, 2호)
+갱신 반영(지휘자 직접, 2026-10-22): '(갱신)' 표시 줄이 최신 사실. '이전:' 줄은 낡은 기록이며 삭제하지 않고 남김. 시트 폴더는 지시문에 명시된 것만 적음(33_D 만 C:/works/_review_sheets_2026-10-22/).
 
 ## 한도
 - 아트 렌더 레인 <=8 (RAM >=6GB 일 때 7번째~). 비아트 heavy <=3 별도. 빌드 slot 1 비움. 남의 PID 종료 금지. 신규 게이트(gate-v2) 미설치 -> 기존 heavy_gate, 렌더 에이전트는 동시 1개.
@@ -6,8 +7,11 @@
 - 2호가 띄웠던 deferred 렌더 레인 5개(G1~G5)는 B1/B2 와 중복이라 아직 렌더 시작 전에 종료함(내 PID 만).
 
 ## T11 (kd-rerender b324492)
+- (갱신) PC 가 21:15 에 비정상 종료·21:24 재부팅 → 렌더 에이전트 다수 사망. 다만 구 드라이버 PID 22168(rerender96 --only cavalry-bandit,cavalry-mongol,heavy-horse-artillery,heavy-tachanka, kd-b2-units 워크트리)이 21:31 에 다시 돌고 있음.
+- (갱신) cavalry-bandit 렌더 완료(rc=0, 미커밋). cavalry-mongol 렌더 중(22:06~). heavy-horse-artillery·heavy-tachanka 상태 미기재.
 - 본 큐(rerender96 --list) = 0 to render, 37 done. 진행 기록 커밋 b324492 (wip-ready, 병합 대기. QUEUE 는 건드리지 않음).
-- deferred 10 = infantry-bandit, infantry-thug-bandit, infantry-dadao-fengtian, infantry-gando, infantry-scout, officer-bandit, cavalry-mongol, cavalry-bandit, heavy-horse-artillery, heavy-tachanka -> T11 범위(81 중) 이나 B1/B2 로 위임, 미렌더.
+- 이전: deferred 10 = infantry-bandit, infantry-thug-bandit, infantry-dadao-fengtian, infantry-gando, infantry-scout, officer-bandit, cavalry-mongol, cavalry-bandit, heavy-horse-artillery, heavy-tachanka -> T11 범위(81 중) 이나 B1/B2 로 위임, 미렌더.
+- (갱신) deferred 10 중 cavalry-bandit·cavalry-mongol·heavy-horse-artillery·heavy-tachanka 는 위 PID 22168 범위. infantry-bandit·thug-bandit·dadao-fengtian 은 B1 커밋 완료(샤드 표 B1 행). officer-bandit·infantry-scout 는 B1 새 에이전트 진행 중. gando 는 T39g 행 참조.
 - 구 드라이버 A/B/C/D/F(대기 전용) 아직 살아 있음: 정리는 지휘자 결정.
 
 ## 샤드 / 발주 표 (워크트리 kd-develop/<이름>)
@@ -21,15 +25,23 @@
 | T39g 간도 복식 | t39g-gando-dress | sonnet | 실행 중(게이트 대기 후 렌더, 재개 지시함, agent a69d7f5) | gando_dress.png 예정. B2 와 gando 렌더 중복 주의: B2 는 T39g 결과 반영 필요 |
 | T55a 한국 민가 21종 | t55a-house-korean @8faffd2 (main 486c4d7) | sonnet | 완료 wip-ready (스프라이트 30, import 안 함) | kd-t55a/.../t55a_houses_korean.png, t55a_houses_korean_map.png ; 렌더물은 scratchpad 임시경로(재렌더 가능) |
 | T55b 만주 민가 | t55b-house-manchu @13610a9 | sonnet | 완료 wip-ready (36 스프라이트, 5분) | kd-t55b/.../t55b_houses_manchu.png (라벨 한글 깨짐) ; 렌더물 C:/gameProject/render_out/t55b |
-| C1E1 신규 유닛(피난민·의용병·봉천기마/야포) | kd/c1e1-art-units (base kd/c1e1-u2-units 4c309a4) | sonnet | 실행 중(재개 지시, agent a11b9cb). 철도수비대 제외, 마적·간도 위임 | c1e1_new_units.png 예정 |
+| 이전: C1E1 신규 유닛(피난민·의용병·봉천기마/야포) | kd/c1e1-art-units (base kd/c1e1-u2-units 4c309a4) | sonnet | 실행 중(재개 지시, agent a11b9cb). 철도수비대 제외, 마적·간도 위임 | c1e1_new_units.png 예정 |
+| C1E1 신규 유닛(피난민·의용병·봉천기마/야포) (갱신) | kd/c1e1-art-units @8b73c78b (base kd/c1e1-u2-units 4c309a4) | 미기재 | theme.json 충돌 1건 수정 중. 철도수비대 제외, 마적·간도 위임 | c1e1_new_units.png 예정 |
 | 공병 엎드려쏴 근본수정 | kd/pioneer-prone a69e6ac | sonnet | 승인됨(병합 라운드 M) | pioneer_prone_rootfix.png 확인 필요 |
+| B1 마적·잡병·대도병·장교·척후 (갱신) | kd-b1-units @9b4d049f | 미기재 | infantry-bandit·thug-bandit·dadao-fengtian 완료 커밋. officer-bandit·infantry-scout 는 새 에이전트 진행 중 | - |
+| A1 도로 (갱신) | kd/a1-roads @ab9ab733 | 미기재 | wip-ready, 리뷰 완료 (렌더 전용, 충돌 없음, 병합 OK; roads 먼저) | 25_A1_roads_contact.png |
+| A1 지형타일·물 (갱신) | kd/a1-terrain-tiles @9bf4ffa5 | 미기재 | wip-ready, 리뷰 완료 (렌더 전용, 충돌 없음, 병합 OK) | 26_A1_water_contact.png |
+| A2 지면 데칼 (갱신) | kd/a2-ground-decals @b63062dc | 미기재 | 완료, 리뷰 대기 | 미기재 |
+| D 열차 T30d (갱신) | kd/d-train-sprites @21a3b158 | 미기재 | 객차 5종(기관차·포차·기관총차·화차·잔해) 전부 완료, wip-ready | C:/works/_review_sheets_2026-10-22/33_D_trains_contact.png |
+| 설정 패널 (갱신) | kd/settings-panel-fit @d5aa4ac9 | 미기재 | 상태 미기재 | 27_settings_1024x640.png |
 | 시안 정리 scout | (읽기) | haiku | 완료, 아래 표 | - |
 
 ## 대기 목록
 | 항목 | 선행 | 샤드 계획 |
 |---|---|---|
 | gt-prone-fix 26 보병 엎드려쏴 재렌더(+EDGE_MARGIN=2 전방향, import --only, 시트) | 지휘자의 병합 신호(kd/pioneer-prone -> merge/0.2-final) | 26유닛 / 4샤드(6~7유닛씩, 유닛당 ~900s 가정 -> 샤드당 ~100분) sonnet x4 ; T39j 결과: 대상 19유닛은 E방향 여백 부족 확인됨 |
-| PR2 소품 변형 22종(풀숲 grass_tuft·들꽃 wildflower 추가) | PR3 문서(kd/pr3-prop-variants, 키 규칙 props/<종류>/var_01..07) + 레인 여유 | 샤드 P-A: bush,sorghum,stump,log_pile,log_pile_scattered,rock_outcrop,dirt_mound,grass_tuft,wildflower ; P-B: dead_tree,dead_tree_fallen,willow,willow_fallen,reed,snow_mound ; P-C: rock_s/m/l(+cracked), tree_birch/larch/pine/oak(+fallen) 변형. 모두 sonnet, 에이전트당 렌더 1개. grass_tuft/wildflower 는 props.json 키 추가 소카드 필요시 보고 |
+| 이전: PR2 소품 변형 22종(풀숲 grass_tuft·들꽃 wildflower 추가) | PR3 문서(kd/pr3-prop-variants, 키 규칙 props/<종류>/var_01..07) + 레인 여유 | 샤드 P-A: bush,sorghum,stump,log_pile,log_pile_scattered,rock_outcrop,dirt_mound,grass_tuft,wildflower ; P-B: dead_tree,dead_tree_fallen,willow,willow_fallen,reed,snow_mound ; P-C: rock_s/m/l(+cracked), tree_birch/larch/pine/oak(+fallen) 변형. 모두 sonnet, 에이전트당 렌더 1개. grass_tuft/wildflower 는 props.json 키 추가 소카드 필요시 보고 |
+| PR2 진행 (갱신) | kd/props-keys(props 키 추가) 진행 -> P-A 는 그 뒤 | P-B 진행(kd/props-pb), P-C 대기 |
 | 마적+봉천 혼합 팀색/표식 | B1(마적·봉천 유닛) 완료 | 소규모 sonnet 1 |
 | VIP 포트레이트 자리표시 | 후순위, gt-face-proto 재사용 | sonnet 1 |
 | T39e 게임 연결(MarchMuzzle 로더) | 사용자 결정 | feature 카드 |
@@ -55,4 +67,5 @@
 ## 완료 예상 / 막힌 것
 - 오늘 안 완료 가능: T39g, C1E1 신규 유닛(렌더 소수), PR2 샤드 1~2개 (레인 여유 시). 어려움: 26보병 재렌더(병합 신호 대기, ~100분), PR2 전체(22종 x 6~8, 텍스처 ~21MB), 혼합 비주얼·VIP.
 - 막힘: 렌더 에이전트 일부가 게이트 대기 중 턴을 끝냄(재개 지시로 처리). 구 대기 드라이버 5개가 게이트 슬롯을 점유 가능.
+- (갱신) 21:15 PC 비정상 종료·21:24 재부팅으로 렌더 에이전트 다수 사망. 21:31 부터 구 드라이버 PID 22168 재가동 (T11 (갱신) 줄 참조).
 - 병렬화 제안: PR2 변형을 종류당 6 으로 줄이면 렌더량 25% 감소; PR2 샤드 3개를 위 순서로; 26 보병은 4샤드; 렌더 RAM 여유가 6GB 미만(현재 4.9)이라 7번째 레인 불가.
