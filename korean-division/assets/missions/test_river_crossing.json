@@ -7,6 +7,7 @@
   "briefing": "한국군 소총대대가 강 건너 봉천군 중대를 공격한다. 강에는 여울 둘과 흙 다리 하나뿐 - 도하 AI 와 하천 렌더 시험용.",
   "map": "test_river",
   "seed": 1920,
+  "propScatter": true,
   "weather": "clear",
   "time": "day",
   "player": 1,
