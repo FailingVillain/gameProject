@@ -198,3 +198,4 @@ AQ3 승인(T45 의 AI vs AI 미션 분류 목록 확인 후 진행) · AP1 시�
 - **시안**: 활성 탭 내용 화면을 나머지(15탭 전부)도 제작. 그래픽 시안은 사용자가 추후 한 번에 검토.
 - **RAM**: 무거운 작업 합계 14GB까지 허용 검토(측정: 렌더 파이썬 8개 합 0.45GB·dotnet 1개 최대 1.65GB → 안전; 병목은 CPU).
 - **BA (15:4x)**: 제목 확정 — 메인 제목 'KOREAN DIVISION' / '코리안 디비전', 극중 부대 이름 **'제17 대한 사단'**(AZ 의 '1920 대한 사단' 대체). 제목 브랜드 검토(Steam·타 스토어·상표) 실시 중(Gemini 1차: 정확 일치 없음, 'Steel Division'(Eugen)·'The Division'(Ubisoft) 혼동 위험·검색 노이즈(한반도 분단) 지적 → 직접 검증 중).
+- **BB (15:5x)**: 영문 제목 후보 A 'KOREAN DIVISION : 1920'(사용자 선호) / B 'ARMY DIVISION OF KOREA' / C 'KOREAN DIVISION : WAY TO MANCHURIA' — Gemini 검토: 정확 일치 없음, A·C 는 Steel Division('X Division: 시대/부제') 구문과 브랜드 근접(중~높음, 법적보다 연상), B 는 어색+'Division of Korea' 분단 검색과 겹침, 상표 DB 정식 조회는 미검증 → 출시 전 변리사 조회 필요. 최종 확정은 사용자.
