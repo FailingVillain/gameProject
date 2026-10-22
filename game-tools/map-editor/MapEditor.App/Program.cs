@@ -66,6 +66,8 @@ public static class EditorMain
             steps = player.Steps().GetEnumerator();
         }
         int exit = 0, idle = 0;
+        bool perfOn = Environment.GetEnvironmentVariable("KD_EDITOR_PERF") == "1";   // 프레임 시간 측정 (끝날 때 한 줄 출력)
+        var frameMs = new List<double>();
         var last = new InputFrame { Mouse = new Vector2(700, 300) };
         while (!Raylib.WindowShouldClose())
         {
@@ -90,10 +92,17 @@ public static class EditorMain
             }
             else f = RealInput.Poll();
             last = f;
+            long ft0 = System.Diagnostics.Stopwatch.GetTimestamp();
             ed.Update(f);
             // 스크립트가 열기 목록 등을 만들었으면 같은 프레임에 배치가 반영돼 있다
             view.Draw(ed, f.Mouse, shotNow == null ? null : ResolveShot(shotNow, shot));
+            if (perfOn) frameMs.Add(System.Diagnostics.Stopwatch.GetElapsedTime(ft0).TotalMilliseconds);
             if (idle == -1) break;
+        }
+        if (perfOn && frameMs.Count > 0)
+        {
+            frameMs.Sort();
+            Console.WriteLine($"[perf] map {ed.Doc.Width}x{ed.Doc.Height} frames {frameMs.Count} update+draw ms: median {frameMs[frameMs.Count / 2]:0.00} p95 {frameMs[(int)(frameMs.Count * 0.95)]:0.00} max {frameMs[^1]:0.00}; Refresh last {ed.LastRefreshMs:0.0} max {ed.MaxRefreshMs:0.0} ms; rebuilds {ed.Rebuilds}; workingSet {Environment.WorkingSet / 1048576} MB");
         }
         view.Dispose();
         Ui.Unload();

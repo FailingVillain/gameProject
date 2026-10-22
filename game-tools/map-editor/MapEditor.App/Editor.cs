@@ -102,6 +102,7 @@ public sealed class Editor
     public bool RenderDirty = true;       // 창 쪽이 렌더러를 다시 만들 때 확인
     public GameMap? PreviewMap;           // 마지막으로 성공한 게임 지도 (렌더러 입력)
     public int Rebuilds;
+    public double LastRefreshMs, MaxRefreshMs;   // KD_EDITOR_PERF 측정용: Refresh() 한 번 (직렬화 + 게임 로드 + 검사)
     public string LastHash = "";
     public string LoadError = "";
 
@@ -172,6 +173,13 @@ public sealed class Editor
 
     /// <summary>문서가 바뀐 뒤: 게임 지도로 다시 굽고 (게임과 같은 로더) 변경 표시 · 검사 목록 갱신. 커밋 · 되돌리기 때만 부른다 (프레임마다 아님).</summary>
     public void Refresh(bool markSaved = false)
+    {
+        long t0 = System.Diagnostics.Stopwatch.GetTimestamp();
+        try { RefreshCore(markSaved); }
+        finally { LastRefreshMs = System.Diagnostics.Stopwatch.GetElapsedTime(t0).TotalMilliseconds; MaxRefreshMs = Math.Max(MaxRefreshMs, LastRefreshMs); }
+    }
+
+    void RefreshCore(bool markSaved)
     {
         string json = Doc.ToJson();
         LoadError = "";
