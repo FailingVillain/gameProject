@@ -66,6 +66,9 @@ public sealed partial class World
     /// <summary>[훅] 지형 은폐 보정 (숲 · 고지에 있는 은폐 유닛은 더 안 보임). 지형이 추가되면 여기서 계산한다 — 지금은 0.</summary>
     public float TerrainConcealment(Unit u) => 0f;
 
+    /// <summary>날씨 은폐 보정 %p (안개 · 눈 등). weather.extendedEffects 가 꺼져 있으면 0. 상태 없음 — 종류 + balance 값으로 계산.</summary>
+    public float WeatherConcealment(Unit u) => Defs.Weather.ConcealAdd(Weather.Kind);
+
     // ---------------------------------------------------------------- 근접 규칙 (전차 · 장갑차에는 근접 불가)
 
     /// <summary>u 가 t 에게 근접 공격을 할 수 있는가: 장갑 병과 불가 (착검 · 검 · 대도 · 기병 모두), 피해를 줄 수 없는 병과 불가.</summary>

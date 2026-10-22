@@ -133,5 +133,34 @@ public static class WeatherSelfTest
         var rf = ReplayFile.FromWorld(rw);
         var back = rf.CreateWorld(defs);
         check(back.Weather.Kind == WeatherKind.Snow && back.Weather.Time == TimeOfDay.Night && back.ComputeChecksum() == rw.ComputeChecksum(), "리플레이: 시작 날씨 (--weather · --time) 재현");
+
+        // ---- 은폐 날씨 보정 (TW1, extendedEffects 기본 꺼짐)
+        var sniperDef = defs.Units["infantry_sniper"];
+        var cw = Load(PlainMap, "weatherplain", opt.Seed);
+        var sn = cw.SpawnUnit(sniperDef, 1, new Vector2(20.5f, 70.5f));
+        var ci = cw.SpawnUnit(inf, 1, new Vector2(24.5f, 70.5f));
+        float baseC = sniperDef.Concealment;
+        cw.SetupWeather(WeatherKind.Fog, TimeOfDay.Day);
+        check(!wd.ExtendedEffects && cw.BaseConcealment(sn) == baseC && cw.WeatherConcealment(sn) == 0f, "은폐 보정: 기본 꺼짐 = 원값 (안개에서도)");
+        float fogAdd = wd.States["fog"].Conceal;
+        wd.ExtendedEffects = true;
+        try
+        {
+            float want = Math.Min(100f, baseC + fogAdd);
+            check(fogAdd > 0 && cw.BaseConcealment(sn) == want, $"은폐 보정: 켬 + 안개 {baseC} → {cw.BaseConcealment(sn)} (+{fogAdd})");
+            check(inf.Concealment > 0 || cw.BaseConcealment(ci) == 0f, "은폐 0 유닛은 보정 없음");
+            cw.SetupWeather(WeatherKind.Clear, TimeOfDay.Day);
+            check(cw.BaseConcealment(sn) == baseC, "켬 + 맑음 = 원값");
+            cw.SetupWeather(WeatherKind.Fog, TimeOfDay.Day);
+            sn.RevealUntil = cw.Tick + 10;
+            check(cw.ConcealmentOf(sn) == 0f, "사격 노출(RevealUntil)이 보정보다 우선");
+            sn.RevealUntil = -1;
+            var a1 = Load(PlainMap, "weatherplain", opt.Seed); a1.SetupWeather(WeatherKind.Fog, TimeOfDay.Day);
+            var b1 = Load(PlainMap, "weatherplain", opt.Seed); b1.SetupWeather(WeatherKind.Fog, TimeOfDay.Day);
+            foreach (var x in new[] { a1, b1 }) { x.SpawnUnit(sniperDef, 1, new Vector2(20.5f, 70.5f)); x.SpawnUnit(inf, 2, new Vector2(30.5f, 70.5f)); }
+            for (int i = 0; i < 300; i++) { a1.Step(); b1.Step(); }
+            check(a1.ComputeChecksum() == b1.ComputeChecksum(), "켬 + 안개: 같은 시드 2회 체크섬 동일");
+        }
+        finally { wd.ExtendedEffects = false; }
     }
 }

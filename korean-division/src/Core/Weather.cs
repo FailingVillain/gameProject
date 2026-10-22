@@ -93,6 +93,8 @@ public sealed class WeatherEffectDef
     public float Hit { get; set; } = 1;
     /// <summary>이동 속도 ×.</summary>
     public float Move { get; set; } = 1;
+    /// <summary>(날씨만) 은폐 보정 %p (extendedEffects 가 켜졌을 때만, 은폐 > 0 인 유닛에 더함). 기본 0.</summary>
+    public float Conceal { get; set; }
     /// <summary>(시간대만) 장교 쌍안경 보너스가 남는 비율 (1 = 전부, 0 = 없음).</summary>
     public float Binocular { get; set; } = 1;
 }
@@ -106,6 +108,12 @@ public sealed class WeatherDef
     public int MinSight { get; set; } = 8;
     /// <summary>날씨 × 시간대 시야 배수의 하한 (안개 + 밤이 곱해져 너무 작아지지 않게).</summary>
     public float MinSightMul { get; set; } = 0.3f;
+    /// <summary>확장 효과 스위치 (기본 꺼짐): 켜면 states.&lt;종류&gt;.conceal 은폐 보정이 적용된다. 꺼짐 = 기존 동작 그대로.</summary>
+    public bool ExtendedEffects { get; set; }
+
+    /// <summary>날씨 종류의 은폐 보정 %p (스위치가 꺼져 있으면 0).</summary>
+    public float ConcealAdd(WeatherKind k) =>
+        ExtendedEffects && States.TryGetValue(WeatherState.KeyOf(k), out var e) ? e.Conceal : 0f;
 
     // 열거값 → 배수 표 (처음 물을 때 만든다 — 지역 계산이고 데이터만의 함수라 결정적)
     [JsonIgnore] float[]? sight, hit, move, bino;

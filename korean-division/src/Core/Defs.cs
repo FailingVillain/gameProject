@@ -925,6 +925,9 @@ Require(CombatRules.SquadLeaderRank >= 0 && CombatRules.SquadLeaderRank <= Comba
         foreach (var g in Start.Force)
             foreach (var k in g.Units.Keys) Require(Units.ContainsKey(k), $"시작 병력 유닛 '{k}' 없음");
         Require(Buildings.Values.Any(b => b.Capturable), "점령 가능(capturable) 건물이 하나는 있어야 함");
+        Require(Weather.MinSight >= 0 && float.IsFinite(Weather.MinSightMul) && Weather.MinSightMul is > 0 and <= 1, "weather.minSight >= 0, 0 < minSightMul <= 1");
+        foreach (var (k, e) in Weather.States)
+            Require(float.IsFinite(e.Conceal) && e.Conceal is >= 0 and <= 100, $"weather.states.{k}.conceal 은 0~100 (%p, NaN 불가)");
         Require(Vision.BlockSize is >= 1 and <= 4, "vision.blockSize 는 1~4");
     }
 
