@@ -37,6 +37,7 @@
 | d1947b0 | wip/orderq2 | T04 명령 대기열 · 사격선 (B3) · FV 54/21 · detcheck 19501757040f0d62 · orderq/firectl/replay/command/crossing PASS · snaptest OK · uiicons FAIL 1건(정상) |
 | 7d5c124 | ai3b2 | T05 AI 블랙보드 3B (B4) · FV 55/21 · detcheck 19501757040f0d62 · ai3b/snapshot/crossing PASS · snaptest OK · uiicons FAIL 1건(정상) |
 | 89ca250 | kd/t24-s1s3 | T24 D08 ①②③ (B5) · FV 55/21 · detcheck ccfbd1ddab1c1dfe · cavcmd/command/drill/officer PASS · snaptest OK · crossing FAIL 2건(B5b 전 정상) · uiicons FAIL 1건(정상) |
+| 21085f4 | kd/t24-crossing-fix | 도하 단계 observer keep=0 (B5b) · FV 55/21 · detcheck ccfbd1ddab1c1dfe 불변 · crossing/tactical/officer/command PASS · uiicons FAIL 1건(정상) |
 
 **큐 닫음 (release, 2026-10-22)**: fix/n12-forest 큐 — 전체 selftest 2008 OK/FAIL 0 · detcheck 8변형 동일 · snaptest OK · dist 발행. (T03~T05 큐의 T13 은 별도, 아직 queued.)
 
