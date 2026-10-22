@@ -85,10 +85,8 @@ public static partial class S
     public const string TipGroundFire = "땅의 한 지점을 찍으면 관측자 없이도 그 지점으로 계속 포격합니다 (퍼짐 1.5배). 사거리 밖 · 최소 사거리 안은 불가, 직사포는 사선이 필요합니다. 정지 · 다른 명령 · 탄약 소진 시 끝납니다.";
     public const string StateGroundFire = "지점 포격";
     // N79a: 집결 지점 · 포격 종류
-    public const string CmdMoreCard = "더 보기";
-    public const string TipMoreCard = "명령 카드 둘째 쪽 (칸이 모자라 넘친 명령). 그 명령의 단축키는 어느 쪽에서나 동작합니다.";
-    public const string CmdBackCard = "처음으로";
-    public const string TipBackCard = "명령 카드 첫 쪽으로 돌아갑니다.";
+    public const string CmdCardPage = "쪽";
+    public const string TipCardPage = "카드 쪽 넘김 (.): 명령이 한 쪽에 다 들어가지 않을 때 다음 쪽을 봅니다. 각 명령의 단축키는 어느 쪽에서든 그대로 동작합니다.";
     public const string CmdRallyPoint = "집결 지점";
     public const string TipRallyPoint = "선택한 중대가 후퇴할 집결 지점을 지정합니다 (깃발 표시). 후퇴 · 철수는 그 지점으로 갑니다. 전술 AI 도 자기 중대의 집결 지점을 정합니다.";
     public const string RallySet = "집결 지점 지정 ({0}개 중대)";
