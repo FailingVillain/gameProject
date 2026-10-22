@@ -20,6 +20,27 @@ public static class StockKeys
 
 public sealed class CampaignState
 {
+    /// <summary>[v5 · T42b] 진급 한 건: 어느 작전 뒤에 누가 어떤 계급에서 어떤 계급으로 (Officer = 장교 계급 색인, 아니면 사병 계급 색인).</summary>
+    public sealed class PromotionRecord
+    {
+        public string AfterMission { get; set; } = "";
+        public bool Officer { get; set; }
+        public int UnitId { get; set; }
+        public int FromRank { get; set; }
+        public int ToRank { get; set; }
+    }
+
+    /// <summary>[v7 · T42d] 연표 한 줄: 몇 일째에 무슨 일 (Kind = "mission" 작전 승리 정산 / "event" 본국 이벤트 발동). 문구는 저장하지 않고 id 로 표시 때 찾는다 (이벤트 문구 = 스토리 TBD).</summary>
+    public sealed class TimelineEntry
+    {
+        public int Day { get; set; }
+        public string Kind { get; set; } = "";
+        public string Id { get; set; } = "";
+        /// <summary>mission: 작전 제목 (없으면 id). event: 고른 선택지 번호 (1부터).</summary>
+        public string Title { get; set; } = "";
+        public int Choice { get; set; }
+    }
+
     public sealed class MissionRecord
     {
         public string MissionId { get; set; } = "";
@@ -58,6 +79,8 @@ public sealed class CampaignState
         };
         public Dictionary<string, int> Heavy { get; set; } = new();
         public int Horses { get; set; } = 100;
+        /// <summary>[v6 · T42c] 아직 처리 안 한 포로 (송환 · 수용으로 줄어든다). 옛 파일 = 0.</summary>
+        public int Prisoners { get; set; }
         public List<string> RecentLog { get; set; } = new();
     }
 
@@ -78,6 +101,11 @@ public sealed class CampaignState
         public string Caliber { get; set; } = StockKeys.Ru;
         /// <summary>[T19c · Q9] 배속 연대 1~9 (0 = 사단 직할 · 미배속, 옛 파일 기본값). 추가만 — SchemaVersion 그대로. 규칙: CampaignRegiments.</summary>
         public int Regiment { get; set; }
+        /// <summary>[v4 · T42a] 피로 0..100 (0 = 쌩쌩). 작전 정산 때만 변한다: 투입 +, 미투입 −. 옛 파일 = 0.</summary>
+        public int Fatigue { get; set; }
+        /// <summary>[v4 · T42a] 사기 0..100. 작전 정산 때만 변한다 (승패 · 손실률). 옛 파일 = <see cref="MoraleStart"/>.</summary>
+        public int Morale { get; set; } = MoraleStart;
+        public const int MoraleStart = 70;
     }
 
     public sealed class PendingOperation
@@ -116,20 +144,46 @@ public sealed class CampaignState
         /// <summary>[v3 · Q6] 포탄 종류별 실제 발사로 재고에서 뺀 수 · 노획으로 더한 수.</summary>
         public Dictionary<string, int> ShellsFired { get; set; } = new();
         public Dictionary<string, int> LootedShells { get; set; } = new();
+        /// <summary>[v6 · T42c] 이번 정산으로 포로 장부에 더한 수.</summary>
+        public int PrisonersTaken { get; set; }
         public string? TriggeredEventId { get; set; }
     }
 
     /// <summary>캠페인 저장 스키마 버전. 규칙 (ENGINE_NOTES 저장 호환): 필드는 추가만 한다 — 새 필드는 C# 기본값이 곧 "옛 파일에 없을 때의 값"
     /// 이라 옛 파일 (Version 1, 또는 Version 필드가 없는 파일 — 없으면 기본값 = 현재 버전으로 읽는다) 은 변환 없이 열고 모자란 필드는 기본값으로 채운다. Version 0 · 음수는 깨진 파일로 거부한다. 필드를 지우거나 뜻을 바꾸면 SchemaVersion 을 올리고
     /// 그 옛 파일은 거부한다. 현재보다 큰 Version (더 새 게임이 만든 파일) 과 깨진 파일도 거부 (사유는 LastLoadError, 한국어).
-    /// 3 (T19b): 구경별 탄약 · 포탄 정산 — RosterCompany.Caliber · Pending.AmmoByCaliber/ShellsLoaded/ShellScale · DebriefReport.ShellsFired/LootedShells (추가만, v2 는 기본값으로 이행).</summary>
-    public const int SchemaVersion = 3;
+    /// 3 (T19b): 구경별 탄약 · 포탄 정산 — RosterCompany.Caliber · Pending.AmmoByCaliber/ShellsLoaded/ShellScale · DebriefReport.ShellsFired/LootedShells (추가만, v2 는 기본값으로 이행).
+    /// 4 (T42a): 중대 피로 · 사기 계정 — RosterCompany.Fatigue/Morale (추가만, v3 는 Fatigue 0 · Morale 70 으로 이행).
+    /// 5 (T42b): 진급 기록 · 정원 — PromotionLog / PromotionsThisBreak (추가만, v3 · v4 는 빈 목록 · 0 으로 이행).
+    /// 6 (T42c): 포로 장부 — Stock.Prisoners · PrisonersRepatriated/PrisonersInterned · DebriefReport.PrisonersTaken (추가만, v3~v5 는 0 으로 이행).</summary>
+    /// 7 (T42d): 작전 일수 · 연표 — Day / Timeline (추가만, v3~v6 은 Day = 1 + 치른 작전 수 × missionDays · 빈 연표로 이행).
+    public const int SchemaVersion = 7;
+    public const int TimelineMax = 200;
+    /// <summary>Day 상한 (손상 저장 · 덧셈 넘침 방지).</summary>
+    public const int DayMax = 100000;
     public int Version { get; set; } = SchemaVersion;
     public string CampaignId { get; set; } = "c1";
     /// <summary>다음에 할 미션 id (파일이 없으면 '준비 중' 화면).</summary>
     public string NextMission { get; set; } = "";
     public List<string> Completed { get; set; } = new();
     public List<MissionRecord> History { get; set; } = new();
+    /// <summary>[v5 · T42b] 진급 적용 기록 (오래된 것이 앞). 옛 파일 = 빈 목록. 규칙: CampaignPromotion.</summary>
+    public List<PromotionRecord> PromotionLog { get; set; } = new();
+    /// <summary>[v5 · T42b] 이번 작전 사이에 이미 낸 진급 수 (정원 계산용). 이월 병력이 새로 정해지면 (CampaignState.Apply) 0 으로 돌아간다.</summary>
+    public int PromotionsThisBreak { get; set; }
+    /// <summary>[v6 · T42c] 지금까지 송환 · 수용한 포로 누계 (처리 결과 표시용).</summary>
+    public int PrisonersRepatriated { get; set; }
+    public int PrisonersInterned { get; set; }
+    /// <summary>[v7 · T42d] 작전 일수 (1일째 시작, 첫 승리 정산마다 campaign_economy.json missionDays 만큼 증가). 계절 · 시간 효과 없음 — 카운터만 (규칙 7). 0 = 옛 파일 (EnsureInitialized 가 채움).</summary>
+    public int Day { get; set; }
+    /// <summary>[v7 · T42d] 연표 (오래된 것이 앞, 최대 TimelineMax).</summary>
+    public List<TimelineEntry> Timeline { get; set; } = new();
+    /// <summary>연표 한 줄을 더한다 (최대 TimelineMax 넘으면 가장 오래된 것부터 버린다).</summary>
+    public void AddTimeline(string kind, string id, string title = "", int choice = 0)
+    {
+        Timeline.Add(new TimelineEntry { Day = Math.Max(Day, 1), Kind = kind, Id = id, Title = title, Choice = choice });
+        if (Timeline.Count > TimelineMax) Timeline.RemoveRange(0, Timeline.Count - TimelineMax);
+    }
     /// <summary>이월 사병 (계급 · 사살 수 · 병력 id).</summary>
     public List<MissionResults.UnitLine> Units { get; set; } = new();
     /// <summary>이월 장교 (OfficerRank · Xp · Post).</summary>
@@ -178,6 +232,7 @@ public sealed class CampaignState
     public void EnsureInitialized()
     {
         Manpower ??= new();
+        PromotionLog ??= new();   // T42b
         Stock ??= new();
         Stock.Rifles ??= new();
         if (!Stock.Rifles.ContainsKey(StockKeys.Ru)) Stock.Rifles[StockKeys.Ru] = 3000;
@@ -222,18 +277,29 @@ public sealed class CampaignState
     public void Sanitize()
     {
         Supply = float.IsFinite(Supply) ? Math.Max(0f, Supply) : 0f;
+        PromotionsThisBreak = Math.Max(0, PromotionsThisBreak);
+        (PromotionLog ??= new()).RemoveAll(p => p == null);   // T42b
         Manpower.Recruits = Math.Clamp(Manpower.Recruits, 0, ManpowerState.MaxRecruits);
         Manpower.Wounded = Math.Max(0, Manpower.Wounded);
         Manpower.Reserve = Math.Max(0, Manpower.Reserve);
         foreach (var d in new[] { Stock.Rifles, Stock.Ammo, Stock.Shells, Stock.Heavy })
             foreach (var k in d.Keys.ToList()) if (d[k] < 0) d[k] = 0;
         Stock.Horses = Math.Max(0, Stock.Horses);
+        Stock.Prisoners = Math.Max(0, Stock.Prisoners);   // T42c
+        PrisonersRepatriated = Math.Max(0, PrisonersRepatriated);
+        PrisonersInterned = Math.Max(0, PrisonersInterned);
+        Timeline ??= new(); Timeline.RemoveAll(e => e == null);   // T42d
+        if (Timeline.Count > TimelineMax) Timeline.RemoveRange(0, Timeline.Count - TimelineMax);
+        if (Day <= 0) Day = (int)Math.Min(DayMax, 1L + (long)(History?.Count ?? 0) * CampaignEconomyDefs.Current.MissionDays);
+        Day = Math.Min(Day, DayMax);
         foreach (var c in Roster)
         {
             c.MaxStrength = Math.Max(1, c.MaxStrength);
             c.Strength = Math.Clamp(c.Strength, 0, c.MaxStrength);
             c.Wounded = Math.Max(0, c.Wounded);
             c.UnhealedOps = Math.Max(0, c.UnhealedOps);
+            c.Fatigue = Math.Clamp(c.Fatigue, 0, 100);   // T42a
+            c.Morale = Math.Clamp(c.Morale, 0, 100);
         }
         if (Pending != null && (string.IsNullOrEmpty(Pending.MissionId) || Pending.DeployedCompanyIds == null)) Pending = null;
         if (Pending != null) Pending.AmmoScale = float.IsFinite(Pending.AmmoScale) ? Math.Clamp(Pending.AmmoScale, 0f, 1f) : 1f;
@@ -281,8 +347,13 @@ public sealed class CampaignState
             if (!wasDone) { s.EntryUnits = s.Units.ToList(); s.EntryOfficers = s.Officers.ToList(); s.EntryMission = r.MissionId; }
             if (r.MissionId == Tumen) s.HowitzerCompany = true;
             s.NextMission = Chain.First(c => c.Id == r.MissionId).Next;
-            s.Officers = r.Survivors.Where(u => u.OfficerRank != null).Select(Copy).ToList();
-            s.Units = r.Survivors.Where(u => u.OfficerRank == null).Select(Copy).ToList();
+            // T42 fix: 마지막 미션 재승리 (wasDone, 같은 EntryMission) 는 이월 병력 · 진급 정원을 건드리지 않는다 (정원 8 우회 · 적용한 진급 소실 방지)
+            if (!wasDone)
+            {
+                s.Officers = r.Survivors.Where(u => u.OfficerRank != null).Select(Copy).ToList();
+                s.Units = r.Survivors.Where(u => u.OfficerRank == null).Select(Copy).ToList();
+                s.PromotionsThisBreak = 0;   // T42b: 새 이월 병력 = 새 작전 사이
+            }
         }
 
         // 곡사포 중대가 편입될 때 HowitzerCompany == true 이면 Roster 에 "how" 곡사포 중대도 Available = true 로 추가/활성화
@@ -304,7 +375,7 @@ public sealed class CampaignState
 
     static MissionResults.UnitLine Copy(MissionResults.UnitLine u) => new()
     {
-        Id = u.Id, Unit = u.Unit, Name = u.Name, Kills = u.Kills, Rank = u.Rank, StartRank = u.Rank, Force = u.Force,
+        Id = u.Id, Unit = u.Unit, Name = u.Name, Kills = u.Kills, Rank = CampaignPromotion.CarriedRank(u), StartRank = CampaignPromotion.CarriedRank(u), Force = u.Force,
         OfficerRank = u.OfficerRank, TempRank = null, Xp = u.Xp, Post = u.Post,
     };
 

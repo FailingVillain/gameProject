@@ -270,6 +270,29 @@ public static class CampaignEconomy
         return res;
     }
 
+    /// <summary>[T42a] 중대 피로 · 사기 정산 (정수, 로스터 순서 — 결정적). lossRatio = 잃은 수 / 투입 수.</summary>
+    public static void SettleFatigueMorale(CampaignState s, IReadOnlyCollection<CampaignState.RosterCompany> deployed, bool won, float lossRatio)
+    {
+        var d = CampaignEconomyDefs.Current;
+        int moraleDeltaDeployed = (won ? d.MoraleWin : -d.MoraleLoss) - (int)MathF.Round(Math.Clamp(lossRatio, 0f, 1f) * d.MoraleCasualtyScale);
+        foreach (var c in s.Roster)
+        {
+            if (deployed.Contains(c))
+            {
+                c.Fatigue = Math.Clamp(c.Fatigue + d.FatiguePerDeploy, 0, 100);
+                c.Morale = Math.Clamp(c.Morale + moraleDeltaDeployed, 0, 100);
+            }
+            else
+            {
+                c.Fatigue = Math.Clamp(c.Fatigue - d.FatigueRestRecovery, 0, 100);
+                c.Morale = Math.Clamp(c.Morale + d.MoraleRestRecovery, 0, 100);
+            }
+        }
+    }
+
+    /// <summary>[T42a] 지침 (피로 문턱 이상) 인가 — 홈 표시 · 투입 경고용. 잠금 아님.</summary>
+    public static bool IsTired(CampaignState.RosterCompany c) => c.Fatigue >= CampaignEconomyDefs.Current.FatigueWarnThreshold;
+
     public static void SettleBattle(CampaignState s, MissionResults r)
     {
         // 0) 출격 때 기록해 둔 비용 · 탄약 · 거부 패널티를 결과 확정 시점에 반영 (원자적 커밋)
@@ -331,6 +354,9 @@ public static class CampaignEconomy
             s.Manpower.Wounded += woundedReturned;
         }
 
+        // 2-1) [T42a] 피로 · 사기 계정: 투입 중대 피로 +, 미투입 −. 사기 = 승패 ± 손실률. 출격 편성이 있을 때만 (홈 계정, 시뮬 무관)
+        if (deployed.Count > 0) SettleFatigueMorale(s, deployed, r.Result == "won", me != null && me.Spawned > 0 ? Math.Clamp((float)me.Lost / me.Spawned, 0f, 1f) : 0f);
+
         // 3) 탄약 환원: Pending 에 적재된 탄약 중 생존 비율만큼 같은 구경으로 복귀
         int ammoRefunded = 0;
         if (s.Pending != null && s.Pending.AmmoLoaded > 0)
@@ -367,6 +393,7 @@ public static class CampaignEconomy
         int lootedAmmo = 0;
         int lootedHorses = 0;
         var lootedShells = new Dictionary<string, int>();
+        int prisoners = 0;
         if (r.Result == "won")
         {
             lootedSupply = r.EnemyKills * CampaignEconomyDefs.Current.LootSupplyPerKill;
@@ -376,6 +403,8 @@ public static class CampaignEconomy
             s.Supply += lootedSupply;
             s.Stock.Rifles[enemyCaliber] = s.Stock.Rifles.GetValueOrDefault(enemyCaliber, 0) + lootedRifles;
             s.Stock.Ammo[enemyCaliber] = s.Stock.Ammo.GetValueOrDefault(enemyCaliber, 0) + lootedAmmo;
+            prisoners = Math.Max(0, r.EnemyCaptured);   // T42c: 포로 = 항복한 적 (꺼져 있으면 0)
+            s.Stock.Prisoners += prisoners;
             foreach (var shell in StockKeys.AllShells)   // 노획 포탄 = 적 손실 비례 (Q6)
             {
                 int n = (int)(r.EnemyKills * CampaignEconomyDefs.Current.LootShellsPerKill.GetValueOrDefault(shell, 0f));
@@ -396,7 +425,7 @@ public static class CampaignEconomy
         s.Manpower.Recruits = Math.Min(CampaignState.ManpowerState.MaxRecruits, s.Manpower.Recruits + regularRecruits);
 
         // 6) 입고 로그 갱신 (최대 5건)
-        string logEntry = $"[{r.MissionId}] 정산: 보급 +{regularSupply:0}(노획 +{lootedSupply:0}), 신병 +{regularRecruits}, 탄약환원 +{ammoRefunded}, 포탄 발사 -{shellsFired.Values.Sum()} 노획 +{lootedShells.Values.Sum()}";
+        string logEntry = $"[{r.MissionId}] 정산: 보급 +{regularSupply:0}(노획 +{lootedSupply:0}), 신병 +{regularRecruits}, 탄약환원 +{ammoRefunded}, 포탄 발사 -{shellsFired.Values.Sum()} 노획 +{lootedShells.Values.Sum()}" + (prisoners > 0 ? $", 포로 +{prisoners}" : "");
         s.Stock.RecentLog.Add(logEntry);
         while (s.Stock.RecentLog.Count > 5) s.Stock.RecentLog.RemoveAt(0);
 
@@ -420,8 +449,14 @@ public static class CampaignEconomy
             LootedHorses = lootedHorses,
             AmmoRefunded = ammoRefunded,
             ShellsFired = shellsFired,
-            LootedShells = lootedShells
+            LootedShells = lootedShells,
+            PrisonersTaken = prisoners
         };
         s.Pending = null;
+
+        // 8) T42d: 작전 일수 + 연표 (첫 승리 정산만 — SettleBattle 은 첫 승리에서만 불린다)
+        if (s.Day <= 0) s.Day = 1;   // 새 캠페인 = 1일째 시작
+        s.Day = (int)Math.Min(CampaignState.DayMax, (long)s.Day + CampaignEconomyDefs.Current.MissionDays);
+        s.AddTimeline("mission", r.MissionId, r.Title ?? "");
     }
 }

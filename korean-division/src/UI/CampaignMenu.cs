@@ -251,9 +251,12 @@ public sealed partial class CampaignMenu
             case Tab.Map: DrawTabMap(body); break;
             case Tab.Events: DrawTabEvents(body); break;
             case Tab.Staff: DrawTabStaff(body); break;
+            case Tab.Schedule: DrawTabSchedule(body); break;      // T42d
             case Tab.Records: DrawTabRecords(body); break;        // T38f 읽기 전용
             case Tab.Equipment: DrawTabEquipment(body); break;
             case Tab.Organization: DrawTabOrganization(body); break;
+            case Tab.Promotion: DrawTabPromotion(body); break;       // T42b
+            case Tab.Diplomacy: DrawTabPrisoners(body); break;       // T42c
             default: DrawTabPlaceholder(body, currentTab); break;   // 후속 탭 (틀만)
         }
     }
@@ -336,7 +339,9 @@ public sealed partial class CampaignMenu
         Ui.Text($"보급품 잔고: {state.Supply:N0} (작전 승리 시 +1,500 보충)", leftX + 10, ly, 15, Palette.Text); ly += 20;
 
         Color rifleCol = rifleRate >= 100 ? Palette.HpGood : rifleRate >= 70 ? Palette.Warning : Palette.HpLow;
-        Ui.Text(string.Format(S.CmSumRifleRate, rifleRate, totalRifles, totalInfantry), leftX + 10, ly, 15, rifleCol); ly += 30;
+        Ui.Text(string.Format(S.CmSumRifleRate, rifleRate, totalRifles, totalInfantry), leftX + 10, ly, 15, rifleCol); ly += 20;
+        var fm = CampaignHomeViews.FatigueMorale(state);   // [T42a] 읽기 전용 한 줄
+        Ui.Text(string.Format(S.CmSumFatigueMorale, fm.AvgFatigue, fm.AvgMorale, fm.Tired), leftX + 10, ly, 15, fm.Tired > 0 ? Palette.Warning : Palette.Text); ly += 30;
 
         // [좌측] 2. 지휘부 및 황실 동향
         Ui.Text(S.CmSumSectionPolitics, leftX, ly, 17, Palette.Accent); ly += 24;
@@ -456,6 +461,7 @@ public sealed partial class CampaignMenu
             Ui.Text($"{c.Wounded}", rx, ry + 7, 14, wCol); rx += colWounded;
             // 상태 / 의무
             if (c.Mandatory) Ui.Text(S.CmStatusMandatory, rx, ry + 7, 14, Palette.Accent);
+            else if (c.Available && CampaignEconomy.IsTired(c)) Ui.Text(S.CmStatusTired, rx, ry + 7, 14, Palette.Warning);   // T42a: 경고만, 잠금 없음
             else if (c.Available) Ui.Text(S.CmStatusAvailable, rx, ry + 7, 14, Palette.HpGood);
             else Ui.Text(S.CmStatusUnavailable, rx, ry + 7, 14, Palette.HpLow);
             rx += colStatus;
@@ -948,6 +954,9 @@ public sealed partial class CampaignMenu
         {
             Ui.Text(string.Format(S.CmDebriefShells, fired.Values.Sum(), fired.GetValueOrDefault(StockKeys.InfGun), fired.GetValueOrDefault(StockKeys.Field), fired.GetValueOrDefault(StockKeys.Howitzer), lootSh.Values.Sum()), x, y, 15, Palette.Text); y += 22;
         }
+
+        // 포로 (T42c): 있을 때만
+        if (d.PrisonersTaken > 0) { Ui.Text(string.Format(S.CmDebriefPrisoners, d.PrisonersTaken), x, y, 15, Palette.Accent); y += 22; }
 
         // 정기 보급 도착
         Ui.Text(string.Format(S.CmDebriefRegular, d.RegularSupplyAdded, d.RecruitsAdded), x, y, 15, Palette.HpGood); y += 22;

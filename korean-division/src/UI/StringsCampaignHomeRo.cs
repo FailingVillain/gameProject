@@ -9,6 +9,17 @@ public static partial class S
     public const string CmRecSummary = "치른 작전 {0}회 · 누적 적 사살 {1:N0} · 누적 손실 {2:N0}";
     public const string CmRecRecentHead = "작전 일지 (최근 {0}건)";
     public const string CmRecRow = "{0}  -  사살 {1:N0} · 손실 {2:N0} · 생존 {3:N0}";
+    public const string CmRecDay = "[{0}일] ";
+    // T42d 탭 14 일정 (이벤트 문구는 스토리 TBD — 제목은 이벤트 정의에서 읽기만)
+    public const string CmSchTitle = "14. 일정 · 연표";
+    public const string CmSchDay = "작전 {0}일째";
+    public const string CmSchCounts = "치른 작전 {0}회 · 발동한 이벤트 {1}건";
+    public const string CmSchHead = "연표 (최근 {0}건, 최신이 위)";
+    public const string CmSchRowDay = "{0}일째";
+    public const string CmSchMission = "작전 완료: {0}";
+    public const string CmSchEvent = "이벤트: {0} (선택 {1})";
+    public const string CmSchEmpty = "(아직 기록이 없습니다)";
+    public const string CmSchLater = "계절 · 날씨 · 명령 기한은 후속 (지금은 일수 카운터만, 효과 없음).";
     public const string CmRecEmpty = "(아직 치른 작전이 없습니다)";
     public const string CmRecTopHead = "이월 사병 사살 상위";
     public const string CmRecTopRow = "{0}  -  사살 {1:N0}";
@@ -38,6 +49,11 @@ public static partial class S
     public const string CmOrgBat = "{0}  {1}개 중대 · 병력 {2:N0}/{3:N0} · 부상 {4:N0} · 가용 {5}";
     public const string CmOrgDirectCo = "{0}  병력 {1:N0}/{2:N0} · 부상 {3:N0}{4}";
     public const string CmOrgDirectUnavail = " · 출전 불가";
+    // ---- [T42a] 피로 · 사기 (읽기 표시)
+    public const string CmSumFatigueMorale = "피로 평균 {0} · 사기 평균 {1} · 지침 {2}개 중대";
+    public const string CmOrgBarFatigue = "피로", CmOrgBarMorale = "사기";
+    public const string CmOrgTired = "지침 {0}";
+    public const string CmStatusTired = "지침 (피로)";
     public const string CmOrgMore = "... 외 {0}줄 (화면 밖)";
     public const string CmOrgLater = "분대 · 중대 편제 틀 편집은 후속 (연대 배속은 2 신병/부대 탭).";
 }

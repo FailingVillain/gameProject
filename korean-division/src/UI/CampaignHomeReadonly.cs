@@ -8,7 +8,7 @@ namespace KoreanDivision.UI;
 /// </summary>
 public sealed partial class CampaignMenu
 {
-    static bool IsReadonlyView(Tab t) => t is Tab.Records or Tab.Equipment or Tab.Organization;
+    static bool IsReadonlyView(Tab t) => t is Tab.Records or Tab.Equipment or Tab.Organization or Tab.Schedule;
 
     void DrawTabRecords(Rectangle body)
     {
@@ -21,7 +21,7 @@ public sealed partial class CampaignMenu
         if (v.Recent.Count == 0) { Ui.Text(S.CmRecEmpty, x + 10, y, 14, Palette.TextDim); y += 20; }
         foreach (var r in v.Recent)
         {
-            string line = string.Format(S.CmRecRow, r.Title, r.Kills, r.Lost, r.Survivors);
+            string line = (r.Day > 0 ? string.Format(S.CmRecDay, r.Day) : "") + string.Format(S.CmRecRow, r.Title, r.Kills, r.Lost, r.Survivors);
             Ui.Text(line, x + 10, y, 14, Palette.Text);
             if (r.SavedAt.Length > 0) { var sz = Ui.Measure(r.SavedAt, 12); Ui.Text(r.SavedAt, x + w - sz.X, y + 1, 12, Palette.TextDim); }
             y += 20;
@@ -36,6 +36,26 @@ public sealed partial class CampaignMenu
         if (d == null) Ui.Text(S.CmRecDebriefEmpty, x + 10, y, 14, Palette.TextDim);
         else Ui.Text(string.Format(S.CmRecDebrief, string.IsNullOrEmpty(d.Title) ? d.MissionId : d.Title, d.Dead, d.WoundedReturned, d.DischargedWounded, d.EnemyKills), x + 10, y, 14, Palette.Text);
         ReadonlyFooter(body, S.CmRecLater);
+    }
+
+    /// <summary>[T42d] 탭 14 일정: 현재 일수 + 연표 (이벤트 발동 · 작전 결과 시간순, 최신 위). 읽기 전용.</summary>
+    void DrawTabSchedule(Rectangle body)
+    {
+        var v = CampaignHomeViews.Schedule(state);
+        float x = body.X + 20, y = body.Y + 16, w = body.Width - 40;
+        Ui.Text(S.CmSchTitle, x, y, 22, Palette.Accent); y += 34;
+        Ui.Text(string.Format(S.CmSchDay, v.Day), x, y, 18, Palette.Text); y += 26;
+        Ui.Text(string.Format(S.CmSchCounts, v.Missions, v.Events), x, y, 15, Palette.TextDim); y += 30;
+        Ui.Text(string.Format(S.CmSchHead, CampaignHomeViews.ScheduleMax), x, y, 16, Palette.Accent); y += 24;
+        if (v.Rows.Count == 0) Ui.Text(S.CmSchEmpty, x + 10, y, 14, Palette.TextDim);
+        foreach (var r in v.Rows)
+        {
+            var dayLabel = string.Format(S.CmSchRowDay, r.Day);
+            Ui.Text(dayLabel, x + 10, y, 14, Palette.TextDim);
+            Ui.Text(r.Text, x + 80, y, 14, r.IsEvent ? Palette.Accent : Palette.Text);
+            y += 21;
+        }
+        ReadonlyFooter(body, S.CmSchLater);
     }
 
     void DrawTabEquipment(Rectangle body)
@@ -85,12 +105,26 @@ public sealed partial class CampaignMenu
                 string line = b.Number > 0
                     ? string.Format(S.CmOrgBat, string.IsNullOrEmpty(b.Name) ? $"{b.Number}" : b.Name, b.Companies, b.Strength, b.MaxStrength, b.Wounded, b.Available)
                     : string.Format(S.CmOrgDirectCo, b.Name, b.Strength, b.MaxStrength, b.Wounded, b.Available > 0 ? "" : S.CmOrgDirectUnavail);
-                Ui.Text(line, x + 24, y, 14, Palette.Text); y += 20; shown++;
+                Ui.Text(line, x + 24, y, 14, Palette.Text);
+                DrawMeter(body.X + body.Width - 330, y + 3, S.CmOrgBarFatigue, b.Fatigue, b.Fatigue >= CampaignEconomyDefs.Current.FatigueWarnThreshold ? Palette.Warning : Palette.HpGood);   // T42a 읽기 막대
+                DrawMeter(body.X + body.Width - 170, y + 3, S.CmOrgBarMorale, b.Morale, Palette.Accent);
+                y += 20; shown++;
             }
             y += 6;
         }
         if (shown < total) Ui.Text(string.Format(S.CmOrgMore, total - shown), x, limit + 4, 13, Palette.TextDim);
         ReadonlyFooter(body, S.CmOrgLater);
+    }
+
+    /// <summary>[T42a] 라벨 + 0..100 막대 (읽기 전용, 폭 150).</summary>
+    static void DrawMeter(float x, float y, string label, int value, Color fill)
+    {
+        value = Math.Clamp(value, 0, 100);
+        Ui.Text(label, x, y - 2, 12, Palette.TextDim);
+        var bar = new Rectangle(x + 32, y, 90, 10);
+        Raylib.DrawRectangleRec(bar, Palette.Alpha(Palette.PanelDark, 200));
+        Raylib.DrawRectangleRec(new Rectangle(bar.X, bar.Y, bar.Width * value / 100f, bar.Height), fill);
+        Ui.Text($"{value}", bar.X + bar.Width + 4, y - 2, 12, Palette.Text);
     }
 
     void ReadonlyFooter(Rectangle body, string later)

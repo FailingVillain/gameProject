@@ -28,7 +28,7 @@ public sealed partial class CampaignMenu
         new[] { Tab.Diplomacy, Tab.Staff, Tab.Promotion },
     };
 
-    static bool IsMvp(Tab t) => t is Tab.Summary or Tab.Roster or Tab.Logistics or Tab.Map or Tab.Events or Tab.Staff || IsReadonlyView(t);
+    static bool IsMvp(Tab t) => t is Tab.Summary or Tab.Roster or Tab.Logistics or Tab.Map or Tab.Events or Tab.Staff || IsReadonlyView(t) || t == Tab.Promotion || t == Tab.Diplomacy;
 
     static string TabLabel(Tab t) => t switch
     {

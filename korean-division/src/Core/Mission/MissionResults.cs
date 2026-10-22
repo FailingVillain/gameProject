@@ -27,6 +27,8 @@ public sealed class MissionResults
     public bool CheatsUsed { get; set; }
     public int PlayerFaction { get; set; }
     public int EnemyKills { get; set; }
+    /// <summary>[T42c] 끝났을 때 항복한 채 살아 있는 적대 세력 유닛 수 (= 포로). 항복 규칙이 꺼져 있으면 0. 시뮬 상태를 읽기만 함 — 저장 · 체크섬 무관.</summary>
+    public int EnemyCaptured { get; set; }
     /// <summary>[측정] 아군 오사 — 무기 종류별 (명중 · 사살 · 피해량). 저장 · 체크섬과 무관한 부가 계수기.</summary>
     public Dictionary<string, FriendlyFireEntry> FriendlyFire { get; set; } = new();
     /// <summary>[T19b] 플레이어 세력 포 (병과 gun) 의 무기 키별 발사 수 — 캠페인 포탄 정산 (실제 발사 수 차감). 미션 중 불러오기를 하면 그 뒤 발사만 센다.</summary>
@@ -66,7 +68,7 @@ public sealed class MissionResults
         {
             int sp = f < m.Spawned.Length ? m.Spawned[f] : 0;
             r.Factions.Add(new FactionLine { Id = f, Name = w.Faction(f).Name, Player = f == m.Player, Spawned = sp, Lost = Math.Max(0, sp - alive[f]), Alive = alive[f], Captured = captured[f] });
-            if (w.IsHostile(m.Player, f)) r.EnemyKills += Math.Max(0, sp - alive[f]);
+            if (w.IsHostile(m.Player, f)) { r.EnemyKills += Math.Max(0, sp - alive[f] - captured[f]); r.EnemyCaptured += captured[f]; }
         }
         for (int i = 0; i < m.Def.Objectives.Count; i++)
         {
