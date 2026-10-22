@@ -584,13 +584,6 @@
       "weapon": "gun_field", "armor": "basic", "category": "gun", "suppressResist": 0.75, "setupTime": 15, "packTime": 12, "turnRate": 30,
       "factions": ["fengtian"], "artAs": "heavy_field_gun", "canCapture": false, "autoAttack": true,
     },
-    // 일본 철도수비대 (철도 부속지 중대 약 150, 중립 구역 [제안], 명세): 일본 보병 (infantry_japanese) 수치 그대로. 일본 전용 — 부속지가 별도 중립 세력 슬롯이면 그 슬롯의 En 이 japanese 여야 편성 가능 (엔진 카드 참고).
-    "infantry_railway_guard_japanese": {
-      "name": "일본 철도수비대", "description": "만철 부속지를 지키는 일본 철도수비대 (일본 전용). 성능은 일본 보병과 같고 아리사카 38식 소총에 착검으로 싸웁니다.",
-      "hp": 100, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
-      "weapon": "rifle_mosin", "melee": "bayonet", "armor": "none", "category": "infantry", "suppressResist": 0.75, "marchFire": true, "bayonetPreFixed": true,
-      "factions": ["japanese"], "artAs": "infantry", "artVariant": "japanese", "canCapture": true, "autoAttack": true,
-    },
     // 피난민 (SK3 호송 대상, 명세 / C1E1-g5): 비전투 — 무기 · 근접 없음 (기수와 같은 무장 없음 규칙), 자동 사격 · 점령 없음. 속도는 보병보다 느림 (2.6 = 보급 마차), 체력 60 (민간인), 제압 취약 1.5.
     // 도주 · 공포 AI 는 없음 (범위 밖). 공용 = 한국 편성 · 중립 어느 쪽 배치도 검증 통과. 그림 = 보병 자리표시.
     "civilian_refugee": {
