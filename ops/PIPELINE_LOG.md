@@ -122,6 +122,7 @@
 | 13:10 | 사용자 일괄 승인 반영: 보류 해제(전투공병·지도 편집기·전술 AI 3C/3D·기병 측면·AI 연막·철조망) → 카드 작성 spec×3 · 시기 미정 항목 보류 · 후속 카드 진행(IsAi 복원 T35 opus, AH2→T36·U4→T37 sonnet) · 역제안 1(백업 완료: C:/works/_backup/gameProject-all-2026-10-22.bundle 260MB verify OK)·2(통합 리허설 opus, integration/rehearsal)·3(결정 묶음 문서 spec)·8(release 실가동: fix/n12-forest 병합 merger 발주 → release)·9(PIPELINE v2 docs). 워크트리 정리는 백업 확인 후 목록화→삭제. 재렌더 가속 가능성은 scout 조사 중. 지휘자 교체는 하루 1회로 확정(메모리) | 동시 약 14 |
 | 13:1x | **merger 첫 실가동 성공(sonnet, 55k, 92초)**: fix/n12-forest → main bfe5641(--no-ff), n12·forest·gapfill 단독 PASS, detcheck GOLDEN 일치, MERGE_QUEUE 기록 a58af15, 락·워크트리·브랜치 정리. 통합 리허설에 main 기반 변경 통보. release 첫 실가동 발주 | 병합 단계 1건 검증 |
 | 13:1x | 결정 묶음 문서 완료(spec, 69k, 83초): ops/DECISION_SESSION.md 1c93026 — 8묶음(병합 정책→렌더·그림→항복·IsAi·AI 난이도→통신→열차·전투 밸런스→캠페인 슬라이스·경제→캠페인 홈 UI·저장→하천·지도·소소한 기본값), 묶음당 4~5분, 거부권용 '이미 적용된 기본값' 목록. PIPELINE v2 완료(docs haiku, 80k, 79초): ops/PIPELINE.md 592392d, 5.8k→8.8k자(1.51배) | 역제안 3·9 완료 |
+| 13:1x | **재시작한 T16b 에이전트(opus, 114k, 745초)가 원본 에이전트가 살아 있음을 발견하고 중단**: 원본은 스크래치패드에 결과를 쓰며 러너(PID 5244)를 돌리는 중(커밋 없이 85분). 교훈 18 정정 — 출력 파일 0바이트/워크트리 무변화는 정지 신호가 아님(이중 발주 2번째). 부수 이익: 중간 결과 확보 — breach 는 원인 아님, N32 끔 효과 소실 지점은 formation 병합(formRelax). 원본 계속 진행(권장) | 정지 판정 규칙 재수정 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |

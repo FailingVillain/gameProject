@@ -135,3 +135,6 @@ Q-A1 새 Entity(TrainCar, Units 밖 World.Trains) · Q-A2 단선·순환선만(�
 - **T31a** (kd/t31a-regroup 97ed026, ai3b2 위): 재투입 제한 키(`regroup.noRejoinBelow` 기본 0=꺼짐; `rejoinStrength` 기존)로는 대대 손실을 1~3%p 밖에 못 줄임 — 측정 미션이 '진 쪽 70% 손실 시 종료'라 평균 손실의 바닥이 70%. 0.67 은 손실 −9%p 이나 시간 초과 5/8 이라 기각. **수용 기준(손실 20~40%) 미달** → T31b(종료선 측정, 발주함)가 관건. wip-ready 이나 켜지 말 것.
 - **AJ 갱신** artillery_spotters 재확인(n=24, 시드 101~124): 스택·main 모두 18/24(75%), 시간 초과 0, 24판 승패·시각 동일 → T15 의 5/8 은 노이즈, **뚜렷한 하락 아님**. (남은 의심은 trench_assault 1/8 — T16b 진행 중.)
 
+
+## Z 갱신. T16b 중간 결과 (2026-10-22 13:1x; 원본 T16b 에이전트 진행 중, 확정 아님)
+trench_assault 시드 101~120 한국 승/20: 구 main 92ac51c5 N32 켬 5·끔 11 / formation 병합 직전 c6b99041 끔 11 / **formation 병합 1ea925d8 끔 4** / main·breach2 끔 4 / breach2 + `formRelax:false` 켬 5·끔 11 / `relaxMoveTolerance` 0.5 끔 11 / `restAlignSec` 0 끔 10 / `formDeadband` 0 끔 5 / `shortMoveDist` 0 끔 7. → **돌파(breach)는 원인이 아님**; 'N32 끔 효과'가 사라진 지점은 formation 병합(`formRelax`, 특히 `relaxMoveTolerance` 1.5). 단 시드 121~160 에서는 breach2 끔 21/40 이라 101~120 이 효과를 과장했을 수 있음 → 원본 에이전트가 확인 중. 확정되면 카드(T16b)로 올라옴.
