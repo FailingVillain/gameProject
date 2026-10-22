@@ -279,6 +279,34 @@ public static class TerrainSelfTest
             check(flw.Map.Get(11, 20) == TerrainType.Ford && flw.Map.TerrainHash == fm.TerrainHash && flw.ComputeChecksum() == fw.ComputeChecksum(), "저장 · 불러오기: 여울 칸 유지 · 체크섬 일치");
         }
 
+        // ---- 다리 (T39d, 2026-10-22): 지도 json "bridge" · 통행 x1 · 엄폐 없음 · 사선 불변 · 깊은 물 대비 · 판자 방향 · 저장
+        {
+            const string BrMap = """
+            { "name": "bridge test", "width": 64, "height": 64, "base": "grass", "starts": [ [4, 4], [60, 60] ],
+              "paint": [
+                { "terrain": "water", "rect": [30, 0, 5, 64] },
+                { "terrain": "bridge", "rect": [30, 20, 5, 3] },
+                { "terrain": "water", "rect": [0, 40, 64, 4] },
+                { "terrain": "bridge", "rect": [10, 40, 3, 4] }
+              ] }
+            """;
+            var bw = World.CreateStandard(MapFile.LoadText(BrMap, "brtest", opt.Seed), defs);
+            foreach (var u in bw.Units) u.Hp = 0;
+            bw.Step();
+            var bm = bw.Map;
+            check(bm.Get(32, 21) == TerrainType.Bridge && bm.Get(32, 19) == TerrainType.Water && bm.Get(32, 23) == TerrainType.Water, "지도 json: bridge rect 가 하천 위에 덮어 칠해짐");
+            check(!bm.IsWalkable(32, 19) && bm.IsWalkable(32, 21) && bm.IsWalkable(30, 20) && bm.IsWalkable(34, 22), "다리 통행 가능 (깊은 물 불가) - 전 칸");
+            var bct = bm.TerrainCover(C(32, 21));
+            check(MathF.Abs(bm.MoveMul(C(32, 21)) - 1f) < 1e-4f && bct.Hit == 1f && bct.Suppress == 1f, "다리: 이동 x1 · 지형 엄폐 없음");
+            check(bm.HasLineOfSight(C(28, 21), C(37, 21)) && bm.HasFiringLine(C(28, 21), C(37, 21), 0, 0), "다리를 가로지르는 직선 이동 검사 · 사선 막지 않음 (다리 길이 방향)");
+            var tl = KoreanDivision.Render.BridgeRenderer.Tiles(bm);
+            var tH = tl.Find(t => t.X == 32 && t.Y == 21); var tV = tl.Find(t => t.X == 11 && t.Y == 41);
+            check(tl.Count == 15 + 12 && tH.Vertical && !tV.Vertical, $"다리 렌더 정보: {tl.Count}칸, 세로 강 위 다리 = 세로 널빤지 {tH.Vertical} · 가로 강 위 다리 = 가로 널빤지 {!tV.Vertical}");
+            var bbytes = Snapshot.Save(bw, new SnapshotMeta("bridge", 1, false, "none"));
+            var blw = Snapshot.Load(bbytes, defs).World;
+            check(blw.Map.Get(32, 21) == TerrainType.Bridge && blw.Map.TerrainHash == bm.TerrainHash && blw.ComputeChecksum() == bw.ComputeChecksum(), "저장 · 불러오기: 다리 칸 유지 · 체크섬 일치");
+        }
+
         // ---- 생성 맵: 숲 · 언덕 흩뿌리기 (결정적 · 2인 대칭)
         {
             var g1 = GameMap.Generate(128, 128, opt.Seed);

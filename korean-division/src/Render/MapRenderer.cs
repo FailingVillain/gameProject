@@ -540,6 +540,11 @@ public sealed partial class MapRenderer : IDisposable
                 for (int k = 0; k < 14; k++)
                     Raylib.ImageDrawPixel(ref img, (int)((h >> (k * 2)) % 32), (int)((h >> (k * 2 + 7)) % 32), Palette.Shade(c, k % 2 == 0 ? -26 : 20));
                 break;
+            case TerrainType.Bridge:
+                // 다리 바닥 (테마 그림 없음 → 나무색 + 나뭇결 점). 널빤지 줄 · 난간은 BridgeRenderer 가 이웃 물 방향을 보고 덧그린다.
+                for (int k = 0; k < 10; k++)
+                    Raylib.ImageDrawPixel(ref img, (int)((h >> (k * 2)) % 32), (int)((h >> (k * 2 + 7)) % 32), Palette.Shade(c, k % 2 == 0 ? -16 : 12));
+                break;
             case TerrainType.Wire:
                 for (int k = 0; k < 3; k++)
                 {
