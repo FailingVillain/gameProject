@@ -124,6 +124,9 @@ public static partial class S
 
     // ---- 4. 지도 탭 (작전 지도)
     public const string CmMapTitle = "만주 북진 작전 지도 및 진로";
+    public const string CmMapZoomLabel = "배율 ×{0:0.0}";
+    public const string CmMapZoomHint = "휠 확대 · 끌어서 이동 · + - 0 키";
+    public const string CmMapFit = "맞춤";
     public const string CmNodeAndong = "안동";
     public const string CmNodeFenghuang = "봉황성";
     public const string CmNodeAnshan = "안산";

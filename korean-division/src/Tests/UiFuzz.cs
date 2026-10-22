@@ -232,7 +232,9 @@ public sealed class UiFuzz
             visitedTabs.Add(cm.FuzzTab); visitedViews.Add(view);
             if (cm.FuzzSlotsOpen) Ev("cm-slots-frames");
             if (view == "Debrief") Ev("cm-debrief-frames");
+            MapZoomDrive(cm, view);
             if (campFrame % 600 == 0) { SeedCampaign(); menu.ShowCampaign(); Ev("campaign-reseed"); return; }
+            if (cm.FuzzTab == 10 && view == "Home" && mapDwell++ < 150) return;   // 지도 탭에서는 잠시 머물며 휠 · 끌기를 쏜다
             if (campFrame % (visitedTabs.Count < CampaignMenu.FuzzTabCount ? 5 : 12) != 0 || view != "Home" || cm.FuzzSlotsOpen) return;
             int n = Enumerable.Range(1, CampaignMenu.FuzzTabCount).FirstOrDefault(t => !visitedTabs.Contains(t));
             if (n == 0) n = rng.Next(1, CampaignMenu.FuzzTabCount + 1);
@@ -248,6 +250,40 @@ public sealed class UiFuzz
                 break;
             }
         });
+    }
+
+    // [T47] 지도 탭 (10) 휠 확대 · 끌기 퍼즈: 뷰포트 안에서 휠 / 끌기 / 키를 쏘고, 배율 범위 · 중심 유한 · 캠페인 상태 불변을 대조한다.
+    int mapDragLeft, mapDwell; string? mapBaseline; int mapSteps; CampaignMenu? mapCm;
+    void MapZoomDrive(CampaignMenu cm, string view)
+    {
+        if (cm.FuzzTab != 10 || view != "Home" || cm.FuzzSlotsOpen) { mapBaseline = null; mapDragLeft = 0; mapDwell = 0; return; }
+        if (!ReferenceEquals(mapCm, cm)) { mapCm = cm; mapBaseline = null; mapDragLeft = 0; }
+        var c = cm.FuzzMapViewportCenter; var sz = cm.FuzzMapViewportSize;
+        if (sz.X < 10) return;   // 아직 한 번도 안 그려짐
+        float z = cm.FuzzMapZoom; var mc = cm.FuzzMapCenter;
+        if (float.IsNaN(z) || z < 1f - 1e-3f || z > 8f + 1e-3f || float.IsNaN(mc.X) || float.IsNaN(mc.Y) || mc.X < 0 || mc.Y < 0 || mc.X > 960 || mc.Y > 320)
+            throw new InvalidOperationException($"map zoom out of range: zoom {z} center {mc}");
+        if (++mapSteps % 10 == 0)
+        {
+            string json = cm.FuzzStateJson;
+            if (mapBaseline == null) mapBaseline = json;
+            else if (mapBaseline != json) throw new InvalidOperationException("campaign state changed on the map tab");
+        }
+        if (mapDwell < 150) { inp.Pressed.Clear(); inp.Wheel = 0; }   // 머무는 동안 메뉴 퍼즈의 무작위 클릭 · 휠은 막고 지도 전용 입력만 쏜다
+        Vector2 RandPt() => new(c.X + (float)(rng.NextDouble() - 0.5) * sz.X * 0.8f, c.Y + (float)(rng.NextDouble() - 0.5) * sz.Y * 0.8f);
+        if (mapDragLeft > 0)
+        {
+            inp.Down.Add(MouseButton.Left);
+            inp.Delta = new Vector2(rng.Next(-25, 26), rng.Next(-15, 16));
+            inp.Mouse += inp.Delta;
+            if (--mapDragLeft == 0) { inp.Down.Remove(MouseButton.Left); inp.Released.Add(MouseButton.Left); Ev("map-drag-end"); }
+            return;
+        }
+        int roll = rng.Next(5);
+        if (roll < 2) { inp.Mouse = RandPt(); inp.Wheel = rng.Next(-4, 5); Ev("map-wheel"); }
+        else if (roll == 2) { inp.Mouse = RandPt(); mapDragLeft = rng.Next(3, 14); inp.Pressed.Add(MouseButton.Left); inp.Down.Add(MouseButton.Left); inp.Delta = new Vector2(12, 7); Ev("map-drag-start"); }
+        else if (roll == 4 && rng.Next(8) == 0) { inp.Mouse = RandPt(); inp.Pressed.Add(MouseButton.Left); Ev("map-click"); }
+        else if (roll == 3) { inp.KeyPress.Add(new[] { KeyboardKey.Equal, KeyboardKey.Minus, KeyboardKey.Zero, KeyboardKey.KpAdd, KeyboardKey.KpSubtract, KeyboardKey.Kp0 }[rng.Next(6)]); Ev("map-key"); }
     }
 
     // ---------------------------------------------------------------- 겨냥 클릭 (T38g)

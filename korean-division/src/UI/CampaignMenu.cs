@@ -54,6 +54,7 @@ public sealed partial class CampaignMenu
         loadError = CampaignState.LastLoadError;
         Adopt(state);
         ApplyViewOverride();
+        ApplyMapZoomOverride();   // T47 확인용
     }
 
     /// <summary>상태를 화면에 붙인다 (생성 · 슬롯 불러오기).</summary>
@@ -603,45 +604,10 @@ public sealed partial class CampaignMenu
         Ui.Text(S.CmTutorialNote, x + w - tbw * 2 - 8 - Ui.Measure(S.CmTutorialNote, 12).X - 10, tby + 8, 12, Palette.TextDim);
         y += 30;
 
-        // 상단: 만주 북진 작전 경로 노선도 (도식 그리기)
-        var mapBox = new Rectangle(x, y, w, 150);
-        Ui.Panel(mapBox, Palette.Alpha(Palette.PanelDark, 200), Palette.PanelBorder);
-
-        // 노선도 거점: 압록강 (튜토리얼) -> 안동 (1-1 도하) -> 봉황성 -> 안산 -> 요양 -> 봉천 -> 장춘 -> 하얼빈 (회령 · 두만강은 Q10 으로 러시아 편에 재배치)
-        string[] routeNodes = {
-            S.CmNodeYalu,
-            S.CmNodeAndong, S.CmNodeFenghuang, S.CmNodeAnshan,
-            S.CmNodeLiaoyang, S.CmNodeFengtian, S.CmNodeChangchun, S.CmNodeHarbin
-        };
-
-        float segW = (mapBox.Width - 60) / (routeNodes.Length - 1);
-        float nodeY = mapBox.Y + mapBox.Height / 2 - 6;
-
-        // 선 연결
-        for (int i = 0; i < routeNodes.Length - 1; i++)
-        {
-            float nx1 = mapBox.X + 30 + i * segW;
-            float nx2 = mapBox.X + 30 + (i + 1) * segW;
-            Color lineCol = RouteDone(i) ? Palette.HpGood : Palette.PanelBorder;
-            Raylib.DrawLineEx(new Vector2(nx1, nodeY), new Vector2(nx2, nodeY), 3, lineCol);
-        }
-
-        // 노드 원 및 이름
-        for (int i = 0; i < routeNodes.Length; i++)
-        {
-            float nx = mapBox.X + 30 + i * segW;
-            bool isDone = RouteDone(i);
-            bool isCurrent = !isDone && (i == 0 || RouteDone(i - 1)) && i < RouteMissionIds.Length;
-
-            Color circleCol = isDone ? Palette.HpGood : isCurrent ? Palette.Accent : Palette.PanelBorder;
-            Raylib.DrawCircleV(new Vector2(nx, nodeY), 7, circleCol);
-            Raylib.DrawCircleLinesV(new Vector2(nx, nodeY), 7, Palette.PanelDark);
-
-            Vector2 nameSz = Ui.Measure(routeNodes[i], 12);
-            Ui.Text(routeNodes[i], nx - nameSz.X / 2, nodeY + 12, 12, isCurrent ? Palette.Accent : Palette.Text);
-        }
-
-        y += 166;
+        // 상단: 만주 북진 작전 경로 노선도 — 확대 · 이동 가능 (T47, CampaignMapView.cs)
+        float mapH = Math.Clamp(body.Y + body.Height - y - 16 - 240, 150, 280);   // 아래 작전 목록(240) 을 남기고 세로 여유만큼
+        DrawMapView(new Rectangle(x, y, w, mapH));
+        y += mapH + 16;
 
         // 하단: 작전 미션 목록
         Ui.Text("선택 가능한 작전 목록:", x, y, 16, Palette.Accent); y += 24;
@@ -658,7 +624,7 @@ public sealed partial class CampaignMenu
             var m = missions[i];
             bool done = state.Completed.Contains(m.Id);
             bool isNext = state.NextMission == m.Id || (string.IsNullOrEmpty(state.NextMission) && m.Id == CampaignState.FirstMission);
-            bool available = (done || isNext || m.Id == CampaignState.FirstMission) && File.Exists(MissionDef.PathOf(m.Id));   // 파일 없는 다음 작전 = 준비 중
+            bool available = MissionAvailable(m.Id);   // 파일 없는 다음 작전 = 준비 중
 
             var rowRect = new Rectangle(x, y, w, 44);
             bool hover = Ui.Contains(rowRect, mouse);
