@@ -33,6 +33,7 @@ public static class UserSettings
         public float Volume { get; set; } = 0.8f;
         public bool ColorBlind { get; set; } = false;
         public string Overlay { get; set; } = "concise";
+        public string Language { get; set; } = "ko";   // [TI1] ko | en (모르는 값 = ko)
         public Dictionary<string, string>? Keys { get; set; }
     }
 
@@ -84,6 +85,9 @@ public static class UserSettings
             Volume = Math.Clamp(float.IsNaN(d.Volume) ? 0.8f : d.Volume, 0f, 1f);
             ColorBlind = d.ColorBlind;
             Overlay = ParseOverlay(d.Overlay);
+            string lang = (d.Language ?? "").Trim().ToLowerInvariant();
+            if (lang != "ko" && lang != "en") { Note($"{name}: 'Language' 값이 올바르지 않아 기본값(ko)을 쓴다"); lang = "ko"; }
+            KoreanDivision.Core.Loc.Language = lang;
             Sfx.Volume = Volume;
             KeyMap = new();
             if (d.Keys != null)
@@ -121,7 +125,7 @@ public static class UserSettings
         if (blockSave) return;   // [T49b] 못 읽은 원본을 .bak 없이 덮어쓰지 않는다
         try
         {
-            var d = new Data { Width = Width, Height = Height, Volume = Volume, ColorBlind = ColorBlind, Overlay = OverlayName(Overlay), Keys = KeyMap.Count == 0 ? null : KeyMap.OrderBy(kv => kv.Key, StringComparer.Ordinal).ToDictionary(kv => kv.Key, kv => kv.Value.ToString()), Mode = Mode switch { WindowMode.Borderless => "borderless", WindowMode.Fullscreen => "fullscreen", _ => "windowed" } };
+            var d = new Data { Width = Width, Height = Height, Volume = Volume, ColorBlind = ColorBlind, Overlay = OverlayName(Overlay), Language = KoreanDivision.Core.Loc.Language, Keys = KeyMap.Count == 0 ? null : KeyMap.OrderBy(kv => kv.Key, StringComparer.Ordinal).ToDictionary(kv => kv.Key, kv => kv.Value.ToString()), Mode = Mode switch { WindowMode.Borderless => "borderless", WindowMode.Fullscreen => "fullscreen", _ => "windowed" } };
             File.WriteAllText(FilePath, JsonSerializer.Serialize(d, new JsonSerializerOptions { WriteIndented = true }));
         }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException) { }
