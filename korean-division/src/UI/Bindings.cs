@@ -12,9 +12,12 @@ public static class Bindings
         ("1~9", "연대 선택"), ("Alt+1~9", "대대 선택 (0 = 목록)"),
         ("Ctrl+Alt+1~9", "중대 편성 → 대대"), ("Ctrl+Shift+1~9", "대대 → 연대 편입"), ("Ctrl+1~9", "대대 번호 변경"),
         ("I", "분대 아이콘"), ("B", "사선 (누르는 동안)"), ("N", "소리"), ("[ ]", "게임 속도"), ("+ -", "확대/축소"),
-        ("F3", "일시정지"), ("F6/F7", "빠른 저장/불러오기"), ("Enter", "콘솔"), ("Esc", "취소/선택 해제"),
+        ("F1", "도움말 (이 목록)"), ("F3", "일시정지"), ("F6/F7", "빠른 저장/불러오기"), ("Enter", "콘솔"), ("Esc", "취소/선택 해제"),
     };
 
     public static IEnumerable<(string Key, string Text)> All() =>
         KoreanDivision.Core.Commands.UnitCommands.Select(c => (c.Hotkey.ToString(), c.Label)).Concat(Extra);
+
+    /// <summary>docs/CONTROLS.md 「단축키 일람」 표의 한 줄 형식 (문서 동기 테스트와 문서 갱신 공용).</summary>
+    public static string MarkdownRow((string Key, string Text) b) => $"| `{b.Key}` | {b.Text} |";
 }

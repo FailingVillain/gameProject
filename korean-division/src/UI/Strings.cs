@@ -244,7 +244,11 @@ public static partial class S
     public const string ConsoleHelp2 = "spawn <유닛> [수] — 화면 중앙에 내 유닛 생성 (치트, 인구 무시)";
     public const string ConsoleHelp4 = "fps — 프레임 시간 표시 켜기/끄기";
     public const string ConsoleHelp6 = "volume <0~100> · mute — 효과음 음량 / 음소거";
-    public const string ConsoleHelpKeys = "keys — 단축키 목록";
+    public const string ConsoleHelpKeys = "keys — 단축키 목록 (F1 = 도움말 화면, helpui)";
+    // 도움말 오버레이 (T38b, F1)
+    public const string HelpTitle = "도움말 · 단축키";
+    public const string HelpHint = "F1 · Esc: 닫기 · 휠 · ↑↓ · PgUp/PgDn: 스크롤";
+    public const string HelpClose = "닫기";
     public const string ConsoleHelp5 = "help — 이 목록";
     public const string ConsoleVolume = "효과음 음량 {0}%{1}";
     public const string ConsoleMuted = " (음소거)";
