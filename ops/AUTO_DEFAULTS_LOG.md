@@ -9,3 +9,4 @@
 2026-10-22 | FV 번호 | T32b=65·T34a=66 (Replay 불변), AE2 62 비움 | MERGE_PLAN, FV_RESERVATIONS
 2026-10-22 | T48b | 분할: T48b1(opus 신원 영속)·T48b2(sonnet 풀/참모); 스냅샷 A안(MissionState 매핑, FV 52→53) | 장교 신원 조사(89b2e5f)
 2026-10-22 | 병합 | merge/0.2 에서만 병합, main 은 --ff-only 마지막, 그룹별 태그, 충돌 임의 해결 금지 | MERGE_PLAN
+- 2026-10-22 저장 호환 정책: 캠페인=항상 이행(더하기만), 미션 저장·리플레이=옛 형식 거부+한국어 안내, 설정=관대, 사용자 파일=건너뛰기 -> ops/SAVE_COMPAT_POLICY.md (권고 기본값, 자동 적용)
