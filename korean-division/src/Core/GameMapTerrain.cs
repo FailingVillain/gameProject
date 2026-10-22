@@ -149,6 +149,7 @@ public sealed partial class GameMap
         {
             TerrainType.Forest => r.ForestMove,
             TerrainType.Rubble => r.RubbleMove,
+            TerrainType.Ford => r.FordMove,
             TerrainType.Wire => r.WireMove,
             TerrainType.Trench => r.TrenchMove,
             TerrainType.Crater => r.CraterMove,

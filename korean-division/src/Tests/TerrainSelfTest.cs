@@ -244,6 +244,41 @@ public static class TerrainSelfTest
             check(lw.Map.Get(15, 10) == TerrainType.Rail && lw.Map.TerrainHash == rm.TerrainHash && lw.ComputeChecksum() == rw.ComputeChecksum(), "저장 · 불러오기: 선로 칸 유지");
         }
 
+        // ---- 여울 · 하천 (T39a, 2026-10-22): 지도 json "ford" · line "width" · 통행 · 이동 배수 · 사선 불변 · 깊은 물 통행 불가 · 저장
+        {
+            const string FordMap = """
+            { "name": "ford test", "width": 64, "height": 64, "base": "grass", "starts": [ [4, 4], [60, 60] ],
+              "paint": [
+                { "terrain": "water", "line": [5, 20, 30, 20, 40, 40], "width": 4 },
+                { "terrain": "water", "line": [5, 50, 60, 50] },
+                { "terrain": "ford", "rect": [10, 18, 4, 5] }
+              ] }
+            """;
+            var fw = World.CreateStandard(MapFile.LoadText(FordMap, "fordtest", opt.Seed), defs);
+            foreach (var u in fw.Units) u.Hp = 0;
+            fw.Step();
+            var fm = fw.Map;
+            // 폭 4: 중심 y=20 에서 -1~+2 → y 19~22 (x 가 중간인 칸, 여울 rect 밖)
+            check(fm.Get(20, 19) == TerrainType.Water && fm.Get(20, 22) == TerrainType.Water && fm.Get(20, 18) == TerrainType.Grass && fm.Get(20, 23) == TerrainType.Grass,
+                  "지도 json: water line width 4 (정사각 확장, 중심 -1~+2)");
+            check(fm.Get(20, 50) == TerrainType.Water && fm.Get(20, 49) == TerrainType.Grass && fm.Get(20, 51) == TerrainType.Grass, "width 생략 = 1칸 폭 (현행과 동일)");
+            check(fm.Get(11, 20) == TerrainType.Ford && fm.Get(11, 18) == TerrainType.Ford && fm.Get(11, 22) == TerrainType.Ford && fm.Get(14, 20) == TerrainType.Water,
+                  "지도 json: ford rect 가 하천 위에 덮어 칠해짐");
+            check(!fm.IsWalkable(20, 20) && fm.IsWalkable(11, 20), "깊은 물 통행 불가 · 여울 통행 가능");
+            var fct = fm.TerrainCover(C(11, 20));
+            check(MathF.Abs(fm.MoveMul(C(11, 20)) - tr.FordMove) < 1e-4f && MathF.Abs(tr.FordMove - 0.6f) < 1e-4f && fct.Hit == 1f && fct.Suppress == 1f,
+                  $"여울: 이동 ×{tr.FordMove} · 지형 엄폐 없음");
+            check(fm.HasFiringLine(C(11, 15), C(11, 26), 0, 0) && fm.HasLineOfSight(C(11, 15), C(11, 26)), "여울을 가로지르는 사선 · 직선 이동 검사 막지 않음");
+            bool tooWide = false, tooNarrow = false, oddLine = false;
+            try { MapFile.LoadText(FordMap.Replace("\"width\": 4", "\"width\": 7"), "badw", opt.Seed); } catch (Exception) { tooWide = true; }
+            try { MapFile.LoadText(FordMap.Replace("\"width\": 4", "\"width\": 0"), "badw", opt.Seed); } catch (Exception) { tooNarrow = true; }
+            try { MapFile.LoadText(FordMap.Replace("5, 20, 30, 20, 40, 40", "5, 20, 30, 20, 40"), "badl", opt.Seed); } catch (Exception) { oddLine = true; }
+            check(tooWide && tooNarrow && oddLine, "지도 json 검증: width 0 · 7, 홀수 개 line 은 거부");
+            var fbytes = Snapshot.Save(fw, new SnapshotMeta("ford", 1, false, "none"));
+            var flw = Snapshot.Load(fbytes, defs).World;
+            check(flw.Map.Get(11, 20) == TerrainType.Ford && flw.Map.TerrainHash == fm.TerrainHash && flw.ComputeChecksum() == fw.ComputeChecksum(), "저장 · 불러오기: 여울 칸 유지 · 체크섬 일치");
+        }
+
         // ---- 생성 맵: 숲 · 언덕 흩뿌리기 (결정적 · 2인 대칭)
         {
             var g1 = GameMap.Generate(128, 128, opt.Seed);
