@@ -489,6 +489,14 @@ public sealed class CombatRulesDef
     public float SurrenderProbeLen { get; set; } = 10f;
     public float SurrenderProbeDeg { get; set; } = 60f;
     public float SurrenderBlockRadius { get; set; } = 4f;
+    // T31c: AI 쪽만 완화하는 신규 키 (기본 = 현행). -1 = 위 공통 키를 그대로 씀. 플레이어 병사는 영향 없음.
+    public float SurrenderAiCasualty { get; set; } = -1f;
+    public int SurrenderAiMaxLeft { get; set; } = -1;
+    public float SurrenderAiChance { get; set; } = -1f;
+    public float SurrenderAiSuppAt { get; set; } = -1f;
+    public float SurrenderAiSuppSec { get; set; } = -1f;
+    /// <summary>AI 퇴각 불가 판정 완화 배수 (1 = 현행): 막힘 반경 · 탐침 길이 × 값, 포위 임계 0.35 × 값 (상한 0.9).</summary>
+    public float SurrenderRetreatBlockedMul { get; set; } = 1f;
     public float BreakMinSec { get; set; } = 8f;
     public float BreakMaxSec { get; set; } = 40f;
     public float BreakRallyAt { get; set; } = 0.3f;

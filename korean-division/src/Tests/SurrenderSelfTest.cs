@@ -20,7 +20,7 @@ public static class SurrenderSelfTest
         check = chk; defs = Defs.Current;
         Console.WriteLine("[surr 항복 — 엄격한 조건 · AI 퇴각 먼저 · 플레이어 낮은 빈도 · 표적 제외 · 저장]");
         using var nd = TestDefs.NoCommandDelay();
-        try { TestValues(); TestGates(); TestWaterBlocked(); TestAiRetreatFirst(); TestRates(); TestSurrenderedState(); TestSnapshot(); }
+        try { TestValues(); TestGates(); TestWaterBlocked(); TestAiRetreatFirst(); TestRelaxed(); TestRates(); TestSurrenderedState(); TestSnapshot(); }
         catch (Exception e) { check(false, $"surr 테스트 중 예외: {e.GetType().Name}: {e.Message}\n{e.StackTrace}"); }
     }
 
@@ -110,6 +110,49 @@ public static class SurrenderSelfTest
         w.Move(1, new[] { u }, new Vector2(80, 60));
         for (int i = 0; i < Ticks(2); i++) { u.Suppression = (short)(C.SuppressMax * 0.95f); w.Step(); }
         check(!u.Retreating && !u.Surrendered, "플레이어: 제압 · 소탕 상황에서도 자동 후퇴하지 않음 (명령 수행)");
+    }
+
+    /// <summary>T31c: AI 전용 완화 키 — 기본 = 현행 (no-op), 켜면 AI 만 항복, 퇴각 가능하면 여전히 안 함.</summary>
+    static void TestRelaxed()
+    {
+        using var cs = new ChanceScope(1f);
+        float sa = C.SurrenderAiSuppAt, ss = C.SurrenderAiSuppSec, ac = C.SurrenderAiCasualty, ch = C.SurrenderAiChance, bm = C.SurrenderRetreatBlockedMul; int ml = C.SurrenderAiMaxLeft;
+        try
+        {
+            var c = new Vector2(60, 60);
+            check(ac < 0 && ml < 0 && ch < 0 && bm == 1f, $"기본값 = 현행 (aiCasualty {ac} · aiMaxLeft {ml} · aiChance {ch} · retreatBlockedMul {bm})");
+            bool Ai(bool ai, int left, bool ring = true)
+            {
+                var w = Bare(); w.Faction(1).IsAi = ai; var u = Squad(w, left, 30, c);
+                if (ring) Ring(w, c, 8f); else Enemy(w, c + new Vector2(0, -8));
+                return Hold(w, u, 0.95f, C.SurrenderSuppSec + 6);
+            }
+            check(!Ai(true, 11), "기본: AI 중대 30 → 11 (63% 사상) 포위 → 항복 안 함 (현행 80%/10명)");
+            C.SurrenderAiCasualty = 0.6f; C.SurrenderAiMaxLeft = 20;
+            check(Ai(true, 11), "완화 (aiCasualty 0.6 · aiMaxLeft 20): AI 11명 포위 → 항복");
+            check(!Ai(false, 11), "완화 키는 플레이어에게 영향 없음 (11명 포위 → 항복 안 함)");
+            check(!Ai(true, 13), "완화해도 사상 < 60% (13/30 남음) → 항복 안 함");
+            check(!Ai(true, 11, ring: false), "완화해도 AI 퇴각로가 열려 있으면 항복 안 함");
+            C.SurrenderAiCasualty = -1; C.SurrenderAiMaxLeft = -1;
+            C.SurrenderChance = 0f; C.SurrenderAiChance = 1f;
+            check(Ai(true, 3), "aiChance 1 (공통 chance 0): AI 항복");
+            check(!Ai(false, 3), "공통 chance 0 → 플레이어는 항복 안 함");
+            C.SurrenderAiChance = -1f;
+            C.SurrenderChance = 1f;
+            bool Sup(bool ai, float supp, float sec) { var w = Bare(); w.Faction(1).IsAi = ai; var u = Squad(w, 3, 30, c); Ring(w, c, 8f); return Hold(w, u, supp, sec); }
+            check(!Sup(true, 0.6f, 6f), "기본: 제압 0.6 · 6초 → 항복 안 함 (현행 0.85 · 10초)");
+            C.SurrenderAiSuppAt = 0.5f; C.SurrenderAiSuppSec = 4f;
+            check(Sup(true, 0.6f, 6f) && !Sup(false, 0.6f, 6f), "aiSuppAt 0.5 · aiSuppSec 4: AI 만 약한 제압 · 짧은 지속에도 항복");
+            C.SurrenderAiSuppAt = -1; C.SurrenderAiSuppSec = -1;
+            // 퇴각로 판정 완화: 남쪽 물 (y>=69) — 기본 탐침 10칸은 ±60도 쪽이 트여 있음, ×2 면 막힘
+            void Sea(GameMap m) { for (int y = 69; y < 120; y++) for (int x = 0; x < 120; x++) m.Set(x, y, TerrainType.Water); }
+            bool Blocked(bool ai) { var w = Bare(120, Sea); w.Faction(1).IsAi = ai; var u = Squad(w, 3, 30, c); Enemy(w, c + new Vector2(0, -8)); return w.CannotRetreat(u); }
+            bool b0 = Blocked(true);
+            C.SurrenderRetreatBlockedMul = 2f;
+            bool b1 = Blocked(true), bp = Blocked(false);
+            check(!b0 && b1 && !bp, $"retreatBlockedMul 2: AI 막힘 판정만 완화 (기본 {b0} → {b1}, 플레이어 {bp})");
+        }
+        finally { C.SurrenderAiSuppAt = sa; C.SurrenderAiSuppSec = ss; C.SurrenderAiCasualty = ac; C.SurrenderAiMaxLeft = ml; C.SurrenderAiChance = ch; C.SurrenderRetreatBlockedMul = bm; }
     }
 
     static void TestRates()
