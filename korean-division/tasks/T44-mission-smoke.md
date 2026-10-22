@@ -2,7 +2,7 @@
 - id: T44 | 역할: feature (측정 도구) | 등급: D中 H1 (R1 S<=100k Wlight) | 버전 0.2
 - 선행: 없음 (base main) | 후행: 통합 리허설에서 상시 사용
 - 파일: Tests/MissionSmoke.cs(신규) · SelfTest.cs 그룹 1줄(KD_SELFTEST_ONLY=smoke) · tools/smoke_missions.ps1 · reports/ 출력. 시뮬 코드 무변경.
-- 브랜치 `t44-mission-smoke` (main 에서) | 상태: queued
+- 브랜치 `kd/t44-smoke` (main 에서) | 상태: wip-ready
 ## 확정 결정
 - 승률/밸런스는 보고하지 않는다 (밸런스 전부 보류, 사용자 2026-10-22). 기능 상태만.
 - 가볍게: 단일 프로세스 직렬, 동시 heavy job 1개 이하 (heavy-job 상한).
@@ -17,3 +17,13 @@ KD_SELFTEST_ONLY=smoke · tools/smoke_missions.ps1 (reports/smoke_<날짜>.md)
 ## 질문
 (1) 정지 판정 300초 기준 적절한가? (2) 16인 지도가 없으면 새 지도 추가는 이 카드 밖으로 두는가? (3) 통합 리허설 관문에 넣는가(지휘자 결정)?
 ## 결과
+- 구현(feature/sonnet): src/Tests/MissionSmoke.cs(신규) · SelfTest.cs `smoke` 그룹 1줄 · tools/smoke_missions.ps1 (기본 exe = bin/t44, 공유 bin/Debug 아님). 시뮬 코드 무변경. 빌드 경고 0 오류 0.
+- 질문 답 (카드 권고 채택): (1) 정지 기준 300 시뮬초(KD_SMOKE_STALL) (2) 16인 지도 없으면 보고에 'none', 새 지도는 카드 밖 (3) 통합 관문 편입 안 함.
+- 정지 판정: 1 시뮬초마다 이동(>0.05)·사망·발사 하나라도 있으면 진행. 호송(escort) id 는 정지 시 '합법 후보' 표기. 벽시계 TIMEOUT(기본 240s)은 PC 부하에 따라 달라 비결정적 — 경고로만 취급.
+- 환경 변수: KD_SMOKE_ID(한 미션) · KD_SMOKE_WALL · KD_SMOKE_STALL. 결정성 1건 = 첫 미션 60 시뮬초 2회 체크섬 동일(전체 실행 시).
+- **검증 결과: 미실행 (heavy_gate 25분+ 대기로 막힘 — kd-rerender 의 `heavy_gate.ps1 -Render` 대기자 다수가 풀 점유). 미션별 상태 표는 비어 있음.** 게이트가 열리면: `tools/smoke_missions.ps1` 1회 (또는 KD_SELFTEST_ONLY=smoke) -> reports/smoke_<날짜>.md 를 이 표에 옮긴다.
+| 미션 | 상태 |
+|---|---|
+| (미측정) | - |
+
+- 2차 시도: 게이트 열림 직후 1회 실행에서 `.exe`(GUI 서브시스템)가 stdout 없이 즉시 반환해 NO_OUTPUT 로 나옴 -> 스크립트를 `dotnet <dll>` 호출로 수정(콘솔 호스트, 블록). 수정 뒤 재실행은 게이트 재점유(kd-rerender -Render 대기자)로 대기 중 중단 — 표는 여전히 미측정.
