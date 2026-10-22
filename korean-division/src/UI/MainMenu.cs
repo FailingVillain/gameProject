@@ -188,6 +188,12 @@ public sealed class MainMenu
     {
         Vector2 m = Ui.Measure(S.GameTitle, 72, Ui.FontRole.Heading);
         Ui.Text(S.GameTitle, (screenW - m.X) / 2, y, 72, Palette.Accent, Ui.FontRole.Heading);
+        y += m.Y - 6;
+        Vector2 s = Ui.Measure(S.GameTitleSub, 26);
+        Ui.Text(S.GameTitleSub, (screenW - s.X) / 2, y, 26, Palette.TextDim);
+        y += s.Y - 4;
+        Vector2 k = Ui.Measure(S.GameTitleKo, 26);
+        Ui.Text(S.GameTitleKo, (screenW - k.X) / 2, y, 26, Palette.Text);
     }
 
     bool Button(Rectangle r, string label, bool enabled = true, bool active = false, int size = 16)
@@ -205,7 +211,7 @@ public sealed class MainMenu
 
     void DrawMain()
     {
-        DrawTitle(screenH * 0.30f - 120);
+        DrawTitle(screenH * 0.30f - 150);
         const float w = 320, h = 46, gap = 10;
         float x = (screenW - w) / 2, y = screenH * 0.30f + 30;
         if (Button(new Rectangle(x, y, w, h), S.MenuCampaign, size: 26)) { page = Page.Campaign; campaign = new CampaignMenu(); }
