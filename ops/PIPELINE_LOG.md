@@ -228,6 +228,7 @@
 | 16:1x | 민가 계획 완료(art sonnet, 100k, 316초; spec/house-variety c731b37): 현재 4종·LOD 3단계·4종 디코드 12.8MB, 기본 42종+구운 색 변형 66+폐허 42프레임, 좌우 반전은 그릴 때(DrawTexturePro 음수 source 폭), 메모리 한 문화권 ~60~115MB(LOD0 한도 768MB의 15%)·혼합 맵 최대 ~215MB, 렌더 108프레임 ≈2시간(가정; T55g 가 1종 실측), houseStyle 키+assets/data/house_styles.json, 카드 T55/T55g/T55s/T55m/T55a/T55b. 발주 1단계 3건: T55g(생성기, art sonnet), T55s(선택 로직, t39i 위 sonnet), T55m(import·레지스트리, haiku); T55a/b 는 T55g 완료 뒤 자동 4갈래. 사용자 질의 응답: 4갈래 분할 가능(1단계 2~3개→2단계 4개) | 진행 |
 | 16:1x | T38l wip-ready(haiku, 82k, 197초; t38l-title-strings fa03891, t38a 위): 창 제목 'KOREAN DIVISION : MARCH ON MANCHURIA', 메뉴 72px KOREAN DIVISION+26px MARCH ON MANCHURIA+26px '대한 사단 : 북벌 1920', HUD 약칭, S.UnitNameKo='제17 대한 사단'(화면 미사용), uiicons·골든 PASS, 1280x720 메뉴 샷(미커밋, 눈 확인 안 함). 발주: 연대장·T49 체인 리뷰(sonnet), STATE 인계·LESSONS 갱신(haiku), T50d 성능 벤치 하네스(sonnet, main 위 tools/perf-bench) | 완료 ~99 |
 | 16:1x | 사용자: 유닛 머리 위 파랑/빨강 표시가 지저분 → 코드 확인(UnitRenderer 470~515): HP 바(선택·호버·최근 피격 3초), 탄약 바(노랑, ≤20% 빨강)·적재량 바(파랑, 낮으면 빨강)는 아군 선택 시 또는 부족하면 상시 표시, 진행 막대, 분대 상태 아이콘, 줌 아웃 시 중대 휘장. 발주 T38m(sonnet, t38a 위): 3단계 설정 간결/보통/상세, 기본 간결(탄약·적재량 바는 선택 시만, 위험 상태는 분대 아이콘이 경고), 전후 스크린샷 | 진행 |
+| 16:1x | 사용자 정정: 머리 위 '다이아몬드 모양, 파랑/빨강, 유닛마다' — 코드(main) 읽기로는 SquadIcons 에 마름모 없음(7x7 도트 아이콘), UnitSymbols 는 줌<0.5 중대 NATO 틀 → 원인 요소 미확정. T38m 에이전트에 요소 식별(전 코드·브랜치 grep, 줌 4종 라벨 스크린샷) 후 기본 간결에서 선택/호버 때만 표시하도록 통보 | 진행 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
@@ -243,3 +244,18 @@
 | 완료(wip-ready) / 발주 | 병합 10/13 | 26 / 37 (T06·T11 은 단서) | 처리량 우수, 품질은 리뷰가 지킴 |
 
 v2 후보(사용자 확인 후 PIPELINE.md 반영): ① 리뷰 단계 표준화 ② FV 예약표 정식화 ③ 정지 감지 ④ L 카드 사전 분할 ⑤ 세부 설계 없는 카드는 '기본 꺼짐 스위치+초안 수치'로 ⑥ 병합 단계(merger)는 사용자 허가 후 첫 가동에서 검증.
+
+## 이전 인계 보관 (2026-10-22 08:50 절 원문, STATE 인계 절 교체 시 이동)
+## 인계 (2026-10-22 08:50, 취침 중 자율 가동 종료 — 새 지휘자 세션은 이 절부터)
+정책(사용자 강조): **WIP 는 병합하지 않는다 — wip-ready 까지만.** push 금지·merger 미발주. 결정 장부 = ops/DECISIONS.md (A~Z 절, 아래 요약), 가동 기록·v1 점검 = ops/PIPELINE_LOG.md, 번호 예약 = ops/FV_RESERVATIONS.md.
+- main = 문서·ops 커밋만 추가(코드 불변). main selftest 4건 실패(n12·forest)는 **시험 낡음**이며 수정 브랜치 `fix/n12-forest` 36a5a87 (병합 여부 M1 대기) → 병합되면 release 가 전체 selftest·publish 재실행.
+- wip-ready (병합 안 함, 각 브랜치 = kd-develop/<워크트리>): T01 gemini-import 63080df · T03 wip/breach2 · T04 wip/orderq2 0377f8a · T05 ai3b2 f74a675 · T07 rail · T08 t08-ui-bundle · T09+T29 → **t29b-on-t09 a89b4d2(T09·T29 대체)** · T10 kd/t10-comms-b · T12 measure/t12(측정) · T16 kd/t16-trench(기준 미달) · T17 t17-cmd-convenience 0eb92e8 · T19a t19a-save-slots 43e69b1 · T19b2 t19b2-synced · T19c t19c-home-tabs 9260e36 · T19d t19d-doctrines 04a9149 · T21 sfxnew · T22 gt-face-proto · T23 spec/t23-campaign-home 42fa456 · T24 kd/t24-s1s3 e4fd65b · T25 kd/t25-bayonet-all · T27 t27-cmd-ui2 · T28 t28-cover-forest · T11 kd-rerender(부분 4/70, 렌더 드라이버 백그라운드 가동 중).
+- **수용 기준 미달·비권장**: T06 wip/casualty2 ef8daab(J1) · T16(Z1).
+- 스택 체인: gemini-import → t09 → t19a → t19b → t19b2 → t19c → t19d (t29b 는 t09 위 별도, T19b2 가 흡수). breach2 → orderq2 → ai3b2 / kd/t24 · breach2 → t10 / t25 / t16.
+- release 첫 실 가동 완료 2026-10-22 (main ec9f713): selftest 2008 OK/FAIL 0 · detcheck 8변형 동일 8aa6448b · snaptest OK · dist 발행. 이 시험 환경에서 bin/main/KoreanDivision.exe(apphost)가 런타임을 못 찾음 → `dotnet bin/main/KoreanDivision.dll` 로 실행, tools/detcheck.ps1 은 대신 수동 8변형.
+- 사용자 결정 대기(무응답 시 괄호 기본값): M1 fix/n12 병합(보류) · J1/J2 T06(보류) · Z1 T16(변경 유지) · P1 marchChargeRange 3 vs 5(5 유지) · Q1 난이도 플래그 소비처(보류)·Q2 · N1~N4 통신 알파(꺼짐) · U1~U4 S1~S3 값(후보 유지, ③은 끔 권장) · R1/R2 · S1/S2 · T1~T4 · V1~V5 · O1/O2 · K1~K4 · L1~L3 · I1/I2 T28 옵션(꺼짐) · H1 야전포 사거리(80 유지) · Y1 T11 렌더 계속(드라이버 유지) · F1~F4 · R01 함성 방침(잠정 B, 재보고).
+- 다음 발주 후보: T15(밤 soak, 렌더 풀 해소 뒤) · 기능별 측정(돌파·명령 큐·manReplace) · T10b(Q1) · 엎드려쏴 재렌더(T11 뒤) · T16 원인 재조사(Z1) · AI 항복 개선(J1 뒤) · 병합 단계 첫 가동 검증(사용자 허가 후).
+- 사용자 행동: U01 GitHub 작성자 확인 · U02 옛 폴더 삭제 · T26 훅 설치 권한 허용(.git/hooks 쓰기) · T08/T22/T28/T19c/T11 시트 검수.
+- 지휘자 세션은 컨텍스트가 큼 → /clear 후 이 STATE → QUEUE → DECISIONS → PIPELINE_LOG(v1 점검 표) 순으로 읽고 시작.
+
+(보고서: ops/REPORT_2026-10-22.md — 2026-10-22 13:00 기준 전체 보고·로드맵 미큐 목록·역제안)
