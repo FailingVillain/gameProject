@@ -156,6 +156,7 @@
 | 14:0x | T39b question 으로 종료(sonnet, 108k, 1334초; river-r2 7a8b242): ClearFor 가 물 위 사격 전부 차단(폭 1/3/6 확인), 허용 시 골든 변경(units 20→126) → 되돌림. 지휘자 판단으로 `terrain.waterBlocksFire`(기본 true) 스위치화 후 wip-ready 하도록 재개 지시, 기본 전환은 0.3 | 사용자 질문 없이 진행(AR1 기록) |
 | 14:0x | T33a 리뷰 수정 완료(sonnet, 101k, 917초; c5b30f4): 모르는 paint/site/unit 키 원문 보존(rail line/width·ford 왕복 바이트 동일)·모르는 지형은 Raster 건너뛰고 Validate 경고·입력 검증(크기 1..1024·반경·tiles 길이)·TryParse·중복 키 오류·인라인 fixture, 편집기 시험 264 pass/0 fail. 골든 해시 불변. 게이트: 새 스크립트는 -ExecutionPolicy Bypass 필요(실행 정책, 우회 아님). T33b 에 체리픽 통보 | 리뷰→수정 12회 |
 | 14:0x | 사용자 승인: AQ3·AP1(노출 유지)·AO1(추천안)·AN1 종결. AO1 적용: heavy_gate.ps1 기본 Max 8→10 + 빈 RAM 3GB 미만이면 닫힘(RAM 가드), 시험 통과·'gate open heavy=7', LIMITS 갱신. T41 충돌 로그 wip-ready(sonnet, 109k; kd/crash-log 69320b1): crashlog 9/9, uifuzz 0, 골든 일치, 실제 충돌 경로 로그 생성(종료 코드 127 은 의도 일치 미확인). 사용자 식사 1시간 → 자율 속행 크론 | |
+| 14:0x | T45 wip-ready(sonnet, 132k, 432초; kd/t45-menu-hide 88735b1): 플레이 버튼 DevMenu 뒤(--dev-menu·KD_DEV_MENU=1), 관전 설정 인원 2 고정·4인 지도 칩 제거(지시 밖 확장 — 확인), AI vs AI 미션 7개(spectate:true 근거: ai_bn_assault·ai_bn_meeting·ai_kr_vs_ft_1000·ai_kr_vs_jp_trench·armour_test·bandit_raid·units_showcase)를 관전 탭 목록으로 이동(미션 메뉴 17→10), menuhide 12항목·uifuzz·골든 일치, 스크린샷 t45_*.png. 발주: T45 리뷰(sonnet) | 완료 ~56 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
