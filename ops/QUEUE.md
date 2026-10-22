@@ -60,6 +60,7 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | C1E1-g3 | 미션 이벤트 행동 확장 | sim | D上 H3 | TC-E | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
 | C1E1-g4 | 목표 확장 (항복/N점/losses 변수) | sim | D上 H2 | 없음(base merge/0.2) | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
 | C1E1-g5 | 피난민 비전투 유닛 | feature | D下~中 H1 | u1 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-u2 | C1E1 누락 유닛 정의 5종 (봉천 기마·야포, 철도수비대, 피난민, 의용병) | feature | D中 H1 | u1 | wip-ready (kd/c1e1-u2-units 8061b9a, 병합 금지 지시) |
 | C1E1-g6 | unlock.* 편성 해금 | feature | D中 H2 | TC-D | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
 | C1E1-d1 | 결정 16개·노드 데이터 JSON | feature | D中 H1 | g1 TC-E | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
 | C1E1-d2 | E1 시작 상태 + 경제 상수 | docs | D下 H1 | TC-D | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
@@ -160,6 +161,7 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T38f | wip-ready | t38f-home-readonly-tabs @b622d1d | kd-t38f | T19d |
 | T38g | wip-ready | t38g-ui-harness @f5a76d4 | kd-t38g | T27 |
 | T38h | 확인 필요 (로그 없음, 미커밋 4건) | t38h-fuzz-campaign @e5f76ec | kd-t38h | T38g |
+| T38k | wip-ready | t38k-fonts @07cb63f | kd-t38k | T38a |
 | T39a | wip-ready | river-r1 @5b7b9f1 | kd-river-r1 | rail |
 | T39b | wip-ready | river-r2 @8ada7a9 | kd-river-r2 | T39a |
 | T39c | wip-ready | river-r3 @26df7f6 | kd-river-r3 | T39b |
