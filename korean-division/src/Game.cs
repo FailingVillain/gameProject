@@ -74,6 +74,7 @@ public sealed partial class Game : IDisposable
     readonly WeatherFx weatherFx = new();
     int weatherSeen = -1;   // 마지막으로 알린 World.Weather.Changes (환경음 · 알림)
     public readonly CommandConsole CommandBox = new();
+    public readonly HelpOverlay HelpBox = new();   // T38b: F1 도움말 (Bindings 단일 출처, 화면 전용)
     public bool ShowPerf { get; private set; }
     /// <summary>프레임 시간 (Program 이 채움, fps 명령으로 표시).</summary>
     public double FrameUpdateMs, FrameDrawMs;
@@ -588,6 +589,7 @@ public sealed partial class Game : IDisposable
         {
             if (CommandBox.Update() is string line) RunConsoleCommand(line);
         }
+        else if (HelpBox.IsOpen) HelpBox.Update(mouse);   // 도움말이 열려 있는 동안 게임 입력은 막힘 (F1 은 HandleGlobalKeys)
         else if (World.Winner != 0) { if (World.Mission != null) HandleMissionOver(); else HandleGameOver(); }
         else if (DeployPhase) UpdateDeploy();   // 미션 배치 단계 (GameMission.cs)
         else if (Input.IsKeyPressed(KeyboardKey.Enter) || Input.IsKeyPressed(KeyboardKey.KpEnter)) CommandBox.Open();
@@ -599,7 +601,7 @@ public sealed partial class Game : IDisposable
         if (!CommandBox.IsOpen)
         {
             HandleGlobalKeys();
-            ScrollCamera(dt);
+            if (!HelpBox.IsOpen) ScrollCamera(dt);
         }
 
         if (replay != null && World.Tick >= replay.EndTick) Paused = true;
@@ -892,6 +894,7 @@ public sealed partial class Game : IDisposable
     /// <summary>게임 종료 화면에서도 동작하는 키.</summary>
     void HandleGlobalKeys()
     {
+        if (Input.IsKeyPressed(KeyboardKey.F1)) HelpBox.Toggle();   // T38b: 도움말 (일시정지 · 종료 화면에서도)
         if (Input.IsKeyPressed(KeyboardKey.F3)) Paused = !Paused;
         if (Input.IsKeyPressed(KeyboardKey.F6)) QuickSave();   // 빠른 저장 (saves/quicksave.kds)
         if (Input.IsKeyPressed(KeyboardKey.F7)) QuickLoad();   // 빠른 불러오기
@@ -1625,6 +1628,7 @@ public sealed partial class Game : IDisposable
             for (int i = 0; i < parts.Count; i += 4) CommandBox.Print(string.Join(" · ", parts.Skip(i).Take(4)));
             return;
         }
+        if (joined == "helpui") { HelpBox.Toggle(); return; }
         if (joined == "help" || joined == "?")
         {
             foreach (var h in new[] { S.ConsoleHelp1, S.ConsoleHelp2, S.ConsoleHelp4, S.ConsoleHelp6, S.ConsoleHelp7, S.ConsoleHelpKeys, S.ConsoleHelp5 }) CommandBox.Print(h);
@@ -2001,6 +2005,7 @@ public sealed partial class Game : IDisposable
             Ui.Text(perf, Hud.Viewport.X + Hud.Viewport.Width - pm.X - 16, Hud.Viewport.Y + 12, 16, Palette.Accent);
         }
 
+        HelpBox.Draw(mouse);
         if (screenshotPath != null)
         {
             Rlgl.DrawRenderBatchActive();

@@ -118,5 +118,30 @@ public static class UiIconsSelfTest
             }
         }
         catch (Exception ex) { check(false, $"아이콘 테스트 중 예외: {ex.GetType().Name}: {ex.Message}\n{ex.StackTrace}"); }
+        Console.WriteLine("[도움말 단축키 = CONTROLS.md]");
+        try { CheckControlsDoc(check); } catch (Exception ex) { check(false, $"도움말 문서 동기 테스트 예외: {ex.GetType().Name}: {ex.Message}"); }
+    }
+
+    /// <summary>T38b: docs/CONTROLS.md 「단축키 일람」 표 (BINDINGS 표지 사이) 가 Bindings.All() 과 한 줄도 어긋나지 않는다 (누락 0 · 잉여 0).</summary>
+    static void CheckControlsDoc(Action<bool, string> check)
+    {
+        string? path = null;
+        foreach (var root in new[] { Directory.GetCurrentDirectory(), AppContext.BaseDirectory })
+            for (var d = new DirectoryInfo(root); d != null && path == null; d = d.Parent)
+                if (File.Exists(System.IO.Path.Combine(d.FullName, "docs", "CONTROLS.md"))) path = System.IO.Path.Combine(d.FullName, "docs", "CONTROLS.md");
+        check(path != null, "docs/CONTROLS.md 를 찾음");
+        if (path == null) return;
+        var lines = File.ReadAllLines(path);
+        int b = Array.FindIndex(lines, l => l.Contains("<!-- BINDINGS:BEGIN")), e = Array.FindIndex(lines, l => l.Contains("<!-- BINDINGS:END"));
+        check(b >= 0 && e > b, "CONTROLS.md 에 BINDINGS:BEGIN / END 표지가 있음");
+        if (b < 0 || e <= b) return;
+        var doc = lines.Skip(b + 1).Take(e - b - 1).Where(l => l.StartsWith("| `")).Select(l => l.TrimEnd()).ToList();
+        var code = KoreanDivision.UI.Bindings.All().Select(KoreanDivision.UI.Bindings.MarkdownRow).ToList();
+        var missing = code.Except(doc).ToList();   // 코드에 있고 문서에 없음
+        var extra = doc.Except(code).ToList();   // 문서에 있고 코드에 없음
+        string detail = missing.Count + extra.Count > 0 ? Environment.NewLine + "  누락: " + string.Join(" / ", missing) + Environment.NewLine + "  잉여: " + string.Join(" / ", extra) : "";
+        check(missing.Count == 0 && extra.Count == 0 && doc.Count == code.Count, $"CONTROLS.md 단축키 일람 = Bindings.All() (누락 {missing.Count}, 잉여 {extra.Count}){detail}");
+        check(code.Distinct().Count() == code.Count, "Bindings.All() 에 같은 줄이 두 번 나오지 않음");
+        check(KoreanDivision.UI.Bindings.All().Any(x => x.Key == "F1"), "도움말 키 F1 이 Bindings 에 있음");
     }
 }
