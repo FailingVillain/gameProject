@@ -165,6 +165,7 @@
 | 14:2x | T39c wip-ready(sonnet, 135k, 376초; river-r3 26df7f6, river-r2 위): 합성 여울 타일·전이·거품 띠, 미니맵 청록, test_river 지도+AI 관전 미션, terrain/missions/uiicons·uifuzz·골든 PASS. 미확인: 도하 AI 여울 실제 점유, 타일 이음매 약하게 보임, 프레임 시간 | 완료 ~62 |
 | 14:3x | T38g wip-ready(sonnet, 150k, 3394초; t38g-ui-harness f5a76d4, t27-cmd-ui2 위): 작은 버튼 겨냥 퍼즈(Ui.RegHit)+3해상도 시트 생성기, 퍼즈 예외 0·골든 일치. 발견: 1024x640 메인 메뉴 하단·교전 테스트 목록 잘림(T38d 대상). 게이트 1시간 대기 후 개수 직접 확인하고 빌드(규정 경계 — 지켜볼 것) | 완료 ~63 |
 | 14:4x | T38b wip-ready(sonnet, 115k, 360초; t38b-help-overlay 93ce79f, t38g 위): F1 도움말 오버레이(Bindings.All 기반, CONTROLS.md §13 동기 시험), 퍼즈·골든 PASS. 스크롤은 정적 캡처로 미확인. 발주: T38a(t38b 위) | 완료 ~64 |
+| 14:5x | T32d wip-ready(sonnet, 117k, 1799초; kd/t32d-pioneer-art 2118f9b, t32a 위): 전투공병 그림(진위대 모델+장대 와이어커터·공구 주머니), units/pioneer PASS, 시트 pioneer_t32d.png 사용자 검수 대기(Q1/Q3 기본값). uiicons 단축키 충돌 1건 FAIL — 베이스 t32a 에서도 동일(기존 결함, 별도 확인 필요) | 완료 ~65 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
