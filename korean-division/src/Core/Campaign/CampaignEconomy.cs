@@ -229,7 +229,7 @@ public static class CampaignEconomy
     public static (float RecruitPenalty, float SupplyPenalty) ComputePenalty(CampaignState s)
     {
         float recruitPenalty = 0f;
-        int heirMood = s.Flags.GetValueOrDefault("heir_mood", 60);
+        int heirMood = s.Flags.GetValueOrDefault("heir_mood", 50);
         if (heirMood < 20) recruitPenalty = 0.20f;
         else if (heirMood < 40) recruitPenalty = 0.10f;
         recruitPenalty = Math.Clamp(recruitPenalty, 0f, CampaignEconomyDefs.Current.PenaltyCap);
@@ -294,6 +294,33 @@ public static class CampaignEconomy
         }
     }
 
+    /// <summary>[M2 · BH2] 사기에 따른 탈영률 (0..DesertionMaxRate). 문턱 이상이면 0.</summary>
+    public static float DesertionRate(int morale)
+    {
+        var d = CampaignEconomyDefs.Current;
+        if (d.DesertionMoraleBelow <= 0 || morale >= d.DesertionMoraleBelow) return 0f;
+        return (d.DesertionMoraleBelow - Math.Clamp(morale, 0, 100)) / (float)d.DesertionMoraleBelow * d.DesertionMaxRate;
+    }
+
+    /// <summary>
+    /// [M2 · BH2] 탈영 정산: 로스터 각 중대의 사기로 탈영률을 구해 현재 병력(Strength)에서 정수 반올림으로 뺀다 (로스터 순서, 난수 없음 — 결정적).
+    /// 전투 중에는 호출하지 않는다 — 전투 종료 정산(SettleBattle)과 캠페인 이벤트 처리(CampaignEvents.ApplyChoice)에서만. 시뮬 무관. 빠진 인원 합계를 돌려준다.
+    /// </summary>
+    public static int SettleDesertion(CampaignState s)
+    {
+        int total = 0;
+        foreach (var c in s.Roster)
+        {
+            int n = Math.Min(c.Strength, (int)MathF.Round(c.Strength * DesertionRate(c.Morale)));
+            if (n <= 0) continue;
+            c.Strength -= n; total += n;
+        }
+        return total;
+    }
+
+    // TODO(M1 연결): 미션 시작 때 캠페인 사기(CampaignVars.Get(s, "morale.troops"), 또는 중대별 RosterCompany.Morale)를 sim 에 넘기는 진입점은
+    // kd/m1-morale-suppress 가 제공한다 (예: MissionLauncher.SetCampaignMorale(int)). 이 카드에서는 자리만 남기고 구현하지 않는다.
+
     /// <summary>[T42a] 지침 (피로 문턱 이상) 인가 — 홈 표시 · 투입 경고용. 잠금 아님.</summary>
     public static bool IsTired(CampaignState.RosterCompany c) => c.Fatigue >= CampaignEconomyDefs.Current.FatigueWarnThreshold;
 
@@ -307,7 +334,7 @@ public static class CampaignEconomy
                 s.Stock.Ammo[cal] = Math.Max(0, s.Stock.Ammo.GetValueOrDefault(cal, 0) - n);
             if (s.Pending.RefusedMandatory)
             {
-                s.Flags["heir_mood"] = Math.Clamp(s.Flags.GetValueOrDefault("heir_mood", 60) - 10, 0, 100);
+                s.Flags["heir_mood"] = Math.Clamp(s.Flags.GetValueOrDefault("heir_mood", 50) - 10, 0, 100);
                 s.Flags["cmd_favor"] = Math.Clamp(s.Flags.GetValueOrDefault("cmd_favor", 50) - 5, 0, 100);
             }
         }
@@ -362,6 +389,9 @@ public static class CampaignEconomy
 
         // 2-1) [T42a] 피로 · 사기 계정: 투입 중대 피로 +, 미투입 −. 사기 = 승패 ± 손실률. 출격 편성이 있을 때만 (홈 계정, 시뮬 무관)
         if (deployed.Count > 0) SettleFatigueMorale(s, deployed, r.Result == "won", me != null && me.Spawned > 0 ? Math.Clamp((float)me.Lost / me.Spawned, 0f, 1f) : 0f);
+
+        // 2-1b) [M2 · BH2] 탈영: 사기 정산 뒤 (전투가 끝난 다음 — 전투 중 아님) 사기가 낮은 중대에서 병력이 빠진다
+        int deserters = SettleDesertion(s);
 
         // 2-2) [TC-D] 에피소드 보급: 예약 환원, 영구 소모 (전사자 보충 + 투입 비용 10%) 누적
         CampaignFunds.SettleReservation(s, dead);
@@ -434,7 +464,7 @@ public static class CampaignEconomy
         s.Manpower.Recruits = Math.Min(CampaignState.ManpowerState.MaxRecruits, s.Manpower.Recruits + regularRecruits);
 
         // 6) 입고 로그 갱신 (최대 5건)
-        string logEntry = $"[{r.MissionId}] 정산: 보급 +{regularSupply:0}(노획 +{lootedSupply:0}), 신병 +{regularRecruits}, 탄약환원 +{ammoRefunded}, 포탄 발사 -{shellsFired.Values.Sum()} 노획 +{lootedShells.Values.Sum()}" + (prisoners > 0 ? $", 포로 +{prisoners}" : "");
+        string logEntry = $"[{r.MissionId}] 정산: 보급 +{regularSupply:0}(노획 +{lootedSupply:0}), 신병 +{regularRecruits}, 탄약환원 +{ammoRefunded}, 포탄 발사 -{shellsFired.Values.Sum()} 노획 +{lootedShells.Values.Sum()}" + (prisoners > 0 ? $", 포로 +{prisoners}" : "") + (deserters > 0 ? $", 탈영 -{deserters}" : "");
         s.Stock.RecentLog.Add(logEntry);
         while (s.Stock.RecentLog.Count > 5) s.Stock.RecentLog.RemoveAt(0);
 
@@ -459,7 +489,8 @@ public static class CampaignEconomy
             AmmoRefunded = ammoRefunded,
             ShellsFired = shellsFired,
             LootedShells = lootedShells,
-            PrisonersTaken = prisoners
+            PrisonersTaken = prisoners,
+            Deserters = deserters
         };
         s.Pending = null;
 

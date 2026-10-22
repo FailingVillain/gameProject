@@ -249,6 +249,9 @@ public static class CampaignEvents
         var favorChoice = Current.FirstOrDefault(e => e.Id == eventId)?.Choices.ElementAtOrDefault(choiceIndex);
         if (favorChoice?.FavorDelta != null) CommanderFavors.ApplyEventDeltas(s, favorChoice.FavorDelta);   // T48c
 
+        int deserters = CampaignEconomy.SettleDesertion(s);   // M2 · BH2: 이벤트 처리 시점 탈영 (전투 중 아님)
+        if (deserters > 0) result += $" (탈영 {deserters}명)";
+
         s.Flags["ev_" + eventId] = choiceIndex + 1;
         s.AddTimeline("event", eventId, "", choiceIndex + 1);   // T42d: 발동 기록
         return result;
