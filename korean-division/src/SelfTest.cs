@@ -137,6 +137,13 @@ public static partial class SelfTest
                 default: core = false; break;
             }
             if (core) { Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+            // 알 수 없는 묶음 이름이 전체 selftest(약 10분, heavy) 로 조용히 떨어지던 사고 방지 (2026-10-22): 이름이 있는데 일치 없음 = 즉시 실패.
+            // 위 if 체인 · 이 switch 의 이름 목록은 tools/agent/selftest_groups_check.ps1 이 소스에서 읽어 점검한다.
+            if (only.Length > 0)
+            {
+                Console.WriteLine($"SELFTEST FAIL: 알 수 없는 시험 묶음 '{only}' — 묶음 이름은 src/SelfTest.cs 의 KD_SELFTEST_ONLY 체인 참고");
+                return 2;
+            }
         }
         TestMapGeneration(opt);
         TestMultiplayerMaps(opt);

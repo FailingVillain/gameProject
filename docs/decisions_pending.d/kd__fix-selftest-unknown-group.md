@@ -1,0 +1,1 @@
+- (kd/fix-selftest-unknown-group) 알 수 없는 KD_SELFTEST_ONLY 이름은 종료 코드 2 + 한국어 오류 (전체 selftest 폴백 제거). 공백만 있는 값도 '이름 있음'으로 취급해 실패. `--selftest-list` 플래그는 생략(체인을 바꾸면 selftest_parallel.ps1 의 소스 파싱 정규식이 깨짐) — 대신 `tools/agent/selftest_groups_check.ps1 -List`. 점검 스크립트 허용 목록: detcheck(별도 모드), g1/g2(주석 자리표시자), isai(미병합 브랜치 예시), findtarget(미병합 카드 계획). 병합 후 isai·findtarget 은 허용 목록에서 빼도 된다.
