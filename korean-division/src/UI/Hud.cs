@@ -429,7 +429,9 @@ public sealed class Hud : IDisposable
                 int ammoSum = 0, ammoMax = 0;
                 foreach (var u in c.Members.Where(m => m.Alive)) { ammoSum += u.Ammo; ammoMax += u.Weapon?.Ammo ?? 0; }
                 int ammoPct = ammoMax > 0 ? (int)MathF.Round(ammoSum * 100f / ammoMax) : 100;
-                string st = game.World.ContactTrigger(c) ? S.UnitListEngage
+                bool wiped = !c.Members.Any(m => m.Alive);   // T27 ③: 전멸 중대는 상태 문구로 표시 (행은 유지)
+                string st = wiped ? S.UnitListWiped
+                    : game.World.ContactTrigger(c) ? S.UnitListEngage
                     : c.Marching ? S.UnitListMove
                     : c.Members.Any(u => u.Order == UnitOrder.Hold) ? S.UnitListHold
                     : S.UnitListIdle;
@@ -439,7 +441,7 @@ public sealed class Hud : IDisposable
                 ind = c.Battalion != null ? 24 : 10;
             }
             Raylib.DrawRectangleRec(r, Palette.Alpha(sel ? Palette.BtnActive : hv ? Palette.BtnHover : Palette.Btn, 220));
-            Ui.Text(text, r.X + ind, r.Y + 2, 14, Palette.Text);
+            Ui.Text(text, r.X + ind, r.Y + 2, 14, item is Company wc && !wc.Members.Any(m => m.Alive) ? Palette.TextDim : Palette.Text);
         }
     }
 

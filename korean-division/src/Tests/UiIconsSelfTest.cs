@@ -86,6 +86,22 @@ public static class UiIconsSelfTest
             check(SquadIcons.Pick(default) == SquadIcons.Status.None, "아무 상태도 없으면 None");
             check(Enum.GetValues<SquadIcons.Status>().Where(s => s != SquadIcons.Status.None).All(s => SquadIcons.Shape(s).Length == 7 && SquadIcons.Shape(s).All(r => r.Length == 7)), "아이콘 모양 7x7");
 
+            // 3b) 색각 대응 도형 (T27 ⑧): 기본 꺼짐, 세력 1~5 가 서로 다른 도형, 같은 세력은 항상 같은 도형
+            check(!KoreanDivision.UI.UserSettings.ColorBlind, "색각 대응 기본값 = 꺼짐");
+            check(Enumerable.Range(1, 5).Select(KoreanDivision.Render.ColorBlind.Shape).Distinct().Count() == 5, "색각 대응: 세력 5종 도형이 모두 다름");
+            check(KoreanDivision.Render.ColorBlind.Shape(1) == KoreanDivision.Render.ColorBlind.Shape(6) && Enumerable.Range(-2, 20).All(o => KoreanDivision.Render.ColorBlind.Shape(o) is >= 0 and < 5), "색각 대응: 세력 6 이상 순환 · 범위 밖 안전");
+
+            // 3c) 도감 (T27 ⑥): 모든 유닛이 '전체' 에 있고 세력 · 분류 필터에 최소 하나씩 걸림; 설명 누락은 목록으로 보고
+            var cx = defs.Units.Values.ToList();
+            var facs = Enum.GetValues<KoreanDivision.UI.CodexMenu.FactionFilter>().Where(x => x != KoreanDivision.UI.CodexMenu.FactionFilter.All).ToList();
+            var cats = Enum.GetValues<KoreanDivision.UI.CodexMenu.CategoryFilter>().Where(x => x != KoreanDivision.UI.CodexMenu.CategoryFilter.All).ToList();
+            var noFac = cx.Where(u => !facs.Any(f => KoreanDivision.UI.CodexMenu.Filter(new[] { u }, f, KoreanDivision.UI.CodexMenu.CategoryFilter.All).Count > 0)).Select(u => u.Key).ToList();
+            var noCat = cx.Where(u => !cats.Any(c => KoreanDivision.UI.CodexMenu.Filter(new[] { u }, KoreanDivision.UI.CodexMenu.FactionFilter.All, c).Count > 0)).Select(u => u.Key).ToList();
+            check(noFac.Count == 0, $"도감: 세력 필터에 안 걸리는 유닛 0 ({string.Join(",", noFac)})");
+            check(noCat.Count == 0, $"도감: 분류 필터에 안 걸리는 유닛 0 ({string.Join(",", noCat)})");
+            var noDesc = cx.Where(u => string.IsNullOrWhiteSpace(u.Description)).Select(u => u.Key).ToList();
+            Console.WriteLine($"  [도감 보고] 설명 문구 누락 {noDesc.Count}/{cx.Count}: {string.Join(", ", noDesc)}");
+
             // 4) 실제 분대에서 읽기: 장교 없는 보병 중대 = 지휘관 없음, 제압 올리면 Suppressed
             var us = new List<Unit>();
             for (int i = 0; i < 12; i++) us.Add(w.SpawnUnit(defs.Units["infantry"], 1, new Vector2(10 + i % 4, 40 + i / 4)));

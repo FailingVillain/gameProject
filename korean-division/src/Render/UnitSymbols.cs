@@ -141,6 +141,7 @@ public static class UnitSymbols
         Raylib.DrawRectangleRec(r, fill);
         Raylib.DrawRectangleLinesEx(r, 2, team);
         Raylib.DrawRectangleLinesEx(new Rectangle(r.X - 1, r.Y - 1, r.Width + 2, r.Height + 2), 1, dark);
+        if (ColorBlind.Enabled) ColorBlind.Draw(new Vector2(r.X + 2, r.Y + 2), MathF.Max(4f, r.Width * 0.18f), a.C.Owner, team);   // 색각 대응: 세력 도형 (좌상단)
         if (BranchIcon(a.Main, (int)MathF.Min(r.Width, r.Height) - 2) is { } bi)
             Raylib.DrawTexture(bi.Base[0], (int)MathF.Round(r.X + (r.Width - bi.Base[0].Width) / 2), (int)MathF.Round(r.Y + (r.Height - bi.Base[0].Height) / 2), Color.White);
         else DrawGlyph(a.Main, r);
@@ -211,6 +212,7 @@ public static class UnitSymbols
         }
         Raylib.DrawTexture(icon.Base[0], (int)MathF.Round(r.X), (int)MathF.Round(r.Y), Color.White);
         Raylib.DrawRing(new Vector2(cx, cy), rad - 0.5f, rad + 1.2f, 0, 360, 36, team);   // 같은 세력 · 같은 휘장끼리 구분
+        if (ColorBlind.Enabled) ColorBlind.Draw(new Vector2(r.X + 3, r.Y + 3), MathF.Max(4f, r.Width * 0.18f), a.C.Owner, team);   // 색각 대응: 세력 도형 (좌상단)
         // 병종 이미지: 세력 휘장 바로 아래 (휘장 + 병종 그림). 이미지가 없으면 (옛 테마 · 지휘) 우하단 작은 NATO 기호.
         float barY = r.Y + r.Height + 3;
         if (BranchIcon(a.Main, (int)(r.Width * 0.6f)) is { } bi)
