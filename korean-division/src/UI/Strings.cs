@@ -258,6 +258,8 @@ public static partial class S
     public const string MenuStart = "시작";
     public const string MenuSetupPlay = "게임 설정";
     public const string MenuSetupSpectate = "관전 설정";
+    public const string MenuSpectateMissions = "AI 대 AI 미션 (관전)";
+    public const string MenuSpectateMissionsNone = "관전 미션 없음";
     public const string MenuMap = "맵";
     public const string MenuGenerated = "생성 맵";
     public const string MenuPlayers = "인원";

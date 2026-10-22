@@ -37,7 +37,7 @@ try
 {
     for (int i = 0; i < args.Length; i++)
     {
-        if (args[i] is not ("--novsync" or "--menu-shot" or "--menu-page" or "--theme" or "--uifuzz" or "--fuzz-menu" or "--mute")) gameFlag = true;   // 테마만 바꿔도 시작 화면은 그대로
+        if (args[i] is not ("--novsync" or "--menu-shot" or "--menu-page" or "--theme" or "--uifuzz" or "--fuzz-menu" or "--mute" or "--dev-menu")) gameFlag = true;   // 테마만 바꿔도 시작 화면은 그대로
         switch (args[i])
         {
             case "--map":
@@ -79,6 +79,7 @@ try
             case "--no-replay": opt.SaveReplay = false; break;
             case "--spectate": opt.Spectate = true; break;
             case "--view": opt.ViewFaction = int.Parse(args[++i]); break;   // 관전 시작 시점 (0 = 전체)
+            case "--dev-menu": KoreanDivision.UI.MainMenu.DevMenu = true; break;   // 숨긴 메뉴 항목(플레이 / 관전 인원) 표시 (T45)
             case "--menu-shot": menuShot = Path.GetFullPath(args[++i]); break;   // 시작 화면 스크린샷 (확인용)
             case "--menu-page": menuPage = args[++i].ToLowerInvariant(); break;   // main | setup | spectate | replays
             case "--selftest": selfTest = true; break;

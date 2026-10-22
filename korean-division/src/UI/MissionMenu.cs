@@ -22,6 +22,9 @@ public sealed class MissionMenu : IDisposable
     int previewW, previewH;
     string? previewId;
 
+    /// <summary>목록에 보이는 미션 id (관전 미션 제외). 시험용.</summary>
+    public IReadOnlyList<string> ListedIds => entries.Select(e => e.Id).ToList();
+
     public GameOptions? Chosen { get; set; }
     public bool BackRequested { get; set; }
 
@@ -32,7 +35,7 @@ public sealed class MissionMenu : IDisposable
     {
         foreach (var id in MissionDef.Available())
         {
-            try { entries.Add(new Entry(id, MissionDef.Load(id), null)); }
+            try { var def = MissionDef.Load(id); if (!def.Spectate) entries.Add(new Entry(id, def, null)); }   // AI 대 AI 관전 미션은 시작 화면 '관전' 탭으로 옮겼다 (T45)
             catch (Exception e) when (e is IOException or InvalidDataException or JsonException or InvalidOperationException or KeyNotFoundException) { entries.Add(new Entry(id, null, e.Message)); }
         }
         if (openBriefing != null)
