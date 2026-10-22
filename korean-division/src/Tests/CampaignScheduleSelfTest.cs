@@ -57,6 +57,20 @@ public static class CampaignScheduleSelfTest
             for (int i = 0; i < CampaignState.TimelineMax + 25; i++) { cap.Day = i + 1; cap.AddTimeline("mission", "m" + i); }
             check(cap.Timeline.Count == CampaignState.TimelineMax && cap.Timeline[0].Id == "m25", "T42d 연표 상한: 오래된 것부터 버림");
 
+            // 5b) 상한 · 보정: Day 상한, 불러온 연표 상한, 덧셈 넘침, 첫 이벤트 Day>=1
+            var big = CampaignState.FromJson("{\"Version\":7,\"Day\":2000000000}");
+            check(big != null && big.Day == CampaignState.DayMax, "T42d 손상 값: Day 상한 보정");
+            var many = new CampaignState { Day = 5 };
+            for (int i = 0; i < CampaignState.TimelineMax + 30; i++) many.Timeline.Add(new CampaignState.TimelineEntry { Day = 5, Kind = "mission", Id = "x" + i });
+            var manyBack = CampaignState.FromJson(many.ToJson());
+            check(manyBack != null && manyBack.Timeline.Count == CampaignState.TimelineMax && manyBack.Timeline[0].Id == "x30", "T42d 불러온 연표 상한 (오래된 것부터 버림)");
+            var ov = new CampaignState(); ov.EnsureInitialized(); ov.Day = int.MaxValue - 1;
+            CampaignEconomy.SettleBattle(ov, Won("m9"));
+            check(ov.Day == CampaignState.DayMax, "T42d 일수 덧셈 넘침 방지");
+            var fresh = new CampaignState(); fresh.EnsureInitialized(); fresh.Day = 0;
+            CampaignEvents.ApplyChoice(fresh, "e1_guard_front", 0);
+            check(fresh.Timeline.Count == 1 && fresh.Timeline[0].Day >= 1, "T42d 첫 미션 전 이벤트: 연표 Day >= 1");
+
             // 6) 표시 자료: 최신 위 · 예외 없음 · 일지 일수
             var ev = CampaignHomeViews.Schedule(null);
             check(ev.Day == 1 && ev.Rows.Count == 0, "T42d 일정 표시: null 상태도 안전");

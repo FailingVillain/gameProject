@@ -456,7 +456,7 @@ public static class CampaignEconomy
 
         // 8) T42d: 작전 일수 + 연표 (첫 승리 정산만 — SettleBattle 은 첫 승리에서만 불린다)
         if (s.Day <= 0) s.Day = 1;   // 새 캠페인 = 1일째 시작
-        s.Day += CampaignEconomyDefs.Current.MissionDays;
+        s.Day = (int)Math.Min(CampaignState.DayMax, (long)s.Day + CampaignEconomyDefs.Current.MissionDays);
         s.AddTimeline("mission", r.MissionId, r.Title ?? "");
     }
 }

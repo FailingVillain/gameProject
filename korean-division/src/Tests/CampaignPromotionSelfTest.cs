@@ -69,6 +69,16 @@ public static class CampaignPromotionSelfTest
             check(off != null && off.Units[0].Rank == 3 && CampaignPromotion.Candidates(off).Count == 0 && CampaignPromotion.BlockOf(off) == CampaignPromotion.Block.Off && !CampaignPromotion.Promote(off, false, 7),
                 "T42b 기본 꺼짐: 이월 계급 기존대로(자동) · 후보 없음 · 진급 거부");
 
+            // 7b) 마지막 미션 재승리: 이월 병력 · 적용한 진급 · 정원 카운터 유지 (정원 우회 · 진급 소실 방지)
+            CampaignEconomyDefs.Override(new CampaignEconomyDefs { PromotionManual = true }.Sanitized());
+            var rp = CampaignState.Apply(new CampaignState(), offOn)!;
+            bool pr = CampaignPromotion.Promote(rp, false, 7);
+            int rankAfter = rp.Units[0].Rank, quota = rp.PromotionsThisBreak;
+            var again = CampaignState.Apply(rp, offOn)!;   // 같은 마지막 미션 다시 승리
+            check(pr && quota == 1 && again.PromotionsThisBreak == 1 && again.Units.Count == 1 && again.Units[0].Rank == rankAfter && again.Units[0].Kills == 0 && again.PromotionLog.Count == 1,
+                "T42 수정: 마지막 미션 재승리는 정원 · 적용한 진급 · 이월 병력을 건드리지 않는다");
+            CampaignEconomyDefs.Override(new CampaignEconomyDefs().Sanitized());
+
             // 8) 손상 입력: null 목록 · 이상한 JSON 배열은 크래시 없이 기본값
             var odd = CampaignEconomyDefs.Load("nonexistent.json");
             var weird = new CampaignEconomyDefs { PromoSoldierKills = new[] { -5, 9_999_999 }, PromoOfficerXp = null!, PromoSoldierMaxRank = 99, PromoMaxPerBreak = -3 }.Sanitized();

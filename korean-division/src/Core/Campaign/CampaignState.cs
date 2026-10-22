@@ -159,6 +159,8 @@ public sealed class CampaignState
     /// 7 (T42d): 작전 일수 · 연표 — Day / Timeline (추가만, v3~v6 은 Day = 1 + 치른 작전 수 × missionDays · 빈 연표로 이행).
     public const int SchemaVersion = 7;
     public const int TimelineMax = 200;
+    /// <summary>Day 상한 (손상 저장 · 덧셈 넘침 방지).</summary>
+    public const int DayMax = 100000;
     public int Version { get; set; } = SchemaVersion;
     public string CampaignId { get; set; } = "c1";
     /// <summary>다음에 할 미션 id (파일이 없으면 '준비 중' 화면).</summary>
@@ -179,7 +181,7 @@ public sealed class CampaignState
     /// <summary>연표 한 줄을 더한다 (최대 TimelineMax 넘으면 가장 오래된 것부터 버린다).</summary>
     public void AddTimeline(string kind, string id, string title = "", int choice = 0)
     {
-        Timeline.Add(new TimelineEntry { Day = Day, Kind = kind, Id = id, Title = title, Choice = choice });
+        Timeline.Add(new TimelineEntry { Day = Math.Max(Day, 1), Kind = kind, Id = id, Title = title, Choice = choice });
         if (Timeline.Count > TimelineMax) Timeline.RemoveRange(0, Timeline.Count - TimelineMax);
     }
     /// <summary>이월 사병 (계급 · 사살 수 · 병력 id).</summary>
@@ -287,7 +289,9 @@ public sealed class CampaignState
         PrisonersRepatriated = Math.Max(0, PrisonersRepatriated);
         PrisonersInterned = Math.Max(0, PrisonersInterned);
         Timeline ??= new(); Timeline.RemoveAll(e => e == null);   // T42d
-        if (Day <= 0) Day = 1 + (History?.Count ?? 0) * CampaignEconomyDefs.Current.MissionDays;
+        if (Timeline.Count > TimelineMax) Timeline.RemoveRange(0, Timeline.Count - TimelineMax);
+        if (Day <= 0) Day = (int)Math.Min(DayMax, 1L + (long)(History?.Count ?? 0) * CampaignEconomyDefs.Current.MissionDays);
+        Day = Math.Min(Day, DayMax);
         foreach (var c in Roster)
         {
             c.MaxStrength = Math.Max(1, c.MaxStrength);
@@ -343,9 +347,13 @@ public sealed class CampaignState
             if (!wasDone) { s.EntryUnits = s.Units.ToList(); s.EntryOfficers = s.Officers.ToList(); s.EntryMission = r.MissionId; }
             if (r.MissionId == Tumen) s.HowitzerCompany = true;
             s.NextMission = Chain.First(c => c.Id == r.MissionId).Next;
-            s.Officers = r.Survivors.Where(u => u.OfficerRank != null).Select(Copy).ToList();
-            s.Units = r.Survivors.Where(u => u.OfficerRank == null).Select(Copy).ToList();
-            s.PromotionsThisBreak = 0;   // T42b: 새 이월 병력 = 새 작전 사이
+            // T42 fix: 마지막 미션 재승리 (wasDone, 같은 EntryMission) 는 이월 병력 · 진급 정원을 건드리지 않는다 (정원 8 우회 · 적용한 진급 소실 방지)
+            if (!wasDone)
+            {
+                s.Officers = r.Survivors.Where(u => u.OfficerRank != null).Select(Copy).ToList();
+                s.Units = r.Survivors.Where(u => u.OfficerRank == null).Select(Copy).ToList();
+                s.PromotionsThisBreak = 0;   // T42b: 새 이월 병력 = 새 작전 사이
+            }
         }
 
         // 곡사포 중대가 편입될 때 HowitzerCompany == true 이면 Roster 에 "how" 곡사포 중대도 Available = true 로 추가/활성화
