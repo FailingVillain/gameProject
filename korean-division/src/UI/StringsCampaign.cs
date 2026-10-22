@@ -171,6 +171,7 @@ public static partial class S
     public const string CmPreBtnCancel = "[취소 / 뒤로]";
 
     public const string CmWarnOverSupply = "경고: 보유 보급품을 초과하여 부대를 투입할 수 없습니다!";
+    public const string CmPreEpisodeSupply = "가용 보급: {0:0} / {1:0} (소요 {2:0.0})   |   자금 {3} ({4:N0}냥)   |   정규 {5}/{6} · 외인 {7}/{8}";
     public const string CmWarnOverCap = "경고: 작전 투입 상한 병력을 초과하였습니다!";
     public const string CmWarnNoSelection = "경고: 투입할 부대를 최소 1개 이상 선택하십시오.";
     public const string CmWarnMandatoryRefused = "경고: 황손 시위대 의무 투입을 제외하면 황손 심기 하락 및 보급 불이익이 발생합니다!";

@@ -139,6 +139,7 @@ public static class SaveCompatSelfTest
         CommanderDataSelfTest.Run(check);   // T48a 연대장 데이터 · 로더 · 저장 v8 · 풀 동기화
         OfficerIdentitySelfTest.Run(check);   // T48b1 장교 신원 키 · 주입 · 전사/부상 · 저장 v9
         CommanderPoolSelfTest.Run(check);   // T48b2 기용/해임 · 배정 · 참모 효과 · 옛 저장 v3~v9
+        CampaignFundsSelfTest.Run(check);   // TC-D 자금 · 외인 슬롯 · 통제 한도 · 가용 보급 (저장 v11)
         CampaignHomeViewsSelfTest.Run(check);   // T38f 읽기 전용 탭 (기록 · 장비 · 편제) 표시 자료
         string cdir = TestTemp.Child("kd_compat_campaign");
         string? oldEnv = Environment.GetEnvironmentVariable("KD_CAMPAIGN_DIR");

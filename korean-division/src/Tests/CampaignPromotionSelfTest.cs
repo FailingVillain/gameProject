@@ -16,7 +16,7 @@ public static class CampaignPromotionSelfTest
             // 1) 옛 저장 (v3 · v4) -> v5: 진급 기록 빈 목록 · 정원 0, 진급 필드가 있는 v5 왕복
             var v3 = CampaignState.FromJson("{\"Version\":3,\"Roster\":[{\"Id\":\"a\",\"Kind\":\"infantry\",\"Strength\":60,\"MaxStrength\":60}]}");
             var v4 = CampaignState.FromJson("{\"Version\":4,\"PromotionLog\":null,\"Roster\":[{\"Id\":\"a\",\"Fatigue\":10,\"MaxStrength\":60}]}");
-            check(v3 != null && v3.Version == 9 && v3.PromotionLog.Count == 0 && v3.PromotionsThisBreak == 0 && v4 != null && v4.Version == 9 && v4.PromotionLog.Count == 0 && v4.Roster[0].Fatigue == 10,
+            check(v3 != null && v3.Version == CampaignState.SchemaVersion && v3.PromotionLog.Count == 0 && v3.PromotionsThisBreak == 0 && v4 != null && v4.Version == CampaignState.SchemaVersion && v4.PromotionLog.Count == 0 && v4.Roster[0].Fatigue == 10,
                 "T42b 저장 이행: v3 · v4 파일 -> v5, 진급 기록 빈 목록 · 정원 0");
 
             var d = new CampaignEconomyDefs { PromotionManual = true }.Sanitized();
@@ -42,7 +42,7 @@ public static class CampaignPromotionSelfTest
 
             // 4) 저장 왕복 (기록 · 정원 · 계급 보존)
             var back = CampaignState.FromJson(s.ToJson());
-            check(back != null && back.PromotionLog.Count == 2 && back.PromotionsThisBreak == 2 && back.Officers[0].OfficerRank == 3 && back.PromotionLog[1].UnitId == 1 && back.Version == 9,
+            check(back != null && back.PromotionLog.Count == 2 && back.PromotionsThisBreak == 2 && back.Officers[0].OfficerRank == 3 && back.PromotionLog[1].UnitId == 1 && back.Version == CampaignState.SchemaVersion,
                 "T42b 저장 왕복: 진급 기록 · 정원 · 계급 보존");
 
             // 5) 작전 사이에만 + 정원
