@@ -676,7 +676,7 @@ public static class SnapshotSelfTest
         Audit1(typeof(TrainTrack), "TX TY Waypoints Loop", "Cum Length");   // 누적 호장 = 칸 열에서 다시 계산
         Audit1(typeof(DrillState), "Phase Passive PhaseTick ContactTick Enemy Home BoundSquad BoundLast BoundTick Man ManTick ManGoal ManWay FollowGoal LiftUntil LiftPos", "");   // ORG_ 전술 틀 구역 (TacticDrill.cs)
         Audit1(typeof(Battalion), "Id Owner Number Form Companies Commander HandoverUntil", "");
-        Audit1(typeof(MissionState), "Def Started Deployment ForceUnits Tags StartRank ObjState ObjProgress ObjRevealed EventFired ReinforcementSpawned Spawned Messages Weather TimeOfDay Result EndTick FailReason", "Alive");   // Alive = 매 틱 다시 세는 작업 버퍼
+        Audit1(typeof(MissionState), "Def Started Deployment ForceUnits Tags StartRank ObjState ObjProgress ObjRevealed EventFired ReinforcementSpawned Spawned Messages Weather TimeOfDay Result EndTick FailReason", "Alive AliveCars TotalCars");   // Alive/AliveCars/TotalCars = 매 틱 다시 세는 작업 버퍼
         Audit1(typeof(CompanyAnchor), "Pos Heading Goal FinalDir Arrived Column Close ClearTicks WaitTicks HalfWidth Spacing SpeedMul Slots ColumnSlots FinalOff Trail Group Flag", "RowPos RowTan RowReach");   // 종대 줄 위치 = 매 틱 자취에서 다시 계산
     }
 
