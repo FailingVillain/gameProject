@@ -145,7 +145,7 @@ public sealed class CampaignState
         public int Fatigue { get; set; }
         /// <summary>[v4 · T42a] 사기 0..100. 작전 정산 때만 변한다 (승패 · 손실률). 옛 파일 = <see cref="MoraleStart"/>.</summary>
         public int Morale { get; set; } = MoraleStart;
-        public const int MoraleStart = 70;
+        public const int MoraleStart = 50;   // M2 · 사용자 BH3: 초기 50 (옛 70)
     }
 
     public sealed class PendingOperation
@@ -188,6 +188,8 @@ public sealed class CampaignState
         public Dictionary<string, int> LootedShells { get; set; } = new();
         /// <summary>[v6 · T42c] 이번 정산으로 포로 장부에 더한 수.</summary>
         public int PrisonersTaken { get; set; }
+        /// <summary>[M2 · BH2] 이번 정산에서 사기 저하로 병력에서 빠진 탈영병 수 (추가만 — SchemaVersion 그대로, 옛 파일 = 0).</summary>
+        public int Deserters { get; set; }
         public string? TriggeredEventId { get; set; }
     }
 
@@ -261,7 +263,7 @@ public sealed class CampaignState
     public DecisionLog Decisions { get; set; } = new();
     public StockState Stock { get; set; } = new();
     public List<RosterCompany> Roster { get; set; } = new();
-    public Dictionary<string, int> Flags { get; set; } = new() { ["heir_mood"] = 60, ["cmd_favor"] = 50 };
+    public Dictionary<string, int> Flags { get; set; } = new() { ["heir_mood"] = 50, ["cmd_favor"] = 50 };
     public uint Seed { get; set; } = 19200401u;
     public PendingOperation? Pending { get; set; }
     public DebriefReport? LastDebrief { get; set; }
@@ -314,7 +316,7 @@ public sealed class CampaignState
         if (LastDebrief != null) { LastDebrief.ShellsFired ??= new(); LastDebrief.LootedShells ??= new(); }
         Decisions ??= new();   // TC-E
         Flags ??= new();
-        if (!Flags.ContainsKey("heir_mood")) Flags["heir_mood"] = 60;
+        if (!Flags.ContainsKey("heir_mood")) Flags["heir_mood"] = 50;
         if (!Flags.ContainsKey("cmd_favor")) Flags["cmd_favor"] = 50;
         Roster ??= new();
         if (Roster.Count == 0)

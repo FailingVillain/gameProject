@@ -17,12 +17,12 @@ public static class CampaignDecisionsSelfTest
 
             // 1) 변수 레지스트리 JSON + 별칭 (옛 Flags 키 공유) + 범위
             var s0 = new CampaignState();
-            bool fresh = CampaignVars.Defs.Count == 18 && CampaignVars.Get(s0, "favor.hwangson") == 60 && CampaignVars.Get(s0, "favor.minDaejang") == 50 && s0.Flags["heir_mood"] == 60 && s0.Flags["cmd_favor"] == 50
-                && CampaignVars.Get(s0, "favor.namChamjang") == 0 && CampaignVars.Get(s0, "maxCasualtyFrac") == 50 && !CampaignVars.Has("favor.kimJuhyun");
-            check(fresh, $"TC-E 변수: 18개 로드 · favor.hwangson 60 / minDaejang 50 = 옛 heir_mood / cmd_favor 공유 (등록 {CampaignVars.Defs.Count})");
+            bool fresh = CampaignVars.Defs.Count == 18 && CampaignVars.Get(s0, "favor.hwangson") == 50 && CampaignVars.Get(s0, "favor.minDaejang") == 50 && s0.Flags["heir_mood"] == 50 && s0.Flags["cmd_favor"] == 50
+                && CampaignVars.Get(s0, "favor.namChamjang") == 50 && CampaignVars.Get(s0, "maxCasualtyFrac") == 50 && !CampaignVars.Has("favor.kimJuhyun");
+            check(fresh, $"TC-E 변수: 18개 로드 · favor.hwangson 50 / minDaejang 50 = 옛 heir_mood / cmd_favor 공유 (등록 {CampaignVars.Defs.Count})");
             bool a1 = CampaignVars.Set(s0, "favor.hwangson", 250), a2 = CampaignVars.Add(s0, "rep.local", -1000), a3 = CampaignVars.Set(s0, "nope.var", 5), a4 = CampaignVars.Add(s0, "pow.bandit", int.MaxValue);
-            check(a1 && a2 && !a3 && a4 && s0.Flags["heir_mood"] == 100 && CampaignVars.Get(s0, "rep.local") == -100 && CampaignVars.Get(s0, "nope.var") == 0 && !s0.Flags.ContainsKey("nope.var") && CampaignVars.Get(s0, "pow.bandit") == 100000,
-                "TC-E 변수: 범위로 자름 (호감 100 · 평판 -100 · 포로 상한) · 모르는 키는 쓰기 거부 / 읽기 0");
+            check(a1 && a2 && !a3 && a4 && s0.Flags["heir_mood"] == 100 && CampaignVars.Get(s0, "rep.local") == 0 && CampaignVars.Get(s0, "nope.var") == 0 && !s0.Flags.ContainsKey("nope.var") && CampaignVars.Get(s0, "pow.bandit") == 100000,
+                "TC-E 변수: 범위로 자름 (호감 100 · 민심 0 · 포로 상한) · 모르는 키는 쓰기 거부 / 읽기 0");
             var snap = CampaignVars.SnapshotAll(s0); CampaignVars.Set(s0, "favor.hwangson", 1); CampaignVars.Set(s0, "flag.namLetter", 1); CampaignVars.RestoreAll(s0, snap);
             check(CampaignVars.Get(s0, "favor.hwangson") == 100 && CampaignVars.Get(s0, "flag.namLetter") == 0 && snap.Count == 18, "TC-E 변수: 스냅샷 / 복원");
             var junk = CampaignVars.Sanitized(new CampaignVarDef?[] { null, new() { Key = "" }, new() { Key = "x.a", Min = 5, Max = 1 }, new() { Key = "x.b", Min = 0, Max = 10, Default = 99 }, new() { Key = "x.b" }, new() { Key = "x.c", Alias = "x.b" } });
@@ -111,7 +111,7 @@ public static class CampaignDecisionsSelfTest
             CampaignVars.Add(sm, "morale.troops", -30); CampaignVars.Set(sm, "rep.local", -9); sm.Supply = 900f; CampaignFunds.AddPermanentLoss(sm, 50f);
             bool during = sm.Decisions.Answers.Count == 3 && sm.Funds == 8;
             bool retried = CampaignDecisions.RetryMission(sm);
-            check(during && retried && sm.Day == 3 && sm.Decisions.Answers.Count == 1 && sm.Decisions.Answers[0].Id == "D01" && sm.Funds == 10 && CampaignVars.Get(sm, "rep.local") == 7 && CampaignVars.Get(sm, "morale.troops") == 70
+            check(during && retried && sm.Day == 3 && sm.Decisions.Answers.Count == 1 && sm.Decisions.Answers[0].Id == "D01" && sm.Funds == 10 && CampaignVars.Get(sm, "rep.local") == 7 && CampaignVars.Get(sm, "morale.troops") == 50
                 && sm.Supply == 1234f && sm.EpisodePermanentSupplyLoss == 0f && !dd.HasPending(sm) && sm.Decisions.Checkpoint == null && !CampaignDecisions.RetryMission(sm) && !dd.IsAnswered(sm, "D04"),
                 $"TC-E 재도전 복원: 미션 중 응답 · 변수 · 자금 · 보급 되돌림, 일수 {sm.Day} 그대로 (재도전은 일수 안 씀), 복원 뒤 같은 결정 다시 응답 가능");
             check(dd.Answer(sm, "D04", One("B"), 0, out _) == "", "TC-E 재도전 뒤 같은 결정 재응답 가능");
@@ -139,15 +139,15 @@ public static class CampaignDecisionsSelfTest
                 "TC-E 저장 이행: v11 → v13 (빈 결정 기록 · 호감 80/41 그대로)");
             var bad = CampaignState.FromJson("{\"Decisions\":{\"Answers\":[{\"Id\":\"D01\",\"Choices\":[\"\",\"A\"],\"Quantity\":-5,\"Day\":-3},{\"Id\":\"\"}],\"Pending\":[\"\",\"D04\"],\"Checkpoint\":{\"Answers\":99,\"Funds\":-4,\"Supply\":-1}},\"Flags\":{\"heir_mood\":900,\"rep.local\":-777,\"pow.bandit\":-5}}");
             check(bad != null && bad.Decisions.Answers.Count == 1 && bad.Decisions.Answers[0].Choices.Count == 1 && bad.Decisions.Answers[0].Quantity == 0 && bad.Decisions.Answers[0].Day == 0 && bad.Decisions.Pending.SequenceEqual(new[] { "D04" })
-                && bad.Decisions.Checkpoint!.Answers == 1 && bad.Decisions.Checkpoint.Funds == 0 && bad.Decisions.Checkpoint.Supply == 0f && CampaignVars.Get(bad, "favor.hwangson") == 100 && bad.Flags["heir_mood"] == 100 && bad.Flags["rep.local"] == -100 && bad.Flags["pow.bandit"] == 0,
+                && bad.Decisions.Checkpoint!.Answers == 1 && bad.Decisions.Checkpoint.Funds == 0 && bad.Decisions.Checkpoint.Supply == 0f && CampaignVars.Get(bad, "favor.hwangson") == 100 && bad.Flags["heir_mood"] == 100 && bad.Flags["rep.local"] == 0 && bad.Flags["pow.bandit"] == 0,
                 "TC-E 저장 보정: 빈 선택/수량 음수/일수 음수/복원점 범위/Flags 변수 범위");
             var nul = CampaignState.FromJson("{\"Decisions\":null,\"Flags\":null}");
-            check(nul != null && nul.Decisions.Answers.Count == 0 && CampaignVars.Get(nul, "favor.hwangson") == 60, "TC-E 저장: Decisions/Flags null 이어도 기본값");
+            check(nul != null && nul.Decisions.Answers.Count == 0 && CampaignVars.Get(nul, "favor.hwangson") == 50, "TC-E 저장: Decisions/Flags null 이어도 기본값");
 
             // 6) 기본 설정에서 기존 동작 불변: 새 상태의 옛 Flags 키 · 이벤트 처리가 같은 값을 공유
             var se = new CampaignState();
             CampaignVars.Add(se, "favor.hwangson", -10);
-            check(se.Flags["heir_mood"] == 50 && se.Flags.Count == 2, "TC-E 하위 호환: 새 상태 Flags 는 옛 두 키뿐, favor.hwangson 변경이 heir_mood 에 반영");
+            check(se.Flags["heir_mood"] == 40 && se.Flags.Count == 2, "TC-E 하위 호환: 새 상태 Flags 는 옛 두 키뿐, favor.hwangson 변경이 heir_mood 에 반영");
         }
         finally { CampaignEconomyDefs.Override(savedEco); CampaignVars.Override(null); CampaignDecisions.Override(null); }
     }

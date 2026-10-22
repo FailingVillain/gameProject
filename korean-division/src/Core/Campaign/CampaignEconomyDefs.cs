@@ -74,6 +74,15 @@ public sealed class CampaignEconomyDefs
     /// <summary>[임시] 해임 뒤 호감이 이 값 이하로 내려가 있으면 재기용 불가 (설계 3.4, 이 값 초과여야 함).</summary>
     public int CommanderRehireMinFavor { get; set; } = -5;
 
+    // ---- [M2 · 사용자 BH2/BH5] 탈영 · 포/중화기 보급 단가 — 전부 자리표시 (0.3 밸런스에서 확정). 홈 계정만, 전투 시뮬과 무관.
+    /// <summary>[임시] 중대 사기가 이 값 미만이면 정산마다 탈영병 발생 (이상이면 0).</summary>
+    public int DesertionMoraleBelow { get; set; } = 30;
+    /// <summary>[임시] 사기 0 일 때의 탈영률 (병력 비율, 0..1). 사기가 문턱에 가까울수록 선형으로 0 에 수렴: 률 = (문턱 - 사기) / 문턱 x 이 값. 정수 반올림.</summary>
+    public float DesertionMaxRate { get; set; } = 0.05f;
+    /// <summary>[임시 · BH5] 포(보병포 · 야포) · 중화기(곡사포) 보급 단가. 값만 정의 — 사용처(투입 비용 환산)는 d2(kd/c1e1-d2-econ)의 supplyCost* 와 함께 연결된다.</summary>
+    public float SupplyCostArtillery { get; set; } = 7f;
+    public float SupplyCostHeavy { get; set; } = 7f;
+
     // ---- [TC-D · C1E1 R5] 자금 · 외인 슬롯 · 통제 한도 · 에피소드 보급 풀 — 모든 수치는 spec R5/사용자 결정(2026-10-22), 가격 일부 임시 (균형 단계에서 조정).
     /// <summary>에피소드 시작 자금 (10 = 은 5,000냥).</summary>
     public int FundsStart { get; set; } = 10;
@@ -156,6 +165,10 @@ public sealed class CampaignEconomyDefs
         CommanderDismissFavorPenalty = Math.Clamp(CommanderDismissFavorPenalty, 0, 100);
         CommanderRehireCooldownMissions = Math.Clamp(CommanderRehireCooldownMissions, 0, 100);
         CommanderRehireMinFavor = Math.Clamp(CommanderRehireMinFavor, CommanderFavorMin, CommanderFavorMax);
+        DesertionMoraleBelow = Math.Clamp(DesertionMoraleBelow, 0, 100);
+        DesertionMaxRate = F(DesertionMaxRate, 0f, 1f, d.DesertionMaxRate);
+        SupplyCostArtillery = F(SupplyCostArtillery, 0f, 100000f, d.SupplyCostArtillery);
+        SupplyCostHeavy = F(SupplyCostHeavy, 0f, 100000f, d.SupplyCostHeavy);
         PrisonerAcceptSupply = F(PrisonerAcceptSupply, 0f, 1000f, d.PrisonerAcceptSupply);
         FundsStart = Math.Clamp(FundsStart, 0, 1_000_000);
         SilverPerFund = Math.Clamp(SilverPerFund, 1, 1_000_000);

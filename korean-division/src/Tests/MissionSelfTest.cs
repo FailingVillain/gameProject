@@ -560,7 +560,7 @@ public static class MissionSelfTest
         check(s1.Stock.Ammo["ru"] == 100000 && s1.Stock.Ammo["jp"] == 100000 && s1.Stock.Ammo["de"] == 100000 && s1.Stock.Ammo["fr"] == 100000 && s1.Stock.Ammo["jpOld"] == 100000, "v1 읽기: Ammo 5종 각 100,000");
         check(s1.Stock.Shells["infGun"] == 500 && s1.Stock.Shells["field"] == 300 && s1.Stock.Shells["howitzer"] == 150, "v1 읽기: Shells 500/300/150");
         check(s1.Roster.Count >= 4 && s1.Roster.Any(c => c.Id == "b1_c1") && s1.Roster.Any(c => c.Id == "mg"), "v1 읽기: Roster 4개 중대 초기화");
-        check(s1.Flags["heir_mood"] == 60 && s1.Flags["cmd_favor"] == 50, "v1 읽기: Flags heir_mood=60, cmd_favor=50");
+        check(s1.Flags["heir_mood"] == 50 && s1.Flags["cmd_favor"] == 50, "v1 읽기: Flags heir_mood=50, cmd_favor=50");
 
         // 2) CampaignEconomy: 병종별 투입 비용 계산
         check(CampaignEconomy.UnitDeployCost("infantry") == 1.0f &&
@@ -680,7 +680,7 @@ public static class MissionSelfTest
         var sEv1 = new CampaignState();
         CampaignEvents.ApplyChoice(sEv1, "e1_guard_front", 0);
         var guardCo = sEv1.Roster.FirstOrDefault(c => c.Id == "guard");
-        check(sEv1.Flags["heir_mood"] == 70 && sEv1.Supply == 3200f && guardCo != null && guardCo.Mandatory && sEv1.Flags["ev_e1_guard_front"] == 1,
+        check(sEv1.Flags["heir_mood"] == 60 && sEv1.Supply == 3200f && guardCo != null && guardCo.Mandatory && sEv1.Flags["ev_e1_guard_front"] == 1,
               "CampaignEvents: E1(a) 수락 -> 심기+10, 보급+200, 시위대 의무 투입");
 
         var sEv2 = new CampaignState();
@@ -701,7 +701,7 @@ public static class MissionSelfTest
         // 11) CampaignEvents: E5(a) 군단장 만류 수용
         var sEv5 = new CampaignState();
         CampaignEvents.ApplyChoice(sEv5, "e5_corps_restraint", 0);
-        check(sEv5.Supply == 3200f && sEv5.Flags["heir_mood"] == 55, "CampaignEvents: E5(a) 수용 -> 보급+200, 심기-5");
+        check(sEv5.Supply == 3200f && sEv5.Flags["heir_mood"] == 45, "CampaignEvents: E5(a) 수용 -> 보급+200, 심기-5");
 
         // 12) Phase 2 S3: PendingOperation (AmmoScale & 출격 중대) 미션 반영 검증
         string s3Dir = TestTemp.Child("campaign_s3");
@@ -758,10 +758,10 @@ public static class MissionSelfTest
         var sMand = new CampaignState();
         sMand.Roster.First(c => c.Id == "b1_c1").Mandatory = true;
         CampaignEconomy.BeginOperation(sMand, "m", new[] { "b1_c2" });
-        check(sMand.Pending!.RefusedMandatory && sMand.Flags["heir_mood"] == 60, "의무 중대 제외: 출격 때는 심기 불변, 기록만");
+        check(sMand.Pending!.RefusedMandatory && sMand.Flags["heir_mood"] == 50, "의무 중대 제외: 출격 때는 심기 불변, 기록만");
         sMand.Pending.MissionId = CampaignState.Hoeryong;
         CampaignEconomy.SettleBattle(sMand, rOp);
-        check(sMand.Flags["heir_mood"] == 50 && sMand.Flags["cmd_favor"] == 45, "의무 중대 제외: 결과 확정 때 심기 -10 · 총사령관 -5");
+        check(sMand.Flags["heir_mood"] == 40 && sMand.Flags["cmd_favor"] == 45, "의무 중대 제외: 결과 확정 때 심기 -10 · 총사령관 -5");
 
         // 14b) D23: 이미 이긴 미션의 반복 승리는 결과만 기록, 자원 · 병력 불변
         var sRep = CampaignState.Apply(null, new MissionResults { MissionId = CampaignState.FirstMission, Result = "won" })!;
