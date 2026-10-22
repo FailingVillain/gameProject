@@ -41,6 +41,7 @@
 - 보고: 역할 카드의 줄 수 이내(지휘자가 정하면 그 값). 끝에 **'임의 결정' 항목**(카드가 안 정한 값·가정·해석·삭제·완화를 전부 나열; 없으면 '없음').
 - 비아트 heavy(빌드·selftest·측정)는 에이전트 안에서 순차 (heavy_gate 통과). 웹 조회는 `hub ask -w`.
 - 역할별 한 줄 (옛 LESSONS 에서 이전): feature·sim = JSON Load/Validate 에 null·NaN·범위 검증 + 플래그 바꾸면 소비처 grep, 낡은 시험과 틀린 코드를 구분(약화 금지) · sim·reviewer = ObjCodec/저장 필드 추가는 기본 꺼짐이어도 FV+1, 측정 전용 통계는 FV 불변 · feature = 새 버튼은 selftest, 새 미션은 `MissionDef.Available()` 순회 묶음(N77·N12·Props·Terrain·missions) · measure/feature = n=8 은 동작 확인만(승률 판정 금지), 힙은 강제 GC 후 · reviewer = checkout 금지 · art = 자세는 `edge_check` 로 칸 경계 확인 · merger = `merge_step.ps1` 만 사용(snapshot + `--snaptest` 강제) · 공통 = 자기 브랜치에서 ops/ 수정 금지.
+- selftest 묶음: `KD_SELFTEST_ONLY` 이름은 `src/SelfTest.cs` 에서 확인 (알 수 없는 이름은 이제 즉시 오류 — 전체 selftest 로 안 떨어진다; 이름 점검 `tools/agent/selftest_groups_check.ps1 [-List]`).
 
 ## 2. 문서 쓰기 소유권
 | 파일 | 쓰는 사람 | 그 외 |
