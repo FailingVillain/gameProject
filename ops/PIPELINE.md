@@ -8,13 +8,13 @@
 |---|---|---|---|---|
 | 입력 | 사용자 | 지시 → DECISIONS 답 / QUEUE 행 | - | 결정 25건 적체 → 저위험은 기본값 진행(D22) |
 | 작업 정의 | spec(또는 지휘자) | QUEUE 행 → tasks/Tnn 카드 | 카드 ≈1.5KB · L 카드는 사전 분할 | 중복 조사 → MERGE_QUEUE 완료 표 + GIT_HISTORY_DIGEST grep 의무 |
-| 발주 | 지휘자 | 카드 → 에이전트(역할 카드 + 카드 3줄 프롬프트) | 에이전트 24 · 上 5 · 파도 ≤12 | 지휘자 알림 싱크 → 파도마다 세션 교체 · QUEUE 행 낡음 → 발주 전 MERGE_QUEUE·main 대조(T18) |
+| 발주 | 지휘자 | 카드 → 에이전트(역할 카드 + 카드 3줄 프롬프트) | 현재 한도는 ops/LIMITS.md 참조 · 파도 ≤12 | 지휘자 알림 싱크 → 파도마다 세션 교체 · QUEUE 행 낡음 → 발주 전 MERGE_QUEUE·main 대조(T18) |
 | 코딩 | sim/feature/art/docs | 카드 → 브랜치 커밋 | 컨텍스트 200k | 핫스팟 충돌 → H≥2 같은 파일은 직렬 · 역할 오배정 → 코드 카드는 docs 금지(T26) |
-| 로컬 검증 | 같은 에이전트 | 빌드·detcheck·자기 묶음·snaptest → 카드 결과 | 무거운 작업 8 | 게이트 대기 25분+ → 전체 selftest 는 release 만 |
+| 로컬 검증 | 같은 에이전트 | 빌드·detcheck·자기 묶음·snaptest → 카드 결과 | 무거운 작업 = LIMITS.md 참조 | 게이트 대기 25분+ → 전체 selftest 는 release 만 |
 | wip-ready | 같은 에이전트 | 카드 상태 wip-ready → 리뷰 발주 → MERGE_QUEUE 행(지휘자) | 잠금 금지 | 잠금 폴링 → 작업 에이전트는 잠금을 안 잡음 |
 | 리뷰 | reviewer(읽기 전용, 필수) | wip-ready 브랜치 diff → 차단/높음/중간 결함 목록 | 브랜치 1건당 리뷰 1 | 리뷰 누락 → 리뷰 없이 다음 스택 발주 금지 |
 | 수정 사이클 | 작성자 또는 수정 에이전트 | 리뷰 지적 → 같은 브랜치 1커밋 → 재검증 | 사이클 1회 = 1커밋 | 스택 하위 수정 → 상위 브랜치에 SendMessage 로 체리픽 지시 |
-| 측정 | measure | main 커밋 → BASELINE_CURRENT 블록 | heavy 8 | 개별 측정 중복 → 통합 측정 1회(T12) · 목표 미달 → wip-ready 금지, 정직 보고(T06·T16) |
+| 측정 | measure | main 커밋 → BASELINE_CURRENT 블록 | 비아트 heavy = LIMITS.md 참조 | 개별 측정 중복 → 통합 측정 1회(T12) · 목표 미달 → wip-ready 금지, 정직 보고(T06·T16) |
 | 통합 리허설 | 지휘자(제안, 사용자 확인) | 병합 순서대로 integration/rehearsal 에 합침 → selftest·golden → ops/REPORT 기록 | 잠금 1개 | 충돌·번호 겹침 → FV_RESERVATIONS 로 재번호 후 재시험 |
 | 병합 | merger(상시) | 리허설 통과 → main, 완료 표 행, 카드 merged | 잠금 1개, 만료 30분 | main 이동마다 재검증 → main 1회 병합, 충돌 시만 재병합 |
 | release 기록 | release | 큐 끝 → selftest·골든·publish·기록 5곳, 카드 closed | 큐당 1회 | 첫 실 가동은 fix/n12-forest 병합 뒤(§8) |
@@ -34,6 +34,13 @@
 1. **FV 상승** (LESSONS 21): 저장 프로필(ObjCodec 대상)·Snapshot/Replay 필드를 추가·변경했는가? 기본값이 꺼져 있어도 `FormatVersion` 을 올렸고 FV_RESERVATIONS 에 적었는가? (측정 전용 통계는 제외, LESSONS 14)
 2. **저장 필드**: 새 상태가 체크섬 · `SnapshotSelfTest.Audit` · 저장/불러오기 · 엔티티 참조 태그에 모두 들어갔는가? (T37 actingCache · T40 AliveCars 누락 전례)
 3. **snapshot 분류** (LESSONS 23·28): 새 필드를 snapshot 과 `--snaptest` 가 다루도록 분류했는가(저장 대상 / 파생 캐시 / 표현 전용)? 분류 근거 한 줄을 리뷰 보고에 적는다.
+
+### 1-d 발주 프롬프트 공통 꼬리 (2026-10-22; 모든 발주문 끝에 붙인다, 한도 값은 ops/LIMITS.md)
+- 기반: 기반 브랜치·커밋 해시를 적고, push 금지, main·병합 라인(merge/*) 수정 금지.
+- FV: 임시 번호를 쓰고 fv_claim 으로 예약 요청 (정식 번호는 지휘자가 FV_RESERVATIONS 에서 배정).
+- 보고: 최종 보고 ≤12줄. 임의로 정한 결정은 보고에 항목으로 나열한다 (지휘자가 AUTO_DEFAULTS_LOG 에 기록).
+- 시작 전 `preflight.ps1 <카드id>` 실행, 결과 한 줄을 보고에 적는다.
+- 비아트 heavy(빌드·selftest·측정)는 에이전트 안에서 순차로 돌린다 (heavy_gate 통과).
 
 ## 2. 문서 쓰기 소유권
 | 파일 | 쓰는 사람 | 그 외 |
@@ -107,7 +114,7 @@ queued(지휘자/spec) → assigned(지휘자, 발주 시) → running(에이전
 - 등급 5축 중 R·S·W 는 선택 메모(D·H 만 필수). 다시 필수로 올리지 않음.
 - 게이트 3레인: 코드 있음, 기본 비활성. 게이트 대기 합계가 주 60분을 넘으면 시험.
 - harness: 읽기 전용 현황판 그대로(3단계 확장 보류).
-- 파도 크기 시험(≤12 · 上 ≤3 · heavy ≤6)은 Fable 권고 — LIMITS 값은 사용자 지시(24/5/8) 유지, 다음 파도에서 12 로 한 번 시험해 숫자 기록.
+- 파도 크기 시험(≤12 · 上 ≤3 · heavy ≤6)은 Fable 권고 — 한도 값은 ops/LIMITS.md 기준(사용자 지시 우선), 다음 파도에서 12 로 한 번 시험해 숫자 기록.
 - 지휘자 세션 교체 주기(파도마다)는 시험 뒤 확정.
 - release 첫 실 가동: 2026-10-22 완료 (selftest 2008 OK).
 - 통합 리허설 담당·절차: 첫 병합 전 사용자 확인.
