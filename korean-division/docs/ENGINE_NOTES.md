@@ -734,3 +734,9 @@
 
 ## 장갑열차 시연 미션 (2026-10-22, 브랜치 `t30e-demo-mission`, T30e, FormatVersion 59 그대로)
 - `assets/missions/train_escort_demo.json`: 호송 (Q-E1 권장), 인라인 mapData 150x64, 장갑열차 + 화물열차 스크립트 이동, 시간 제한 900초. 캠페인 미연결. 시험 `KD_SELFTEST_ONLY=traindemo` (golden = `assets/data/train_demo.golden`, 갱신 `KD_TRAIN_DEMO_UPDATE=1`). 코드 · 밸런스 변경 없음.
+
+## T32b 전술 AI 연막 수류탄 (2026-10-22, `src/AI/Tactical/TacticalAi.Smoke.cs` · `TrenchAssault.cs` TaSmokeHook, 기본 꺼짐)
+- 사용자 2026-10-22: AI 연막 · 철조망 보류(D18) 해제. 켜기 = 프로필 `tactics.smokeAi` (겹침 `smoke_on`) · tactics.json `trenchAssault.smokeHook`. 수치 = tactics.json `breachAi` (초안).
+- R1 개활 횡단 / R2 사격 아래 돌격: 공격 과제 소총 중대 (연막 보유 ≥ smokeMinMen) 가 기존 `ThrowSmokeCommand`(리플레이 `smokegrenade`) 를 점마다 1명씩 낸다. R3: AI 플래그 (TA.Flags 1) 돌격만 접근 → 돌파 직전 참호 앞 줄에 시뮬이 직접 투척.
+- AF1: 시뮬은 Faction.IsAi 를 안 읽는다. 새 저장 상태 없음 — 쿨다운 · 동시 수 = 자기 연막 · 날아가는 연막 수류탄, 최근 사상 = 생존자 LastDamagedTick (대용). 프로필 키 추가로 FormatVersion 56 (병합 때 재번호).
+- 사거리 grenade.range 5 그대로라 줄은 앞선 보유자 + 4.5칸, 적에서 8~20칸 (R2 하한 2칸) 일 때만. 시험 `KD_SELFTEST_ONLY=smokeai`, 관찰 tactics-obs 변형 SMOKE · SMOKEHOOK · SMOKEALL, 보고 줄 `[T32b 연막]`.

@@ -106,6 +106,7 @@ public sealed partial class TacticalAi
         }
 
         if (g.Kind == TacKind.Line && TrenchAssaultThink(w, s, g)) return;   // N32 참호 돌격 (TacticalAi.TrenchAssault.cs)
+        if (g.Kind == TacKind.Line) SmokeThink(w, s, g, range);              // T32b 연막 수류탄 (TacticalAi.Smoke.cs, 기본 꺼짐)
         if (g.Kind == TacKind.Line) PickTemplate(w, s, g, range);
         switch (g.Kind)
         {

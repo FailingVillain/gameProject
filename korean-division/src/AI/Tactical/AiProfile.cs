@@ -152,6 +152,8 @@ public sealed class TacticsProfile
     /// <summary>소총 중대 전술 틀 사용 (방어 = 종심 방어, 공격 = 화력-기동 — CombatFormations.cs, 1단계 정지 배치).</summary>
     /// <summary>N32: 공격 과제 소총 중대가 보이는 적 참호선을 만나면 참호 돌격 순서 (TrenchAssault.cs) 를 쓴다. 수치는 tactics.json trenchAssault (ai*). 측정용 겹침 "notrenchassault".</summary>
     public bool TrenchAssault = true;
+    /// <summary>T32b: 공격 과제 소총 중대가 개활 횡단 · 사격 아래 돌격 때 연막 수류탄을 던진다 (TacticalAi.Smoke.cs, 수치 tactics.json breachAi). 기본 꺼짐 — 측정용 겹침 "smoke_on".</summary>
+    public bool SmokeAi = false;
     public bool Templates = true;    // 기본 켜짐 (사용자 결정 2026-10-19, N4 2단계 행동)
     // ---- 3단계 B (방어 · 예비 · 역습, docs/TACTICAL_AI_STAGE3_REVIEW_2026-10-19.md S3 · S4 · S8 — TacticalAi.Reserve3B.cs). 2단계 · 3A 와 비교 = 겹침 "no3b".
     /// <summary>저탄약 교대: 대대 예비 중대 (탄약 ≥ ammoRotateReady) 와 탄약 평균이 ammoRotateAt 아래인 전선 중대를 맞바꾼다 (나가는 중대는 예비 위치에서 회복). 대대마다 ammoRotateCooldown 초에 한 번.</summary>

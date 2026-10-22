@@ -242,6 +242,8 @@ public sealed class TacticRules
     public CounterAiDef Counter { get; set; } = new();
     /// <summary>참호 돌격 교리 (TrenchAssault.cs, N32).</summary>
     public TrenchAssaultDef TrenchAssault { get; set; } = new();
+    /// <summary>전술 AI 연막 (T32b, TacticalAi.Smoke.cs BreachAiDef).</summary>
+    public BreachAiDef BreachAi { get; set; } = new();
     public Dictionary<string, TemplateDef> Templates { get; set; } = BuiltinTemplates();
 
     static Dictionary<string, TemplateDef> BuiltinTemplates()

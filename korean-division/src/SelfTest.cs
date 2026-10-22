@@ -70,6 +70,7 @@ public static partial class SelfTest
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "props") { Tests.PropsSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "f2") { Tests.F2SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "n32") { Tests.N32SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+        if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "smokeai") { Tests.SmokeAiSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }   // T32b
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "gapfill") { Tests.GapFillSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "n23") { Tests.N23SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "surr") { Tests.SurrenderSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
@@ -168,6 +169,7 @@ public static partial class SelfTest
         Tests.PropsSelfTest.Run(opt, Check);               // F6 엄폐물 소품 층
         Tests.F2SelfTest.Run(opt, Check);                  // F1 2차 제자리 방향 전환 · 선까지 전진 · 대형 유지 · AI 재명령 제한
         Tests.N32SelfTest.Run(opt, Check);
+        Tests.SmokeAiSelfTest.Run(opt, Check);   // T32b AI 연막
         Tests.FireCtlSelfTest.Run(opt, Check);             // N73 사격 통제 + N75 사선 막힘 사수 표시 판정 (firectl)
         Tests.OrderQueueSelfTest.Run(opt, Check);          // N74 명령 대기열 (orderq)
         Tests.N79aSelfTest.Run(opt, Check);                // N79a 집결 지점 · 포격 종류

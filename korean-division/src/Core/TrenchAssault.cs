@@ -72,7 +72,7 @@ public sealed class TrenchAssaultDef
     public int AiMinDefenders { get; set; } = 3;
     public int AiMinMen { get; set; } = 20;
     public float AiMinOdds { get; set; } = 0.8f;
-    // 자리만 (이 묶음에서는 구현 없음 — 참호 돌파 묶음: N59 연막 · 철조망 절단)
+    // smokeHook (T32b): 전술 AI 가 낸 돌격 (명령 Ai 플래그 = TA.Flags 1) 만, 접근 → 돌파 전환 직전 참호 앞에 연막 수류탄 줄 (TaSmokeHook). wireCutHook = 자리만 (T32c).
     public bool SmokeHook { get; set; } = false;
     public bool WireCutHook { get; set; } = false;
 }
@@ -438,18 +438,40 @@ public sealed partial class World
         DrillMove(list, dest, order, dir, MathF.Max(3f, list.Count * 1.2f), form, quick);
     }
 
+    /// <summary>
+    /// T32b R3 (tactics.json trenchAssault.smokeHook, 기본 꺼짐): 전술 AI 가 시작한 돌격 (TA.Flags 1 — 명령의 Ai 플래그, 세력 IsAi 는 읽지 않음) 이 접근 → 돌파로 넘어가기 직전,
+    /// 돌격조의 연막 보유자가 참호 목표 앞 (공격 쪽 연막 반경만큼) 가로줄에 breachAi.smokeSpacing 간격 · 최대 smokeMaxPerCompany 개를 던진다 (사거리 grenade.range 안만).
+    /// </summary>
+    void TaSmokeHook(Company c)
+    {
+        if (!TaR.SmokeHook || c.TA.Flags != 1) return;
+        var B = TacRules.BreachAi;
+        var taSmk = new List<Unit>();   // 돌격마다 한 번 (지역 목록 — World 필드 아님)
+        var taSmkPlan = new List<(Unit U, Vector2 P)>();
+        foreach (var u in taAs) if (u.Alive && !u.Surrendered && u.SmokeGrenades > 0) taSmk.Add(u);
+        if (taSmk.Count == 0) return;
+        var dir = c.TA.Dir; var perp = new Vector2(-dir.Y, dir.X);
+        float bMin = float.MaxValue, bMax = float.MinValue;
+        foreach (var u in taSmk) { float b = Vector2.Dot(u.Pos - c.TA.Target, perp); bMin = MathF.Min(bMin, b); bMax = MathF.Max(bMax, b); }
+        int n = Math.Clamp((int)((bMax - bMin) / MathF.Max(1f, B.SmokeSpacing)) + 1, 1, Math.Max(1, B.SmokeMaxPerCompany));
+        var center = c.TA.Target - dir * Defs.Breach.SmokeGrenadeRadius + perp * ((bMin + bMax) * 0.5f);
+        SmokeLine.Plan(Map, taSmk, center, perp, n, B.SmokeSpacing, Defs.Grenade.Range - 0.05f, taSmkPlan);
+        foreach (var (u, p) in taSmkPlan) ThrowSmoke(u, p);
+        Stats.TaSmokeHook += taSmkPlan.Count;
+    }
+
     void TaApproach(Company c, List<Vector2> tiles)
     {
         var ta = c.TA; var R = TaR;
         var T = ta.Target;
-        if (Tick - ta.StageTick > SecTicks(R.ApproachMaxSec)) { TaGo(c, TaStage.BreakIn); return; }
+        if (Tick - ta.StageTick > SecTicks(R.ApproachMaxSec)) { TaSmokeHook(c); TaGo(c, TaStage.BreakIn); return; }
         float dist = TaMeanDist(taAs, tiles);
         float stand = Defs.Grenade.Range * R.RushStandFrac;
         // 포격: 소총이 liftDist 안이면 포격 지점을 참호 너머 (creepLead) 로 옮긴다 (이동 탄막)
         if (dist <= R.LiftDist && ta.FirePoint != Vector2.Zero && Vector2.DistanceSquared(ta.FirePoint, T) < 0.36f) TaFire(c, ClampToMap(T + ta.Dir * R.CreepLead));
         // 총 사격 진지 지킴 (경기관총): 서서 사격
         foreach (var u in taGun) if (!Moving(u)) DrillHoldUnit(u);
-        if (dist <= Defs.Grenade.Range - 0.2f + 0.5f || TaFracWithin(taAs, tiles, Defs.Grenade.Range - 0.2f) >= R.BreakFrac) { TaGo(c, TaStage.BreakIn); return; }
+        if (dist <= Defs.Grenade.Range - 0.2f + 0.5f || TaFracWithin(taAs, tiles, Defs.Grenade.Range - 0.2f) >= R.BreakFrac) { TaSmokeHook(c); TaGo(c, TaStage.BreakIn); return; }
         if (dist <= R.BoundEndDist + 1f)
         {
             // 돌진: 속보로 수류탄 거리까지 (경기관총은 엄호)
