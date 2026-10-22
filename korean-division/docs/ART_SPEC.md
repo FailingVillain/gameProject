@@ -117,3 +117,12 @@
 - **시대 고증 (Q-D1 권장 채택)**: 모델 1종 (1918~20 러시아식 장갑열차 외형), 세력 차이 = 팀색 + 소품/도색 변형 (올리브 = 기본, 일본 황토 · 러시아 회갈 등은 재질 앵커만 교체, 별도 모델 없음). 소품 차이(깃발 · 휘장)는 필요 시 후속.
 - **자리표시 교체 계획**: T30e 는 그림 없으면 단색 사각형(길이 2칸 × 0.6칸)을 그림. 승인 뒤: `import_kd1920.py --only train-loco,train-guncar,train-mgcar,train-freight,train-wreck` → theme.json `unit.train_*`(+`.turret`) 항목 (scale 0.25, 다른 차량과 동일) 만 추가. **승인 전 임포트 안 함.**
 - 알려진 한계: 바퀴 보기 단순, 객차 사이 연결 틈(완충기)은 겹침으로 처리 안 보임, 선로 그림(T07)과의 높이 맞춤은 T30e 에서 확인.
+
+## 소품 그림 규격 · 외형 변형 (PR3, 2026-10-22, 렌더 전용)
+- **키 = 폴더 이름 = props.json `types` 키 = 파일 접두**: `assets/themes/kd1920/props/<키>/<키>.png` (+ `@64` `@32` `_shadow*.png` `_layout.json`). 소문자 snake_case, 부서진 모습은 `<키>_cracked` / `<키>_fallen` (기존 규칙).
+- **PR1 새 종류 키 (PR2 아트가 이 이름으로 낸다)**: 덤불 `bush`, 수수밭 `sorghum_field`, 그루터기 `stump`, 통나무 더미 `log_pile`, 암반 노두 `rock_outcrop`, 고사목 `tree_dead`, 흙 둔덕 `dirt_mound`, 버드나무 `tree_willow`, 갈대 `reed`, 눈더미 `snow_drift`. PR1 이 다른 키를 확정하면 그 키가 우선 (폴더 이름만 맞추면 된다).
+- **외형 변형**: 기존 파일 = 0번, 추가는 `props/<키>/var_01/ .. var_07/` 폴더에 **같은 파일 이름 규칙** (`<키>.png`, `<키>@64.png`, `<키>@32.png`, `<키>_shadow*.png`, `<키>_layout.json`). 목표 종류당 6~8 (0번 포함), 코드 상한 `PropVariants.MaxVariants` = 8. 폴더가 연속이어야 하고 끊기면 거기까지만 읽는다. 폴더가 없으면 단일 외형 (현재 화면과 동일).
+- **변형 조건**: 게임플레이 속성(cover · losBlock · radius · hp)은 종류 단위 — 변형은 그림만 다르다. 발밑 기준점(anchor)은 변형마다 `_layout.json` 에 따로 적고, 충돌 반경(radius) 안에 몸통이 들어오게 그린다. 크기 차이는 ±15% 이내 권장.
+- **고르는 법**: `PropVariants.Pick(x, y, n)` = 소품 위치(1/64 타일)의 정수 해시 % n. 렌더에서만 계산 — sim · 저장 · 체크섬 · 리플레이 영향 없음. 부서진 변종은 자기 종류의 변형 수로 따로 고른다.
+- **메모리**: 현재 아틀라스 페이지 없음 — 종류마다 변형 전부를 한 번에 올려(몸통 + 그림자 x LOD 3단) 함께 둔다. 변형 1벌 ≈ 128x128 몸통 64KB + 그림자 + 하위 LOD ≈ 130KB 이하. 종류 20 x 8 = 160벌 ≈ 21MB 상한 (실제 합계는 `PropRenderer.TextureBytes`). 더 늘리면 아틀라스 묶음 도입을 별도 카드로.
+- 가져오기: `tools/import_props.py` 가 `var_NN/` 하위 폴더까지 복사한다.

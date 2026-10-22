@@ -29,6 +29,7 @@ public static class PropsSelfTest
             TestSuppress();
             TestSnapshot();
             TestCoverClusterForest();
+            TestVariants();
         }
         catch (Exception e) { check(false, $"props 테스트 중 예외: {e.GetType().Name}: {e.Message}\n{e.StackTrace}"); }
     }
@@ -44,6 +45,25 @@ public static class PropsSelfTest
         w.PlaceBuilding(hq, 2, size - 1 - hq.Size, size - 1 - hq.Size);
         w.Fog.Enabled = false;
         return w;
+    }
+
+    /// <summary>소품 외형 변형 번호: 순수 함수 (같은 입력 = 같은 출력), 범위, 폴백(변형 1 = 항상 0), 골고루 분포.</summary>
+    static void TestVariants()
+    {
+        bool pure = true, range = true, one = true;
+        var hist = new int[6];
+        for (int i = 0; i < 3000; i++)
+        {
+            float x = 3f + (i % 60) * 1.37f, y = 5f + (i / 60) * 1.91f;
+            int a = Render.PropVariants.Pick(x, y, 6), b = Render.PropVariants.Pick(x, y, 6);
+            pure &= a == b; range &= a >= 0 && a < 6; one &= Render.PropVariants.Pick(x, y, 1) == 0 && Render.PropVariants.Pick(x, y, 0) == 0;
+            if (a >= 0 && a < 6) hist[a]++;
+        }
+        bool spread = true;
+        foreach (int h in hist) spread &= h > 3000 / 6 / 2;
+        check(pure && range, "props: 변형 번호 = 위치 해시 순수 함수, 범위 내");
+        check(one, "props: 변형 1개(없음) -> 항상 0번 = 기존 외형 폴백");
+        check(spread, "props: 변형 번호 분포가 고르다 (" + string.Join("/", hist) + ")");
     }
 
     static void TestData()

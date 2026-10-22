@@ -1,7 +1,7 @@
 """game-tools props 렌더 (korean-division-image-out/props/<name>/) -> assets/themes/kd1920/props/<name>/ 복사 (F6 엄폐 소품, v1 그림 그대로).
 
     python tools/import_props.py [--src <korean-division-image-out 경로>]
-<name>.png / @64 / @32 + <name>_shadow*.png + <name>_layout.json 만 복사 (contact · gif 제외). 다시 돌려도 안전. 게임 로더 = src/Render/PropArt.cs.
+<name>.png / @64 / @32 + <name>_shadow*.png + <name>_layout.json 만 복사 (var_NN/ 하위 폴더 포함, contact · gif 제외). 다시 돌려도 안전. 게임 로더 = src/Render/PropArt.cs.
 """
 import os
 import shutil
@@ -24,7 +24,14 @@ for name in sorted(os.listdir(src_props)):
     out = os.path.join(DST, name)
     os.makedirs(out, exist_ok=True)
     for fn in sorted(os.listdir(d)):
-        if fn.endswith(".png") or fn.endswith("_layout.json"):
-            shutil.copy2(os.path.join(d, fn), os.path.join(out, fn))
+        full = os.path.join(d, fn)
+        if os.path.isdir(full) and fn.startswith("var_"):   # 외형 변형 폴더 (var_01..), 같은 파일 규칙
+            os.makedirs(os.path.join(out, fn), exist_ok=True)
+            for f2 in sorted(os.listdir(full)):
+                if f2.endswith(".png") or f2.endswith("_layout.json"):
+                    shutil.copy2(os.path.join(full, f2), os.path.join(out, fn, f2))
+                    n += 1
+        elif fn.endswith(".png") or fn.endswith("_layout.json"):
+            shutil.copy2(full, os.path.join(out, fn))
             n += 1
 print(f"[props] {n} files -> {DST}")
