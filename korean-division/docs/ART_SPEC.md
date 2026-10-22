@@ -84,6 +84,7 @@
 - 유닛 이름 = **병과 접두어**: `infantry-*` (보병), `heavy-*` (중화기 · 거치 무기: `heavy-machinegunner`, `heavy-at-rifleman`, `heavy-maxim`), `tank-*` (장갑 차량: `tank-ft-female`, `tank-ft-male`, `tank-armored_car`). 그림 (game-tools) 은 바로 적용, 게임 유닛 id (balance.json: machinegunner · at_infantry · armored_car 등) 와 테마 연결은 브랜치 합치기 뒤 일괄 변경.
 - **병과 표기 = 그림 실루엣, 초안 (2026-10-19, `icons2`)**: `icon.branch.*` 을 흰색 + 어두운 윤곽 그림 실루엣 (보병 · 기관총 · 대전차 · 포병 · 곡사포 · 기병 · 정찰 · 돌격 · 저격 · 기갑 · 보급 · 지휘 officer) 으로 교체. 생성 `game-tools/icons/branch_silhouettes.py`, 옛 NATO 식 글리프 = `icons/_old_glyph/`. 지휘도 이미지 (NATO 깃발 대체 불필요). 분대 상태 아이콘: 크기 축소 · 중간 줌 흐림 · 지휘관 없음은 교전 · 선택 때만. 접촉표 `branch_silhouettes.png` · `squad_icons_v2.png`.
 - **병종 마커 (2026-10-19 결정, `rankui`)**: 축소 표시 = 세력 휘장 + 아래 병종 이미지 (`icon.branch.*`, branch_icons 12~32px). NATO 기호 삭제 (옛 테마 대체 · 지휘 깃발만 남음). 접촉표 `docs/art_review/branch_markers.png`.
+- **전투공병 (T32d, 2026-10-22)**: `infantry-pioneer` = 진위대 복사 + 등에 대각 장대 와이어 커터 + 허리 공구 주머니 (`tools/parts/pioneer.py`). 시트 `docs/art_review/pioneer_t32d.png`.
 
 ## 세력별 복식표 (2026-10-21)
 - 범례: **현행** = 코드 · 유닛 JSON 에 이미 있음. **(예정)** = 오늘 결정했으나 그림 · 코드 미반영. 색 값은 `game-tools/image/tune/materials.json` 앵커 (어두운 → 밝은 4단, dark → light). 출처 경로는 `game-tools/` 기준.

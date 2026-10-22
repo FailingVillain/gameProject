@@ -1,0 +1,52 @@
+{
+  "name": "infantry-pioneer",
+  "_doc": "전투공병 (T32d): infantry-default copy; gear swapped: long-handled wire cutter strapped across the pack back + canvas tool pouch (pliers, gloves) instead of the haversack. Same body / rifle / 35 frames.",
+  "base": "infantry",
+  "anims": "infantry-motions",
+  "headgear": "korean_kepi",
+  "uniform": {
+    "jacket": "fgrey_dark",
+    "trousers": "fgrey_dark_trouser",
+    "legging": "fgrey_dark_wrap",
+    "boot": "leather",
+    "belt": "leather",
+    "hand": "skin",
+    "collar": true,
+    "puttees": true,
+    "puttee_seam": "fgrey_dark_trouser",
+    "piping": "acc_brass",
+    "placket": false,
+    "trouser_stripe": true,
+    "stripe_mat": "acc_brass"
+  },
+  "weapon": "bolt_rifle",
+  "gear": [
+    "field_pack_grey",
+    "wire_cutter",
+    "tool_pouch",
+    "canteen_cloth",
+    "leather_pouches"
+  ],
+  "team": [
+    "helmet_band",
+    "arm_patch"
+  ],
+  "belt": true,
+  "belt_pouches": false,
+  "e_pull_extra": 3.0,
+  "dirs": "all",
+  "frames": "all",
+  "tune": {
+    "_doc": "prone E/NE: whole figure turned toward the camera so boots + muzzle flash fit the 192x240 cell (the long prone of design 08 is wider than the cell side-on)",
+    "poses": {
+      "infantry": {
+        "e_view_yaw": {
+          "prone": 62
+        },
+        "ne_view_yaw": {
+          "prone": 20
+        }
+      }
+    }
+  }
+}

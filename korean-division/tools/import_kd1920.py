@@ -40,6 +40,7 @@ UNITS = {
     "unit.infantry_scout": ("infantry-scout", None),       # 정찰병 (쌍안경 관측)
     "unit.infantry_regular": ("infantry-regular", None),   # 철모 보병
     "unit.infantry_assault": ("infantry-assault", None),   # 돌격병
+    "unit.infantry_pioneer": ("infantry-pioneer", None),   # 전투공병 (T32d)
     "unit.infantry_guard": ("infantry-guard", None),       # 시위대
     "unit.infantry_reserve": ("infantry-reserve", None),   # 예비군 (옛 군복, 옛 이름 infantry-default-old). 폴더가 아직 없으면 건너뜀
     "unit.infantry_sniper": ("infantry-sniper", None),     # 저격수
@@ -100,7 +101,7 @@ ALIASES = {
     "unit.infantry_default_old": "unit.infantry_reserve",   # 지방대 = infantry-reserve
     }
 FALLBACK = {}   # 렌더 폴더가 아직 없을 때 임시 별칭 (infantry-reserve 연결 완료로 비움)
-SKIP_DIRS = ("_drafts", "_legacy", "buildings")
+SKIP_DIRS = ("_drafts", "_legacy", "buildings", "_res96")   # _res96 = 96x120 재렌더 출력 (--src 로 직접 지정해서 가져옴)
 
 
 def find_unit_dir(folder):
@@ -199,13 +200,21 @@ def layouts_for(folder, kind, part):
     return [f"units/{folder}/{n}" for n in copied[(folder, kind)][part]]
 
 
+def layout_scale(rel):
+    """96x120 재렌더 (layout "res96": true) = 화면 크기 유지: 스케일 = 32 / 주 프레임 폭 (192 → 0.1667). 그 외 SCALE."""
+    with open(os.path.join(DST, rel), encoding="utf-8") as f:
+        L = json.load(f)
+    return round(32.0 / L["frame"][0], 6) if L.get("res96") else SCALE
+
+
 def sprite_entry(folder, kind, sprites, key):
     if kind == "vehicle":
         sprites[key] = {"layouts": layouts_for(folder, kind, "hull"), "scale": SCALE}
         if "turret" in copied[(folder, kind)]:
             sprites[key + ".turret"] = {"layouts": layouts_for(folder, kind, "turret"), "scale": SCALE}
     else:
-        sprites[key] = {"layouts": layouts_for(folder, kind, None), "scale": SCALE}
+        lays = layouts_for(folder, kind, None)
+        sprites[key] = {"layouts": lays, "scale": layout_scale(lays[0])}
 
 
 def main():
