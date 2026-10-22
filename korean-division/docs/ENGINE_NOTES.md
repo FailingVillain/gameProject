@@ -702,3 +702,10 @@
 ## T24 ② 도하 예외 (2026-10-22, kd/t24-crossing-fix)
 - 원인: observerMinEnemyDist 15 가 도하 시나리오 (CrossingSelfTest 단일 다리) 에서 관측자를 강 건너 방어선 15칸 밖으로 물려 곡사포가 표적을 못 봄 (도하 전 적 감소 155→153 vs 142→130) → 교두보 불성립 · 도하 미완 (crossing FAIL 2).
 - 수정: ObserverThink 에서 연대 도하 국면이 FireBase · Crossing · Bridgehead 인 동안 keep = 0 (②끔). 키 · 기본값 불변, detcheck golden 불변 (ccfbd1dd…/beefbe5c…).
+
+## T10 대포병 · 조명탄 · 행군 피로 (FieldOps.cs, 2026-10-22, 기본 끔)
+- 데이터 = `assets/data/fieldops.json` (`FieldOpsDefs.Current`, 테스트 `Override`). 세 기능 모두 `enabled: false` 기본 — 기존 동작 · 골든 체크섬 불변. 수치 초안 (사용자 승인 전).
+- ② 대포병: 곡사 · 간접 사격 포가 쏠 때 (`Fire` · `FireAtGround` → `CbOnFire`) 포 둘레 `detectRange` 칸 안에 관측 유닛 (Def.Spotter) 을 둔 적대 세력이 한 발마다 `detectChance` → `World.CbMarks` (세력 · 포 Id · 만료 틱, `revealSec`). 표시 중이면 `FogOfWar.CanSee` · `SeenBySpotter` 참 → 곡사포가 그 포를 쏠 수 있다. 전술 AI `PickArtilleryTarget` 은 `aiPriority` 면 돌격 지원 다음 순위로 탐지된 포 (가장 가까운 · 유효 · 안전).
+- ③ 조명탄: `FireFlareCommand` (리플레이 "flare") — 장교만, 장교마다 `perOfficer` 발 (`Unit.FlaresUsed`), `range` 칸, 낮이면 무시. `World.Flares` 원 (`radius` · `sec`). 낮이 아닐 때 원 중심 `seeRange`+반경 안에 유닛이 있는 세력은 안개 갱신 때 원을 찍고 (`Stamp`), 원 안 표적의 명중 배수 = 날씨 × 낮 (`WeatherHitMulAt`). AI 사용 · 화면 표시 · 버튼은 아직 없음.
+- ④ 행군 피로: 켜면 걷기 이동 중 스태미나 회복 대신 `walkDrain`/초 소모 (`UpdateStamina`). 지침 효과는 기존 스태미나 규칙.
+- 저장 = CMB2 끝 `WriteFieldOps` (FormatVersion 57 예약값, Replay 22 예약값 — 병합 때 재예약), 체크섬 `HashFieldOps` (기본 상태면 생략). 시험 `KD_SELFTEST_ONLY=fieldops`.

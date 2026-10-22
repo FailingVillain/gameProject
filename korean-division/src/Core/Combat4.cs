@@ -53,6 +53,7 @@ public sealed partial class World
     /// <summary>faction(또는 동맹)의 관측 유닛(장교 · 정찰병)이 지금 시야 안에서 보고 있는 표적인가 (SpotterOnly 무기).</summary>
     public bool SeenBySpotter(int faction, Entity t)
     {
+        if (CbMarks.Count > 0 && t is Unit cu && CbMarked(faction, cu)) return true;   // T10 ② 대포병 탐지 (FieldOps.cs)
         for (int i = 0; i < spotters.Count; i++)
         {
             var s = spotters[i];
@@ -160,6 +161,7 @@ public sealed partial class World
     void UpdateBlasts()
     {
         UpdateSmokes();   // 다 탄 연막 지우기 (Breach.cs)
+        UpdateFieldOps();   // 대포병 표시 만료 · 다 탄 조명탄 (FieldOps.cs, T10)
         if (Blasts.Count == 0) return;
         var g = Defs.Grenade;
         for (int bi = 0; bi < Blasts.Count;)

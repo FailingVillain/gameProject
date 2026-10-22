@@ -1,0 +1,23 @@
+{
+  // 통신 알파 뒤 ②~④ (T10, ROADMAP_LONG '전투 시스템 추가' 사용자 2026-10-21 승인 목록). 세부 규칙 · 수치는 초안 — 사용자 승인 전이라 모두 기본 끔 (enabled false = 기존 동작).
+  // 규칙 설명 = src/Core/FieldOps.cs 머리말.
+  "counterBattery": {
+    "enabled": false,
+    "detectRange": 60,      // 포 둘레 이 칸 안에 관측 유닛 (장교 · 정찰병) 을 둔 적대 세력만 탐지 판정
+    "detectChance": 0.35,   // 한 발마다 탐지 확률
+    "revealSec": 20,        // 탐지된 포가 그 세력에게 보이는 시간 (다시 쏘면 갱신)
+    "aiPriority": true      // 전술 AI 곡사포: 돌격 지원 다음 순위로 탐지된 포
+  },
+  "flare": {
+    "enabled": false,
+    "range": 25,            // 장교 조명탄 사거리 (칸)
+    "radius": 10,           // 밝힌 원 반경 (칸)
+    "sec": 40,              // 지속 (초)
+    "perOfficer": 2,        // 장교 한 명이 쏠 수 있는 발수
+    "seeRange": 40          // 원 중심에서 이 칸 (+ 반경) 안에 유닛이 있는 세력이 밝힌 원을 본다
+  },
+  "marchFatigue": {
+    "enabled": false,
+    "walkDrain": 1.0        // 걷기 이동 중 스태미나 초당 감소 (켜면 회복 +2/초 대신)
+  }
+}

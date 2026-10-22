@@ -141,7 +141,7 @@ public sealed partial class World
             if (su.RetreatShot) p *= Defs.Tactics.Pursuit.RetreatFireAccMul;   // 후퇴 사격 (Pursuit.cs, pursuit2)
         }
         p *= TerrainAccuracy(shooter, target, !IsIndirect(w));   // 곡사는 소품 엄폐 · 시선 차단 없음
-        p *= WeatherHitMul;   // 날씨 · 시간대 (Weather.cs)
+        p *= Flares.Count > 0 ? WeatherHitMulAt(target.Pos) : WeatherHitMul;   // 날씨 · 시간대 (Weather.cs) — 조명탄 원 안은 낮 값 (FieldOps.cs, T10)
         return p > HitCap ? HitCap : p;
     }
 

@@ -62,6 +62,7 @@ public static partial class SelfTest
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "firectl") { Tests.FireCtlSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "n73") { Tests.N73SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "pronemove") { Tests.ProneMoveSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+        if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "fieldops") { Tests.FieldOpsSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "breach") { Tests.BreachSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "n79a") { Tests.N79aSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "f1") { Tests.F1SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
@@ -162,6 +163,7 @@ public static partial class SelfTest
         Tests.OrderQueueSelfTest.Run(opt, Check);          // N74 명령 대기열 (orderq)
         Tests.N79aSelfTest.Run(opt, Check);                // N79a 집결 지점 · 포격 종류
         Tests.BreachSelfTest.Run(opt, Check);              // N59 · N60 · N65 참호 돌파 묶음 (연막 · 철조망 절단 · 경박격포)
+        Tests.FieldOpsSelfTest.Run(opt, Check);            // T10 대포병 · 조명탄 · 행군 피로 · 난이도 D15
         Tests.ProneMoveSelfTest.Run(opt, Check);         // pronemove 엎드림 이동
         Tests.SurrenderSelfTest.Run(opt, Check);          // N79b 항복
         Tests.SuppressionSelfTest.Run(opt, Check);        // 제압 재설계 N25 (근접 탄착 · 명중률 · 고정 · 장교 제압 후퇴)

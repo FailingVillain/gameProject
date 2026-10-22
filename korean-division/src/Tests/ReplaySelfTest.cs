@@ -74,6 +74,7 @@ public static class ReplaySelfTest
             new SetFinalLineCommand(1, new[] { 3 }, new Vector2(9, 10)),   // arty3
             new DispatchOrderCommand(1, 2, CommsVia.Courier, new MoveCommand(1, new[] { 1 }, new Vector2(11, 12))),   // comms
             new ThrowSmokeCommand(1, new[] { 5 }, new Vector2(13.5f, 14.25f)), new CutWireCommand(1, new[] { 6 }, new Vector2(15, 16)),   // breach (N65 · N59)
+            new FireFlareCommand(1, new[] { 7 }, new Vector2(17.5f, 18)),   // T10 조명탄
         };
 
         // GameCommand.cs 에 등록된 모든 파생 형식이 표본에 들어 있는지 (새 명령을 추가하고 표본을 빠뜨리면 여기서 걸림)

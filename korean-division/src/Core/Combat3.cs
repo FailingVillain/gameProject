@@ -142,6 +142,7 @@ public sealed partial class World
         float f = u.Fatigue;
         if (u.Charging) { if (moved) f += c.StaminaChargeDrain * dt; }
         else if (u.QuickStep && moved) f += c.StaminaQuickDrain * dt;
+        else if (moved && FieldOpsDefs.Current.MarchFatigue is { Enabled: true } mf) f += mf.WalkDrain * dt;   // T10 ④ 행군 피로 (FieldOps.cs, 기본 끔)
         else f -= (moved ? c.StaminaRegenMove : c.StaminaRegenIdle) * dt;
         u.Fatigue = Math.Clamp(f, 0f, u.StaminaCap);
     }
@@ -417,6 +418,7 @@ public sealed partial class World
         foreach (var b in Blasts) { w.I(b.ThrowerId); w.I(b.Owner); w.F(b.Pos.X); w.F(b.Pos.Y); w.L(b.ExplodeTick); }
         WriteShells(w);   // 날아가는 포탄 (ShellFlight.cs)
         WriteBreach(w);   // 연막 · 철조망 절단 (Breach.cs, FormatVersion 51)
+        WriteFieldOps(w);   // 대포병 · 조명탄 (FieldOps.cs, T10)
     }
 
     void ReadCombat3(SnapReader r)
@@ -479,6 +481,7 @@ public sealed partial class World
             Blasts.Add(new GrenadeBlast { ThrowerId = r.I(), Owner = r.I(), Pos = new Vector2(r.F(), r.F()), ExplodeTick = r.L() });
         ReadShells(r);
         ReadBreach(r);
+        ReadFieldOps(r);   // T10
     }
 
     void HashCombat3(ref Hasher h)
@@ -513,5 +516,6 @@ public sealed partial class World
         foreach (var b in Blasts) { h.Add(b.ThrowerId); h.Add(b.Pos.X); h.Add(b.Pos.Y); h.Add(b.ExplodeTick); }
         HashShells(ref h);
         HashBreach(ref h);
+        HashFieldOps(ref h);   // T10 (기본 상태면 생략)
     }
 }

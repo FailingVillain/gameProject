@@ -108,6 +108,9 @@ public sealed partial class FogOfWar
                 if (u.Alive && u.Owner == f) Stamp(g, u.Pos, world.SightOf(u));
             foreach (var b in world.Buildings)
                 if (b.Alive && b.Owner == f) Stamp(g, b.Pos, world.BuildingSight(b));
+            if (world.Flares.Count > 0 && world.Weather.Time != TimeOfDay.Day)   // T10 ③ 조명탄: 가까이 있는 세력은 밝힌 원을 본다 (FieldOps.cs)
+                foreach (var fl in world.Flares)
+                    if (world.FlareSeenBy(f, fl)) Stamp(g, fl.Pos, (int)MathF.Ceiling(fl.Radius));
         }
         bool shared = ShareAlliedVision();
         for (int f = 1; f < grids.Length; f++)
@@ -343,6 +346,7 @@ public sealed partial class FogOfWar
             if (b.Owner > 0 && b.Owner < world.Factions.Count && world.Factions[b.Owner].Revealed) return true;
             return Footprint(grid, b.TileX, b.TileY, b.Size);
         }
+        if (world.CbMarks.Count > 0 && e is Unit cu && world.CbMarked(faction, cu)) return true;   // T10 ② 대포병 탐지 (FieldOps.cs)
         if (!IsVisible(faction, e.Pos)) return false;
         return e is not Unit u || world.Detected(faction, u);
     }

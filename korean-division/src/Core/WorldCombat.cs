@@ -479,6 +479,7 @@ public sealed partial class World
     {
         if (shooter is Unit su) { su.LastShotTick = Tick; su.RevealUntil = Tick + RevealTicks; if (su.IsOfficer || su.Def.Scout) ProbeOfficerShot(su, target, dist); }
         MarkAlert(shooter.Owner, from);
+        if (CbOn && shooter is Unit cbu && (IsIndirect(w) || w.Splash > 0 && w.SpotterIndirect)) CbOnFire(cbu);   // T10 ② 대포병 탐지 (FieldOps.cs, 기본 끔)
         if (IsIndirect(w)) { FireArtillery(shooter, from, target, w); return; }
         if (w.Splash > 0 && w.SpotterIndirect && shooter is Unit gu && !HasFiringLine(gu, target, w)) { Stats.SpotterIndirectShots++; FireArtillery(shooter, from, target, w); return; }   // arty3 야전포 간접 사격: 퍼짐 = ScatterAt (Combat2.cs)
         if (w.Splash > 0) { FireGun(shooter, from, target, w, dist); return; }   // 직사포 폭발 (Combat4.cs)
