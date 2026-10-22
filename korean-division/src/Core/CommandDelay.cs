@@ -56,7 +56,19 @@ public sealed partial class World
         }
         if (u.Squad is not { } s || s.Members.Count < 2) return ChainTier.Isolated;
         foreach (var m in s.Members) if (m.Alive && m.IsNco) return ChainTier.Nco;
+        if (u.Company is { Commander: null } co && HasActingNcoCached(co)) return ChainTier.Nco;   // T37: 대리 지휘관 (CommandLevelOf = Nco) 이 있는 중대는 부사관 단계 — 지연 단계도 같은 기준
         return ChainTier.Acting;
+    }
+
+    /// <summary>[작업값 — 저장 안 함] 중대별 "대리 부사관 있음" 틱 캐시 (ActingNco 는 분대 · 중대원을 훑으므로 명령당 한 번만).</summary>
+    readonly Dictionary<Company, (long Tick, bool Has)> actingCache = new();
+
+    bool HasActingNcoCached(Company c)
+    {
+        if (actingCache.TryGetValue(c, out var e) && e.Tick == Tick) return e.Has;
+        bool has = ActingNco(c) != null;
+        actingCache[c] = (Tick, has);
+        return has;
     }
 
     /// <summary>N37: 플레이어 명령의 선택 인원 → 지연 배수 (balance.json command.playerSelSizes · playerSelMul, 구간 선형). sel ≤ 0 (AI) = 1.</summary>

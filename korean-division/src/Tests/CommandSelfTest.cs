@@ -232,6 +232,19 @@ public static class CommandSelfTest
             var best = c.Members.Where(u => u.Alive && !u.IsOfficer).OrderByDescending(u => u.Rank).ThenBy(u => u.Id).First();
             check(w.ActingNco(c) == best && w.CommandLevelOf(c) == CommandLevel.Nco && !w.TacticAllowed(c, CompanyTactic.FlankLeft),
                 $"T24 ① 부사관 없음 (actingMinRank 0) → 최고 계급 병사 대리 (Id {best.Id}, 계급 {best.Rank})");
+            // T37: 지휘 단계(Nco) 와 지연 단계가 같다 — 부사관 없는 분대의 병사도 대리 지휘관이 있으면 Nco 단계, 대리가 없으면 Acting
+            var noNco = c.Members.FirstOrDefault(m => m.Alive && !m.IsOfficer && m.Def.IsInfantry && m.Squad is { } sq && sq.Members.Count >= 2 && !sq.Members.Any(x => x.Alive && x.IsNco));
+            if (noNco != null)
+            {
+                var offs = w.Units.Where(o => o.Alive && o.Def.CommandRadius > 0 && o.Owner == noNco.Owner && Vector2.Distance(o.Pos, noNco.Pos) <= o.Def.CommandRadius).ToList();
+                bool tNco = w.ChainTierOf(noNco) == (offs.Count > 0 ? ChainTier.Officer : ChainTier.Nco);
+                R.ActingMinRank = -1;
+                w.Step();   // 캐시는 틱 단위
+                bool tAct = w.ChainTierOf(noNco) == (offs.Count > 0 ? ChainTier.Officer : ChainTier.Acting) || w.CommandLevelOf(c) != CommandLevel.None;
+                R.ActingMinRank = 0;
+                check(tNco && tAct, "T37: 대리 지휘관이 있는 중대는 분대에 부사관이 없어도 지연 단계 Nco (CommandLevelOf 와 일치), 대리 없으면 Acting");
+            }
+            else check(false, "T37: 부사관 없는 분대 병사 없음 (테스트 전제)");
         }
         finally { R.ActingMinRank = savedMin; }
         // T24 ① 후보 제한: 중화기 · 기병이 낮은 Id 에 있어도 대리는 보병 (non-heavy non-scout) 만
