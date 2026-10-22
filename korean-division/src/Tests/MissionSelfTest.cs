@@ -124,6 +124,26 @@ public static class MissionSelfTest
             Steps(w2, 0.2f);
             check(w2.Mission!.ObjState[0] == MissionState.Failed && w2.Winner == 2, "escort: 태그 유닛 사망 → 실패");
         }
+        // ---- escort: 피난민 N명 중 70% 도착 (C1E1-g5; civilian_refugee, 기존 escort count 로 표현 — 새 메카닉 없음)
+        {
+            MissionDef R(string fail = "") => MissionDef.Parse(Template.Replace("\"forces\": [", "\"forces\": [ { \"id\": \"ref\", \"faction\": 1, \"at\": [5, 40], \"units\": { \"civilian_refugee\": 10 }, \"tag\": \"ref\", \"company\": false },")
+                .Replace("OBJ", """{ "id": "e", "type": "escort", "tag": "ref", "area": "goal", "count": 7 }""").Replace("FAIL", fail).Replace("EVT", ""), "t_mission");
+            var w = W(R());
+            check(Force(w, "ref").Count == 10 && Force(w, "ref").All(u => u.Def.Weapon == null), "escort(피난민): 피난민 10명 비무장 배치");
+            Teleport(Force(w, "ref").Take(6), new Vector2(30, 28));
+            Steps(w, 0.2f);
+            check(w.Winner == 0 && w.Mission!.ObjProgress[0] == 6, "escort(피난민): 6/10 도착 (60%) → 아직");
+            Teleport(Force(w, "ref").Skip(6).Take(1), new Vector2(34, 30));
+            Steps(w, 0.2f);
+            check(w.Mission!.ObjState[0] == MissionState.Done && w.Winner == 1, "escort(피난민): 7/10 도착 (70%) → 완료 · 승리");
+            var w2 = W(R());
+            foreach (var u in Force(w2, "ref").Take(3)) u.Hp = 0;
+            Steps(w2, 0.2f);
+            check(w2.Winner == 0, "escort(피난민): 3/10 사망 (70% 생존) → 아직 진행");
+            Force(w2, "ref")[3].Hp = 0;
+            Steps(w2, 0.2f);
+            check(w2.Mission!.ObjState[0] == MissionState.Failed && w2.Winner == 2, "escort(피난민): 4/10 사망 (도착 70% 불가) → 실패 · 패배");
+        }
         // ---- 패배 조건
         {
             const string keep = """{ "id": "d", "type": "defend", "seconds": 999 }""";
