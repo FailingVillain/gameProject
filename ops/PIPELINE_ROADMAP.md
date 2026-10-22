@@ -7,7 +7,7 @@
 - 2026-10-22 추가 완료(브랜치 tools/pipeline-v2 에 통합, main 반영은 병합 라운드): 병렬 처리 도구(fv_claim/fv_assign · assemble_notes · queue_guard) · 카드 id/로드맵 점검(card_id · roadmap_check) · watchdog/stack_depth · 게이트 v2(풀 분리·빌드 슬롯·대기 로그) · 자급자족 publish.
 - 문서: LESSONS 12줄 + LESSONS_ARCHIVE, PIPELINE v2.1(발주·병합 절차, 웨이브 2 체크리스트), ROLE_CARD_PATCHES(지휘자 적용 대기).
 
-## 웨이브 2 도입 (사용자 승인)
+## 웨이브 2 도입 (사용자 승인) — 반영됨 (2026-10-22, PIPELINE.md '서브 지휘자' 절)
 1. **보조 지휘자 3분야: 아트 · 캠페인 · 병합.**
    - 아트: 가동 중. 캠페인: 웨이브 2 시작 때 임명(C1E1 카드·미션 JSON·UI). 병합: merger 상시(= 병합 보조 지휘자; 최종 합치기 담당).
    - 규칙: 자기 풀 한도 안에서만 발주 · QUEUE/STATE 는 최상위 지휘자만 수정(보조는 전용 상태 파일 ART_STATE/CAMPAIGN_STATE 만) · 파도마다 새 에이전트 · 최종 보고 ≤15줄 · sim(H3)은 보조 없이 최상위가 직렬 관리.
