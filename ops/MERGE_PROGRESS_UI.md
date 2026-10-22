@@ -20,3 +20,27 @@ Tags: ui-pre-merge-F, ui-post-F (e5fba3a).
 ## Group G plan (user-corrected)
 G1 t08-ui-bundle 2e9aef5, G2 t17 0eb92e8, G3 t27 4cf5c45, G4 t38g f5a76d4, G4b cherry-pick f126551 only (t38h branch name = t38h-fuzz-campaign), G5 t38b 93ce79f, t38a-settings-keys 7274c71 (skip if ancestor), then t38c-on-ui 85e6658 (NB branch name has no kd/ prefix). t38c-on-ui contains t27,t38g,t38b,t38a already (ancestry) - expect "already up to date" for several.
 Then H: t43 kd/t43-branch-symbols d45b18f, t38i-tutorial-link 3e41444 (check wip-ready), T33a-c editor chain (T33d tip 022647f deferred for final combine).
+
+## Group G + part of H (all: detcheck 8aa6448b9690b922 GOLDEN match, uiicons/command PASS, uifuzz 30 + --fuzz-menu + --fuzz-campaign 0 exceptions)
+Flag syntax: `--uifuzz 30 --fuzz-menu` and `--uifuzz 30 --fuzz-campaign` (modifiers of --uifuzz, not standalone).
+| step | branch@tip | commit | notes |
+|---|---|---|---|
+| G1 | t08-ui-bundle 2e9aef5 | c1118bc | ops ours |
+| G2 | t17-cmd-convenience 0eb92e8 | e138ec1 | |
+| G3 | t27-cmd-ui2 4cf5c45 | a7fb263 | |
+| G4 | t38g-ui-harness f5a76d4 | 4ca45a7 | |
+| G4b | t38h-fuzz-campaign f126551 (cherry-pick only) | 44e8004 | e5f76ec dropped |
+| G5 | t38b-help-overlay 93ce79f | ff6ab92 | |
+| G6 | t38a-settings-keys 7274c71 (was NOT an ancestor) | 79f81a1 | |
+| -- | t38c-on-ui 85e6658 | 16457df | no CONTROLS/UiIcons conflict; crossing+missions+snaptest(QUICK exit 0) PASS |
+| G8 | kd/t43-branch-symbols d45b18f | 060b4c8 | |
+| -- | t38i-tutorial-link 3e41444 (cherry-pick only; card says wip-ready) | eea5d65 | missions/savecompat PASS |
+| H1 | kd/t33a-map-model c5b30f4 / t33b-map-ui 5207b8f / t33c-placement c514821 | d55a0a0 / 3ab7c21 / fa5805a | game code untouched; `dotnet run --project game-tools/map-editor/MapEditor.Tests -- <korean-division root>` pass 604 fail 0 |
+Tags: ui-pre-merge-G, ui-post-G (060b4c8... before t38i), ui-pre-merge-H.
+
+## Not done / next
+- G7 kd/t45-menu-hide 88735b1: not in the order given to line 2 -> NOT merged (plan G7, needs menuhide, uifuzz 30, missions).
+- T33d (kd/t33d-rail 022647f): final combine only (needs rail/river terrains from line 1). Editor terrain list has no Bridge/Ford/Rail yet (Terrain.cs) - expected until river merges.
+- H2 t39i-ruined-houses, H3 spec/* docs not done.
+- Final combine of merge/0.2 + merge/0.2-ui is by the commander (campaign-side files overlap with sim: Snapshot/Replay FV lines untouched here).
+Resume point: ui-post-H partial; nothing in progress, working tree clean.
