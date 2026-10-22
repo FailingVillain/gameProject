@@ -80,11 +80,13 @@ static partial class Tests
         EmbedReference();
         StrokeAndFill();
         ForwardCompat();
+        RailAll();
         InputValidation();
         PlacementAll();
         PlacementInsertAndEmbed();
         InspectorChecks();
         TestPlayFiles();
+        SourceGuardTests();
 
         Console.WriteLine($"map-editor tests: pass {passes} fail {fails}");
         return fails == 0 ? 0 : 1;
@@ -318,7 +320,7 @@ static partial class Tests
         Check(Semantic(Game(withComments, "c")) == Semantic(Game(saved, "c")), "주석 지도 의미 불변");
     }
 
-    // 6. 앞으로 올 키 (rail line/width, river ford, 시설 · 유닛 여분 키) 는 왕복에서 그대로, 모르는 지형은 래스터에서만 건너뜀
+    // 6. 앞으로 올 키 (magma line/width, river ford, 시설 · 유닛 여분 키) 는 왕복에서 그대로, 모르는 지형은 래스터에서만 건너뜀
     static void ForwardCompat()
     {
         string text = """
@@ -326,7 +328,7 @@ static partial class Tests
   "name": "fc",
   "width": 32, "height": 32, "base": "grass",
   "paint": [
-    { "terrain": "rail", "line": [[1, 1], [20, 1]], "width": 2 },
+    { "terrain": "magma", "line": [[1, 1], [20, 1]], "wide": 2 },
     { "terrain": "water", "rect": [0, 5, 32, 3], "ford": [[10, 5, 3]] },
     { "terrain": "dirt", "rect": [2, 2, 2, 2] }
   ],
@@ -341,7 +343,7 @@ static partial class Tests
 """;
         var d = MapDoc.Parse(text);
         string saved = d.ToFileText();
-        Check(saved.Contains("{ \"terrain\": \"rail\", \"line\": [[1, 1], [20, 1]], \"width\": 2 }"), "rail 형 paint: line / width 원문 보존");
+        Check(saved.Contains("{ \"terrain\": \"magma\", \"line\": [[1, 1], [20, 1]], \"wide\": 2 }"), "rail 형 paint: line / width 원문 보존");
         Check(saved.Contains("\"ford\": [[10, 5, 3]]"), "ford 형 paint: 여분 키 원문 보존");
         Check(saved.Contains("\"tag\": { \"a\": [1, 2] }") && saved.Contains("\"stance\": \"hold\""), "시설 · 유닛 여분 키 보존");
         Check(MapDoc.Parse(saved).ToFileText() == saved, "여분 키 포함 왕복 바이트 동일");
@@ -349,14 +351,14 @@ static partial class Tests
         var warn = new List<string>();
         var errs = d.Validate(warn);
         Check(errs.Count == 0, "모르는 지형 / 키는 오류가 아님");
-        Check(warn.Count == 2 && warn[0].Contains("rail") && warn[1].Contains("ford"), $"Validate 경고 2개 (실제 {warn.Count})");
+        Check(warn.Count == 2 && warn[0].Contains("magma") && warn[1].Contains("ford"), $"Validate 경고 2개 (실제 {warn.Count})");
         var g = d.Raster();   // 예외 없음
         Check(g.At(1, 1) == 0 && g.At(5, 5) == MapDoc.TerrainIndex("water") && g.At(2, 2) == MapDoc.TerrainIndex("dirt"), "모르는 지형 줄은 래스터에서 건너뜀, 나머지는 적용");
         d.PaintRect("rock", 0, 0, 1, 1);
         Check(d.ToFileText().Contains("\"line\": [[1, 1], [20, 1]]"), "편집 뒤에도 여분 키 보존");
         d.Undo();
         Check(d.ToFileText() == saved, "undo 뒤 바이트 동일");
-        string withC = "{ \"name\": \"c\", \"width\": 8, \"height\": 8,\n \"paint\": [ { \"terrain\": \"rail\", \"line\": [ // 선\n [1,1] ] } ],\n \"schedule\": [ // 일정\n 1 ] }";
+        string withC = "{ \"name\": \"c\", \"width\": 8, \"height\": 8,\n \"paint\": [ { \"terrain\": \"magma\", \"line\": [ // 선\n [1,1] ] } ],\n \"schedule\": [ // 일정\n 1 ] }";
         var c = MapDoc.Parse(withC);
         Check(c.DroppedComments == 0, $"여분 키 안 주석은 보존으로 셈 (버림 {c.DroppedComments})");
         Check(MapDoc.Parse(c.ToFileText()).ToFileText() == c.ToFileText(), "여분 키 안 주석 포함 왕복 동일");

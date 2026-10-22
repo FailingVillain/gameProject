@@ -11,7 +11,7 @@ using ModelSite = MapEditor.Model.SiteDef;
 
 namespace MapEditor.App;
 
-public enum Tool { Brush, Line, Rect, Circle, Fill, Eraser, Prop, Site, Start, Area, Zone, Unit }
+public enum Tool { Brush, Line, Rect, Circle, Fill, Eraser, Prop, Site, Start, Area, Zone, Unit, Rail }
 
 /// <summary>한 프레임의 입력. 실제 입력(Raylib)과 스크립트 재생이 같은 모양을 만든다.</summary>
 public sealed class InputFrame
@@ -49,11 +49,13 @@ public sealed class Editor
 {
     public const int TopH = 40, StatusH = 26, LeftW = 132, RightW = 200, BottomH = 116;
     public const int ListRows = 5, IssueRows = 4, PopupRows = 8;
-    public const string TestId = "_editor_test";
+    public static string TestId => EditorPaths.TestId;   // 프로세스마다 고유 (_editor_test_<pid>)
+    readonly List<string> testCopies = new();
+    static bool exitHooked;
     public static readonly string[] PaletteNames = MapDoc.TerrainNames.Concat(new[] { "high", "low" }).ToArray();
-    public static readonly string[] PaletteLabels = { "풀", "흙", "모래", "물", "바위", "숲", "잔해", "집", "철조망", "참호", "구덩이", "고지 올림", "고지 내림" };
-    public static readonly string[] ToolLabels = { "브러시 B", "선 L", "사각 R", "원 C", "채움 F", "지우개 E", "소품 P", "시설 S", "시작 T", "구역 Z", "배치구역 X", "유닛 U" };
-    public static readonly string[] ToolIds = { "tool_brush", "tool_line", "tool_rect", "tool_circle", "tool_fill", "tool_eraser", "tool_prop", "tool_site", "tool_start", "tool_area", "tool_zone", "tool_unit" };
+    public static readonly string[] PaletteLabels = { "풀", "흙", "모래", "물", "바위", "숲", "잔해", "집", "철조망", "참호", "구덩이", "선로", "여울", "다리", "고지 올림", "고지 내림" };
+    public static readonly string[] ToolLabels = { "브러시 B", "선 L", "사각 R", "원 C", "채움 F", "지우개 E", "소품 P", "시설 S", "시작 T", "구역 Z", "배치구역 X", "유닛 U", "선로 N" };
+    public static readonly string[] ToolIds = { "tool_brush", "tool_line", "tool_rect", "tool_circle", "tool_fill", "tool_eraser", "tool_prop", "tool_site", "tool_start", "tool_area", "tool_zone", "tool_unit", "tool_rail" };
 
     // 정적 초기화 순서: 게임 정의(balance.json) 를 먼저 읽어야 아래 팔레트가 채워진다 (아래 필드들은 글자 순서대로 초기화됨)
     static readonly bool defsLoaded = LoadDefs();
@@ -277,6 +279,24 @@ public sealed class Editor
         Cam.Scroll((before - after) * Cam.Cam.Zoom);   // Scroll 은 화면 픽셀 단위 이동이고 끝에 지도 안으로 자름
     }
 
+    /// <summary>팔레트 견본색. 앞 11개는 게임 정의 그대로, 그 뒤 (rail · ford · bridge) 는 아직 안 합쳐진 브랜치의 지형이라 게임 enum 에 없을 수 있어 편집기가 색을 갖는다 (값은 각 브랜치 Terrain.cs 와 같음; 병합 뒤 Terrains.Get 으로 바꿔도 됨).</summary>
+    public static Color SwatchColor(string name)
+    {
+        switch (name)
+        {
+            case "rail": return new Color(104, 96, 88, 255);
+            case "ford": return new Color(96, 156, 172, 255);
+            case "bridge": return new Color(138, 106, 66, 255);
+            case "high": return new Color(230, 220, 120, 255);
+            case "low": return new Color(110, 140, 170, 255);
+        }
+        int i = Array.IndexOf(MapDoc.TerrainNames, name);
+        return i >= 0 && i < 11 ? Terrains.Get((TerrainType)i).Color : Color.White;
+    }
+
+    /// <summary>선로 도구: 지금까지 찍은 꺾임점 (Enter / 우클릭 = 확정, Esc = 취소, Backspace = 마지막 점 취소).</summary>
+    public readonly List<(int X, int Y)> RailPts = new();
+
     public string CurrentTerrain => PaletteNames[Palette];
     public bool IsTerrainTool => (int)Tool < 6;
 
@@ -453,6 +473,12 @@ public sealed class Editor
                 Line("끌기 = 새 구역"); Line("선택하고 끌면 교체");
                 NeedMission();
                 break;
+            case Tool.Rail:
+                Head("선로 (꺾은선)");
+                Line("클릭 = 꺾임점 추가"); Line("Enter / 우클릭 = 확정"); Line("Backspace = 점 취소"); Line("Esc = 전부 취소");
+                y += 4;
+                Line($"찍은 점 {RailPts.Count}개"); Line("저장 = paint line"); Line("지형 = rail (고정)");
+                break;
             case Tool.Unit:
                 Head("유닛 종류 (지도 units)");
                 Chooser("type_prev", "type_next", UnitTypes[Math.Clamp(UnitSel, 0, UnitTypes.Length - 1)], () => UnitSel = Wrap(UnitSel - 1, UnitTypes.Length), () => UnitSel = Wrap(UnitSel + 1, UnitTypes.Length));
@@ -469,9 +495,9 @@ public sealed class Editor
                 for (int i = 0; i < PaletteNames.Length; i++)
                 {
                     int k = i;
-                    Color sw = i < MapDoc.TerrainNames.Length ? Terrains.Get((TerrainType)i).Color : (i == 11 ? new Color(230, 220, 120, 255) : new Color(110, 140, 170, 255));
+                    Color sw = SwatchColor(PaletteNames[i]);
                     Buttons.Add(new Button { Id = "pal_" + i, Label = PaletteLabels[i], Rect = new Rectangle(px, py, bw, 26), Click = () => Palette = k, Active = () => Palette == k, Swatch = sw });
-                    py += 30;
+                    py += 28;
                 }
                 y = py + 6;
                 Line($"{Doc.Width}x{Doc.Height}  기본 {Doc.Base}"); Line($"연산 {Doc.Paint.Count}  되돌리기 {Doc.UndoDepth}"); Line($"해시 {LastHash}");
@@ -657,6 +683,7 @@ public sealed class Editor
         try
         {
             string full = Path.GetFullPath(path);
+            if (!EditorPaths.AllowSourceOverwrite && EditorPaths.IsProtectedSource(full, MapFile.Folder, MissionDef.Folder)) { Status = EditorPaths.RefuseMessage(full); return false; }
             string text = Mission != null ? Mission.ToText() : Doc.ToFileText();
             if (Mission != null) MissionDef.Parse(text, Mission.Id);                        // 게임 미션 검증
             else loadText.Invoke(null, new object?[] { text, "check", Config.DefaultSeed, null });   // 게임 지도 검증
@@ -691,6 +718,7 @@ public sealed class Editor
             if (Mission != null)
             {
                 Directory.CreateDirectory(MissionDef.Folder);
+                Track(MissionDef.PathOf(TestId));
                 File.Copy(SavePath!, MissionDef.PathOf(TestId), true);
                 MissionDef.Load(TestId);   // 게임이 같은 위치에서 읽히는지 확인
                 args = new[] { "--mission", TestId, "--mission-start" };
@@ -698,6 +726,7 @@ public sealed class Editor
             else
             {
                 Directory.CreateDirectory(MapFile.Folder);
+                Track(MapFile.PathOf(TestId));
                 File.Copy(SavePath!, MapFile.PathOf(TestId), true);
                 MapFile.Load(TestId, Config.DefaultSeed);
                 args = new[] { "--map", TestId };
@@ -707,6 +736,22 @@ public sealed class Editor
         }
         catch (Exception e) { Status = "테스트 실행 실패: " + (e.InnerException?.Message ?? e.Message); }
     }
+
+    void Track(string p)
+    {
+        if (!testCopies.Contains(p)) testCopies.Add(p);
+        lock (live) if (!live.Contains(this)) live.Add(this);
+        if (!exitHooked) { exitHooked = true; AppDomain.CurrentDomain.ProcessExit += (_, _) => CleanupTestCopies(); }
+    }
+    static readonly List<Editor> live = new();
+
+    /// <summary>테스트 실행 임시 사본 삭제 (편집기 종료 때 자동; 게임은 시작할 때 읽으므로 실행 직후엔 지우지 않음).</summary>
+    public void CleanupTestPlay()
+    {
+        foreach (var p in testCopies) { try { if (File.Exists(p)) File.Delete(p); } catch { } }
+        testCopies.Clear();
+    }
+    static void CleanupTestCopies() { lock (live) foreach (var e in live) e.CleanupTestPlay(); }
 
     /// <summary>스크립트 · selftest 용: 게임을 띄우지 않고 인자만 기록.</summary>
     public static string RecordLaunch(string[] args) => "실행 기록만 (창 안 띄움): " + string.Join(" ", args);
@@ -747,7 +792,7 @@ public sealed class Editor
 
     (int X, int Y) Clamp((int X, int Y) t) => (Math.Clamp(t.X, 0, Doc.Width - 1), Math.Clamp(t.Y, 0, Doc.Height - 1));
 
-    void CancelDrag() { Dragging = false; DragCells.Clear(); DragStartIdx = -1; }
+    void CancelDrag() { RailPts.Clear(); Dragging = false; DragCells.Clear(); DragStartIdx = -1; }
 
     public void Update(InputFrame f)
     {
@@ -821,6 +866,9 @@ public sealed class Editor
             case "z": SetTool(Tool.Area); break;
             case "x": SetTool(Tool.Zone); break;
             case "u": SetTool(Tool.Unit); break;
+            case "n": SetTool(Tool.Rail); break;
+            case "enter": if (Tool == Tool.Rail) CommitRail(); break;
+            case "backspace": if (Tool == Tool.Rail && RailPts.Count > 0) { RailPts.RemoveAt(RailPts.Count - 1); Status = $"선로 점 {RailPts.Count}개"; } break;
             case "g": ShowGrid = !ShowGrid; break;
             case "h": ShowHigh = !ShowHigh; break;
             case "f5": TestPlay(); break;
@@ -835,6 +883,17 @@ public sealed class Editor
 
     void BeginDrag(int button, (int X, int Y) t, Vector2 world)
     {
+        if (Tool == Tool.Rail)   // 꺾은선 도구는 끌지 않고 점을 하나씩 찍는다
+        {
+            Dragging = false;
+            if (button == 1) CommitRail();
+            else if (HoverIn)
+            {
+                if (RailPts.Count == 0 || RailPts[^1] != t) RailPts.Add(t);
+                Status = $"선로 점 {RailPts.Count}개 -- 계속 클릭, Enter / 우클릭 = 확정, Esc = 취소";
+            }
+            return;
+        }
         Dragging = true; DragButton = button; DragStart = DragCur = t; DragWorld = world; DragCells.Clear(); DragStartIdx = -1;
         if (!IsTerrainTool)
         {
@@ -896,6 +955,19 @@ public sealed class Editor
             case Tool.Fill: Doc.Fill(t, a.X, a.Y); break;
         }
         return $"{ToolLabels[(int)Tool].Split(' ')[0]} {(erase ? Doc.Base : t)} 칠함";
+    }
+
+    /// <summary>찍어 둔 꺾임점을 한 번의 되돌리기로 확정 (게임 paint "line" 한 줄, 지형 = rail).</summary>
+    void CommitRail()
+    {
+        if (RailPts.Count < 2) { Status = RailPts.Count == 0 ? "선로: 점을 2개 이상 찍으세요" : "선로: 점이 하나뿐 -- 하나 더 찍으세요"; return; }
+        var pts = RailPts.ToList();
+        RailPts.Clear();
+        int before = Doc.UndoDepth;
+        try { Doc.PaintPolyline("rail", pts); }
+        catch (Exception e) { Status = "선로 실패: " + e.Message; return; }
+        Refresh();
+        Status = Doc.UndoDepth != before ? $"선로 {pts.Count}점 칠함 (되돌리기 {Doc.UndoDepth})" : "변화 없음";
     }
 
     // ---------------------------------------------------------------- 배치 확정

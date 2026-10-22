@@ -258,19 +258,28 @@ static partial class Tests
         Console.WriteLine($"  검사 원본 {checkedN}개");
     }
 
+    static void SourceGuardTests()
+    {
+        string src = Path.Combine(root, "assets", "maps", "battle_flat.json");
+        Check(EditorPaths.IsProtectedSource(src, MapFile.Folder), "보호: 에셋 원본 경로");
+        Check(EditorPaths.IsProtectedSource(Path.Combine(root, "assets", "missions", "x.json")), "보호: 미션 원본 경로");
+        Check(!EditorPaths.IsProtectedSource(Path.Combine(Path.GetTempPath(), "maps_edit", "a.json"), MapFile.Folder), "비보호: 임시 저장 폴더");
+        Check(EditorPaths.TestId != "_editor_test" && EditorPaths.TestId.EndsWith("_" + Environment.ProcessId), "테스트 id 는 프로세스 고유: " + EditorPaths.TestId);
+    }
+
     // 테스트 실행 파일: 게임이 읽는 위치에 써서 게임 로더로 왕복 (새 게임 플래그 없이)
     static void TestPlayFiles()
     {
         string maps = MapFile.Folder, missions = MissionDef.Folder;
         Directory.CreateDirectory(maps); Directory.CreateDirectory(missions);
-        string mp = Path.Combine(maps, "_editor_test.json"), sp = Path.Combine(missions, "_editor_test.json");
+        string mp = Path.Combine(maps, EditorPaths.TestId + ".json"), sp = Path.Combine(missions, EditorPaths.TestId + ".json");
         try
         {
             // (1) 지도: 편집 -> 저장 텍스트 -> 게임 폴더 -> MapFile.Load
             var d = MapDoc.Parse(File.ReadAllText(Path.Combine(root, "assets", "maps", "battle_flat.json")));
             d.PaintRect("water", 10, 10, 5, 5); d.AddStart(100, 100); d.AddSite(new SiteDef(50, 50, Defs.Current.SiteKinds.First().Key, 1));
             File.WriteAllText(mp, d.ToFileText());
-            var g = MapFile.Load("_editor_test", 1920);
+            var g = MapFile.Load(EditorPaths.TestId, 1920);
             Check(g.Get(12, 12) == TerrainType.Water && g.StartTiles.Count == 3 && g.ResourceSites.Count >= 1, "왕복 1 (지도): 편집 지도를 게임 폴더에서 MapFile.Load 로 읽음");
             Check(Semantic(g) == Semantic(Game(d.ToFileText(), "x")), "왕복 1: 게임이 읽은 의미 = 문서");
 
@@ -279,7 +288,7 @@ static partial class Tests
             var m = MissionDoc.Parse(orig, MapLoader, "c0_02_yalu");
             m.Map.PaintRect("sand", 5, 5, 4, 4); m.AddProp(new PropPlace("rock_l", 50.5, 40.5)); m.SetArea("zz_new", new double[] { 5, 5, 10, 10 }, null); m.AddZone(new ZoneDef(1, new double[] { 70, 140, 30, 10 }, null));
             File.WriteAllText(sp, m.ToText());
-            var def = MissionDef.Load("_editor_test");
+            var def = MissionDef.Load(EditorPaths.TestId);
             Check(def.Props.Count == 1 && def.Areas.ContainsKey("zz_new") && def.DeployZones.Count == 2 && def.MapData is { ValueKind: JsonValueKind.Object }, "왕복 2 (미션 mapData): 게임이 편집된 소품 · 구역 · 배치 구역 · 지도를 읽음");
             var gm = Game(def.MapData!.Value.GetRawText(), "m");
             Check(gm.Get(6, 6) == TerrainType.Sand, "왕복 2: 미션 지도에 칠한 모래가 있음");
@@ -289,7 +298,7 @@ static partial class Tests
             var r = MissionDoc.Parse(refMission, MapLoader, "t_ref");
             r.Map.PaintCircle("rock", 100, 60, 4); r.SetArea("g", null, new double[] { 200, 64, 6 });
             File.WriteAllText(sp, r.ToText());
-            var def3 = MissionDef.Load("_editor_test");
+            var def3 = MissionDef.Load(EditorPaths.TestId);
             Check(def3.Areas.ContainsKey("g") && def3.MapData is { ValueKind: JsonValueKind.Object } && def3.Map == null, "왕복 3 (map 참조 -> 내장): 게임이 내장 지도 미션으로 읽음");
         }
         finally

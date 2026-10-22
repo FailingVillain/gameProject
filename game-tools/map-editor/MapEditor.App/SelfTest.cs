@@ -197,7 +197,7 @@ public static class SelfTest
         var ed = new Editor(Editor.NewDoc(64, 64), "t", Tmp("tp"));
         var sp = new ScriptPlayer(ed, "tp", new[] { "tool rect", "terrain water", "drag 20 20 25 25", "key f5" });
         foreach (var s in sp.Steps()) ed.Update(s.Frame ?? new InputFrame());
-        Check(ed.LastLaunch == "--map _editor_test", "F5 지도: 실행 인자 " + ed.LastLaunch);
+        Check(ed.LastLaunch == "--map " + Editor.TestId, "F5 지도: 실행 인자 " + ed.LastLaunch);
         try
         {
             var g = MapFile.Load(Editor.TestId, Config.DefaultSeed);
@@ -208,7 +208,7 @@ public static class SelfTest
         var em = new Editor(Editor.NewDoc(64, 64), "t", Tmp("tpm"));
         var sm = new ScriptPlayer(em, "tpm", new[] { "open village_defense", "tool prop", "click 60 60", "button testplay" });
         foreach (var s in sm.Steps()) em.Update(s.Frame ?? new InputFrame { Mouse = new Vector2(700, 300) });
-        Check(em.LastLaunch == "--mission _editor_test --mission-start", "F5 미션: 실행 인자 " + em.LastLaunch);
+        Check(em.LastLaunch == "--mission " + Editor.TestId + " --mission-start", "F5 미션: 실행 인자 " + em.LastLaunch);
         try
         {
             var d = MissionDef.Load(Editor.TestId);
@@ -225,6 +225,20 @@ public static class SelfTest
         foreach (var s in sc.Steps()) eb.Update(s.Frame ?? new InputFrame());
         Check(eb.ErrorCount > 0 && eb.LastLaunch == "", "시작이 물 위(오류)면 F5 는 실행하지 않음: " + eb.Status);
         foreach (var p in new[] { MapFile.PathOf(Editor.TestId), MissionDef.PathOf(Editor.TestId) }) if (File.Exists(p)) File.Delete(p);
+        // 테스트 실행 사본은 프로세스 고유 id, 정리하면 사라짐
+        Check(Editor.TestId.EndsWith("_" + Environment.ProcessId), "테스트 id 는 프로세스 고유: " + Editor.TestId);
+        var ec = new Editor(Editor.NewDoc(64, 64), "t", Tmp("tpc"));
+        ec.Doc.AddStart(5, 5); ec.Doc.AddStart(8, 8);
+        ec.TestPlay();
+        Check(File.Exists(MapFile.PathOf(Editor.TestId)), "F5 후 임시 사본 있음");
+        ec.CleanupTestPlay();
+        Check(!File.Exists(MapFile.PathOf(Editor.TestId)), "정리하면 임시 사본 사라짐");
+        // 원본 에셋 경로 덮어쓰기 거부
+        string srcPath = MapFile.PathOf("battle_flat"), srcBefore = File.ReadAllText(srcPath);
+        var eo = new Editor(Editor.NewDoc(64, 64), "t", Tmp("own"));
+        Check(eo.OpenPath(srcPath) && eo.SavePath != null && !EditorPaths.IsProtectedSource(eo.SavePath), "id/경로로 연 원본은 저장 위치가 assets 밖");
+        eo.SavePath = srcPath;
+        Check(!eo.Save() && File.ReadAllText(srcPath) == srcBefore && eo.Status.Contains("allow-source-overwrite"), "원본 경로 저장은 거부되고 파일 불변: " + eo.Status);
     }
 
     static string RunScript(string path, int run)

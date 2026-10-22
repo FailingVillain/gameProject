@@ -168,7 +168,7 @@ public sealed class ScriptPlayer
             "scatterlist" => ed.ScatterList.Count.ToString(),
             "density" => ed.Mission == null ? "none" : Num(ed.Mission.PropDensity),
             "cell" => ed.Mission == null ? "none" : ed.Mission.PropCell.ToString(),
-            "launch" => ed.LastLaunch.Replace(' ', '+'),
+            "launch" => ed.LastLaunch.Replace(Editor.TestId, "_editor_test").Replace(' ', '+'),   // 스크립트는 pid 없는 이름으로 비교
             "prop_sel" => Editor.PropTypes[Math.Clamp(ed.PropSel, 0, Editor.PropTypes.Length - 1)],
             "site_sel" => Editor.SiteTypes.Length == 0 ? "-" : Editor.SiteTypes[Math.Clamp(ed.SiteSel, 0, Editor.SiteTypes.Length - 1)],
             "unit_sel" => Editor.UnitTypes[Math.Clamp(ed.UnitSel, 0, Editor.UnitTypes.Length - 1)],

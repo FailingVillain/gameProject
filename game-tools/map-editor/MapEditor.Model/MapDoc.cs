@@ -14,6 +14,10 @@ public sealed class PaintOp
     public int[]? Rect;
     public int[]? Circle;
     public List<int[]>? Tiles;
+    /// <summary>꺾은선 [x0, y0, x1, y1, ...] (게임 MapFile paint "line", rail 브랜치): 1칸 폭 8방향 직선으로 이어 칠한다.</summary>
+    public int[]? Line;
+    /// <summary>꺾은선 폭 (칸, 1~6, 생략 = 1; river-r2 의 paint "width"). 편집기 UI 는 없고 파일의 값을 읽고 그대로 쓰며 래스터에만 반영 -- line 에만 영향.</summary>
+    public int? Width;
     public bool? High;
     /// <summary>이 줄 바로 앞의 // 주석 (파일에서 읽은 것, 다시 쓸 때 보존).</summary>
     public List<string> Comments = new();
@@ -23,7 +27,7 @@ public sealed class PaintOp
     public PaintOp Clone() => new()
     {
         Terrain = Terrain, Rect = Rect?.ToArray(), Circle = Circle?.ToArray(),
-        Tiles = Tiles?.Select(t => t.ToArray()).ToList(), High = High, Comments = Comments.ToList(), Extra = Extra.ToList(),
+        Tiles = Tiles?.Select(t => t.ToArray()).ToList(), Line = Line?.ToArray(), Width = Width, High = High, Comments = Comments.ToList(), Extra = Extra.ToList(),
     };
 }
 
@@ -37,6 +41,30 @@ public sealed record ExtraField(string Name, string RawJson);
 /// <summary>래스터 결과: 칸별 지형 번호 (TerrainNames 인덱스) + 고지.</summary>
 public sealed class MapGrid
 {
+    public const byte RailId = 11;   // TerrainNames 의 "rail"
+
+    /// <summary>선로 선분 (칸 중심 기준 이웃 연결): 게임 RailRenderer.Segments 와 같은 규칙 -- 동 · 남, 대각(두 직각 이웃이 모두 선로가 아닐 때만), 외톨이는 가로 토막. 위 줄 → 아래, 왼쪽 → 오른쪽 순.</summary>
+    public List<(int X, int Y, float Ax, float Ay, float Bx, float By)> RailSegments()
+    {
+        var res = new List<(int, int, float, float, float, float)>();
+        bool R(int x, int y) => InBounds(x, y) && At(x, y) == RailId;
+        for (int y = 0; y < Height; y++)
+        for (int x = 0; x < Width; x++)
+        {
+            if (At(x, y) != RailId) continue;
+            float cx = x + 0.5f, cy = y + 0.5f;
+            bool e = R(x + 1, y), s = R(x, y + 1), w = R(x - 1, y), n = R(x, y - 1);
+            bool any = e || s || w || n;
+            if (e) res.Add((x, y, cx, cy, cx + 1, cy));
+            if (s) res.Add((x, y, cx, cy, cx, cy + 1));
+            if (R(x + 1, y + 1) && !e && !s) { res.Add((x, y, cx, cy, cx + 1, cy + 1)); any = true; }
+            if (R(x - 1, y + 1) && !w && !s) { res.Add((x, y, cx, cy, cx - 1, cy + 1)); any = true; }
+            any |= R(x - 1, y - 1) && !w && !n || R(x + 1, y - 1) && !e && !n;
+            if (!any) res.Add((x, y, cx - 0.5f, cy, cx + 0.5f, cy));
+        }
+        return res;
+    }
+
     public readonly int Width, Height;
     public readonly byte[] Terrain;
     public readonly bool[] High;
@@ -48,11 +76,11 @@ public sealed class MapGrid
 /// <summary>
 /// 지도 한 장의 편집 문서 (MapFile JSON 과 같은 필드). 모든 변경은 가역 명령 (Undo / Redo).
 /// 직렬화는 정규화 (키 순서 고정, paint 순서 보존) 라 같은 문서는 같은 바이트다.
-/// 선과 채우기는 main 에 `line` paint 가 없으므로 tiles / 1행 rect 로 저장한다.
+/// 선(L 도구) 과 채우기는 tiles / 1행 rect 로, 꺾은선(N 도구, 선로) 은 rail 브랜치의 paint `line` 으로 저장한다.
 /// </summary>
 public sealed class MapDoc
 {
-    public static readonly string[] TerrainNames = { "grass", "dirt", "sand", "water", "rock", "forest", "rubble", "house", "wire", "trench", "crater" };
+    public static readonly string[] TerrainNames = { "grass", "dirt", "sand", "water", "rock", "forest", "rubble", "house", "wire", "trench", "crater", "rail", "ford", "bridge" };   // 번호 = 게임 TerrainType 바이트 (rail 11 = rail 브랜치, ford 12 = river-r1, bridge 13 = river-r4-bridge); 앞 브랜치가 안 합쳐진 게임에서도 편집기는 이 이름들을 안다
 
     public string Name { get; private set; } = "";
     public int Width { get; private set; }
@@ -215,11 +243,28 @@ public sealed class MapDoc
                 case "rect": op.Rect = p.Value.EnumerateArray().Select(v => v.GetInt32()).ToArray(); break;
                 case "circle": op.Circle = p.Value.EnumerateArray().Select(v => v.GetInt32()).ToArray(); break;
                 case "tiles": op.Tiles = p.Value.EnumerateArray().Select(t => t.EnumerateArray().Select(v => v.GetInt32()).ToArray()).ToList(); break;
+                case "line" when TryFlatInts(p.Value, out var ln): op.Line = ln; break;
+                case "width" when p.Value.ValueKind == JsonValueKind.Number && p.Value.TryGetInt32(out int wd): op.Width = wd; break;
                 case "high": op.High = p.Value.ValueKind == JsonValueKind.Null ? null : p.Value.GetBoolean(); break;
                 default: op.Extra.Add(new ExtraField(p.Name, p.Value.GetRawText())); break;
             }
         }
         return op;
+    }
+
+    /// <summary>[정수, 정수, ...] 평평한 배열이면 true (중첩 · 실수 · 문자열이면 false: 그대로 여분 키로 보존).</summary>
+    static bool TryFlatInts(JsonElement e, out int[] r)
+    {
+        r = Array.Empty<int>();
+        if (e.ValueKind != JsonValueKind.Array) return false;
+        var l = new List<int>();
+        foreach (var v in e.EnumerateArray())
+        {
+            if (v.ValueKind != JsonValueKind.Number || !v.TryGetInt32(out int i)) return false;
+            l.Add(i);
+        }
+        r = l.ToArray();
+        return true;
     }
 
     /// <summary>paint 배열 원소 바로 앞의 // 주석을 원소 번호별로 모은다.</summary>
@@ -316,6 +361,15 @@ public sealed class MapDoc
         if (p.Tiles != null)
             foreach (var tp in p.Tiles)
                 if (tp is { Length: 2 } && g.InBounds(tp[0], tp[1])) Put(tp[0], tp[1]);
+        if (p.Line is { Length: >= 4 } ln)   // 게임 MapFile 과 같은 순서 (rect, circle, tiles, line) · 같은 브레즌햄 · 같은 폭 확장
+        {
+            int wd = Math.Clamp(p.Width ?? 1, 1, 6), lo = -((wd - 1) / 2), hiOff = lo + wd - 1;
+            for (int k = 0; k + 3 < ln.Length; k += 2)
+                foreach (var (lx, ly) in LineCells(ln[k], ln[k + 1], ln[k + 2], ln[k + 3]))
+                    for (int oy = lo; oy <= hiOff; oy++)
+                    for (int ox = lo; ox <= hiOff; ox++)
+                        if (g.InBounds(lx + ox, ly + oy)) Put(lx + ox, ly + oy);
+        }
     }
 
     // ---------------------------------------------------------------- 검사
@@ -339,6 +393,8 @@ public sealed class MapDoc
                 else if (p.Circle[2] < 0 || p.Circle[2] > MaxDim) errs.Add($"circle 반지름 {p.Circle[2]} (0..{MaxDim})");
             }
             if (p.Tiles != null && p.Tiles.Any(t => t.Length != 2)) errs.Add("tiles 원소는 [x,y]");
+            if (p.Width is int pw && (pw < 1 || pw > 6)) errs.Add($"paint width {pw} 는 1~6 (칸)");
+            if (p.Line != null && (p.Line.Length < 4 || p.Line.Length % 2 != 0)) errs.Add("line 은 [x0,y0,x1,y1,...] (점 2개 이상, 짝수 개)");
             idx++;
         }
         if (starts.Count > MaxStarts) errs.Add($"시작 위치는 최대 {MaxStarts}개 (현재 {starts.Count})");
@@ -403,6 +459,8 @@ public sealed class MapDoc
         if (p.Rect != null) parts.Add($"\"rect\": [{string.Join(", ", p.Rect)}]");
         if (p.Circle != null) parts.Add($"\"circle\": [{string.Join(", ", p.Circle)}]");
         if (p.Tiles != null) parts.Add($"\"tiles\": [{string.Join(", ", p.Tiles.Select(t => $"[{string.Join(", ", t)}]"))}]");
+        if (p.Line != null) parts.Add($"\"line\": [{string.Join(", ", p.Line)}]");
+        if (p.Width is int pw) parts.Add($"\"width\": {pw}");
         if (p.High is bool h) parts.Add($"\"high\": {(h ? "true" : "false")}");
         foreach (var x in p.Extra) parts.Add($"{Q(x.Name)}: {x.RawJson}");
         return "{ " + string.Join(", ", parts) + " }";
@@ -484,6 +542,17 @@ public sealed class MapDoc
 
     public void PaintCircle(string terrain, int cx, int cy, int r, bool? high = null) =>
         AddPaint(new PaintOp { Terrain = terrain, Circle = new[] { cx, cy, r }, High = high }, "원");
+
+    /// <summary>꺾은선 칠하기 (선로 · 길): 점 2개 이상, 인접한 같은 점은 합친다. 파일에는 게임 paint "line" 그대로 저장 (한 줄 = undo 한 번).</summary>
+    public void PaintPolyline(string terrain, IReadOnlyList<(int X, int Y)> pts, bool? high = null)
+    {
+        var l = new List<int>();
+        (int X, int Y)? prev = null;
+        foreach (var q in pts) { if (prev == q) continue; l.Add(q.X); l.Add(q.Y); prev = q; }
+        if (l.Count < 4) return;   // 점 하나는 선이 아님
+        if (pts.Any(q => !InMap(q.X, q.Y))) throw new ArgumentException("꺾은선 점이 지도 밖");
+        AddPaint(new PaintOp { Terrain = terrain, Line = l.ToArray(), High = high }, "꺾은선");
+    }
 
     /// <summary>낱칸 칠하기 (자유 획). 지도 밖 칸은 버리고 중복 칸은 하나로 (입력 순서 유지).</summary>
     public void PaintTiles(string terrain, IEnumerable<(int X, int Y)> cells, bool? high = null)

@@ -1,0 +1,53 @@
+# T33d 선로 꺾은선 도구: 점을 찍고 Enter / 우클릭으로 확정 (한 번 = undo 한 단계), Backspace / Esc 로 취소. 저장 = paint line.
+new 64 64
+fit
+tool rail
+click 4 40
+click 24 40
+click 36 28
+click 60 28
+assert paint=0
+key enter
+assert paint=1 undo=1 t(4,40)=rail t(24,40)=rail t(30,34)=rail t(36,28)=rail t(60,28)=rail t(10,39)=grass
+# 점 취소: Backspace 로 마지막 점 빼기, 우클릭 확정
+click 4 10
+click 20 10
+click 30 20
+key backspace
+rclick 30 20
+assert paint=2 undo=2 t(20,10)=rail t(30,20)=grass
+# Esc = 전부 취소, 점 하나는 칠하지 않음
+click 10 50
+click 40 55
+key esc
+key enter
+click 10 50
+key enter
+assert paint=2 undo=2
+# 도구 바꾸면 찍던 점 사라짐
+click 10 50
+click 40 55
+button tool_brush
+button tool_rail
+key enter
+assert paint=2
+# 여울 · 다리는 일반 칠하기
+terrain ford
+tool rect
+drag 6 20 10 22
+terrain bridge
+drag 12 20 14 22
+assert t(6,20)=ford t(12,20)=bridge
+key g
+shot rail.png
+key ctrl+z
+key ctrl+z
+assert undo=2
+key ctrl+z
+key ctrl+z
+assert paint=0
+key ctrl+y
+key ctrl+y
+assert paint=2 t(4,40)=rail
+hash
+expect A85121B10CB084E5
