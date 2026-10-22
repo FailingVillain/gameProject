@@ -248,6 +248,7 @@
 | 16:5x | T55a2 완료(gt-house-a2 14f20e2): 한국 기와 9종(톤 2, 팔작·ㄱ자·ㅁ자 암시), @32 접촉 수정, 시트 housegen_a2.png. **민가 1차 42종 렌더 전부 완료**(a1 b4a53db·a2 14f20e2·b1 cdef9f8·b2 e5a4db5). 남은 것: T55i(게임 import, house_classes/theme 연결), 생성기 2차 개선 목록 | 기록 |
 | 17:0x | T38m 완료(t38m-overlay-declutter 2ca199c): 머리 위 '흰 테두리+세력색 도형' = ColorBlind:true 일 때 모든 유닛에 상시(파랑 아군 원·빨강 적 사각; 마름모는 4번 세력 모양이라 재현 안 됨), 사용자 settings.json 미확인. Overlay 3단계 간결/보통/상세 기본 간결, U 키·설정 화면·F1. 간결: HP/탄약/색각 도형/분대 아이콘은 선택·호버·위험 때만. 교전 테스트엔 중대·분대 없어 UnitSymbols 는 원인 아님. 색각 사용자는 간결에서 평소 구분 약화(보통 이상 권장) | 완료 ~111 |
 | 17:0x | T38n 완료(kd/t38n-monitor-env a13672a): KD_MONITOR(비면 기존 동작·secondary=주 아닌 첫 모니터·정수 clamp), 창 모드 유지·크기 모니터−80px·중앙, monitorpick 9건 PASS, 골든 일치, 실행 확인 '[monitor] secondary #1 of 3 -> window 1280x720 at (320,1260)'(이 PC 모니터 3개, 인덱스 1). 병합 라인 2 3단계에 추가 필요 | 기록 |
+| 17:0x | T48d 완료(t48d-commander-ui b5a10af, t48b2 위; 206k): 탭 8 소탭 4(연대장 3x3 인사 카드판·대대장/참모·후보 풀·학파), 확인 대화상자(해임 호감 하락 예고), 탭 9 종착 배정, 탭 12 인사 일지, 탭 14 연대장 연표, 규칙은 API 결과 그대로(해임 불가는 버튼 없음), commanders UI 시험 35건·savecompat·missions·uiicons·퍼즈·골든 PASS. 이 기반에 없는 것: --fuzz-campaign(t38h), commanders.enabled 스위치(명단 비면 '규칙 꺼짐' 안내), 초상 파일 없으면 실루엣. 스크린샷은 scratchpad shots/ | 기록 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |

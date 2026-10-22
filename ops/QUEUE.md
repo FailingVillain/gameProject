@@ -42,20 +42,20 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T48b1 | 장교 신원 키 (OfficerKey) · 주입/환수 · 전사/항상부상 · 대대장 주입 · 진급 Key · 종착 | sim | D上 R3 M H3 Wlight | T48a | wip-ready (t48b1-officer-identity fa8dff1 · kd-t48b1 · T48a e31406d 위 스택 · FV 53 · 캠페인 v9, 병합 보류) |
 | T48b2 | 연대장 기용/해임 · 장교 배정 · 참모 4슬롯 효과 (캠페인 층) · 작전 태그 정산 | feature | D中 H2 | T48b1 T48c | wip-ready (t48b2-assign · kd-t48b2 · t48b1 fa8dff1 + t48c c24c423 스택 · 캠페인 v9 유지, 병합 보류) |
 | T48c | 연대장 호감도 + 해임 시 소폭 하락 | feature | D中 R2 S H2 Wlight | T48b | wip-ready (t48c-favor c24c423, T48a 위 스택, 병합 보류) |
-| T48d | 연대장·대대장·참모 관리 UI (탭 8/9/12/14) | feature | D中 R1 M H2 Wlight | T48b T48c | queued |
+| T48d | 연대장·대대장·참모 관리 UI (탭 8/9/12/14) | feature | D中 R1 M H2 Wlight | T48b T48c | wip-ready (branch t48d-commander-ui, 스택: t48b2-assign 위) |
 | T48e | 2단계 전투 연결 (기본 꺼짐 키 4개, FV 예약 필요) | sim | D上 R3 M H3 Wheavy | T48d · T10 · T24 | queued (blocked) |
 | T39c | 하천 렌더(합성 여울 타일)·test_river 지도/미션 | feature | D中 R1 S H0 Wlight | river-r2 위 스택 | wip-ready (river-r3 26df7f6) |
 | TC-A | 브리핑 규모 분리 + 정보 3단계 (C1E1) | feature | D中 H2 | 없음(base t42d) | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
 | TC-B | SK2 경보 상태 (C1E1) | sim | D上 H3 | 없음(base merge/0.2) | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
 | TC-C | 이벤트 중대 명령 주입 + 잠금 D15 (C1E1) | sim | D上 H3 | 없음(base merge/0.2) | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
-| TC-D | funds · 외인 슬롯 · 통제 한도 · 가용 보급 (C1E1) | feature | D中 H2 | t42d | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| TC-D | funds · 외인 슬롯 · 통제 한도 · 가용 보급 (C1E1) | feature | D中 H2 | t48b2-assign | wip-ready (branch kd/tcd-funds-slots, 스키마 v11) |
 | TC-E | favor.* · 변수 레지스트리 · 결정 런타임 (C1E1) | sim | D中~上 H2 | TC-D | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
 | TC-F | 미션 데이터 변형 · SK 플래그 · BT1 이탈 · pow.bandit (C1E1) | feature | D中 H2 | TC-D · TC-E | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
 | TC-G | 일본 철도 부속지 진입/사격 금지 (C1E1) | sim | D中~上 H3 | 없음(base merge/0.2) | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
 | C1E1-m1 | MAP-A 지도 생성 (medium) | feature | D中 H0 | 없음 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
 | C1E1-m2 | MAP-B 지도 생성 (large) | feature | D中 H0 | 없음 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
 | C1E1-u1 | 유닛/무기/세력 점검 (보고서) | scout | D下 H0 | 없음 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
-| C1E1-g1 | 에피소드 그래프 런타임 | sim | D上 H3 | 없음(base t42d) | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-g1 | 에피소드 그래프 런타임 | sim | D上 H3 | 없음(base t48b2 80c11fb) | wip-ready (kd/c1e1-g1-episode-graph, 캠페인 스키마 v12, FV 없음) |
 | C1E1-g2 | 에피소드 화면 UI | feature | D中 H2 | g1 TC-D TC-E | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
 | C1E1-g3 | 미션 이벤트 행동 확장 | sim | D上 H3 | TC-E | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
 | C1E1-g4 | 목표 확장 (항복/N점/losses 변수) | sim | D上 H2 | 없음(base merge/0.2) | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
@@ -162,6 +162,7 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T38g | wip-ready | t38g-ui-harness @f5a76d4 | kd-t38g | T27 |
 | T38h | 확인 필요 (로그 없음, 미커밋 4건) | t38h-fuzz-campaign @e5f76ec | kd-t38h | T38g |
 | T38k | wip-ready | t38k-fonts @07cb63f | kd-t38k | T38a |
+| T38m | wip-ready (스택: t38a 위, 병합 안 함) | t38m-overlay-declutter @2ca199c | kd-t38m | T38a |
 | T39a | wip-ready | river-r1 @5b7b9f1 | kd-river-r1 | rail |
 | T39b | wip-ready | river-r2 @8ada7a9 | kd-river-r2 | T39a |
 | T39c | wip-ready | river-r3 @26df7f6 | kd-river-r3 | T39b |
@@ -186,3 +187,4 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T49a | 저장 호환 정책 적용 1 (메시지 · 이행 .bak · 목록 회색 표시, ops/SAVE_COMPAT_POLICY.md) | feature | D中 R2 S H1 Wlight | 없음 | wip-ready (브랜치 t49a-save-messages, 스택 base t48a e31406d) |
 | T49b | 저장 호환 정책 적용 2 (설정 관대 읽기 · 사용자 지도/지휘관 건너뛰기 · 테스트) | feature | D中 R2 S H1 Wlight | T48a | queued |
 | T49c | 저장 호환 출시 게이트 (캠페인 v1..현재 옛 샘플 테스트) | feature | D下 R2 S H1 Wlight | T49a | queued |
+| T38n | 게임이 env KD_MONITOR 를 따름 (창 모드만) | feature | D中 H1 | 없음 | wip-ready (kd/t38n-monitor-env @a13672a · kd-t38n) |
