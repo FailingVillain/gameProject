@@ -53,6 +53,9 @@
   "permanentDeployFrac": 0.1,
   "casualtyReplaceCost": 1.0,
   "civilianReliefSupplyLoss": 400,
+  "_unlock": "C1E1-g6 편성 해금: unlockKinds = 병종 Kind -> 필요한 해금 키 (표에 없으면 항상 편성 가능). unlockOnWin = 미션 첫 승리 정산 때 켜는 키. BT1 보상 = 야전포 (사용자 2026-10-22). 곡사포 규칙은 범위 밖",
+  "unlockKinds": { "fieldGun": "unlock.fieldGun" },
+  "unlockOnWin": { "c1e1_bt1": ["unlock.fieldGun"] },
   "shellWeapons": { "gun_infantry": "infGun", "gun_field": "field", "howitzer_heavy": "howitzer" },
   "lootShellsPerKill": { "infGun": 0.1, "field": 0.05, "howitzer": 0.02 }
 }

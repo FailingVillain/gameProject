@@ -97,6 +97,10 @@ public sealed class CampaignEconomyDefs
     public float CasualtyReplaceCost { get; set; } = 1f;
     /// <summary>D02 C 대민 구제의 영구 보급 소모 (이벤트 런타임은 TC-E 가 이 값을 쓴다).</summary>
     public int CivilianReliefSupplyLoss { get; set; } = 400;
+    /// <summary>[C1E1-g6] 편성 해금 표: 병종 Kind -> 필요한 해금 키 (CampaignState.Flags). 표에 없는 병종은 항상 편성 가능. 규칙: CampaignUnlocks.</summary>
+    public Dictionary<string, string> UnlockKinds { get; set; } = new() { ["fieldGun"] = "unlock.fieldGun" };
+    /// <summary>[C1E1-g6] 미션 첫 승리 정산 때 켜는 해금 키 (미션 id -> 키 목록). BT1 보상 = 야전포.</summary>
+    public Dictionary<string, List<string>> UnlockOnWin { get; set; } = new() { ["c1e1_bt1"] = new() { "unlock.fieldGun" } };
 
     static CampaignEconomyDefs? current;
     public static CampaignEconomyDefs Current => current ??= Load(Path.Combine(AppContext.BaseDirectory, "assets", "data", "campaign_economy.json"));
@@ -167,6 +171,8 @@ public sealed class CampaignEconomyDefs
         PermanentDeployFrac = F(PermanentDeployFrac, 0f, 1f, d.PermanentDeployFrac);
         CasualtyReplaceCost = F(CasualtyReplaceCost, 0f, 1000f, d.CasualtyReplaceCost);
         CivilianReliefSupplyLoss = Math.Clamp(CivilianReliefSupplyLoss, 0, 10_000_000);
+        UnlockKinds = UnlockKinds == null ? d.UnlockKinds : UnlockKinds.Where(kv => !string.IsNullOrEmpty(kv.Key) && kv.Value != null && kv.Value.StartsWith(CampaignUnlocks.Prefix, StringComparison.Ordinal)).ToDictionary(kv => kv.Key, kv => kv.Value);   // C1E1-g6
+        UnlockOnWin = UnlockOnWin == null ? d.UnlockOnWin : UnlockOnWin.Where(kv => !string.IsNullOrEmpty(kv.Key) && kv.Value != null).ToDictionary(kv => kv.Key, kv => kv.Value.Where(k => k != null && k.StartsWith(CampaignUnlocks.Prefix, StringComparison.Ordinal)).ToList());
         PromoSoldierMaxRank = Math.Clamp(PromoSoldierMaxRank, 0, 8);
         PromoMaxPerBreak = Math.Clamp(PromoMaxPerBreak, 0, 10_000);
         PromoSoldierKills = FixArray(PromoSoldierKills, d.PromoSoldierKills, 9);

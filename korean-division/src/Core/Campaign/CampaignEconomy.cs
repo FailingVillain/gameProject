@@ -174,6 +174,7 @@ public static class CampaignEconomy
     public static bool BeginOperation(CampaignState s, string missionId, IReadOnlyList<string> deployedIds, int maxDeploy = 0, IReadOnlyDictionary<string, int>? shellBase = null)
     {
         var selected = s.Roster.Where(c => deployedIds.Contains(c.Id)).ToList();
+        if (selected.Any(c => !CampaignUnlocks.CanDeploy(s, c))) return false;   // [C1E1-g6] 미해금 병종은 편성 불가 (상태 불변)
         if (CampaignFunds.CheckControl(selected) != null) return false;   // [TC-D] 통제 한도 · 외인 슬롯 초과 편성은 시작하지 않는다 (상태 불변)
 
         // 출격 직전에는 상태를 바꾸지 않는다: 비용 · 탄약 · 포탄 · 거부 패널티는 Pending 에 기록만 하고

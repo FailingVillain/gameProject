@@ -466,6 +466,7 @@ public sealed class CampaignState
         }
 
         // 전투 정산 (자원 / 부상 / 노획 / 정기보급 / LastDebrief) - 첫 승리만 (D23): 반복 승리는 결과만 기록하고 자원은 더하지 않는다
+        if (!wasDone) CampaignUnlocks.OnWon(s, r.MissionId);   // C1E1-g6: 첫 승리 해금 (unlock.* -> Flags)
         if (!wasDone) CampaignEconomy.SettleBattle(s, r);
         else CampaignEconomy.RecordRepeatVictory(s, r);
         // T48b1: 장교 신원 (키 발급 · 명부 갱신 · 전사/부상) — 이월 병력을 새로 정한 첫 승리만 (연표 Day = 정산 뒤)
