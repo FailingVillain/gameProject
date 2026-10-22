@@ -312,6 +312,8 @@ public static class CampaignEconomy
         }
         else s.Pending = null;
 
+        CampaignVariants.OnResult(s, r.MissionId, r.Result, r);   // TC-F: SK 효용 플래그 · pow.bandit (데이터 표, 해당 미션만)
+
         // 1) 직전 미션 미치료 부상자 UnhealedOps++, 3회 이상이면 전역 처리
         int discharged = 0;
         foreach (var c in s.Roster)

@@ -13,6 +13,7 @@
     { "key": "flag.flankPath",          "min": 0, "max": 1, "default": 0 },
     { "key": "flag.dockIntel",          "min": 0, "max": 1, "default": 0 },
     { "key": "flag.andongCavalryCut",   "min": 0, "max": 1, "default": 0 },
+    { "key": "flag.andongCavalryBoost", "min": 0, "max": 1, "default": 0 },
     { "key": "flag.andongSurrender",    "min": 0, "max": 1, "default": 0 },
     { "key": "flag.andongRemnant",      "min": 0, "max": 1, "default": 0 },
     { "key": "flag.siwidaeDispatched",  "min": 0, "max": 1, "default": 0 },

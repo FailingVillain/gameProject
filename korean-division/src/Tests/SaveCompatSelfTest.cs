@@ -141,6 +141,7 @@ public static class SaveCompatSelfTest
         CommanderPoolSelfTest.Run(check);   // T48b2 기용/해임 · 배정 · 참모 효과 · 옛 저장 v3~v9
         CampaignFundsSelfTest.Run(check);   // TC-D 자금 · 외인 슬롯 · 통제 한도 · 가용 보급 (저장 v11)
         CampaignDecisionsSelfTest.Run(check);   // TC-E 변수 레지스트리 · 결정 16개 · 결정 런타임 · 재도전 복원 (저장 v13)
+        CampaignVariantsSelfTest.Run(check);   // TC-F 미션 변형 (D02 B 이탈 · SK 플래그 3종 · 구역/소품) · pow.bandit · D15 협상 -1 · 결과 표
         CampaignHomeViewsSelfTest.Run(check);   // T38f 읽기 전용 탭 (기록 · 장비 · 편제) 표시 자료
         string cdir = TestTemp.Child("kd_compat_campaign");
         string? oldEnv = Environment.GetEnvironmentVariable("KD_CAMPAIGN_DIR");

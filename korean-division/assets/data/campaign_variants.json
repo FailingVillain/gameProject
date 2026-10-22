@@ -1,0 +1,12 @@
+{
+  "_note": "TC-F 캠페인 변형 표. onResult = 미션이 그 결과로 끝났을 때 변수를 정한다 (result: won · lost · failConfirmed=SK 실패 확정, g1 이 부름). pow = 승리한 미션의 항복한 적(세력 en) 인원을 변수에 더함. 미션 쪽 배치 변형은 각 미션 JSON 의 variants 절 (MissionVariants).",
+  "onResult": [
+    { "mission": "c1e1_sk1", "result": "won",           "set": [ { "op": "set", "var": "flag.flankPath", "value": 1 } ] },
+    { "mission": "c1e1_sk3", "result": "won",           "set": [ { "op": "set", "var": "flag.dockIntel", "value": 1 } ] },
+    { "mission": "c1e1_sk4", "result": "won",           "set": [ { "op": "set", "var": "flag.andongCavalryCut", "value": 1 } ] },
+    { "mission": "c1e1_sk4", "result": "failConfirmed", "set": [ { "op": "set", "var": "flag.andongCavalryBoost", "value": 1 } ] }
+  ],
+  "pow": [
+    { "var": "pow.bandit", "factions": [ "bandit" ], "missions": [ "c1e1_bt1", "c1e1_sk1" ] }
+  ]
+}
