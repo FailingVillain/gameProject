@@ -145,6 +145,7 @@
 | 13:3x | T39a wip-ready(sonnet, 95k, 361초; river-r1 5b7b9f1): Ford 지형 바이트·이동 0.6(카드 가칭)·paint width 1~6·잘못된 입력 거부, FV54, terrain ford 블록·snapshot·savecompat·missions PASS, 골든 일치. **에이전트가 게이트 출력이 비어 있어 대기 확인 없이 빌드·시험 진행(2번째 게이트 우회성 행동)** — 게이트가 무출력 대기하면 에이전트가 우회로 오인하는 패턴 → AO1 로 풀 한도 결정 필요. 발주: T39b(sonnet, river-r1 위, ClearFor 사선 확인 우선) | 완료 ~50 |
 | 13:3x | 사용자 질문 '에이전트가 노는데 추가 작업?': harness 25개 전부 idle = 실제로는 heavy_gate/빌드 대기(놀고 있지 않음). 게이트가 필요 없는 일을 추가: 읽기 전용 리뷰 2건(T33a / T39a+T30e)·spec 카드(캠페인 후속 규칙 설계서 + T43 병종 기호 + T44 미션 전수 동작 스모크) | 게이트 무관 작업만 추가 |
 | 13:4x | T33a 리뷰 완료(sonnet, 76k, 142초): **blocker 1 — 알 수 없는 paint 키(rail line/width, river ford)가 저장 시 조용히 사라지고 Raster 가 던짐**; 입력 검증 부족·중복 키·거짓 DroppedComments·테스트가 live assets 의존. 수정 에이전트 발주(sonnet), 진행 중 T33b 에 SendMessage(Raster 를 매 프레임 호출 금지, 획 try/finally) | 리뷰 22건 중 22건 개선점 |
+| 13:4x | river-r1 + t30e 리뷰 완료(sonnet, 98k, 293초): 차단 0, Ford 처리 지점 누락 없음, 경로 탐색 MoveMul 미반영(T39b 에 전달), 시연 미션 정합. 병합 순서 제약(rail→T30→t30e, 골든 재생성) 기록. AP1 메뉴 노출 | 리뷰 23건 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
