@@ -12,3 +12,4 @@ reports/
 tools/__pycache__/
 
 __pycache__/
+dist-sc/
