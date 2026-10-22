@@ -33,3 +33,46 @@ T50d perf bench: Prof hooks reused, 3 seeds x ACE x 1k/5k/10k, 10% regress thres
 2026-10-22 | 엎드려쏴 | 보병 칸 폭 확장(176x160/192x160) 동의 처리 → 27종 import 발주(사용자 '정확한 직각' 요구; C# 변경 없음) | 이의 시 되돌림
 - T38k: tiers Body16/26 Heading26/40/72 Numeric16/22; >=40px title-only glyphs; unused 7.4MB fonts kept (propose drop); no merge
 2026-10-22 | 글꼴 | 배포 시 미사용 글꼴 3개(Gothic Bold·Myeongjo Regular·Coding Bold, ~7.4MB) 제외 권장(코드가 안 씀) — 개발 중엔 유지 | T38k FONTS.md
+T55s: houseStyle absent=legacy 4; tones 255/238-230-218/222-230-240; retry 3; frameMb 2.0; B-variant key suffix .b
+2026-10-22 | T55g | 스펙=JSON 파일(house_specs/*.json), 파이썬 표 아님: 생성기 무수정으로 T55a/b 추가 | 카드 요구 housegen_specs.py 대신
+2026-10-22 | T55g | 발자국 [w,d] 는 가로형(4x3,5x3) 권장: 용마루가 x축 | 3x4 는 깊이가 커 맞배가 어색
+2026-10-22 | T55g | 기존4종 재현 비교 시트 생략, 6샘플+팔레트변형3만 | 요청 범위(샘플 ~6)
+2026-10-22 C1E1-u1 audit: 유닛 플래그 기준 표 작성, 외인 의용병 id 는 common_village_militia 후보로 두고 미확정 표기 (보고서만)
+- C1E1-m1: 강 폭 26칸(사행 ±10), 여울 폭 14칸, 상류=동, 시작 위치 임시 2개, 가옥 북안10+소초2+내륙10 (스펙 범위 내)
+- C1E1-m1: a_escape=북단 중앙 200x12 기본값, 갈대=grass, 밭=dirt, 제방=high 띠, 내륙마을 보조구역 a_inland_village 추가
+c1e1-m2: annex NE of city, rubble=timber yard, flank path west edge (spec lacks positions); large=1200 default
+T55a1: ko 12 classes (all registry tones=1), footprint 3x4 specified as [4,3] (wider than deep)
+- T55b2 (Sonnet): zh giwa footprints written wide-first (4x3 not 3x4); barns 1 tone; renders in gt-house-b2/_out (untracked)
+- C1E1-u2: 의용병 id=common_volunteer (신규, 민단 수치); 철도수비대=japanese 전용; 피난민=common 비무장 hp60 spd2.6
+- C1E1-u2: 새 유닛 id 규칙 = 기존 접미 패턴(cavalry_fengtian, heavy_field_gun_fengtian, infantry_railway_guard_japanese, civilian_refugee)
+T55a2: 9 giwa specs korean_a2_giwa.json set ko_a2, 2 tones via variant a; renders in gt-house-a2/render_a2
+T55b1: gt-house-b1 specs manchu_b1_*, tone a=base b=variant; flat/thatch mix per request despite Gemini note flat roofs rare
+- 2026-10-22 C1E1-g1: SK 실패 확정 일수 failDays 기본 0 (일수는 승리 시 확정 규칙의 안전한 해석, JSON 노드값으로 변경 가능)
+- 2026-10-22 C1E1-g1: OP1 재도전 = IL2 확정 직후 상태 → D11 변형(강공/포위) 선택도 지워 다시 고름
+- 2026-10-22 C1E1-g1: 에피소드 일수는 Episode.DaysUsed 별도. CampaignState.Day(missionDays) 연동은 g2/연동 카드로 미룸
+- 2026-10-22 C1E1-g1: OP1 미션 id = c1e1_op1_assault / c1e1_op1_siege (Q10 파일 2개, Q18 이름 규칙), D10 결과 키 follow/delay/persuadeOk/persuadeFail
+TC-D: base t48b2-assign(v9), schema v11 skip v10; supply gate for episode not enforced yet; fairy/sword price 2 temp; E2 cap via param
+- T38m: Overlay default=간결(concise), U key cycles; concise hides colorblind markers/low bars unless selected (user 2026-10-22 messy)
+2026-10-22 | 머리 위 표시 | 기본 간결(HP·탄약·색각 도형·분대 아이콘 선택/위험 때만), 색각 도형은 간결에서 선택·호버만 — 색각 사용자는 보통 이상 권장 | T38m, 사용자 확인 대기
+T38n: KD_MONITOR unset=old behaviour; secondary=first non-primary, window clamped to monitor-80px, centred; never fullscreen
+T48d defaults: no commanders.enabled on base -> rules off when roster empty; fuzz-campaign absent; hire/dismiss both confirm; portraits via file else silhouette
+T11b: infantry cells widened 128->176/192 approved (user auto-default); imported, no C# change
+T33e: MapDoc.MaxDim=1500 mirror of Config.MaxMapSize (test-checked); synthetic big maps in tests; fixtures A/B copied
+2026-10-22 | SmokeAiSelfTest 129 리플레이 왕복 FAIL(E1 IsAi 체크섬 반영) → 시험 쪽 수정(IsAi 유지)으로 위임, 별도 커밋 | merger E3
+2026-10-22 | 최종 합치기 F1: CrashLog 중복(T41 UI.CrashLog vs T01 CrashLog) → (a) T41 유지, T01 src/CrashLog.cs·Program.cs 170/236행 제거 | merger final
+2026-10-22 | M2 후속: Set은 모든 중대를 같은 값으로 맞춤(요청에 없던 해석) · DecisionCheckpoint.CompanyMorale 선택 필드 추가(재도전 시 이벤트로 바뀐 중대 사기 복원; 옛 저장은 빈 값) | kd/m2-morale-camp f0a187e
+2026-10-22 | 지휘자 임의 결정 소급 기록: N77 상한 c1e1_op1* 3,800→3,100 · units 시험 철도수비대 전용 검사 3건 삭제(대상 유닛 제거, 사용자 결정) · 가옥 3~6칸 위반은 시험 완화 대신 지도 생성기 수정 · TC-C 주입은 명령 로그에 안 남김(리플레이 이중 실행 방지) · 탈영은 중대별 사기 기준 · propsV2 기본 꺼짐 · 날씨는 이미 구현돼 있어 설계서 범위 축소 | 지휘자
+2026-10-22 | 이름 규칙: 사용자 승인 — ID 유지·현재 접두어 스타일 유지 + 접두어 뜻 규칙표 추가(PDF 바탕화면/coding), 보고는 항상 '한글 이름(ID)', 카드마다 한글 이름 한 줄 필수. 해석: 제안 3(새 ID 영역약어-번호)은 '새 카드에만' 적용하고 기존 접두어는 그대로 둔다 | 지휘자 해석(되돌리기: 새 카드도 기존 스타일로)
+2026-10-22 | 병렬 도구(tools/pipe-parallel 448e58b) 임의 결정 6건: ①FV 청구 파일 ops/fv_claims/<브랜치,/→__>.txt 형식 '날짜|FV+n|Replay+n|Schema+n|base해시|사유' ②조각 파일 docs/decisions_pending.d/·docs/engine_notes.d/<브랜치>.md ③조각 합침은 원본 끝 주석 블록(작업 에이전트=조각 파일, 합치는 쪽=병합 라인/release) ④병합 중 FV 줄 충돌은 --ours 로 접고 fv_assign -Apply 후 병합 커밋 뒤엔 -BaseRef HEAD^1 ⑤queue_guard 는 merge_step 에서 기본 경고만(-GuardStrict 일 때 STOP) ⑥Schema 청구는 표시만(캠페인 스키마 수동) | 에이전트 임의 결정(되돌리기: 해당 브랜치 파일 삭제)
+2026-10-22 | 한도·꼬리 문서(tools/pipe-docs 2a393ee): 리포 문서 7개의 한도 숫자를 'ops/LIMITS.md 참조'로 교체, PIPELINE.md 1-d 공통 꼬리 5줄 추가, 홈 파일(common.md:6, release.md)은 수정 안 하고 보고만 | 에이전트 결정(되돌리기: 브랜치 revert)
+2026-10-22 | 카드 검색: harness 탭 + harness.exe 발주(사용자 요청). 상태는 QUEUE 가 아니라 git 계산(사용자 지시) | 지휘자
+2026-10-22 | harness 카드 검색(C:/works/agentHub/harness, 리포 아님 → harness_bak_20261022.zip 백업) 임의 결정 8건: ①사전 최신 ref는 파일 마지막 변경 커밋 시각 기준 ②작업 브랜치는 사전→등록부→CARD_INDEX→id 추정(spec/*·통합 브랜치 제외) ③상태 판정: 병합됨=통합 4브랜치 조상, 삭제된 브랜치는 커밋 제목 언급 시 병합됨(추정), 진행 중=미커밋 또는 2시간 내 커밋, 병합 대기=미병합 브랜치, 보류=사전 문구에만, 알 수 없음 ④'낡음 의심'=QUEUE 첫 단어가 계산 상태와 불일치 ⑤영역은 id 접두어로 ⑥포트 HARNESS_PORT/--port, 사용 중이면 종료 ⑦POST /api/cards/refresh 추가(data/cards.json 에만 씀) ⑧탭 CSS 신규 | 에이전트 결정(되돌리기: harness_bak zip 복원)
+2026-10-22 | 카드 이름 PDF: C:/Users/seung/OneDrive/바탕 화면/coding/카드_이름_규칙.pdf 생성(규칙 8항+접두어 표+사전). 규칙 5번(영역약어 ID)은 새 카드에만 적용 | 지휘자
+2026-10-22 | 파이프라인 v2.1(tools/pipeline-v2 b29cb6d) 임의 결정 8건: ①LESSONS 12개로 축소(게이트 25 유지, 23·24·28·30 중복 삭제 표기, 12 보관), 원본 32개 LESSONS_ARCHIVE.md ②LIMITS '무거운 작업' 행 삭제 안 함 ③AGENT_RULES 보고 길이 '역할 카드 줄 수'로 통일 ④1-d 꼬리에서 한도 숫자 제거 ⑤체크리스트 (i) 요약·재배열, 동시 상한은 '실효 20 유지' ⑥PIPELINE v2.1 ⑦1-c 의 LESSONS 번호 참조를 ARCHIVE 로 ⑧아카이브 머리글 신규 | 에이전트 결정(되돌리기: 브랜치 revert)
+2026-10-22 | 홈 역할 카드 적용(지휘자): ~/.claude/agents/*.md 9개 Report 줄에 '마지막 줄 임의 결정:' 추가 + reviewer checkout 금지 명시, ~/.claude/agent-lessons/common.md 에 한도→LIMITS·웹조회 flash 줄 추가·selftest 문구 갱신. 백업 ~/.claude/agents_backup_20261022/. 보류: 도구(fv_claim·merge_step·queue_guard) 사용 문구는 도구가 base 에 들어간 뒤 적용(지금은 에이전트 worktree 에 도구가 없음) | 지휘자 판단(되돌리기: 백업 복원)
+2026-10-22 | 최종 합치기(merge/0.2-final 27440d3) 임의 결정: ①CrashLog 중복=T41 유지·T01 3기능(콘솔 마지막 20줄·GitRev·MessageBox) 소실 ②낡은 시험·문서 분리 커밋 수정(CONTROLS.md Y/U 행 추가, T38m 설정 시험을 T49 필드별 폴백에 맞춤, T48c/TC-D 스키마 리터럴→SchemaVersion 비교, 호환 샘플 v10~v12 추가, PlacementAll이 map 참조 미션 건너뜀, props 시험이 test_* 미션 제외) ③prone-wide-assets 스프라이트 200개 충돌은 브랜치 쪽 채택 ④perf-bench 0355c89 병합 보류(파일 중복) ⑤골든 재생성 1회(사용자 AX 승인 범위): detcheck ccfbd1dd…→67280420… , train_demo 410f3e6c…(8069틱)→d6ec723e…(10372틱, 원인 미확인) ⑥squads 기존 FAIL 2건(지휘 계통 단계·임시 분대장 분대 지연)은 병합 전부터라 미수정 ⑦단축키 U 충돌(Commands.cs:31 vs Game.cs:850) 미수정 | merger/지휘자(되돌리기: 태그 pre-final / 단계 태그)
+2026-10-22 | TW3 날씨 전환 페이드(kd/tw3-weather-fade 617a343) 임의 결정: 페이드 2.0초 선형(FadeSeconds 상수) · 종류와 시간대 모두 같은 Changes 로 페이드 · 이전 층 입자 즉시 소멸(안개 덩어리는 새 날씨가 안개 아닐 때 함께 페이드아웃) · 재전환 시 도착 상태를 이전으로 삼음 · 눈보라 상한/프레임 ms 측정/스크린샷 생략 | 에이전트 결정(되돌리기: 브랜치 revert)
+2026-10-22 | PR5 소품 산포 최적화(kd/pr5-scatter-opt 4453cac) 임의 결정: 그리드 칸 크기 = 소품 간격+0.5 · 옛 선형 구현을 LegacyCrowded/LegacyAvoid 참조 구현으로 남김 · 측정용 c1e1_map_a/b 를 assets/maps 에 untracked 복사 | 에이전트 결정
+2026-10-22 | TW1 날씨 은폐 보정(kd/tw1-weather-conceal 01306f4) 임의 결정: 은폐 수치 안개+10·비+5·눈+5(설계서 초안값, 기본 꺼짐 extendedEffects=false) · 날씨 종류에만 적용·시간대와 곱하지 않음 · minSightMul 검증 범위 0<x≤1 · conceal 범위 0~100 · 비용 비교 --stress 미실행 | 에이전트 결정
+2026-10-22 | T52d 난이도 캠페인 키(kd/t52d-difficulty-keys 0544b2d) 임의 결정: '거절'을 파일 전체 거절이 아닌 해당 값만 1.0 으로 교체+경고로 해석 · 정산식 RegularSupply*(1-패널티)*homeSupplyMul, round(RegularRecruits*(1-패널티)*recruitMul) · 카드의 'campaign' 묶음이 없어 comms 묶음으로 대체 · 값 범위 0.25~4 | 에이전트 결정
+2026-10-22 | 지휘자 결정: 단축키 U 충돌은 철조망 절단 U 유지·머리 위 표시 순환을 다른 키로 이동(사용자 '적당히 재지정'), squads·train_demo 조사 카드 발주(사용자 승인), harness 에이전트 목록에 서브 지휘자/병합 담당/감독관 라벨 추가 요청 | 지휘자
