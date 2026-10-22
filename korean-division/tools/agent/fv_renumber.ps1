@@ -16,6 +16,7 @@
 # Table rules: row order = merge order. Cells starting with a number count as that number; "keep"-style rows (cell has the
 # word after the number, e.g. "59 <keep>") inherit the previous assigned value; cells with no leading number ("-", "TBD")
 # are skipped. Free-text reservations below the table are NOT parsed (listed as a reminder only).
+[CmdletBinding(PositionalBinding = $false)]
 param(
     [switch]$Report,
     [switch]$Plan,
