@@ -142,3 +142,6 @@ V1 연대 배속 규칙: 대대 소속 중대는 대대 단위로 함께 배속,
 ## AB. 하천 설계 제안 (2026-10-22; 브랜치 spec/river-design 26e0b88, kd-develop/kd-spec-river/korean-division/docs/RIVER_DESIGN.md) — 전부 '제안', 구현 미착수
 요지: 깊은 물 = 기존 `Water`(통행 불가) 유지, 여울 = `TerrainType.Ford` enum 끝에 1개 추가(권장), 다리 = 기존 c0_02_yalu 방식(물 위 흙 띠) 유지. 도하 AI(`FindCrossing`)는 걸을 수 있나만 봐서 여울/다리가 자동 도하 지점이 됨. FV +1(rail 53 → 하천 54, 예약 필요), 새 상태 필드 없음, 기존 지도에 Ford 없으면 골든 불변. 구현 카드 제안(rail 위): R1 Ford 바이트·이동 배수·paint 폭(소) · R2 길찾기·도하 AI·NearWater 정리(중) · R3 렌더·테스트 지도(중) · R4 Bridge 지형(선택).
 - **AB1~8** 질문: 폭 상한 · `Bridge` 필요 여부 · 여울에 차량·포 통과 · 여울 사격 보정 · 수영 · 강 건너 사격(`GameMapTerrain.ClearFor` 가 물이 사선을 막는 것으로 읽혀 영향 가능 — 구현 1단계에서 먼저 측정) · 쓸 미션 · 장갑열차와 묶음 여부. 무응답 시 구현 보류(제안서만 보존).
+
+## AC. T30d 열차 그림 (2026-10-22; 브랜치 t30d-train-art 8e51e5a, kd-develop/kd-t30d-train-art; 시트 docs/art_review/train_blockout.png) — 검수 요청
+블록아웃 5종(train-loco·guncar·mgcar·freight·wreck) × 5방향 × 평상/파괴. Q-D1(모델 1종, 세력 차이는 팀색·소품)·Q-D2(8방향=S/SE/E/NE/N+좌우 반전, 곡선은 가장 가까운 방향) 카드 권장안 채택. **크기 값은 T30a 카드에 없어 에이전트가 임의 설정**(1칸=32 모델단위, 객차 2.0×0.6칸, 연결 0.25칸) → T30a 확정 후 대조 필요. 한계: 포탑 시트는 자리표시, 바퀴 단순, 선로 그림과의 높이 맞춤은 T30e. **AC1** 블록아웃 방향 승인? 무응답 시 진행.
