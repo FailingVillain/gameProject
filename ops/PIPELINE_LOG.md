@@ -161,6 +161,7 @@
 | 14:0x | T35 wip-ready(opus, 151k, 3215초=54분; kd/isai-restore 5c08a38): IsAi 를 읽는 sim 은 Surrender.cs:39 하나, 리플레이 재생에서 AI 가 안 붙는 결함은 자유전뿐 아니라 **미션 리플레이도 동일**(WorldMission.cs:77 은 실제 게임에서만 실행)했음. 리플레이 머리말 AiFactions(Replay 24)+체크섬 `if (f.IsAi) h.Add(0x4149)`(AI 아닌 세력은 불변 → 골든 그대로)+FV60. 시험: 재생 체크섬 일치·항복 27 대 27, 머리말 제거 시 어긋남 재현, replay 31 OK 등, 8변형 골든 일치. 발주: T35 리뷰(sonnet) | 완료 ~58 |
 | 14:0x | T39b wip-ready(sonnet, 118k, 1595초; river-r2 8ada7a9): 물 위 직사 사격 `terrain.waterBlocksFire`(기본 true=현행, 골든 불변, false 시 유닛 20→126·사격 2530→6119 → 0.3 결정), 여울 실측 감속 0.60, FindCrossing 폭 3~6 정상·1~2 는 minObstacle 에 걸림, 신규 시험 true/false 폭 1·3·6·실사격·바위 차단. 발주: T39c(sonnet, river-r2 위, 렌더+시험 지도) | 완료 ~59 |
 | 14:0x | T35 리뷰(sonnet, 71k): 차단 0, 병합 OK. 참고: 미션/표준 경로 시험 없음, 병합 시 FV/Replay 재번호(60/24, AE2 61/25 앞) | 완료 ~60 |
+| 14:1x | T43 wip-ready(sonnet, 90k, 228초; kd/t43-branch-symbols b9c97a9): 곡사포·저격 기호 추가(데이터 판정), uiicons·uifuzz 30·골든 PASS. 미확인: 색각 도형 겹침(t27 미병합), cavalry_default 병종 Infantry 로 나옴(범위 밖 제안) | 완료 ~61 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
