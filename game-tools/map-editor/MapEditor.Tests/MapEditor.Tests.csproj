@@ -11,5 +11,6 @@
   <ItemGroup>
     <ProjectReference Include="..\MapEditor.Model\MapEditor.Model.csproj" />
     <ProjectReference Include="..\..\..\korean-division\KoreanDivision.csproj" />
+    <None Include="fixtures\*.json" CopyToOutputDirectory="PreserveNewest" LinkBase="fixtures" />
   </ItemGroup>
 </Project>

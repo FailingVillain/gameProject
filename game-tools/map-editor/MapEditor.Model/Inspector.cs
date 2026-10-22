@@ -33,34 +33,46 @@ public static class Inspector
         bool ok = env.Walkable != null && W >= 1 && H >= 1 && W <= MapDoc.MaxDim && H <= MapDoc.MaxDim;
         bool Walk(int x, int y) => ok && (uint)x < (uint)W && (uint)y < (uint)H && env.Walkable!(x, y);
 
-        // 연결 덩어리 (시작 / 구역 도달성 용)
+        // 연결 덩어리 (시작 / 구역 도달성 용). 큰 지도 (1500x1500) 에서 커밋마다 전부 라벨링하면 느려서:
+        // 통행 격자를 한 번 뽑아 두고 (대리자 호출 1회/칸), 덩어리는 질의된 칸에서 처음 필요할 때만 채운다 (8방향, 대각은 두 옆칸이 걸어갈 수 있어야 함).
         int[]? comp = null; List<int>? compSize = null;
+        bool[]? walk = null;
         if (ok)
         {
+            walk = new bool[W * H];
+            for (int y = 0; y < H; y++)
+            for (int x = 0; x < W; x++) walk[y * W + x] = env.Walkable!(x, y);
             comp = new int[W * H]; compSize = new List<int>();
-            var q = new Queue<int>();
-            for (int s = 0; s < comp.Length; s++)
+        }
+        var flood = new Queue<int>();
+        int Label(int s)
+        {
+            if (comp![s] != 0 || !walk![s]) return comp![s];
+            int id = compSize!.Count + 1, n = 0;
+            comp[s] = id; flood.Enqueue(s);
+            while (flood.Count > 0)
             {
-                if (comp[s] != 0 || !Walk(s % W, s / W)) continue;
-                int id = compSize.Count + 1, n = 0;
-                comp[s] = id; q.Enqueue(s);
-                while (q.Count > 0)
+                int c = flood.Dequeue(), cx = c % W, cy = c / W; n++;
+                for (int dy = -1; dy <= 1; dy++)
                 {
-                    int c = q.Dequeue(), cx = c % W, cy = c / W; n++;
-                    for (int dy = -1; dy <= 1; dy++)
+                    int ny = cy + dy;
+                    if ((uint)ny >= (uint)H) continue;
                     for (int dx = -1; dx <= 1; dx++)
                     {
                         if (dx == 0 && dy == 0) continue;
-                        int nx = cx + dx, ny = cy + dy;
-                        if (!Walk(nx, ny) || comp[ny * W + nx] != 0) continue;
-                        if (dx != 0 && dy != 0 && (!Walk(cx + dx, cy) || !Walk(cx, cy + dy))) continue;
-                        comp[ny * W + nx] = id; q.Enqueue(ny * W + nx);
+                        int nx = cx + dx;
+                        if ((uint)nx >= (uint)W) continue;
+                        int ni = ny * W + nx;
+                        if (!walk[ni] || comp[ni] != 0) continue;
+                        if (dx != 0 && dy != 0 && (!walk[cy * W + nx] || !walk[ny * W + cx])) continue;
+                        comp[ni] = id; flood.Enqueue(ni);
                     }
                 }
-                compSize.Add(n);
             }
+            compSize.Add(n);
+            return id;
         }
-        int CompAt(double x, double y) => comp != null && inMap(x, y) ? comp[(int)y * W + (int)x] : 0;
+        int CompAt(double x, double y) => comp != null && inMap(x, y) ? Label((int)y * W + (int)x) : 0;
 
         // ---- 시작
         var st = doc.Starts;

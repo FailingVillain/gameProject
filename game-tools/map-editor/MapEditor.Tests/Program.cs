@@ -82,6 +82,7 @@ static partial class Tests
         ForwardCompat();
         RailAll();
         InputValidation();
+        BigMapAll();
         PlacementAll();
         PlacementInsertAndEmbed();
         InspectorChecks();
@@ -392,8 +393,9 @@ static partial class Tests
     static void InputValidation()
     {
         Check(MapDoc.Parse("{ \"width\": 0, \"height\": 5 }").Validate().Count > 0, "width 0 은 오류");
-        Check(MapDoc.Parse("{ \"width\": 5000, \"height\": 5 }").Validate().Any(e => e.Contains("1..1024")), "width 5000 은 오류");
-        Check(MapDoc.Parse("{ \"width\": 1024, \"height\": 1024 }").Validate().Count == 0, "1024x1024 는 통과");
+        Check(MapDoc.Parse("{ \"width\": 5000, \"height\": 5 }").Validate().Any(e => e.Contains("1..1500")), "width 5000 은 오류");
+        Check(MapDoc.Parse("{ \"width\": 1500, \"height\": 1500 }").Validate().Count == 0, "1500x1500 는 통과 (게임 상한)");
+        Check(MapDoc.Parse("{ \"width\": 1501, \"height\": 8 }").Validate().Any(e => e.Contains("1..1500")), "1501 은 오류");
         bool threw = false;
         try { MapDoc.Parse("{ \"width\": 100000, \"height\": 100000 }").Raster(); } catch (InvalidDataException) { threw = true; }
         Check(threw, "범위 밖 크기의 Raster 는 InvalidDataException (메모리 폭주 없음)");

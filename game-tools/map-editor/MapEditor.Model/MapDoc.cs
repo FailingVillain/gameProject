@@ -119,7 +119,8 @@ public sealed class MapDoc
     // ---------------------------------------------------------------- 읽기
     static readonly JsonDocumentOptions DocOpts = new() { CommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true };
 
-    public const int MaxDim = 1024;
+    /// <summary>게임 Config.MaxMapSize 와 같은 값 (모델은 게임 비의존이라 값을 베낌; MapEditor.Tests 가 대조해 게임 상수가 바뀌면 실패).</summary>
+    public const int MaxDim = 1500;
     /// <summary>게임 Config.MaxPlayers 와 같은 값 (시험이 대조).</summary>
     public const int MaxStarts = 16;
     readonly List<string> loadIssues = new();
@@ -602,13 +603,11 @@ public sealed class MapDoc
         while (q.Count > 0)
         {
             int c = q.Dequeue(), cx = c % g.Width, cy = c / g.Width;
-            foreach (var (nx, ny) in new[] { (cx + 1, cy), (cx - 1, cy), (cx, cy + 1), (cx, cy - 1) })
-            {
-                if (!g.InBounds(nx, ny)) continue;
-                int ni = ny * g.Width + nx;
-                if (mark[ni] || !Same(ni)) continue;
-                mark[ni] = true; q.Enqueue(ni);
-            }
+            // 이웃 4칸 (배열 할당 없이: 1500x1500 에서 칸마다 배열을 만들면 느림)
+            if (cx + 1 < g.Width && !mark[c + 1] && Same(c + 1)) { mark[c + 1] = true; q.Enqueue(c + 1); }
+            if (cx > 0 && !mark[c - 1] && Same(c - 1)) { mark[c - 1] = true; q.Enqueue(c - 1); }
+            if (cy + 1 < g.Height && !mark[c + g.Width] && Same(c + g.Width)) { mark[c + g.Width] = true; q.Enqueue(c + g.Width); }
+            if (cy > 0 && !mark[c - g.Width] && Same(c - g.Width)) { mark[c - g.Width] = true; q.Enqueue(c - g.Width); }
         }
         int count = 0;
         BeginStroke("채우기");
