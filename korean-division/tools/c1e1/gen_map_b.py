@@ -47,6 +47,28 @@ def P(terrain, rect=None, circle=None, high=None):
     paint.append(d)
 
 
+def _split(L):
+    """house side -> [(offset, len)] pieces, each 3..6 tiles, 1-tile gaps (HouseBlocks MaxSide rule, T02)."""
+    if L <= 6: return [(0, L)]
+    if L <= 8: return [(0, 6)]
+    n = 2
+    while (L - (n - 1)) / n > 6: n += 1
+    base, extra = divmod(L - (n - 1), n)
+    out, o = [], 0
+    for i in range(n):
+        l = base + (1 if i < extra else 0)
+        out.append((o, l)); o += l + 1
+    return out
+
+
+def HOUSE(rect):
+    """paint a house rect as 3..6-tile buildings (long sides split with a 1-tile gap, 7-8 clamped to 6)."""
+    x, y, w, h = [int(v) for v in rect]
+    for oy, hh in _split(h):
+        for ox, ww in _split(w):
+            P("house", [x + ox, y + oy, ww, hh])
+
+
 # ---- areas (named zones; rect = [x, y, w, h]) ----
 A = {}
 A["b_city"] = R(0.44, 0.40, 0.76, 0.68)           # urban district, enemy 800
@@ -146,7 +168,7 @@ while y < cy0 + ch - 8:
     while x < cx0 + cw - 8:
         bw = min(rng.randint(6, 16), cx0 + cw - 2 - x)
         if bw >= 4:
-            P("house", [x, y + rng.randint(0, 2), bw, max(4, rowh - rng.randint(1, 3))])
+            HOUSE([x, y + rng.randint(0, 2), bw, max(4, rowh - rng.randint(1, 3))])
         x += bw + rng.randint(2, 4)
     y += rowh + rng.randint(2, 4)
 P("dirt", [cx0, cy0 + ch // 2 - 2, cw, 5])          # main street (merchant row), west gate to dock
@@ -154,7 +176,7 @@ P("dirt", [cx0 + cw // 2 - 2, cy0, 5, ch])          # cross street
 P("rubble", [cx0 + fx(0.03), cy0 + ch - fy(0.05), fx(0.07), fy(0.04)])  # timber yard
 hq = A["b_hq"]
 P("dirt", hq)
-P("house", [hq[0] + hq[2] // 2 - 4, hq[1] + hq[3] // 2 - 3, 8, 6])
+HOUSE([hq[0] + hq[2] // 2 - 4, hq[1] + hq[3] // 2 - 3, 8, 6])
 
 # ---- dock ----
 dk = A["b_dock"]
@@ -162,7 +184,7 @@ P("sand", [dk[0], dk[1], flat_edge - dk[0], dk[3]])
 for yy in range(dk[1] + 4, dk[1] + dk[3] - 2, 12):
     P("sand", [flat_edge - 2, yy, 8, 3])             # piers
 for yy in range(dk[1] + 2, dk[1] + dk[3] - 4, 14):
-    P("house", [dk[0] + 3, yy, 7, 5])                # warehouses
+    HOUSE([dk[0] + 3, yy, 7, 5])                # warehouses
 city_r = A["b_city"][0] + A["b_city"][2]
 P("dirt", [city_r, dk[1] + dk[3] // 2 - 2, dk[0] - city_r + 4, 5])
 
@@ -178,7 +200,7 @@ for gy in range(ay + step // 2 * 2, ay + ah - 4, step):
     P("dirt", [ax, gy, aw, 3])
 for gx in range(ax + 3, ax + aw - 4 - step, step):
     for gy in range(ay + 3, ay + ah - 4 - step // 2, step):
-        P("house", [gx + 2, gy + 2, step - 8, step - 8])
+        HOUSE([gx + 2, gy + 2, step - 8, step - 8])
 P("dirt", [ax + 4, ay + ah // 2 - 6, step - 2, 12])  # station yard, plain dirt
 # the belt between city and annex is left unpainted (grass)
 
@@ -186,7 +208,7 @@ P("dirt", [ax + 4, ay + ah // 2 - 6, step - 2, 12])  # station yard, plain dirt
 vx, vy, vw, vh = A["b_north_village"]
 P("dirt", A["b_north_village"])
 for k in range(12):
-    P("house", [vx + 3 + (k % 4) * (vw // 4), vy + 3 + (k // 4) * (vh // 3), max(4, vw // 4 - 4), max(3, vh // 3 - 4)])
+    HOUSE([vx + 3 + (k % 4) * (vw // 4), vy + 3 + (k // 4) * (vh // 3), max(4, vw // 4 - 4), max(3, vh // 3 - 4)])
 
 # ---- flank path (west edge north, then east toward the plain) ----
 P("dirt", [fx(0.055), fy(0.12), 4, fy(0.80) - fy(0.12)])
@@ -217,6 +239,31 @@ def raster():
                 for xx in range(max(0, cx - r), min(W, cx + r + 1)):
                     if (xx - cx) ** 2 + (yy - cy) ** 2 <= r * r: ter[yy][xx] = t
     return ter
+
+
+def prune_houses():
+    """streets painted over houses leave slivers; HouseBlocks (T02) needs every building 3..6 per side -> turn bad blocks into dirt."""
+    for _ in range(20):
+        ter = raster()
+        used = [[False] * W for _ in range(H)]
+        bad = []
+        fr = lambda x, y: ter[y][x] == 7 and not used[y][x]
+        for y in range(H):
+            for x in range(W):
+                if not fr(x, y): continue
+                w = 1
+                while w < 6 and x + w < W and fr(x + w, y): w += 1
+                h = 1
+                while h < 6 and y + h < H and all(fr(x + k, y + h) for k in range(w)): h += 1
+                for yy in range(y, y + h):
+                    for xx in range(x, x + w): used[yy][xx] = True
+                if min(w, h) < 3: bad.append([x, y, w, h])
+        if not bad: return
+        for b in bad: P("dirt", b)
+    raise SystemExit("prune_houses did not converge")
+
+
+prune_houses()
 
 
 def check():
