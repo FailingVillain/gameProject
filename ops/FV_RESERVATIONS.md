@@ -1,5 +1,7 @@
 # FV_RESERVATIONS - 저장 형식(FormatVersion)·Replay 번호 예약표 (WIP 스택용, 2026-10-22)
 
+> **2026-10-22 지시(tools/pipe-parallel): 이 표는 더 이상 수동으로 갱신하지 않는다.** 브랜치는 `ops/fv_claims/<브랜치>.txt` 에 청구하고(`fv_claim.ps1`), 현재 예약 현황은 `fv_assign.ps1 -Report`, 병합 순서별 최종 번호는 `fv_assign.ps1 -Order ...` 가 청구 파일에서 계산한다. 아래 표·정정은 2026-10-22 이전 이력으로만 남긴다(TC-G=68 등 낡은 값 포함).
+
 > 이유: WIP 를 병합하지 않고 브랜치 스택으로 두는 동안 번호가 겹침(rail·breach2 둘 다 53). 번호를 올리는 브랜치는 여기 먼저 적는다(지휘자 관리). main = FV52 / Replay19.
 
 | 브랜치 | FV | Replay | 기반 | 상태 | 메모 |

@@ -87,6 +87,16 @@ foreach ($l in $fv) {
 }
 foreach ($k in $nums.Keys) { if ($nums[$k].Count -gt 1 -and (($nums[$k] -join ' ').ToLower() -match $tokRe)) { $warn += ("FV {0} reserved by several rows: {1} (renumber at merge time)" -f $k, ($nums[$k] -join ' / ')) } }
 
+# 5b. queue guard: an existing branch of this name must not touch QUEUE/STATE/MERGE_QUEUE (WARN)
+$qg = Join-Path $PSScriptRoot 'queue_guard.ps1'
+if ((Test-Path $qg) -and -not $isCard) {
+    & git -C $Top rev-parse --verify --quiet ("refs/heads/" + $Id.Trim()) 2>$null | Out-Null
+    if ($LASTEXITCODE -eq 0) {
+        $qo = @(& powershell -NoProfile -ExecutionPolicy Bypass -File $qg -Branch $Id.Trim() -Top $Top 2>&1 | ForEach-Object { "$_" })
+        if ($LASTEXITCODE -ne 0) { $warn += ("queue_guard: " + ($qo -join ' ; ')) }
+    }
+}
+
 # 6. card id uniqueness (card_id.ps1 -Check: CONFLICT = BLOCK) and duplicate-work summary (roadmap_check.ps1: WARN only)
 if ($isCard -and -not $Quick) {
     $cid = Join-Path $PSScriptRoot 'card_id.ps1'

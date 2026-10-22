@@ -15,9 +15,9 @@ Repo `C:\gameProject\korean-division`. Report in Korean, short. Procedures: `doc
 - Context ~200k, or first mergeable slice done: merge / WIP-commit, then stop and report the rest.
 
 ## Docs / determinism
-- ENGINE_NOTES: append a short section, never rewrite others' text. Your task card: write only its 결과/상태 lines. ops/*.md: not yours (owners in ops/PIPELINE.md). Count lines (selftest totals, FormatVersion) are replaced, never appended. Per-merge CLAUDE.md / SELFTEST_HISTORY / BASELINE / HANDOFF updates are NOT yours - the release role does them at queue end.
+- ENGINE_NOTES / DECISIONS_PENDING: do NOT edit those files; write your short section / lines to your own one file `docs/engine_notes.d/<branch>.md` / `docs/decisions_pending.d/<branch>.md` (branch with `/`->`__`; optional first line `date: YYYY-MM-DD HH:mm`); the merge line assembles them (tools/agent/assemble_notes.ps1). Never rewrite others' text. Your task card: write only its 결과/상태 lines. ops/*.md: not yours (owners in ops/PIPELINE.md). Count lines (selftest totals, FormatVersion) are replaced, never appended. Per-merge CLAUDE.md / SELFTEST_HISTORY / BASELINE / HANDOFF updates are NOT yours - the release role does them at queue end.
 - Ambiguous instruction (value, direction, unit): ask in the report, or implement the safest reading behind a JSON switch and say so.
-- Determinism: DetMath, hash RNG, commands only; new state -> checksum + Audit + save + FormatVersion bump (check main's value at merge time).
+- Determinism: DetMath, hash RNG, commands only; new state -> checksum + Audit + save + FormatVersion bump: do not pick the final number - run `tools/agent/fv_claim.ps1 -Fv 1 [-Replay 1] -Reason ...` (writes ops/fv_claims/<branch>.txt) and use base FV+1 as the temporary number; the merge line assigns it (fv_assign.ps1). Never edit ops/QUEUE.md / STATE.md / MERGE_QUEUE.md (queue_guard.ps1 checks).
 - No test dodging: never change a test's seed/map/values to pass an invariant; fix the cause or report and stop.
 - Two real fix attempts failed: WIP-commit, report the diagnosis.
 
