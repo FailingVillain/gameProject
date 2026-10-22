@@ -153,10 +153,17 @@ public sealed partial class MapFile
             if (p.Tiles != null)
                 foreach (var tp in p.Tiles)
                     if (tp is { Length: 2 } && map.InBounds(tp[0], tp[1])) Put(tp[0], tp[1]);
+            Require(p.Width == null || (p.Width >= 1 && p.Width <= 6), $"paint width {p.Width} 는 1~6 (칸)");
+            if (p.Line != null) Require(p.Line.Length % 2 == 0, "paint line 은 [x0, y0, x1, y1, ...] 짝수 개");
             if (p.Line is { Length: >= 4 } ln)
-                for (int k = 0; k + 3 < ln.Length; k += 2)   // 꺾은선 [x0, y0, x1, y1, x2, y2, ...] — 8방향 이어진 1칸 폭 (선로 · 길)
+            {
+                int wd = p.Width ?? 1, lo = -((wd - 1) / 2), hiOff = lo + wd - 1;   // 폭 N: 중심에서 -(N-1)/2 ~ +N/2 정사각 확장
+                for (int k = 0; k + 3 < ln.Length; k += 2)   // 꺾은선 [x0, y0, x1, y1, x2, y2, ...] — 8방향 이어진 선 (기본 1칸 폭: 선로 · 길 · 하천)
                     foreach (var (lx, ly) in LineTiles(ln[k], ln[k + 1], ln[k + 2], ln[k + 3]))
-                        if (map.InBounds(lx, ly)) Put(lx, ly);
+                        for (int oy = lo; oy <= hiOff; oy++)
+                        for (int ox = lo; ox <= hiOff; ox++)
+                            if (map.InBounds(lx + ox, ly + oy)) Put(lx + ox, ly + oy);
+            }
         }
         Require(Factions.Count <= Starts.Count, $"세력 정의 {Factions.Count}개가 시작 위치 {Starts.Count}개보다 많음");
         foreach (var f in Factions) Require(f.Color == null || f.Color.Length == 3, "세력 색은 [r, g, b]");
@@ -220,7 +227,8 @@ public sealed partial class MapFile
         "trench" => TerrainType.Trench,
         "crater" => TerrainType.Crater,
         "rail" => TerrainType.Rail,
-        _ => throw new InvalidDataException($"알 수 없는 지형 '{name}' (grass, dirt, sand, water, rock, forest, rubble, house, wire, trench, crater, rail / 높이만: high, low)"),
+        "ford" => TerrainType.Ford,
+        _ => throw new InvalidDataException($"알 수 없는 지형 '{name}' (grass, dirt, sand, water, rock, forest, rubble, house, wire, trench, crater, rail, ford / 높이만: high, low)"),
     };
 
     static void Require(bool ok, string msg)
@@ -270,6 +278,8 @@ public sealed class Paint
     public int[][]? Tiles { get; set; }
     /// <summary>꺾은선 [x0, y0, x1, y1, ...] — 1칸 폭으로 이어 칠한다 (선로 · 길).</summary>
     public int[]? Line { get; set; }
+    /// <summary>꺾은선 폭 (칸, 1~6, 생략 = 1 = 현행). 정사각 확장 — 하천 (T39a). rect · circle · tiles 에는 영향 없음.</summary>
+    public int? Width { get; set; }
     /// <summary>지형과 함께 고지 표시도 바꾼다 (생략 = 그대로).</summary>
     public bool? High { get; set; }
 }

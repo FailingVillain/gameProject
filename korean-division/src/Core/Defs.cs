@@ -303,6 +303,8 @@ public sealed class TerrainRulesDef
     public float ForestSuppress { get; set; } = 0.8f;
     /// <summary>숲 가장자리에서 이 깊이(칸)까지만 보이고 쏠 수 있다. 더 깊은 숲 칸은 시야 · 사선을 막는다.</summary>
     public int ForestSeeDepth { get; set; } = 2;
+    /// <summary>여울 (얕은 물) 칸 이동 배수 — 가칭 (T39a, 측정 보류).</summary>
+    public float FordMove { get; set; } = 0.6f;
     public float RubbleMove { get; set; } = 0.6f;
     public float RubbleHit { get; set; } = 0.5f;
     public float RubbleSuppress { get; set; } = 0.6f;
