@@ -9,6 +9,7 @@ public sealed partial class GameMap
     {
         EnsureTerrain();
         int seeDepth = Defs.Current.Terrain.ForestSeeDepth;
+        bool waterOpen = !Defs.Current.Terrain.WaterBlocksFire;
         var (x, y) = TileOf(a);
         var (ex, ey) = TileOf(b);
         string Why(int cx, int cy)
@@ -18,7 +19,7 @@ public sealed partial class GameMap
             if (!walkable[i]) return "통행 불가 지형 " + tiles[i];
             return "건물 점유 칸";
         }
-        if (!ClearFor(x, y, ignoreA, ignoreB)) return Why(x, y) + " (출발 칸)";
+        if (!ClearFor(x, y, ignoreA, ignoreB, waterOpen)) return Why(x, y) + " (출발 칸)";
         bool shooterLow = !high[y * Width + x];
         bool passedHigh = false;
         Vector2 d = b - a;
@@ -34,11 +35,11 @@ public sealed partial class GameMap
             else if (tMaxY < tMaxX) { y += stepY; tMaxY += tDeltaY; }
             else
             {
-                if (!ClearFor(x + stepX, y, ignoreA, ignoreB)) return Why(x + stepX, y) + " (대각 모서리)";
-                if (!ClearFor(x, y + stepY, ignoreA, ignoreB)) return Why(x, y + stepY) + " (대각 모서리)";
+                if (!ClearFor(x + stepX, y, ignoreA, ignoreB, waterOpen)) return Why(x + stepX, y) + " (대각 모서리)";
+                if (!ClearFor(x, y + stepY, ignoreA, ignoreB, waterOpen)) return Why(x, y + stepY) + " (대각 모서리)";
                 x += stepX; y += stepY; tMaxX += tDeltaX; tMaxY += tDeltaY;
             }
-            if (!ClearFor(x, y, ignoreA, ignoreB)) return Why(x, y);
+            if (!ClearFor(x, y, ignoreA, ignoreB, waterOpen)) return Why(x, y);
             if (passedHigh) return "평지 사수: 고지 너머";
             int i = y * Width + x;
             if ((x != ex || y != ey) && forestDepth[i] > seeDepth) return "깊은 숲 (사이 칸)";

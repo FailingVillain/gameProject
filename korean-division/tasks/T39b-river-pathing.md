@@ -3,7 +3,7 @@
 - 선행: T39a (스택: `river-r1` 위) | 후행: T39c(병행 가능), T39d
 - 근거 문서: docs/RIVER_DESIGN.md (브랜치 spec/river-design @26e0b88; 이 카드 시작 시 해당 파일을 `git show spec/river-design:korean-division/docs/RIVER_DESIGN.md` 로 읽는다). 사용자는 세부 요구를 주지 않았다 -> 제안서 "권장" 답을 가정(아래 가정 목록). 로드맵 한 줄(ROADMAP_LONG 항목 8 "강 소형 포함")을 넘는 메커니즘 추가 금지.
 - 핫스팟/만질 파일: GameMapTerrain.ClearFor, GameMap.IsWalkable/길찾기 비용(MoveMul 사용 여부), TacticalAi.Crossing.cs FindCrossing, Suppression.NearWater, Surrender, tactics.json(minObstacle 등 데이터 조정만), CrossingSelfTest
-- 브랜치: `river-r2` (base `river-r1`) | 상태: question (Q6 골든 영향, 사용자 결정 대기) | 담당: -
+- 브랜치: `river-r2` (base `river-r1`) | 상태: wip-ready | 담당: -
 ## 확정 결정
 - 없음(ROADMAP_LONG 항목 8 한 줄). 권장 답 가정 목록 참조.
 ## 범위 밖
@@ -19,10 +19,11 @@ KD_SELFTEST_ONLY=crossing, tactics-obs n=8, detcheck.
 ## 가정한 답
 T39a 목록과 동일 (특히 Q6 허용, Q4 감속만).
 ## 결과
-**상태: question** (브랜치 river-r2 @ river-r1 5b7b9f1 위, 시험만 추가, 시뮬 코드 변경 없음)
+**상태: wip-ready** (브랜치 river-r2 @ river-r1 5b7b9f1 위). 지휘자 결정(0.2 기능 / 밸런스 영향은 0.3): Q6 변경을 데이터 키 `terrain.waterBlocksFire` 뒤로 재적용.
 1. 측정: `GameMapTerrain.ClearFor` 는 통행 불가 칸(물 포함)이면 사선 차단 -> 소총(`los:true`)은 물 건너 사격 불가. 폭 1 · 3 · 6 하천 모두 HasFiringLine 막힘, 물 한 칸 사이 두 사수 8초 실사격: 사격 0 · 표적 없음. (CrossingSelfTest.TestRiverFire 특성화 시험)
-2. Q6 적용 시험: `Water` 만 직사 사선에서 비차단(ClearFor fire 인자, 이동용 HasLineOfSight 는 그대로) -> 시험 통과(사격 틱 427)하나 **detcheck 골든 변경**(8aa6448b.. -> 0d62878d.., units 20 -> 126, shots 2530 -> 6119). 카드 지시대로 변경 되돌림, 골든 재생성 안 함. 질문은 docs/DECISIONS_PENDING.md.
+2. [수정] `terrain.waterBlocksFire` (bool, 기본 **true** = 현행: 물이 직사 사선을 막음 -> 골든 8aa6448b 불변). false 면 직사(los) 사격만 물 위 통과 (ClearFor waterOpen 인자; 이동용 HasLineOfSight 는 항상 막음). 키는 TerrainRulesDef 타입 역직렬화라 bool 외 값은 로드 실패. 시험: 기본 true / false 각각 폭 1·3·6 사선 + 2사수 실사격(false 에서만 사격, 틱 427) + 바위 차단. **기본을 false 로 바꾸는 것은 0.3 밸런스 패스 결정** (시험 장면에서 units 20->126 · shots 2530->6119, golden 0d62878d). 아래 원 측정 기록:
+   Q6 적용 시험(원 기록): `Water` 만 직사 사선에서 비차단(ClearFor fire 인자, 이동용 HasLineOfSight 는 그대로) -> 시험 통과(사격 틱 427)하나 **detcheck 골든 변경**(8aa6448b.. -> 0d62878d.., units 20 -> 126, shots 2530 -> 6119). 골든 재생성 안 함.
 3. 길찾기: A* 비용에 MoveMul 미사용(속도만, Combat3.cs:159) -> 카드 허용대로 그대로. 여울 실측 감속: 10초 이동 풀밭 30.4 vs 여울 18.3 (비 0.60 = fordMove). 깊은 물은 비통과(T39a 시험 + 기존). 길찾기 비용항 추가 안 함(카드가 요구 안 함; 필요하면 후속 제안).
 4. FindCrossing: 폭 3~6 하천 + 여울(폭 4) -> 건널 곳 폭 4 정상. 폭 1~2 는 minObstacle=3 에 걸려 병목 아님(일반 이동; 여울/다리는 A* 가 사용). tactics.json minObstacle 을 낮추면 기존 지도 1~2칸 장애물(담, 건물열)까지 병목화해 동작 변화 위험 -> 조정 안 함, 판단 요청(질문 2).
 5. NearWater(Suppression.cs:307) = `== TerrainType.Water` 만, Surrender 는 NearWater/IsTerrainWalkable 사용 -> Ford · 다리(dirt) 제외, 기존 지도 불변(코드 확인, 변경 없음).
-6. 시험(KD_SELFTEST_ONLY): crossing PASS(신규 3건 포함) · terrain PASS · tactical PASS · missions PASS, detcheck 골든 일치(8aa6448b9690b922). tactics-obs --choke: 시뮬 코드 변경 없어 불변(미실행).
+6. 시험(KD_SELFTEST_ONLY): crossing PASS(신규 3건 포함) · terrain PASS · tactical PASS · missions PASS, detcheck 골든 일치(8aa6448b9690b922, 기본 설정). minObstacle 불변. tactics-obs --choke: 시뮬 코드 변경 없어 불변(미실행).

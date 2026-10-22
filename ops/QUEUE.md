@@ -14,7 +14,7 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T06 | 사상자 속도 조정 (wip/casualty) | sim | D中~上 R3 SM H2 Wheavy | D19 | blocked(D19) |
 | T07 | 철도 지형 (wip/rail 복원, 장갑열차 제외) | feature → merger | D上 R2 SM H2 Wlight | 없음 (T02 병합됨) | wip-ready |
 | T39a | 하천 1: Ford 지형 + 이동 배수 + paint 폭 (rail 위 스택, FV 54) | feature | D中 R2 S H2 Wlight | rail(T07) | wip-ready |
-| T39b | 하천 2: ClearFor 물 사선 측정 + 길찾기 · 도하 AI · NearWater (river-r2, river-r1 위 스택) | sim | D上 R2 SM H2 Wlight | T39a | question (Q6 골든 변경 -> DECISIONS_PENDING; 시험만 wip) |
+| T39b | 하천 2: ClearFor 물 사선 측정 + 길찾기 · 도하 AI · NearWater (river-r2, river-r1 위 스택) | sim | D上 R2 SM H2 Wlight | T39a | wip-ready (terrain.waterBlocksFire 키 뒤, 기본 true) |
 | T08 | 조작 UI 묶음 + UI 종이 질감 개편 | feature | D中 R1 SM H1 Wlight | T01 | queued |
 | T09 | 캠페인 수직 슬라이스 (0-1→0-2→1-1 한 사이클) | feature | D上 R3 SM H2 Wlight | T01(저장 트랜잭션) | queued |
 | T10 | 통신 알파 ②~④ (대포병 · 야간 · 행군 피로) | sim | D上 R3 SM H3 Wheavy | D15 | blocked(D15) |

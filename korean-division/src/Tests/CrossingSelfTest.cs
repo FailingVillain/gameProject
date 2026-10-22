@@ -129,28 +129,38 @@ public static class CrossingSelfTest
         return w.Map;
     }
 
-    /// <summary>측정 (T39b 선행, 특성화 시험): 현재 물 칸은 직사 사선 (HasFiringLine, rifle los) 을 막는다 (ClearFor: 통행 불가 = 사선 불가). Q6(건너 사격 허용) 적용 시 detcheck 골든이 바뀌어 보류 (DECISIONS_PENDING). 허용으로 바뀌면 이 시험의 기대값을 뒤집는다.</summary>
+    /// <summary>T39b Q6: terrain.waterBlocksFire (기본 true = 현행) — true 면 물 칸이 직사 사선 (HasFiringLine, rifle los) 을 막고, false 면 물 위를 지난다 (이동용 HasLineOfSight 는 항상 막음). 바위 등은 항상 막음. 두 설정 모두 2 사수 실사격으로 확인.</summary>
     static void TestRiverFire()
     {
-        foreach (int rw in new[] { 1, 3, 6 })
+        var T = defs.Terrain;
+        check(T.WaterBlocksFire, "terrain.waterBlocksFire 기본 true (현행 동작 · 골든 불변)");
+        bool save = T.WaterBlocksFire;
+        try
         {
-            var m = RiverMapText(rw, false);
-            var a = new Vector2(28.5f, 32.5f); var b = new Vector2(30 + rw + 1.5f, 32.5f);
-            bool fl = m.HasFiringLine(a, b, 0, 0), los = m.HasLineOfSight(a, b);
-            check(!fl && !los, $"하천 폭 {rw}: 물 건너 사선 {(fl ? "트임" : "막힘")} · 이동용 직선 검사 {(los ? "트임" : "막힘")} (현행: 둘 다 막힘)");
+            foreach (bool blocks in new[] { true, false })
+            {
+                T.WaterBlocksFire = blocks;
+                foreach (int rw in new[] { 1, 3, 6 })
+                {
+                    var m = RiverMapText(rw, false);
+                    var a = new Vector2(28.5f, 32.5f); var b = new Vector2(30 + rw + 1.5f, 32.5f);
+                    bool fl = m.HasFiringLine(a, b, 0, 0), los = m.HasLineOfSight(a, b);
+                    check(fl == !blocks && !los, $"waterBlocksFire={blocks} 폭 {rw}: 물 건너 사선 {(fl ? "트임" : "막힘")} · 이동용 직선 검사 {(los ? "트임" : "막힘")} (이동용은 항상 막힘)");
+                }
+                var mr = RiverMapText(1, false);
+                mr.Set(40, 32, TerrainType.Rock);
+                check(!mr.HasFiringLine(new Vector2(38.5f, 32.5f), new Vector2(42.5f, 32.5f), 0, 0), $"waterBlocksFire={blocks}: 바위는 사선을 막음");
+                var w = TestDefs.Strip(World.CreateStandard(MapFile.LoadText("{\"name\":\"rv\",\"width\":64,\"height\":64,\"base\":\"grass\",\"starts\":[[4,4],[60,60]],\"paint\":[{\"terrain\":\"water\",\"rect\":[30,0,1,64]}]}", "rv", 1), defs));
+                w.Fog.Enabled = false;
+                var s = w.SpawnUnit(defs.Units["infantry"], 1, new Vector2(27.5f, 32.5f));
+                var foe = w.SpawnUnit(defs.Units["infantry"], 2, new Vector2(33.5f, 32.5f));
+                foe.Weapon = null; w.Hold(1, new[] { s }); w.Hold(2, new[] { foe });
+                for (int i = 0; i < 60 * 8; i++) { foe.Hp = 100000; w.Step(); }
+                bool fired = s.LastShotTick > 0 && s.Target == foe;
+                check(fired == !blocks, $"waterBlocksFire={blocks}: 물 한 칸 건너 두 사수 사격 {(fired ? "함" : "안 함")} (틱 {s.LastShotTick})");
+            }
         }
-        {
-            var m = RiverMapText(1, false);
-            m.Set(40, 32, TerrainType.Rock);
-            check(!m.HasFiringLine(new Vector2(38.5f, 32.5f), new Vector2(42.5f, 32.5f), 0, 0), "바위는 사선을 막음");
-        }
-        var w = TestDefs.Strip(World.CreateStandard(MapFile.LoadText("{\"name\":\"rv\",\"width\":64,\"height\":64,\"base\":\"grass\",\"starts\":[[4,4],[60,60]],\"paint\":[{\"terrain\":\"water\",\"rect\":[30,0,1,64]}]}", "rv", 1), defs));
-        w.Fog.Enabled = false;
-        var s = w.SpawnUnit(defs.Units["infantry"], 1, new Vector2(27.5f, 32.5f));
-        var foe = w.SpawnUnit(defs.Units["infantry"], 2, new Vector2(33.5f, 32.5f));
-        foe.Weapon = null; w.Hold(1, new[] { s }); w.Hold(2, new[] { foe });
-        for (int i = 0; i < 60 * 8; i++) { foe.Hp = 100000; w.Step(); }
-        check(s.LastShotTick < 0 && s.Target == null, $"물 한 칸 건너 두 사수 (현행): 사격 없음 · 표적 없음 (사격 틱 {s.LastShotTick} 표적 {s.Target?.Id})");
+        finally { T.WaterBlocksFire = save; }
     }
 
     /// <summary>폭 1~6 하천 + 여울(폭 6): FindCrossing 이 건널 곳을 잡는지 · NearWater 는 Water 만.</summary>
