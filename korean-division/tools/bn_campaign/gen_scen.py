@@ -48,7 +48,19 @@ def rifle_co(fac, k=1):
 
 def mg_units(fac, big):
     f = FAC[fac]
-    return {f['off']: 1, "heavy_maxim": 5 if big else 2, "heavy_machinegunner": 8 if big else 4, "infantry": 4 if big else 3}
+    return mg_mix(fac, 5 if big else 2, 8 if big else 4, 4 if big else 3)
+
+
+# 경기관총 사수는 세력 전용 (balance.json factions): 한국 = heavy_machinegunner, 봉천 · 러시아 = _fengtian, 일본 = 없음 (소총병으로)
+LMG = {'kr': 'heavy_machinegunner', 'ft': 'heavy_machinegunner_fengtian', 'ru': 'heavy_machinegunner_fengtian'}
+
+
+def mg_mix(fac, maxim, lmg, inf):
+    f = FAC[fac]
+    d = {f['off']: 1, "heavy_maxim": maxim}
+    if fac in LMG: d[LMG[fac]] = lmg; d[f['inf'] if fac != 'kr' else 'infantry'] = inf
+    else: d[f['inf']] = inf + lmg
+    return {k: v for k, v in d.items() if v}
 
 
 def forces(cfg):

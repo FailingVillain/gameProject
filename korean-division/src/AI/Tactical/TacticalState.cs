@@ -269,4 +269,5 @@ public sealed class TacFaction
     public int FallbacksSupp;            // 중대 스스로 후퇴 중 제압 판단 (N25) 으로 난 것 (Fallbacks 에 포함)
     // 3B 누계 (측정용): 저탄약 교대 · 사건 투입 (틈 · 돌파 · 측면) · 예비 재지정 · 고정 제대 밀기 (3A 남은 일 1)
     public int AmmoRotations, PlugGaps, PlugBreaches, PlugFlanks, ReserveRedesignations, FixPushes;
+    public int ManReplaces;              // 3B2 기동 제대 대체 중대 지정 수 (strategy.manReplace)
 }

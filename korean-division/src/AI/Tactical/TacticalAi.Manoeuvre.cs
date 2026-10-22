@@ -468,6 +468,7 @@ public sealed partial class TacticalAi
             if (g.Element == ManElement.None || g.Pending || RegimentOfGroup(s, g) != r.Id) continue;
             if (g.Element == ManElement.Manoeuvre) man.Add(g); else fix.Add(g);
         }
+        if (man.Count == 0 && S.ManReplace && ReplaceManoeuvre(w, s, r, fix, man)) fix.Remove(man[0]);   // 3B2: 고정 제대 바깥 중대를 대신 보낸다
         if (man.Count == 0) { s.PlanAborts++; EndPlan(w, s, r, 1); return; }   // 기동 제대가 없어짐 (전멸 · 후퇴 · 조우)
         // 고정 제대 교전: 절반 이상 중대가 사격 중
         if (r.FixTick == 0 && fix.Count > 0)
@@ -504,6 +505,37 @@ public sealed partial class TacticalAi
             if (!release) s.PlanAborts++;
             EndPlan(w, s, r, release ? 0 : 1);
         }
+    }
+
+    /// <summary>
+    /// 3B2 대체 중대 (strategy.manReplace): 기동 제대가 모두 빠졌을 때 고정 제대 중 성한 (소총 · 8명 이상 · 후퇴 · Spent 아님) 중대가 2개 이상이면
+    /// 측면 쪽 바깥 중대 하나를 같은 경유점 · 돌격 진지로 보낸다. 도착 예정 (경로 / 계획 속도) 이 maxArrive 를 넘으면 안 보낸다. 기한은 새 도착 예정에 맞춰 늘린다.
+    /// 성공하면 man 에 그 중대를 넣고 true.
+    /// </summary>
+    bool ReplaceManoeuvre(World w, TacFaction s, TacRegiment r, List<TacGroup> fix, List<TacGroup> man)
+    {
+        var S = s.Profile.Strategy;
+        int nOk = 0; TacGroup? c = null; float best = float.MaxValue;
+        foreach (var g in fix)
+        {
+            if (g.Kind != TacKind.Line || g.Alive < 8 || g.State == TacState.Fallback || g.Spent) continue;
+            nOk++;
+            float dw = Vector2.DistanceSquared(g.Center, r.PlanWay);   // 경유점에 가장 가까운 = 측면 쪽 바깥 중대 (같으면 Id)
+            if (dw < best || (dw == best && c != null && g.Id < c.Id)) { best = dw; c = g; }
+        }
+        if (nOk < 2 || c == null) return false;
+        float v = r.PlanEta > 0 ? MathF.Max(0.5f, r.PlanDetour / r.PlanEta) : 1.5f;
+        float eta = (Vector2.Distance(c.Center, r.PlanWay) + Vector2.Distance(r.PlanWay, r.PlanAxis)) / v;
+        if (eta > S.MaxArrive) return false;
+        c.Element = ManElement.Manoeuvre; c.ManStage = 1; c.ManArrive = 0; c.Task = TacTask.Attack;
+        c.ManWay = r.PlanWay; c.ManGoal = r.PlanAxis; c.ManFace = SafeNorm(r.PlanEnemy - r.PlanAxis, c.ManFace);
+        c.OrderTick = -100000; c.SquadBound = 0;
+        r.ArriveTick = 0;
+        r.PlanDeadline = Math.Max(r.PlanDeadline, w.Tick + Sec(eta * 1.25f + 10f));
+        s.ManReplaces++;
+        man.Add(c);
+        PlanTrace?.Invoke($"  plan R{r.Id} t={w.Tick / 60} 대체 중대 L{c.Id} eta {eta:0}s");
+        return true;
     }
 
     /// <summary>계획 끝 (풀기 · 취소): 제대 표시를 지우고 기동 중대는 적 측면 끝을 향해 보통 공격으로.</summary>

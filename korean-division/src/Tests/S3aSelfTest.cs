@@ -28,6 +28,7 @@ public static class S3aSelfTest
             TestObjectiveMapping();
             TestMissionWithdraw();
             TestSnapshot();
+            TestManReplace();
         }
         catch (Exception e) { check(false, $"s3a 테스트 중 예외: {e.GetType().Name}: {e.Message}\n{e.StackTrace}"); }
     }
@@ -85,6 +86,29 @@ public static class S3aSelfTest
             if (i % 30 == 0 && PlanReg(w) is { } r) return r;
         }
         return PlanReg(w);
+    }
+
+    // ---------------------------------------------------------------- 3B2 대체 중대 (strategy.manReplace)
+
+    static void TestManReplace()
+    {
+        foreach (bool on in new[] { true, false })
+        {
+            var w = MissionWorld(TrenchMission(prof1: on ? "korean+3b_manrepl" : "korean", atk: 4), 3);
+            var r = StepToPlan(w);
+            var s = St(w, 1);
+            if (r == null || r.Plan is not (ManPlan.Flank or ManPlan.Pincer) || r.PlanStage != 1) { check(false, $"대체 중대: 측면 · 협공 계획이 안 생김 ({r?.Plan})"); return; }
+            var gone = s.Groups.Where(g => g.Element == ManElement.Manoeuvre).Select(g => g.Id).ToList();
+            foreach (var g in s.Groups) if (g.Element == ManElement.Manoeuvre) { g.Element = ManElement.None; g.ManStage = 0; }   // 기동 제대 후퇴 (AI 상태만 — 시험용)
+            int aborts = s.PlanAborts;
+            Steps(w, 3);
+            var nm = s.Groups.Where(g => g.Element == ManElement.Manoeuvre).ToList();
+            if (on)
+                check(s.ManReplaces == 1 && r.PlanStage == 1 && nm.Count == 1 && !gone.Contains(nm[0].Id) && nm[0].ManStage == 1 && nm[0].ManWay == r.PlanWay && s.PlanAborts == aborts,
+                    $"manReplace: 기동 제대가 빠지면 고정 중대 L{(nm.Count > 0 ? nm[0].Id : 0)} 를 같은 경유점으로 (대체 {s.ManReplaces}, 계획 단계 {r.PlanStage})");
+            else
+                check(s.ManReplaces == 0 && r.PlanStage == 2 && nm.Count == 0 && s.PlanAborts == aborts + 1, $"manReplace 끔: 기동 제대가 빠지면 계획 취소 (옛 동작, 단계 {r.PlanStage})");
+        }
     }
 
     // ---------------------------------------------------------------- 프로필 · 겹침

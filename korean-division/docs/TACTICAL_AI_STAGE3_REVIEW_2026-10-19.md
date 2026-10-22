@@ -220,3 +220,7 @@
 구현 (ENGINE_NOTES '전술 AI 3단계 B'): S3 사건 투입 (틈 · 돌파 · 측면) · S3 예비 재지정 · 예비 저탄약 교대 — 기본 켬. S8 역습 병력비 (`counterOdds`) · S4 진지 히스테리시스 (`defendRepick`) · 3A 남은 일 1 (고정 제대 밀기 `fixPush` · `fixWait`) — 구현 · 테스트, 기본 끔. S7 교착은 ④ stale 로 이미 main.
 측정 (같은 실행 파일, 기본 대 `no3b`): tactics-obs A/B/C 시드 1~5 = A 2/5 0.85 · B 3/5 0.98→0.94 · C 5/5 0.66 (퇴행 없음), 방어 미션 9판 동일. 3단계 합격표의 bn_campaign C1/C2 (D_* · CTR_* · RIV_*) 는 시간 상한으로 못 함 → 다음 측정.
 남은 일: 3A 남은 일 1 의 '기동 제대 후퇴 시 대체 중대', 2 (협공 고정 몫 축소 — `pincerShare` 값 실험), 4 (MGD_T · D_hill 측정), counterOdds · defendRepick · fixPush 을 C1/C2 시나리오로 재측정 후 켤지 결정.
+
+## 3B2 (2026-10-22, 브랜치 `ai3b2`, opus) — 3A 남은 일 정리
+- 3A 남은 일 1 '기동 제대 후퇴 시 대체 중대' = `strategy.manReplace` 구현 (기본 끔). 남은 일 2 (협공 몫) = `3b_pincer65` 측정: 협공 대신 측면만 골라 승 50→52/80, 섞임. 남은 일 4 (MGD_T · D_hill) = 측정 (기관총 시나리오 생성기 오류 수정 후). counterOdds · defendRepick · fixPush 의 C1/C2 재측정 = ENGINE_NOTES '전술 AI 3B2' — counterOdds 발동 0, 나머지 차이 ≤1승 → **기본값 그대로 (끔)**.
+- 합격표 3B 지표 중 방어 예비 · 역습 · 곤경 투입은 C1/C2 방어 측이 2개 중대 (예비 없음) 라 측정 불가 → `gen_scen4` DR_* 를 병합 큐 뒤 통합 측정으로 이월 (코디네이터 지시). '방어 24칸 안 ≥50%' 는 90명 중대 정면 (≈30칸) 상 중심 거리 24칸이 거의 불가능 — 지표 재정의 필요 (DECISIONS_PENDING).

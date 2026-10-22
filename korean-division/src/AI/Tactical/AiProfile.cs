@@ -100,6 +100,8 @@ public sealed class StrategyProfile
     public bool FixPush = false;
     public float FixPushSec = 8f;
     public float FixWait = 20f;
+    /// <summary>3B2 (3A 남은 일 1 — 대체 중대): 측면 · 협공 계획 중 기동 제대가 모두 빠지면 (후퇴 · 조우 · 전멸) 고정 제대의 바깥 중대 하나를 새 기동 중대로 (고정 1개 이상 남김).</summary>
+    public bool ManReplace = false;
     public object Clone() => MemberwiseClone();
 }
 
