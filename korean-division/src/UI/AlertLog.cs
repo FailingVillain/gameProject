@@ -83,6 +83,7 @@ public sealed class AlertLog
     {
         var res = new List<Result>();
         if (!ReferenceEquals(seenWorld, w)) { Clear(); seenWorld = w; }
+        if (me <= 0) return res;   // 관전 · 리플레이 (Me=0): 플레이어 세력이 아니면 경보 · 효과음 · 공지 모두 없음 (중립 건물 Owner==0 오경보 방지)
         if (w.LastAttacked.TryGetValue(me, out var atk) && atk.Tick != lastAttackTick)
         {
             lastAttackTick = atk.Tick;
@@ -93,7 +94,7 @@ public sealed class AlertLog
             if (!b.Def.Capturable) continue;
             bool was = contested.TryGetValue(b.Id, out var c) && c;
             contested[b.Id] = b.Contested;
-            bool mine = b.Owner == me || (b.Owner > 0 && me > 0 && w.Allied(me, b.Owner));
+            bool mine = b.Owner == me || (b.Owner > 0 && w.Allied(me, b.Owner));
             if (seeded && mine && b.Contested && !was) res.Add(Feed(AlertKind.SiteContested, b.Pos, now));
         }
         seeded = true;
@@ -119,6 +120,6 @@ public sealed class AlertLog
     public static string Line(Entry e, double now)
     {
         string s = $"{Ago(now - e.LastTime)} · {KindName(e.Kind)} · {Zone(e.Pos)}";
-        return e.Count > 1 ? s + $" x{e.Count}" : s;
+        return e.Count > 1 ? s + string.Format(S.AlertRepeat, e.Count) : s;
     }
 }

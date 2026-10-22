@@ -181,6 +181,40 @@ public static class UiIconsSelfTest
         check(KoreanDivision.UI.AlertLog.Zone(new Vector2(0, 0)) == "A1" && KoreanDivision.UI.AlertLog.Zone(new Vector2(40, 33)) == "C3", "알림: 구역 표기 16칸 격자 (A1, C3)");
         check(KoreanDivision.UI.AlertLog.Ago(3) == KoreanDivision.UI.S.AlertJustNow && KoreanDivision.UI.AlertLog.Ago(125).StartsWith("2"), "알림: 경과 표기 (방금 · N분 전)");
         check(KoreanDivision.UI.UserSettings.AlertBand, "알림 띠 기본값 = 켜짐");
+        // 관전 · 리플레이 (Me=0) 오경보 방지: 중립 시설(Owner 0)이 분쟁 상태가 돼도 항목 없음 / 플레이어 세력은 기존대로
+        try
+        {
+            var d0 = Defs.Current; var m0 = new GameMap(40, 40, 1);
+            for (int y = 0; y < 40; y++) for (int x = 0; x < 40; x++) m0.Set(x, y, TerrainType.Grass);
+            var w = new World(m0, d0, 2) { RecordCommands = false };
+            var site = w.PlaceBuilding(d0.Headquarters, 0, 10, 10)!;
+            var obs = new KoreanDivision.UI.AlertLog();
+            obs.Poll(w, 0, 1); site.Owner = 0; site.Contested = true;
+            check(obs.Poll(w, 0, 2).Count == 0 && obs.Entries.Count == 0, "알림: 관전(me=0) 은 중립 시설 분쟁에도 항목 · 효과음 · 공지 없음");
+            site.Contested = false; site.Owner = 1;
+            var pl = new KoreanDivision.UI.AlertLog();
+            pl.Poll(w, 1, 1); site.Contested = true;
+            var pr = pl.Poll(w, 1, 2);
+            check(pr.Count == 1 && pr[0].Notice && pr[0].Sound && pl.Entries.Count == 1, "알림: 플레이어(me=1) 는 자기 시설 분쟁에 기존대로 알림");
+        }
+        catch (Exception ex) { check(false, $"알림 관전 테스트 예외: {ex.GetType().Name}: {ex.Message}"); }
+        // 1024x640 띠 위치: 화면 안 · 상단 막대/하단 HUD/대대 막대와 겹치지 않음
+        {
+            float W = 1024, H = 640;
+            var bottom = new Raylib_cs.Rectangle(0, H - Config.HudHeight, W, Config.HudHeight);
+            var view = new Raylib_cs.Rectangle(0, Config.TopBarHeight, W, H - Config.TopBarHeight - Config.HudHeight);
+            float barY = KoreanDivision.UI.Hud.BarYAt(bottom.Y);
+            var groupBar = new Raylib_cs.Rectangle(8, barY, W - 16, 40);
+            bool ok = true; string why = "";
+            for (int n = 1; n <= 3; n++) for (int i = 0; i < n; i++)
+            {
+                var r = KoreanDivision.UI.Hud.AlertRowRect(view, barY, n, i);
+                bool inside = r.X >= 0 && r.Y >= Config.TopBarHeight && r.X + r.Width <= W && r.Y + r.Height <= bottom.Y;
+                bool hitBar = r.Y + r.Height > groupBar.Y && r.Y < groupBar.Y + groupBar.Height && r.X < groupBar.X + groupBar.Width && r.X + r.Width > groupBar.X;
+                if (!inside || hitBar) { ok = false; why = $"n={n} i={i} {r.X:0},{r.Y:0},{r.Width:0},{r.Height:0}"; }
+            }
+            check(ok, "알림 띠(1024x640): 화면 안 · 상단 버튼줄 · 하단 HUD · 대대 막대와 겹치지 않음 " + why);
+        }
         check(KoreanDivision.UI.Bindings.All().Count(b => b.Key == "Backspace") == 1, "Backspace 는 도움말 목록에 한 번 (최근 알림 이동)");
     }
 

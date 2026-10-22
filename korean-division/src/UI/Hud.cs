@@ -167,11 +167,18 @@ public sealed class Hud : IDisposable
         if (!UserSettings.AlertBand || game.Observer) yield break;
         double now = Raylib.GetTime();
         var shown = game.Alerts.Entries.Where(e => now - e.LastTime <= AlertHideAfter).TakeLast(AlertRows).ToList();
-        float w = MathF.Min(300, MathF.Max(120, Viewport.Width * 0.4f));
-        float bottom = BarY - 6;
-        for (int i = 0; i < shown.Count; i++)
-            yield return (shown[i], new Rectangle(Viewport.X + 8, bottom - (shown.Count - i) * AlertRowH, w, AlertRowH - 2));
+        for (int i = 0; i < shown.Count; i++) yield return (shown[i], AlertRowRect(Viewport, BarY, shown.Count, i));
     }
+
+    /// <summary>띠 i 번째 칸 (순수 계산 — 시험이 1024x640 에서 고정). 대대 막대(barY) 바로 위, 뷰포트 왼쪽.</summary>
+    public static Rectangle AlertRowRect(Rectangle viewport, float barY, int count, int i)
+    {
+        float w = MathF.Min(300, MathF.Max(120, viewport.Width * 0.4f));
+        return new Rectangle(viewport.X + 8, barY - 6 - (count - i) * AlertRowH, w, AlertRowH - 2);
+    }
+
+    /// <summary>대대 막대 위 y (하단 HUD 위 y 에서).</summary>
+    public static float BarYAt(float bottomY) => bottomY - GroupH - 6;
 
     public AlertLog.Entry? AlertAt(Vector2 p)
     {
@@ -195,7 +202,7 @@ public sealed class Hud : IDisposable
 
     // ---- 대대 막대: 뷰포트 왼쪽 아래(하단 HUD 바로 위). 맨 앞 [기본] 대형 단추 + 편성된 대대 1~9. 위쪽 = 선택, 아래쪽 = 대형 단추
     const float GroupW = 80, GroupH = 40, GroupGap = 4, GroupFormH = 17;
-    float BarY => Bottom.Y - GroupH - 6;
+    float BarY => BarYAt(Bottom.Y);
 
     IEnumerable<(int N, Rectangle R)> BatSlots()
     {

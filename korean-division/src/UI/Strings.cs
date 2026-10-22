@@ -189,7 +189,9 @@ public static partial class S
     public const string SetAlertBand = "교전 알림 띠";
     public const string SetAlertBandOn = "띠 켬";
     public const string SetAlertBandOff = "띠 끔";
-    public const string SetAlertBandNote = "미니맵 위 알림 목록. 클릭 · Backspace = 그 위치로 이동";
+    public const string SetAlertBandNote = "화면 왼쪽 아래(대대 막대 위) 알림 목록. 클릭 · Backspace = 그 위치로 이동";
+    public const string AlertRepeat = " x{0}";
+    public const string KeyAlertJump = "최근 교전 알림 위치로 이동";
     public const string BuildPending = "{0} 건설: 위치를 좌클릭  (Shift: 연속 · 우클릭/Esc: 취소)";
     public const string Victory = "승리!";
     public const string Defeat = "패배";
