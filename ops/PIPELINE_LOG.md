@@ -153,6 +153,7 @@
 | 13:5x | 사용자 결정: AI 관전 유지·다자간 대결 숨김만·AI vs AI 미션을 관전 탭으로 이동·교전 테스트/빠른 교전은 나중에 검토. → T45 발주(feature sonnet, main 위; 게이트 수정본 `-ExecutionPolicy Bypass` 명령 명시). T40 wip-ready(2de288d): 열차 전멸 판정(AliveCars), FV59 유지 | 완료 ~53 |
 | 13:5x | T32a wip-ready(sonnet, 97k, 2560초; kd/t32a-pioneer 26cc9fd): infantry_pioneer(hp100·속도3.2·제압저항 0.75·소총+총검·수류탄2·wireCutter·한국군 전용·편성 미포함), artAs=infantry_regular 임시, pioneer 그룹 등 PASS, 골든 일치. 발주: T32d 그림(art sonnet, t32a 위, 재렌더 res96 파이프라인 재사용) | AI 규칙 T32b·c 는 0.4 |
 | 13:5x | T41 충돌 로그 부분(sonnet, 100k, 1553초; kd/crash-log 675090f): 구현·시험 코드 작성 완료, 옛 게이트 30분+ 대기로 빌드/시험 미실행. 수정 게이트 경로로 재개 지시(SendMessage) | 게이트 수정 반영 중 |
+| 14:0x | T39b question 으로 종료(sonnet, 108k, 1334초; river-r2 7a8b242): ClearFor 가 물 위 사격 전부 차단(폭 1/3/6 확인), 허용 시 골든 변경(units 20→126) → 되돌림. 지휘자 판단으로 `terrain.waterBlocksFire`(기본 true) 스위치화 후 wip-ready 하도록 재개 지시, 기본 전환은 0.3 | 사용자 질문 없이 진행(AR1 기록) |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
