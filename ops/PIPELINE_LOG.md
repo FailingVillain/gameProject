@@ -158,6 +158,7 @@
 | 14:0x | 사용자 승인: AQ3·AP1(노출 유지)·AO1(추천안)·AN1 종결. AO1 적용: heavy_gate.ps1 기본 Max 8→10 + 빈 RAM 3GB 미만이면 닫힘(RAM 가드), 시험 통과·'gate open heavy=7', LIMITS 갱신. T41 충돌 로그 wip-ready(sonnet, 109k; kd/crash-log 69320b1): crashlog 9/9, uifuzz 0, 골든 일치, 실제 충돌 경로 로그 생성(종료 코드 127 은 의도 일치 미확인). 사용자 식사 1시간 → 자율 속행 크론 | |
 | 14:0x | T45 wip-ready(sonnet, 132k, 432초; kd/t45-menu-hide 88735b1): 플레이 버튼 DevMenu 뒤(--dev-menu·KD_DEV_MENU=1), 관전 설정 인원 2 고정·4인 지도 칩 제거(지시 밖 확장 — 확인), AI vs AI 미션 7개(spectate:true 근거: ai_bn_assault·ai_bn_meeting·ai_kr_vs_ft_1000·ai_kr_vs_jp_trench·armour_test·bandit_raid·units_showcase)를 관전 탭 목록으로 이동(미션 메뉴 17→10), menuhide 12항목·uifuzz·골든 일치, 스크린샷 t45_*.png. 발주: T45 리뷰(sonnet) | 완료 ~56 |
 | 14:0x | T33b wip-ready(sonnet, 177k — 한도 근접, 2352초; kd/t33b-map-ui 9fb5363 + c5b30f4 체리픽 5207b8f): 별도 Raylib exe MapEditor.App, 브러시·선·사각·원·채움·지우개·지형 11종·고지·격자·열기/저장/undo, 드래그 중 미리보기·마우스 뗄 때 커밋, --script 입력 재생·--selftest(모든 버튼 클릭 확인, 3개 해상도), 시험 1735+264 pass/0 fail, 게임 코드 불변. 게이트 25분 대기 후 수정본으로 통과(우회 없음). 발주: T33c(sonnet, t33b 위: 소품·시설·시작점·구역·검사 패널·시험 플레이) | 완료 ~57 |
+| 14:0x | T35 wip-ready(opus, 151k, 3215초=54분; kd/isai-restore 5c08a38): IsAi 를 읽는 sim 은 Surrender.cs:39 하나, 리플레이 재생에서 AI 가 안 붙는 결함은 자유전뿐 아니라 **미션 리플레이도 동일**(WorldMission.cs:77 은 실제 게임에서만 실행)했음. 리플레이 머리말 AiFactions(Replay 24)+체크섬 `if (f.IsAi) h.Add(0x4149)`(AI 아닌 세력은 불변 → 골든 그대로)+FV60. 시험: 재생 체크섬 일치·항복 27 대 27, 머리말 제거 시 어긋남 재현, replay 31 OK 등, 8변형 골든 일치. 발주: T35 리뷰(sonnet) | 완료 ~58 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
