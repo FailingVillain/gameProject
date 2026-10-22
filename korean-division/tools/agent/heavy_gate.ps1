@@ -20,7 +20,8 @@ function Get-HeavyLane([string]$Name, [string]$CmdLine) {
     if ($CmdLine -match 'build|KoreanDivision\.dll|MSBuild\.dll') { return 'validate' }
     return $null
   }
-  if ($Name -eq 'python.exe' -and $CmdLine -match 'make_unit|rerender96') { return 'render' }
+  # Only the actual render child (make_unit) is heavy; the rerender96 driver just waits on it. Counting both double-counted every lane (2026-10-22: 4 lanes = 8 heavy -> gate closed for all builds).
+  if ($Name -eq 'python.exe' -and $CmdLine -match 'make_unit') { return 'render' }
   return $null
 }
 

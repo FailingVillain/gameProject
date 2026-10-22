@@ -11,7 +11,7 @@ Ok ($null -eq (Get-HeavyLane 'KoreanDivision.exe' 'C:\a\dist\KoreanDivision.exe 
 Ok ((Get-HeavyLane 'dotnet.exe' 'dotnet build x.csproj') -eq 'validate') 'dotnet build=validate'
 Ok ((Get-HeavyLane 'dotnet.exe' 'dotnet KoreanDivision.dll --collide') -eq 'measure') 'dll collide=measure'
 Ok ((Get-HeavyLane 'python.exe' 'python make_unit.py') -eq 'render') 'make_unit=render'
-Ok ((Get-HeavyLane 'python.exe' 'python rerender96.py') -eq 'render') 'rerender96=render'
+Ok ($null -eq (Get-HeavyLane 'python.exe' 'python rerender96.py')) 'rerender96 driver is not heavy (child make_unit is)'
 Ok ($null -eq (Get-HeavyLane 'python.exe' 'python other.py')) 'other python ignored'
 Ok (Test-GateOpen (C 3 3 1) 'render' 8 $false) 'render below limit passes when others full'
 Ok (-not (Test-GateOpen (C 3 3 2) 'validate' 8 $false)) 'total 8 blocks'
