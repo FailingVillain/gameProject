@@ -32,3 +32,4 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 보류(이 표 밖): 장갑열차 · 하천 · 전술 AI 3C/3D · 지도 편집기 · 캠페인 순서 연결/챕터 1/엔딩.
 | T38g | UI 하네스 (퍼즈 작은 버튼 + 화면x3해상도 시트) | feature | D中 R1 S H0 Wlight | 없음 (run_game.ps1 = tools/monitor-launch, 복사 포함) | wip-ready (t38g-ui-harness, NO-MERGE 스택: t27-cmd-ui2 위) |
 | T38b | 게임 내 도움말 오버레이 (F1, Bindings 단일 출처 + CONTROLS 동기 테스트) | feature | D中 H1 R1 S Wlight | T38g (스택) | wip-ready (t38b-help-overlay, NO-MERGE 스택: t38g-ui-harness 위) |
+| T38l | 게임 제목 문자열 교체 (창 전체 영문 제목 · 메인 메뉴 3줄 · HUD 짧은 형태 · 부대명 상수) | feature | D中 H1 Wlight | T38a (스택) | wip-ready (t38l-title-strings, NO-MERGE 스택: t38a-settings-keys 위) |

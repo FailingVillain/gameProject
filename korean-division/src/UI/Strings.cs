@@ -13,7 +13,12 @@ public static partial class S
     public const string SymStrength = "병력";
     public const string SymAmmoAvg = "탄약 평균";
     public const string SymSuppAvg = "제압 평균";
+    // 제목 (2026-10-22 확정). 짧은 형태 = HUD · 로고 줄, 전체 = 창 제목.
     public const string GameTitle = "KOREAN DIVISION";
+    public const string GameTitleFull = "KOREAN DIVISION : MARCH ON MANCHURIA";
+    public const string GameTitleSub = "MARCH ON MANCHURIA";
+    public const string GameTitleKo = "대한 사단 : 북벌 1920";
+    public const string UnitNameKo = "제17 대한 사단";
     // 날씨 · 시간대 (WeatherKind · TimeOfDay 순서)
     public const string WeatherNames = "맑음|흐림|안개|비|눈";
     public const string TimeNames = "새벽|낮|해질녘|밤";
