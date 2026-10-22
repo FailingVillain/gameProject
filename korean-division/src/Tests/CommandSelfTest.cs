@@ -1,5 +1,6 @@
 using System.Numerics;
 using KoreanDivision.Core;
+using KoreanDivision.UI;
 
 namespace KoreanDivision.Tests;
 
@@ -30,6 +31,7 @@ public static class CommandSelfTest
             TestXpEffects();
             TestSnapshot();
             TestMissionResults();
+            TestBattleAutosave();
         }
         catch (Exception e) { check(false, $"지휘 계급 테스트 중 예외: {e.GetType().Name}: {e.Message}\n{e.StackTrace}"); }
     }
@@ -361,6 +363,26 @@ public static class CommandSelfTest
       "objectives": [ { "id": "o", "type": "eliminate", "tag": "boss" }, { "id": "o2", "type": "defend", "seconds": 999 } ] }
     """;
 
+    static void TestBattleAutosave()
+    {
+        var st = SaveManager.BattleState.Initial;
+        long L = SaveManager.BattleLullTicks, G = SaveManager.BattleSaveGap; int M = SaveManager.BattleShotMin;
+        long t = 100_000;
+        check(SaveManager.BattleSaveDue(ref st, t, M), "전투 자동 저장: 조용한 뒤 사격 BattleShotMin 발 이상이면 저장");
+        check(!SaveManager.BattleSaveDue(ref st, t + 1, M + 5), "전투 자동 저장: 같은 교전 중에는 반복하지 않음 (실패해도 매 프레임 반복 없음)");
+        for (long k = 2; k < 50; k++) if (SaveManager.BattleSaveDue(ref st, t + k, M)) { check(false, "전투 자동 저장: 교전 지속 중 재저장 없음"); break; }
+        long t2 = t + 50 + L;   // 조용한 시간 경과 → 재무장, 하지만 간격 미달
+        SaveManager.BattleSaveDue(ref st, t2, 0);
+        check(!SaveManager.BattleSaveDue(ref st, t2 + 1, M), "전투 자동 저장: 최소 간격(2분) 안이면 재무장돼도 저장 안 함");
+        check(!SaveManager.BattleSaveDue(ref st, t2 + 2, M), "전투 자동 저장: 간격 미달로 소비된 뒤에도 반복 없음");
+        long t3 = t + G + L + 100;
+        SaveManager.BattleSaveDue(ref st, t3, 0);
+        SaveManager.BattleSaveDue(ref st, t3 + L, 0);
+        check(SaveManager.BattleSaveDue(ref st, t3 + L + 1, M), "전투 자동 저장: 조용한 시간 + 간격 경과 뒤 다시 저장 (재무장)");
+        var s2 = SaveManager.BattleState.Initial;
+        check(!SaveManager.BattleSaveDue(ref s2, t, M - 1), "전투 자동 저장: 사격 BattleShotMin 미만이면 저장 안 함");
+    }
+
     static void TestMissionResults()
     {
         var d = MissionDef.Parse(MissionJson, "t_command");
@@ -384,6 +406,14 @@ public static class CommandSelfTest
             "미션 결과: 장교 정식 계급 · 임시 진급 · 경험치 · 직책 기록 (사병은 없음)");
         string json = System.Text.Json.JsonSerializer.Serialize(res, CommandJson.Options);
         check(json.Contains("\"xp\"", StringComparison.OrdinalIgnoreCase) && json.Contains("\"tempRank\"", StringComparison.OrdinalIgnoreCase), "결과 json 에 xp · tempRank");
+        check(res.Companies.Count > 0 && res.Companies.All(c => c.Alive <= c.Initial && c.Alive >= 0) && json.Contains("\"companies\"", StringComparison.OrdinalIgnoreCase), "전과 보고: 중대별 요약 (잔존 ≤ 편성) 이 결과에 포함");
+        {
+            long tot(Dictionary<int, long[]> d) { long n = 0; foreach (var c in d.Values) foreach (long x in c) n += x; return n; }
+            bool same = res.LossCause.Count == w.Stats.LossCause.Count && w.Stats.LossCause.All(kv => res.LossCause.TryGetValue(kv.Key, out var c) && c.Length == 3 && c.SequenceEqual(kv.Value));
+            check(same && tot(res.LossCause) == tot(w.Stats.LossCause), "전과 보고: 사상 원인 합계가 통계와 일치 (사격 · 근접 · 포격)");
+            foreach (var c in res.LossCause.Values) c[0] += 1000;
+            check(tot(res.LossCause) != tot(w.Stats.LossCause) || res.LossCause.Count == 0, "전과 보고: 사상 원인은 복사본 (통계 원본 불변)");
+        }
         // 임시 진급한 장교는 진급 후보
         p1[0].Hp = 0;
         for (int i = 0; i < 2; i++) w.Step();

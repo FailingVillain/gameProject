@@ -624,6 +624,7 @@ public sealed partial class Game : IDisposable
         }
 
         AutosaveIfDue();
+        BattleAutosave();
         ConsumeWorldEvents();
         Sfx.EndFrame();
         double now = Now;
@@ -1922,6 +1923,19 @@ public sealed partial class Game : IDisposable
         if (slot <= autosaveSlot) return;
         autosaveSlot = slot;
         SaveGame(SaveManager.AutosaveName(World.Tick), auto: true);
+    }
+
+    SaveManager.BattleState battleState = SaveManager.BattleState.Initial;
+
+    /// <summary>
+    /// 큰 교전 직전 자동 저장 (미션만): 조용한 시간 (BattleLullTicks, 사격 없음) 뒤에 사격이 한꺼번에 BattleShotMin 발 이상 되면
+    /// 그 틱 경계에서 'autosave_battle' 슬롯 한 개를 덮어쓴다. 월드를 읽기만 한다 (시뮬 결과 무관). 최소 간격 BattleSaveGap.
+    /// 판정은 SaveManager.BattleSaveDue (순수 함수 — 셀프테스트 대상).
+    /// </summary>
+    void BattleAutosave()
+    {
+        if (IsReplay || World.Winner != 0 || World.Mission == null || SaveManager.AutosaveTicks <= 0) return;
+        if (SaveManager.BattleSaveDue(ref battleState, World.Tick, World.Shots.Count)) SaveGame(SaveManager.BattleName, auto: true);
     }
 
     void ConsoleSave(string? name)

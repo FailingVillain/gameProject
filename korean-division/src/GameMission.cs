@@ -150,7 +150,7 @@ public sealed partial class Game
         get
         {
             var vp = Hud.Viewport;
-            float w = MathF.Min(760, vp.Width - 40), h = MathF.Min(520, vp.Height - 30);
+            float w = MathF.Min(760, vp.Width - 40), h = MathF.Min(660, vp.Height - 30);
             return new Rectangle(vp.X + (vp.Width - w) / 2, vp.Y + (vp.Height - h) / 2, w, h);
         }
     }
@@ -276,6 +276,32 @@ public sealed partial class Game
         if (World.Winner != 0) DrawMissionResults(m);
     }
 
+    /// <summary>전과 보고 (읽기 전용 집계): 사상 원인 비율 · 중대별 요약. 공간이 모자라면 아래 줄을 자른다.</summary>
+    void DrawBattleReport(MissionResults r, Rectangle p, float x1, float x2, float y0)
+    {
+        float limit = p.Y + p.Height - 62;
+        float yl = y0;
+        if (yl + 22 <= limit) { Ui.Text(S.RsCauses, x1, yl, 16, Palette.Accent); yl += 22; }
+        foreach (var f in r.Factions)
+        {
+            if (yl + 20 > limit) break;
+            if (!r.LossCause.TryGetValue(f.Id, out var c)) continue;
+            long tot = c[0] + c[1] + c[2];
+            if (tot <= 0) continue;
+            Ui.Text(string.Format(S.RsCauseFmt, f.Name, c[0] * 100 / tot, c[1] * 100 / tot, c[2] * 100 / tot), x1, yl, 16, Palette.Player(f.Id));
+            yl += 20;
+        }
+        float yr = y0;
+        if (r.Companies.Count == 0 || yr + 22 > limit) return;
+        Ui.Text(S.RsCompanies, x2, yr, 16, Palette.Accent); yr += 22;
+        foreach (var c in r.Companies)
+        {
+            if (yr + 20 > limit) break;
+            Ui.Text(string.Format(S.RsCompanyFmt, c.Number, c.Alive, c.Initial, c.Kills), x2, yr, 16, Palette.Text);
+            yr += 20;
+        }
+    }
+
     void DrawMissionResults(MissionState m)
     {
         var r = missionResults ??= MissionResults.From(World);
@@ -303,6 +329,7 @@ public sealed partial class Game
         foreach (var u in r.TopUnits) { Ui.Text($"#{u.Id} {u.Name}  {u.Kills}", x1, yl, 16, Palette.Text); yl += 20; }
         yl += 8;
         Ui.Text($"{S.RsPromotions}  {string.Format(S.RsPromotionsN, r.Promotions.Count)}", x1, yl, 16, Palette.Text);
+        DrawBattleReport(r, p, x1, x2, yl + 28);
         for (int i = 0; i < m.Def.Objectives.Count; i++)
         {
             var o = m.Def.Objectives[i];
