@@ -185,6 +185,7 @@
 | 15:0x | 포로 이중집계 수정 완료(sonnet, 55k, 99초; t42d 06ee9bd): EnemyKills = 스폰−생존−항복, 포로는 EnemyCaptured 로만, 항복 꺼짐 기본에서 결과 불변, savecompat·missions·골든 PASS. 열린 항목 = 패배 분기(죽은 코드)만. 참고: 적 FactionLine.Lost 는 항복 포함 유지 → 최종 T42d 팁 06ee9bd | 완료 ~77 |
 | 15:0x | crossing 진단·수정 완료(sonnet, 95k, 835초; kd/t24-crossing-fix 390763a, t24-s1s3 07ac80c 위): 원인 = T24 ② observerMinEnemyDist=15 (TacticalAi.Artillery.cs ObserverThink 693-731) — 도하 중 관측반이 15칸 밖으로 물러나 곡사포가 건너편을 못 봄(②끔 시 통과, 12 통과/9 실패). 수정 = 도하 단계(FireBase/Crossing/Bridgehead)에서 keep=0, 키·기본 15 불변, crossing/tactical/officer/command PASS, 교두보 348초·승리 545초(②끔과 동일), 골든 불변. 미실행: uifuzz·snaptest·8변형·전체 selftest. 카드 없음(병합 때 t24-s1s3 뒤에 얹기) | 완료 ~78 · 병합 블로커 해소 |
 | 15:0x | 사용자: 전투공병 엎드려쏴 총구 잘림 → art 수정 발주(t32d 위, 공병만 재렌더) | 진행 |
+| 15:0x | T39d wip-ready(sonnet, 108k, 321초; river-r4-bridge 9d4b7be, river-r3 위): 지형 Bridge(바이트 13; 이동×1·엄폐 없음·사선 비차단), 지도에서 칠해야만 생겨 기본 꺼짐·기존 지도 불변, BridgeRenderer(널빤지·난간), FV 55(브랜치 내; 병합 때 63 후보로 재번호), terrain 7·crossing 시험 추가 PASS, snaptest·uifuzz·골든 일치. 미완: river_terrain.png 시트 갱신(게임 창 캡처 미실시), 지도 편집기 지형 목록에 Bridge 추가 필요 | 완료 ~79 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |

@@ -30,3 +30,5 @@
 river-r1 (T39a) FV 54 / Replay 변경 없음, 기반 rail, wip-ready 5b7b9f1. river-r2·r3 는 새 상태 없을 때 변경 없음.
 
 **정정(2026-10-22 14:4x, 통합 리허설 실측):** 병합 순서대로 합치면 실제 번호는 breach2 53/R20 · orderq2 54/R21 · ai3b2 55 · t10 57/R22 · rail 58 · t30a 59/R23 · t30b 60. 따라서 IsAi 복원(AF1, T35) = **61 / Replay 24**, AI 난이도 배수(AE2) = **62 / Replay 25**, T32b/T32c 는 63/64 이후(필요 시). 병합 직전 tools/fv-renumber 로 재번호 (골든은 FV 만으로는 안 변함, 체크섬 변화는 breach2→t24→t25 세 곳뿐 → 새 골든 bef5ffb0 822cdacd, 사용자 지시 시 재생성).
+
+**T39d 다리(river-r4-bridge 9d4b7be, river-r3 위, 2026-10-22 15:0x):** 지형 `Bridge`(바이트 13) 추가로 브랜치 내 FormatVersion 55(river-r1 54 위), Replay 불변. 병합 시 river 스택(rail→r1→r2→r3→r4)은 rail 58·t30a 59·t30b 60·IsAi 61·AE2 62 뒤로 재번호 필요 → 후보 63. 지도 편집기(T33)의 지형 목록에도 Bridge 추가 필요(T33c/T33d 에 전달).
