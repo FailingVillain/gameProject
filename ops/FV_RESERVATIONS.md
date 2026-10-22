@@ -28,3 +28,5 @@
 예약 후보: T34c TacRegiment 필드 1개 = FV 64 (Replay 변경 없음), 기반 ai3b2 스택.
 예약 후보: T39a 하천 Ford = rail+1 → 이 브랜치 FV 54 (병합 시 재번호), T39b·c 는 새 상태 없을 때 변경 없음.
 river-r1 (T39a) FV 54 / Replay 변경 없음, 기반 rail, wip-ready 5b7b9f1. river-r2·r3 는 새 상태 없을 때 변경 없음.
+
+**정정(2026-10-22 14:4x, 통합 리허설 실측):** 병합 순서대로 합치면 실제 번호는 breach2 53/R20 · orderq2 54/R21 · ai3b2 55 · t10 57/R22 · rail 58 · t30a 59/R23 · t30b 60. 따라서 IsAi 복원(AF1, T35) = **61 / Replay 24**, AI 난이도 배수(AE2) = **62 / Replay 25**, T32b/T32c 는 63/64 이후(필요 시). 병합 직전 tools/fv-renumber 로 재번호 (골든은 FV 만으로는 안 변함, 체크섬 변화는 breach2→t24→t25 세 곳뿐 → 새 골든 bef5ffb0 822cdacd, 사용자 지시 시 재생성).

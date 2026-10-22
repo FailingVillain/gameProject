@@ -179,6 +179,7 @@
 | 14:4x | T42c wip-ready(sonnet, 131k, 296초; t42c-prisoners 66e7637, t42b 위): 포로 장부·송환/수용(탭 7), 스키마 v6(추가만, v3~v5 이행), 기존 Surrendered 집계 재사용(시뮬·FV 불변), 항복 꺼짐 기본에서 0. savecompat 15건 추가·골든 일치. **갭**: uifuzz --fuzz-menu 가 캠페인 홈에 도달 못함(캠페인 화면 퍼즈 미커버) → T38g 후속 카드 후보 | 완료 ~72 |
 | 14:4x | T42d wip-ready(sonnet, 123k, 246초; t42d-schedule-log 0d5a676, t42c 위): 스키마 v7(Day·Timeline 200건, v3~v6 이행), 첫 승리 정산 시 일수(missionDays 임시 1), 탭 14 연표(읽기 전용)·탭 12 [N일] 접두, savecompat 10건·골든 일치. T42a~d 체인 완료 → 체인 리뷰 발주(sonnet) | 완료 ~73 |
 | 14:4x | T42a~d 체인 리뷰(sonnet, 94k, 76초): 차단 0, 병합 가능. 비차단 7: ①항복자 EnemyKills·포로 이중 계산(항복 켤 때; 사용자 결정) ②패배 분기 죽은 코드 ③마지막 미션 재승리 시 진급 정원 초기화 ④장교 XP 미소모로 연속 진급 ⑤Day/Timeline 상한 없음 ⑥첫 미션 전 이벤트 Day=0 ⑦경제 JSON null 원소 시 전체 폴백. → ③⑤⑥ 수정 발주(sonnet, t42d 위); ①②④⑦ 은 카드에 미결로 기록 | 리뷰 완료 |
+| 14:5x | **통합 리허설 완료**(sonnet, 202k, 6088초; integration/rehearsal 984c404, 측정 생략): 전 스택 병합 충돌 대부분 ops 문서·버전 줄(기계적), 어려운 곳 = 캠페인 스택(같은 수정 두 벌: gemini-import 뒤 t19d 만 병합 권장), t30a/t30b(열차 저장 위치; t30b 부터 또는 재스택). 실제 FV: breach2 53/R20 … rail 58 · t30a 59/R23 · t30b 60 → IsAi 61/24, AE2 62/25 로 예약표 정정. 체크섬 변화 3곳(breach2→t24→t25) → 통합 골든 bef5ffb0 822cdacd. 전체 selftest FAIL 4: ①uiicons 11버튼(T38c 로 해소 경로) ②crossing 2건 — T24 의심(t24 단독도 실패, 07ac80c 재확인 필요) ③안개 0.311ms(부하 탓 추정). snaptest·uifuzz OK. → crossing 진단 발주 | 완료 ~74 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
