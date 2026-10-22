@@ -196,6 +196,7 @@
 | 15:2x | **병합 계획서 작성**(sonnet, 132k; ops/MERGE_PLAN.md, 질문 6건은 DECISIONS_PENDING): 그룹 A~H 단계표, main 직접 병합 대신 merge/0.2 작업 트리에서 합친 뒤 --ff-only, 번호 rail58·t30a59·t30b60·IsAi61·river63·다리64·연막65(AE2 62 비움), T36/T37 골든 변경으로 최종 골든은 bef5ffb0과 다를 수 있음(재생성은 사용자 OK 후 1회). t38h 는 계획서에서 제외(→ 지휘자 확인: 별도 신규 작업이므로 포함해야 하는지 재검토 필요). 사용자 최종 확인 대기 | 계획서 완료 |
 | 15:2x | T38c 재작업 wip-ready(sonnet, 120k, 391초; t38c-on-ui 85e6658, t38a 위; kd/t46-card-overflow 를 대체): T27 쪽 넘김을 N쪽(쪽당 8·'.' 키)으로 일반화, 모든 쪽 단축키, '.' Bindings/CONTROLS 등록·재지정 불가 시험, 9개 이하 옛 배치. uiicons·uifuzz·골든 PASS. throwaway 체리픽(리허설 984c404): Game/Bindings/Strings 무충돌, CONTROLS/UiIconsSelfTest/QUEUE 충돌(T38a/b 가 리허설에 없어서). 실창 클릭 미검증. throwaway 워크트리 kd-throwaway-t38c 정리는 사용자 몫(--force 필요) → UI 체인 병합 가능, 병합 계획서 UI 그룹에서 kd/t46-card-overflow 를 t38c-on-ui 로 교체 | 완료 ~83 · 차단 해소 |
 | 15:2x | 사용자 결정 AU(연대장·대대장 시스템) + 병합 계획서 질문 2~4 승인 → 연대장/대대장 설계서·카드 작성 발주(spec), 임시 틀(작성 템플릿) 포함. 계획서 최종 확인 대기 | 기록 |
+| 15:2x | T38h wip-ready(sonnet, 113k, 781초; t38h-fuzz-campaign f126551, t42d 위 + t38g 체리픽 e5f76ec): --fuzz-campaign(합성 캠페인 자료 주입·15탭·슬롯 창·전과 보고 클릭), 3해상도 퍼즈 예외 0·방문 탭 15/15, 골든 8변형 일치, UI 크래시 수정 없음. 한계: 슬롯 확인 버튼·연대 [-][+] 전 분기 보장 없음. **병합 계획서 정정 필요**: t38h 는 e5f76ec(t38g 중복, 드롭)+f126551(실작업, 포함해야 함) | 완료 ~84 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
