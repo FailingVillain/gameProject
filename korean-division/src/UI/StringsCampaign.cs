@@ -131,9 +131,19 @@ public static partial class S
     public const string CmNodeHoeryong = "회령";
     public const string CmNodeTumen = "두만강";
 
+    public const string CmNodeYalu = "압록강";
     public const string CmMissionHoeryongName = "1-1 회령 초소";
     public const string CmMissionTumenName = "1-2 두만강 도하";
     public const string CmMissionC103Name = "1-3 미개척 전선";
+    // T09 수직 슬라이스 (0-1 → 0-2 → 1-1)
+    public const string CmMissionC001Name = "0-1 마적떼!";
+    public const string CmMissionC001Desc = "튜토리얼 · 압록강을 넘어온 마적떼를 1개 중대로 쫓아낸다 (기본 조작).";
+    public const string CmMissionC002Name = "0-2 압록강을 건너서";
+    public const string CmMissionC002Desc = "튜토리얼 · 대대급 작전으로 초소를 깨뜨리고 마적 산채를 부순다.";
+    public const string CmMissionC101Name = "1-1 압록강 도하";
+    public const string CmMissionC101Desc = "안동 맞은편 여울을 건너 나루 마을을 점령하고 교두보를 지킨다.";
+    public const string CmMissionNextName = "1-2 (준비 중)";
+    public const string CmMissionNextDesc = "다음 작전은 준비 중입니다.";
 
     public const string CmMapStatusDone = "작전 완료";
     public const string CmMapStatusCurrent = "작전 준비 중";

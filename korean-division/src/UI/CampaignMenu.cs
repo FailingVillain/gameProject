@@ -194,7 +194,8 @@ public sealed class CampaignMenu
         // 좌측 하단 액션 버튼 ([작전 개시], [캠페인 초기화], [뒤로])
         float by = panel.Y + panel.Height - 48;
         var opStartRect = new Rectangle(tabX, by - 88, tabW, 40);
-        if (Button(opStartRect, S.CmBtnOpStart, true, 18, Palette.Accent))
+        bool opReady = File.Exists(MissionDef.PathOf(targetMissionId));   // 다음 작전 파일이 없으면 (준비 중) 출격 잠금
+        if (Button(opStartRect, S.CmBtnOpStart, opReady, 18, opReady ? Palette.Accent : null))
         {
             OpenPreOp(targetMissionId);
         }
@@ -255,7 +256,7 @@ public sealed class CampaignMenu
         Ui.Text(resText, rx, y + 4, 15, Palette.Text);
 
         // 다음 작전 & 미확인 전문
-        string nextName = !string.IsNullOrEmpty(state.NextName) ? state.NextName : (string.IsNullOrEmpty(state.NextMission) ? S.CmMissionHoeryongName : state.NextMission);
+        string nextName = !string.IsNullOrEmpty(state.NextName) ? state.NextName : (string.IsNullOrEmpty(state.NextMission) ? S.CmMissionC001Name : state.NextMission);
         var pendingEvents = CampaignEvents.AvailableEvents(state);
 
         float rEnd = panel.X + panel.Width - 20;
@@ -547,7 +548,7 @@ public sealed class CampaignMenu
     // ---------------------------------------------------------------- 4. 지도 탭
 
     /// <summary>작전 노선도 거점 i 를 점령하는 미션 id (거점 순서대로; 미션이 아직 없는 거점은 배열 밖 = 항상 미완료).</summary>
-    static readonly string[] RouteMissionIds = { CampaignState.FirstMission, "c1_02_tumen", "c1_03" };
+    static readonly string[] RouteMissionIds = { CampaignState.Tutorial2, CampaignState.YaluCrossing };
     bool RouteDone(int node) => node >= 0 && node < RouteMissionIds.Length && state.Completed.Contains(RouteMissionIds[node]);
 
     void DrawTabMap(Rectangle body)
@@ -560,9 +561,9 @@ public sealed class CampaignMenu
         var mapBox = new Rectangle(x, y, w, 150);
         Ui.Panel(mapBox, Palette.Alpha(Palette.PanelDark, 200), Palette.PanelBorder);
 
-        // 노선도 거점: 회령/두만강(초기) 및 안동 -> 봉황성 -> 안산 -> 요양 -> 봉천 -> 장춘 -> 하얼빈
+        // 노선도 거점: 압록강 (튜토리얼) -> 안동 (1-1 도하) -> 봉황성 -> 안산 -> 요양 -> 봉천 -> 장춘 -> 하얼빈 (회령 · 두만강은 Q10 으로 러시아 편에 재배치)
         string[] routeNodes = {
-            S.CmNodeHoeryong, S.CmNodeTumen,
+            S.CmNodeYalu,
             S.CmNodeAndong, S.CmNodeFenghuang, S.CmNodeAnshan,
             S.CmNodeLiaoyang, S.CmNodeFengtian, S.CmNodeChangchun, S.CmNodeHarbin
         };
@@ -600,9 +601,10 @@ public sealed class CampaignMenu
         Ui.Text("선택 가능한 작전 목록:", x, y, 16, Palette.Accent); y += 24;
 
         (string Id, string Name, string Desc)[] missions = {
-            ("c1_01_hoeryong", S.CmMissionHoeryongName, "1920년 4월, 간도 회령 초소에서 마적 잔당 및 일본 순사대와의 첫 교전."),
-            ("c1_02_tumen", S.CmMissionTumenName, "두만강을 도하하여 적 후방 보급선을 타격하는 도하 작전."),
-            ("c1_03", S.CmMissionC103Name, "봉천 군벌과의 접경 지대 전선 탐색 및 교두보 확보.")
+            (CampaignState.FirstMission, S.CmMissionC001Name, S.CmMissionC001Desc),
+            (CampaignState.Tutorial2, S.CmMissionC002Name, S.CmMissionC002Desc),
+            (CampaignState.YaluCrossing, S.CmMissionC101Name, S.CmMissionC101Desc),
+            ("c1_02", S.CmMissionNextName, S.CmMissionNextDesc)
         };
 
         for (int i = 0; i < missions.Length; i++)
@@ -610,7 +612,7 @@ public sealed class CampaignMenu
             var m = missions[i];
             bool done = state.Completed.Contains(m.Id);
             bool isNext = state.NextMission == m.Id || (string.IsNullOrEmpty(state.NextMission) && m.Id == CampaignState.FirstMission);
-            bool available = done || isNext || m.Id == CampaignState.FirstMission;
+            bool available = (done || isNext || m.Id == CampaignState.FirstMission) && File.Exists(MissionDef.PathOf(m.Id));   // 파일 없는 다음 작전 = 준비 중
 
             var rowRect = new Rectangle(x, y, w, 44);
             bool hover = Ui.Contains(rowRect, mouse);

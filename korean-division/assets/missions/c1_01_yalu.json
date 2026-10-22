@@ -1,0 +1,114 @@
+{
+  "propScatter": true,
+  "propDensity": 4.0,
+  "propCell": 6,
+  // 캠페인 1-1 압록강 도하 (T09 수직 슬라이스 · EPISODES 챕터 1 ep1 "압록강 도하 (안동 맞은편)", 적 = 봉천 지방군 · 마적). 지도 · 편성 · 수치는 c1_02_tumen (Q10 로 재배치된 옛 1-2) 을 그대로 옮긴 초안 — 원본은 그대로.
+  // "carry": true → 0-2 에서 살아남은 소총병 (계급) · 중대 장교 (계급 · 경험치) 가 대대 b1 의 중대에 들어오고 모자란 자리는 보충병 (이등병). CampaignCarry.cs
+  // 적 732 (초안 700): 마적 본대 110 + 여울 경비 42 + 42 + 증원 150 + 130 + 100, 봉천 경비대 65 + 기관총 1 + 증원 111 (일찍 끝내면 증원은 안 온다). AI 대 AI 시드 1~5 (이월 없음): 2승 3패.
+  // 봄 진흙 = 강 양안의 넓은 모래 (sand) 띠. 강은 물 (water) 이고 여울 2곳만 건널 수 있다.
+  "id": "c1_01_yalu",
+  "title": "1-1 압록강 도하",
+  "date": "1920년 봄 · 해빙기",
+  "location": "압록강변 · 안동 맞은편 여울",
+  "briefing": "마적 무리가 압록강 건너 나루 마을에 터를 잡고, 봉천 경비대가 마적을 두둔하며 국경을 지킨다. 제1대대 (압록강 산채 소탕의 생존 병력이 중심, 모자란 자리는 보충병) 와 곡사포 중대로 강을 건너 나루 마을을 점령하고 교두보를 지켜라. 강은 여울 두 곳 (북 · 남) 으로만 건널 수 있고, 봄 진흙 때문에 양안은 걸음이 느리다. 관측반 (정찰병) 이 적을 보면 곡사포가 그 지점에 쏜다. 여울 두 곳을 모두 확보하면 증원과 보급이 편해진다. 대대 손실이 60% 에 이르면 도하는 실패다.",
+  "carry": true,
+  "seed": 1920,
+  "weather": "overcast",
+  "time": "day",
+  "player": 1,
+  "factions": [
+    { "name": "한국", "en": "korean", "lang": "ko", "color": [60, 130, 235], "team": 1, "posture": "attack", "area": "bridgehead" },
+    { "name": "마적", "en": "bandit", "lang": "zh", "color": [200, 120, 40], "team": 2, "posture": "hold", "area": "bridgehead" },
+    { "name": "봉천 경비대", "en": "fengtian", "lang": "zh", "color": [150, 150, 150], "team": 2, "posture": "hold", "area": "bridgehead" }
+  ],
+  "mapData": {
+    "name": "압록강 여울 (안동 맞은편)",
+    "width": 168, "height": 120, "base": "grass",
+    "paint": [
+      { "terrain": "sand", "rect": [50, 0, 28, 120] },
+      { "terrain": "water", "rect": [60, 0, 11, 24] },
+      { "terrain": "water", "rect": [60, 36, 11, 50] },
+      { "terrain": "water", "rect": [60, 98, 11, 22] },
+      { "terrain": "dirt", "rect": [72, 54, 30, 12] },
+      { "terrain": "forest", "rect": [21, 9, 18, 15] },
+      { "terrain": "forest", "rect": [86, 6, 20, 18] },
+      { "terrain": "forest", "rect": [86, 94, 20, 18] },
+      { "terrain": "high", "rect": [120, 28, 21, 15] },
+      { "terrain": "high", "circle": [36, 93, 8] },
+      { "terrain": "high", "circle": [30, 40, 6] },
+      { "terrain": "house", "rect": [98, 49, 4, 3] },
+      { "terrain": "house", "rect": [105, 49, 4, 3] },
+      { "terrain": "house", "rect": [98, 69, 4, 3] },
+      { "terrain": "house", "rect": [105, 69, 4, 3] },
+      { "terrain": "house", "rect": [111, 56, 4, 3] },
+      { "terrain": "house", "rect": [111, 62, 4, 3] },
+      { "terrain": "rubble", "rect": [91, 57, 5, 4] },
+      { "terrain": "trench", "rect": [86, 44, 1, 32] },
+      { "terrain": "trench", "rect": [80, 26, 6, 1] },
+      { "terrain": "trench", "rect": [80, 92, 6, 1] },
+      { "terrain": "wire", "rect": [82, 44, 1, 8] },
+      { "terrain": "wire", "rect": [82, 68, 1, 8] }
+    ],
+    "starts": [ [27, 60], [105, 60] ]
+  },
+  "areas": {
+    "bridgehead": { "rect": [90, 47, 28, 26] },
+    "ford_n": { "rect": [54, 22, 23, 16] },
+    "ford_s": { "rect": [54, 84, 23, 16] },
+    "east_edge": { "rect": [153, 45, 12, 30] },
+    "east_north": { "rect": [150, 20, 12, 12] }
+  },
+  "deployZones": [ { "faction": 1, "rect": [6, 21, 45, 78] } ],
+  "forces": [
+    { "id": "b1", "faction": 1, "name": "제1대대", "at": [38, 60], "facing": 90, "battalion": 1, "battalionForm": "line", "formation": "line",
+      "companies": [
+        { "units": { "officer": 1, "infantry": 60 } },
+        { "units": { "officer": 1, "infantry": 60 } },
+        { "units": { "officer": 1, "infantry": 60 } }
+      ] },
+    { "id": "mg", "faction": 1, "name": "기관총 중대", "at": [34, 60], "facing": 90, "units": { "officer": 1, "heavy_maxim": 3 }, "formation": "line" },
+    { "id": "how", "faction": 1, "name": "곡사포 중대", "at": [24, 60], "facing": 90, "units": { "officer": 1, "heavy_howitzer": 4 }, "formation": "line" },
+    { "id": "obs", "faction": 1, "name": "관측반", "at": [46, 56], "facing": 90, "units": { "scout": 4 }, "company": false, "formation": "spread" },
+    { "id": "e1", "faction": 2, "name": "마적 본대", "at": [104, 60], "facing": 270, "formation": "line",
+      "companies": [ { "units": { "bandit_leader": 1, "bandit_rifleman": 55, "bandit_thug": 54 } } ] },
+    { "id": "e2", "faction": 2, "name": "북 여울 경비", "at": [84, 30], "facing": 270, "formation": "line",
+      "companies": [ { "units": { "bandit_leader": 1, "bandit_rifleman": 24, "bandit_thug": 20 } } ] },
+    { "id": "e3", "faction": 2, "name": "남 여울 경비", "at": [84, 90], "facing": 270, "formation": "line",
+      "companies": [ { "units": { "bandit_leader": 1, "bandit_rifleman": 24, "bandit_thug": 20 } } ] },
+    { "id": "g1", "faction": 3, "name": "봉천 경비대", "at": [112, 66], "facing": 270, "formation": "line",
+      "companies": [
+        { "units": { "officer_fengtian": 1, "infantry_fengtian": 64 } }
+      ] },
+    { "id": "g_mg", "faction": 3, "name": "경비대 기관총", "at": [90, 60], "facing": 270, "units": { "heavy_maxim": 1 }, "formation": "column" }
+  ],
+  "reinforcements": [
+    { "id": "e4", "faction": 2, "name": "마적 증원 1", "area": "east_edge", "facing": 270, "time": 360, "posture": "attack", "aiArea": "bridgehead", "formation": "line",
+      "companies": [ { "units": { "bandit_leader": 1, "bandit_rifleman": 70, "bandit_thug": 54 } } ] },
+    { "id": "e5", "faction": 2, "name": "마적 증원 2", "area": "east_north", "facing": 225, "time": 780, "posture": "attack", "aiArea": "bridgehead", "formation": "line",
+      "companies": [ { "units": { "bandit_leader": 1, "bandit_rifleman": 75, "bandit_thug": 54 } } ] },
+    { "id": "e6", "faction": 2, "name": "마적 증원 3", "area": "east_edge", "facing": 270, "time": 1200, "posture": "attack", "aiArea": "bridgehead", "formation": "line",
+      "companies": [ { "units": { "bandit_leader": 1, "bandit_rifleman": 55, "bandit_thug": 44 } } ] },
+    { "id": "g2", "faction": 3, "name": "봉천 경비대 증원", "area": "east_edge", "facing": 270, "time": 1500, "posture": "attack", "aiArea": "bridgehead", "formation": "line",
+      "companies": [ { "units": { "officer_fengtian": 1, "infantry_fengtian": 110 } } ] }
+  ],
+  "objectives": [
+    { "id": "take", "type": "capture", "area": "bridgehead", "seconds": 240, "text": "나루 마을 점령 후 교두보 4분 유지" },
+    { "id": "ford_n", "type": "capture", "area": "ford_n", "seconds": 30, "primary": false, "text": "북쪽 여울 확보" },
+    { "id": "ford_s", "type": "capture", "area": "ford_s", "seconds": 30, "primary": false, "text": "남쪽 여울 확보" }
+  ],
+  "failures": [
+    { "type": "losses", "percent": 60 },
+    { "type": "timeLimit", "seconds": 6000 }
+  ],
+  "events": [
+    { "id": "intro", "when": { "time": 1 }, "do": [ { "message": "압록강 건너 나루 마을을 점령하라. 강은 여울 두 곳으로만 건널 수 있다." } ] },
+    { "id": "t_obs", "when": { "time": 20 }, "do": [ { "message": "[포격] 관측반 (정찰병) 을 앞에 세우면 적을 본 곳에 곡사포가 쏜다. 방열에는 시간이 걸린다" } ] },
+    { "id": "t_mud", "when": { "time": 60 }, "do": [ { "message": "[진흙] 봄 진흙 때문에 강가는 걸음이 느리다. 종대로 여울을 연속해서 건너라" } ] },
+    { "id": "ford_n_in", "when": { "area": "ford_n", "faction": 1 }, "do": [ { "message": "북쪽 여울에 들어섰다. 동안 참호의 마적을 조심하라" } ] },
+    { "id": "ford_s_in", "when": { "area": "ford_s", "faction": 1 }, "do": [ { "message": "남쪽 여울에 들어섰다. 동안 참호의 마적을 조심하라" } ] },
+    { "id": "e4_msg", "when": { "time": 350 }, "do": [ { "message": "마적 증원이 동쪽에서 온다!" } ] },
+    { "id": "e5_msg", "when": { "time": 770 }, "do": [ { "message": "북동쪽에서 또 한 무리가 접근한다!" } ] },
+    { "id": "g2_msg", "when": { "time": 1490 }, "do": [ { "message": "봉천 경비대 증원이 동쪽에서 온다. 교두보를 지켜라!" } ] },
+    { "id": "taken", "when": { "objective": "take" }, "do": [ { "message": "교두보 확보!" } ] }
+  ]
+}

@@ -63,7 +63,8 @@ public static class CampaignCarry
             // s.Pending.AmmoScale < 1f일 때 플레이어 세력(faction == 1)의 모든 병력(forces) 및 소속 companies JSON 노드에 "ammoScale": Math.Round(s.Pending.AmmoScale, 3)을 기록.
             if (s.Pending.AmmoScale < 1f)
             {
-                double scale = Math.Round((double)s.Pending.AmmoScale, 3);
+                // 파일 형식은 기존과 같은 소수(0.5) — 천분율 정수에서 만들어 쓴다 (읽기는 옛 소수 · 새 소수 모두 float 로 같음)
+                double scale = World.ToPermille(s.Pending.AmmoScale) / 1000.0;
                 int playerFaction = root["player"]?.GetValue<int>() ?? 1;
                 void ApplyAmmoScale(JsonArray? list)
                 {

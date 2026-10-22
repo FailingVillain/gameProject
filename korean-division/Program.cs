@@ -232,7 +232,8 @@ while (running)
         if (game.QuitRequested)
         {
             game.SaveReplay();
-            if (cur.FromMenu) menu?.ShowMain();   // 메뉴에서 시작했으면 메뉴로, 아니면 종료
+            if (cur.FromMenu && cur.MissionId != null && CampaignState.IsCampaignMission(cur.MissionId) && !game.IsReplay) menu?.ShowCampaign();   // 캠페인 미션 → 캠페인 홈 (전과 보고 · 보충)
+            else if (cur.FromMenu) menu?.ShowMain();   // 메뉴에서 시작했으면 메뉴로, 아니면 종료
             else running = false;
             break;
         }
