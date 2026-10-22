@@ -225,7 +225,8 @@ public sealed partial class World
     bool IsValidTarget(Unit u, Entity t) =>
         t.Alive && !t.Indestructible && t is not Unit { Surrendered: true } && Fog.CanSee(u.Owner, t) &&
         (u.Weapon is not { SpotterOnly: true } || SeenBySpotter(u.Owner, t)) &&   // 곡사포: 장교 · 정찰병이 보는 곳만
-        IsHostile(u.Owner, t.Owner);
+        IsHostile(u.Owner, t.Owner) &&
+        (u.Order == UnitOrder.Attack || u.Weapon == null || u.Weapon.CanDamage(CategoryOf(t)));   // T36: 자동 표적 · 반격은 피해를 줄 수 없는(면역) 표적을 잡지 않음 — 플레이어 공격 명령은 그대로
 
     /// <summary>
     /// 표적과 교전. 사거리 안이면 사격, 밖이면 (chase 시) 추격.
@@ -513,6 +514,7 @@ public sealed partial class World
         if (tu.Order != UnitOrder.Idle && tu.Order != UnitOrder.Hold && !formMember) return;
         if (PassiveFire(tu) && !PassiveRetaliate(tu, attacker)) return;   // N35: 장교 · 정찰병은 자위 조건 밖 사격자에게 반격하지 않음 (OfficerConduct.cs)
         if (!IsHostile(tu.Owner, attacker.Owner)) return;
+        if (!tu.Weapon.CanDamage(CategoryOf(attacker))) return;   // T36: 면역 표적(소총 → 장갑차 · 객차)에게는 반격하지 않음
         if (!FireAllowed(tu, attacker)) return;   // N73: 사격 금지 · 응사만 (피격 직후에는 허용됨)
         tu.Target = attacker;
         tu.LeashOrigin = tu.Pos;
