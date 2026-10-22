@@ -740,3 +740,9 @@
 - R1 개활 횡단 / R2 사격 아래 돌격: 공격 과제 소총 중대 (연막 보유 ≥ smokeMinMen) 가 기존 `ThrowSmokeCommand`(리플레이 `smokegrenade`) 를 점마다 1명씩 낸다. R3: AI 플래그 (TA.Flags 1) 돌격만 접근 → 돌파 직전 참호 앞 줄에 시뮬이 직접 투척.
 - AF1: 시뮬은 Faction.IsAi 를 안 읽는다. 새 저장 상태 없음 — 쿨다운 · 동시 수 = 자기 연막 · 날아가는 연막 수류탄, 최근 사상 = 생존자 LastDamagedTick (대용). 프로필 키 추가로 FormatVersion 56 (병합 때 재번호).
 - 사거리 grenade.range 5 그대로라 줄은 앞선 보유자 + 4.5칸, 적에서 8~20칸 (R2 하한 2칸) 일 때만. 시험 `KD_SELFTEST_ONLY=smokeai`, 관찰 tactics-obs 변형 SMOKE · SMOKEHOOK · SMOKEALL, 보고 줄 `[T32b 연막]`.
+
+## TC-B SK2 경보 상태 (2026-10-22, `src/Core/Mission/MissionAlert.cs`, 미션 JSON 에 쓸 때만 동작)
+- 사건 조건 `seenBy` (세력 1~) + `seenTag` (생략 = 플레이어 세력 전원): 그 세력이 안개 시야 + 은폐 탐지 (`Fog.CanSee`) 로 대상 유닛을 식별하면 참. 안개 꺼짐 = 거짓. 새 상태 없음 (사건은 한 번만).
+- 행동 `spawn` 의 `delay` 초 (0~3600, 기본 0 = 즉시): `MissionState.ReinforcementDue` (도착 틱) 에 예약, 매 틱 UpdateMission 이 등장. 병력 `patrol` ([x,y] 두 점 이상): 부대원 전원이 한가하고 경계 상태 (World.IsAlerted) 가 아니면 30틱마다 다음 점으로 이동 명령 (`PatrolLeg`).
+- 저장: MISN 끝 ReinforcementDue · PatrolLeg, FormatVersion 67 (임시 — 병합 때 fv_renumber). 체크섬은 값이 있을 때만 → 기존 미션·detcheck 불변. Replay 번호 불변 (새 명령 없음). 시험 `KD_SELFTEST_ONLY=tcb`.
+- c1e1_sk2.json 교체 안: sk2_alarm `when {seenBy:2}` + `[message, {spawn:r_alarm, delay:N}]`, 순찰조 e_patrol_w/e 에 `patrol`, 소초 존 진입 조건 삭제. id 그대로.

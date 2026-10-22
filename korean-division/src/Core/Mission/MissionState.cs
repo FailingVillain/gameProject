@@ -30,6 +30,10 @@ public sealed class MissionState
     public bool[] ObjRevealed = Array.Empty<bool>();
     public bool[] EventFired = Array.Empty<bool>();
     public bool[] ReinforcementSpawned = Array.Empty<bool>();
+    /// <summary>TC-B: 증원별 예약 도착 틱 (0 = 예약 없음). spawn 행동의 delay 초 뒤.</summary>
+    public long[] ReinforcementDue = Array.Empty<long>();
+    /// <summary>TC-B: 병력(Def.Forces 순서)별 순찰 다음 경유점 번호.</summary>
+    public int[] PatrolLeg = Array.Empty<int>();
     /// <summary>세력별 지금까지 생긴 유닛 수 (손실 = 생긴 수 − 살아 있는 수).</summary>
     public int[] Spawned = Array.Empty<int>();
     /// <summary>사건 메시지 기록 (틱, 글). HUD 가 최근 것을 띄운다.</summary>
@@ -53,6 +57,8 @@ public sealed class MissionState
         ObjRevealed = def.Objectives.Select(o => !o.Hidden).ToArray();
         EventFired = new bool[def.Events.Count];
         ReinforcementSpawned = new bool[def.Reinforcements.Count];
+        ReinforcementDue = new long[def.Reinforcements.Count];
+        PatrolLeg = new int[def.Forces.Count];
         Spawned = new int[def.FactionCount + 1];
         Weather = def.Weather;
         TimeOfDay = def.Time;
@@ -82,6 +88,8 @@ public sealed class MissionState
         foreach (var (t, s) in Messages) { w.L(t); w.Str(s); }
         w.Str(Weather); w.Str(TimeOfDay);
         w.I(Result); w.L(EndTick); w.I(FailReason);
+        w.I(ReinforcementDue.Length); foreach (long d in ReinforcementDue) w.L(d);   // TC-B (FV 67)
+        w.I(PatrolLeg.Length); foreach (int p in PatrolLeg) w.I(p);
     }
 
     static void WriteMap(SnapWriter w, SortedDictionary<string, List<int>> m)
@@ -134,6 +142,12 @@ public sealed class MissionState
         for (int i = 0; i < nm; i++) s.Messages.Add((r.L(), r.Str() ?? ""));
         s.Weather = r.Str(); s.TimeOfDay = r.Str();
         s.Result = r.I(); s.EndTick = r.L(); s.FailReason = r.I();
+        int nd2 = r.Count();
+        if (nd2 != s.ReinforcementDue.Length) throw new SnapshotException(string.Format(SnapMsg.Invalid, "mission reinforcement due"));
+        for (int i = 0; i < nd2; i++) s.ReinforcementDue[i] = r.L();
+        int np = r.Count();
+        if (np != s.PatrolLeg.Length) throw new SnapshotException(string.Format(SnapMsg.Invalid, "mission patrol"));
+        for (int i = 0; i < np; i++) s.PatrolLeg[i] = Math.Max(0, r.I());
         return s;
     }
 }

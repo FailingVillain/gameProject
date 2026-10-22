@@ -142,6 +142,7 @@ public sealed partial class MissionDef
         {
             Require(f.Posture == null || MissionFaction.Postures.Contains(f.Posture), $"병력 '{f.Id}' 자세 '{f.Posture}'");
             Require(f.AiArea == null || Area(f.AiArea) != null, $"병력 '{f.Id}': 구역 '{f.AiArea}' 없음");
+            Require(f.Patrol == null || (f.Patrol.Length >= 2 && f.Patrol.All(p => p is { Length: 2 } && float.IsFinite(p[0]) && float.IsFinite(p[1]) && p[0] >= 0 && p[1] >= 0)), $"병력 '{f.Id}': patrol 은 [x, y] 두 점 이상");
             Require(!string.IsNullOrWhiteSpace(f.Id) && ids.Add(f.Id), $"병력 id '{f.Id}' 가 비었거나 중복");
             Require(f.Faction >= 1 && f.Faction <= Factions.Count, $"병력 '{f.Id}' 의 세력 {f.Faction} 이 범위 밖");
             Require(f.At is { Length: 2 } || Area(f.Area) != null, $"병력 '{f.Id}' 위치 (at [x,y] 또는 area)");
@@ -180,9 +181,11 @@ public sealed partial class MissionDef
         {
             Require(e.When.Area == null || Area(e.When.Area) != null, $"사건 '{e.Id}': 구역 '{e.When.Area}' 없음");
             Require(e.When.Objective == null || oids.Contains(e.When.Objective), $"사건 '{e.Id}': 목표 '{e.When.Objective}' 없음");
+            Require(e.When.SeenBy == 0 || (e.When.SeenBy >= 1 && e.When.SeenBy <= Factions.Count), $"사건 '{e.Id}': seenBy {e.When.SeenBy} 이 세력 범위 밖");
             foreach (var a in e.Do)
             {
                 Require(a.Spawn == null || Reinforcements.Any(r => r.Id == a.Spawn), $"사건 '{e.Id}': 증원 '{a.Spawn}' 없음");
+                Require(float.IsFinite(a.Delay) && a.Delay >= 0 && a.Delay <= 3600, $"사건 '{e.Id}': delay {a.Delay} (0~3600초)");
                 Require(a.Reveal == null || oids.Contains(a.Reveal), $"사건 '{e.Id}': 목표 '{a.Reveal}' 없음");
             }
         }
@@ -313,6 +316,8 @@ public sealed class MissionForce
     /// <summary>AI 힌트: 이 병력만의 자세 · 구역 (없으면 세력의 posture · area).</summary>
     public string? Posture { get; set; }
     public string? AiArea { get; set; }
+    /// <summary>TC-B 순찰: 경유점 [x, y] 목록 (칸 좌표). 병력 전원이 한가하면 다음 점으로 이동 (마지막 다음은 처음). 부대가 경계 상태가 되면 멈춘다. 없으면 순찰 안 함.</summary>
+    public float[][]? Patrol { get; set; }
 
     public IEnumerable<MissionCompany> AllCompanies()
     {
@@ -408,6 +413,9 @@ public sealed class MissionCondition
     public string? State { get; set; }
     /// <summary>태그 유닛이 모두 죽음.</summary>
     public string? Killed { get; set; }
+    /// <summary>TC-B 감지 경보: 이 세력(1~)이 (안개 시야 + 은폐 탐지로) 상대 유닛을 식별함. 대상 = seenTag 태그 유닛 (없으면 플레이어 세력 전원). 안개가 꺼져 있으면 거짓.</summary>
+    public int SeenBy { get; set; }
+    public string? SeenTag { get; set; }
 }
 
 public sealed class MissionAction
@@ -417,4 +425,6 @@ public sealed class MissionAction
     public string? Weather { get; set; }
     public string? Time { get; set; }
     public string? Reveal { get; set; }
+    /// <summary>TC-B: spawn 을 이 초 뒤로 미룬다 (0 = 즉시, 기본). 이미 예약된 증원은 다시 예약하지 않는다.</summary>
+    public float Delay { get; set; }
 }
