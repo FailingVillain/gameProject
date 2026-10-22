@@ -138,6 +138,7 @@ public static class SaveCompatSelfTest
         CampaignScheduleSelfTest.Run(check);   // T42d 일정 · 연표 (저장 v7 · 일수 · 이벤트 기록 · 표시)
         CommanderDataSelfTest.Run(check);   // T48a 연대장 데이터 · 로더 · 저장 v8 · 풀 동기화
         OfficerIdentitySelfTest.Run(check);   // T48b1 장교 신원 키 · 주입 · 전사/부상 · 저장 v9
+        CommanderPoolSelfTest.Run(check);   // T48b2 기용/해임 · 배정 · 참모 효과 · 옛 저장 v3~v9
         CampaignHomeViewsSelfTest.Run(check);   // T38f 읽기 전용 탭 (기록 · 장비 · 편제) 표시 자료
         string cdir = TestTemp.Child("kd_compat_campaign");
         string? oldEnv = Environment.GetEnvironmentVariable("KD_CAMPAIGN_DIR");

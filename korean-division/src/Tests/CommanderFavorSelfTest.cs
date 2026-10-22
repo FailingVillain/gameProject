@@ -107,7 +107,7 @@ public static class CommanderFavorSelfTest
 
             // 7) 저장: v7 파일 로드는 호감 규칙과 무관, 호감은 v8 왕복에 실림
             var v7 = CampaignState.FromJson("{\"Version\":7,\"Day\":4}");
-            check(v7 != null && v7.Version == 8 && v7.CommanderPool.All(c => c.Favor >= -20 && c.Favor <= 100), "T48c v7 로드 영향 없음 (풀은 T48a 동기화로 초기 호감)");
+            check(v7 != null && v7.Version == CampaignState.SchemaVersion && v7.CommanderPool.All(c => c.Favor >= -20 && c.Favor <= 100), "T48c v7 로드 영향 없음 (풀은 T48a 동기화로 초기 호감)");
             var rt = CampaignState.FromJson(s.ToJson());
             check(rt != null && Slot(rt, "a").Favor == -4 && Slot(rt, "c").Favor == 10 && Slot(rt, "a").FavorLastMission == "m4", "T48c 호감 · FavorLastMission 저장 왕복");
         }

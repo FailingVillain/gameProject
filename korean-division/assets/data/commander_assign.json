@@ -1,0 +1,15 @@
+{
+  "_doc": "연대장 기용/해임 · 장교 배정 · 참모 효과 규칙 (T48b2, 전부 임시 - 0.3 밸런스에서 확정). 참모 효과는 캠페인 층만 (전투 시뮬 반영은 T48e). 가중 = 1000 + rankStepPermille*(계급-rankBase) + xpTierStepPermille*경험치단계 (천분율, 정수; minWeight~maxWeight 로 클램프). 효과 = base * 가중 / 1000.",
+  "version": 1,
+  "chargeHireCost": false,
+  "hireCostSupplyUnit": 100,
+  "requireRegimentCompanies": false,
+  "enforceMinRegiments": false,
+  "staffBackToBattalion": true,
+  "tags": { "lowLossPermille": 100, "fastSeconds": 900, "heavyLossPermille": 300 },
+  "staff": {
+    "rankBase": 4, "rankStepPermille": 100, "xpTierStepPermille": 50, "xpTierSteps": [60, 180, 420, 900],
+    "minWeightPermille": 500, "maxWeightPermille": 2000,
+    "supplyBasePermille": 50, "intelBaseInfo": 2, "researchBasePermille": 100, "doctrineBasePermille": 50
+  }
+}
