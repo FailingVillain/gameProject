@@ -126,6 +126,7 @@
 | 13:1x | 재렌더 정찰 완료(haiku, 78k, 149초): T11 27/81, 남은 13~14h(2레인), --shard 분할 지원, 자원상 4레인 가능(CPU 1코어/자식). T11 뒤 항목: 기수 깃발 3:2 완료, 엎드려쏴·가옥 폐허·세력 변형 부분, 화염 앵커·한국/봉천 색·간도 복식·보병 모션 2차 미착수. Y2/Y3 질문 | 레인 수 사용자 결정 대기 |
 | 13:1x | 카드 T32a~d 완료(spec, 92k, 250초; spec/cards-t32 726ec29): 시뮬이 IsAi 를 읽지 않도록 설계(기존 smokegrenade/cutwire 명령만 AI 가 발행), 키 전부 기본 꺼짐. 발주: T32a(sonnet, ai3b2 위)·T32b(opus, ai3b2 위). T32c 는 T32b 뒤, T32d 는 T32a 뒤 | 동시 약 13 |
 | 13:1x | 지도 편집기 설계+카드 T33a~d 완료(spec, 111k, 250초; kd/t33-map-editor-design 3b7c994): 정의='지도 한 장만, 출력은 기존 mapData·props·areas JSON, 별도 도구(game-tools/map-editor, 기존 mission-editor DESIGN 의 부분집합)'. 발주: T33a(sonnet, main 기반, 헤드리스 문서 모델·undo·왕복 시험). T33b·c(UI)는 T33a 뒤, T33d(철도 도구)는 rail 뒤. 질문 8개(설계 §9, 기본값 권장안) | 동시 약 14 |
+| 13:1x | 사용자 Y2 승인(A: 렌더 4레인·낮은 우선순위) → art 에이전트 발주: 기존 --group A/B 드라이버를 죽이지 않고 claim 방식 중복 없이 레인 2개 추가, BelowNormal, RAM 여유 3GB 미만이면 감속 | 재렌더 ETA 13h→약 7h 목표 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
