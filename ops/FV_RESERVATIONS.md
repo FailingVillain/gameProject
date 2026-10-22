@@ -12,7 +12,7 @@
 | kd/t10-comms-b (T10) | 57 | 22 | wip/breach2 | wip-ready | breach2 위 스택이라 54~56 을 건너뜀 → 합칠 때 재번호 |
 | t30a-train-move (T30a) | 58 | 23 | rail | wip-ready (863f9d1) | 열차 객체·궤도 이동 |
 | t30b-train-weapons (T30b) | 59 | 23 | t30a | wip-ready (ca1cdb8) | 열차 저장 위치 ORG_ 끝→ENTS 끝, 엔티티 참조 태그 3 |
-| t30c-freight-objective (T30c) | 60 예정 | 24? | t30b | 진행 중 | 새 상태 있을 때만 |
+| t30c-freight-objective (T30c) | 59 유지 | 23 유지 | t30b | wip-ready (f5fa49a) | 새 상태 없음(ObjProgress 재사용) |
 | gemini-import / t09 / t29 / T19a~d | 확인 필요 | 확인 필요 | gemini-import | - | 캠페인 저장 스키마는 별도(SchemaVersion 2); sim FV 는 안 올림 |
 | sfxnew · rerender · face-proto · t27 · t28 · t17 · t08 | 변경 없음 | - | - | - | 표현/설정/옵션 전용 |
 
