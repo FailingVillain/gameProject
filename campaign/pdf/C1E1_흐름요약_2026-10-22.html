@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<title>C1E1 안동 점령전 — 흐름과 분기</title>
+<style>
+@page { size: A4 landscape; margin: 12mm; }
+body { font-family: "Malgun Gothic", sans-serif; font-size: 10.5pt; color:#222; line-height:1.45; }
+h1 { font-size: 18pt; margin: 0 0 2pt; }
+h2 { font-size: 13pt; border-bottom: 2px solid #444; padding-bottom: 2pt; margin: 14pt 0 6pt; page-break-after: avoid; }
+.sub { color:#666; font-size:9.5pt; margin-bottom:6pt; }
+table { border-collapse: collapse; width:100%; margin: 4pt 0; page-break-inside: auto; }
+tr { page-break-inside: avoid; }
+th, td { border: 1px solid #999; padding: 3pt 5pt; vertical-align: top; font-size: 9.5pt; }
+th { background:#e8e8e8; text-align:left; }
+.ok { background:#dff2df; text-align:center; } .no { background:#f6d9d9; text-align:center; }
+.maj { background:#ffe3b3; } .std { background:#e3eefc; } .min { background:#f0f0f0; }
+.tag { font-size:8.5pt; padding:0 4pt; border-radius:3pt; border:1px solid #888; }
+.pb { page-break-before: always; }
+ul { margin: 2pt 0 2pt 16pt; padding:0; }
+svg text { font-family: "Malgun Gothic", sans-serif; }
+</style></head><body>
+
+<h1>C1E1 안동 점령전 — 흐름과 분기</h1>
+<div class="sub">KOREAN DIVISION 캠페인 디자인 v1 · 2026-10-22 · 사용자 승인 사항 기준 (호감도 증감 값은 미지정 — 방향만 표시)</div>
+
+<h2>1. 용어</h2>
+<table>
+<tr><th>계층</th><td>Chapter(묶음) &gt; Episode(구현 단위) &gt; Mission(총칭)</td></tr>
+<tr><th>Mission 등급</th><td><b>Operation</b> 대형 (1~2시간) · <b>Battle</b> 중형 (30~45분) · <b>Skirmish</b> 소형 (10~20분)</td></tr>
+<tr><th>전투 없는 노드</th><td>Choice(선택지) · Event(사건) · Interlude(홈 구간)</td></tr>
+<tr><th>패배 규칙</th><td>Operation · Battle = 재도전(대가 없음). Skirmish = 재도전 / 실패 확정 (선택 Skirmish 만; 필수는 재도전만)</td></tr>
+<tr><th>E1 조건</th><td>에피소드 전체 <b>7일</b> · VIP는 황손(+상부 명령으로서 민 대장)만 · 자금 단위 <b>냥</b>(은괴 기준). 설계 단위 자금 10 = <b>은 5,000냥</b> (자금 1 = 500냥)</td></tr>
+</table>
+
+<h2>2. 흐름도</h2>
+<svg viewBox="0 0 1080 330" width="100%" xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#444"/></marker></defs>
+  <g font-size="12" text-anchor="middle">
+    <!-- row 1 -->
+    <rect x="10"  y="20" width="150" height="56" rx="6" fill="#fff3d6" stroke="#b38600"/><text x="85"  y="43">EV1 황손 등장</text><text x="85" y="62" font-size="10">D01 따름/설득/무시</text>
+    <rect x="210" y="20" width="150" height="56" rx="6" fill="#e3eefc" stroke="#336"/><text x="285" y="43">CH1 병력 보충 방침</text><text x="285" y="62" font-size="10">D02 A·B·C 중복 가능</text>
+    <rect x="410" y="20" width="150" height="56" rx="6" fill="#d8f0d8" stroke="#2a6b2a"/><text x="485" y="43">BT1 교두보 (필수)</text><text x="485" y="62" font-size="10">D03 도하 · D04 노획 · 1일</text>
+    <rect x="610" y="20" width="200" height="56" rx="6" fill="#e3eefc" stroke="#336"/><text x="710" y="43">SELECT Skirmish 0~2개</text><text x="710" y="62" font-size="10">D05·D06 · 1개당 1일</text>
+    <line x1="160" y1="48" x2="208" y2="48" stroke="#444" marker-end="url(#a)"/>
+    <line x1="360" y1="48" x2="408" y2="48" stroke="#444" marker-end="url(#a)"/>
+    <line x1="560" y1="48" x2="608" y2="48" stroke="#444" marker-end="url(#a)"/>
+    <!-- skirmishes -->
+    <g font-size="10">
+      <rect x="840" y="6"  width="230" height="32" rx="5" fill="#f6f6f6" stroke="#777"/><text x="955" y="26">SK 비적 소탕 (의용병 +100)</text>
+      <rect x="840" y="42" width="230" height="32" rx="5" fill="#f6f6f6" stroke="#777"/><text x="955" y="62">SK 위력 정찰 (D07 문서 처리)</text>
+      <rect x="840" y="78" width="230" height="32" rx="5" fill="#f6f6f6" stroke="#777"/><text x="955" y="98">SK 약탈 금지 (D08 호송)</text>
+      <rect x="840" y="114" width="230" height="32" rx="5" fill="#f6f6f6" stroke="#777"/><text x="955" y="134">SK 기병 대 기병 (OP1 적 약화)</text>
+    </g>
+    <line x1="810" y1="48" x2="838" y2="48" stroke="#444" stroke-dasharray="3" />
+    <text x="950" y="166" font-size="10" fill="#666">4개 중 0~2개 선택 · 고르지 않은 것은 보상 · 파급 상실</text>
+    <!-- row 2 -->
+    <rect x="10"  y="200" width="150" height="56" rx="6" fill="#e3eefc" stroke="#336"/><text x="85"  y="223">CH2 군 내부 처리</text><text x="85" y="242" font-size="10">D09 요정/처형/보검/안 함</text>
+    <rect x="210" y="200" width="150" height="56" rx="6" fill="#fff3d6" stroke="#b38600"/><text x="285" y="223">EV2 민 대장 강행 명령</text><text x="285" y="242" font-size="10">D10 따름/지연/설득</text>
+    <rect x="410" y="200" width="170" height="56" rx="6" fill="#ffd6d6" stroke="#a33"/><text x="495" y="223">OP1 안동 포위전 (필수)</text><text x="495" y="242" font-size="10">D11 접근 · D12 포격 허가</text>
+    <rect x="640" y="180" width="150" height="40" rx="6" fill="#fff" stroke="#a33"/><text x="715" y="205">강공 (2일)</text>
+    <rect x="640" y="236" width="150" height="40" rx="6" fill="#fff" stroke="#a33"/><text x="715" y="261">포위 · 항복 유도 (4일)</text>
+    <rect x="830" y="200" width="110" height="56" rx="6" fill="#e3eefc" stroke="#336"/><text x="885" y="223">D13 항복 조건</text><text x="885" y="242" font-size="10">flag.andongSurrender</text>
+    <rect x="965" y="200" width="105" height="56" rx="6" fill="#f0f0f0" stroke="#666"/><text x="1017" y="223">D14 전과 보고</text><text x="1017" y="242" font-size="10">황손 / 자기 이름</text>
+    <line x1="160" y1="228" x2="208" y2="228" stroke="#444" marker-end="url(#a)"/>
+    <line x1="360" y1="228" x2="408" y2="228" stroke="#444" marker-end="url(#a)"/>
+    <line x1="580" y1="215" x2="638" y2="200" stroke="#444" marker-end="url(#a)"/>
+    <line x1="580" y1="240" x2="638" y2="256" stroke="#444" marker-end="url(#a)"/>
+    <line x1="790" y1="200" x2="828" y2="222" stroke="#444" marker-end="url(#a)"/>
+    <line x1="790" y1="256" x2="828" y2="238" stroke="#444" marker-end="url(#a)"/>
+    <line x1="940" y1="228" x2="963" y2="228" stroke="#444" marker-end="url(#a)"/>
+    <!-- link row1 -> row2 -->
+    <path d="M710,76 L710,160 L85,160 L85,198" fill="none" stroke="#444" marker-end="url(#a)"/>
+  </g>
+  <text x="10" y="310" font-size="10" fill="#555">범례: 노랑=Event · 파랑=Choice · 초록=Battle · 빨강=Operation · 회색=Skirmish/Report</text>
+</svg>
+
+<h2>3. 일수 · 민 대장 기한 (D10)</h2>
+<div class="sub">전체 7일. 교두보 1일 + Skirmish 개수 × 1일 + 포위전 (강공 2일 / 포위·항복 유도 4일). ✓ = 기한 안에 완료 가능</div>
+<table>
+<tr><th>Skirmish 수</th><th>강공 합계</th><th>포위 합계</th><th>따름 (기한 5일)</th><th>지연 요청 (기한 6일, 호감 −)</th><th>설득 성공 (기한 7일)</th></tr>
+<tr><td>0개</td><td>3일</td><td>5일</td><td class="ok">강공 ✓ · 포위 ✓</td><td class="ok">강공 ✓ · 포위 ✓</td><td class="ok">강공 ✓ · 포위 ✓</td></tr>
+<tr><td>1개</td><td>4일</td><td>6일</td><td>강공 ✓ · <span class="no">포위 ✗</span></td><td class="ok">강공 ✓ · 포위 ✓</td><td class="ok">강공 ✓ · 포위 ✓</td></tr>
+<tr><td>2개</td><td>5일</td><td>7일</td><td>강공 ✓ · <span class="no">포위 ✗</span></td><td>강공 ✓ · <span class="no">포위 ✗</span></td><td class="ok">강공 ✓ · 포위 ✓</td></tr>
+</table>
+<ul>
+<li><b>설득</b>은 <b>intel.andong</b>(위력 정찰 문서를 작전에 활용, D07 B)을 가졌을 때만 성립. 없으면 실패 → 민 대장 호감 −− 및 기한 5일 적용.</li>
+<li>기한 초과는 패배가 아니라 페널티 (호감 −, 본국 보급 −, 병사 사기 −). 재도전은 대가 없음.</li>
+<li>따름·지연으로 기한이 줄면 포위·항복 유도는 Skirmish를 덜 해야 가능 → <b>Skirmish를 포기할지, 포위를 포기할지</b>가 핵심 선택.</li>
+</ul>
+
+<h2 class="pb">4. D02 병력 보충 방침 — 예산 · 조합</h2>
+<div class="sub">시작 자금 10 = 은 5,000냥 (설계 단위 1 = 500냥). 의용군 A=5 (2,500냥) · 마적 B=3/100명 (1,500냥/100명, 100~300명) · 대민 구제 C=보급 소모(자금 아님)</div>
+<table>
+<tr><th>선택</th><th>효과</th><th>비고</th></tr>
+<tr><td>A 의용군 400</td><td>favor.minDaejang −</td><td>OP1 · BT1 편성에 배속</td></tr>
+<tr><td>B 마적 초모 (100~300)</td><td>favor.hwangson −, favor.minDaejang −−, 약탈 이벤트 (rep.local −)</td><td>A+B(200명 이상)은 예산 초과 → 불가</td></tr>
+<tr><td>C 대민 구제</td><td>rep.local +</td><td>보급 소모 → 투입 가능 병력 감소</td></tr>
+<tr><td>A + B</td><td colspan="2">의용군 · 마적 불화: 시작 사기 − (병력은 합산)</td></tr>
+<tr><td>B + C</td><td colspan="2">약탈 이벤트 발생 안 함 · C 의 rep.local + 는 반감</td></tr>
+<tr><td>A + C</td><td colspan="2">intel.andong 일부 확보 → 야간 도하(D03) 시야 페널티 완화</td></tr>
+<tr><td>A + B + C</td><td colspan="2">위 효과 전부 적용 (예산 가장 빠듯)</td></tr>
+</table>
+
+<h2>5. 안동 포위전 분기 (D11 · D13)</h2>
+<table>
+<tr><th></th><th>강공</th><th>포위 · 항복 유도</th></tr>
+<tr><th>속도</th><td>2일</td><td>4일</td></tr>
+<tr><th>사상 · 민간 피해</th><td>큼 (포격 허용 가능)</td><td>적음</td></tr>
+<tr><th>민 대장 호감</th><td>+</td><td>—</td></tr>
+<tr><th>영향 요소</th><td>D01 에서 황손 훈수를 <b>따랐다면</b> 유리</td><td>D02(의용군 연락) · D07(정찰 정보)로 항복 조건 개선</td></tr>
+<tr><th>D13 항복 조건</th><td>기본 조건</td><td>선택지 개선 (전원 무장해제 / 일부 편입 / 포로 송환)</td></tr>
+<tr><th>후속</th><td colspan="2"><b>flag.andongSurrender</b> 가 이후 에피소드 적 배치에 반영</td></tr>
+</table>
+
+<h2 class="pb">6. 결정 14개 (플레이 중 응답 필수)</h2>
+<table>
+<tr><th>#</th><th>무게</th><th>종류 · 위치</th><th>내용</th><th>소비처</th></tr>
+<tr class="std"><td>D01</td><td>std</td><td>ORDER · EV1</td><td>황손 훈수 (과시용 속전속결): 따름 / 설득 / 무시</td><td>favor.hwangson, D11</td></tr>
+<tr class="maj"><td>D02</td><td>major</td><td>CHOICE · CH1</td><td>병력 보충: 의용군 / 마적 / 구제 (중복 가능, 예산 제약)</td><td>BT1·OP1 편성, rep.local</td></tr>
+<tr class="std"><td>D03</td><td>std</td><td>APPROACH · BT1</td><td>도하 방식: 정면 / 여울 우회 / 야간</td><td>BT1 배치, OP1 적 경계심</td></tr>
+<tr class="min"><td>D04</td><td>minor</td><td>INMISSION · BT1</td><td>노획 처리: 즉시 투입 / 후방 집결</td><td>탄약 · 보급 · 시간</td></tr>
+<tr class="std"><td>D05</td><td>std</td><td>SELECT</td><td>Skirmish 1/2 (1일)</td><td>일수, 보상</td></tr>
+<tr class="std"><td>D06</td><td>std</td><td>SELECT</td><td>Skirmish 2/2 (1일)</td><td>일수, 보상</td></tr>
+<tr class="std"><td>D07</td><td>std</td><td>CHOICE · 위력 정찰</td><td>문서: 본국 보고 / 작전 활용 / 황손에게 공 바침</td><td>intel.andong, D10, D11</td></tr>
+<tr class="min"><td>D08</td><td>minor</td><td>INMISSION · 약탈 금지</td><td>호송 우선 / 마적 추격 우선</td><td>rep.local, 시간</td></tr>
+<tr class="std"><td>D09</td><td>std</td><td>CHOICE · CH2</td><td>요정 설치 / 포로 처형 / 보검 선물 / 안 함</td><td>사기, 호감, 평판</td></tr>
+<tr class="maj"><td>D10</td><td>major</td><td>ORDER · EV2</td><td>민 대장 강행 명령: 따름 / 지연 요청 / 설득</td><td>OP1 기한, maxCasualtyFrac</td></tr>
+<tr class="maj"><td>D11</td><td>major</td><td>APPROACH · OP1</td><td>강공 / 포위 · 항복 유도</td><td>OP1 전체, D13</td></tr>
+<tr class="min"><td>D12</td><td>minor</td><td>INMISSION · OP1</td><td>시가지 포격 허가 / 금지</td><td>속도, rep.local</td></tr>
+<tr class="maj"><td>D13</td><td>major</td><td>CHOICE · OP1 종료</td><td>항복 조건: 무장해제 / 일부 편입 / 포로 송환</td><td>노획, flag.andongSurrender</td></tr>
+<tr class="min"><td>D14</td><td>minor</td><td>REPORT · 종료</td><td>전과 귀속: 황손 / 자기 이름</td><td>favor.hwangson, 본국 보급</td></tr>
+</table>
+<div class="sub">D07 · D08 은 해당 Skirmish를 골랐을 때만 발생 → 한 번 플레이에서 실제 마주치는 결정은 12~14개.</div>
+
+<h2>7. 미결</h2>
+<ul>
+<li>호감도 증감의 정수 값 (사용자 지정 예정) · 자금 환산 (은 5,000냥 = 자금 10) 고증 확인</li>
+<li>E2 이후 챕터 1 구성 (이석 · 남 참장 · 시위대장 해금 시점)</li>
+<li>층 2 명세 (미션 5개: 교두보 · Skirmish 4 · 포위전) 작성</li>
+</ul>
+</body></html>
