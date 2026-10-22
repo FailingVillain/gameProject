@@ -119,6 +119,7 @@
 | 12:56 | 런처 완료(sonnet, 56k, 81초): tools/monitor-launch 75a1712 — korean-division/tools/agent/run_game.ps1 (보조 모니터 우선, 없으면 주 모니터, KD_MONITOR 지정, 크기 유지·위치만, 종료 코드 전달). 실측: 모니터 3개(주=DISPLAY2 1920x1080), 창은 DISPLAY1 로 이동, uifuzz 5 통과. CLAUDE.md 7번 규칙 추가(5·6번 줄임). T30e 완료(sonnet, 112k, 713초): t30e-demo-mission 7f46a4c — 호송 시연 미션(신규 소형 지도 150x64, 화차 3량 중 2량 보급역 도착, 900초), 시드 1~16 에서 16승 0패(적 열차 없음), 패배 변형·verify OK, traindemo PASS, FV59 유지, 3de60d5 체리픽 | 열차 체인 a→b→c→e 완성 · 완료 36/54 |
 | 12:5x | D15 반영 완료(sonnet, 57k, 87초): kd/t10b-difficulty 4d74ce9 — easy courierCapture=true(전 난이도 캡처 가능), src/AI 에 전령 참조 0건이라 '전령 사냥' 코드는 원래 없음(끄는 키 불필요), 시험 갱신+TestAiIgnoresCouriers(소스 grep 검사), 카드에 'D15 최신' 명기. 골든 불변 | D15 해소 |
 | 12:57 | 자동 점검 + 사용자 답 반영 발주: T24 ③ 끔(sonnet)·종료선 50% 측정 시나리오+새 기준선(measure). **T16b 에이전트 출력 파일이 11:34 이후 0바이트·워크트리 무변화(80분)** — 시작조차 못 한 것으로 판단, 새 에이전트(opus)로 재발주. 판정 규칙: 출력 파일 크기·mtime 이 가장 신뢰할 수 있는 정지 신호(첫 T16 은 게이트 대기 중에도 작업 트리를 바꿨음) | 정지 판정 규칙 개선 |
+| 13:10 | 사용자 일괄 승인 반영: 보류 해제(전투공병·지도 편집기·전술 AI 3C/3D·기병 측면·AI 연막·철조망) → 카드 작성 spec×3 · 시기 미정 항목 보류 · 후속 카드 진행(IsAi 복원 T35 opus, AH2→T36·U4→T37 sonnet) · 역제안 1(백업 완료: C:/works/_backup/gameProject-all-2026-10-22.bundle 260MB verify OK)·2(통합 리허설 opus, integration/rehearsal)·3(결정 묶음 문서 spec)·8(release 실가동: fix/n12-forest 병합 merger 발주 → release)·9(PIPELINE v2 docs). 워크트리 정리는 백업 확인 후 목록화→삭제. 재렌더 가속 가능성은 scout 조사 중. 지휘자 교체는 하루 1회로 확정(메모리) | 동시 약 14 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
