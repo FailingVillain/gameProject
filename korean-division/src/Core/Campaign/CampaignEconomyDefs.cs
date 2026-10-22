@@ -63,6 +63,17 @@ public sealed class CampaignEconomyDefs
     /// <summary>[임시] 첫 승리 정산 한 번에 늘어나는 작전 일수 (0 = 일수 안 늘림).</summary>
     public int MissionDays { get; set; } = 1;
 
+    // ---- [T48a] 연대장 — 전부 임시 (0.3 밸런스에서 확정, 사용자 결정 AU/AW/AY: 해임 시 호감 소폭 하락 · 재기용 쿨다운 1작전).
+    /// <summary>[임시] 연대장을 해임할 때 그 인물의 호감에서 깎는 값 (양수; 인물별 dismissFavorPenalty 가 있으면 그쪽, 해임 불가는 0).</summary>
+    public int CommanderDismissFavorPenalty { get; set; } = 2;
+    /// <summary>[임시] 호감 범위.</summary>
+    public int CommanderFavorMin { get; set; } = -20;
+    public int CommanderFavorMax { get; set; } = 100;
+    /// <summary>[임시] 해임 뒤 이 작전 수가 지나야 다시 기용 가능 (사용자 AY: 1작전).</summary>
+    public int CommanderRehireCooldownMissions { get; set; } = 1;
+    /// <summary>[임시] 해임 뒤 호감이 이 값 이하로 내려가 있으면 재기용 불가 (설계 3.4, 이 값 초과여야 함).</summary>
+    public int CommanderRehireMinFavor { get; set; } = -5;
+
     static CampaignEconomyDefs? current;
     public static CampaignEconomyDefs Current => current ??= Load(Path.Combine(AppContext.BaseDirectory, "assets", "data", "campaign_economy.json"));
     /// <summary>[테스트] 정의를 갈아 끼운다 (null = 파일 다시 읽기).</summary>
@@ -116,6 +127,11 @@ public sealed class CampaignEconomyDefs
         MoraleCasualtyScale = Math.Clamp(MoraleCasualtyScale, 0, 100);
         MoraleRestRecovery = Math.Clamp(MoraleRestRecovery, 0, 100);
         MissionDays = Math.Clamp(MissionDays, 0, 365);
+        CommanderFavorMin = Math.Clamp(CommanderFavorMin, -1000, 0);
+        CommanderFavorMax = Math.Clamp(CommanderFavorMax, 1, 1000);
+        CommanderDismissFavorPenalty = Math.Clamp(CommanderDismissFavorPenalty, 0, 100);
+        CommanderRehireCooldownMissions = Math.Clamp(CommanderRehireCooldownMissions, 0, 100);
+        CommanderRehireMinFavor = Math.Clamp(CommanderRehireMinFavor, CommanderFavorMin, CommanderFavorMax);
         PrisonerAcceptSupply = F(PrisonerAcceptSupply, 0f, 1000f, d.PrisonerAcceptSupply);
         PromoSoldierMaxRank = Math.Clamp(PromoSoldierMaxRank, 0, 8);
         PromoMaxPerBreak = Math.Clamp(PromoMaxPerBreak, 0, 10_000);

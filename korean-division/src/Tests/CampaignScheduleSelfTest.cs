@@ -23,7 +23,7 @@ public static class CampaignScheduleSelfTest
             // 1) 옛 저장 -> v7: Day = 1 + 기록 수 x missionDays, 빈 연표
             var v3 = CampaignState.FromJson("{\"Version\":3}");
             var v6 = CampaignState.FromJson("{\"Version\":6,\"History\":[{\"MissionId\":\"a\"},{\"MissionId\":\"b\"}],\"PrisonersInterned\":4}");
-            check(v3 != null && v3.Version == 7 && v3.Day == 1 && v3.Timeline.Count == 0 && v6 != null && v6.Version == 7 && v6.Day == 5 && v6.PrisonersInterned == 4,
+            check(v3 != null && v3.Version == 8 && v3.Day == 1 && v3.Timeline.Count == 0 && v6 != null && v6.Version == 8 && v6.Day == 5 && v6.PrisonersInterned == 4,
                 "T42d 저장 이행: v3 -> Day 1, v6 -> Day 1+2x2=5 (다른 필드 보존)");
 
             // 2) 왕복 + 깨진 값

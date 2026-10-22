@@ -41,6 +41,37 @@ public sealed class CampaignState
         public int Choice { get; set; }
     }
 
+    /// <summary>[v8 · T48a] 연대장 풀 한 명의 가변 상태 (불변 데이터 = commanders.json 의 같은 id). Status = CommanderStatus. Regiment 0 = 미배속. 전이 규칙은 T48b, 호감 증감은 T48c.</summary>
+    public sealed class CommanderSlot
+    {
+        public string Id { get; set; } = "";
+        public string Status { get; set; } = CommanderStatus.Locked;
+        public int Regiment { get; set; }
+        public int Favor { get; set; }
+        /// <summary>마지막 호감 증감 작전 id (같은 작전 중복 반영 방지).</summary>
+        public string FavorLastMission { get; set; } = "";
+        public int HiredDay { get; set; }
+        public int DismissedDay { get; set; }
+        public int TimesHired { get; set; }
+    }
+
+    /// <summary>[v8 · T48a] 캠페인에서 이어지는 개별 장교 (필드만 — 발급 · 배정 · 종착 로직은 T48b). Assignment: "" 없음 / "battalion" / "staff".</summary>
+    public sealed class CampaignOfficer
+    {
+        public int Key { get; set; }
+        public string Name { get; set; } = "";
+        public int Rank { get; set; }
+        public int Xp { get; set; }
+        public string School { get; set; } = "";
+        public string Assignment { get; set; } = "";
+        public int Battalion { get; set; }
+        public string StaffSlot { get; set; } = "";
+        public string Status { get; set; } = "alive";
+        public int WoundedUntilMission { get; set; }
+        public bool AlwaysWounded { get; set; }
+        public bool TerminalReady { get; set; }
+    }
+
     public sealed class MissionRecord
     {
         public string MissionId { get; set; } = "";
@@ -157,7 +188,8 @@ public sealed class CampaignState
     /// 5 (T42b): 진급 기록 · 정원 — PromotionLog / PromotionsThisBreak (추가만, v3 · v4 는 빈 목록 · 0 으로 이행).
     /// 6 (T42c): 포로 장부 — Stock.Prisoners · PrisonersRepatriated/PrisonersInterned · DebriefReport.PrisonersTaken (추가만, v3~v5 는 0 으로 이행).</summary>
     /// 7 (T42d): 작전 일수 · 연표 — Day / Timeline (추가만, v3~v6 은 Day = 1 + 치른 작전 수 × missionDays · 빈 연표로 이행).
-    public const int SchemaVersion = 7;
+    /// 8 (T48a): 연대장 풀 · 장교 명부 — CommanderPool / CampaignOfficers (추가만, v3~v7 은 빈 목록으로 이행; 풀은 불러올 때 CommanderPools.Sync 가 데이터와 맞춘다).
+    public const int SchemaVersion = 8;
     public const int TimelineMax = 200;
     /// <summary>Day 상한 (손상 저장 · 덧셈 넘침 방지).</summary>
     public const int DayMax = 100000;
@@ -184,6 +216,10 @@ public sealed class CampaignState
         Timeline.Add(new TimelineEntry { Day = Math.Max(Day, 1), Kind = kind, Id = id, Title = title, Choice = choice });
         if (Timeline.Count > TimelineMax) Timeline.RemoveRange(0, Timeline.Count - TimelineMax);
     }
+    /// <summary>[v8 · T48a] 연대장 풀 상태 (정의 순서로 추가, 데이터에서 사라진 id 도 보존). 옛 파일 = 빈 목록. 규칙: CommanderPools / T48b.</summary>
+    public List<CommanderSlot> CommanderPool { get; set; } = new();
+    /// <summary>[v8 · T48a] 장교 명부 (대대장 · 참모 후보). 옛 파일 = 빈 목록. 로직은 T48b.</summary>
+    public List<CampaignOfficer> CampaignOfficers { get; set; } = new();
     /// <summary>이월 사병 (계급 · 사살 수 · 병력 id).</summary>
     public List<MissionResults.UnitLine> Units { get; set; } = new();
     /// <summary>이월 장교 (OfficerRank · Xp · Post).</summary>
@@ -233,6 +269,7 @@ public sealed class CampaignState
     {
         Manpower ??= new();
         PromotionLog ??= new();   // T42b
+        CommanderPool ??= new(); CampaignOfficers ??= new();   // T48a
         Stock ??= new();
         Stock.Rifles ??= new();
         if (!Stock.Rifles.ContainsKey(StockKeys.Ru)) Stock.Rifles[StockKeys.Ru] = 3000;
@@ -273,6 +310,31 @@ public sealed class CampaignState
         }
     }
 
+    /// <summary>[T48a] 풀 · 장교 명부 보정: null/빈 id/중복 id 제거 (먼저 나온 것 유지), 모르는 상태는 locked, 호감은 범위로, 음수 카운터 0.</summary>
+    void SanitizeCommanders()
+    {
+        var eco = CampaignEconomyDefs.Current;
+        CommanderPool ??= new();
+        var seen = new HashSet<string>();
+        CommanderPool.RemoveAll(c => c == null || string.IsNullOrEmpty(c.Id) || !seen.Add(c.Id));
+        foreach (var c in CommanderPool)
+        {
+            if (Array.IndexOf(CommanderStatus.All, c.Status) < 0) c.Status = CommanderStatus.Locked;
+            c.Regiment = Math.Clamp(c.Regiment, 0, 9);
+            c.Favor = Math.Clamp(c.Favor, eco.CommanderFavorMin, eco.CommanderFavorMax);
+            c.FavorLastMission ??= "";
+            c.HiredDay = Math.Clamp(c.HiredDay, 0, DayMax); c.DismissedDay = Math.Clamp(c.DismissedDay, 0, DayMax);
+            c.TimesHired = Math.Clamp(c.TimesHired, 0, 100000);
+        }
+        CampaignOfficers ??= new();
+        CampaignOfficers.RemoveAll(o => o == null);
+        foreach (var o in CampaignOfficers)
+        {
+            o.Name ??= ""; o.School ??= ""; o.Assignment ??= ""; o.StaffSlot ??= ""; o.Status ??= "alive";
+            o.Rank = Math.Max(0, o.Rank); o.Xp = Math.Max(0, o.Xp); o.Battalion = Math.Max(0, o.Battalion); o.WoundedUntilMission = Math.Max(0, o.WoundedUntilMission);
+        }
+    }
+
     /// <summary>손상 · 수작업 편집된 저장 값을 허용 범위로 되돌린다 (음수 재고 · 정원 초과 · 모르는 미션을 가리키는 출격 기록).</summary>
     public void Sanitize()
     {
@@ -289,6 +351,7 @@ public sealed class CampaignState
         PrisonersRepatriated = Math.Max(0, PrisonersRepatriated);
         PrisonersInterned = Math.Max(0, PrisonersInterned);
         Timeline ??= new(); Timeline.RemoveAll(e => e == null);   // T42d
+        SanitizeCommanders();
         if (Timeline.Count > TimelineMax) Timeline.RemoveRange(0, Timeline.Count - TimelineMax);
         if (Day <= 0) Day = (int)Math.Min(DayMax, 1L + (long)(History?.Count ?? 0) * CampaignEconomyDefs.Current.MissionDays);
         Day = Math.Min(Day, DayMax);
@@ -334,6 +397,7 @@ public sealed class CampaignState
         if (r.Result != "won" || !IsCampaignMission(r.MissionId)) return null;
         var s = prev ?? new CampaignState();
         s.EnsureInitialized();
+        CommanderPools.Sync(s);   // T48a
         bool wasDone = s.Completed.Contains(r.MissionId);
         if (!wasDone) s.Completed.Add(r.MissionId);
         s.History.RemoveAll(h => h.MissionId == r.MissionId);
@@ -401,7 +465,8 @@ public sealed class CampaignState
     bool HasNullElements() =>
         (Completed?.Contains(null!) ?? false) || (History?.Contains(null!) ?? false) || (Units?.Contains(null!) ?? false) || (Officers?.Contains(null!) ?? false)
         || (EntryUnits?.Contains(null!) ?? false) || (EntryOfficers?.Contains(null!) ?? false) || (Roster?.Contains(null!) ?? false)
-        || (Stock?.RecentLog?.Contains(null!) ?? false) || (Pending?.DeployedCompanyIds?.Contains(null!) ?? false);
+        || (Stock?.RecentLog?.Contains(null!) ?? false) || (Pending?.DeployedCompanyIds?.Contains(null!) ?? false)
+        || (CommanderPool?.Contains(null!) ?? false) || (CampaignOfficers?.Contains(null!) ?? false);
 
     /// <summary>메뉴 저장 관문: 읽기 실패 (깨진 · 더 새 버전) 파일이 있는 동안은 저장하지 않는다 (원본 보호). loadError 가 null 이면 일반 Save.</summary>
     public bool SaveUnlessLoadFailed(string? loadError) => loadError == null && Save();
@@ -447,7 +512,9 @@ public sealed class CampaignState
         string text;
         try { text = File.ReadAllText(FilePath); }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException) { LastLoadError = string.Format(SnapMsg.CantRead, e.Message); return null; }
-        return Parse(text, out _);
+        var s = Parse(text, out _);
+        if (s != null) CommanderPools.Sync(s);   // T48a: 데이터의 새 연대장을 풀에 더한다 (사라진 id 는 보존)
+        return s;
     }
 
     /// <summary>[테스트 · Load] 텍스트 → 상태 (거부면 null + 한국어 사유).</summary>

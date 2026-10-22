@@ -1,0 +1,6 @@
+{
+  "_doc": "연대장 선호/기피 태그 어휘 + 학파 목록 (T48a, 임시). commanders.json 의 favor.likes/dislikes 와 school 은 여기 있는 값만 허용. 학파 = docs/OFFICER_DOCTRINES.md 5종 + 없음.",
+  "version": 1,
+  "tags": ["공세", "수비", "인명보존", "보급중시", "포로관대", "포로엄격", "학파존중", "시위대편애", "속전속결", "민간보호"],
+  "schools": ["독일", "불란서", "노서아", "평양", "북경", "없음"]
+}
