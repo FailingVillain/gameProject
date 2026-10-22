@@ -27,6 +27,12 @@
 | b5918a8 · a4c79c7 | docs-ops · docs-roles | 문서 재정비 (ops/tasks, 헌장/역할/절차) |
 | 562e578 | docs-fable | PIPELINE v1 · STATE/QUEUE 현행화 · T13 |
 | bfe5641 | fix/n12-forest | 낡은 시험 4건 수정 (N12/Forest/GapFill 시험 3파일만; 사용자 승인 예외 2026-10-22) |
+| a8552f9 | tools/fv-renumber | fv_renumber.ps1 (merge/0.2 A1) · FV 52/19 · detcheck 8aa6448b9690b922 |
+| 9b2cbff | tools/monitor-launch | run_game.ps1 (A2) · AGENT_RULES 절 합집합 · FV 52/19 |
+| 5d8149f | kd/crash-log | T41 충돌 로그 (A3) · FV 52/19 · detcheck 8aa6448b9690b922 · crashlog PASS · uifuzz 30 0건 |
+| 32180a0 | kd/endline-50 | 종료선 70→50 미션 json (A4) · FV 52/19 · detcheck 8aa6448b9690b922 · missions PASS |
+| a0611ad | sfxnew | T21 효과음 (A5) · FV 52/19 · detcheck 8aa6448b9690b922 · sounds.json 유효 |
+| 2231459 · abbe77f | gt-face-proto · t30d-train-art | T22 얼굴 시안 · T30d 열차 그림 (A6, src 변경 없음) · FV 52/19 · detcheck 8aa6448b9690b922 |
 
 **큐 닫음 (release, 2026-10-22)**: fix/n12-forest 큐 — 전체 selftest 2008 OK/FAIL 0 · detcheck 8변형 동일 · snaptest OK · dist 발행. (T03~T05 큐의 T13 은 별도, 아직 queued.)
 
