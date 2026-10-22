@@ -54,5 +54,9 @@
   "casualtyReplaceCost": 1.0,
   "civilianReliefSupplyLoss": 400,
   "shellWeapons": { "gun_infantry": "infGun", "gun_field": "field", "howitzer_heavy": "howitzer" },
-  "lootShellsPerKill": { "infGun": 0.1, "field": 0.05, "howitzer": 0.02 }
+  "lootShellsPerKill": { "infGun": 0.1, "field": 0.05, "howitzer": 0.02 },
+  "_e1SupplyCost": "C1E1-d2 (spec R5, 2026-10-22): 보급 풀 4,000 = 투입 비용 단위. 보병 1 · 기병 3 · 외인 1명 = 1. 포는 명세에 5~9 범위만 있음 - 단일값 미정 (supplyCostGun 키는 값 확정 후 추가). 시작 편성은 campaign_e1_start.json",
+  "supplyCostInfantry": 1,
+  "supplyCostCavalry": 3,
+  "supplyCostForeign": 1
 }
