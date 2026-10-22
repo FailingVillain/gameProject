@@ -182,6 +182,7 @@
 | 14:5x | **통합 리허설 완료**(sonnet, 202k, 6088초; integration/rehearsal 984c404, 측정 생략): 전 스택 병합 충돌 대부분 ops 문서·버전 줄(기계적), 어려운 곳 = 캠페인 스택(같은 수정 두 벌: gemini-import 뒤 t19d 만 병합 권장), t30a/t30b(열차 저장 위치; t30b 부터 또는 재스택). 실제 FV: breach2 53/R20 … rail 58 · t30a 59/R23 · t30b 60 → IsAi 61/24, AE2 62/25 로 예약표 정정. 체크섬 변화 3곳(breach2→t24→t25) → 통합 골든 bef5ffb0 822cdacd. 전체 selftest FAIL 4: ①uiicons 11버튼(T38c 로 해소 경로) ②crossing 2건 — T24 의심(t24 단독도 실패, 07ac80c 재확인 필요) ③안개 0.311ms(부하 탓 추정). snaptest·uifuzz OK. → crossing 진단 발주 | 완료 ~74 |
 | 14:5x | T42 체인 리뷰 수정 완료(sonnet, 66k, 109초; t42d 57f5440): ③재승리 시 진급 정원·이월 불변(재승리 생존자 사살 수는 미반영), ⑤Day 상한 100000·Timeline 200 절단, ⑥Day≥1. savecompat·missions·골든 PASS. 열린 항목 3건(이중 집계·죽은 패배 분기·장교 XP) 카드 기록 → 최종 T42d 팁 = 57f5440 | 완료 ~75 |
 | 15:0x | T32b wip-ready(opus, 267k — 한도 초과 근접, 6356초; kd/t32b-ai-smoke 33284fa, ai3b2 위): AI 연막 R1/R2/R3 키 기본 꺼짐, tactics.smokeAi 저장 대상 → FV 55→56(병합 때 62 이후로 재번호), smokeai 13항목 PASS, 골든 일치(끔). 사용자 답: 시트 검수 15장 폴더 오픈, 포로 이중집계 수정, 장교 XP 유지, 병합 정책 해제 제안 승인(DECISIONS AT). 발주: 포로 수정(t42d 위), T38e(t38a 위), T39d(river-r3 위) | 완료 ~76 |
+| 15:0x | 포로 이중집계 수정 완료(sonnet, 55k, 99초; t42d 06ee9bd): EnemyKills = 스폰−생존−항복, 포로는 EnemyCaptured 로만, 항복 꺼짐 기본에서 결과 불변, savecompat·missions·골든 PASS. 열린 항목 = 패배 분기(죽은 코드)만. 참고: 적 FactionLine.Lost 는 항복 포함 유지 → 최종 T42d 팁 06ee9bd | 완료 ~77 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
