@@ -86,7 +86,8 @@ public static class UserSettings
             ColorBlind = d.ColorBlind;
             Overlay = ParseOverlay(d.Overlay);
             string lang = (d.Language ?? "").Trim().ToLowerInvariant();
-            if (lang != "ko" && lang != "en") { Note($"{name}: 'Language' 값이 올바르지 않아 기본값(ko)을 쓴다"); lang = "ko"; }
+            unknownLanguage = null;
+            if (lang != "ko" && lang != "en") { Note($"{name}: 'Language' 값이 올바르지 않아 기본값(ko)을 쓴다"); unknownLanguage = d.Language; lang = "ko"; }   // 원문은 저장 때 보존
             KoreanDivision.Core.Loc.Language = lang;
             Sfx.Volume = Volume;
             KeyMap = new();
@@ -96,6 +97,15 @@ public static class UserSettings
             Bindings.Sanitize();
         }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException) { Unreadable(name, e.Message); }
+    }
+
+    static string? unknownLanguage;   // 읽은 모르는 언어 코드 원문 (사용 시 ko; 사용자가 언어를 바꾸기 전까지 저장 때 그대로 유지)
+    static string SavedLanguage()
+    {
+        string cur = KoreanDivision.Core.Loc.Language;
+        if (unknownLanguage != null && cur == KoreanDivision.Core.Loc.Ko) return unknownLanguage;
+        unknownLanguage = null;
+        return cur;
     }
 
     static void Note(string msg) { LoadMessages.Add(msg); Console.Error.WriteLine("[설정] " + msg); }
@@ -125,7 +135,7 @@ public static class UserSettings
         if (blockSave) return;   // [T49b] 못 읽은 원본을 .bak 없이 덮어쓰지 않는다
         try
         {
-            var d = new Data { Width = Width, Height = Height, Volume = Volume, ColorBlind = ColorBlind, Overlay = OverlayName(Overlay), Language = KoreanDivision.Core.Loc.Language, Keys = KeyMap.Count == 0 ? null : KeyMap.OrderBy(kv => kv.Key, StringComparer.Ordinal).ToDictionary(kv => kv.Key, kv => kv.Value.ToString()), Mode = Mode switch { WindowMode.Borderless => "borderless", WindowMode.Fullscreen => "fullscreen", _ => "windowed" } };
+            var d = new Data { Width = Width, Height = Height, Volume = Volume, ColorBlind = ColorBlind, Overlay = OverlayName(Overlay), Language = SavedLanguage(), Keys = KeyMap.Count == 0 ? null : KeyMap.OrderBy(kv => kv.Key, StringComparer.Ordinal).ToDictionary(kv => kv.Key, kv => kv.Value.ToString()), Mode = Mode switch { WindowMode.Borderless => "borderless", WindowMode.Fullscreen => "fullscreen", _ => "windowed" } };
             File.WriteAllText(FilePath, JsonSerializer.Serialize(d, new JsonSerializerOptions { WriteIndented = true }));
         }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException) { }
