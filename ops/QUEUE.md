@@ -37,12 +37,45 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T32a | 전투공병 유닛 데이터 infantry_pioneer (wireCutter·수류탄2·한국군 전용) | feature | D中 R1 S H1 Wlight | ai3b2 위 스택 | wip-ready (kd/t32a-pioneer 26cc9fd) |
 | T32b | 전술 AI 연막 수류탄 (개활 횡단·사격 아래·참호 돌격 smokeHook, 기본 꺼짐, FV 56→예약 62) | sim | D上 R3 SM H2 Wheavy | ai3b2 위 스택 | wip-ready (kd/t32b-ai-smoke 33284fa) |
 | T43 | 병종 기호 곡사포·저격 추가 | feature | D下 R1 S H0 Wlight | 없음 (main) | wip-ready (kd/t43-branch-symbols b9c97a9) |
-| T48a | 연대장 데이터 · 스키마 v8 · 로더 · 샘플 (연대장 풀) | feature | D中 R2 S H2 Wlight | T42d 위 스택 (06ee9bd) | queued (카드 spec/cards-commanders 122c65a) |
+| T48a | 연대장 데이터 · 스키마 v8 · 로더 · 샘플 (연대장 풀) | feature | D中 R2 S H2 Wlight | T42d 위 스택 (06ee9bd) | wip-ready (브랜치 t48a-commander-data, 스택 base t42d 06ee9bd) |
 | T48b | 장교 신원 영속 · 진급 종착 · 배정 · 연대장 기용/해임 · 전사/항상부상 | sim | D上 R3 M H2 Wlight | T48a | queued |
-| T48c | 연대장 호감도 + 해임 시 소폭 하락 | feature | D中 R2 S H2 Wlight | T48b | queued |
+| T48b1 | 장교 신원 키 (OfficerKey) · 주입/환수 · 전사/항상부상 · 대대장 주입 · 진급 Key · 종착 | sim | D上 R3 M H3 Wlight | T48a | wip-ready (t48b1-officer-identity fa8dff1 · kd-t48b1 · T48a e31406d 위 스택 · FV 53 · 캠페인 v9, 병합 보류) |
+| T48b2 | 연대장 기용/해임 · 장교 배정 · 참모 4슬롯 효과 (캠페인 층) · 작전 태그 정산 | feature | D中 H2 | T48b1 T48c | wip-ready (t48b2-assign · kd-t48b2 · t48b1 fa8dff1 + t48c c24c423 스택 · 캠페인 v9 유지, 병합 보류) |
+| T48c | 연대장 호감도 + 해임 시 소폭 하락 | feature | D中 R2 S H2 Wlight | T48b | wip-ready (t48c-favor c24c423, T48a 위 스택, 병합 보류) |
 | T48d | 연대장·대대장·참모 관리 UI (탭 8/9/12/14) | feature | D中 R1 M H2 Wlight | T48b T48c | queued |
 | T48e | 2단계 전투 연결 (기본 꺼짐 키 4개, FV 예약 필요) | sim | D上 R3 M H3 Wheavy | T48d · T10 · T24 | queued (blocked) |
 | T39c | 하천 렌더(합성 여울 타일)·test_river 지도/미션 | feature | D中 R1 S H0 Wlight | river-r2 위 스택 | wip-ready (river-r3 26df7f6) |
+| TC-A | 브리핑 규모 분리 + 정보 3단계 (C1E1) | feature | D中 H2 | 없음(base t42d) | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| TC-B | SK2 경보 상태 (C1E1) | sim | D上 H3 | 없음(base merge/0.2) | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| TC-C | 이벤트 중대 명령 주입 + 잠금 D15 (C1E1) | sim | D上 H3 | 없음(base merge/0.2) | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| TC-D | funds · 외인 슬롯 · 통제 한도 · 가용 보급 (C1E1) | feature | D中 H2 | t42d | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| TC-E | favor.* · 변수 레지스트리 · 결정 런타임 (C1E1) | sim | D中~上 H2 | TC-D | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| TC-F | 미션 데이터 변형 · SK 플래그 · BT1 이탈 · pow.bandit (C1E1) | feature | D中 H2 | TC-D · TC-E | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| TC-G | 일본 철도 부속지 진입/사격 금지 (C1E1) | sim | D中~上 H3 | 없음(base merge/0.2) | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-m1 | MAP-A 지도 생성 (medium) | feature | D中 H0 | 없음 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-m2 | MAP-B 지도 생성 (large) | feature | D中 H0 | 없음 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-u1 | 유닛/무기/세력 점검 (보고서) | scout | D下 H0 | 없음 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-g1 | 에피소드 그래프 런타임 | sim | D上 H3 | 없음(base t42d) | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-g2 | 에피소드 화면 UI | feature | D中 H2 | g1 TC-D TC-E | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-g3 | 미션 이벤트 행동 확장 | sim | D上 H3 | TC-E | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-g4 | 목표 확장 (항복/N점/losses 변수) | sim | D上 H2 | 없음(base merge/0.2) | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-g5 | 피난민 비전투 유닛 | feature | D下~中 H1 | u1 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-u2 | C1E1 누락 유닛 정의 5종 (봉천 기마·야포, 철도수비대, 피난민, 의용병) | feature | D中 H1 | u1 | wip-ready (kd/c1e1-u2-units 8061b9a, 병합 금지 지시) |
+| C1E1-g6 | unlock.* 편성 해금 | feature | D中 H2 | TC-D | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-d1 | 결정 16개·노드 데이터 JSON | feature | D中 H1 | g1 TC-E | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-d2 | E1 시작 상태 + 경제 상수 | docs | D下 H1 | TC-D | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-s1 | BT1 미션 JSON | feature | D中 H1 | m1 u1 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-s2 | SK1 미션 JSON | feature | D中 H1 | m1 u1 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-s3 | SK2 미션 JSON | feature | D中 H1 | m1 u1 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-s4 | SK3 미션 JSON | feature | D中 H1 | m2 u1 g5 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-s5 | SK4 미션 JSON | feature | D中 H1 | m2 u1 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-s6 | OP1 강공 미션 JSON | feature | D中 H1 | m2 u1 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-s7 | OP1 포위 미션 JSON | feature | D中 H1 | s6 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-v1 | 변형 데이터 적용 | feature | D中 H1 | s1~s7 TC-F TC-A | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-t1 | 기능 문구 (서사 키만) | docs | D下 H1 | d1 s* | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-p1 | VIP 포트레이트 자리표시 (선택) | art | D下~中 H0 | Q4 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-q1 | 종단 시험 S1~S4 | measure | D中 H1 | 거의 전부 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-q2 | OP1 성능 스모크 | measure | D中 H0 | s6 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
 
 **정책 (사용자 2026-10-22, 강조): WIP 는 병합하지 않는다. WIP 작업은 재개해서 완료(wip-ready)까지만 한다.** merger 는 발주하지 않는다. 선행이 '병합'인 카드는 선행 카드의 wip 브랜치 위에 쌓아(스택) 진행한다. main 에는 WIP 가 들어가지 않는다(사용자 지시 전까지).
 
@@ -128,6 +161,7 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T38f | wip-ready | t38f-home-readonly-tabs @b622d1d | kd-t38f | T19d |
 | T38g | wip-ready | t38g-ui-harness @f5a76d4 | kd-t38g | T27 |
 | T38h | 확인 필요 (로그 없음, 미커밋 4건) | t38h-fuzz-campaign @e5f76ec | kd-t38h | T38g |
+| T38k | wip-ready | t38k-fonts @07cb63f | kd-t38k | T38a |
 | T39a | wip-ready | river-r1 @5b7b9f1 | kd-river-r1 | rail |
 | T39b | wip-ready | river-r2 @8ada7a9 | kd-river-r2 | T39a |
 | T39c | wip-ready | river-r3 @26df7f6 | kd-river-r3 | T39b |
@@ -149,6 +183,6 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 우선순위: ① 재렌더(T11) ② 기능 구현(스택: 전투공병·AI 연막/철조망·지도 편집기·UI 백로그·열차·IsAi·캠페인 후속) ③ 통합 리허설/병합 준비 ④ (보류) 밸런스.
 
 버전 마일스톤(사용자 2026-10-22): 0.2 = 밸런스 패치 이전(기능 완료·병합) → 0.3 = 밸런스 패치 이후(한 번에) → 0.4 = AI 개선. 상세 = ops/VERSIONS.md. 남은 AI 카드(T32c, T34b~e)는 0.4 로 미룸.
-| T49a | 저장 호환 정책 적용 1 (메시지 · 이행 .bak · 목록 회색 표시, ops/SAVE_COMPAT_POLICY.md) | feature | D中 R2 S H1 Wlight | 없음 | queued |
+| T49a | 저장 호환 정책 적용 1 (메시지 · 이행 .bak · 목록 회색 표시, ops/SAVE_COMPAT_POLICY.md) | feature | D中 R2 S H1 Wlight | 없음 | wip-ready (브랜치 t49a-save-messages, 스택 base t48a e31406d) |
 | T49b | 저장 호환 정책 적용 2 (설정 관대 읽기 · 사용자 지도/지휘관 건너뛰기 · 테스트) | feature | D中 R2 S H1 Wlight | T48a | queued |
 | T49c | 저장 호환 출시 게이트 (캠페인 v1..현재 옛 샘플 테스트) | feature | D下 R2 S H1 Wlight | T49a | queued |

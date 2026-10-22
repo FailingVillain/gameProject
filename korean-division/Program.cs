@@ -179,6 +179,7 @@ Raylib.SetConfigFlags(ConfigFlags.ResizableWindow | ConfigFlags.Msaa4xHint | (no
 Raylib.InitWindow(UserSettings.Width, UserSettings.Height, $"{Config.Title} {Config.Version}");
 Raylib.SetWindowMinSize(Config.MinScreenWidth, Config.MinScreenHeight);
 if (UserSettings.Mode != UserSettings.WindowMode.Windowed) UserSettings.Apply();
+KoreanDivision.Render.MonitorPick.Apply();   // T38n: env KD_MONITOR=primary|secondary|N 이면 그 모니터 가운데로 (창 모드만)
 Raylib.SetExitKey(KeyboardKey.Null);   // Esc 는 게임 내 취소 키로 사용
 Raylib.SetTargetFPS(noVsync ? 0 : Config.MaxFps);
 Ui.LoadFonts(defs.AllText().Concat(MissionDef.AllText()));   // 미션 파일의 제목 · 브리핑 · 목표 글자도 아틀라스에

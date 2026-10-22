@@ -103,6 +103,7 @@ public static partial class SelfTest
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "forest") { Tests.ForestSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "formrelax") { Tests.FormRelaxSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "choke") { Tests.ChokeSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+        if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "monitorpick") { Tests.MonitorPickSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "bunchfix") { Tests.BunchFixSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "uiicons") { Tests.UiIconsSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "menuhide") { Tests.MenuHideSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
@@ -197,6 +198,7 @@ public static partial class SelfTest
         Tests.ForestSelfTest.Run(opt, Check);             // 숲 전투 (시야 깊이 · 방어 이점 · 정찰조 숲 탐색)
         Tests.FormRelaxSelfTest.Run(opt, Check);           // 대형 완화 (짧은 이동 평행이동 · 산개 파상 횡대 · 휴식 정렬)
         Tests.ChokeSelfTest.Run(opt, Check);               // choke 좁은 길목 통과 (큐 · 종대 유지 · 저장)
+        Tests.MonitorPickSelfTest.Run(opt, Check);         // monitorpick KD_MONITOR 모니터 선택 (T38n)
         Tests.BunchFixSelfTest.Run(opt, Check);            // bunchfix 행군 종대 뭉침 (자취 외삽 · 좁은 길 문턱 · 막힌 슬롯 흩뿌림 · 배치 지도 안)
         Tests.Ai412SelfTest.Run(opt, Check);              // 결정 4 돌격 허가 · 결정 12 대대 역할 · 부사관 기본 편성
         Tests.CavCmdSelfTest.Run(opt, Check);             // cavcmd 기병 장교 · 기병 분대 부사관 대리
