@@ -165,7 +165,12 @@ public static class FreightSelfTest
             var wc = Make(Enemy, Cap);
             Steps(wc, 5);
             var c1 = TacticalAi.ObjectiveFor(wc, 1);
-            check(c1.Kind == AiObjectiveKind.Take && MathF.Abs(c1.Radius - 3) < 1e-6f, $"AI: 화차 탈취 = Take 반경 3 ({c1.Kind})");
+            var cu = TacticalAi.ObjectiveFor(wc, 1);
+            check(!wc.Fog.CanSee(1, wc.Trains[0].Cars[2]) ? cu.Kind == AiObjectiveKind.None : c1.Kind == AiObjectiveKind.Take, $"AI: 안 보이는 적 화차는 위치를 모름 ({cu.Kind})");
+            wc.SpawnUnit(defs.Units["infantry"], 1, wc.Trains[0].Cars[2].Pos + new Vector2(0, 6f));
+            Steps(wc, 30);
+            c1 = TacticalAi.ObjectiveFor(wc, 1);
+            check(c1.Kind == AiObjectiveKind.Take && MathF.Abs(c1.Radius - 3) < 1e-6f && Vector2.Distance(c1.Point, wc.Trains[0].Cars[2].Pos) < 8f, $"AI: 보이는 화차 탈취 = Take 반경 3 ({c1.Kind})");
         }
 
         // ---- 6. 저장 → 불러오기 (탈취 진행 중): 바이트 동일 · 체크섬 동일 · 이어 돌려도 같은 결과
