@@ -64,6 +64,10 @@ public static partial class S
     public const string RsDefeat = "미션 실패";
     public const string RsDuration = "작전 시간";
     public const string RsLosses = "손실 (생성 / 손실)";
+    public const string RsCauses = "사상 원인 (아군 / 적)";
+    public const string RsCauseFmt = "{0} 사격 {1}% · 근접 {2}% · 포격 {3}%";
+    public const string RsCompanies = "중대별 (잔존 / 편성 · 사살)";
+    public const string RsCompanyFmt = "제{0}중대  {1} / {2}  · {3}";
     public const string RsKills = "적 사살";
     public const string RsTopUnits = "최다 사살 부대원";
     public const string RsPromotions = "승진";

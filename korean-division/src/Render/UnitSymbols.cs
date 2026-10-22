@@ -13,7 +13,7 @@ namespace KoreanDivision.Render;
 /// </summary>
 public static class UnitSymbols
 {
-    public enum Branch { Infantry, MachineGun, AntiTank, Artillery, Cavalry, Armor, Supply, Officer, Scout, Assault }
+    public enum Branch { Infantry, MachineGun, AntiTank, Artillery, Cavalry, Armor, Supply, Officer, Scout, Assault, Howitzer, Sniper }
 
     static readonly string[] BranchName = S.SymBranches.Split('|');
 
@@ -26,10 +26,13 @@ public static class UnitSymbols
           : d.Category == "wagon" || d.IsSupplyWagon ? Branch.Supply
           : d.Category == "armored" ? Branch.Armor
           : d.Category == "cavalry" ? Branch.Cavalry
+          : d.Category == "gun" && w != null && w.Indirect ? Branch.Howitzer   // 곡사포 = 곡사 무기 포 (자료 판정, 이름 아님)
           : d.Category == "gun" || (w != null && w.Indirect) ? Branch.Artillery
+          : w != null && w.PreferOfficer && !w.Indirect ? Branch.Sniper   // 저격 = 장교 우선 표적 무기 (무기 속성)
           : w != null && w.IsAntiArmor ? Branch.AntiTank
           : w != null && w.Spray > 0 ? Branch.MachineGun
           : d.Scout ? Branch.Scout
+          : d.Mounted ? Branch.Cavalry   // 승마 = 기병 (category 가 infantry 인 기병 정의 포함, 자료 판정). 승마 정찰은 위의 정찰 유지
           : d.Grenades > 0 && d.Category == "infantry" ? Branch.Assault
           : Branch.Infantry;
         cache[d] = b;
@@ -44,7 +47,7 @@ public static class UnitSymbols
         public Branch Main;
     }
     static readonly Dictionary<int, Agg> aggs = new();
-    static readonly int[] counts = new int[10];
+    static readonly int[] counts = new int[Enum.GetValues<Branch>().Length];
     static readonly List<Agg> live = new();
     static readonly HashSet<int> hiRegs = new();
     static long lastTick = -100; static int lastSeat = -1;
@@ -80,7 +83,7 @@ public static class UnitSymbols
             if (sel && c.Battalion != null) hiRegs.Add(c.Battalion.Id);
             if (a.Seen == 0) continue;
             a.Pos = sum / a.Seen;
-            int best = 0; for (int i = 1; i < 10; i++) if (counts[i] > counts[best]) best = i;
+            int best = 0; for (int i = 1; i < counts.Length; i++) if (counts[i] > counts[best]) best = i;
             a.Main = (Branch)best;
             live.Add(a);
         }
@@ -90,7 +93,7 @@ public static class UnitSymbols
     public static string? IconName(Branch b) => b switch
     {
         Branch.Infantry => "infantry", Branch.MachineGun => "mg", Branch.AntiTank => "at", Branch.Artillery => "artillery",
-        Branch.Cavalry => "cavalry", Branch.Armor => "armour", Branch.Supply => "supply", Branch.Scout => "scout", Branch.Assault => "assault", Branch.Officer => "officer",
+        Branch.Cavalry => "cavalry", Branch.Armor => "armour", Branch.Supply => "supply", Branch.Scout => "scout", Branch.Assault => "assault", Branch.Howitzer => "howitzer", Branch.Sniper => "sniper", Branch.Officer => "officer",
         _ => null,
     };
     static readonly int[] IconSizes = { 12, 16, 20, 24, 32 };
@@ -141,6 +144,7 @@ public static class UnitSymbols
         Raylib.DrawRectangleRec(r, fill);
         Raylib.DrawRectangleLinesEx(r, 2, team);
         Raylib.DrawRectangleLinesEx(new Rectangle(r.X - 1, r.Y - 1, r.Width + 2, r.Height + 2), 1, dark);
+        if (ColorBlind.Enabled) ColorBlind.Draw(new Vector2(r.X + 2, r.Y + 2), MathF.Max(4f, r.Width * 0.18f), a.C.Owner, team);   // 색각 대응: 세력 도형 (좌상단)
         if (BranchIcon(a.Main, (int)MathF.Min(r.Width, r.Height) - 2) is { } bi)
             Raylib.DrawTexture(bi.Base[0], (int)MathF.Round(r.X + (r.Width - bi.Base[0].Width) / 2), (int)MathF.Round(r.Y + (r.Height - bi.Base[0].Height) / 2), Color.White);
         else DrawGlyph(a.Main, r);
@@ -175,6 +179,13 @@ public static class UnitSymbols
                 Raylib.DrawTriangleLines(new(cx, r.Y + 2), new(r.X + 2, r.Y + h - 2), new(r.X + w - 2, r.Y + h - 2), ink); break;
             case Branch.Artillery:
                 Raylib.DrawCircleV(new(cx, cy), 3.2f, ink); break;
+            case Branch.Howitzer:
+                Raylib.DrawCircleV(new(cx, cy), 3.2f, ink);
+                Raylib.DrawLineEx(new(cx, r.Y), new(cx, r.Y + h * 0.3f), 1.5f, ink); break;
+            case Branch.Sniper:
+                Raylib.DrawLineEx(new(r.X, r.Y), new(r.X + w, r.Y + h), 1.5f, ink);
+                Raylib.DrawLineEx(new(r.X + w, r.Y), new(r.X, r.Y + h), 1.5f, ink);
+                Raylib.DrawCircleLinesV(new(cx, cy), 3f, ink); break;
             case Branch.Cavalry:
                 Raylib.DrawLineEx(new(r.X, r.Y + h), new(r.X + w, r.Y), 1.5f, ink); break;
             case Branch.Armor:
@@ -211,6 +222,7 @@ public static class UnitSymbols
         }
         Raylib.DrawTexture(icon.Base[0], (int)MathF.Round(r.X), (int)MathF.Round(r.Y), Color.White);
         Raylib.DrawRing(new Vector2(cx, cy), rad - 0.5f, rad + 1.2f, 0, 360, 36, team);   // 같은 세력 · 같은 휘장끼리 구분
+        if (ColorBlind.Enabled) ColorBlind.Draw(new Vector2(r.X + 3, r.Y + 3), MathF.Max(4f, r.Width * 0.18f), a.C.Owner, team);   // 색각 대응: 세력 도형 (좌상단)
         // 병종 이미지: 세력 휘장 바로 아래 (휘장 + 병종 그림). 이미지가 없으면 (옛 테마 · 지휘) 우하단 작은 NATO 기호.
         float barY = r.Y + r.Height + 3;
         if (BranchIcon(a.Main, (int)(r.Width * 0.6f)) is { } bi)

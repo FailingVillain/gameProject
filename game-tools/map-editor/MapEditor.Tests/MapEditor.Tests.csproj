@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- headless round-trip tests. Game csproj is a read-only reference. Run: dotnet run with optional korean-division root arg -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>MapEditor.Tests</RootNamespace>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MapEditor.Model\MapEditor.Model.csproj" />
+    <ProjectReference Include="..\..\..\korean-division\KoreanDivision.csproj" />
+  </ItemGroup>
+</Project>

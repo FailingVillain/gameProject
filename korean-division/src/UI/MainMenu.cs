@@ -12,7 +12,8 @@ namespace KoreanDivision.UI;
 /// </summary>
 public sealed class MainMenu
 {
-    enum Page { Main, Setup, Replays, Battle, Load, Missions, Campaign }
+    enum Page { Main, Setup, Replays, Battle, Load, Missions, Campaign, Settings, Keys, Codex }
+    CodexMenu? codex;
     CampaignMenu? campaign;
     MissionMenu? missions;   // 미션 선택 · 브리핑 (MissionMenu.cs)
 
@@ -55,11 +56,16 @@ public sealed class MainMenu
         aiIndex = Math.Max(0, Array.IndexOf(aiKeys, AiRegistry.Default));
         switch (initialPage)
         {
-            case "setup": page = Page.Setup; break;
-            case "setup-gen": page = Page.Setup; mapIndex = -1; break;   // 스크린샷용: 생성 맵 (지도 크기 줄)
+            case "setup": page = Page.Setup; DevMenu = true; break;   // 숨긴 '플레이' 설정 화면도 개발 경로로는 열린다
+            case "setup-gen": page = Page.Setup; mapIndex = -1; DevMenu = true; break;   // 스크린샷용: 생성 맵 (지도 크기 줄)
             case "spectate": page = Page.Setup; spectate = true; break;
             case "replays": OpenReplays(); break;
             case "battle": page = Page.Battle; break;
+            case "settings": page = Page.Settings; break;
+            case "keys": page = Page.Keys; break;
+            case "keys-listen": page = Page.Keys; listening = Commands.UnitCommands[0].Key; break;   // 스크린샷용: 첫 줄 입력 대기
+            case "keys-conflict": page = Page.Keys; keysMsg = Bindings.TrySet("move", 'S'); break;   // 스크린샷용: 충돌 거부 표시
+            case "codex": page = Page.Codex; codex = new CodexMenu(); break;
             case "load": OpenLoad(); break;
             case "missions": page = Page.Missions; missions = new MissionMenu(); break;
             case "campaign": page = Page.Campaign; campaign = new CampaignMenu(); break;
@@ -68,6 +74,23 @@ public sealed class MainMenu
     }
 
     public const string DefaultMapId = "corners4";
+
+    /// <summary>개발 메뉴 (T45): 켜면 메인 메뉴에 '플레이'(다자간 자유전) 가 보이고, 관전 설정에 인원 · 다자간 맵 선택이 남는다.
+    /// 끄면(기본) 플레이어에게는 숨김 - 코드는 그대로. 켜는 법: 인자 --dev-menu / 환경 KD_DEV_MENU=1 / --menu-page setup · setup-gen.</summary>
+    public static bool DevMenu { get; set; } = Environment.GetEnvironmentVariable("KD_DEV_MENU") == "1";
+
+    /// <summary>관전 설정에서 다자간 선택(인원 / 3인 이상 지도)을 숨기는가: 관전 + 개발 메뉴 꺼짐.</summary>
+    bool HideMulti => spectate && !DevMenu;
+    /// <summary>메인 메뉴의 '플레이' 버튼 표시 여부 (= DevMenu). 시험용.</summary>
+    public static bool PlayButtonVisible => DevMenu;
+    public const int SpectateDefaultPlayers = 2;
+
+    List<(string Id, string Title)>? spectateMissions;
+    /// <summary>관전 탭의 AI 대 AI 미션 목록 (spectate:true 미션). 시험용.</summary>
+    public IReadOnlyList<(string Id, string Title)> SpectateMissions => spectateMissions ??= MissionDef.AvailableSpectate();
+
+    /// <summary>관전 설정에 보이는 지도 칩의 고정 지도 id (hideMulti 이면 2인 이하 지도만). 시험용.</summary>
+    public IReadOnlyList<string> VisibleFixedMapIds(bool hideMulti) => fixedMaps.Where(m => !hideMulti || m.Players <= SpectateDefaultPlayers).Select(m => m.Id).ToList();
 
     int FactionCount => mapIndex >= 0 ? fixedMaps[mapIndex].Players : players;
 
@@ -83,6 +106,9 @@ public sealed class MainMenu
 
     /// <summary>게임을 마치고 돌아왔을 때: 첫 화면으로.</summary>
     public void ShowMain(string? notice = null) { page = Page.Main; startNotice = notice; }
+    /// <summary>캠페인 미션을 끝내고 돌아올 때: 캠페인 홈을 새로 읽어 (전과 보고 → 보충) 연다.</summary>
+    public CampaignMenu? FuzzCampaign => page == Page.Campaign ? campaign : null;   // T38h 퍼즈 관찰용
+    public void ShowCampaign() { page = Page.Campaign; campaign = new CampaignMenu(); }
     string? startNotice;   // 시작 실패 안내 (옛 형식 리플레이 등) — 첫 화면에 한 번 표시, 클릭하면 사라짐
 
     // ---------------------------------------------------------------- 프레임
@@ -96,7 +122,8 @@ public sealed class MainMenu
 
         if (Input.IsKeyPressed(KeyboardKey.Escape))
         {
-            if (page == Page.Main) ExitRequested = true;
+            if (page == Page.Keys) { if (listening != null) listening = null; else page = Page.Settings; }
+            else if (page == Page.Main) ExitRequested = true;
             else if (page == Page.Missions && missions?.Back() == true) { }   // 브리핑 → 미션 목록
             else page = Page.Main;
         }
@@ -110,11 +137,19 @@ public sealed class MainMenu
             case Page.Setup: DrawSetup(); break;
             case Page.Replays: DrawReplays(); break;
             case Page.Battle: DrawBattle(); break;
+            case Page.Settings: DrawSettings(); break;
+            case Page.Keys: DrawKeys(); break;
             case Page.Load: DrawLoad(); break;
+            case Page.Codex:
+                codex ??= new CodexMenu();
+                codex.Draw(screenW, screenH);
+                if (codex.BackRequested) { codex.BackRequested = false; page = Page.Main; }
+                break;
             case Page.Campaign:
                 campaign ??= new CampaignMenu();
                 campaign.Draw(screenW, screenH);
                 if (campaign.OpenMission != null) { missions?.Dispose(); missions = new MissionMenu(campaign.OpenMission); campaign.OpenMission = null; page = Page.Missions; }
+                else if (campaign.OpenPractice != null) { missions?.Dispose(); missions = new MissionMenu(campaign.OpenPractice, practice: true); campaign.OpenPractice = null; page = Page.Missions; }
                 else if (campaign.BackRequested) { campaign.BackRequested = false; page = Page.Main; }
                 break;
             case Page.Missions:
@@ -151,12 +186,19 @@ public sealed class MainMenu
 
     void DrawTitle(float y)
     {
-        Vector2 m = Ui.Measure(S.GameTitle, 72);
-        Ui.Text(S.GameTitle, (screenW - m.X) / 2, y, 72, Palette.Accent);
+        Vector2 m = Ui.Measure(S.GameTitle, 72, Ui.FontRole.Heading);
+        Ui.Text(S.GameTitle, (screenW - m.X) / 2, y, 72, Palette.Accent, Ui.FontRole.Heading);
+        y += m.Y - 6;
+        Vector2 s = Ui.Measure(S.GameTitleSub, 26);
+        Ui.Text(S.GameTitleSub, (screenW - s.X) / 2, y, 26, Palette.TextDim);
+        y += s.Y - 4;
+        Vector2 k = Ui.Measure(S.GameTitleKo, 26);
+        Ui.Text(S.GameTitleKo, (screenW - k.X) / 2, y, 26, Palette.Text);
     }
 
     bool Button(Rectangle r, string label, bool enabled = true, bool active = false, int size = 16)
     {
+        Ui.RegHit(r, label, enabled);
         bool hover = enabled && Ui.Contains(r, mouse);
         Color fill = !enabled ? Palette.PanelDark : active ? Palette.BtnActive : hover ? Palette.BtnHover : Palette.Btn;
         Raylib.DrawRectangleRounded(r, 0.2f, 4, fill);
@@ -169,22 +211,26 @@ public sealed class MainMenu
 
     void DrawMain()
     {
-        DrawTitle(screenH * 0.30f - 120);
+        DrawTitle(screenH * 0.30f - 150);
         const float w = 320, h = 46, gap = 10;
         float x = (screenW - w) / 2, y = screenH * 0.30f + 30;
         if (Button(new Rectangle(x, y, w, h), S.MenuCampaign, size: 26)) { page = Page.Campaign; campaign = new CampaignMenu(); }
         y += h + gap;
-        if (Button(new Rectangle(x, y, w, h), S.MenuMissions, size: 26)) { page = Page.Missions; missions ??= new MissionMenu(); }
+        if (Button(new Rectangle(x, y, w, h), S.MenuMissions, size: 26)) { page = Page.Missions; if (missions is { Practice: true }) { missions.Dispose(); missions = null; } missions ??= new MissionMenu(); }
         y += h + gap;
-        if (Button(new Rectangle(x, y, w, h), S.MenuPlay, size: 26)) { page = Page.Setup; spectate = false; }
-        y += h + gap;
+        if (PlayButtonVisible)   // 다자간 자유전 진입점: 플레이어 메뉴에서는 숨김 (T45, 사용자 결정 AQ)
+        {
+            if (Button(new Rectangle(x, y, w, h), S.MenuPlay, size: 26)) { page = Page.Setup; spectate = false; }
+            y += h + gap;
+        }
         if (Button(new Rectangle(x, y, w, h), S.MenuSpectate, size: 26)) { page = Page.Setup; spectate = true; }
         y += h + gap;
         float lw = (w - gap) / 2;   // 불러오기 · 리플레이 한 줄 (미션 버튼 자리)
         if (Button(new Rectangle(x, y, lw, h), S.MenuLoad, size: 24)) OpenLoad();
         if (Button(new Rectangle(x + lw + gap, y, lw, h), S.MenuReplays, size: 24)) OpenReplays();
         y += h + gap;
-        if (Button(new Rectangle(x, y, w, h), S.MenuBattle, size: 26)) page = Page.Battle;
+        if (Button(new Rectangle(x, y, lw, h), S.MenuBattle, size: 24)) page = Page.Battle;
+        if (Button(new Rectangle(x + lw + gap, y, lw, h), S.MenuCodex, size: 24)) { page = Page.Codex; codex ??= new CodexMenu(); }
         y += h + gap;
         // 빠른 교전 두 가지: 200 대 200 (가볍게) · 500 대 500 — 한 줄에 반씩
         float hw = (w - gap) / 2;
@@ -193,7 +239,110 @@ public sealed class MainMenu
         if (Button(new Rectangle(x + hw + gap, y, hw, h), S.MenuQuickBattle, size: 24)) Chosen = QuickBattleOptions();
         if (Ui.Contains(new Rectangle(x + hw + gap, y, hw, h), mouse)) Ui.Text(S.MenuQuickBattleTip, x + (w - Ui.Measure(S.MenuQuickBattleTip, 16).X) / 2, screenH - 40, 16, Palette.TextDim);
         y += h + gap;
-        if (Button(new Rectangle(x, y, w, h), S.Quit, size: 26)) ExitRequested = true;
+        if (Button(new Rectangle(x, y, lw, h), S.MenuSettings, size: 24)) page = Page.Settings;
+        if (Button(new Rectangle(x + lw + gap, y, lw, h), S.Quit, size: 24)) ExitRequested = true;
+    }
+
+    // ---------------------------------------------------------------- 환경 설정 (UserSettings)
+
+    void DrawSettings()
+    {
+        float pw = MathF.Min(760, screenW - 40), ph = 470;
+        var panel = new Rectangle((screenW - pw) / 2, MathF.Max(16, (screenH - ph) / 2 - 10), pw, ph);
+        Ui.Panel(panel, Palette.Alpha(Palette.PanelDark, 235), Palette.HudTrim);
+        Ui.Text(S.MenuSettings, panel.X + 24, panel.Y + 16, 26, Palette.Accent);
+        float lx = panel.X + 24, cx = panel.X + 170, y = panel.Y + 70;
+        bool windowed = UserSettings.Mode == UserSettings.WindowMode.Windowed;
+
+        Ui.Text(S.SetResolution, lx, y + 6, 16, Palette.TextDim);
+        float x = cx;
+        foreach (var (rw, rh) in UserSettings.Resolutions)
+        {
+            string lab = $"{rw}x{rh}";
+            float bw = Ui.Measure(lab, 16).X + 28;
+            if (Button(new Rectangle(x, y, bw, 32), lab, windowed, windowed && UserSettings.Width == rw && UserSettings.Height == rh))
+            { UserSettings.Width = rw; UserSettings.Height = rh; UserSettings.Apply(); UserSettings.Save(); }
+            x += bw + 8;
+        }
+        y += 38;
+        if (!windowed) Ui.Text(S.SetResolutionNote, cx, y, 16, Palette.TextDim);
+        y += RowH - 38 + 16;
+
+        Ui.Text(S.SetWindowMode, lx, y + 6, 16, Palette.TextDim);
+        var modes = new[] { (UserSettings.WindowMode.Windowed, S.SetModeWindowed), (UserSettings.WindowMode.Borderless, S.SetModeBorderless), (UserSettings.WindowMode.Fullscreen, S.SetModeFullscreen) };
+        x = cx;
+        foreach (var (m, lab) in modes)
+        {
+            if (Button(new Rectangle(x, y, 120, 32), lab, true, UserSettings.Mode == m))
+            { UserSettings.Mode = m; UserSettings.Apply(); UserSettings.Save(); }
+            x += 128;
+        }
+        y += RowH + 16;
+
+        Ui.Text(S.SetVolume, lx, y + 6, 16, Palette.TextDim);
+        if (Button(new Rectangle(cx, y, 36, 32), "-")) { UserSettings.SetVolume(UserSettings.Volume - 0.1f); UserSettings.Save(); }
+        Ui.TextCentered($"{(int)MathF.Round(UserSettings.Volume * 100)}%", new Rectangle(cx + 40, y, 80, 32), 16, Palette.Text);
+        if (Button(new Rectangle(cx + 124, y, 36, 32), "+")) { UserSettings.SetVolume(UserSettings.Volume + 0.1f); UserSettings.Save(); }
+        if (Button(new Rectangle(cx + 180, y, 100, 32), S.SetMute, true, Sfx.Muted)) Sfx.Muted = !Sfx.Muted;
+        y += RowH + 16;
+
+        Ui.Text(S.SetColorBlind, lx, y + 6, 16, Palette.TextDim);
+        if (Button(new Rectangle(cx, y, 120, 32), UserSettings.ColorBlind ? S.SetColorBlindOn : S.SetColorBlindOff, true, UserSettings.ColorBlind))
+        { UserSettings.ColorBlind = !UserSettings.ColorBlind; UserSettings.Save(); }
+        Ui.Text(S.SetColorBlindNote, cx + 132, y + 8, 14, Palette.TextDim);
+        y += RowH + 16;
+
+        Ui.Text(S.SetKeys, lx, y + 6, 16, Palette.TextDim);
+        if (Button(new Rectangle(cx, y, 160, 32), S.SetKeysButton)) { page = Page.Keys; listening = null; keysMsg = null; }
+
+        Ui.Text(S.SetFileNote, lx, panel.Y + panel.Height - 96, 16, Palette.TextDim);
+        if (Button(new Rectangle(panel.X + 24, panel.Y + panel.Height - 62, 140, 40), S.MenuBack)) page = Page.Main;
+    }
+
+    // ---------------------------------------------------------------- 단축키 재지정 (T38a)
+
+    string? listening;   // 새 키를 기다리는 명령 Key
+    string? keysMsg;     // 마지막 거부 이유 (충돌 표시)
+
+    void DrawKeys()
+    {
+        var cmds = Commands.UnitCommands;
+        float pw = MathF.Min(780, screenW - 40), ph = 78 + 6 * 40 + 150;
+        var panel = new Rectangle((screenW - pw) / 2, MathF.Max(16, (screenH - ph) / 2 - 10), pw, ph);
+        Ui.Panel(panel, Palette.Alpha(Palette.PanelDark, 235), Palette.HudTrim);
+        Ui.Text(S.KeysTitle, panel.X + 24, panel.Y + 16, 26, Palette.Accent);
+
+        if (listening != null)   // A~Z 한 번 = 지정 시도 (충돌이면 거부)
+            for (char ch = 'A'; ch <= 'Z'; ch++)
+                if (Input.IsKeyPressed(Commands.Key(ch)))
+                {
+                    keysMsg = Bindings.TrySet(listening, ch);
+                    if (keysMsg == null) UserSettings.Save();
+                    listening = null;
+                    break;
+                }
+
+        float colW = (pw - 48 - 20) / 2;
+        for (int i = 0; i < cmds.Length; i++)
+        {
+            var c = cmds[i];
+            float x = panel.X + 24 + (i / 6) * (colW + 20), y = panel.Y + 78 + (i % 6) * 40;
+            bool changed = UserSettings.KeyMap.ContainsKey(c.Key);
+            Ui.Text(c.Label, x, y + 6, 16, Palette.Text);
+            var kr = new Rectangle(x + colW - 190, y, 70, 32);
+            bool wait = listening == c.Key;
+            if (Button(kr, wait ? S.KeysPress : Bindings.KeyOf(c).ToString(), true, wait || changed, 16))
+            { listening = wait ? null : c.Key; keysMsg = null; }
+            if (Button(new Rectangle(x + colW - 114, y, 114, 32), S.KeysReset, changed))
+            { keysMsg = Bindings.TrySet(c.Key, c.Hotkey); if (keysMsg == null) UserSettings.Save(); }   // 기본 키를 남이 쓰는 중이면 거부(사유 표시)
+        }
+        float by = panel.Y + 78 + 6 * 40 + 4;
+        if (keysMsg != null) Ui.Text(keysMsg, panel.X + 24, by, 16, Palette.Warning);
+        else Ui.Text(S.KeysHint, panel.X + 24, by, 14, Palette.TextDim);
+        Ui.Text(S.KeysFixedNote, panel.X + 24, by + 24, 14, Palette.TextDim);
+        if (Button(new Rectangle(panel.X + 24, panel.Y + ph - 62, 140, 40), S.MenuBack)) { page = Page.Settings; listening = null; }
+        if (Button(new Rectangle(panel.X + 176, panel.Y + ph - 62, 190, 40), S.KeysResetAll, UserSettings.KeyMap.Count > 0))
+        { Bindings.ResetAll(); UserSettings.Save(); keysMsg = null; }
     }
 
     // ---------------------------------------------------------------- 설정
@@ -201,7 +350,26 @@ public sealed class MainMenu
     void DrawSetup()
     {
         string title = spectate ? S.MenuSetupSpectate : S.MenuSetupPlay;
-        float pw = MathF.Min(760, screenW - 40), ph = spectate ? 430 + RowH : 478 + RowH;
+        bool hideMulti = HideMulti;
+        if (hideMulti)   // 관전은 AI 대 AI 2자 기본: 인원 고정, 3인 이상 지도는 칩에서 뺀다
+        {
+            players = SpectateDefaultPlayers;
+            if (mapIndex >= 0 && fixedMaps[mapIndex].Players > SpectateDefaultPlayers) mapIndex = -1;
+        }
+        var visibleMaps = Enumerable.Range(0, fixedMaps.Count).Where(i => !hideMulti || fixedMaps[i].Players <= SpectateDefaultPlayers).ToList();
+        var spectateList = spectate ? SpectateMissions : null;
+        const float missionRowH = 36, missionHead = 28;
+        float missionH = spectateList is { Count: > 0 } ? missionHead + ((spectateList.Count + 1) / 2) * missionRowH : spectate ? missionHead + 24 : 0;
+        float pw = MathF.Min(760, screenW - 40);
+        // 맵 칩이 몇 줄로 접히는가 (패널 높이에 반영); 칩 영역 폭 = 패널 폭 - 146 (cx 오프셋) - 24
+        int chipRows = 1;
+        {
+            float areaW = pw - 146 - 24, xx = 0;
+            var lab = new List<string> { S.MenuGenerated };
+            lab.AddRange(visibleMaps.Select(i => $"{fixedMaps[i].Id}  {string.Format(S.MenuMapPlayers, fixedMaps[i].Players)}"));
+            foreach (var l in lab) { float bw = Ui.Measure(l, 16).X + 28; if (xx + bw > areaW) { xx = 0; chipRows++; } xx += bw + 8; }
+        }
+        float ph = (spectate ? 430 + RowH : 478 + RowH) - (hideMulti ? RowH : 0) + (chipRows - 1) * 38 + (spectate ? missionH - 44 : 0);
         var panel = new Rectangle((screenW - pw) / 2, MathF.Max(16, (screenH - ph) / 2 - 10), pw, ph);
         Ui.Panel(panel, Palette.Alpha(Palette.PanelDark, 235), Palette.HudTrim);
         Ui.Text(title, panel.X + 24, panel.Y + 16, 26, Palette.Accent);
@@ -213,28 +381,33 @@ public sealed class MainMenu
         Ui.Text(S.MenuMap, lx, y + 6, 16, Palette.TextDim);
         float x = cx;
         var labels = new List<string> { S.MenuGenerated };
-        labels.AddRange(fixedMaps.Select(m => $"{m.Id}  {string.Format(S.MenuMapPlayers, m.Players)}"));
+        var chipMap = new List<int> { -1 };   // 칩 -> mapIndex
+        chipMap.AddRange(visibleMaps);
+        labels.AddRange(visibleMaps.Select(i => $"{fixedMaps[i].Id}  {string.Format(S.MenuMapPlayers, fixedMaps[i].Players)}"));
         float rowY = y;
         for (int i = 0; i < labels.Count; i++)
         {
             float bw = Ui.Measure(labels[i], 16).X + 28;
             if (x + bw > panel.X + panel.Width - 24) { x = cx; rowY += 38; }
-            if (Button(new Rectangle(x, rowY, bw, 32), labels[i], true, mapIndex == i - 1)) mapIndex = i - 1;
+            if (Button(new Rectangle(x, rowY, bw, 32), labels[i], true, mapIndex == chipMap[i])) mapIndex = chipMap[i];
             x += bw + 8;
         }
         y = rowY + 52;
         fixedMap = mapIndex >= 0;
 
-        // 인원
-        Ui.Text(S.MenuPlayers, lx, y + 6, 16, Palette.TextDim);
-        if (fixedMap) Ui.Text($"{fixedMaps[mapIndex].Players}   ·   {S.MenuFixedNote}", cx, y + 6, 16, Palette.TextDim);
-        else
+        // 인원 (관전 + 개발 메뉴 꺼짐이면 숨김: 2자 고정)
+        if (!hideMulti)
         {
-            if (Button(new Rectangle(cx, y, 36, 32), "-")) players = Math.Max(2, players - (Input.IsKeyDown(KeyboardKey.LeftShift) ? 4 : 1));
-            Ui.TextCentered(players.ToString(), new Rectangle(cx + 40, y, 60, 32), 16, Palette.Text);
-            if (Button(new Rectangle(cx + 104, y, 36, 32), "+")) players = Math.Min(Config.MaxPlayers, players + (Input.IsKeyDown(KeyboardKey.LeftShift) ? 4 : 1));
+            Ui.Text(S.MenuPlayers, lx, y + 6, 16, Palette.TextDim);
+            if (fixedMap) Ui.Text($"{fixedMaps[mapIndex].Players}   ·   {S.MenuFixedNote}", cx, y + 6, 16, Palette.TextDim);
+            else
+            {
+                if (Button(new Rectangle(cx, y, 36, 32), "-")) players = Math.Max(2, players - (Input.IsKeyDown(KeyboardKey.LeftShift) ? 4 : 1));
+                Ui.TextCentered(players.ToString(), new Rectangle(cx + 40, y, 60, 32), 16, Palette.Text);
+                if (Button(new Rectangle(cx + 104, y, 36, 32), "+")) players = Math.Min(Config.MaxPlayers, players + (Input.IsKeyDown(KeyboardKey.LeftShift) ? 4 : 1));
+            }
+            y += RowH;
         }
-        y += RowH;
 
         // 지도 크기 (생성 맵만): 자동 (인원 기준) · 초소형 200 · 소형 400 · 중형 800 · 대형 1200 · 초대형 1500
         Ui.Text(S.MenuMapSize, lx, y + 6, 16, Palette.TextDim);
@@ -282,6 +455,23 @@ public sealed class MainMenu
         // 안개
         Ui.Text(S.MenuFog, lx, y + 6, 16, Palette.TextDim);
         if (Button(new Rectangle(cx, y, 100, 32), fog ? S.On : S.Off, true, fog)) fog = !fog;
+        y += RowH + 4;
+
+        // AI 대 AI 미션 (관전 탭, T45): 클릭하면 그 미션을 관전 모드로 시작 (GameOptions.MissionId - 미션의 spectate 플래그가 관전 모드를 켠다)
+        if (spectateList != null)
+        {
+            Ui.Text(S.MenuSpectateMissions, lx, y, 16, Palette.Accent);
+            y += missionHead;
+            if (spectateList.Count == 0) Ui.Text(S.MenuSpectateMissionsNone, lx, y + 4, 16, Palette.TextDim);
+            float colW = (panel.Width - 48 - 8) / 2;
+            for (int i = 0; i < spectateList.Count; i++)
+            {
+                var r = new Rectangle(lx + (i % 2) * (colW + 8), y + (i / 2) * missionRowH, colW, 32);
+                string lab = spectateList[i].Title;
+                while (lab.Length > 4 && Ui.Measure(lab, 16).X > colW - 16) lab = lab[..^4] + "...";
+                if (Button(r, lab)) Chosen = new GameOptions { MissionId = spectateList[i].Id, FromMenu = true };
+            }
+        }
 
         // 하단 버튼
         float by = panel.Y + panel.Height - 62;
@@ -291,6 +481,7 @@ public sealed class MainMenu
 
     void StartGame()
     {
+        if (HideMulti) { players = SpectateDefaultPlayers; if (mapIndex >= 0 && fixedMaps[mapIndex].Players > SpectateDefaultPlayers) mapIndex = -1; }
         var opt = new GameOptions { Spectate = spectate, FromMenu = true, Faction = Math.Clamp(faction, 1, FactionCount), Ai = aiKeys[aiIndex], NoFog = !fog };
         opt.Seed = seed ?? Random.Shared.Next(1, 1_000_000);
         if (mapIndex >= 0)
@@ -645,12 +836,18 @@ public sealed class MainMenu
             }
             else
             {
-                string kind = e.Error != null && e.Error.StartsWith("저장 형식") ? S.SaveIncompatible : S.SaveUnreadable;
+                string kind = e.Note != null ? S.SaveIncompatible : S.SaveUnreadable;
                 Ui.Text(kind, x + Ui.Measure(e.Name, 16).X + 14, row.Y + 7, 16, Palette.HpLow);
                 string msg = e.Error ?? "";
                 float maxW = del.X - x - 24;
                 while (msg.Length > 4 && Ui.Measure(msg, 16).X > maxW) msg = msg[..^4] + "...";
                 Ui.Text(msg, x, row.Y + 29, 16, Palette.TextDim);
+                if (e.Note != null)   // 저장 호환 정책: 무엇이 안전한지 / 무엇을 하면 되는지 한 줄 (회색 행 + 사유 아래)
+                {
+                    string note = e.Note;
+                    while (note.Length > 4 && Ui.Measure(note, 14).X > maxW) note = note[..^4] + "...";
+                    Ui.Text(note, x, row.Y + 46, 14, Palette.Warning);
+                }
             }
             bool armed = deleteArm == e.Path;
             Ui.Button(del, armed ? S.SaveDeleteSure : S.SaveDelete, overDel, armed);
@@ -706,7 +903,7 @@ public sealed class MainMenu
         catch (SnapshotException ex)
         {
             loadError = ex.Message;
-            saves[index] = e with { Header = null, Error = ex.Message };
+            saves[index] = e with { Header = null, Error = ex.Message, Note = ex.Note };
         }
     }
 }

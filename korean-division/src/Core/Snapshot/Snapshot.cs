@@ -187,7 +187,8 @@ public static class Snapshot
         if (file.Length < 10 || !file.AsSpan(0, 4).SequenceEqual(Magic)) throw new SnapshotException(SnapMsg.NotSave);
         int fmt = BinaryPrimitives.ReadUInt16LittleEndian(file.AsSpan(4, 2));
         if (fmt != FormatVersion)
-            throw new SnapshotException(string.Format(fmt < FormatVersion ? SnapMsg.OldFormat : SnapMsg.NewFormat, fmt, FormatVersion));
+            throw new SnapshotException(string.Format(fmt < FormatVersion ? SnapMsg.OldFormat : SnapMsg.NewFormat, fmt, FormatVersion))
+            { Note = fmt < FormatVersion ? SnapMsg.OldFormatNote : SnapMsg.NewFormatNote };
         uint hl = BinaryPrimitives.ReadUInt32LittleEndian(file.AsSpan(6, 4));
         if (hl > file.Length - 10 || hl > 1 << 22) throw new SnapshotException(SnapMsg.BadHeader);
         SnapshotHeader? h;

@@ -23,6 +23,7 @@ public static partial class SelfTest
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "s4") { Tests.S4SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "assaultinf") { Tests.AssaultInfSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "units") { Tests.UnitsSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+        if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "doctrines") { Tests.DoctrinesSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "n61") { Tests.N61SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "f4") { Tests.F4SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "armour") { Tests.ArmourSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
@@ -55,6 +56,8 @@ public static partial class SelfTest
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "org") { Tests.OrgSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "missions") { Tests.MissionSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "tactical") { Tests.TacticalSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+        if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "commanders") { Tests.CommanderDataSelfTest.Run(Check); Tests.CommanderFavorSelfTest.Run(Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+        if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "compatgate") { Tests.CompatGateSelfTest.Run(Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "savecompat") { Tests.SaveCompatSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "snapshot") { Tests.SnapshotSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "command") { Tests.CommandSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
@@ -102,6 +105,8 @@ public static partial class SelfTest
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "choke") { Tests.ChokeSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "bunchfix") { Tests.BunchFixSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "uiicons") { Tests.UiIconsSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+        if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "menuhide") { Tests.MenuHideSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+        if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "fonts") { Tests.FontCoverageSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "artyai") { Tests.ArtyAiSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "n12") { Tests.N12SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "n77") { Tests.N77SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
@@ -152,6 +157,7 @@ public static partial class SelfTest
         Tests.F4SelfTest.Run(opt, Check);
         Tests.N61SelfTest.Run(opt, Check);
         Tests.UnitsSelfTest.Run(opt, Check);
+        Tests.DoctrinesSelfTest.Run(opt, Check);
         Tests.AssaultInfSelfTest.Run(opt, Check);
         Tests.NavSelfTest.Run(opt, Check);
         Tests.FormationSelfTest.Run(opt, Check);
@@ -203,6 +209,8 @@ public static partial class SelfTest
         Tests.Arty2SelfTest.Run(opt, Check);               // N22 보병포 동행 · 사선 막힘 재배치 · 정찰병 시야 48 · 피격 엄폐
         Tests.Tweak1SelfTest.Run(opt, Check);              // tweak1 대열 정비 화력조 제외 · 돌격 중 보류 · 방어 유닛만 엄폐 · 참호 0.5 · 보병포 · 관측자 노출 회피 · 야전포 방열
         Tests.UiIconsSelfTest.Run(opt, Check);              // 수류탄 X · 아군 오사 계수 · 분대 아이콘 우선순위
+        Tests.MenuHideSelfTest.Run(opt, Check);            // T45 시작 화면 숨김 · 관전 미션 목록
+        Tests.FontCoverageSelfTest.Run(opt, Check);         // T38k 글꼴 커버리지 (번들 OFL 3종 cmap)
         Tests.CommandSelfTest.Run(opt, Check);   // 지휘 계급 · 승계 · 장교 경험치 (N3)
         Tests.ScoutSelfTest.Run(opt, Check);   // 정찰병 (정찰조 · 자율 행동 · 곡사포 관측)
         Tests.CommandExtSelfTest.Run(opt, Check);
@@ -231,6 +239,8 @@ public static partial class SelfTest
         Tests.SnapshotSelfTest.Run(opt, Check);
         Console.WriteLine("[저장 형식 호환 (옛 버전 · 손상 파일 거부)]");
         Tests.SaveCompatSelfTest.Run(opt, Check);
+        Console.WriteLine("[저장 호환 출시 게이트 (캠페인 v1..현재 고정 샘플)]");
+        Tests.CompatGateSelfTest.Run(Check);
         TestPerformance(opt);
 
         Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})");

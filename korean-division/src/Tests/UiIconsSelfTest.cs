@@ -30,6 +30,20 @@ public static class UiIconsSelfTest
             check(missing == 0, $"병종 이미지 파일 모두 있음 (누락 {missing}, {themeDir})");
             bool defsOk = defs.Units.Values.All(d => UnitSymbols.Of(d) is var b && UnitSymbols.IconName(b) != null);
             check(defsOk, "모든 유닛 정의가 병종 이미지에 대응");
+            // T43: 곡사포 · 저격은 자료(무기 속성)로 판정, 이름 하드코딩 없음. 유닛 -> 병종 전체 목록 (누락 0).
+            var unitBranch = string.Join(", ", defs.Units.Values.Select(d => $"{d.Key}={UnitSymbols.Of(d)}"));
+            Console.WriteLine("  [병종 매핑] " + unitBranch);
+            check(defs.Units.Values.Any(d => UnitSymbols.Of(d) == UnitSymbols.Branch.Howitzer && d.Category == "gun" && d.Weapon != null && defs.Weapons[d.Weapon].Indirect),
+                "곡사 무기 포 = Howitzer (곡사포 이미지)");
+            check(defs.Units.Values.Any(d => UnitSymbols.Of(d) == UnitSymbols.Branch.Sniper && d.Weapon != null && defs.Weapons[d.Weapon].PreferOfficer),
+                "장교 우선 표적 직사 무기 = Sniper (저격 이미지)");
+            check(defs.Units.Values.Where(d => d.Category == "gun" && d.Weapon != null && !defs.Weapons[d.Weapon].Indirect).All(d => UnitSymbols.Of(d) == UnitSymbols.Branch.Artillery),
+                "직사 포 = Artillery 유지");
+            // T43b: 승마 유닛 = 기병 (category 가 infantry 인 기병 정의도 포함, 예: cavalry_default · cavalry_cossack). 지휘관 제외.
+            check(defs.Units.Values.Any(d => d.Mounted && d.Category == "infantry"),
+                "승마 보병 정의가 있음 (기병 판정 시험 대상)");
+            check(defs.Units.Values.Where(d => d.Mounted && !d.IsOfficer && !d.Scout).All(d => UnitSymbols.Of(d) == UnitSymbols.Branch.Cavalry),
+                "승마 유닛 = Cavalry (category 무관, 장교 · 승마 정찰 제외)");
 
             // 1b) 카드 칸: 어떤 선택 조합 (유닛 종류 1~2종) 에서도 두 버튼이 같은 칸을 쓰지 않는다 (N15-2)
             var all = defs.Units.Values.ToList();
@@ -44,12 +58,23 @@ public static class UiIconsSelfTest
                             btns.Add(new KoreanDivision.UI.CardButton(c.Key, c.Label, c.Tooltip, c.Hotkey.ToString(), Commands.Key(c.Hotkey), c.Col, c.Row, c.Key));
                     if (sel.All(d => d.MarchFire && d.Category == "infantry")) btns.Add(new KoreanDivision.UI.CardButton("marchfire", "", "", "F", Raylib_cs.KeyboardKey.F, 0, 2, "marchfire"));
                     btns.Add(new KoreanDivision.UI.CardButton("closeranks", "", "", "L", Raylib_cs.KeyboardKey.L, 1, 2, "closeranks"));
-                    Game.ResolveSlots(btns);
                     combos++;
-                    if (btns.Select(b => b.Row * 3 + b.Col).Distinct().Count() != btns.Count || btns.Any(b => b.Col is < 0 or > 2 || b.Row is < 0 or > 2)) bad++;
                     if (btns.Select(b => b.Hotkey).Distinct().Count() != btns.Count) bad++;
+                    bad += CardPagesBad(btns);
                 }
             check(bad == 0, $"카드 칸 · 단축키 충돌 없음 ({combos} 조합)");
+            // T38c: 동적 버튼(포격 종류 · 집결 · 참호 돌격 · 사격 통제 …)까지 붙은 11개 · 25개 카드 — 쪽마다 칸 충돌 없음, 버튼은 정확히 한 쪽, 쪽 버튼은 (2,2)
+            var big = new List<KoreanDivision.UI.CardButton>();
+            string ks = "MSAQHXTVDEC";
+            for (int n = 0; n < 11; n++) big.Add(new(ks[n].ToString(), "", "", ks[n].ToString(), Raylib_cs.KeyboardKey.A + n, n % 3, n / 3 % 3, ks[n].ToString()));   // 일부러 칸 겹침
+            check(CardPagesBad(big) == 0 && Game.PaginateCard(big, 0, out int pg11).Count == 9 && pg11 == 2, "11개 카드 → 2쪽 (쪽당 8 + 쪽 버튼), 모든 버튼이 한 쪽에");
+            var big25 = Enumerable.Range(0, 25).Select(n => new KoreanDivision.UI.CardButton("k" + n, "", "", "", Raylib_cs.KeyboardKey.Null, n % 3, n / 3 % 3, "")).ToList();
+            check(CardPagesBad(big25) == 0 && Game.PaginateCard(big25, 99, out int pg25).Count == 2 && pg25 == 4, "25개 카드 → 4쪽, 범위 밖 쪽 번호는 마지막 쪽 (버튼 1 + 쪽 버튼)");
+            var nine = big.Take(9).ToList();
+            check(Game.PaginateCard(nine, 0, out int pg9).All(b => b.Key != "cardpage") && pg9 == 1 && CardPagesBad(nine) == 0, "9개 이하는 쪽 버튼 없이 옛 배치");
+            var pgBtn = Game.PaginateCard(big, 1, out _).First(b => b.Key == "cardpage");
+            check(pgBtn.Hotkey == Raylib_cs.KeyboardKey.Period && pgBtn.HotkeyLabel == "." && pgBtn.Value == "2/2", "쪽 버튼: 키 '.', 값 2/2");
+            check(KoreanDivision.UI.Bindings.Extra.Any(x => x.Key == ".") && KoreanDivision.UI.Bindings.Conflict("move", '.') != null && KoreanDivision.UI.Bindings.TrySet("move", '.') != null, "'.' 는 고정 키 — 도움말 표에 있고 명령에 재지정 불가");
             var tf = new List<KoreanDivision.UI.CardButton> { new("groundfire", "", "", "T", Raylib_cs.KeyboardKey.T, 0, 2, "g"), new("marchfire", "", "", "F", Raylib_cs.KeyboardKey.F, 0, 2, "m") };
             Game.ResolveSlots(tf);
             check(tf[0].Col == 0 && tf[0].Row == 2 && (tf[1].Col, tf[1].Row) != (0, 2) && tf[1].Hotkey == Raylib_cs.KeyboardKey.F, "T · F 가 같은 칸이면 F 가 빈 칸으로 이동, 단축키 유지");
@@ -86,6 +111,22 @@ public static class UiIconsSelfTest
             check(SquadIcons.Pick(default) == SquadIcons.Status.None, "아무 상태도 없으면 None");
             check(Enum.GetValues<SquadIcons.Status>().Where(s => s != SquadIcons.Status.None).All(s => SquadIcons.Shape(s).Length == 7 && SquadIcons.Shape(s).All(r => r.Length == 7)), "아이콘 모양 7x7");
 
+            // 3b) 색각 대응 도형 (T27 ⑧): 기본 꺼짐, 세력 1~5 가 서로 다른 도형, 같은 세력은 항상 같은 도형
+            check(!KoreanDivision.UI.UserSettings.ColorBlind, "색각 대응 기본값 = 꺼짐");
+            check(Enumerable.Range(1, 5).Select(KoreanDivision.Render.ColorBlind.Shape).Distinct().Count() == 5, "색각 대응: 세력 5종 도형이 모두 다름");
+            check(KoreanDivision.Render.ColorBlind.Shape(1) == KoreanDivision.Render.ColorBlind.Shape(6) && Enumerable.Range(-2, 20).All(o => KoreanDivision.Render.ColorBlind.Shape(o) is >= 0 and < 5), "색각 대응: 세력 6 이상 순환 · 범위 밖 안전");
+
+            // 3c) 도감 (T27 ⑥): 모든 유닛이 '전체' 에 있고 세력 · 분류 필터에 최소 하나씩 걸림; 설명 누락은 목록으로 보고
+            var cx = defs.Units.Values.ToList();
+            var facs = Enum.GetValues<KoreanDivision.UI.CodexMenu.FactionFilter>().Where(x => x != KoreanDivision.UI.CodexMenu.FactionFilter.All).ToList();
+            var cats = Enum.GetValues<KoreanDivision.UI.CodexMenu.CategoryFilter>().Where(x => x != KoreanDivision.UI.CodexMenu.CategoryFilter.All).ToList();
+            var noFac = cx.Where(u => !facs.Any(f => KoreanDivision.UI.CodexMenu.Filter(new[] { u }, f, KoreanDivision.UI.CodexMenu.CategoryFilter.All).Count > 0)).Select(u => u.Key).ToList();
+            var noCat = cx.Where(u => !cats.Any(c => KoreanDivision.UI.CodexMenu.Filter(new[] { u }, KoreanDivision.UI.CodexMenu.FactionFilter.All, c).Count > 0)).Select(u => u.Key).ToList();
+            check(noFac.Count == 0, $"도감: 세력 필터에 안 걸리는 유닛 0 ({string.Join(",", noFac)})");
+            check(noCat.Count == 0, $"도감: 분류 필터에 안 걸리는 유닛 0 ({string.Join(",", noCat)})");
+            var noDesc = cx.Where(u => string.IsNullOrWhiteSpace(u.Description)).Select(u => u.Key).ToList();
+            Console.WriteLine($"  [도감 보고] 설명 문구 누락 {noDesc.Count}/{cx.Count}: {string.Join(", ", noDesc)}");
+
             // 4) 실제 분대에서 읽기: 장교 없는 보병 중대 = 지휘관 없음, 제압 올리면 Suppressed
             var us = new List<Unit>();
             for (int i = 0; i < 12; i++) us.Add(w.SpawnUnit(defs.Units["infantry"], 1, new Vector2(10 + i % 4, 40 + i / 4)));
@@ -102,5 +143,93 @@ public static class UiIconsSelfTest
             }
         }
         catch (Exception ex) { check(false, $"아이콘 테스트 중 예외: {ex.GetType().Name}: {ex.Message}\n{ex.StackTrace}"); }
+        Console.WriteLine("[단축키 재지정 (T38a)]");
+        try { CheckRemap(check); } catch (Exception ex) { check(false, $"단축키 재지정 테스트 예외: {ex.GetType().Name}: {ex.Message}\n{ex.StackTrace}"); }
+        Console.WriteLine("[도움말 단축키 = CONTROLS.md]");
+        try { CheckControlsDoc(check); } catch (Exception ex) { check(false, $"도움말 문서 동기 테스트 예외: {ex.GetType().Name}: {ex.Message}"); }
+    }
+
+    /// <summary>T38a: 단축키 재지정 — 충돌 거부 · settings.json 왕복 · 기본값 복원 · 손상 파일 방어 · 도움말/카드 반영. 임시 settings 파일 사용, 끝에 원복.</summary>
+    static void CheckRemap(Action<bool, string> check)
+    {
+        string tmp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "kd_keys_" + Guid.NewGuid().ToString("N") + ".json");
+        var oldPath = KoreanDivision.UI.UserSettings.PathOverride;
+        var oldMap = new Dictionary<string, char>(KoreanDivision.UI.UserSettings.KeyMap);
+        try
+        {
+            KoreanDivision.UI.UserSettings.PathOverride = tmp;
+            KoreanDivision.UI.Bindings.ResetAll();
+            var move = Commands.Get("move")!; var stop = Commands.Get("stop")!;
+            check(KoreanDivision.UI.Bindings.KeyOf(move) == 'M', "기본: 이동 = M");
+            check(KoreanDivision.UI.Bindings.TrySet("move", 'S') != null && KoreanDivision.UI.Bindings.KeyOf(move) == 'M', "다른 명령(정지 S)이 쓰는 키는 거부, 키 그대로");
+            check(KoreanDivision.UI.Bindings.TrySet("move", 'F') != null, "고정 키(F 돌격 사격)는 거부");
+            check(KoreanDivision.UI.Bindings.TrySet("move", '1') != null, "글자 아닌 키는 거부");
+            check(KoreanDivision.UI.Bindings.TrySet("move", 'z') == null && KoreanDivision.UI.Bindings.KeyOf(move) == 'Z', "빈 키 Z 로 재지정 (소문자도 대문자로)");
+            check(KoreanDivision.UI.Bindings.TrySet("stop", 'M') == null, "비어진 기본 키 M 을 다른 명령이 쓸 수 있음");
+            check(KoreanDivision.UI.Bindings.All().Any(x => x.Key == "Z" && x.Text == move.Label) && KoreanDivision.UI.Bindings.All().Any(x => x.Key == "M" && x.Text == stop.Label), "도움말 일람(All)이 새 키를 반영");
+            check(KoreanDivision.UI.Bindings.RaylibKeyOf(move) == Raylib_cs.KeyboardKey.Z, "카드 단축키(RaylibKeyOf)가 새 키를 반영");
+            check(KoreanDivision.UI.Bindings.AllDefaults().Any(x => x.Key == "M" && x.Text == move.Label), "AllDefaults 는 기본 키 그대로");
+            KoreanDivision.UI.UserSettings.Save();
+            KoreanDivision.UI.UserSettings.KeyMap = new();
+            KoreanDivision.UI.UserSettings.Load();
+            check(KoreanDivision.UI.Bindings.KeyOf(move) == 'Z' && KoreanDivision.UI.Bindings.KeyOf(stop) == 'M', "settings.json 왕복 후 재지정 유지");
+            var all = Commands.UnitCommands.Select(KoreanDivision.UI.Bindings.KeyOf).ToList();
+            check(all.Distinct().Count() == all.Count, "재지정 뒤에도 카드 키 중복 없음");
+            KoreanDivision.UI.Bindings.TrySet("move", 'M');   // 기본값과 같으면 재지정 항목이 사라짐 (M 은 정지가 쓰는 중이라 거부)
+            check(KoreanDivision.UI.UserSettings.KeyMap.ContainsKey("move"), "기본 키가 남이 쓰는 중이면 복원 시도도 거부");
+            KoreanDivision.UI.Bindings.ResetAll();
+            check(KoreanDivision.UI.Bindings.KeyOf(move) == 'M' && KoreanDivision.UI.Bindings.KeyOf(stop) == 'S', "모두 기본값 복원");
+            // 손으로 망가뜨린 파일: 중복 · 고정 키 · 모르는 명령 · 숫자
+            File.WriteAllText(tmp, "{\"Keys\":{\"move\":\"K\",\"stop\":\"A\",\"nope\":\"Q\",\"hold\":\"7\",\"attack\":\"A\"}}");
+            KoreanDivision.UI.UserSettings.Load();
+            var all2 = Commands.UnitCommands.Select(KoreanDivision.UI.Bindings.KeyOf).ToList();
+            check(all2.Distinct().Count() == all2.Count && KoreanDivision.UI.Bindings.KeyOf(move) == 'M' && KoreanDivision.UI.Bindings.KeyOf(Commands.Get("hold")!) == 'H', "손상된 키 항목(고정 키 · 숫자 · 중복)은 버리고 키 중복 없음");
+        }
+        finally
+        {
+            KoreanDivision.UI.UserSettings.PathOverride = oldPath;
+            KoreanDivision.UI.UserSettings.KeyMap = oldMap;
+            try { File.Delete(tmp); } catch { }
+        }
+    }
+
+    /// <summary>T38c: 쪽 나눔 불량 수 — 쪽마다 칸 중복 · 칸 범위 밖 · 쪽 버튼 위치 · 모든 버튼이 정확히 한 쪽에 보이는지.</summary>
+    static int CardPagesBad(List<KoreanDivision.UI.CardButton> btns)
+    {
+        int bad = 0;
+        var seen = new HashSet<string>();
+        Game.PaginateCard(btns, 0, out int pgs);
+        for (int pg = 0; pg < pgs; pg++)
+        {
+            var vis = Game.PaginateCard(btns, pg, out _);
+            if (vis.Select(b => b.Row * 3 + b.Col).Distinct().Count() != vis.Count || vis.Any(b => b.Col is < 0 or > 2 || b.Row is < 0 or > 2)) bad++;
+            if (pgs > 1 && !vis.Exists(b => b.Key == "cardpage" && b.Col == 2 && b.Row == 2)) bad++;
+            foreach (var vb in vis) if (vb.Key != "cardpage" && !seen.Add(vb.Key)) bad++;
+        }
+        if (seen.Count != btns.Count) bad++;
+        return bad;
+    }
+
+    /// <summary>T38b: docs/CONTROLS.md 「단축키 일람」 표 (BINDINGS 표지 사이) 가 Bindings.All() 과 한 줄도 어긋나지 않는다 (누락 0 · 잉여 0).</summary>
+    static void CheckControlsDoc(Action<bool, string> check)
+    {
+        string? path = null;
+        foreach (var root in new[] { Directory.GetCurrentDirectory(), AppContext.BaseDirectory })
+            for (var d = new DirectoryInfo(root); d != null && path == null; d = d.Parent)
+                if (File.Exists(System.IO.Path.Combine(d.FullName, "docs", "CONTROLS.md"))) path = System.IO.Path.Combine(d.FullName, "docs", "CONTROLS.md");
+        check(path != null, "docs/CONTROLS.md 를 찾음");
+        if (path == null) return;
+        var lines = File.ReadAllLines(path);
+        int b = Array.FindIndex(lines, l => l.Contains("<!-- BINDINGS:BEGIN")), e = Array.FindIndex(lines, l => l.Contains("<!-- BINDINGS:END"));
+        check(b >= 0 && e > b, "CONTROLS.md 에 BINDINGS:BEGIN / END 표지가 있음");
+        if (b < 0 || e <= b) return;
+        var doc = lines.Skip(b + 1).Take(e - b - 1).Where(l => l.StartsWith("| `")).Select(l => l.TrimEnd()).ToList();
+        var code = KoreanDivision.UI.Bindings.AllDefaults().Select(KoreanDivision.UI.Bindings.MarkdownRow).ToList();
+        var missing = code.Except(doc).ToList();   // 코드에 있고 문서에 없음
+        var extra = doc.Except(code).ToList();   // 문서에 있고 코드에 없음
+        string detail = missing.Count + extra.Count > 0 ? Environment.NewLine + "  누락: " + string.Join(" / ", missing) + Environment.NewLine + "  잉여: " + string.Join(" / ", extra) : "";
+        check(missing.Count == 0 && extra.Count == 0 && doc.Count == code.Count, $"CONTROLS.md 단축키 일람 = Bindings.All() (누락 {missing.Count}, 잉여 {extra.Count}){detail}");
+        check(code.Distinct().Count() == code.Count, "Bindings.All() 에 같은 줄이 두 번 나오지 않음");
+        check(KoreanDivision.UI.Bindings.AllDefaults().Any(x => x.Key == "F1"), "도움말 키 F1 이 Bindings 에 있음");
     }
 }

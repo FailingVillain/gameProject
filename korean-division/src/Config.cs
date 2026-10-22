@@ -3,7 +3,7 @@ namespace KoreanDivision;
 /// <summary>전역 설정값. 화면/맵/조작 관련 상수는 모두 여기서 관리한다.</summary>
 public static class Config
 {
-    public const string Title = "Korean Division";
+    public const string Title = "KOREAN DIVISION : MARCH ON MANCHURIA";
     public const string Version = "0.2";
 
     // ---- 화면 ----

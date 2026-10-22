@@ -1,5 +1,6 @@
 using System.Buffers.Binary;
 using KoreanDivision.Core;
+using KoreanDivision.UI;
 
 namespace KoreanDivision.Tests;
 
@@ -137,6 +138,18 @@ public static class SaveCompatSelfTest
             catch (Exception ex) { cBad++; cFirst = cFirst == "" ? t + " " + ex.GetType().Name : cFirst; }
         }
         check(cBad == 0, $"캠페인 저장: 빈 · 쓰레기 · 잘못된 형식은 예외 없이 한국어 사유와 함께 거부 (벗어난 경우 {cBad}) {cFirst}");
+        CampaignSlotsSelfTest.Run(check);   // T19a 슬롯 9칸 · 자동 저장 · 실패 재시도
+        CampaignAmmoSelfTest.Run(check);    // T19b 구경별 탄약 · 포탄 (저장 v3 · 적재 · 발사 차감 · 노획)
+        CampaignHomeSelfTest.Run(check);    // T19c 연대 배속 (Q9) 저장 왕복 · 투입 비용 공용 함수
+        CampaignFatigueSelfTest.Run(check);   // T42a 피로 · 사기 계정 (저장 v4 · 정산 · 홈 요약)
+        CampaignPromotionSelfTest.Run(check);   // T42b 진급 후보 · 적용 (저장 v5 · 후보 · 정원 · 이월)
+        CampaignPrisonersSelfTest.Run(check);   // T42c 포로 장부 · 송환/수용 (저장 v6 · 정산 · 처리)
+        CampaignScheduleSelfTest.Run(check);   // T42d 일정 · 연표 (저장 v7 · 일수 · 이벤트 기록 · 표시)
+        CommanderDataSelfTest.Run(check);   // T48a 연대장 데이터 · 로더 · 저장 v8 · 풀 동기화
+        CommanderFavorSelfTest.Run(check);   // T48c 연대장 호감 · 해임 · 태그 · 단계 · 규칙 JSON
+        TolerantReadSelfTest.Run(check);   // T49b 설정 / 사용자 작성 지휘관 JSON 관대한 읽기
+        CampaignHomeViewsSelfTest.Run(check);   // T38f 읽기 전용 탭 (기록 · 장비 · 편제) 표시 자료
+        MapZoomSelfTest.Run(check);   // T47 작전 지도 확대 (배율 · 중심 범위 · 클릭 좌표 · 상태 불변)
         string cdir = TestTemp.Child("kd_compat_campaign");
         string? oldEnv = Environment.GetEnvironmentVariable("KD_CAMPAIGN_DIR");
         Environment.SetEnvironmentVariable("KD_CAMPAIGN_DIR", cdir);
@@ -150,6 +163,116 @@ public static class SaveCompatSelfTest
             check(rej && acc, "캠페인 저장: 파일 경로 Load 가 새 스키마는 거부(사유 기록), 옛/부분 파일은 연다");
         }
         finally { Environment.SetEnvironmentVariable("KD_CAMPAIGN_DIR", oldEnv); try { Directory.Delete(cdir, true); } catch (IOException) { } }
+
+        // 읽기 실패 파일 보호: 메뉴 저장 관문 · 결과 확정 (GameMission) 가 원본을 덮어쓰지 않는다 + 손상 목록 원소는 거부 + 탄약 배율 정수 계산
+        {
+            int nullBad = 0;
+            foreach (var t in new[] { "{\"Roster\":[null]}", "{\"Units\":[null]}", "{\"History\":[null]}", "{\"Completed\":[null]}", "{\"Stock\":{\"RecentLog\":[null]}}", "{\"Pending\":{\"MissionId\":\"x\",\"DeployedCompanyIds\":[null]}}" })
+            {
+                try { var r = CampaignState.Parse(t, out var er); if (r != null || string.IsNullOrEmpty(er)) nullBad++; }
+                catch (Exception) { nullBad++; }
+            }
+            check(nullBad == 0, $"캠페인 저장: 목록 안 null 원소는 크래시 없이 거부 (벗어난 경우 {nullBad})");
+
+            string gdir = TestTemp.Child("kd_compat_guard");
+            string? oldG = Environment.GetEnvironmentVariable("KD_CAMPAIGN_DIR");
+            Environment.SetEnvironmentVariable("KD_CAMPAIGN_DIR", gdir);
+            try
+            {
+                Directory.CreateDirectory(gdir);
+                string brokenText = $"{{\"Version\":{CampaignState.SchemaVersion + 1},\"Keep\":\"original\"}}";
+                File.WriteAllText(CampaignState.FilePath, brokenText);
+                var menuState = CampaignState.Load() ?? new CampaignState();
+                string? le = CampaignState.LastLoadError;
+                bool menuBlocked = le != null && !menuState.SaveUnlessLoadFailed(le) && File.ReadAllText(CampaignState.FilePath) == brokenText;
+                var won = new MissionResults { MissionId = CampaignState.FirstMission, Title = "1-1", Result = "won" };
+                bool commitBlocked = !CampaignState.CommitResult(won) && File.ReadAllText(CampaignState.FilePath) == brokenText;
+                check(menuBlocked && commitBlocked, "캠페인 저장: 읽기 실패 (더 새 버전) 동안 메뉴 저장 · 결과 확정이 원본을 덮어쓰지 않는다");
+                bool moved = CampaignState.BackupBroken() && !File.Exists(CampaignState.FilePath) && File.ReadAllText(CampaignState.FilePath + ".bak") == brokenText;
+                check(moved, "캠페인 저장: 초기화 전 원본은 campaign.json.bak 로 보존");
+                CampaignState.Load();   // 파일 없음 → 거부 아님
+                bool commitOk = CampaignState.LastLoadError == null && CampaignState.CommitResult(won) && CampaignState.Load() is { } saved && saved.Completed.Contains(CampaignState.FirstMission);
+                check(commitOk && new CampaignState().SaveUnlessLoadFailed(null), "캠페인 저장: 파일이 없으면 (정상) 결과 확정과 메뉴 저장이 동작");
+            }
+            finally { Environment.SetEnvironmentVariable("KD_CAMPAIGN_DIR", oldG); try { Directory.Delete(gdir, true); } catch (IOException) { } }
+
+            check(World.ScaleAmmo(100, 0.5f) == 50 && World.ScaleAmmo(7, 0.5f) == 4 && World.ScaleAmmo(100, 2f) == 100 && World.ScaleAmmo(100, -1f) == 0
+                && World.ScaleAmmo(100, float.NaN) == 100 && World.ScaleAmmo(100, float.PositiveInfinity) == 100 && World.ScaleAmmo(1000, 0.333f) == 333,
+                "미션 탄약 배율: 정수 천분율 (NaN · 무한대는 배율 없음, 범위 0..1)");
+        }
+
+        // T49a: 사용자에게 보이는 안내 줄 · 이행 .bak · 거부된 저장은 목록에서 회색 + 사유로 남고 파일은 그대로
+        {
+            bool noteOk = true; string noteMsg = "";
+            foreach (int fmt in new[] { cur - 1, cur + 1 })
+            {
+                var b = (byte[])good.Clone();
+                BinaryPrimitives.WriteUInt16LittleEndian(b.AsSpan(4, 2), (ushort)fmt);
+                try { Snapshot.ReadHeader(b); noteOk = false; }
+                catch (SnapshotException e)
+                {
+                    string want = fmt < cur ? SnapMsg.OldFormatNote : SnapMsg.NewFormatNote;
+                    noteMsg = e.FullMessage;
+                    noteOk &= e.Note == want && e.FullMessage.EndsWith(want) && !e.Message.Contains(want);
+                }
+            }
+            check(noteOk && noteMsg.Contains("최신 버전"), $"T49a: 거부된 저장은 안내 줄(옛 = 캠페인은 안전 · 새 = 최신 버전으로) 을 함께 돌려준다 — {noteMsg}");
+            check(ReplayFile.ReplayRejectMsg(rcur - 1).Contains($"v{rcur - 1} 게임에서만 볼 수 있습니다") && SnapMsg.CampaignNewer.Contains("지우지 않고"), "T49a: 리플레이 거부 문구에 'vN 게임에서만', 캠페인 새 버전 문구에 '지우지 않고' 안내");
+
+            string mdir = TestTemp.Child("kd_compat_t49a");
+            try { Directory.Delete(mdir, true); } catch (IOException) { }
+            Directory.CreateDirectory(mdir);
+            string? oldM = Environment.GetEnvironmentVariable("KD_CAMPAIGN_DIR");
+            Environment.SetEnvironmentVariable("KD_CAMPAIGN_DIR", mdir);
+            try
+            {
+                string oldText = "{\"Version\":3,\"NextMission\":\"c1_02_tumen\",\"Completed\":[\"c1_01_hoeryong\"]}";
+                File.WriteAllText(CampaignState.FilePath, oldText);
+                var st = CampaignState.Load();
+                string bak = CampaignState.FilePath + ".v3.bak";
+                bool firstOk = st != null && !File.Exists(bak) && st.Save();
+                bool made = File.Exists(bak) && File.ReadAllText(bak) == oldText && Directory.GetFiles(mdir, "*.bak*").Length == 1
+                    && CampaignState.MigrationNotice is { } mn && mn.Contains("campaign.json.v3.bak") && mn.Contains("옮겼습니다");
+                string savedText = File.ReadAllText(CampaignState.FilePath);
+                bool second = st!.Save() && Directory.GetFiles(mdir, "*.bak*").Length == 1 && File.ReadAllText(bak) == oldText && savedText != oldText;
+                check(firstOk && made && second, "T49a: 옛 스키마 campaign.json 첫 이행 저장은 .v<옛>.bak 를 정확히 하나 만들고 알림을 남기며, 다음 저장은 새 .bak 를 만들지 않는다");
+                check(CampaignState.TakeMigrationNotice() != null && CampaignState.TakeMigrationNotice() == null, "T49a: 이행 알림은 한 번만 나온다");
+
+                // 이미 .bak 가 있으면 덮어쓰지 않는다
+                File.WriteAllText(CampaignState.FilePath, oldText);
+                File.WriteAllText(bak, "SENTINEL");
+                bool kept = CampaignState.Load()!.Save() && File.ReadAllText(bak) == "SENTINEL" && CampaignState.TakeMigrationNotice() == null;
+                check(kept, "T49a: 같은 이름의 .bak 가 이미 있으면 덮어쓰지 않는다");
+
+                // 현재 스키마 파일 · 파일 없음: .bak 없음
+                foreach (var f in Directory.GetFiles(mdir)) File.Delete(f);
+                bool none = new CampaignState().Save() && new CampaignState().Save() && Directory.GetFiles(mdir, "*.bak*").Length == 0;
+                check(none, "T49a: 새 파일 · 현재 스키마 저장은 .bak 를 만들지 않는다");
+            }
+            finally { Environment.SetEnvironmentVariable("KD_CAMPAIGN_DIR", oldM); try { Directory.Delete(mdir, true); } catch (IOException) { } }
+
+            // 거부된 미션 저장: 목록에 회색(Header 없음) + 사유 + 안내, 파일 바이트 그대로, 불러오기 후보(Newest)에서 제외
+            string sdir = TestTemp.Child("kd_compat_t49a_saves");
+            try { Directory.Delete(sdir, true); } catch (IOException) { }
+            Directory.CreateDirectory(sdir);
+            string? oldS = SaveManager.FolderOverride;
+            SaveManager.FolderOverride = sdir;
+            try
+            {
+                var old = (byte[])good.Clone();
+                BinaryPrimitives.WriteUInt16LittleEndian(old.AsSpan(4, 2), (ushort)(cur - 1));
+                string sp = Path.Combine(sdir, "old_quick.kds");
+                File.WriteAllBytes(sp, old);
+                File.WriteAllBytes(Path.Combine(sdir, "fine.kds"), good);
+                var list = SaveManager.List();
+                var re = list.FirstOrDefault(e => e.Name == "old_quick");
+                bool listed = re is { Header: null, Error: not null, Note: not null } && re.Error.Contains("열 수 없습니다") && re.Note == SnapMsg.OldFormatNote
+                    && list.FirstOrDefault(e => e.Name == "fine")?.Header != null;
+                bool untouched = File.ReadAllBytes(sp).AsSpan().SequenceEqual(old);
+                check(listed && untouched && SaveManager.Newest()?.Name == "fine", "T49a: 거부된 옛 미션 저장은 목록에 사유 + 안내와 함께 남고 (읽을 수 없는 행) 파일은 그대로, 불러오기 후보에서는 제외");
+            }
+            finally { SaveManager.FolderOverride = oldS; try { Directory.Delete(sdir, true); } catch (IOException) { } }
+        }
 
         try { Directory.Delete(dir, true); } catch (IOException) { }
     }

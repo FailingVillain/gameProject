@@ -206,6 +206,7 @@ public static class UnitRenderer
             else
                 Raylib.DrawRectangleRec(new Rectangle(p.X - half - px * 0.5f, p.Y - half - px * 0.5f, half * 2 + px, half * 2 + px), outline);
             Raylib.DrawRectangleRec(new Rectangle(p.X - half, p.Y - half, half * 2, half * 2), c);
+            if (ColorBlind.Enabled) ColorBlind.Draw(p, half * 1.5f, u.Owner, c);   // 색각 대응: 점 위에 세력 도형
         }
     }
 
@@ -450,6 +451,16 @@ public static class UnitRenderer
         }
         TeamShader.Leave();
         while (propI < propN) PropRenderer.DrawBody(propI++, zoom);
+
+        if (ColorBlind.Enabled)   // 색각 대응 (T27 ⑧): 유닛 머리 위 세력 도형 (색 단독 구분 금지)
+            for (int i = 0; i < n; i++)
+            {
+                var u = sorted[i].U;
+                Vector2 p = RP(u) * TS;
+                var body = sorted[i].Art.Body;
+                float top = sorted[i].Art.Dir ? p.Y - body!.Anchor.Y * body.Scale + 4 : p.Y - u.Radius * TS;
+                ColorBlind.Draw(new Vector2(p.X, top - 3f / zoom), MathF.Max(1.5f, 3.2f / zoom), u.Owner, Palette.Player(u.Owner));
+            }
 
         if (AimDebug)   // 확인용 (KD_AIMDEBUG=1): 빨강 = 표적 방위, 노랑 = 그려진 행 방향 (UnitRenderer.SnapFacing)
             for (int i = 0; i < n; i++)

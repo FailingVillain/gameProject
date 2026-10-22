@@ -22,17 +22,24 @@ public sealed class MissionMenu : IDisposable
     int previewW, previewH;
     string? previewId;
 
+    /// <summary>목록에 보이는 미션 id (관전 미션 제외). 시험용.</summary>
+    public IReadOnlyList<string> ListedIds => entries.Select(e => e.Id).ToList();
+
     public GameOptions? Chosen { get; set; }
     public bool BackRequested { get; set; }
 
     Vector2 mouse;
     bool click;
 
-    public MissionMenu(string? openBriefing = null)
+    public bool Practice => practice;
+    readonly bool practice;   // 연습 출격: 결과 json · 캠페인 정산을 하지 않는다 (GameOptions.NoResultsFile)
+
+    public MissionMenu(string? openBriefing = null, bool practice = false)
     {
+        this.practice = practice;
         foreach (var id in MissionDef.Available())
         {
-            try { entries.Add(new Entry(id, MissionDef.Load(id), null)); }
+            try { var def = MissionDef.Load(id); if (!def.Spectate) entries.Add(new Entry(id, def, null)); }   // AI 대 AI 관전 미션은 시작 화면 '관전' 탭으로 옮겼다 (T45)
             catch (Exception e) when (e is IOException or InvalidDataException or JsonException or InvalidOperationException or KeyNotFoundException) { entries.Add(new Entry(id, null, e.Message)); }
         }
         if (openBriefing != null)
@@ -53,6 +60,7 @@ public sealed class MissionMenu : IDisposable
 
     bool Button(Rectangle r, string label, bool enabled = true, int size = 16)
     {
+        Ui.RegHit(r, label, enabled);
         bool hover = enabled && Ui.Contains(r, mouse);
         Raylib.DrawRectangleRounded(r, 0.2f, 4, !enabled ? Palette.PanelDark : hover ? Palette.BtnHover : Palette.Btn);
         Raylib.DrawRectangleRoundedLinesEx(r, 0.2f, 4, 1, hover ? Palette.Accent : Palette.PanelBorder);
@@ -242,9 +250,9 @@ public sealed class MissionMenu : IDisposable
         float by = panel.Y + ph - 54;
         if (Button(new Rectangle(panel.X + 22, by, 140, 40), S.MsBack)) briefing = false;
         if (Button(new Rectangle(panel.X + pw - 22 - 200, by, 200, 40), S.MsDeployStart, size: 26))
-            Chosen = new GameOptions { MissionId = id, FromMenu = true };
+            Chosen = new GameOptions { MissionId = id, FromMenu = true, NoResultsFile = practice };
         if (Button(new Rectangle(panel.X + pw - 22 - 200 - 12 - 160, by, 160, 40), S.MsQuickStart))
-            Chosen = new GameOptions { MissionId = id, FromMenu = true, MissionSkipDeploy = true };
+            Chosen = new GameOptions { MissionId = id, FromMenu = true, MissionSkipDeploy = true, NoResultsFile = practice };
     }
 
     public void Dispose()

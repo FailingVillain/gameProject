@@ -53,11 +53,16 @@ public sealed class UiFuzz
     readonly Dictionary<string, int> events = new();
     void Ev(string k) => events[k] = events.GetValueOrDefault(k) + 1;
 
-    public UiFuzz(double seconds, int seed)
+    readonly bool campaignMode;   // T38h: --fuzz-campaign
+
+    public UiFuzz(double seconds, int seed, bool campaign = false)
     {
         Seconds = seconds;
+        campaignMode = campaign;
+        if (campaign) Environment.SetEnvironmentVariable("KD_CAMPAIGN_DIR", TestTemp.Child("fuzz_campaign"));   // 진짜 캠페인 저장을 건드리지 않는다
         rng = new Random(seed);
         Input.Source = inp;
+        Ui.HitRecording = true;   // T38g: 그려진 버튼 사각형을 모아 겨냥 클릭에 쓴다
         PrepareSaves();
         // 멈춤 감시: 10초 넘게 프레임이 안 넘어가면 마지막 단계 · 상황을 출력 (무한 루프 · 교착 진단용)
         var wd = new Thread(() =>
@@ -140,6 +145,8 @@ public sealed class UiFuzz
     public int Report()
     {
         Console.Error.WriteLine($"[uifuzz] 선택 종류 {seenSelections.Count}가지: {string.Join(" ", seenSelections.OrderBy(x => x))}");
+        Console.Error.WriteLine($"[uifuzz] 겨냥 클릭: 서로 다른 버튼 {aimedLabels.Count}개 (작은 것 {aimedSmall.Count}개: {string.Join(" | ", aimedSmall.OrderBy(x => x).Take(12))})");
+        if (campaignMode) Console.Error.WriteLine($"[uifuzz] 캠페인 홈: 방문한 탭 {visitedTabs.Count}/15 ({string.Join(",", visitedTabs.OrderBy(x => x))}), 화면 상태 {string.Join("/", visitedViews)}");
         Console.Error.WriteLine($"[uifuzz] 사건: {string.Join(", ", events.Select(kv => $"{kv.Key}={kv.Value}"))}");
         Console.Error.WriteLine(KoreanDivision.Render.LodAtlas.Summary());
         Console.Error.WriteLine($"[uifuzz] {frame} 프레임, 예외 {Exceptions}건, 고유 크래시 지점 {crashes.Count}곳");
@@ -161,14 +168,152 @@ public sealed class UiFuzz
             inp.Mouse = rng.Next(2) == 0 ? new Vector2(rng.Next(0, w), rng.Next(0, h)) : new Vector2(w / 2f + rng.Next(-420, 420), h * 0.3f + rng.Next(0, (int)(h * 0.6f)));
             stay = rng.Next(1, 4);
         }
-        if (rng.Next(14) == 0) inp.Pressed.Add(MouseButton.Left);
+        if (rng.Next(campaignMode ? 4 : 14) == 0) { if (!AimedClick()) inp.Pressed.Add(MouseButton.Left); }
         if (rng.Next(400) == 0) inp.KeyPress.Add(KeyboardKey.Escape);
         if (rng.Next(60) == 0) inp.Wheel = rng.Next(-3, 4);
         if (rng.Next(30) == 0) inp.KeyHeld.Add(KeyboardKey.LeftShift);
     }
 
+    // ---------------------------------------------------------------- 캠페인 홈 퍼즈 (T38h)
+
+    readonly HashSet<int> visitedTabs = new();
+    readonly HashSet<string> visitedViews = new();
+    int campFrame, awayFrames;
+
+    /// <summary>합성 캠페인 자료 (전과 보고 · 포로 · 진급 · 일정 · 기록 등 모든 탭에 보여줄 것이 있게)를 임시 폴더에 쓴다.</summary>
+    void SeedCampaign()
+    {
+        Directory.CreateDirectory(CampaignState.Folder);
+        var st = new CampaignState();
+        st.EnsureInitialized();
+        st.Completed.Add(CampaignState.FirstMission);
+        st.NextMission = CampaignState.Tutorial2;
+        st.Day = 37;
+        for (int i = 0; i < 6; i++)
+            st.History.Add(new CampaignState.MissionRecord { MissionId = CampaignState.FirstMission, Title = $"fz{i}", DurationSeconds = 600 + i * 90, EnemyKills = 40 + i, Lost = 5 + i, Survivors = 100 - i, SavedAt = "2027-01-01" });
+        st.AddTimeline("mission", CampaignState.FirstMission, "fz");
+        st.AddTimeline("event", "fz_ev", "fz event", 1);
+        st.PromotionLog.Add(new CampaignState.PromotionRecord { AfterMission = CampaignState.FirstMission, Officer = false, UnitId = 3, FromRank = 1, ToRank = 2 });
+        st.PrisonersRepatriated = 4; st.PrisonersInterned = 6; st.Stock.Prisoners = 25;
+        st.Stock.Heavy["field_gun"] = 3; st.Stock.RecentLog.Add("fz log");
+        for (int i = 0; i < st.Roster.Count; i++)
+        {
+            var c = st.Roster[i];
+            c.Regiment = i % 4; c.Fatigue = (i * 17) % 100; c.Morale = 20 + (i * 13) % 80; c.Wounded = i % 3 == 0 ? 7 : 0;
+            if (i % 5 == 4) c.Available = false;
+        }
+        st.LastDebrief = new CampaignState.DebriefReport
+        {
+            MissionId = CampaignState.FirstMission, Title = "fz debrief", TotalLost = 12, WoundedReturned = 5, Dead = 7, DischargedWounded = 1, EnemyKills = 55,
+            SupplyBefore = 3000, SupplyAfter = 2800, RegularSupplyAdded = 200, RecruitsAdded = 150, LootedSupply = 40, LootedRifles = 30, LootedAmmo = 900, LootedHorses = 4,
+            AmmoRefunded = 120, PrisonersTaken = 9, ShellsFired = new() { [StockKeys.InfGun] = 20, [StockKeys.Field] = 10 }, LootedShells = new() { [StockKeys.Field] = 5 },
+        };
+        st.Sanitize();
+        st.Save();
+    }
+
+    /// <summary>시작 화면 퍼즈 한 프레임 뒤 (MenuFrame 다음): 캠페인 홈 밖이면 40프레임 뒤 들어가고, 600프레임마다 새 합성 자료로 다시 들어가며(전과 보고 복원), 홈 화면이면 5프레임마다(다 가본 뒤 12) 아직 안 가본 탭 버튼을 실제로 클릭한다.</summary>
+    public void CampaignDrive(MainMenu menu)
+    {
+        if (!campaignMode) return;
+        Guard("menu", () =>
+        {
+            campFrame++;
+            var cm = menu.FuzzCampaign;
+            if (cm == null)
+            {
+                context = "menu (campaign mode, outside)";
+                if (++awayFrames >= 40) { awayFrames = 0; SeedCampaign(); menu.ShowCampaign(); Ev("campaign-enter"); }
+                return;
+            }
+            awayFrames = 0;
+            string view = cm.FuzzView;
+            context = $"campaign tab {cm.FuzzTab} view {view}{(cm.FuzzSlotsOpen ? " slots" : "")}";
+            visitedTabs.Add(cm.FuzzTab); visitedViews.Add(view);
+            if (cm.FuzzSlotsOpen) Ev("cm-slots-frames");
+            if (view == "Debrief") Ev("cm-debrief-frames");
+            MapZoomDrive(cm, view);
+            if (campFrame % 600 == 0) { SeedCampaign(); menu.ShowCampaign(); Ev("campaign-reseed"); return; }
+            if (cm.FuzzTab == 10 && view == "Home" && mapDwell++ < 150) return;   // 지도 탭에서는 잠시 머물며 휠 · 끌기를 쏜다
+            if (campFrame % (visitedTabs.Count < CampaignMenu.FuzzTabCount ? 5 : 12) != 0 || view != "Home" || cm.FuzzSlotsOpen) return;
+            int n = Enumerable.Range(1, CampaignMenu.FuzzTabCount).FirstOrDefault(t => !visitedTabs.Contains(t));
+            if (n == 0) n = rng.Next(1, CampaignMenu.FuzzTabCount + 1);
+            var (tab, screen) = CampaignMenu.FuzzTabLabels(n);
+            foreach (var key in new[] { tab, screen })
+            {
+                var hit = targets.FirstOrDefault(t => t.Label.StartsWith(key, StringComparison.Ordinal));
+                if (hit.Label == null) continue;
+                var r = hit.R;
+                inp.Mouse = new Vector2(r.X + r.Width / 2, r.Y + r.Height / 2);
+                inp.Pressed.Add(MouseButton.Left);
+                Ev(key == tab ? "cm-tab-click" : "cm-screen-click");
+                break;
+            }
+        });
+    }
+
+    // [T47] 지도 탭 (10) 휠 확대 · 끌기 퍼즈: 뷰포트 안에서 휠 / 끌기 / 키를 쏘고, 배율 범위 · 중심 유한 · 캠페인 상태 불변을 대조한다.
+    int mapDragLeft, mapDwell; string? mapBaseline; int mapSteps; CampaignMenu? mapCm;
+    void MapZoomDrive(CampaignMenu cm, string view)
+    {
+        if (cm.FuzzTab != 10 || view != "Home" || cm.FuzzSlotsOpen) { mapBaseline = null; mapDragLeft = 0; mapDwell = 0; return; }
+        if (!ReferenceEquals(mapCm, cm)) { mapCm = cm; mapBaseline = null; mapDragLeft = 0; }
+        var c = cm.FuzzMapViewportCenter; var sz = cm.FuzzMapViewportSize;
+        if (sz.X < 10) return;   // 아직 한 번도 안 그려짐
+        float z = cm.FuzzMapZoom; var mc = cm.FuzzMapCenter;
+        if (float.IsNaN(z) || z < 1f - 1e-3f || z > 8f + 1e-3f || float.IsNaN(mc.X) || float.IsNaN(mc.Y) || mc.X < 0 || mc.Y < 0 || mc.X > 960 || mc.Y > 320)
+            throw new InvalidOperationException($"map zoom out of range: zoom {z} center {mc}");
+        if (++mapSteps % 10 == 0)
+        {
+            string json = cm.FuzzStateJson;
+            if (mapBaseline == null) mapBaseline = json;
+            else if (mapBaseline != json) throw new InvalidOperationException("campaign state changed on the map tab");
+        }
+        if (mapDwell < 150) { inp.Pressed.Clear(); inp.Wheel = 0; }   // 머무는 동안 메뉴 퍼즈의 무작위 클릭 · 휠은 막고 지도 전용 입력만 쏜다
+        Vector2 RandPt() => new(c.X + (float)(rng.NextDouble() - 0.5) * sz.X * 0.8f, c.Y + (float)(rng.NextDouble() - 0.5) * sz.Y * 0.8f);
+        if (mapDragLeft > 0)
+        {
+            inp.Down.Add(MouseButton.Left);
+            inp.Delta = new Vector2(rng.Next(-25, 26), rng.Next(-15, 16));
+            inp.Mouse += inp.Delta;
+            if (--mapDragLeft == 0) { inp.Down.Remove(MouseButton.Left); inp.Released.Add(MouseButton.Left); Ev("map-drag-end"); }
+            return;
+        }
+        int roll = rng.Next(5);
+        if (roll < 2) { inp.Mouse = RandPt(); inp.Wheel = rng.Next(-4, 5); Ev("map-wheel"); }
+        else if (roll == 2) { inp.Mouse = RandPt(); mapDragLeft = rng.Next(3, 14); inp.Pressed.Add(MouseButton.Left); inp.Down.Add(MouseButton.Left); inp.Delta = new Vector2(12, 7); Ev("map-drag-start"); }
+        else if (roll == 4 && rng.Next(8) == 0) { inp.Mouse = RandPt(); inp.Pressed.Add(MouseButton.Left); Ev("map-click"); }
+        else if (roll == 3) { inp.KeyPress.Add(new[] { KeyboardKey.Equal, KeyboardKey.Minus, KeyboardKey.Zero, KeyboardKey.KpAdd, KeyboardKey.KpSubtract, KeyboardKey.Kp0 }[rng.Next(6)]); Ev("map-key"); }
+    }
+
+    // ---------------------------------------------------------------- 겨냥 클릭 (T38g)
+
+    (Rectangle R, string Label)[] targets = Array.Empty<(Rectangle, string)>();   // 직전 프레임에 그려진 클릭 가능 사각형
+    readonly HashSet<string> aimedLabels = new(), aimedSmall = new();
+    const float SmallPx = 40f;   // 이 이하(가로·세로 모두)면 작은 버튼 ([-][+] · 쪽 넘김 등)
+    static bool IsSmall(Rectangle r) => MathF.Max(r.Width, r.Height) <= SmallPx;
+
+    /// <summary>클릭 30% 는 작은 버튼, 20% 는 아무 등록 버튼을 정확히 겨냥한다 (나머지는 호출자의 무작위). 겨냥했으면 true.</summary>
+    bool AimedClick()
+    {
+        if (targets.Length == 0) return false;
+        int roll = rng.Next(10);
+        if (roll >= (campaignMode ? 8 : 5)) return false;
+        bool wantSmall = roll < 3;
+        var pool = wantSmall ? targets.Where(t => IsSmall(t.R)).ToArray() : targets;
+        if (pool.Length == 0) { if (wantSmall) pool = targets; else return false; }
+        var (r, label) = pool[rng.Next(pool.Length)];
+        inp.Mouse = new Vector2(r.X + r.Width / 2, r.Y + r.Height / 2);
+        inp.Pressed.Add(MouseButton.Left);
+        bool small = IsSmall(r);
+        Ev(small ? "aim-small" : "aim-any");
+        aimedLabels.Add(label); if (small) aimedSmall.Add(label);
+        return true;
+    }
+
     void BeginFrame()
     {
+        targets = Ui.Hits.ToArray(); Ui.Hits.Clear();
         frame++;
         inp.Pressed.Clear(); inp.Released.Clear(); inp.KeyPress.Clear(); inp.KeyHeld.Clear();
         inp.Wheel = 0; inp.Delta = Vector2.Zero;
@@ -183,7 +328,7 @@ public sealed class UiFuzz
         for (var k = KeyboardKey.A; k <= KeyboardKey.Z; k++) l.Add(k);
         for (var k = KeyboardKey.Zero; k <= KeyboardKey.Nine; k++) l.Add(k);
         for (var k = KeyboardKey.Kp0; k <= KeyboardKey.Kp9; k++) l.Add(k);
-        l.AddRange(new[] { KeyboardKey.Escape, KeyboardKey.Space, KeyboardKey.Tab, KeyboardKey.F10, KeyboardKey.F3, KeyboardKey.F6, KeyboardKey.F7, KeyboardKey.Equal, KeyboardKey.Minus,
+        l.AddRange(new[] { KeyboardKey.Escape, KeyboardKey.Space, KeyboardKey.Tab, KeyboardKey.F10, KeyboardKey.F1, KeyboardKey.F3, KeyboardKey.F6, KeyboardKey.F7, KeyboardKey.Equal, KeyboardKey.Minus,
             KeyboardKey.KpAdd, KeyboardKey.KpSubtract, KeyboardKey.LeftBracket, KeyboardKey.RightBracket, KeyboardKey.Backspace, KeyboardKey.Up, KeyboardKey.Down });
         return l.ToArray();
     }
@@ -268,6 +413,8 @@ public sealed class UiFuzz
             }
         }
         if (g.DeployPhase && leftFrames > 0) inp.Mouse += new Vector2(rng.Next(-25, 26), rng.Next(-25, 26));
+        // ---- 겨냥 클릭: 등록된 버튼 중앙을 정확히 누른다 (작은 버튼 30% 예약)
+        if (leftFrames == 0 && !g.DeployPhase && rng.Next(8) == 0) AimedClick();
         // ---- 클릭 (드래그 포함)
         if (leftFrames > 0)
         {

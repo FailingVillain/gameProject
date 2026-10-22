@@ -25,21 +25,23 @@ if (args.Length > 1 && args[0] == "--tactics-obs") return KoreanDivision.Tests.T
 
 // 사용법:  KoreanDivision.exe [--map 100x100] [--seed N] [--ai tactical|tactical:<프로필>|standard|passive|rush|battle|none] [--nofog]
 //                      [--shot out.png [--shot-frame N] [--sim 초]] [--replay 파일] [--verify-replay 파일] [--selftest]
-const string Usage = "사용법: KoreanDivision [--players N] [--faction 번호|이름] [--map WxH|tiny|small|medium|large|huge|지도이름] [--seed N] [--ai 이름|none] [--nofog] [--weather clear|overcast|fog|rain|snow] [--time dawn|day|dusk|night] [--shot out.png] [--shot-frame N] [--sim 초] [--demo] [--exec 명령] [--theme kd1920|ww2|none] [--replay 파일] [--verify-replay 파일] [--no-replay] [--spectate [--view N]] [--mute] [--quick-battle [n]] [--battle \"종류:수,.. --vs \"종류:수,..\" [--battle-map flat|terrain|city] [--battle-ai-vs-ai] [--battle-distance N]] [--balance [suite]] [--selftest]  (인자 없이 실행하면 시작 화면)";
+const string Usage = "사용법: KoreanDivision [--players N] [--faction 번호|이름] [--map WxH|tiny|small|medium|large|huge|지도이름] [--seed N] [--ai 이름|none] [--nofog] [--weather clear|overcast|fog|rain|snow] [--time dawn|day|dusk|night] [--shot out.png] [--shot-frame N] [--sim 초] [--demo] [--exec 명령] [--theme kd1920|ww2|none] [--replay 파일] [--verify-replay 파일] [--no-replay] [--spectate [--view N]] [--mute] [--size WxH] [--quick-battle [n]] [--battle \"종류:수,.. --vs \"종류:수,..\" [--battle-map flat|terrain|city] [--battle-ai-vs-ai] [--battle-distance N]] [--balance [suite]] [--selftest]  (인자 없이 실행하면 시작 화면)";
 var opt = new GameOptions();
-bool selfTest = false, mapGiven = false, noVsync = false, fuzzMenu = false;
+bool selfTest = false, mapGiven = false, noVsync = false, fuzzMenu = false, fuzzCampaign = false;
 double fuzzSeconds = 0;   // > 0 이면 UI 퍼즈 모드 (src/Tests/UiFuzz.cs)
+string? sizeArg = null;   // --size WxH: 이번 실행만 창 크기 (settings.json 은 건드리지 않음; UI 하네스용)
 string? factionArg = null, verifyReplay = null, menuShot = null, menuPage = null;
 string? battleA = null, battleB = null, battleMap = "flat";   // 교전 테스트: --battle "종류:수,..." --vs "..." [--battle-map flat|terrain|city] [--battle-ai-vs-ai] [--battle-distance N]
 bool battleAiVsAi = false;
 int battleDistance = 40;
+bool crashTest = false;
 bool aiGiven = false;   // --ai 를 명시했는가 (교전 테스트도 그 AI 로 — 비교용)
 bool gameFlag = false;   // 게임을 바로 시작하는 인자가 하나라도 있으면 시작 화면을 건너뛴다
 try
 {
     for (int i = 0; i < args.Length; i++)
     {
-        if (args[i] is not ("--novsync" or "--menu-shot" or "--menu-page" or "--theme" or "--uifuzz" or "--fuzz-menu" or "--mute")) gameFlag = true;   // 테마만 바꿔도 시작 화면은 그대로
+        if (args[i] is not ("--novsync" or "--menu-shot" or "--menu-page" or "--theme" or "--uifuzz" or "--size" or "--fuzz-menu" or "--fuzz-campaign" or "--mute" or "--crash-test" or "--dev-menu")) gameFlag = true;   // 테마만 바꿔도 시작 화면은 그대로
         switch (args[i])
         {
             case "--map":
@@ -81,12 +83,15 @@ try
             case "--no-replay": opt.SaveReplay = false; break;
             case "--spectate": opt.Spectate = true; break;
             case "--view": opt.ViewFaction = int.Parse(args[++i]); break;   // 관전 시작 시점 (0 = 전체)
+            case "--size": sizeArg = args[++i]; break;
+            case "--dev-menu": KoreanDivision.UI.MainMenu.DevMenu = true; break;   // 숨긴 메뉴 항목(플레이 / 관전 인원) 표시 (T45)
             case "--menu-shot": menuShot = Path.GetFullPath(args[++i]); break;   // 시작 화면 스크린샷 (확인용)
             case "--menu-page": menuPage = args[++i].ToLowerInvariant(); break;   // main | setup | spectate | replays
             case "--selftest": selfTest = true; break;
             case "--uifuzz":   // UI 크래시 퍼즈: --uifuzz [초] (기본 120). 지도를 안 주면 corners4 + AI, 리플레이는 저장 안 함
                 fuzzSeconds = i + 1 < args.Length && double.TryParse(args[i + 1], System.Globalization.CultureInfo.InvariantCulture, out double fs) ? (++i, fs).fs : 120;
                 break;
+            case "--fuzz-campaign": fuzzMenu = true; fuzzCampaign = true; break;   // T38h: 퍼즈가 캠페인 홈(임시 폴더 + 합성 자료)을 계속 두드린다
             case "--fuzz-menu": fuzzMenu = true; break;   // 퍼즈를 시작 화면부터 (메뉴 → 게임 → 메뉴 ...)
             case "--quick-battle":   // 빠른 교전: 빈 평지 보병 n 대 AI 보병 n (기본 500, 예: --quick-battle 200)
                 if (i + 1 < args.Length && int.TryParse(args[i + 1], out int qn)) { battleA = battleB = MainMenu.QuickBattleSideFor(qn); i++; }
@@ -100,6 +105,7 @@ try
             case "--mission": opt.MissionId = args[++i]; break;   // 미션 (assets/missions/<id>.json) — 배치 단계부터
             case "--mission-start": opt.MissionSkipDeploy = true; break;   // 미션 배치 단계 건너뛰기
             case "--probe": break;
+            case "--crash-test": crashTest = true; break;   // 충돌 로그 확인용: 시작 직후 예외
             default: throw new ArgumentException($"알 수 없는 인자: {args[i]}");
         }
     }
@@ -161,10 +167,19 @@ if (verifyReplay != null)
     return bad < 0 ? 0 : 2;
 }
 
+CrashLog.Install();   // 처리 안 된 예외 → logs/crash-*.txt
+UserSettings.Load();   // 해상도 · 창 모드 · 음량 (settings.json)
+if (sizeArg != null)   // --size WxH (저장 안 함, 최소 해상도 아래로는 못 내림)
+{
+    var sz = sizeArg.ToLowerInvariant().Split('x');
+    if (sz.Length == 2 && int.TryParse(sz[0], out int sw0) && int.TryParse(sz[1], out int sh0)) { UserSettings.Width = Math.Max(Config.MinScreenWidth, sw0); UserSettings.Height = Math.Max(Config.MinScreenHeight, sh0); UserSettings.Mode = UserSettings.WindowMode.Windowed; }
+    else { Console.Error.WriteLine("--size WxH"); return 1; }
+}
 Raylib.SetTraceLogLevel(TraceLogLevel.Warning);
 Raylib.SetConfigFlags(ConfigFlags.ResizableWindow | ConfigFlags.Msaa4xHint | (noVsync ? 0 : ConfigFlags.VSyncHint));
-Raylib.InitWindow(Config.ScreenWidth, Config.ScreenHeight, $"{Config.Title} {Config.Version}");
+Raylib.InitWindow(UserSettings.Width, UserSettings.Height, $"{Config.Title} {Config.Version}");
 Raylib.SetWindowMinSize(Config.MinScreenWidth, Config.MinScreenHeight);
+if (UserSettings.Mode != UserSettings.WindowMode.Windowed) UserSettings.Apply();
 Raylib.SetExitKey(KeyboardKey.Null);   // Esc 는 게임 내 취소 키로 사용
 Raylib.SetTargetFPS(noVsync ? 0 : Config.MaxFps);
 Ui.LoadFonts(defs.AllText().Concat(MissionDef.AllText()));   // 미션 파일의 제목 · 브리핑 · 목표 글자도 아틀라스에
@@ -173,7 +188,8 @@ Sfx.Init(opt.Theme == "none" ? "ww2" : opt.Theme);   // 효과음 (assets/sounds
 
 KoreanDivision.UI.CrashLog.Context = () => ("menu", null, 0, opt.Seed);
 KoreanDivision.UI.CrashLog.MaybeInjectTestCrash();   // 시험 전용 (KD_TEST_CRASH=1): 처리 안 된 예외 경로 확인
-UiFuzz? fuzz = fuzzSeconds > 0 ? new UiFuzz(fuzzSeconds, opt.Seed) : null;
+UiFuzz? fuzz = fuzzSeconds > 0 ? new UiFuzz(fuzzSeconds, opt.Seed, fuzzCampaign) : null;
+if (crashTest) throw new InvalidOperationException("crash-test");
 bool running = true;
 double updMs = 0, drawMs = 0;
 int measured = 0;
@@ -193,6 +209,7 @@ while (running)
             {
                 menu.ExitRequested = false;
                 fuzz.MenuFrame(Raylib.GetScreenWidth(), Raylib.GetScreenHeight());
+                fuzz.CampaignDrive(menu);
                 fuzz.Guard("menu", () => menu.Frame(null));
             }
             else menu.Frame(mshoot ? menuShot : null);
@@ -216,6 +233,7 @@ while (running)
         startError = e.Message;
     }
     if (created == null) { menu?.ShowMain(cur.FromMenu ? string.Format(S.StartFailed, startError) : null); continue; }
+    CrashLog.Context = $"미션 {cur.MissionId ?? "-"}, 시드 {(cur.MissionId != null ? cur.MissionSeed ?? cur.Seed : cur.Seed)}, 지도 {cur.MapId ?? $"{cur.MapWidth}x{cur.MapHeight}"}, AI {cur.Ai}";
     cur.Loaded = null;   // 월드는 게임이 가져갔다 (다시 시작 · 메뉴 복귀가 옛 저장 월드를 다시 쓰지 않게)
     using var game = created;
     KoreanDivision.UI.CrashLog.Context = () => ("game", cur.MissionId, game.World.Tick, cur.Seed);
@@ -234,7 +252,8 @@ while (running)
         if (game.QuitRequested)
         {
             game.SaveReplay();
-            if (cur.FromMenu) menu?.ShowMain();   // 메뉴에서 시작했으면 메뉴로, 아니면 종료
+            if (cur.FromMenu && cur.MissionId != null && CampaignState.IsCampaignMission(cur.MissionId) && !game.IsReplay) menu?.ShowCampaign();   // 캠페인 미션 → 캠페인 홈 (전과 보고 · 보충)
+            else if (cur.FromMenu) menu?.ShowMain();   // 메뉴에서 시작했으면 메뉴로, 아니면 종료
             else running = false;
             break;
         }

@@ -4,7 +4,7 @@ using KoreanDivision.Core;
 namespace KoreanDivision.UI;
 
 /// <summary>저장 목록의 한 줄: 머리말을 읽었으면 Header, 못 읽었으면 Error (깨짐 · 다른 형식 — 화면에는 '읽을 수 없음'으로 표시하고 불러오지 않는다).</summary>
-public sealed record SaveEntry(string Path, string Name, DateTime Modified, SnapshotHeader? Header, string? Error);
+public sealed record SaveEntry(string Path, string Name, DateTime Modified, SnapshotHeader? Header, string? Error, string? Note = null);
 
 /// <summary>
 /// 저장 폴더 (실행 파일 옆 saves/) 관리: 이름 → 경로, 목록 (머리말만 읽음 — 큰 저장도 빠름), 자동 저장 이름, 불러오기 옵션 만들기.
@@ -18,6 +18,26 @@ public static class SaveManager
 
     public const string QuickName = "quicksave";
     public const int AutosaveKeep = 3;
+    /// <summary>큰 교전 직전 자동 저장 슬롯 (한 개, 덮어씀) · 조용한 시간 20초 · 최소 한 번에 6발 · 저장 간격 2분 (게임 시간 틱).</summary>
+    public const string BattleName = "autosave_battle";
+    public const long BattleLullTicks = 20 * 60, BattleSaveGap = 2 * 60 * 60;
+    public const int BattleShotMin = 6;
+    public struct BattleState
+    {
+        public long LastShotSeen, LastSave; public bool Armed;
+        public static BattleState Initial => new() { LastShotSeen = -1_000_000, LastSave = -1_000_000, Armed = true };
+    }
+    /// <summary>전투 자동 저장 판정 (순수): 이 틱에 저장해야 하면 true. 저장 성공 여부와 무관하게 재무장 · 간격 상태를 갱신하므로 실패해도 매 프레임 반복하지 않는다.</summary>
+    public static bool BattleSaveDue(ref BattleState s, long tick, int shotCount)
+    {
+        if (shotCount == 0) { if (tick - s.LastShotSeen >= BattleLullTicks) s.Armed = true; return false; }
+        s.LastShotSeen = tick;
+        if (!s.Armed || shotCount < BattleShotMin) return false;
+        s.Armed = false;
+        if (tick - s.LastSave < BattleSaveGap) return false;
+        s.LastSave = tick;
+        return true;
+    }
     /// <summary>자동 저장 간격 (게임 시간, 틱). 10분. 퍼즈가 짧게 바꾼다.</summary>
     public static long AutosaveTicks = 10 * 60 * 60;
 
@@ -59,7 +79,7 @@ public static class SaveManager
             DateTime mod;
             try { mod = File.GetLastWriteTime(f); } catch (IOException) { mod = DateTime.MinValue; }
             try { list.Add(new SaveEntry(f, name, mod, Snapshot.ReadHeaderFile(f), null)); }
-            catch (SnapshotException e) { list.Add(new SaveEntry(f, name, mod, null, e.Message)); }
+            catch (SnapshotException e) { list.Add(new SaveEntry(f, name, mod, null, e.Message, e.Note)); }
             catch (Exception e) when (e is IOException or UnauthorizedAccessException) { list.Add(new SaveEntry(f, name, mod, null, e.Message)); }
         }
         list.Sort((a, b) => b.Modified.CompareTo(a.Modified));

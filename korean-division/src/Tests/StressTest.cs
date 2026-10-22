@@ -62,6 +62,7 @@ public static partial class StressTest
             Console.WriteLine(fails == 0 ? "COMBAT2 PASS" : $"COMBAT2 FAIL ({fails})");
             return fails;
         }
+        if (args.Length > 0 && args[0] == "bench") return Bench(args[1..]);   // T50d: src/Tests/PerfBench.cs
         if (args.Length > 0 && args[0] == "navtest")   // 개발용: 길찾기 검증만 빠르게
         {
             Defs.Load();

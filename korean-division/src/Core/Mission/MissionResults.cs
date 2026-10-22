@@ -27,9 +27,17 @@ public sealed class MissionResults
     public bool CheatsUsed { get; set; }
     public int PlayerFaction { get; set; }
     public int EnemyKills { get; set; }
+    /// <summary>[T42c] 끝났을 때 항복한 채 살아 있는 적대 세력 유닛 수 (= 포로). 항복 규칙이 꺼져 있으면 0. 시뮬 상태를 읽기만 함 — 저장 · 체크섬 무관.</summary>
+    public int EnemyCaptured { get; set; }
     /// <summary>[측정] 아군 오사 — 무기 종류별 (명중 · 사살 · 피해량). 저장 · 체크섬과 무관한 부가 계수기.</summary>
     public Dictionary<string, FriendlyFireEntry> FriendlyFire { get; set; } = new();
+    /// <summary>[T19b] 플레이어 세력 포 (병과 gun) 의 무기 키별 발사 수 — 캠페인 포탄 정산 (실제 발사 수 차감). 미션 중 불러오기를 하면 그 뒤 발사만 센다.</summary>
+    public Dictionary<string, int> PlayerGunShots { get; set; } = new();
     public sealed class FriendlyFireEntry { public int Hits { get; set; } public int Kills { get; set; } public double Damage { get; set; } }
+    /// <summary>전과 보고 (표시 전용): 세력별 사상 원인 [사격, 근접, 포격] (이번 실행에서 센 것) · 아군 중대별 병력.</summary>
+    public Dictionary<int, long[]> LossCause { get; set; } = new();
+    public List<CompanyLine> Companies { get; set; } = new();
+    public sealed class CompanyLine { public int Number { get; set; } public int Initial { get; set; } public int Alive { get; set; } public int Kills { get; set; } }
     public string SavedAt { get; set; } = "";
     public List<FactionLine> Factions { get; set; } = new();
     public List<ObjectiveLine> Objectives { get; set; } = new();
@@ -56,6 +64,7 @@ public sealed class MissionResults
             SavedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
             Deployment = new List<DeployEntry>(m.Deployment),
         };
+        if ((uint)m.Player < MoveStats.MaxF) foreach (var (k, v) in w.Stats.GunShots[m.Player]) r.PlayerGunShots[k] = v;
         foreach (var (k, v) in w.Stats.FriendlyFire) r.FriendlyFire[k] = new FriendlyFireEntry { Hits = v.Hits, Kills = v.Kills, Damage = Math.Round(v.Damage, 1) };
         if (m.FailReason >= 0 && m.FailReason < m.Def.Failures.Count) r.FailReason = m.Def.Failures[m.FailReason].Type;
         else if (m.Result == MissionState.Lost) r.FailReason = "objective";
@@ -66,7 +75,7 @@ public sealed class MissionResults
         {
             int sp = f < m.Spawned.Length ? m.Spawned[f] : 0;
             r.Factions.Add(new FactionLine { Id = f, Name = w.Faction(f).Name, Player = f == m.Player, Spawned = sp, Lost = Math.Max(0, sp - alive[f]), Alive = alive[f], Captured = captured[f] });
-            if (w.IsHostile(m.Player, f)) r.EnemyKills += Math.Max(0, sp - alive[f]);
+            if (w.IsHostile(m.Player, f)) { r.EnemyKills += Math.Max(0, sp - alive[f] - captured[f]); r.EnemyCaptured += captured[f]; }
         }
         for (int i = 0; i < m.Def.Objectives.Count; i++)
         {
@@ -77,6 +86,9 @@ public sealed class MissionResults
                 State = m.ObjState[i] == MissionState.Done ? "done" : m.ObjState[i] == MissionState.Failed ? "failed" : "active",
             });
         }
+        foreach (var (f, c) in w.Stats.LossCause) r.LossCause[f] = (long[])c.Clone();
+        foreach (var c in w.CompaniesOf(m.Player).OrderBy(c => c.Number))
+            r.Companies.Add(new CompanyLine { Number = c.Number, Initial = Math.Max(c.InitialStrength, c.Members.Count), Alive = c.Members.Count(u => u.Alive), Kills = c.Members.Sum(u => u.Kills) });
         var forceOf = new Dictionary<int, string>();
         foreach (var (fid, ids) in m.ForceUnits) foreach (int id in ids) forceOf[id] = fid;
         foreach (var u in w.Units)

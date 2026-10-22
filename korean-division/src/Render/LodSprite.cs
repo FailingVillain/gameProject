@@ -44,6 +44,8 @@ public sealed class LodLevel
     public int Group;
     internal int[] CellSheet = Array.Empty<int>();   // [프레임] → 시트 번호 (-1 = 이 LOD 에 없음)
     internal int[] CellCol = Array.Empty<int>();
+    /// <summary>[프레임] → 그 칸의 크기 (시트 항목에 "frame" 이 있으면 그 크기, 아니면 FrameW/H) — 엎드림 등 넓은 칸용, 표시 전용.</summary>
+    internal int[] CellFW = Array.Empty<int>(), CellFH = Array.Empty<int>();
     internal string[] SheetFiles = Array.Empty<string>();
     internal string?[] TeamFiles = Array.Empty<string?>();
     // ── 아틀라스 배치 (LodAtlas 가 채움). 칸 번호 ci = 행 × 프레임 수 + 프레임. 투명 여백을 잘라 담는다 → CW = 0 이면 빈 칸.
@@ -95,7 +97,7 @@ public sealed class LodSprite
     public static readonly HashSet<string> UsedAnimNames = new()
     {
         "idle", "idle_alt", "idle_lean", "idle_rest", "idle_look", "idle_adjust", "idle_stretch", "idle_3",
-        "walk", "move", "travel", "walk_shoulder", "walk_fire", "charge", "melee", "melee_b", "sword_wave", "fix_bayonet",
+        "walk", "move", "travel", "walk_shoulder", "walk_quick", "walk_fire", "charge", "melee", "melee_b", "sword_wave", "fix_bayonet", "wave_flag",
         "fire", "pistol_fire", "fire_a", "fire_b", "fire_c", "fire_prone", "fire_kneel", "shoot", "deploy", "unpack", "pack",
         "binoculars", "binoculars_kneel", "crawl", "trench_fire", "grenade_throw", "drag_wounded", "salute", "present_arms", "surrender", "start", "hit_b", "supply", "gallop", "hitch", "unhitch", "death", "death_b", "death_c", "destroyed",
     };
@@ -177,17 +179,23 @@ public sealed class LodSprite
             var sheetIdx = sheets.Select((x, i) => (x.GetProperty("file").GetString()!, i)).ToDictionary(p => p.Item1, p => p.i);
             lv.CellSheet = Enumerable.Repeat(-1, s.FrameNames.Length).ToArray();
             lv.CellCol = new int[s.FrameNames.Length];
+            lv.CellFW = Enumerable.Repeat(lv.FrameW, s.FrameNames.Length).ToArray();
+            lv.CellFH = Enumerable.Repeat(lv.FrameH, s.FrameNames.Length).ToArray();
+            var cellAnchor = new Vector2?[s.FrameNames.Length];
             var cells = root.GetProperty("cells");
             for (int f = 0; f < s.FrameNames.Length; f++)
                 if (cells.TryGetProperty(s.FrameNames[f], out var c) && sheetIdx.TryGetValue(c.GetProperty("sheet").GetString() ?? "", out int si))
                 {
                     lv.CellSheet[f] = si;
                     lv.CellCol[f] = c.GetProperty("col").GetInt32();
+                    var sh = sheets[si];
+                    if (sh.TryGetProperty("frame", out var sfr) && sfr.GetArrayLength() == 2) { lv.CellFW[f] = sfr[0].GetInt32(); lv.CellFH[f] = sfr[1].GetInt32(); }
+                    if (sh.TryGetProperty("anchor", out var san) && san.GetArrayLength() == 2) cellAnchor[f] = new Vector2(san[0].GetSingle(), san[1].GetSingle());
                 }
             // 칸별 기준점 {방향: [[x,y] × 열]} — 열 순서 = 이 레이아웃의 columns
             var cols = root.GetProperty("columns").EnumerateArray().Select(c => c.GetString() ?? "").ToArray();
             lv.Anchors = new Vector2[s.DirCount][];
-            for (int r = 0; r < s.DirCount; r++) lv.Anchors[r] = Enumerable.Repeat(lv.Anchor, s.FrameNames.Length).ToArray();
+            for (int r = 0; r < s.DirCount; r++) lv.Anchors[r] = Enumerable.Range(0, s.FrameNames.Length).Select(i => cellAnchor[i] ?? lv.Anchor).ToArray();
             if (root.TryGetProperty("anchors", out var anf) && anf.GetString() is string anrel && File.Exists(Path.Combine(dir, ldir, anrel)))
             {
                 using var adoc = JsonDocument.Parse(File.ReadAllText(Path.Combine(dir, ldir, anrel)));
@@ -323,9 +331,10 @@ internal static class LodDraw
         }
         float k = worldScale / s.Scale * lv.Scale;   // 이 LOD 1px → 좌표
         var an = lv.AnchorAt(row, frame);
-        float ax = flip ? lv.FrameW - an.X : an.X;
+        int fwc = lv.CellFW[frame];
+        float ax = flip ? fwc - an.X : an.X;
         // 잘라낸 사각형의 칸 안 위치: 반전이면 칸 오른쪽 끝에서 잰다
-        int ox = flip ? lv.FrameW - lv.COX[ci] - cw : lv.COX[ci];
+        int ox = flip ? fwc - lv.COX[ci] - cw : lv.COX[ci];
         var src = new Rectangle(lv.CX[ci], lv.CY[ci], flip ? -cw : cw, lv.CH[ci]);
         var dest = new Rectangle(feet.X - ax * k + ox * k, feet.Y - an.Y * k + lv.COY[ci] * k, cw * k, lv.CH[ci] * k);
         TeamShader.Enter();

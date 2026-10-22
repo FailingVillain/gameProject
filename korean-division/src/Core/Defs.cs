@@ -951,5 +951,6 @@ Require(CombatRules.SquadLeaderRank >= 0 && CombatRules.SquadLeaderRank <= Comba
             .Concat(Armors.Values.Select(a => a.Name))
             .Concat(Units.Values.SelectMany(u => new[] { u.Name, u.Description }))
             .Concat(Buildings.Values.SelectMany(b => new[] { b.Name, b.Description }))
-            .Concat(RankNames.AllText());
+            .Concat(RankNames.AllText())
+            .Concat(CampaignEvents.AllText());
 }

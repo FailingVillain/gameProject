@@ -30,9 +30,10 @@ public sealed partial class World
     /// <summary>사격 1회분 탄약 소모. 탄약이 없으면 false (사격 불가). 무한 탄약 · 교전 테스트(기본)는 항상 true.</summary>
     internal bool ConsumeAmmo(Unit u)
     {
-        if (!AmmoEnabled || !u.UsesAmmo || DebugInfiniteAmmo) return true;
+        if (!AmmoEnabled || !u.UsesAmmo || DebugInfiniteAmmo) { Stats.AddGunShot(u); return true; }
         if (u.Ammo <= 0) return false;
         u.Ammo--;
+        Stats.AddGunShot(u);   // [측정 전용] 캠페인 포탄 정산용 발사 수 (T19b)
         if (KoreanDivision.Tests.AmmoObs.On) KoreanDivision.Tests.AmmoObs.Shot(u, Tick);   // 읽기 전용 측정
         return true;
     }

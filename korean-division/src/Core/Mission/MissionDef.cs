@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace KoreanDivision.Core;
 
 /// <summary>
-/// 미션 파일 (assets/missions/&lt;id&gt;.json) — 지도 참조(또는 인라인 지도) · 세력 · 병력 배치 · 증원 · 목표 · 실패 조건 · 사건표.
+/// 미션 파일 (assets/missions/<id>.json) — 지도 참조(또는 인라인 지도) · 세력 · 병력 배치 · 증원 · 목표 · 실패 조건 · 사건표.
 /// 형식 요약은 docs/ENGINE_NOTES.md '미션 틀'. 정의는 불변 데이터 (실행 상태는 MissionState).
 /// 좌표 = 타일, 방향(facing) = 나침반 각도 (0 = 북/위, 90 = 동/오른쪽, 180 = 남, 270 = 서).
 /// </summary>
@@ -17,7 +17,7 @@ public sealed partial class MissionDef
     public string Date { get; set; } = "";
     public string Location { get; set; } = "";
     public string Briefing { get; set; } = "";
-    /// <summary>기존 지도 id (assets/maps/&lt;id&gt;.json). MapData 가 있으면 무시.</summary>
+    /// <summary>기존 지도 id (assets/maps/<id>.json). MapData 가 있으면 무시.</summary>
     public string? Map { get; set; }
     /// <summary>인라인 지도 (지도 파일과 같은 형식의 객체).</summary>
     public JsonElement? MapData { get; set; }
@@ -55,6 +55,10 @@ public sealed partial class MissionDef
     public float PropDensity { get; set; } = 1f;
     /// <summary>propScatter 군집 칸 크기 (타일, 기본 0 = props.json scatter.cell). 작을수록 같은 지도에 군집이 많다.</summary>
     public int PropCell { get; set; }
+    /// <summary>[Phase 2 S3] 최대 출격 중대 수 제한 (캠페인 출격 통제). 없으면 제한 없음.</summary>
+    public int? MaxDeploy { get; set; }
+    /// <summary>[T19b 캠페인 포탄] 플레이어 세력 유닛의 무기 키별 시작 탄약 비율 (0~1). 이 무기를 든 유닛은 중대 ammoScale 대신 이 값 (CampaignCarry 가 씀). 없으면 영향 없음.</summary>
+    public Dictionary<string, float>? AmmoScaleByWeapon { get; set; }
 
     [JsonIgnore] public string Json { get; internal set; } = "";
     [JsonIgnore] public string Hash { get; internal set; } = "";
@@ -73,12 +77,25 @@ public sealed partial class MissionDef
     public static IEnumerable<string> Available() =>
         Directory.Exists(Folder) ? Directory.GetFiles(Folder, "*.json").Select(Path.GetFileNameWithoutExtension).OfType<string>().OrderBy(n => n, StringComparer.Ordinal) : Array.Empty<string>();
 
+    /// <summary>관전 미션 (spectate:true = AI 대 AI) id · 제목. 시작 화면 '관전' 탭의 목록 (T45). 읽기 실패한 파일은 뺀다 (미션 메뉴가 '고장'으로 보여 준다).</summary>
+    public static List<(string Id, string Title)> AvailableSpectate()
+    {
+        var list = new List<(string, string)>();
+        foreach (var id in Available())
+        {
+            try { var d = Load(id); if (d.Spectate) list.Add((id, d.Title)); }
+            catch (Exception e) when (e is IOException or InvalidDataException or JsonException or InvalidOperationException or KeyNotFoundException) { }
+        }
+        return list;
+    }
+
     public static MissionDef Load(string id)
     {
         string path = PathOf(id);
         if (!File.Exists(path)) throw new FileNotFoundException($"미션 파일 없음: {path}");
         string text = File.ReadAllText(path);
-        if (CampaignCarry.WantsCarry(text)) text = CampaignCarry.Patch(text, id, CampaignState.Load());
+        var cs = CampaignState.Load();
+        if (CampaignCarry.WantsCarry(text) || CampaignCarry.WantsPending(id, cs)) text = CampaignCarry.Patch(text, id, cs);
         return Parse(text, id);
     }
 
@@ -313,11 +330,18 @@ public sealed class MissionForce
     /// <summary>AI 힌트: 이 병력만의 자세 · 구역 (없으면 세력의 posture · area).</summary>
     public string? Posture { get; set; }
     public string? AiArea { get; set; }
+    /// <summary>[Phase 2 S3] 시작 탄약 비율 (0~1). 없으면 1.0 (완전 보급).</summary>
+    public float? AmmoScale { get; set; }
 
     public IEnumerable<MissionCompany> AllCompanies()
     {
-        if (Companies is { Count: > 0 }) return Companies;
-        if (Units is { Count: > 0 }) return new[] { new MissionCompany { Units = Units, Rank = Rank, SquadLeaderRank = SquadLeaderRank, OfficerRanks = OfficerRanks, OfficerXp = OfficerXp, Tag = Tag, Formation = Formation, Company = Company, Weapon = Weapon } };
+        if (Companies is { Count: > 0 })
+        {
+            if (AmmoScale != null)
+                foreach (var c in Companies) c.AmmoScale ??= AmmoScale;
+            return Companies;
+        }
+        if (Units is { Count: > 0 }) return new[] { new MissionCompany { Units = Units, Rank = Rank, SquadLeaderRank = SquadLeaderRank, OfficerRanks = OfficerRanks, OfficerXp = OfficerXp, Tag = Tag, Formation = Formation, Company = Company, Weapon = Weapon, AmmoScale = AmmoScale } };
         return Array.Empty<MissionCompany>();
     }
 }
@@ -341,6 +365,8 @@ public sealed class MissionCompany
     /// <summary>태그 (목표 · 사건이 참조: officer · guns · wagon ...).</summary>
     public string? Tag { get; set; }
     public bool? Company { get; set; }
+    /// <summary>[Phase 2 S3] 시작 탄약 비율 (0~1). 없으면 1.0 (완전 보급).</summary>
+    public float? AmmoScale { get; set; }
 
     public static FormType? ParseForm(string? s) => (s ?? "line").ToLowerInvariant() switch
     {

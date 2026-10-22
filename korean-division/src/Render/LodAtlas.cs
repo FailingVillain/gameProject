@@ -242,17 +242,18 @@ internal sealed class LodAtlas : IDisposable
                 for (int f = 0; f < nf; f++)
                 {
                     if (lv.CellSheet[f] != i || !s.Used[f]) continue;
-                    int x0 = lv.CellCol[f] * lv.FrameW;
+                    int fw = lv.CellFW[f], fh = lv.CellFH[f];
+                    int x0 = lv.CellCol[f] * fw;
                     for (int r = 0; r < nd; r++)
                     {
-                        int y0 = r * lv.FrameH;
-                        if (x0 + lv.FrameW > iw || y0 + lv.FrameH > ih) continue;
+                        int y0 = r * fh;
+                        if (x0 + fw > iw || y0 + fh > ih) continue;
                         // 불투명 픽셀의 경계 상자
                         int minX = int.MaxValue, minY = int.MaxValue, maxX = -1, maxY = -1;
-                        for (int y = 0; y < lv.FrameH; y++)
+                        for (int y = 0; y < fh; y++)
                         {
                             byte* row = b + ((long)(y0 + y) * iw + x0) * 4;
-                            for (int x = 0; x < lv.FrameW; x++)
+                            for (int x = 0; x < fw; x++)
                                 if (row[x * 4 + 3] != 0)
                                 {
                                     if (x < minX) minX = x;
@@ -264,7 +265,7 @@ internal sealed class LodAtlas : IDisposable
                         if (maxX < 0) continue;   // 빈 칸
                         // 투명 1px 테두리를 남긴다: 사각형 변이 불투명 픽셀 경계와 겹치지 않게 (래스터화가 잘라내기 전과 같도록) — 칸 사이 틈 역할도 함
                         minX = Math.Max(0, minX - Pad); minY = Math.Max(0, minY - Pad);
-                        maxX = Math.Min(lv.FrameW - 1, maxX + Pad); maxY = Math.Min(lv.FrameH - 1, maxY + Pad);
+                        maxX = Math.Min(fw - 1, maxX + Pad); maxY = Math.Min(fh - 1, maxY + Pad);
                         int cw = maxX - minX + 1, ch = maxY - minY + 1;
                         var px = GC.AllocateUninitializedArray<byte>(cw * ch * 4);
                         fixed (byte* d = px)

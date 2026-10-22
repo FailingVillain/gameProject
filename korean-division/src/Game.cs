@@ -74,6 +74,7 @@ public sealed partial class Game : IDisposable
     readonly WeatherFx weatherFx = new();
     int weatherSeen = -1;   // 마지막으로 알린 World.Weather.Changes (환경음 · 알림)
     public readonly CommandConsole CommandBox = new();
+    public readonly HelpOverlay HelpBox = new();   // T38b: F1 도움말 (Bindings 단일 출처, 화면 전용)
     public bool ShowPerf { get; private set; }
     /// <summary>프레임 시간 (Program 이 채움, fps 명령으로 표시).</summary>
     public double FrameUpdateMs, FrameDrawMs;
@@ -114,6 +115,39 @@ public sealed partial class Game : IDisposable
     /// <summary>대대 목록 패널 (0 키).</summary>
     public bool ShowBatList;
     int lastBattalionId;                    // 마지막으로 부른 대대
+    readonly Dictionary<int, int> battalionRegiment = new();
+
+    /// <summary>대대의 소속 연대 번호 (1~9, 기본 = (대대번호-1)/3 + 1).</summary>
+    public int RegimentOf(Battalion r) =>
+        battalionRegiment.TryGetValue(r.Id, out int reg) && reg is >= 1 and <= 9 ? reg : (r.Number > 0 ? (r.Number - 1) / 3 + 1 : 1);
+
+    public void SetBattalionRegiment(Battalion r, int reg)
+    {
+        if (reg is >= 1 and <= 9)
+        {
+            battalionRegiment[r.Id] = reg;
+            ShowNotice(string.Format(S.RegimentAssigned, r.Number > 0 ? string.Format(S.BattalionName, r.Number) : S.BattalionNoNumber, reg));
+        }
+    }
+
+    /// <summary>연대 n 선택 (소속 대대들 전체 선택). 같은 번호를 0.35초 안에 다시 누르면 카메라를 연대로 옮긴다.</summary>
+    public void RecallRegiment(int n)
+    {
+        if (Observer) return;
+        var bats = World.BattalionsOf(Me).Where(r => RegimentOf(r) == n && r.Companies.Count > 0).ToList();
+        var units = bats.SelectMany(r => r.Companies).SelectMany(c => c.Members).Where(u => u.Alive).ToList();
+        if (units.Count == 0 && World.BattalionByNumber(Me, n) is { } fallback)
+        {
+            RecallBattalion(n);
+            return;
+        }
+        if (units.Count == 0) return;
+        bool again = lastGroupKey == n && Now - lastGroupTime < Config.GroupDoubleTapTime;
+        lastGroupKey = n;
+        lastGroupTime = Now;
+        SetSelection(units);
+        if (again && Selection.Count > 0) CenterOnSelection();
+    }
     Company? cardPress;                    // 중대 카드를 누른 채 (클릭인지 끌기인지는 뗄 때 정한다)
     Vector2 cardPressPos;
     /// <summary>끌고 있는 중대 카드 (HUD 가 잔상을 그린다). 문턱을 넘기 전에는 null.</summary>
@@ -299,21 +333,36 @@ public sealed partial class Game : IDisposable
     public List<Unit> SelectedOwnUnits() => !Observer ? OwnUnits() : new List<Unit>();
     public Building? SelectedBuilding => Selection.Count == 1 ? Selection[0] as Building : null;
 
-    /// <summary>현재 선택에 맞는 커맨드 카드 버튼 목록.</summary>
-    public List<CardButton> CommandCard()
+    /// <summary>현재 선택에 맞는 커맨드 카드 버튼 목록 (보이는 쪽만). allPages = 명령 탭의 모든 쪽 버튼 (단축키 처리용, 칸 무관).</summary>
+    public List<CardButton> CommandCard(bool allPages = false)
+    {
+        if (Observer) { CardPages = 1; return new List<CardButton>(); }   // 리플레이 · 관전: 조작 불가
+        if (Tab == CardTab.Combat) { CardPages = 1; return CombatCard(World.Faction(Me)); }
+        var full = BuildUnitCard();
+        if (allPages) return full;
+        var shown = PaginateCard(full, CardPage, out int pages);
+        CardPages = pages;
+        CardPage = Math.Clamp(CardPage, 0, pages - 1);
+        return shown;
+    }
+
+    /// <summary>카드 쪽 (0 = 첫 쪽) · 쪽 수. 버튼이 9칸을 넘치면 쪽당 8개 + 우하단 쪽 넘김 버튼 (T38c: N쪽). UI 전용 — 시뮬 무관.</summary>
+    public int CardPage { get; private set; }
+    public int CardPages { get; private set; } = 1;
+
+    /// <summary>모든 쪽의 명령 버튼 (단축키 처리용 — 안 보이는 쪽의 단축키도 동작해야 한다).</summary>
+    List<CardButton> BuildUnitCard()
     {
         var list = new List<CardButton>();
-        if (Observer) return list;   // 리플레이 · 관전: 조작 불가
         var units = OwnUnits();
         var f = World.Faction(Me);
-        if (Tab == CardTab.Combat) return CombatCard(f);
         if (units.Count > 0)
         {
             foreach (var c in Commands.UnitCommands)
             {
                 if (!CardAvailable(c, units)) continue;
                 bool active = PendingCommand == c.Key || (c.Key == "hold" && units.All(u => u.Order == UnitOrder.Hold)) || (c.Key == "scoutauto" && units.All(u => u.ScoutAuto));
-                list.Add(new CardButton(c.Key, c.Label, c.Tooltip, c.Hotkey.ToString(), Commands.Key(c.Hotkey), c.Col, c.Row, c.Key, true, active));
+                list.Add(new CardButton(c.Key, c.Label, c.Tooltip, KoreanDivision.UI.Bindings.KeyOf(c).ToString(), KoreanDivision.UI.Bindings.RaylibKeyOf(c), c.Col, c.Row, c.Key, true, active));
             }
             // 중대 명령: 돌격 사격 켜기 / 끄기 (기본 꺼짐 — 켜면 공격 이동 중 장교가 판단해 중대 단위로 걸으며 쏜다)
             var inf = units.Where(u => u.Company != null && u.Def.MarchFire && u.Def.Category == "infantry").ToList();
@@ -345,11 +394,24 @@ public sealed partial class Game : IDisposable
                 list.Add(new CardButton("firekind", S.CmdFireKind, S.TipFireKind, "O", KeyboardKey.O, 2, 1, "groundfire", true, FireKindSel != GroundFireKind.Sustained, null, FireKindName(FireKindSel)));
             if (units.Any(u => u.Company != null))
                 list.Add(new CardButton("rally", S.CmdRallyPoint, S.TipRallyPoint, "J", KeyboardKey.Null, 2, 0, "rally", true, PendingCommand == "rally"));
-            ResolveSlots(list);
             return list;
         }
 
         return list;
+    }
+
+    /// <summary>버튼이 9칸에 다 들어가면 그대로 (ResolveSlots), 넘치면 선호 칸 순으로 쪽당 8개 + 우하단 쪽 넘김 버튼 (".", "1/N"). 단축키는 모든 쪽에서 동작한다.</summary>
+    public static List<CardButton> PaginateCard(List<CardButton> full, int page, out int pages)
+    {
+        if (full.Count <= 9) { var one = new List<CardButton>(full); ResolveSlots(one); pages = 1; return one; }
+        pages = (full.Count + 7) / 8;
+        page = Math.Clamp(page, 0, pages - 1);
+        var sorted = full.OrderBy(b => b.Row * 3 + b.Col).ToList();   // 안정 정렬: 같은 칸이면 먼저 온 쪽이 앞
+        var res = new List<CardButton>();
+        for (int i = page * 8, k = 0; i < Math.Min(sorted.Count, page * 8 + 8); i++, k++)
+            res.Add(sorted[i] with { Col = k % 3, Row = k / 3 });
+        res.Add(new CardButton("cardpage", S.CmdCardPage, S.TipCardPage, ".", KeyboardKey.Period, 2, 2, "", true, false, null, $"{page + 1}/{pages}"));
+        return res;
     }
 
     /// <summary>명령 카드 버튼을 보일지: 공격 · 돌격은 선택 중 하나라도 할 수 있으면 (N36 — 비전투 유닛은 대열을 따라 이동, 돌격 못 하는 유닛은 사수), 나머지는 전원이 할 수 있을 때.</summary>
@@ -514,6 +576,7 @@ public sealed partial class Game : IDisposable
         {
             if (CommandBox.Update() is string line) RunConsoleCommand(line);
         }
+        else if (HelpBox.IsOpen) HelpBox.Update(mouse);   // 도움말이 열려 있는 동안 게임 입력은 막힘 (F1 은 HandleGlobalKeys)
         else if (World.Winner != 0) { if (World.Mission != null) HandleMissionOver(); else HandleGameOver(); }
         else if (DeployPhase) UpdateDeploy();   // 미션 배치 단계 (GameMission.cs)
         else if (Input.IsKeyPressed(KeyboardKey.Enter) || Input.IsKeyPressed(KeyboardKey.KpEnter)) CommandBox.Open();
@@ -525,7 +588,7 @@ public sealed partial class Game : IDisposable
         if (!CommandBox.IsOpen)
         {
             HandleGlobalKeys();
-            ScrollCamera(dt);
+            if (!HelpBox.IsOpen) ScrollCamera(dt);
         }
 
         if (replay != null && World.Tick >= replay.EndTick) Paused = true;
@@ -550,6 +613,7 @@ public sealed partial class Game : IDisposable
         }
 
         AutosaveIfDue();
+        BattleAutosave();
         ConsumeWorldEvents();
         Sfx.EndFrame();
         double now = Now;
@@ -795,17 +859,29 @@ public sealed partial class Game : IDisposable
         {
             if (!Input.IsKeyPressed(KeyboardKey.Zero + n) && !Input.IsKeyPressed(KeyboardKey.Kp0 + n)) continue;
             if (Observer) { if (!ctrl && n < World.Factions.Count) SetView(n); }   // 관전: 숫자 = 시점 (0 = 전체)
-            else if (altKey) { if (n > 0) FormCompanyFromSelection(n); }           // Alt+1..9: 중대 편성 (그 대대로)
-            else if (ctrl) { if (n > 0) RenumberBattalion(n); }                     // Ctrl+1..9: 현재 대대 번호 바꾸기
             else if (n == 0) { ShowBatList = !ShowBatList; Sfx.Play("ui_click"); } // 0: 대대 목록
-            else if (!shift) RecallBattalion(n);
+            else if (ctrl && altKey) { FormCompanyFromSelection(n); }              // Ctrl+Alt+1..9: 중대 편성 및 편입
+            else if (ctrl && shift)                                                // Ctrl+Shift+1..9: 현재 대대 연대 소속 변경
+            {
+                if (CurrentBattalion() is { } curBat) SetBattalionRegiment(curBat, n);
+            }
+            else if (ctrl) { RenumberBattalion(n); }                               // Ctrl+1..9: 대대 번호 변경
+            else if (altKey) { RecallBattalion(n); }                               // Alt+1..9: 대대 선택
+            else if (!shift) { RecallRegiment(n); }                                // 1..9: 연대 선택
         }
 
         bool pressedCard = false;
         if (!ctrl && !Observer && Input.IsKeyPressed(KeyboardKey.J) && SelectedCompanies().Count > 0) { PendingCommand = "rally"; Sfx.Play("ui_click"); }   // N79a: 집결 지점 (J — 어느 탭에서든)
         if (!ctrl)
-            foreach (var c in CommandCard())
+        {
+            if (Tab == CardTab.Command && Input.IsKeyPressed(KeyboardKey.Period))   // T38c: 쪽 넘김 (고정 키 — 재지정 불가)
+            {
+                CommandCard();   // 쪽 수 갱신
+                if (CardPages > 1) { CardPage = (CardPage + 1) % CardPages; Sfx.Play("ui_click"); pressedCard = true; }
+            }
+            if (!pressedCard) foreach (var c in Tab == CardTab.Combat ? CommandCard() : CommandCard(true))   // 명령 탭: 모든 쪽의 단축키
                 if (c.Hotkey != KeyboardKey.Null && Input.IsKeyPressed(c.Hotkey)) { Press(c); pressedCard = true; break; }
+        }
         // N32: 참호 돌격 W 는 카드에 칸이 없어도 (보병 중대는 명령 탭이 가득 참) 어느 탭에서나
         if (!ctrl && !pressedCard && !Observer && Defs.Current.Tactics.TrenchAssault.Enabled && Input.IsKeyPressed(KeyboardKey.W) && SelectedCompanies().Count > 0) { Sfx.Play("ui_click"); PressTrenchAssault(); }
     }
@@ -813,6 +889,7 @@ public sealed partial class Game : IDisposable
     /// <summary>게임 종료 화면에서도 동작하는 키.</summary>
     void HandleGlobalKeys()
     {
+        if (Input.IsKeyPressed(KeyboardKey.F1)) HelpBox.Toggle();   // T38b: 도움말 (일시정지 · 종료 화면에서도)
         if (Input.IsKeyPressed(KeyboardKey.F3)) Paused = !Paused;
         if (Input.IsKeyPressed(KeyboardKey.F6)) QuickSave();   // 빠른 저장 (saves/quicksave.kds)
         if (Input.IsKeyPressed(KeyboardKey.F7)) QuickLoad();   // 빠른 불러오기
@@ -864,7 +941,7 @@ public sealed partial class Game : IDisposable
     void AddToSelection(Entity e)
     {
         if (e.Selected) return;
-        if (Selection.Count == 0) { if (Tab != CardTab.Command) Tab = CardTab.Command; Hud.ResetPage(); }   // 새 선택: 명령 탭으로 · 쪽 초기화
+        if (Selection.Count == 0) { if (Tab != CardTab.Command) Tab = CardTab.Command; Hud.ResetPage(); CardPage = 0; }   // 새 선택: 명령 탭으로 · 쪽 초기화
         e.Selected = true;
         Selection.Add(e);
     }
@@ -1216,7 +1293,8 @@ public sealed partial class Game : IDisposable
 
     void SelectListItem(object item, bool add)
     {
-        if (item is Battalion r) SelectBattalion(r);
+        if (item is int regNum) RecallRegiment(regNum);
+        else if (item is Battalion r) SelectBattalion(r);
         else if (item is Company c) SelectCompany(c, add);
     }
 
@@ -1269,6 +1347,7 @@ public sealed partial class Game : IDisposable
     void SetTab(CardTab t)
     {
         Tab = t;
+        CardPage = 0;
         CancelPending();
         Sfx.Play("ui_click");
     }
@@ -1287,6 +1366,7 @@ public sealed partial class Game : IDisposable
         if (key.StartsWith("cb:")) { CombatPress(key); return; }
         switch (key)
         {
+            case "cardpage": CardPage = (CardPage + 1) % Math.Max(1, CardPages); break;   // 카드 쪽 넘기기 (UI 전용)
             case "stop": World.Stop(Me, units); break;
             case "hold": if (ShiftHeld) PlayerOrder(units.Count, () => World.QueueOrder(Me, units, QueuedKind.Hold, Vector2.Zero)); else World.Hold(Me, units); break;   // N74: Shift+사수 = 대기열 끝에 사수
             case "marchfire": World.SetMarchFire(Me, units, !units.Where(u => u.Company != null && u.Def.MarchFire && u.Def.Category == "infantry").All(u => u.Company!.MarchFireOn)); break;   // 돌격 사격 토글 (중대 단위)
@@ -1473,6 +1553,7 @@ public sealed partial class Game : IDisposable
         {
             case "grid": ShowGrid = !ShowGrid; break;
             case "icons": SquadIcons.Enabled = !SquadIcons.Enabled; break;
+            case "speed": speedIndex = (speedIndex + 1) % Speeds.Length; break;
             case "save": QuickSave(); break;
             case "load": QuickLoad(); break;
             case "board": Spectator.Toggle(); break;
@@ -1565,9 +1646,16 @@ public sealed partial class Game : IDisposable
         string joined = string.Join(' ', words);
         if (words.Length >= 3 && words[0] == "after" && long.TryParse(words[1], out long afterTicks)) { deferredConsole.Add((World.Tick + afterTicks, string.Join(' ', words.Skip(2)))); return; }
         if (words.Length >= 2 && !Observer && FormationConsole(words)) return;
+        if (joined == "keys")
+        {
+            var parts = KoreanDivision.UI.Bindings.All().Select(b => $"{b.Key} {b.Text}").ToList();
+            for (int i = 0; i < parts.Count; i += 4) CommandBox.Print(string.Join(" · ", parts.Skip(i).Take(4)));
+            return;
+        }
+        if (joined == "helpui") { HelpBox.Toggle(); return; }
         if (joined == "help" || joined == "?")
         {
-            foreach (var h in new[] { S.ConsoleHelp1, S.ConsoleHelp2, S.ConsoleHelp4, S.ConsoleHelp6, S.ConsoleHelp7, S.ConsoleHelp5 }) CommandBox.Print(h);
+            foreach (var h in new[] { S.ConsoleHelp1, S.ConsoleHelp2, S.ConsoleHelp4, S.ConsoleHelp6, S.ConsoleHelp7, S.ConsoleHelpKeys, S.ConsoleHelp5 }) CommandBox.Print(h);
             return;
         }
         if (words.Length >= 1 && words[0] == "volume")
@@ -1847,7 +1935,7 @@ public sealed partial class Game : IDisposable
         }
         catch (SnapshotException e)
         {
-            ShowNotice(string.Format(S.LoadFailed, e.Message));
+            ShowNotice(string.Format(S.LoadFailed, e.FullMessage));
             return false;
         }
     }
@@ -1862,6 +1950,19 @@ public sealed partial class Game : IDisposable
         if (slot <= autosaveSlot) return;
         autosaveSlot = slot;
         SaveGame(SaveManager.AutosaveName(World.Tick), auto: true);
+    }
+
+    SaveManager.BattleState battleState = SaveManager.BattleState.Initial;
+
+    /// <summary>
+    /// 큰 교전 직전 자동 저장 (미션만): 조용한 시간 (BattleLullTicks, 사격 없음) 뒤에 사격이 한꺼번에 BattleShotMin 발 이상 되면
+    /// 그 틱 경계에서 'autosave_battle' 슬롯 한 개를 덮어쓴다. 월드를 읽기만 한다 (시뮬 결과 무관). 최소 간격 BattleSaveGap.
+    /// 판정은 SaveManager.BattleSaveDue (순수 함수 — 셀프테스트 대상).
+    /// </summary>
+    void BattleAutosave()
+    {
+        if (IsReplay || World.Winner != 0 || World.Mission == null || SaveManager.AutosaveTicks <= 0) return;
+        if (SaveManager.BattleSaveDue(ref battleState, World.Tick, World.Shots.Count)) SaveGame(SaveManager.BattleName, auto: true);
     }
 
     void ConsoleSave(string? name)
@@ -1943,6 +2044,7 @@ public sealed partial class Game : IDisposable
             Ui.Text(perf, Hud.Viewport.X + Hud.Viewport.Width - pm.X - 16, Hud.Viewport.Y + 12, 16, Palette.Accent);
         }
 
+        HelpBox.Draw(mouse);
         if (screenshotPath != null)
         {
             Rlgl.DrawRenderBatchActive();

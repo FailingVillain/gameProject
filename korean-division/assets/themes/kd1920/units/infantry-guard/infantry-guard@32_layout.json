@@ -21,6 +21,10 @@
   "walk_2",
   "walk_3",
   "walk_4",
+  "walk_quick_1",
+  "walk_quick_2",
+  "walk_quick_3",
+  "walk_quick_4",
   "walk_shoulder_1",
   "walk_shoulder_2",
   "walk_shoulder_3",
@@ -81,6 +85,16 @@
     "walk_4"
    ],
    "ms": 130,
+   "shared_fit": false
+  },
+  "walk_quick": {
+   "frames": [
+    "walk_quick_1",
+    "walk_quick_2",
+    "walk_quick_3",
+    "walk_quick_4"
+   ],
+   "ms": 95,
    "shared_fit": false
   },
   "walk_shoulder": {
@@ -291,6 +305,10 @@
     "walk_2",
     "walk_3",
     "walk_4",
+    "walk_quick_1",
+    "walk_quick_2",
+    "walk_quick_3",
+    "walk_quick_4",
     "walk_shoulder_1",
     "walk_shoulder_2",
     "walk_shoulder_3",
@@ -336,7 +354,7 @@
     "dead_c"
    ],
    "size": [
-    1536,
+    1664,
     200
    ]
   }
@@ -362,177 +380,193 @@
    "sheet": "infantry-guard@32.png",
    "col": 4
   },
-  "walk_shoulder_1": {
+  "walk_quick_1": {
    "sheet": "infantry-guard@32.png",
    "col": 5
   },
-  "walk_shoulder_2": {
+  "walk_quick_2": {
    "sheet": "infantry-guard@32.png",
    "col": 6
   },
-  "walk_shoulder_3": {
+  "walk_quick_3": {
    "sheet": "infantry-guard@32.png",
    "col": 7
   },
-  "walk_shoulder_4": {
+  "walk_quick_4": {
    "sheet": "infantry-guard@32.png",
    "col": 8
   },
-  "walk_fire_1": {
+  "walk_shoulder_1": {
    "sheet": "infantry-guard@32.png",
    "col": 9
   },
-  "walk_fire_2": {
+  "walk_shoulder_2": {
    "sheet": "infantry-guard@32.png",
    "col": 10
   },
-  "walk_fire_3": {
+  "walk_shoulder_3": {
    "sheet": "infantry-guard@32.png",
    "col": 11
   },
-  "walk_fire_4": {
+  "walk_shoulder_4": {
    "sheet": "infantry-guard@32.png",
    "col": 12
   },
-  "aim_a": {
+  "walk_fire_1": {
    "sheet": "infantry-guard@32.png",
    "col": 13
   },
-  "fire_a": {
+  "walk_fire_2": {
    "sheet": "infantry-guard@32.png",
    "col": 14
   },
-  "aim_b": {
+  "walk_fire_3": {
    "sheet": "infantry-guard@32.png",
    "col": 15
   },
-  "fire_b": {
+  "walk_fire_4": {
    "sheet": "infantry-guard@32.png",
    "col": 16
   },
-  "aim_c": {
+  "aim_a": {
    "sheet": "infantry-guard@32.png",
    "col": 17
   },
-  "fire_c": {
+  "fire_a": {
    "sheet": "infantry-guard@32.png",
    "col": 18
   },
-  "idle_alt": {
+  "aim_b": {
    "sheet": "infantry-guard@32.png",
    "col": 19
   },
-  "hit": {
+  "fire_b": {
    "sheet": "infantry-guard@32.png",
    "col": 20
   },
-  "fall": {
+  "aim_c": {
    "sheet": "infantry-guard@32.png",
    "col": 21
   },
-  "dead": {
+  "fire_c": {
    "sheet": "infantry-guard@32.png",
    "col": 22
   },
-  "spare": {
+  "idle_alt": {
    "sheet": "infantry-guard@32.png",
    "col": 23
   },
-  "charge_1": {
+  "hit": {
    "sheet": "infantry-guard@32.png",
    "col": 24
   },
-  "charge_2": {
+  "fall": {
    "sheet": "infantry-guard@32.png",
    "col": 25
   },
-  "charge_3": {
+  "dead": {
    "sheet": "infantry-guard@32.png",
    "col": 26
   },
-  "charge_4": {
+  "spare": {
    "sheet": "infantry-guard@32.png",
    "col": 27
   },
-  "melee_1": {
+  "charge_1": {
    "sheet": "infantry-guard@32.png",
    "col": 28
   },
-  "melee_2": {
+  "charge_2": {
    "sheet": "infantry-guard@32.png",
    "col": 29
   },
-  "melee_3": {
+  "charge_3": {
    "sheet": "infantry-guard@32.png",
    "col": 30
   },
-  "meleeb_1": {
+  "charge_4": {
    "sheet": "infantry-guard@32.png",
    "col": 31
   },
-  "meleeb_2": {
+  "melee_1": {
    "sheet": "infantry-guard@32.png",
    "col": 32
   },
-  "idle_lean": {
+  "melee_2": {
    "sheet": "infantry-guard@32.png",
    "col": 33
   },
-  "go_prone": {
+  "melee_3": {
    "sheet": "infantry-guard@32.png",
    "col": 34
   },
-  "aim_prone": {
+  "meleeb_1": {
    "sheet": "infantry-guard@32.png",
    "col": 35
   },
-  "fire_prone": {
+  "meleeb_2": {
    "sheet": "infantry-guard@32.png",
    "col": 36
   },
-  "fixb_1": {
+  "idle_lean": {
    "sheet": "infantry-guard@32.png",
    "col": 37
   },
-  "fixb_2": {
+  "go_prone": {
    "sheet": "infantry-guard@32.png",
    "col": 38
   },
-  "fixb_3": {
+  "aim_prone": {
    "sheet": "infantry-guard@32.png",
    "col": 39
   },
-  "surrender_1": {
+  "fire_prone": {
    "sheet": "infantry-guard@32.png",
    "col": 40
   },
-  "surrender_2": {
+  "fixb_1": {
    "sheet": "infantry-guard@32.png",
    "col": 41
   },
-  "stagger_b": {
+  "fixb_2": {
    "sheet": "infantry-guard@32.png",
    "col": 42
   },
-  "kneel_b": {
+  "fixb_3": {
    "sheet": "infantry-guard@32.png",
    "col": 43
   },
-  "dead_b": {
+  "surrender_1": {
    "sheet": "infantry-guard@32.png",
    "col": 44
   },
-  "stagger_c": {
+  "surrender_2": {
    "sheet": "infantry-guard@32.png",
    "col": 45
   },
-  "slump_c": {
+  "stagger_b": {
    "sheet": "infantry-guard@32.png",
    "col": 46
   },
-  "dead_c": {
+  "kneel_b": {
    "sheet": "infantry-guard@32.png",
    "col": 47
+  },
+  "dead_b": {
+   "sheet": "infantry-guard@32.png",
+   "col": 48
+  },
+  "stagger_c": {
+   "sheet": "infantry-guard@32.png",
+   "col": 49
+  },
+  "slump_c": {
+   "sheet": "infantry-guard@32.png",
+   "col": 50
+  },
+  "dead_c": {
+   "sheet": "infantry-guard@32.png",
+   "col": 51
   }
  },
  "anchors": "infantry-guard@32_anchors.json"

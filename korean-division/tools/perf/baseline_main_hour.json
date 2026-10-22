@@ -1,0 +1,113 @@
+{
+  "format": 1,
+  "label": "main-hour",
+  "commit": "6baacd5",
+  "date": "2026-10-22T16:18:13",
+  "machine": "SEOPYEONG/16c",
+  "ticks": 216000,
+  "players": 16,
+  "checksumRepeatMismatch": 0,
+  "summary": [
+    {
+      "key": "B5000",
+      "scene": "B",
+      "k": 5000,
+      "runs": 1,
+      "meanMs": 0.3942,
+      "p50Ms": 0.2345,
+      "p95Ms": 1.3345,
+      "p99Ms": 2.5064,
+      "maxMs": 47.044,
+      "findTargetMs": 0.0006,
+      "fogMs": 0.0318,
+      "separateMs": 0.066,
+      "allocKbPerTick": 2.7453
+    }
+  ],
+  "runs": [
+    {
+      "scene": "B",
+      "k": 5000,
+      "seed": 1,
+      "rep": 0,
+      "ticks": 216000,
+      "alive": 541,
+      "checksum": "5bbf3e2f6f57fd85",
+      "meanMs": 0.3942,
+      "p50Ms": 0.2345,
+      "p95Ms": 1.3345,
+      "p99Ms": 2.5064,
+      "maxMs": 47.044,
+      "allocKbPerTick": 2.75,
+      "gcPauseMs": 220.6,
+      "phaseMs": {
+        "AI\u002Bcmd\u002Bnav": 0.0264,
+        "hash1": 0.0131,
+        "UpdateUnit": 0.1911,
+        "hash2": 0.0133,
+        "Separate": 0.066,
+        "Terrain": 0.0113,
+        "Bldg\u002BEcon": 0.0347,
+        "RemoveDead": 0.0008,
+        "Fog": 0.0318,
+        "Victory\u002Bprune": 0.0044,
+        "Checksum": 0.0013
+      },
+      "findTargetMs": 0.0006,
+      "fogMs": 0.0318,
+      "probe": {},
+      "liveHeapMb": [
+        {
+          "tick": 0,
+          "mb": 25.38,
+          "alive": 4944
+        },
+        {
+          "tick": 21600,
+          "mb": 39.86,
+          "alive": 2106
+        },
+        {
+          "tick": 43200,
+          "mb": 42.89,
+          "alive": 882
+        },
+        {
+          "tick": 64800,
+          "mb": 43.46,
+          "alive": 611
+        },
+        {
+          "tick": 86400,
+          "mb": 43.67,
+          "alive": 569
+        },
+        {
+          "tick": 108000,
+          "mb": 44.13,
+          "alive": 551
+        },
+        {
+          "tick": 129600,
+          "mb": 44.36,
+          "alive": 549
+        },
+        {
+          "tick": 151200,
+          "mb": 44.72,
+          "alive": 547
+        },
+        {
+          "tick": 172800,
+          "mb": 44.94,
+          "alive": 546
+        },
+        {
+          "tick": 194400,
+          "mb": 45.19,
+          "alive": 543
+        }
+      ]
+    }
+  ]
+}

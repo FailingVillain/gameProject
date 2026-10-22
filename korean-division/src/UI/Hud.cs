@@ -38,12 +38,12 @@ public sealed class Hud : IDisposable
     int multiPage;                 // 다중 선택 정보 패널의 쪽 (0부터)
     const int MultiPageSize = 25;
 
-    static readonly (string Key, string Label)[] TopButtonDefs = { ("board", S.BoardButton), ("save", S.SaveButton), ("load", S.LoadButton), ("pause", S.Pause), ("grid", S.Grid), ("icons", S.SquadIcons), ("quit", S.Quit) };
+    static readonly (string Key, string Label)[] TopButtonDefs = { ("board", S.BoardButton), ("save", S.SaveButton), ("load", S.LoadButton), ("pause", S.Pause), ("speed", S.SpeedShort), ("grid", S.Grid), ("icons", S.SquadIcons), ("quit", S.Quit) };
     /// <summary>이 게임에서 쓰는 상단 버튼 (현황은 관전자만, 메뉴에서 왔으면 종료 = 메뉴로).</summary>
     IEnumerable<(string Key, string Label)> ActiveButtons => TopButtonDefs
         .Where(d => game.Observer || d.Key != "board")
         .Where(d => !(game.IsReplay && d.Key is "save" or "load"))   // 리플레이 재생은 저장 · 불러오기 없음
-        .Select(d => d.Key == "quit" && game.FromMenu ? (d.Key, S.ToMenu) : d);
+        .Select(d => d.Key == "quit" && game.FromMenu ? (d.Key, S.ToMenu) : (d.Key == "speed" ? (d.Key, $"{game.Speed:0.0#}×") : d));
     readonly Dictionary<string, Rectangle> topButtons = new();
     Rectangle restartButton, quitButton;
 
@@ -207,9 +207,9 @@ public sealed class Hud : IDisposable
     bool MergeVisible => !game.Observer && game.SelectedCompanies().Count > 0;
     public bool MergeButtonAt(Vector2 p) => MergeVisible && Ui.Contains(MergeRect, p);
 
-    // ---- 대대 목록 패널 (0 키): 번호 있는 대대 · 번호 없는 대대 · 대대 없는 중대
-    const float ListRowH = 22, ListW = 280;
-    const int ListMaxRows = 14;
+    // ---- 대대 목록 패널 (0 키): 연대 › 대대 › 중대 트리 구조
+    const float ListRowH = 22, ListW = 380;
+    const int ListMaxRows = 18;
     Rectangle listPanel;
 
     List<(Rectangle R, object Item)> BatListRows()
@@ -218,11 +218,30 @@ public sealed class Hud : IDisposable
         if (game.Observer || !game.ShowBatList) return res;
         var w = game.World;
         var items = new List<object>();
-        items.AddRange(w.BattalionsOf(game.Me).Where(r => r.Companies.Count > 0).OrderBy(r => r.Number == 0 ? 100 : r.Number).ThenBy(r => r.Id));
-        items.AddRange(w.CompaniesOf(game.Me).Where(c => c.Battalion == null && c.Members.Count > 0).OrderBy(c => c.Number).ThenBy(c => c.Id));
+
+        // 내 대대들을 연대 번호별로 그룹화
+        var bats = w.BattalionsOf(game.Me).Where(r => r.Companies.Count > 0).ToList();
+        var regGroups = bats.GroupBy(game.RegimentOf).OrderBy(g => g.Key).ToList();
+        foreach (var rg in regGroups)
+        {
+            items.Add(rg.Key); // int: 연대 헤더
+            foreach (var b in rg.OrderBy(b => b.Number == 0 ? 100 : b.Number).ThenBy(b => b.Id))
+            {
+                items.Add(b); // Battalion: 대대
+                foreach (var c in b.Companies.OrderBy(c => c.Number).ThenBy(c => c.Id))
+                {
+                    items.Add(c); // Company: 소속 중대
+                }
+            }
+        }
+
+        // 독립 중대
+        var indeps = w.CompaniesOf(game.Me).Where(c => c.Battalion == null && c.Members.Count > 0).OrderBy(c => c.Number).ThenBy(c => c.Id).ToList();
+        foreach (var c in indeps) items.Add(c);
+
         int rows = Math.Min(items.Count, ListMaxRows);
         float h = 26 + Math.Max(1, rows) * ListRowH + 4;
-        float x = Viewport.X + 8, top = BarY - 6 - h;
+        float x = Viewport.X + 8, top = MathF.Max(TopBar.Height + 4, BarY - 6 - h);
         for (int i = 0; i < rows; i++) res.Add((new Rectangle(x + 4, top + 26 + i * ListRowH, ListW - 8, ListRowH - 2), items[i]));
         listPanel = new Rectangle(x, top, ListW, h);
         return res;
@@ -384,27 +403,52 @@ public sealed class Hud : IDisposable
         foreach (var (r, item) in rows)
         {
             bool hv = Ui.Contains(r, mouse);
-            string text; bool sel;
-            if (item is Battalion reg)
+            string text; bool sel; float ind = 6;
+            if (item is int regNum)
+            {
+                var rBats = game.World.BattalionsOf(game.Me).Where(b => game.RegimentOf(b) == regNum && b.Companies.Count > 0).ToList();
+                var rUnits = rBats.SelectMany(b => b.Companies).SelectMany(c => c.Members).Where(u => u.Alive).ToList();
+                text = $"[{string.Format(S.RegimentName, regNum)}] · {rBats.Count}대대 · {string.Format(S.UnitsShort, rUnits.Count)}";
+                sel = rUnits.Count > 0 && rUnits.All(u => u.Selected);
+                ind = 6;
+            }
+            else if (item is Battalion reg)
             {
                 string nm = reg.Number > 0 ? string.Format(S.BattalionName, reg.Number) : S.BattalionNoNumber;
-                text = $"{nm} · {string.Format(S.BatCount, reg.Companies.Count)} · {string.Format(S.UnitsShort, Strength(reg.Companies))}";
-                sel = reg.Companies.SelectMany(c => c.Members).All(u => u.Selected);
+                var bUnits = reg.Companies.SelectMany(c => c.Members).Where(u => u.Alive).ToList();
+                int ammoSum = 0, ammoMax = 0;
+                foreach (var u in bUnits) { ammoSum += u.Ammo; ammoMax += u.Weapon?.Ammo ?? 0; }
+                int ammoPct = ammoMax > 0 ? (int)MathF.Round(ammoSum * 100f / ammoMax) : 100;
+                text = $"└ {nm} · {string.Format(S.BatCount, reg.Companies.Count)} · {string.Format(S.UnitsShort, bUnits.Count)} · {ammoPct}%";
+                sel = bUnits.Count > 0 && bUnits.All(u => u.Selected);
+                ind = 16;
             }
             else
             {
                 var c = (Company)item;
-                text = $"{string.Format(S.CompanyName, c.Number)} · {string.Format(S.UnitsShort, c.Members.Count)}";
-                sel = c.Members.All(u => u.Selected);
+                int ammoSum = 0, ammoMax = 0;
+                foreach (var u in c.Members.Where(m => m.Alive)) { ammoSum += u.Ammo; ammoMax += u.Weapon?.Ammo ?? 0; }
+                int ammoPct = ammoMax > 0 ? (int)MathF.Round(ammoSum * 100f / ammoMax) : 100;
+                bool wiped = !c.Members.Any(m => m.Alive);   // T27 ③: 전멸 중대는 상태 문구로 표시 (행은 유지)
+                string st = wiped ? S.UnitListWiped
+                    : game.World.ContactTrigger(c) ? S.UnitListEngage
+                    : c.Marching ? S.UnitListMove
+                    : c.Members.Any(u => u.Order == UnitOrder.Hold) ? S.UnitListHold
+                    : S.UnitListIdle;
+                string prefix = c.Battalion != null ? "   · " : "· ";
+                text = $"{prefix}{string.Format(S.CompanyName, c.Number)} · {c.Members.Count}/{c.InitialStrength} · {ammoPct}% · {st}";
+                sel = c.Members.Count > 0 && c.Members.All(u => u.Selected);
+                ind = c.Battalion != null ? 24 : 10;
             }
             Raylib.DrawRectangleRec(r, Palette.Alpha(sel ? Palette.BtnActive : hv ? Palette.BtnHover : Palette.Btn, 220));
-            Ui.Text(text, r.X + (item is Company ? 16 : 6), r.Y + 2, 16, Palette.Text);
+            Ui.Text(text, r.X + ind, r.Y + 2, 14, item is Company wc && !wc.Members.Any(m => m.Alive) ? Palette.TextDim : Palette.Text);
         }
     }
 
     void DrawTopBar(Vector2 mouse)
     {
         Raylib.DrawRectangleRec(TopBar, Palette.TopBar);
+        Paper.Grain(TopBar);
         Raylib.DrawLineEx(new(0, TopBar.Height), new(TopBar.Width, TopBar.Height), 1, Palette.HudTrim);
 
         float y = (TopBar.Height - 16) / 2;
@@ -474,6 +518,7 @@ public sealed class Hud : IDisposable
     void DrawBottom(Vector2 mouse)
     {
         Raylib.DrawRectangleRec(Bottom, Palette.HudBg);
+        Paper.Grain(Bottom);
         Raylib.DrawRectangleRec(new Rectangle(0, Bottom.Y, Bottom.Width, 3), Palette.HudTrim);
 
         Ui.Panel(MinimapPanel, Palette.PanelDark, Palette.PanelBorder);
@@ -831,6 +876,7 @@ public sealed class Hud : IDisposable
             foreach (var (r, dir) in new[] { (pr, -1), (nr, 1) })
             {
                 bool ok = dir < 0 ? multiPage > 0 : multiPage < pages - 1;
+                Ui.RegHit(r, dir < 0 ? "pager-" : "pager+", ok);
                 bool hv = ok && Ui.Contains(r, mouse);
                 Raylib.DrawRectangleRounded(r, 0.2f, 4, !ok ? Palette.PanelDark : hv ? Palette.BtnHover : Palette.Btn);
                 Raylib.DrawRectangleRoundedLinesEx(r, 0.2f, 4, 1, hv ? Palette.Accent : Palette.PanelBorder);
@@ -889,6 +935,7 @@ public sealed class Hud : IDisposable
             {
                 var tr = TabRect(i);
                 bool th = Ui.Contains(tr, mouse), on = (int)game.Tab == i;
+                Ui.RegHit(tr, names[i]);
                 Raylib.DrawRectangleRounded(tr, 0.25f, 4, on ? Palette.BtnActive : th ? Palette.BtnHover : Palette.Btn);
                 Raylib.DrawRectangleRoundedLinesEx(tr, 0.25f, 4, 1, on || th ? Palette.Accent : Palette.PanelBorder);
                 Ui.TextCentered(names[i], tr, 16, Palette.Text);
@@ -901,6 +948,7 @@ public sealed class Hud : IDisposable
         foreach (var c in game.CommandCard())
         {
             var r = SlotRect(c.Col, c.Row);
+            Ui.RegHit(r, "card:" + c.Label);
             bool hover = Ui.Contains(r, mouse);
             if (hover) hovered = c;
             Color fill = c.Active ? Palette.BtnActive : hover ? Palette.BtnHover : Palette.Btn;

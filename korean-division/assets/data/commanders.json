@@ -1,0 +1,60 @@
+{
+  "_doc": "연대장 풀 샘플 (자리표시자 3명, 실제 인물 아님). 필드 설명 = regiment_commanders_template.md. 수치 범위는 임시(0.3 확정). dismissFavorPenalty null = 공통 기본(campaign_economy.json). 빈 문자열/빈 배열은 '해당 없음'.",
+  "version": 1,
+  "commanders": [
+    {
+      "id": "cmd_placeholder_a",
+      "name": "가나다",
+      "rank": "정령",
+      "origin": "평양 · 평양군관학교",
+      "school": "평양",
+      "traits": ["iron_wall", "quartermaster"],
+      "availability": { "fromMission": "start", "requireEvents": [], "requireFlags": [], "until": "" },
+      "hire": { "cost": 0, "condition": "", "minRegiments": 1 },
+      "unfireable": false,
+      "unfireableNote": "",
+      "rehirable": true,
+      "dismissFavorPenalty": null,
+      "bio": "(약력 3~8줄을 여기에 적는다. 줄바꿈은 \\n)",
+      "favor": { "initial": 30, "likes": ["수비", "인명보존"], "dislikes": ["속전속결"] },
+      "battleSummary": "방어선을 지키는 노장, 낭비를 싫어한다",
+      "portrait": "placeholder_a.png"
+    },
+    {
+      "id": "cmd_placeholder_b",
+      "name": "라마바",
+      "rank": "부령",
+      "origin": "(미정)",
+      "school": "독일",
+      "traits": ["assault_spirit"],
+      "availability": { "fromMission": "1-1", "requireEvents": ["(이벤트 id)"], "requireFlags": [], "until": "" },
+      "hire": { "cost": 2, "condition": "연대 2개 이상 해금", "minRegiments": 2 },
+      "unfireable": false,
+      "unfireableNote": "",
+      "rehirable": true,
+      "dismissFavorPenalty": 3,
+      "bio": "",
+      "favor": { "initial": 20, "likes": ["공세", "속전속결"], "dislikes": ["수비"] },
+      "battleSummary": "(한 줄)",
+      "portrait": ""
+    },
+    {
+      "id": "cmd_placeholder_c",
+      "name": "사아자",
+      "rank": "정령",
+      "origin": "(미정)",
+      "school": "없음",
+      "traits": ["caring", "veteran", "gunner"],
+      "availability": { "fromMission": "start", "requireEvents": [], "requireFlags": ["(플래그)"], "until": "(사라지는 사건 id)" },
+      "hire": { "cost": 0, "condition": "", "minRegiments": 1 },
+      "unfireable": true,
+      "unfireableNote": "보호 인물이라 해임할 수 없다. (사유 문구 예시)",
+      "rehirable": false,
+      "dismissFavorPenalty": 0,
+      "bio": "",
+      "favor": { "initial": 50, "likes": ["인명보존", "민간보호"], "dislikes": ["포로엄격"] },
+      "battleSummary": "(한 줄)",
+      "portrait": ""
+    }
+  ]
+}
