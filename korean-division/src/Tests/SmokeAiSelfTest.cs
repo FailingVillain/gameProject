@@ -7,7 +7,7 @@ namespace KoreanDivision.Tests;
 
 /// <summary>
 /// T32b 전술 AI 연막 수류탄 (TacticalAi.Smoke.cs · TrenchAssault.cs TaSmokeHook): 자료 키 · 기본 꺼짐 · 개활 횡단 투척 · 엄폐 지형 무투척 · 사격 아래 투척 ·
-/// 연막 0 무동작 · 쿨다운 · 키 꺼짐 무명령 · 참호 돌격 smokeHook (Ai 플래그만) · 리플레이 왕복 (IsAi false 여도 일치). 창 없이. 단독 KD_SELFTEST_ONLY=smokeai.
+/// 연막 0 무동작 · 쿨다운 · 키 꺼짐 무명령 · 참호 돌격 smokeHook (Ai 플래그만) · 리플레이 왕복 (재생 쪽에 컨트롤러 없음, IsAi 는 기록 쪽과 같게 — 체크섬 반영 값). 창 없이. 단독 KD_SELFTEST_ONLY=smokeai.
 /// </summary>
 public static class SmokeAiSelfTest
 {
@@ -117,16 +117,16 @@ public static class SmokeAiSelfTest
         check(r.Batches <= 1 || r.MinGap >= cd, $"쿨다운: 투척 묶음 사이 최소 {(r.Batches <= 1 ? 0 : r.MinGap / 60.0):0.0}초 ≥ {defs.Tactics.BreachAi.SmokeCooldownSec}초 (묶음 {r.Batches})");
         int perBatch = r.Batches > 0 ? r.Log.Where(k => k.Tick >= r.T0 && k.Command is ThrowSmokeCommand { Faction: 1 }).GroupBy(k => k.Tick).Max(g => g.Count()) : 0;
         check(perBatch <= defs.Tactics.BreachAi.SmokeMaxPerCompany, $"한 번에 던지는 수 ≤ smokeMaxPerCompany: 최대 {perBatch}");
-        // 리플레이: 같은 시작 + 기록된 명령만 (AI 없음, IsAi false) → 같은 체크섬
+        // 리플레이: 같은 시작 + 기록된 명령만 (컨트롤러 없음; IsAi 는 WorldChecksum 에 들어가므로 기록 쪽과 동일하게 세력 1 = true) → 같은 체크섬
         var (w1, _, _) = Setup(seed, false);
         w1.RecordCommands = false;
-        foreach (var f in w1.Factions) f.IsAi = false;
+        w1.Faction(1).IsAi = true;   // 기록 쪽 Go() 와 같게 (AF1: IsAi 체크섬 반영)
         long t0 = w1.Tick;
         var byTick = r.Log.Where(k => k.Tick >= t0).GroupBy(k => k.Tick).ToDictionary(g => g.Key, g => g.Select(k => JsonSerializer.Deserialize<GameCommand>(JsonSerializer.Serialize(k.Command, CommandJson.Options), CommandJson.Options)!).ToArray());
         w1.CommandFeed = t => byTick.TryGetValue(t, out var l) ? l : Array.Empty<GameCommand>();
         while (w1.Tick < r.W.Tick) w1.Step();
         check(w1.ComputeChecksum() == r.W.ComputeChecksum() && w1.Stats.SmokesSpawned == r.Smokes,
-            $"리플레이 왕복 (켠 상태 90초, 재생 쪽 AI 없음 · IsAi false): 체크섬 일치 {w1.ComputeChecksum() == r.W.ComputeChecksum()} · 연막 {w1.Stats.SmokesSpawned}/{r.Smokes}");
+            $"리플레이 왕복 (켠 상태 90초, 재생 쪽 컨트롤러 없음 · IsAi 는 기록 쪽과 같음): 체크섬 일치 {w1.ComputeChecksum() == r.W.ComputeChecksum()} · 연막 {w1.Stats.SmokesSpawned}/{r.Smokes}");
     }
 
     static void TestCover(int seed)
