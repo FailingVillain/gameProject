@@ -85,6 +85,11 @@ public sealed class ReplayFile
         JsonSerializer.Serialize(fs, this, CommandJson.Options);
     }
 
+    /// <summary>형식 번호가 다른 리플레이의 거부 사유 + 안내 (SAVE_COMPAT_POLICY §4).</summary>
+    public static string ReplayRejectMsg(int fmt) =>
+        string.Format(fmt < FormatVersion ? SnapMsg.ReplayOldFormat : SnapMsg.ReplayNewFormat, fmt, FormatVersion)
+        + " " + string.Format(SnapMsg.ReplayVersionNote, fmt);
+
     /// <summary>읽을 수 없는 리플레이 (옛/새 형식 · 손상). 메시지는 사용자에게 그대로 보인다.</summary>
     public static ReplayFile Load(string path)
     {
@@ -97,10 +102,10 @@ public sealed class ReplayFile
                 if (doc.RootElement.ValueKind != JsonValueKind.Object) throw new InvalidDataException(SnapMsg.ReplayBroken);
                 foreach (var p in doc.RootElement.EnumerateObject())
                     if (string.Equals(p.Name, nameof(Format), StringComparison.OrdinalIgnoreCase) && p.Value.ValueKind == JsonValueKind.Number && p.Value.TryGetInt32(out int fmt) && fmt != FormatVersion)
-                        throw ReplayVersionException.Make(string.Format(fmt < FormatVersion ? SnapMsg.ReplayOldFormat : SnapMsg.ReplayNewFormat, fmt, FormatVersion));
+                        throw ReplayVersionException.Make(ReplayRejectMsg(fmt));
             }
             var r = JsonSerializer.Deserialize<ReplayFile>(bytes, CommandJson.Options) ?? throw new InvalidDataException(SnapMsg.ReplayBroken);
-            if (r.Format != FormatVersion) throw ReplayVersionException.Make(string.Format(r.Format < FormatVersion ? SnapMsg.ReplayOldFormat : SnapMsg.ReplayNewFormat, r.Format, FormatVersion));
+            if (r.Format != FormatVersion) throw ReplayVersionException.Make(ReplayRejectMsg(r.Format));
             return r;
         }
         catch (JsonException e) { throw new InvalidDataException(SnapMsg.ReplayBroken, e); }

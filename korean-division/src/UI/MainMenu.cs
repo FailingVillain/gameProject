@@ -704,12 +704,18 @@ public sealed class MainMenu
             }
             else
             {
-                string kind = e.Error != null && e.Error.StartsWith("저장 형식") ? S.SaveIncompatible : S.SaveUnreadable;
+                string kind = e.Note != null ? S.SaveIncompatible : S.SaveUnreadable;
                 Ui.Text(kind, x + Ui.Measure(e.Name, 16).X + 14, row.Y + 7, 16, Palette.HpLow);
                 string msg = e.Error ?? "";
                 float maxW = del.X - x - 24;
                 while (msg.Length > 4 && Ui.Measure(msg, 16).X > maxW) msg = msg[..^4] + "...";
                 Ui.Text(msg, x, row.Y + 29, 16, Palette.TextDim);
+                if (e.Note != null)   // 저장 호환 정책: 무엇이 안전한지 / 무엇을 하면 되는지 한 줄 (회색 행 + 사유 아래)
+                {
+                    string note = e.Note;
+                    while (note.Length > 4 && Ui.Measure(note, 14).X > maxW) note = note[..^4] + "...";
+                    Ui.Text(note, x, row.Y + 46, 14, Palette.Warning);
+                }
             }
             bool armed = deleteArm == e.Path;
             Ui.Button(del, armed ? S.SaveDeleteSure : S.SaveDelete, overDel, armed);
@@ -765,7 +771,7 @@ public sealed class MainMenu
         catch (SnapshotException ex)
         {
             loadError = ex.Message;
-            saves[index] = e with { Header = null, Error = ex.Message };
+            saves[index] = e with { Header = null, Error = ex.Message, Note = ex.Note };
         }
     }
 }

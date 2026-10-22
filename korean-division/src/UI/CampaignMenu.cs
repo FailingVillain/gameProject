@@ -42,6 +42,7 @@ public sealed partial class CampaignMenu
     // 저장 슬롯 창 · 저장 실패 재시도 (T19a)
     bool slotsOpen;
     string? slotArm, slotNotice;
+    string? migratedNote; double migratedUntil;   // T49a: 캠페인 파일을 새 스키마로 처음 옮겼을 때 한 번 보이는 알림
     CampaignSaves.Info[] slotInfo = Array.Empty<CampaignSaves.Info>();   // 0..8 = 슬롯 1~9, 9 = 작전 직전, 10 = 정산 직후
     Func<bool>? saveRetry;      // null 이 아니면 저장 실패 알림 (다시 시도할 저장)
     Action? saveThen;           // 저장 성공 뒤 이어서 할 일 (출격 · 불러오기 완료)
@@ -214,6 +215,9 @@ public sealed partial class CampaignMenu
             OpenPreOp(targetMissionId);
         }
 
+        if (CampaignState.TakeMigrationNotice() is { } mn) { migratedNote = mn; migratedUntil = Raylib.GetTime() + 12; }
+        if (migratedNote != null && Raylib.GetTime() > migratedUntil) migratedNote = null;
+        if (migratedNote != null && loadError == null) Ui.Text(migratedNote, panel.X + 160, panel.Y + panel.Height - 30, 16, Palette.HpGood);
         if (loadError != null)   // 저장을 못 읽었다: 조용히 새 캠페인으로 덮어쓰지 않도록 사유를 보인다 (저장 호환)
         {
             Ui.Text(loadError, panel.X + 160, panel.Y + panel.Height - 52, 16, Palette.Warning);
@@ -1013,6 +1017,7 @@ public sealed partial class CampaignMenu
         float x = modal.X + 24, y = modal.Y + 16;
         Ui.Text(S.CmSlotsTitle, x, y, 20, Palette.Accent); y += 34;
 
+        string? hoverReason = null;
         int rows = CampaignSaves.SlotCount + 2;
         float rowH = MathF.Min(34, (modal.Height - 130) / rows);
         for (int row = 0; row < rows && row < slotInfo.Length; row++)
@@ -1020,11 +1025,19 @@ public sealed partial class CampaignMenu
             var info = slotInfo[row];
             bool auto = row >= CampaignSaves.SlotCount;
             float ry = y + row * rowH + (auto ? 10 : 0);
-            Ui.Text(SlotLabelOf(row), x, ry + 6, 15, auto ? Palette.Accent : Palette.Text);
+            bool rejected = info.Error != null;   // T49a: 못 여는 칸 = 회색 행 + 흐린 이름 + 사유 (버튼 앞에서 줄이고, 전체 사유는 마우스를 올리면 아래에)
+            float descX = x + 200, descMaxW = modal.X + modal.Width - 24 - 110 - 118 - 12 - descX;
+            if (rejected) Raylib.DrawRectangleRounded(new Rectangle(x - 8, ry, modal.Width - 32, rowH - 4), 0.2f, 4, Palette.Alpha(Palette.TextDim, 30));
+            Ui.Text(SlotLabelOf(row), x, ry + 6, 15, rejected ? Palette.TextDim : auto ? Palette.Accent : Palette.Text);
             string desc = !info.Exists ? S.CmSlotEmpty
-                : info.Error != null ? string.Format(S.CmSlotBroken, info.Error)
+                : rejected ? string.Format(S.CmSlotBroken, info.Error)
                 : string.Format(S.CmSlotSummary, info.SavedAt, info.NextName, info.Completed, info.Supply);
-            Ui.Text(desc, x + 200, ry + 7, 13, info.Exists && info.Error == null ? Palette.TextDim : info.Error != null ? Palette.Warning : Palette.TextDim);
+            if (rejected)
+            {
+                if (Ui.Contains(new Rectangle(x - 8, ry, descX + descMaxW - x + 8, rowH - 4), mouse)) hoverReason = desc;
+                while (desc.Length > 4 && Ui.Measure(desc, 13).X > descMaxW) desc = desc[..^4] + "...";
+            }
+            Ui.Text(desc, descX, ry + 7, 13, rejected ? Palette.Warning : Palette.TextDim);
 
             float bx = modal.X + modal.Width - 24 - 110;
             string loadKey = "load" + row, saveKey = "save" + row;
@@ -1051,6 +1064,7 @@ public sealed partial class CampaignMenu
         }
 
         float by = modal.Y + modal.Height - 50;
+        if (hoverReason != null) { string hr = hoverReason; while (hr.Length > 4 && Ui.Measure(hr, 13).X > modal.Width - 48) hr = hr[..^4] + "..."; Ui.Text(hr, x, by - 46, 13, Palette.Warning); }
         if (loadError != null) Ui.Text(S.CmSlotNoSaveBroken, x, by - 26, 13, Palette.Warning);
         else if (slotInfo.Any(i => i.Error != null)) Ui.Text(S.CmSlotBrokenKept, x, by - 26, 13, Palette.Warning);
         if (slotNotice != null) Ui.Text(slotNotice, x, by + 10, 14, Palette.HpGood);

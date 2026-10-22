@@ -7,6 +7,10 @@ namespace KoreanDivision.Core;
 public sealed class SnapshotException : Exception
 {
     public SnapshotException(string message, Exception? inner = null) : base(message, inner) { }
+    /// <summary>형식 번호 거부일 때 사용자에게 함께 보일 안내 한 줄 (SnapMsg.OldFormatNote / NewFormatNote). 아니면 null.</summary>
+    public string? Note { get; init; }
+    /// <summary>메시지 + 안내 (한 줄로 합쳐 알림 · 콘솔에 쓴다).</summary>
+    public string FullMessage => Note == null ? Message : Message + " " + Note;
 }
 
 /// <summary>스냅샷 본문 쓰기: 7비트 가변 정수 + 부동소수는 비트 그대로 (결정적).</summary>
