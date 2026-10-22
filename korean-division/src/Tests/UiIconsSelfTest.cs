@@ -264,7 +264,7 @@ public static class UiIconsSelfTest
             File.WriteAllText(tmp, "{\"Overlay\":\" DETAILED \"}"); KoreanDivision.UI.UserSettings.Load();
             check(KoreanDivision.UI.UserSettings.Overlay == D, "대소문자 · 공백 관대");
             File.WriteAllText(tmp, "{\"Overlay\":5}"); KoreanDivision.UI.UserSettings.Overlay = D; KoreanDivision.UI.UserSettings.Load();
-            check(KoreanDivision.UI.UserSettings.Overlay == D, "형식이 틀린 파일은 무시 (현재 값 유지, 예외 없음)");
+            check(KoreanDivision.UI.UserSettings.Overlay == C, "형식이 틀린 값은 기본값 간결 (T49 관대한 읽기: 필드별 폴백, 예외 없음)");
             check(KoreanDivision.UI.UserSettings.NextOverlay(C) == N && KoreanDivision.UI.UserSettings.NextOverlay(N) == D && KoreanDivision.UI.UserSettings.NextOverlay(D) == C, "U 키 순환 간결 → 보통 → 상세 → 간결");
             check(KoreanDivision.UI.Bindings.Extra.Any(e => e.Key == "U") && KoreanDivision.UI.Bindings.Conflict("move", 'U') != null, "U 는 도움말 표에 있고 카드 키 재지정 대상에서 제외");
         }
