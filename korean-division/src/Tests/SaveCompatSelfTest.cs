@@ -137,6 +137,7 @@ public static class SaveCompatSelfTest
         CampaignPromotionSelfTest.Run(check);   // T42b 진급 후보 · 적용 (저장 v5 · 후보 · 정원 · 이월)
         CampaignPrisonersSelfTest.Run(check);   // T42c 포로 장부 · 송환/수용 (저장 v6 · 정산 · 처리)
         CampaignScheduleSelfTest.Run(check);   // T42d 일정 · 연표 (저장 v7 · 일수 · 이벤트 기록 · 표시)
+        CampaignBriefingSelfTest.Run(check);   // TC-A 브리핑 정보 3단계 (표시 전용 · 저장 왕복)
         CommanderDataSelfTest.Run(check);   // T48a 연대장 데이터 · 로더 · 저장 v8 · 풀 동기화
         CommanderFavorSelfTest.Run(check);   // T48c 연대장 호감 · 해임 · 태그 · 단계 · 규칙 JSON
         TolerantReadSelfTest.Run(check);   // T49b 설정 / 사용자 작성 지휘관 JSON 관대한 읽기
