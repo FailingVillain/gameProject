@@ -1,0 +1,29 @@
+// C1E1 안동 점령전 — 에피소드 그래프 (구조만, g1). 형식: docs/C1E1_EPISODE_SCHEMA.md
+// 흐름 (spec_c1e1 v0.2 · 계획 §1.2): EV1 → CH1 → IL1 → BT1 → SELECT x2 (SK 0~2) → CH2 → EV2 → IL2 → OP1 → D14 → EV3
+// 결정 내용 · 서사 · 변수 증감은 d1/TC-E 몫 — 여기의 decisions 는 위치 표시용.
+{
+  "id": "c1e1",
+  "dayCap": 7,
+  "start": "EV1",
+  "nodes": [
+    { "id": "EV1", "kind": "EV", "decisions": ["D01"], "next": "CH1" },
+    { "id": "CH1", "kind": "CH", "decisions": ["D02"], "next": "IL1" },
+    { "id": "IL1", "kind": "IL", "next": "BT1" },
+    { "id": "BT1", "kind": "BT", "decisions": ["D03", "D04"], "mission": "c1e1_bt1", "days": 1, "onLose": "retry", "next": "SEL1" },
+    { "id": "SEL1", "kind": "SELECT", "decisions": ["D05"], "options": ["SK1", "SK2", "SK3", "SK4"], "next": "SEL2" },
+    { "id": "SEL2", "kind": "SELECT", "decisions": ["D06"], "options": ["SK1", "SK2", "SK3", "SK4"], "next": "CH2" },
+    { "id": "SK1", "kind": "SK", "mission": "c1e1_sk1", "days": 1, "onLose": "retryOrFail" },
+    { "id": "SK2", "kind": "SK", "decisions": ["D07"], "mission": "c1e1_sk2", "days": 1, "onLose": "retryOrFail" },
+    { "id": "SK3", "kind": "SK", "mission": "c1e1_sk3", "days": 1, "onLose": "retryOrFail" },
+    { "id": "SK4", "kind": "SK", "mission": "c1e1_sk4", "days": 1, "onLose": "retryOrFail" },
+    { "id": "CH2", "kind": "CH", "decisions": ["D09"], "next": "EV2" },
+    { "id": "EV2", "kind": "EV", "decisions": ["D10"], "deadline": { "follow": 5, "delay": 6, "persuadeOk": 7, "persuadeFail": 5 }, "next": "IL2" },
+    { "id": "IL2", "kind": "IL", "decisions": ["D16"], "waitDays": 1, "next": "OP1" },
+    { "id": "OP1", "kind": "OP", "decisions": ["D11", "D12", "D13", "D15"], "variants": [
+        { "key": "assault", "mission": "c1e1_op1_assault", "days": 2 },
+        { "key": "siege", "mission": "c1e1_op1_siege", "days": 4 }
+      ], "checkDeadline": true, "onLose": "retry", "next": "D14" },
+    { "id": "D14", "kind": "REPORT", "decisions": ["D14"], "next": "EV3" },
+    { "id": "EV3", "kind": "EV", "next": "" }
+  ]
+}

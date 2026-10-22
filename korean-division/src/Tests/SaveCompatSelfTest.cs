@@ -149,6 +149,7 @@ public static class SaveCompatSelfTest
         CommanderFavorSelfTest.Run(check);   // T48c 연대장 호감 · 해임 · 태그 · 단계 · 규칙 JSON
         TolerantReadSelfTest.Run(check);   // T49b 설정 / 사용자 작성 지휘관 JSON 관대한 읽기
         OfficerIdentitySelfTest.Run(check);   // T48b1 장교 신원 키 · 주입 · 전사/부상 · 저장 v9
+        CampaignEpisodeSelfTest.Run(check);   // C1E1-g1 에피소드 그래프 · R1 표 · SELECT · 재도전 복원 · 저장 v12
         CommanderPoolSelfTest.Run(check);   // T48b2 기용/해임 · 배정 · 참모 효과 · 옛 저장 v3~v9
         CampaignFundsSelfTest.Run(check);   // TC-D 자금 · 외인 슬롯 · 통제 한도 · 가용 보급 (저장 v11)
         CampaignHomeViewsSelfTest.Run(check);   // T38f 읽기 전용 탭 (기록 · 장비 · 편제) 표시 자료
