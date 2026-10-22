@@ -1,0 +1,36 @@
+# 되돌리기 / 다시 / 지우개. 전부 되돌리면 새 문서와 같은 해시.
+new 64 64
+hash
+expect 885FB12BF2324950   # 새 64x64 문서
+tool rect
+terrain water
+drag 10 10 30 20
+tool circle
+terrain rock
+drag 40 40 46 40
+tool line
+terrain trench
+drag 5 55 58 55
+assert paint=3 undo=3 dirty=1
+key ctrl+z
+assert paint=2 undo=2
+button undo
+assert paint=1
+key ctrl+z
+assert paint=0 undo=0 dirty=0 t(15,15)=grass
+expect 885FB12BF2324950   # 전부 되돌리면 원본 해시
+key ctrl+z
+assert undo=0
+key ctrl+y
+button redo
+assert paint=2 t(15,15)=water t(43,40)=rock
+tool eraser
+drag 10 10 12 10
+assert t(11,10)=grass t(13,10)=water
+tool rect
+terrain sand
+rdrag 14 14 16 14
+assert t(15,14)=grass
+shot undo.png
+hash
+expect FE68D5A1E76F3721

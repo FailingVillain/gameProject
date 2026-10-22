@@ -1,0 +1,33 @@
+# 사각 / 원 / 선 / 채움 / 고지. 한 획 = 되돌리기 한 번.
+new 64 64
+tool rect
+terrain sand
+drag 4 4 20 12
+assert t(4,4)=sand t(20,12)=sand t(21,12)=grass t(12,8)=sand paint=1
+tool circle
+terrain forest
+drag 40 30 46 30
+assert t(40,30)=forest t(46,30)=forest t(47,30)=grass t(40,36)=forest t(46,34)=grass paint=2
+tool line
+terrain dirt
+size 2
+drag 2 60 60 50
+assert t(2,60)=dirt t(60,50)=dirt paint=3
+size 1
+tool fill
+terrain rock
+click 12 8
+assert t(12,8)=rock t(4,4)=rock t(3,4)=grass undo=4
+terrain high
+tool rect
+drag 24 20 34 28
+assert h(24,20)=1 h(34,28)=1 h(35,28)=0 t(30,24)=grass
+key h
+assert high=on
+key g
+assert grid=on
+key ctrl+s   # 저장 (게임 --map 비교용)
+assert dirty=0
+shot shapes.png
+hash
+expect 9B8A3B6EAE0D67C2

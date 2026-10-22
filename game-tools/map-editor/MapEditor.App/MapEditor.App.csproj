@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- T33b: map editor window (Raylib). Separate tool; the game csproj is a read-only reference (renderer/theme/fonts are reused, not copied). -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>MapEditor.App</RootNamespace>
+    <AssemblyName>MapEditor</AssemblyName>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <StartupObject>MapEditor.App.EditorMain</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MapEditor.Model\MapEditor.Model.csproj" />
+    <ProjectReference Include="..\..\..\korean-division\KoreanDivision.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="scripts\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>
