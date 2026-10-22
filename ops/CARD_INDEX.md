@@ -106,6 +106,36 @@
 | T44 | 미션 전수 동작 스모크 | 0.2 | running (발주됨, dirty 3) | kd/t44-smoke @1c4036d | kd-develop/kd-t44 | main | spec/cards-t42 : ? (카드 파일명 확인 필요) |
 | T45 | 메뉴 숨김 (플레이 버튼 DevMenu 뒤·AI vs AI 미션 관전 탭) | 0.2 | wip-ready (로그 14:0x) | kd/t45-menu-hide @88735b1 | kd-develop/kd-t45 | main | ? |
 | T46 | = T38c (명령 카드 쪽 나눔, kd/t46-card-overflow) | 0.2 | wip-ready | kd/t46-card-overflow @54e8a54 | kd-develop/kd-t46 | wip/breach2 | = T38c 행 참조 |
+| TC-A | 브리핑 규모 분리 + 정보 3단계 (C1E1) | 0.2 | queued | kd/c1e1-… (미발주) | - | 없음(base t42d) | spec/cards-c1e1 : korean-division/tasks/TC-A-*.md |
+| TC-B | SK2 경보 상태 (C1E1) | 0.2 | queued | kd/c1e1-… (미발주) | - | 없음(base merge/0.2) | spec/cards-c1e1 : korean-division/tasks/TC-B-*.md |
+| TC-C | 이벤트 중대 명령 주입 + 잠금 D15 (C1E1) | 0.2 | queued | kd/c1e1-… (미발주) | - | 없음(base merge/0.2) | spec/cards-c1e1 : korean-division/tasks/TC-C-*.md |
+| TC-D | funds · 외인 슬롯 · 통제 한도 · 가용 보급 (C1E1) | 0.2 | queued | kd/c1e1-… (미발주) | - | t42d | spec/cards-c1e1 : korean-division/tasks/TC-D-*.md |
+| TC-E | favor.* · 변수 레지스트리 · 결정 런타임 (C1E1) | 0.2 | queued | kd/c1e1-… (미발주) | - | TC-D | spec/cards-c1e1 : korean-division/tasks/TC-E-*.md |
+| TC-F | 미션 데이터 변형 · SK 플래그 · BT1 이탈 · pow.bandit (C1E1) | 0.2 | queued | kd/c1e1-… (미발주) | - | TC-D · TC-E | spec/cards-c1e1 : korean-division/tasks/TC-F-*.md |
+| TC-G | 일본 철도 부속지 진입/사격 금지 (C1E1) | 0.2 | queued | kd/c1e1-… (미발주) | - | 없음(base merge/0.2) | spec/cards-c1e1 : korean-division/tasks/TC-G-*.md |
+| C1E1-m1 | MAP-A 지도 생성 (medium) | 0.2 | queued | kd/c1e1-… (미발주) | - | 없음 | spec/cards-c1e1 : korean-division/tasks/C1E1-m1-*.md |
+| C1E1-m2 | MAP-B 지도 생성 (large) | 0.2 | queued | kd/c1e1-… (미발주) | - | 없음 | spec/cards-c1e1 : korean-division/tasks/C1E1-m2-*.md |
+| C1E1-u1 | 유닛/무기/세력 점검 (보고서) | 0.2 | queued | kd/c1e1-… (미발주) | - | 없음 | spec/cards-c1e1 : korean-division/tasks/C1E1-u1-*.md |
+| C1E1-g1 | 에피소드 그래프 런타임 | 0.2 | queued | kd/c1e1-… (미발주) | - | 없음(base t42d) | spec/cards-c1e1 : korean-division/tasks/C1E1-g1-*.md |
+| C1E1-g2 | 에피소드 화면 UI | 0.2 | queued | kd/c1e1-… (미발주) | - | g1 TC-D TC-E | spec/cards-c1e1 : korean-division/tasks/C1E1-g2-*.md |
+| C1E1-g3 | 미션 이벤트 행동 확장 | 0.2 | queued | kd/c1e1-… (미발주) | - | TC-E | spec/cards-c1e1 : korean-division/tasks/C1E1-g3-*.md |
+| C1E1-g4 | 목표 확장 (항복/N점/losses 변수) | 0.2 | queued | kd/c1e1-… (미발주) | - | 없음(base merge/0.2) | spec/cards-c1e1 : korean-division/tasks/C1E1-g4-*.md |
+| C1E1-g5 | 피난민 비전투 유닛 | 0.2 | queued | kd/c1e1-… (미발주) | - | u1 | spec/cards-c1e1 : korean-division/tasks/C1E1-g5-*.md |
+| C1E1-g6 | unlock.* 편성 해금 | 0.2 | queued | kd/c1e1-… (미발주) | - | TC-D | spec/cards-c1e1 : korean-division/tasks/C1E1-g6-*.md |
+| C1E1-d1 | 결정 16개·노드 데이터 JSON | 0.2 | queued | kd/c1e1-… (미발주) | - | g1 TC-E | spec/cards-c1e1 : korean-division/tasks/C1E1-d1-*.md |
+| C1E1-d2 | E1 시작 상태 + 경제 상수 | 0.2 | queued | kd/c1e1-… (미발주) | - | TC-D | spec/cards-c1e1 : korean-division/tasks/C1E1-d2-*.md |
+| C1E1-s1 | BT1 미션 JSON | 0.2 | queued | kd/c1e1-… (미발주) | - | m1 u1 | spec/cards-c1e1 : korean-division/tasks/C1E1-s1-*.md |
+| C1E1-s2 | SK1 미션 JSON | 0.2 | queued | kd/c1e1-… (미발주) | - | m1 u1 | spec/cards-c1e1 : korean-division/tasks/C1E1-s2-*.md |
+| C1E1-s3 | SK2 미션 JSON | 0.2 | queued | kd/c1e1-… (미발주) | - | m1 u1 | spec/cards-c1e1 : korean-division/tasks/C1E1-s3-*.md |
+| C1E1-s4 | SK3 미션 JSON | 0.2 | queued | kd/c1e1-… (미발주) | - | m2 u1 g5 | spec/cards-c1e1 : korean-division/tasks/C1E1-s4-*.md |
+| C1E1-s5 | SK4 미션 JSON | 0.2 | queued | kd/c1e1-… (미발주) | - | m2 u1 | spec/cards-c1e1 : korean-division/tasks/C1E1-s5-*.md |
+| C1E1-s6 | OP1 강공 미션 JSON | 0.2 | queued | kd/c1e1-… (미발주) | - | m2 u1 | spec/cards-c1e1 : korean-division/tasks/C1E1-s6-*.md |
+| C1E1-s7 | OP1 포위 미션 JSON | 0.2 | queued | kd/c1e1-… (미발주) | - | s6 | spec/cards-c1e1 : korean-division/tasks/C1E1-s7-*.md |
+| C1E1-v1 | 변형 데이터 적용 | 0.2 | queued | kd/c1e1-… (미발주) | - | s1~s7 TC-F TC-A | spec/cards-c1e1 : korean-division/tasks/C1E1-v1-*.md |
+| C1E1-t1 | 기능 문구 (서사 키만) | 0.2 | queued | kd/c1e1-… (미발주) | - | d1 s* | spec/cards-c1e1 : korean-division/tasks/C1E1-t1-*.md |
+| C1E1-p1 | VIP 포트레이트 자리표시 (선택) | 0.2 | queued | kd/c1e1-… (미발주) | - | Q4 | spec/cards-c1e1 : korean-division/tasks/C1E1-p1-*.md |
+| C1E1-q1 | 종단 시험 S1~S4 | 0.2 | queued | kd/c1e1-… (미발주) | - | 거의 전부 | spec/cards-c1e1 : korean-division/tasks/C1E1-q1-*.md |
+| C1E1-q2 | OP1 성능 스모크 | 0.2 | queued | kd/c1e1-… (미발주) | - | s6 | spec/cards-c1e1 : korean-division/tasks/C1E1-q2-*.md |
 
 ## 스택 체인 (기반 → 위)
 

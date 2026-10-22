@@ -44,6 +44,36 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T48d | 연대장·대대장·참모 관리 UI (탭 8/9/12/14) | feature | D中 R1 M H2 Wlight | T48b T48c | queued |
 | T48e | 2단계 전투 연결 (기본 꺼짐 키 4개, FV 예약 필요) | sim | D上 R3 M H3 Wheavy | T48d · T10 · T24 | queued (blocked) |
 | T39c | 하천 렌더(합성 여울 타일)·test_river 지도/미션 | feature | D中 R1 S H0 Wlight | river-r2 위 스택 | wip-ready (river-r3 26df7f6) |
+| TC-A | 브리핑 규모 분리 + 정보 3단계 (C1E1) | feature | D中 H2 | 없음(base t42d) | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| TC-B | SK2 경보 상태 (C1E1) | sim | D上 H3 | 없음(base merge/0.2) | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| TC-C | 이벤트 중대 명령 주입 + 잠금 D15 (C1E1) | sim | D上 H3 | 없음(base merge/0.2) | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| TC-D | funds · 외인 슬롯 · 통제 한도 · 가용 보급 (C1E1) | feature | D中 H2 | t42d | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| TC-E | favor.* · 변수 레지스트리 · 결정 런타임 (C1E1) | sim | D中~上 H2 | TC-D | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| TC-F | 미션 데이터 변형 · SK 플래그 · BT1 이탈 · pow.bandit (C1E1) | feature | D中 H2 | TC-D · TC-E | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| TC-G | 일본 철도 부속지 진입/사격 금지 (C1E1) | sim | D中~上 H3 | 없음(base merge/0.2) | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-m1 | MAP-A 지도 생성 (medium) | feature | D中 H0 | 없음 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-m2 | MAP-B 지도 생성 (large) | feature | D中 H0 | 없음 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-u1 | 유닛/무기/세력 점검 (보고서) | scout | D下 H0 | 없음 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-g1 | 에피소드 그래프 런타임 | sim | D上 H3 | 없음(base t42d) | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-g2 | 에피소드 화면 UI | feature | D中 H2 | g1 TC-D TC-E | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-g3 | 미션 이벤트 행동 확장 | sim | D上 H3 | TC-E | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-g4 | 목표 확장 (항복/N점/losses 변수) | sim | D上 H2 | 없음(base merge/0.2) | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-g5 | 피난민 비전투 유닛 | feature | D下~中 H1 | u1 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-g6 | unlock.* 편성 해금 | feature | D中 H2 | TC-D | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-d1 | 결정 16개·노드 데이터 JSON | feature | D中 H1 | g1 TC-E | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-d2 | E1 시작 상태 + 경제 상수 | docs | D下 H1 | TC-D | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-s1 | BT1 미션 JSON | feature | D中 H1 | m1 u1 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-s2 | SK1 미션 JSON | feature | D中 H1 | m1 u1 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-s3 | SK2 미션 JSON | feature | D中 H1 | m1 u1 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-s4 | SK3 미션 JSON | feature | D中 H1 | m2 u1 g5 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-s5 | SK4 미션 JSON | feature | D中 H1 | m2 u1 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-s6 | OP1 강공 미션 JSON | feature | D中 H1 | m2 u1 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-s7 | OP1 포위 미션 JSON | feature | D中 H1 | s6 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-v1 | 변형 데이터 적용 | feature | D中 H1 | s1~s7 TC-F TC-A | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-t1 | 기능 문구 (서사 키만) | docs | D下 H1 | d1 s* | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-p1 | VIP 포트레이트 자리표시 (선택) | art | D下~中 H0 | Q4 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-q1 | 종단 시험 S1~S4 | measure | D中 H1 | 거의 전부 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
+| C1E1-q2 | OP1 성능 스모크 | measure | D中 H0 | s6 | queued (spec/cards-c1e1, 계획 docs/C1E1_IMPLEMENTATION_PLAN.md) |
 
 **정책 (사용자 2026-10-22, 강조): WIP 는 병합하지 않는다. WIP 작업은 재개해서 완료(wip-ready)까지만 한다.** merger 는 발주하지 않는다. 선행이 '병합'인 카드는 선행 카드의 wip 브랜치 위에 쌓아(스택) 진행한다. main 에는 WIP 가 들어가지 않는다(사용자 지시 전까지).
 
