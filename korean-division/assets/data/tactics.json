@@ -92,7 +92,8 @@
   // 후퇴 뒤 재정비 (pursuit2, 전술 AI 소총 중대 — Pursuit.cs RegroupDef): 스스로 후퇴 (15초) 가 끝나면 minSec 초 제자리 사수 · 재정비, 그 뒤 checkSec 초마다
   // 병력 ≥ rejoinStrength · 평균 제압 ≤ rejoinSupp · (표적 둘레 적 대비 병력 ≥ rejoinOdds 또는 지원 = 다른 공격 중대 supportMin 개가 그 적 둘레 supportRadius × 소총 사거리 안에서 교전) 이면 재전진,
   // 증원 (+reinforceFrac × 처음 병력) 이면 제압만 보고 재전진, 접촉 거리 안 적이 없으면 재전진. 아니면 그 자리 사수 (지원 사격). enabled false = 옛 동작 (곧바로 재전진).
-  "regroup": { "enabled": true, "minSec": 20, "checkSec": 5, "rejoinStrength": 0.5, "rejoinSupp": 0.2, "rejoinOdds": 1.0, "reinforceFrac": 0.15, "supportRadius": 1.2, "supportMin": 1 },
+  // T31a noRejoinBelow (0 = 끔): 재정비 중 병력 < 처음 × 이 값이면 재전진 안 함 (그 자리 사수 = 예비 대용, 새 저장 필드 없음). 측정 켬 값 후보: rejoinStrength 0.7 + noRejoinBelow 0.5.
+  "regroup": { "enabled": true, "minSec": 20, "checkSec": 5, "rejoinStrength": 0.5, "noRejoinBelow": 0, "rejoinSupp": 0.2, "rejoinOdds": 1.0, "reinforceFrac": 0.15, "supportRadius": 1.2, "supportMin": 1 },
   // 기병 (전술 AI CavalryThink): 돌격 = 기수 ≥ minRiders 그리고 기수 ≥ 표적 둘레 oddsRadius 칸 보이는 적 × minOdds (측면 · 후방 접근이면 × flankOddsMul). 아니면 정찰 · 차장 (카빈 사격 · 대기 · 물러남).
   // 접근 각 = 표적 무리 평균 방향 기준: frontDeg 안 = 정면 (점수 −frontPenalty, 표적 제압 ≥ frontSuppOk · 기수 ≥ 둘레 weakRadius 칸 적 × frontWeakOdds · 대형 흐트러짐 (방향 정렬도 < formedAlign) 일 때만 바로 돌격),
   // 그 밖 정면 표적은 옆 · 뒤 flankOffset 칸 (wayOutsideRange = 적 사거리 + 2 칸 밖) 경유점 (기관총 정면 사계 · mgAvoidRadius 칸 밖) 으로 돌아 들어간 뒤 돌격. 측면 flankScore · 후방 rearScore.
