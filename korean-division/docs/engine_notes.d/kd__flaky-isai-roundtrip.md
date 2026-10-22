@@ -1,0 +1,1 @@
+- 스냅샷 왕복 "바이트 동일" 시험은 `Snapshot.RawBody` (본문) 로 비교한다 — 파일 전체에는 머리말 `SavedAt` (DateTime.Now, 초 단위) 가 있어 초 경계를 넘으면 간헐 실패한다 (IsAiReplaySelfTest, kd/flaky-isai-roundtrip). 머리말까지 보려면 SavedAt 만 비우고 비교.
