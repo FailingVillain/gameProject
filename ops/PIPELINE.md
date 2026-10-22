@@ -81,6 +81,10 @@ queued(지휘자/spec) → assigned(지휘자, 발주 시) → running(에이전
 - **웨이브 2 base 는 `merge/0.2-final` 하나**. 이미 merge/0.2 또는 tce 체인 위에 선 브랜치는 final 을 **한 번 merge-in 하고 끝(재스택 금지)**; 이후 깊이는 final 기준 ≤3(stack_depth.ps1 로 발주 전 확인). 이 규칙의 병합 라인 실행은 별도 지시로 하며, 도구·문서 카드(tools/pipe-parallel)는 어떤 브랜치도 병합하지 않는다.
 - 시험: `korean-division/tools/agent/pipe_parallel_test.ps1` (임시 저장소에서 TC-B/TC-C/M1/g3 임시 67 상황을 재현해 68~71 / Replay 24,24,25,26 정렬 포함).
 
+
+| `watchdog.ps1 [<워크트리>...] [-StallMin 30] [-RecentHours 6]` | 에이전트가 멈춰 보일 때 · 주기 점검 지휘자 | 워크트리별 `OK` / `WAITING_GATE` / `SUSPECT_STALL`(30분+ 무변화) + 근거(최근 커밋·변경 파일·러너 dotnet/KoreanDivision/make_unit/blender CPU 변화·경로에 워크트리명이 든 스크래치패드 파일·heavy_gate 대기 로그 `ops/gate_wait.log`). 인자 없으면 최근 6시간 활동 워크트리. **프로세스를 종료하지 않는다(보고만)**; 의심이면 종료코드 2 (LESSONS 8·18·25). `-Fake "commit=45;file=50;scratch=none;runner=0;cpu=0;gate=wait"` 로 판정만 모의 |
+| `stack_depth.ps1 [<브랜치>...] [-Line merge/0.2] [-Max 3]` | **발주 전**(스택 카드) · 병합 대기열 점검 | 각 브랜치 아래에 쌓인 '병합 라인에 아직 안 들어간' 선행 브랜치 사슬 깊이 계산, 3단 초과면 `WARN`(종료코드 3) + 라인에 안 들어간 선행 목록(낮은 쪽 먼저). 인자 없으면 QUEUE.md 의 wip-ready 브랜치 |
+검증: `watchdog_test.ps1` (판정 3종 모의 + 임시 저장소 스택 시험, 전부 PASS 해야 함).
 병합 단계는 이 도구 하나로 끝내고, 직접 명령을 풀어 쓰지 않는다. 세부 절차 정본 = docs/procedures/merge-procedure.md.
 
 ### 로드맵/카드 추가 전 절차 (필수, 사용자 2026-10-22)
