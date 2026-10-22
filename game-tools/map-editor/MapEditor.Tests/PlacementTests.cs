@@ -37,6 +37,7 @@ static partial class Tests
         foreach (var f in files)
         {
             string id = Path.GetFileNameWithoutExtension(f), orig = File.ReadAllText(f);
+            if (MissionMapData.Extract(orig) == null) continue;   // "map" 참조 미션 (예: test_river_crossing): mapData 없음 = 이 시험 대상 아님 (T33d 카드 병합 지시)
             MissionDoc m;
             try { m = MissionDoc.Parse(orig, MapLoader, id); }
             catch (InvalidDataException e) { Check(false, $"{id}: MissionDoc.Parse 실패 {e.Message}"); continue; }
