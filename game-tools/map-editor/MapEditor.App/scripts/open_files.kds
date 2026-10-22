@@ -1,0 +1,30 @@
+# 열기 목록: 게임 지도 / 게임 미션 / 편집본 탭, 이전 · 다음 쪽, 미션 열기.
+new 64 64
+button open
+assert popup=1 tab=0
+button tab_missions
+assert tab=1 page=0
+button pg_next
+assert page=1
+button pg_next
+button pg_next
+button pg_prev
+button pg_prev
+assert page=0
+button tab_edits
+assert tab=2
+button tab_maps
+assert tab=0
+button item_0
+assert popup=0 mission=0
+button open
+button tab_missions
+button item_0
+assert popup=0 mission=1 errors=0 dirty=0
+button open
+button pg_next
+button popup_close
+assert popup=0
+key e
+assert tool=eraser
+shot open_mission.png

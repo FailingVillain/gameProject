@@ -92,6 +92,8 @@ public sealed class MapDoc
     static readonly JsonDocumentOptions DocOpts = new() { CommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true };
 
     public const int MaxDim = 1024;
+    /// <summary>게임 Config.MaxPlayers 와 같은 값 (시험이 대조).</summary>
+    public const int MaxStarts = 16;
     readonly List<string> loadIssues = new();
 
     /// <summary>Parse 의 예외 없는 판: 성공하면 (문서, 빈 목록), 실패하면 (null, 오류 문장).</summary>
@@ -339,9 +341,18 @@ public sealed class MapDoc
             if (p.Tiles != null && p.Tiles.Any(t => t.Length != 2)) errs.Add("tiles 원소는 [x,y]");
             idx++;
         }
+        if (starts.Count > MaxStarts) errs.Add($"시작 위치는 최대 {MaxStarts}개 (현재 {starts.Count})");
         foreach (var s in starts) if (s.Length != 2 || !InMap(s[0], s[1])) errs.Add("시작 위치가 지도 밖");
-        foreach (var s in sites) if (!InMap(s.X, s.Y)) errs.Add($"시설 {s.Type} 이 지도 밖");
-        foreach (var u in units) if (!(u.X >= 0 && u.Y >= 0 && u.X < Width && u.Y < Height)) errs.Add($"유닛 {u.Unit} 이 지도 밖");
+        foreach (var s in sites)
+        {
+            if (!InMap(s.X, s.Y)) errs.Add($"시설 {s.Type} 이 지도 밖");
+            if (s.Owner < 0 || s.Owner > starts.Count) errs.Add($"시설 {s.Type} 소유 세력 {s.Owner} 이 범위 밖 (0~{starts.Count})");
+        }
+        foreach (var u in units)
+        {
+            if (!(u.X >= 0 && u.Y >= 0 && u.X < Width && u.Y < Height)) errs.Add($"유닛 {u.Unit} 이 지도 밖");
+            if (u.Faction < 1 || u.Faction > starts.Count) errs.Add($"유닛 {u.Unit} 세력 {u.Faction} 이 범위 밖 (1~{starts.Count})");
+        }
         return errs;
     }
 
@@ -456,6 +467,11 @@ public sealed class MapDoc
 
     void Touch() => paintVersion++;
 
+    /// <summary>문서 밖 층 (미션 소품 · 구역 등) 이 같은 되돌리기 스택을 쓰도록 하는 가역 명령 하나. 획 안이면 획에 묶인다.</summary>
+    public void Exec(string name, Action doIt, Action undoIt) => Push(name, doIt, undoIt);
+
+    public bool InStroke => stroke != null;
+
     /// <summary>paint 줄을 끝에 더한다 (뒤가 앞을 덮음).</summary>
     public void AddPaint(PaintOp op, string name = "칠하기")
     {
@@ -527,17 +543,20 @@ public sealed class MapDoc
         }
         int count = 0;
         BeginStroke("채우기");
-        for (int ry = 0; ry < g.Height; ry++)
-            for (int rx = 0; rx < g.Width;)
-            {
-                if (!mark[ry * g.Width + rx]) { rx++; continue; }
-                int s = rx;
-                while (rx < g.Width && mark[ry * g.Width + rx]) rx++;
-                // Raster() 캐시는 AddPaint 마다 무효화되지만 위 마크는 이미 계산됨
-                AddPaint(new PaintOp { Terrain = terrain, Rect = new[] { s, ry, rx - s, 1 } }, "채우기 행");
-                count += rx - s;
-            }
-        EndStroke();
+        try
+        {
+            for (int ry = 0; ry < g.Height; ry++)
+                for (int rx = 0; rx < g.Width;)
+                {
+                    if (!mark[ry * g.Width + rx]) { rx++; continue; }
+                    int s = rx;
+                    while (rx < g.Width && mark[ry * g.Width + rx]) rx++;
+                    // Raster() 캐시는 AddPaint 마다 무효화되지만 위 마크는 이미 계산됨
+                    AddPaint(new PaintOp { Terrain = terrain, Rect = new[] { s, ry, rx - s, 1 } }, "채우기 행");
+                    count += rx - s;
+                }
+        }
+        finally { EndStroke(); }   // 중간에 예외가 나도 획이 열린 채 남지 않는다
         return count;
     }
 

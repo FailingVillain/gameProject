@@ -12,7 +12,7 @@ public static class MissionMapData
     static readonly JsonReaderOptions Opts = new() { CommentHandling = JsonCommentHandling.Allow, AllowTrailingCommas = true };
 
     /// <summary>최상위 속성 `name` 의 속성 이름 시작, 값 시작, 값 끝 바이트 위치. 없으면 null.</summary>
-    static (int PropStart, int ValueStart, int ValueEnd)? Find(byte[] bytes, string name)
+    internal static (int PropStart, int ValueStart, int ValueEnd)? Find(byte[] bytes, string name)
     {
         var r = new Utf8JsonReader(bytes, Opts);
         while (r.Read())
@@ -55,6 +55,35 @@ public static class MissionMapData
         if (Find(b, "mapData") != null) throw new InvalidDataException("이미 mapData 가 있음");
         var f = Find(b, "map") ?? throw new InvalidDataException("미션에 map 참조가 없음");
         return Splice(b, f.PropStart, f.ValueEnd, "\"mapData\": " + doc.ToJson(LineIndent(b, f.PropStart)));
+    }
+
+    /// <summary>
+    /// 최상위 속성 `name` 의 값만 build(들여쓰기) 결과로 치환한다. 없으면 마지막 최상위 속성 값 바로 뒤에 쉼표 + 줄바꿈 + 새 속성을 끼워 넣는다
+    /// (이미 있는 다른 바이트는 그대로 -- 새 속성 앞의 쉼표 하나만 더해짐).
+    /// </summary>
+    public static string SetTop(string missionText, string name, Func<int, string> build)
+    {
+        var b = Encoding.UTF8.GetBytes(missionText);
+        if (Find(b, name) is { } f)
+            return Splice(b, f.ValueStart, f.ValueEnd, build(LineIndent(b, f.PropStart)));
+        var r = new Utf8JsonReader(b, Opts);
+        int lastStart = -1, lastEnd = -1;
+        while (r.Read())
+        {
+            if (r.TokenType == JsonTokenType.PropertyName && r.CurrentDepth == 1)
+            {
+                lastStart = (int)r.TokenStartIndex;
+                if (!r.Read()) break;
+                while (r.TokenType == JsonTokenType.Comment && r.Read()) { }
+                if (r.TokenType is JsonTokenType.StartObject or JsonTokenType.StartArray) r.Skip();
+                lastEnd = (int)r.BytesConsumed;
+            }
+        }
+        if (lastEnd < 0) throw new InvalidDataException("미션 JSON 최상위에 속성이 없음");
+        int ind = LineIndent(b, lastStart);
+        if (ind == 0) ind = 2;
+        string key = JsonSerializer.Serialize(name, new JsonSerializerOptions { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
+        return Splice(b, lastEnd, lastEnd, ",\n" + new string(' ', ind) + key + ": " + build(ind));
     }
 
     /// <summary>pos 가 줄의 첫 비공백 위치면 그 들여쓰기 칸 수, 아니면 0.</summary>

@@ -1,0 +1,30 @@
+# 비교용: 편집한 지도를 테스트 실행 폴더에 쓰고 (게임 --map _editor_test --shot 으로 같은 지도를 렌더해 편집기 화면과 나란히 놓는다).
+new 64 64
+tool rect
+terrain water
+drag 8 8 24 18
+tool circle
+terrain rock
+drag 44 40 49 40
+tool line
+terrain dirt
+size 2
+drag 4 56 58 44
+button tool_site
+pick village
+button own_dec
+button own_dec
+click 36 20
+button tool_unit
+pick infantry
+button own_dec
+button own_inc
+click 14 30
+click 16 30
+button tool_start
+click 50 12
+assert starts=3 sites=1 units=2 errors=0
+fit
+shot editor_map.png
+button testplay
+assert launch=--map+_editor_test

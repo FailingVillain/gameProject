@@ -9,7 +9,7 @@ using MapEditor.Model;
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 return Tests.Run(args);
 
-static class Tests
+static partial class Tests
 {
     static int fails, passes;
     static string root = "";
@@ -81,6 +81,10 @@ static class Tests
         StrokeAndFill();
         ForwardCompat();
         InputValidation();
+        PlacementAll();
+        PlacementInsertAndEmbed();
+        InspectorChecks();
+        TestPlayFiles();
 
         Console.WriteLine($"map-editor tests: pass {passes} fail {fails}");
         return fails == 0 ? 0 : 1;

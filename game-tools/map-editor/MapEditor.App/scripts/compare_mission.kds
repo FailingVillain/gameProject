@@ -1,0 +1,22 @@
+# 비교용: 미션 편집 (손으로 놓은 소품 · 구역 · 배치 구역 + 흩뿌리기 미리보기) 을 테스트 실행 폴더에 쓰고 게임 --mission _editor_test --shot 과 나란히 놓는다.
+open village_defense
+button tool_prop
+pick rock_l
+click 66 56
+click 78 56
+pick tree_oak
+click 70 90
+click 74 90
+button tool_area
+name gate_zone
+drag 68 100 76 104
+button tool_zone
+drag 60 120 84 130
+button tool_prop
+button scatter_view
+assert props=4 areas=4 zones=2 errors=0 scatterlist>=20
+zoom 0.8
+center 72 62
+shot editor_mission.png
+button testplay
+assert launch=--mission+_editor_test+--mission-start
