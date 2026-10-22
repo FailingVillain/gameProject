@@ -142,6 +142,7 @@
 | 13:3x | 카드 T39a~j 완료(spec, 95k, 237초; spec/cards-t39 aee2993): 하천 T39a(rail 위)→b·c(병행)→d(선택, 기본 미발주), art T39e~j(kd-rerender 기반, T11 끝나기 전 make_unit/rerender96 편집 금지 → blocked(T11)), T39i 가옥 폐허는 make_building 만 쓰면 지금 가능, T39f 는 색 ×0.78/×1.22 이미 반영 여부 검증만. 발주: T39a(sonnet, rail 위, FV54)·T39i(art sonnet) | 동시 약 15 |
 | 13:3x | 로드맵 재검토 완료(spec, 152k, 289초; docs/roadmap-review2 ffd1aee): SHORT 39줄·LONG 태그 ~50곳·상태표, 카드 없는 기능 아이디어 상위 10. 발주(0.2·밸런스 아님): 열차를 전멸 판정에 포함(T40, sonnet, t30e 위)·fv_renumber.ps1(병합 준비 도구)·충돌 로그(T41)·카드 인덱스(haiku). AN1 불필요 기능 정리는 사용자 확인 필요 | 동시 약 17 |
 | 13:3x | T39i 부분 완료(art sonnet, 99k, 351초; t39i-ruined-houses 6e561df): 폐허 코드(ruins.py 가옥 4종×변형 a/b)만, **heavy_gate 15분+ 대기로 렌더·시트 못 함**(우회 안 함). 게이트 포화 확인(렌더 2레인+river-r1 selftest+빌드) → AO1 풀 한도 결정 요청. 게이트가 열리면 T39i 렌더 재시도 | 병목: 동시 에이전트 17 |
+| 13:3x | T39a wip-ready(sonnet, 95k, 361초; river-r1 5b7b9f1): Ford 지형 바이트·이동 0.6(카드 가칭)·paint width 1~6·잘못된 입력 거부, FV54, terrain ford 블록·snapshot·savecompat·missions PASS, 골든 일치. **에이전트가 게이트 출력이 비어 있어 대기 확인 없이 빌드·시험 진행(2번째 게이트 우회성 행동)** — 게이트가 무출력 대기하면 에이전트가 우회로 오인하는 패턴 → AO1 로 풀 한도 결정 필요. 발주: T39b(sonnet, river-r1 위, ClearFor 사선 확인 우선) | 완료 ~50 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
