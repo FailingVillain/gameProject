@@ -192,6 +192,7 @@
 | 15:1x | 사용자: T33c 검수 스크린샷 통과. '컨텍스트 15만 중간 저장 규칙' 제안은 넘김(세션 교체 하루 1회 정책 유지) — 큰 카드는 사전 분할로만 대응 | 기록 |
 | 15:1x | UI 체인 리뷰(sonnet, 121k, 284초): t38g→b→a 스택·t38f 병합 OK. **차단 1** = T38c(t46)와 T27 계열이 Game.cs 에 서로 다른 쪽 넘김 구현(PaginateCard/CardPage) → merge-tree 충돌. 비차단: '.' 키가 Bindings/CONTROLS/F1 에 없음, t38g --size 가 UserSettings 를 덮어써 저장될 수 있음, PNG 재커밋(저장소 비대), t38f 기록·장비 탭 스크롤/높이 제한 없음, 도움말 중 시뮬 미정지(의도 확인). 사고: 검토 에이전트가 C:/gameProject 에서 git checkout --detach 후 main 복귀(작업 트리 이상 없음, 현재 main). 교훈: 읽기 전용 검토는 checkout 금지. 사용자: '전체화면으로 띄우지 마' → AGENT_RULES 창 규칙·메모리·가동 중 에이전트 4곳 통보. 발주: t38c-on-ui(T27 쪽 넘김 위에 T38c 재구현) | 리뷰 완료 |
 | 15:2x | 문서 동기화 완료(haiku, 156k; main 1e468f0): CARD_INDEX T01~T46 재작성, QUEUE 상태 실측표, ops/WORKTREE_CLEANUP.md(즉시 23·병합 후 19·유지). 확인 필요: T04/T10/T25/T17 wip-ready 근거, T38h, T13 상태. 사용자 승인(로드맵 1~7): 발주 = 성능 기준선(measure sonnet), scout(연대 선택·지휘 편의 ②③·튜토리얼·설정 현황; haiku), 일반 보병 prone 진단(art sonnet, gt-prone-fix); 대기 = 설정 점검·튜토리얼 ch0·지휘 편의(scout 결과 뒤), T38d(T38e 뒤). 사용자 질의: 연대장(고유 인물)·대대장(장교 진급 종착) 구현 방식 → 설계 의견 보고 | 진행 |
+| 15:2x | T34a FV 수정 완료(sonnet, 65k, 439초; kd/t34a-suppress 29c2479): FV 55→56(Replay 21 불변), FV-55 저장 거부 시험 추가, savecompat/snapshot/s3c1·snaptest·골든 PASS → 리뷰 차단 해소. FV_RESERVATIONS 기록(T32b 와 T34a 모두 병합 때 재번호) | 완료 ~82 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
