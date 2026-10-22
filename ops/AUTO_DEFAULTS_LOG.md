@@ -15,3 +15,9 @@ T48a: 연대장 풀 시작상태 = 조건 없음 available/있음 locked; 학파
 T48a: 일정 탭은 Kind mission/event 외 연표 줄 건너뜀; Sync 는 Load()/Apply 에서만(FromJson 이행은 빈 풀); 항목 거부 시 로드 계속
 2026-10-22 | 게임 제목 | 'KOREAN DIVISION'/'코리안 디비전' + 부제 '1920 대한 사단'(시안 적용, 사용자 직역체 선호 반영) | 사용자 확정 시 DECISIONS
 2026-10-22 | 웹 검색 | 모든 웹 조회·검증은 hub ask gemini-flash -w 로(web-fetch/WebSearch 에이전트 금지) | 사용자 재지시
+- 2026-10-22 T48b1: 장교 이름=병종 이름(개인 이름 데이터 없음) · 공적=누적 사살 · 부상 복귀 상수 1작전 · 연표는 대대장 전사/부상만 · 항복 장교=전사 처리
+- 2026-10-22 T48b1: OfficerRoster=T48a CampaignOfficers 확장(별도 목록 안 만듦) · 키 주입 미션의 미출전 키 장교 이월 줄 보존 · 참모 배정 장교 미주입
+T48c: favor tiers 냉담<10/보통/호의40/신뢰70 x0.5/1.0/1.15/1.3 (scaling on per AY), tagMatchDelta 1, deltas {1,2,3,5}; commander_favor.json
+- T49a defaults: migrated .bak=campaign.json.v<n>.bak copy once; rejected rows grey+reason; fuzz-campaign flag absent in stack (plain uifuzz run)
+T49bc: settings tolerant read per-key via reflection; compat fixtures v1-v8 key-filtered from git history
+2026-10-22 | 성능 | T50a~e 는 순수 리팩터(골든 동일 필수)만 자동 진행, 표적 캐시·탐색 반경 축소는 사용자 결정 전 미발주 | ops/PERF_OPT_PLAN.md §5
