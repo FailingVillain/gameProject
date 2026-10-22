@@ -321,6 +321,7 @@ public sealed partial class World
                 int oi = officerIdx[block]++;
                 if (comps[block].OfficerRanks is { } ors && oi < ors.Length) u.OfficerBase = (byte)Math.Clamp(ors[oi], 0, Defs.Officers.MaxRank);
                 u.OfficerXp = Math.Clamp(comps[block].OfficerXp, 0, Defs.Officers.XpMax);
+                if (comps[block].OfficerKeys is { } oks && oi < oks.Length && oks[oi] > 0) m.OfficerKey[u.Id] = oks[oi];   // T48b1 캠페인 장교 신원
             }
             ids.Add(u.Id);
             m.StartRank[u.Id] = Math.Max(0, u.Rank);
@@ -716,6 +717,7 @@ public sealed partial class World
         h.Add(m.Weather ?? ""); h.Add(m.TimeOfDay ?? "");
         foreach (var d in m.Deployment) { h.Add(d.Force); h.Add(d.At.X); h.Add(d.At.Y); h.Add(d.Facing); }
         foreach (var (k, l) in m.Tags) { h.Add(k); h.Add(l.Count); }
+        if (m.OfficerKey.Count > 0) { h.Add(m.OfficerKey.Count); foreach (var (k, v) in m.OfficerKey) { h.Add(k); h.Add(v); } }   // T48b1 (없으면 기존 체크섬 그대로)
     }
 }
 

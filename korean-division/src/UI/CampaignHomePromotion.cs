@@ -34,7 +34,7 @@ public sealed partial class CampaignMenu
             string name = string.Format(S.CmPromoRow, c.Officer ? S.CmPromoOfficer : S.CmPromoSoldier, c.UnitId, CampaignPromotion.RankName(c.Officer, c.FromRank), CampaignPromotion.RankName(c.Officer, c.ToRank),
                 c.Officer ? S.CmPromoXp : S.CmPromoKills, c.Score, c.Need);
             Ui.Text(name, x + 10, y + 5, 14, Palette.Text);
-            if (Button(new Rectangle(x + w - 90, y, 80, 24), S.CmPromoBtn, block == CampaignPromotion.Block.None, 14) && CampaignPromotion.Promote(state, c.Officer, c.UnitId)) SaveLive();
+            if (Button(new Rectangle(x + w - 90, y, 80, 24), S.CmPromoBtn, block == CampaignPromotion.Block.None, 14) && CampaignPromotion.Promote(state, c.Officer, c.UnitId, c.Key)) SaveLive();
             y += 28; shown++;
         }
         if (shown < cands.Count) { Ui.Text(string.Format(S.CmPromoMore, cands.Count - shown), x + 10, y, 13, Palette.TextDim); y += 20; }

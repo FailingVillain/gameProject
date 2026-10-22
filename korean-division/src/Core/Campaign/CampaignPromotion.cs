@@ -9,7 +9,8 @@ namespace KoreanDivision.Core;
 /// </summary>
 public static class CampaignPromotion
 {
-    public sealed record Candidate(bool Officer, int UnitId, string Name, int FromRank, int ToRank, int Score, int Need);
+    /// <summary>Key = [T48b1] 장교 신원 키 (0 = 사병 · 키 없는 옛 줄). 장교 진급은 Key 로 찾는다 (UnitId 는 미션마다 새로 매겨짐).</summary>
+    public sealed record Candidate(bool Officer, int UnitId, string Name, int FromRank, int ToRank, int Score, int Need, int Key = 0);
 
     public enum Block { None, Off, Operation, Quota }
 
@@ -31,6 +32,9 @@ public static class CampaignPromotion
     static int SoldierCap => Math.Clamp(CampaignEconomyDefs.Current.PromoSoldierMaxRank, 0, 8);
     static int OfficerCap => Math.Min(Defs.Current.Officers.MaxPromotionRank, Defs.Current.Officers.MaxRank);
 
+    /// <summary>[T48b1] 진급 종착: 장교 진급 상한 (중령) 에 이르렀는가 → 명부 TerminalReady (배정 대기, 배정 로직은 T48b2).</summary>
+    public static bool IsTerminal(int officerRank) => officerRank >= 1 && officerRank >= OfficerCap;
+
     static int At(int[] a, int i) => i >= 0 && i < a.Length ? a[i] : 0;
 
     /// <summary>한 줄의 후보 판정 (후보 아니면 null).</summary>
@@ -42,7 +46,7 @@ public static class CampaignPromotion
             int need = At(d.PromoOfficerXp, o);
             int xp = u.Xp ?? 0;
             if (o < 1 || o >= OfficerCap || need <= 0 || xp < need) return null;
-            return new Candidate(true, u.Id, u.Name, o, o + 1, xp, need);
+            return new Candidate(true, u.Id, u.Name, o, o + 1, xp, need, u.Key ?? 0);
         }
         int r = u.Rank;
         int to = RankNames.Next(null, r);
@@ -61,16 +65,22 @@ public static class CampaignPromotion
         return res.OrderBy(c => c.Officer ? 0 : 1).ThenByDescending(c => c.FromRank).ThenByDescending(c => c.Score).ThenBy(c => c.UnitId).ToList();
     }
 
-    /// <summary>후보 한 명을 한 계급 올린다. 작전 사이 + 정원 안 + 지금도 후보일 때만 (아니면 false, 상태 불변). 기록은 PromotionLog.</summary>
-    public static bool Promote(CampaignState? s, bool officer, int unitId)
+    /// <summary>후보 한 명을 한 계급 올린다. 작전 사이 + 정원 안 + 지금도 후보일 때만 (아니면 false, 상태 불변). 기록은 PromotionLog.
+    /// [T48b1] 장교는 <paramref name="key"/> (> 0) 가 있으면 키로 찾는다 (키 없는 옛 줄만 unitId).</summary>
+    public static bool Promote(CampaignState? s, bool officer, int unitId, int key = 0)
     {
         if (BlockOf(s) != Block.None) return false;
-        var line = (officer ? s!.Officers : s!.Units).FirstOrDefault(u => u != null && u.Id == unitId && (u.OfficerRank != null) == officer);
+        var line = (officer ? s!.Officers : s!.Units).FirstOrDefault(u => u != null && (u.OfficerRank != null) == officer
+            && (officer && key > 0 ? u.Key == key : u.Id == unitId));
         if (line == null || Judge(line) is not { } c) return false;
-        if (officer) { line.OfficerRank = c.ToRank; }
+        if (officer)
+        {
+            line.OfficerRank = c.ToRank;
+            if (OfficerIdentity.Find(s, line.Key ?? 0) is { } o) { o.Rank = c.ToRank; o.TerminalReady = IsTerminal(c.ToRank); }   // T48b1 명부 · 종착
+        }
         else { line.Rank = c.ToRank; line.StartRank = c.ToRank; line.Kills = 0; }   // 사살은 이번 진급에 쓴 것으로 친다
         s.PromotionsThisBreak++;
-        s.PromotionLog.Add(new CampaignState.PromotionRecord { AfterMission = s.EntryMission ?? "", Officer = officer, UnitId = unitId, FromRank = c.FromRank, ToRank = c.ToRank });
+        s.PromotionLog.Add(new CampaignState.PromotionRecord { AfterMission = s.EntryMission ?? "", Officer = officer, UnitId = line.Id, Key = line.Key ?? 0, FromRank = c.FromRank, ToRank = c.ToRank });
         return true;
     }
 

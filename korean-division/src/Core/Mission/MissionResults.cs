@@ -13,7 +13,11 @@ public sealed class MissionResults
     public sealed class ObjectiveLine { public string Id { get; set; } = ""; public string Type { get; set; } = ""; public bool Primary { get; set; } public bool Revealed { get; set; } public string State { get; set; } = ""; public float Progress { get; set; } public string? Text { get; set; } }
     public sealed class UnitLine { public int Id { get; set; } public string Unit { get; set; } = ""; public string Name { get; set; } = ""; public int Kills { get; set; } public int Rank { get; set; } public int StartRank { get; set; } public string? Force { get; set; }
         /// <summary>[장교] 정식 계급 · 전투 중 임시 진급 단계 · 경험치 · 직책 (company · battalion · staff) — 캠페인 정식 진급 · 계승 근거. 사병은 null.</summary>
-        public int? OfficerRank { get; set; } public int? TempRank { get; set; } public int? Xp { get; set; } public string? Post { get; set; } }
+        public int? OfficerRank { get; set; } public int? TempRank { get; set; } public int? Xp { get; set; } public string? Post { get; set; }
+        /// <summary>[T48b1] 캠페인 장교 신원 키 (미션 텍스트 officerKeys 로 주입된 장교만, 아니면 null). 정산이 첫 등장 장교에게 발급.</summary>
+        public int? Key { get; set; } }
+    /// <summary>[T48b1] 키를 받고 출전한 장교가 살아 돌아오지 못함 (전사, Captured = 항복해 포로). 정산이 명부를 dead (AlwaysWounded 는 부상) 로.</summary>
+    public sealed class OfficerDeath { public int Key { get; set; } public int UnitId { get; set; } public bool Captured { get; set; } }
 
     public int Version { get; set; } = 1;
     public string MissionId { get; set; } = "";
@@ -50,6 +54,8 @@ public sealed class MissionResults
     /// <summary>T30c: 열차마다 객차 · 화물 객차 손실 (잔해 = 손실). 열차 없는 미션은 빈 목록.</summary>
     public List<TrainLine> Trains { get; set; } = new();
     public sealed class TrainLine { public int Id { get; set; } public string? Tag { get; set; } public int Owner { get; set; } public int Cars { get; set; } public int CarsLost { get; set; } public int Freight { get; set; } public int FreightLost { get; set; } }
+    /// <summary>[T48b1] 키 장교 전사 · 포로 (Key 순).</summary>
+    public List<OfficerDeath> Deaths { get; set; } = new();
 
     public static MissionResults From(World w)
     {
@@ -102,6 +108,7 @@ public sealed class MissionResults
             if (u.IsOfficer)
             {
                 line.OfficerRank = u.OfficerBase; line.TempRank = u.TempRank; line.Xp = u.OfficerXp;
+                if (m.OfficerKey.TryGetValue(u.Id, out int ok)) line.Key = ok;
                 line.Post = w.PostOf(u) switch { OfficerPost.Battalion => "battalion", OfficerPost.Assistant => "assistant", OfficerPost.Company => "company", OfficerPost.Staff => "staff", _ => null };
             }
             r.Survivors.Add(line);
@@ -117,6 +124,10 @@ public sealed class MissionResults
             }
             r.Trains.Add(tl);
         }
+        foreach (var (uid, key) in m.OfficerKey)   // T48b1: 주입한 키 장교 중 생존 줄이 없는 것 (전사 · 포로)
+            if (w.Find(uid) is not Unit ou || ou.Surrendered || ou.Owner != m.Player)
+                r.Deaths.Add(new OfficerDeath { Key = key, UnitId = uid, Captured = w.Find(uid) is Unit cu && cu.Surrendered });
+        r.Deaths = r.Deaths.OrderBy(d => d.Key).ToList();
         r.TopUnits = r.Survivors.Where(s => s.Kills > 0).OrderByDescending(s => s.Kills).ThenBy(s => s.Id).Take(5).ToList();
         return r;
     }

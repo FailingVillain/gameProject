@@ -29,9 +29,16 @@ public static class CampaignCarry
         (s?.CarryFor(missionId).Where(u => u.OfficerRank == null && u.Unit == "infantry") ?? Enumerable.Empty<MissionResults.UnitLine>())
             .OrderByDescending(u => u.Rank).ThenBy(u => u.Force ?? "", StringComparer.Ordinal).ThenByDescending(u => u.Kills).ThenBy(u => u.Id).ToList();
 
-    public static List<MissionResults.UnitLine> Officers(CampaignState? s, string missionId) =>
-        (s?.CarryFor(missionId).Where(u => u.OfficerRank != null && u.Post == "company") ?? Enumerable.Empty<MissionResults.UnitLine>())
-            .OrderByDescending(u => u.OfficerRank).ThenByDescending(u => u.Xp ?? 0).ThenBy(u => u.Id).ToList();
+    /// <summary>이월 장교 (이 미션에 넣을 순서): [T48b1] 직책 company 뿐 아니라 battalion · assistant · staff 도 (대대장 주입 경로), 대대장 먼저 → 계급 → 경험치 → id.
+    /// 명부상 전사 · 부상 중 · 참모 배정 장교는 뺀다 (마지막 미션 재도전은 그 미션이 받았던 병력 그대로 — 명부 필터 없음).</summary>
+    public static List<MissionResults.UnitLine> Officers(CampaignState? s, string missionId)
+    {
+        if (s == null) return new();
+        bool replay = s.EntryMission == missionId && s.Completed.Contains(missionId);
+        return s.CarryFor(missionId).Where(u => u.OfficerRank != null && u.Post is "company" or "battalion" or "assistant" or "staff" && (replay || OfficerIdentity.CanDeploy(s, u)))
+            .OrderByDescending(u => OfficerIdentity.IsBattalion(s, u, OfficerIdentity.Find(s, u.Key ?? 0)) ? 1 : 0)
+            .ThenByDescending(u => u.OfficerRank).ThenByDescending(u => u.Xp ?? 0).ThenBy(u => u.Id).ToList();
+    }
 
     /// <summary>carry 상태 및 출격 편성(Pending)을 써 넣은 새 텍스트.</summary>
     public static string Patch(string text, string missionId, CampaignState? s)
@@ -120,6 +127,7 @@ public static class CampaignCarry
                 {
                     c["officerRanks"] = new JsonArray(Math.Clamp(offs[oi].OfficerRank ?? 1, 1, 6));
                     c["officerXp"] = Math.Max(0, offs[oi].Xp ?? 0);
+                    if (offs[oi].Key is int key && key > 0) c["officerKeys"] = new JsonArray(key);   // T48b1 신원 키 (officerRanks 와 나란히)
                     oi++;
                 }
             }

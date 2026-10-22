@@ -745,3 +745,9 @@
 ## 지휘 편의 ①⑤ 전투 자동 저장 · 전과 보고 (2026-10-22, T17 = 구 `battlereport` 복원)
 - 미션 중 저장 = 기존 HUD 저장 버튼 · F6 (`.kds`). 큰 교전 직전 자동 저장 = `Game.BattleAutosave`: 사격 없는 20초 뒤 `World.Shots` 가 한 번에 6발 이상 되는 틱 경계에서 슬롯 `autosave_battle` 한 개를 덮어씀 (최소 간격 2분, 미션만, 월드 읽기만 — 시뮬 · 저장 형식 무변경, FV 불변). 상수 `SaveManager.Battle*`.
 - 전과 보고 = 결과 화면 `DrawBattleReport`: 세력별 사상 원인(사격 · 근접 · 포격 %, `MoveStats.LossCause` 측정 전용 — 불러오면 0부터) + 아군 중대별 잔존/편성/사살. `MissionResults.LossCause/Companies` (JSON 추가 필드).
+
+## T48b1 장교 신원 키 (OfficerKey, 2026-10-22)
+- 미션 Unit Id 는 미션마다 새로 매겨진다 (SpawnForce, 출격 편성 Pending 이 중대 수를 줄이면 밀림) → 캠페인이 키를 발급 (`OfficerIdentity.Settle`, 첫 승리 정산, 생존 장교 Id 순, `NextOfficerKey` 단조 · 재사용 없음).
+- 흐름: `CampaignCarry.Patch` 중대 `officerKeys` → `WorldMission` 스폰 `MissionState.OfficerKey` (유닛 Id → 키, MISN 끝, FV 53, 체크섬은 비어 있지 않을 때만 → 기존 골든 불변) → `MissionResults` 생존 줄 `Key` · `Deaths` → 명부 `CampaignOfficers` (스키마 v9).
+- 주입: 직책 company 뿐 아니라 battalion/assistant/staff 도 (대대장 먼저). 명부 dead · 부상 중 · 참모 배정은 제외. 키 주입 미션에서 출전 안 한 키 장교 이월 줄은 보존.
+- 전사 = dead 영구 (대대장만 연표 `commander` `dead:<키>`), AlwaysWounded = wounded + `WoundedUntilMission = 완료 작전 수 + 1` (연표 `wounded:<키>`). 항복 장교도 상실 (Captured 표시).
