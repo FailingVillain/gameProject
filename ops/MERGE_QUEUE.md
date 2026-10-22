@@ -33,6 +33,7 @@
 | 32180a0 | kd/endline-50 | 종료선 70→50 미션 json (A4) · FV 52/19 · detcheck 8aa6448b9690b922 · missions PASS |
 | a0611ad | sfxnew | T21 효과음 (A5) · FV 52/19 · detcheck 8aa6448b9690b922 · sounds.json 유효 |
 | 2231459 · abbe77f | gt-face-proto · t30d-train-art | T22 얼굴 시안 · T30d 열차 그림 (A6, src 변경 없음) · FV 52/19 · detcheck 8aa6448b9690b922 |
+| ffc4129 | wip/breach2 | T03 돌파 (B1) · FV 53/20 · detcheck 19501757040f0d62 · breach/snapshot/replay/crossing PASS · snaptest OK · uiicons FAIL 1건(정상, 카드 칸) |
 
 **큐 닫음 (release, 2026-10-22)**: fix/n12-forest 큐 — 전체 selftest 2008 OK/FAIL 0 · detcheck 8변형 동일 · snaptest OK · dist 발행. (T03~T05 큐의 T13 은 별도, 아직 queued.)
 

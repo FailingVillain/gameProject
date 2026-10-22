@@ -8,3 +8,5 @@ WARNING: an unknown KD_SELFTEST_ONLY name falls through to the FULL selftest. Ve
   - A2 conflict: korean-division/tools/agent/AGENT_RULES.md (both added a section) -> union.
   - A3-A6: ops/QUEUE.md conflict -> ours. A5: docs/DECISIONS_PENDING.md -> union (HEAD then sfxnew).
   - A5 has no sfx/audio selftest group (none in SelfTest.cs); only sounds.json validity checked.
+- B1 wip/breach2 6ad6c50 -> ffc4129 (only ops/QUEUE.md conflict, ours). FV 53/20. detcheck 19501757040f0d62 d62e14463121dd02 (golden file matches because branch golden came along; plan expects this). breach/snapshot/replay/crossing PASS, snaptest OK (81, 0 FAIL). uiicons FAIL x1 ('card slots / hotkey conflict', expected).
+- B2 (t38c-on-ui): DEFERRED to final combine (coordinator: UI chain on second line merge/0.2-ui). uiicons FAIL stays until then.
