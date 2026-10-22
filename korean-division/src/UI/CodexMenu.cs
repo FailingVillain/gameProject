@@ -707,6 +707,7 @@ public sealed class CodexMenu
 
     bool Button(Rectangle r, string label, bool enabled = true, bool active = false, int size = 16)
     {
+        Ui.RegHit(r, label, enabled);
         bool hover = enabled && Ui.Contains(r, mouse);
         Color fill = !enabled ? Palette.PanelDark : active ? Palette.BtnActive : hover ? Palette.BtnHover : Palette.Btn;
         Raylib.DrawRectangleRounded(r, 0.2f, 4, fill);
@@ -717,6 +718,7 @@ public sealed class CodexMenu
 
     bool Chip(Rectangle r, string label, bool active)
     {
+        Ui.RegHit(r, label, true);
         bool hover = Ui.Contains(r, mouse);
         Color fill = active ? Palette.BtnActive : hover ? Palette.BtnHover : Palette.Btn;
         Raylib.DrawRectangleRounded(r, 0.25f, 4, fill);
