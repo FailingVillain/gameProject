@@ -500,7 +500,49 @@ public sealed class CampaignState
     }
 
     /// <summary>저장 (실패해도 게임은 계속). 임시 파일에 쓰고 바꿔치기 — 실패 시 임시 파일도 지운다 (CampaignSaves.WriteAtomic). 성공 여부.</summary>
-    public bool Save() => CampaignSaves.WriteAtomic(FilePath, ToJson());
+    public bool Save()
+    {
+        int oldV = BackupOldSchemaOnce();
+        if (oldV < 0) return false;   // 원본 보존에 실패하면 덮어쓰지 않는다 (재시도 알림)
+        bool ok = CampaignSaves.WriteAtomic(FilePath, ToJson());
+        if (ok && oldV > 0) MigrationNotice = string.Format(SnapMsg.CampaignMigrated, oldV);
+        return ok;
+    }
+
+    /// <summary>[T49a] 옛 스키마 campaign.json 을 처음 새 스키마로 덮어쓰기 직전에 campaign.json.v&lt;옛&gt;.bak 로 한 번 복사 (저장 호환 정책 §3).
+    /// 이미 같은 이름의 .bak 가 있으면 건드리지 않는다. 반환: 복사한 옛 버전 (복사 안 함 = 0), 복사 실패 = -1.</summary>
+    static int BackupOldSchemaOnce()
+    {
+        try
+        {
+            if (!File.Exists(FilePath)) return 0;
+            int v = DiskVersion(File.ReadAllText(FilePath));
+            if (v < 1 || v >= SchemaVersion) return 0;
+            string bak = $"{FilePath}.v{v}.bak";
+            if (File.Exists(bak)) return 0;
+            File.Copy(FilePath, bak, false);
+            return v;
+        }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException) { return -1; }
+    }
+
+    /// <summary>파일 텍스트의 Version (필드 없음 = 1 = 가장 옛 파일, 읽을 수 없음 = 0).</summary>
+    static int DiskVersion(string text)
+    {
+        try
+        {
+            using var doc = System.Text.Json.JsonDocument.Parse(text);
+            if (doc.RootElement.ValueKind != System.Text.Json.JsonValueKind.Object) return 0;
+            foreach (var prop in doc.RootElement.EnumerateObject())
+                if (prop.Name.Equals("Version", StringComparison.OrdinalIgnoreCase)) return prop.Value.TryGetInt32(out int n) ? n : 0;
+            return 1;
+        }
+        catch (System.Text.Json.JsonException) { return 0; }
+    }
+
+    /// <summary>이행 알림 (한 번만): Save 가 옛 파일을 .bak 로 보존했을 때 채워지고, 화면이 가져가면(Take) 비워진다.</summary>
+    public static string? MigrationNotice { get; private set; }
+    public static string? TakeMigrationNotice() { var m = MigrationNotice; MigrationNotice = null; return m; }
 
     /// <summary>마지막 Load 가 파일을 거부한 사유 (한국어, 거부가 아니면 null). 파일이 없는 것은 거부가 아니다.</summary>
     public static string? LastLoadError { get; private set; }

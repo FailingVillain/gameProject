@@ -10,10 +10,17 @@ public static class SnapMsg
     public const string NotSave = "게임 저장 파일이 아닙니다";
     /// <summary>저장 형식 호환 정책 (ENGINE_NOTES '저장 호환'): 출시 전에는 다른 형식의 저장을 열지 않고 이유만 알린다.</summary>
     public const string OldFormat = "이 저장은 이전 버전에서 만들어져 열 수 없습니다 (저장 형식 v{0} · 현재 v{1})";
+    /// <summary>저장 호환 정책 (ops/SAVE_COMPAT_POLICY.md §4): 옛 미션 저장을 거부할 때 함께 보이는 안내 줄.</summary>
+    public const string OldFormatNote = "진행 중이던 미션만 이어할 수 없습니다. 캠페인 진행은 그대로 안전합니다.";
+    public const string NewFormatNote = "게임을 최신 버전으로 올려 주세요.";
+    public const string ReplayVersionNote = "이 리플레이는 v{0} 게임에서만 볼 수 있습니다.";
+    /// <summary>캠페인 파일을 새 스키마로 처음 옮겨 쓸 때 한 번 (원본 보존 알림).</summary>
+    public const string CampaignMigrated = "캠페인 저장을 새 버전으로 옮겼습니다. 원본은 campaign.json.v{0}.bak 로 보관했습니다.";
+    public const string CampaignNewerKept = "파일은 지우지 않고 그대로 둡니다.";
     public const string NewFormat = "이 저장은 더 새로운 버전에서 만들어져 열 수 없습니다 (저장 형식 v{0} · 현재 v{1})";
     public const string ReplayOldFormat = "이 리플레이는 이전 버전에서 만들어져 열 수 없습니다 (리플레이 형식 v{0} · 현재 v{1})";
     public const string ReplayNewFormat = "이 리플레이는 더 새로운 버전에서 만들어져 열 수 없습니다 (리플레이 형식 v{0} · 현재 v{1})";
-    public const string CampaignNewer = "캠페인 저장이 더 새로운 버전에서 만들어져 열 수 없습니다 (저장 스키마 v{0} · 현재 v{1})";
+    public const string CampaignNewer = "캠페인 저장이 더 새로운 버전에서 만들어져 열 수 없습니다 (저장 스키마 v{0} · 현재 v{1}). 파일은 지우지 않고 그대로 둡니다.";
     public const string CampaignBroken = "캠페인 저장이 손상되었거나 올바른 형식이 아니라 열 수 없습니다";
     public const string ReplayBroken = "리플레이 파일이 손상되었거나 올바른 형식이 아닙니다";
     public const string ReplayStartBroken = "리플레이의 시작 저장 지점을 읽을 수 없습니다: {0}";

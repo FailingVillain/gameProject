@@ -1906,7 +1906,7 @@ public sealed partial class Game : IDisposable
         }
         catch (SnapshotException e)
         {
-            ShowNotice(string.Format(S.LoadFailed, e.Message));
+            ShowNotice(string.Format(S.LoadFailed, e.FullMessage));
             return false;
         }
     }

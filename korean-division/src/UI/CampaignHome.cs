@@ -65,12 +65,13 @@ public sealed partial class CampaignMenu
         currentTab = lastTabOf[(int)s];
     }
 
-    /// <summary>확인 · 스크린샷용: KD_CAMPAIGN_VIEW = left | center | right [:탭 번호] (예 "right", "center:4").</summary>
+    /// <summary>확인 · 스크린샷용: KD_CAMPAIGN_VIEW = left | center | right [:탭 번호] | slots (예 "right", "center:4").</summary>
     void ApplyViewOverride()
     {
         string? v = Environment.GetEnvironmentVariable("KD_CAMPAIGN_VIEW");
         if (string.IsNullOrWhiteSpace(v)) return;
         var parts = v.Trim().ToLowerInvariant().Split(':');
+        if (parts[0] == "slots") { OpenSlots(); return; }   // T49a 스크린샷용: 저장 슬롯 창
         Screen? scr = parts[0] switch { "left" => Screen.Left, "center" => Screen.Center, "right" => Screen.Right, _ => null };
         if (scr is { } sc) SelectScreen(sc);
         if (parts.Length > 1 && int.TryParse(parts[1], out int n) && Enum.IsDefined(typeof(Tab), n)) SelectTab((Tab)n);
