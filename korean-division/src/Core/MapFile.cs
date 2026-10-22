@@ -116,11 +116,37 @@ public sealed partial class MapFile
                 if (!heightOnly) map.Set(x, y, t);
                 if (hi is bool h) map.SetHigh(x, y, h);
             }
-            if (p.Rect is { Length: 4 } r)
+            bool organic = !heightOnly && t == TerrainType.Forest && PropDefs.Current.Rules.OrganicForest;   // T28 (기본 꺼짐)
+            if (organic && p.Rect is { Length: 4 } or1)
+            {
+                float amp = Math.Clamp(Math.Min(or1[2], or1[3]) / 5f, 1.5f, 4.5f);
+                int pad = (int)MathF.Ceiling(amp) + 2;
+                for (int y = or1[1] - pad; y < or1[1] + or1[3] + pad; y++)
+                for (int x = or1[0] - pad; x < or1[0] + or1[2] + pad; x++)
+                {
+                    if (!map.InBounds(x, y)) continue;
+                    float ox = Math.Max(or1[0] - (x + 0.5f), x + 0.5f - (or1[0] + or1[2])), oy = Math.Max(or1[1] - (y + 0.5f), y + 0.5f - (or1[1] + or1[3]));
+                    float sd = ox > 0 && oy > 0 ? MathF.Sqrt(ox * ox + oy * oy) : Math.Max(ox, oy);   // 안쪽 음수 / 바깥 양수
+                    if (map.OrganicForestTile(x, y, sd, amp) && (sd <= 0 || map.Get(x, y) == baseT)) Put(x, y);
+                }
+            }
+            else if (p.Rect is { Length: 4 } r)
                 for (int y = Math.Max(0, r[1]); y < Math.Min(Height, r[1] + r[3]); y++)
                 for (int x = Math.Max(0, r[0]); x < Math.Min(Width, r[0] + r[2]); x++)
                     Put(x, y);
-            if (p.Circle is { Length: 3 } c)
+            if (organic && p.Circle is { Length: 3 } oc)
+            {
+                float amp = Math.Clamp(oc[2] * 0.4f, 1.5f, 4.5f);
+                int pad = (int)MathF.Ceiling(amp) + 2;
+                for (int y = oc[1] - oc[2] - pad; y <= oc[1] + oc[2] + pad; y++)
+                for (int x = oc[0] - oc[2] - pad; x <= oc[0] + oc[2] + pad; x++)
+                {
+                    if (!map.InBounds(x, y)) continue;
+                    float dx = x - oc[0], dy = y - oc[1], sd = MathF.Sqrt(dx * dx + dy * dy) - oc[2];
+                    if (map.OrganicForestTile(x, y, sd, amp) && (sd <= 0 || map.Get(x, y) == baseT)) Put(x, y);
+                }
+            }
+            else if (p.Circle is { Length: 3 } c)
                 for (int y = c[1] - c[2]; y <= c[1] + c[2]; y++)
                 for (int x = c[0] - c[2]; x <= c[0] + c[2]; x++)
                     if (map.InBounds(x, y) && (x - c[0]) * (x - c[0]) + (y - c[1]) * (y - c[1]) <= c[2] * c[2]) Put(x, y);

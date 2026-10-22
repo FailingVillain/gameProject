@@ -28,6 +28,7 @@ public static class PropsSelfTest
             TestMissionsAll();
             TestSuppress();
             TestSnapshot();
+            TestCoverClusterForest();
         }
         catch (Exception e) { check(false, $"props 테스트 중 예외: {e.GetType().Name}: {e.Message}\n{e.StackTrace}"); }
     }
@@ -283,5 +284,78 @@ public static class PropsSelfTest
         for (int i = 0; i < 300; i++) { x.Step(); y.Step(); }
         check(broken > 0 && same && state && blocks && h1 && x.ComputeChecksum() == y.ComputeChecksum(),
             $"소품 스냅샷: 부서진 소품 {broken}/{x.Props.Count} 저장 바이트 동일 {same} · 상태 일치 {state} · 막는 칸 복원 {blocks} · 체크섬 반영 {h1} · 300틱 이어 돌려도 같은 체크섬 (형식 {Snapshot.FormatVersion})");
+    }
+
+    /// <summary>T28: 군집 소품 + 불규칙 숲 (props.json 플래그, 기본 꺼짐): 결정성 · 대칭 · 소품 총량 ±10% · 최근접 이웃 거리 감소 · 직사각형 숲 직선 변 제거 · 숲 면적 ±10%.</summary>
+    static void TestCoverClusterForest()
+    {
+        var rules = PropDefs.Current.Rules;
+        bool o0 = rules.OrganicForest, c0 = rules.Scatter.Clump;
+        try
+        {
+            check(!o0 && !c0, "T28 플래그 기본 꺼짐 (organicForest / scatter.clump = false)");
+            int n0 = 0, n1 = 0; double nn0 = 0, nn1 = 0; int f0 = 0, f1 = 0; bool det = true, sym = true;
+            foreach (int seed in new[] { 1, 2, 3, 4, 5, 6, 7, 8 })
+            {
+                rules.OrganicForest = false; rules.Scatter.Clump = false;
+                var a = GameMap.Generate(160, 160, seed);
+                rules.OrganicForest = true; rules.Scatter.Clump = true;
+                var b = GameMap.Generate(160, 160, seed); var b2 = GameMap.Generate(160, 160, seed);
+                det &= b.PropSeeds.SequenceEqual(b2.PropSeeds) && TerrainHash(b) == TerrainHash(b2);
+                for (int y = 0; y < 160 && sym; y++) for (int x = 0; x < 160; x++) if ((b.Get(x, y) == TerrainType.Forest) != (b.Get(159 - x, 159 - y) == TerrainType.Forest)) { sym = false; break; }
+                n0 += a.PropSeeds.Count; n1 += b.PropSeeds.Count; nn0 += MeanNn(a); nn1 += MeanNn(b);
+                f0 += CountForest(a); f1 += CountForest(b);
+            }
+            check(det, "T28 켜면 같은 시드 -> 같은 지도 (소품 · 지형)");
+            check(sym, "T28 켜도 숲이 180도 대칭");
+            check(Math.Abs(n1 - n0) <= n0 * 0.10, $"T28 소품 총량 {n0} -> {n1} (±10%)");
+            check(nn1 < nn0 * 0.8, $"T28 소품 최근접 이웃 거리 평균 {nn0 / 8:F2} -> {nn1 / 8:F2} (20% 이상 감소)");
+            check(Math.Abs(f1 - f0) <= f0 * 0.10, $"T28 생성 맵 숲 면적 {f0} -> {f1} (±10%)");
+            // 지도 파일의 직사각형 숲
+            const string json = "{\"width\":80,\"height\":60,\"base\":\"grass\",\"starts\":[[5,5],[75,55]],\"paint\":[{\"terrain\":\"forest\",\"rect\":[20,15,30,24]}]}";
+            rules.OrganicForest = false; var r0 = MapFile.LoadText(json, "t28r", 1);
+            rules.OrganicForest = true; var r1 = MapFile.LoadText(json, "t28r", 1);
+            int a0 = CountForest(r0), a1 = CountForest(r1);
+            check(LongestStraight(r0) == 30, $"T28 옛 직사각형 숲 직선 변 {LongestStraight(r0)} (30)");
+            check(LongestStraight(r1) <= 14, $"T28 불규칙 숲 최장 직선 변 {LongestStraight(r1)} (<= 14)");
+            check(Math.Abs(a1 - a0) <= a0 * 0.10, $"T28 직사각형 숲 면적 {a0} -> {a1} (±10%)");
+        }
+        finally { rules.OrganicForest = o0; rules.Scatter.Clump = c0; }
+    }
+
+    static long TerrainHash(GameMap m) { long h = 17; for (int y = 0; y < m.Height; y++) for (int x = 0; x < m.Width; x++) h = h * 31 + (int)m.Get(x, y) + (m.IsHigh(x, y) ? 100 : 0); return h; }
+
+    static int CountForest(GameMap m) { int n = 0; for (int y = 0; y < m.Height; y++) for (int x = 0; x < m.Width; x++) if (m.Get(x, y) == TerrainType.Forest) n++; return n; }
+
+    static double MeanNn(GameMap m)
+    {
+        var p = m.PropSeeds; if (p.Count < 2) return 0; double sum = 0;
+        for (int i = 0; i < p.Count; i++)
+        {
+            double best = double.MaxValue;
+            for (int j = 0; j < p.Count; j++) if (i != j) best = Math.Min(best, Math.Sqrt((p[i].X - p[j].X) * (p[i].X - p[j].X) + (p[i].Y - p[j].Y) * (p[i].Y - p[j].Y)));
+            sum += best;
+        }
+        return sum / p.Count;
+    }
+
+    static int LongestStraight(GameMap m)
+    {
+        bool F(int x, int y) => m.InBounds(x, y) && m.Get(x, y) == TerrainType.Forest;
+        int best = 0;
+        for (int dir = 0; dir < 4; dir++)
+        {
+            int dx = dir == 2 ? -1 : dir == 3 ? 1 : 0, dy = dir == 0 ? -1 : dir == 1 ? 1 : 0; bool horiz = dy != 0;
+            for (int o = 0; o < (horiz ? m.Height : m.Width); o++)
+            {
+                int run = 0;
+                for (int i = 0; i < (horiz ? m.Width : m.Height); i++)
+                {
+                    int x = horiz ? i : o, y = horiz ? o : i;
+                    if (F(x, y) && !F(x + dx, y + dy)) { run++; best = Math.Max(best, run); } else run = 0;
+                }
+            }
+        }
+        return best;
     }
 }
