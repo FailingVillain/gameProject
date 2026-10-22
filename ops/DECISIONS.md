@@ -155,3 +155,8 @@ Q-A1 새 Entity(TrainCar, Units 밖 World.Trains) · Q-A2 단선·순환선만(�
 - **AE1** `commsRules` 를 켤지 + 초안 수치(8칸/0.25/1초, 15칸/0.5) 승인? 무응답 시 꺼짐 유지.
 - **AE2** AI 난이도 배수 적용: 자유전은 어느 세력이 AI 인지가 리플레이에 없음 → A★ 세력별 '배수 적용' 표시를 저장·체크섬·리플레이 머리말에 넣음(FV·Replay 각 +1; 자유전·미션 모두) / B 미션 로드 때 배수를 미션 데이터에 반영(미션만, 자유전 빠짐). 증원 배수는 시뮬 밖에서 곱해도 안전. 무응답 시 보류.
 - **AF1** (T10b 리뷰) 자유전 리플레이에서 `Faction.IsAi` 가 복원되지 않음(`Surrender.cs:39` 가 읽음; 미션은 WorldMission.cs:77 이 설정, 자유전은 Game.cs:181,237 만) → 자유전 리플레이에서 항복 확률이 어긋날 수 있는 **기존 결함**. AI 난이도 배수 안 A(AE2)·T31c 의 AI 전용 항복 확대의 선행 조건. 'IsAi 를 리플레이 머리말에 넣는' 별도 카드(上, FV·Replay +1 예약) 발주할까? 무응답 시 보류 (T31c 에는 IsAi 비의존으로 하라고 전달함).
+
+## AG. T31c AI 항복 (2026-10-22; 브랜치 kd/t31c-surrender e9cd527, kd-develop/kd-t31c-surrender) — 키 전부 기본 끔, 켠 값은 수용 기준 미달
+키(balance.json combat, AI 세력 한정): `surrenderAiCasualty` `surrenderAiMaxLeft` `surrenderAiChance` `surrenderAiSuppAt` `surrenderAiSuppSec`(-1=공통 키) `surrenderRetreatBlockedMul`(1=현행). 제압 키는 카드에 없던 것을 진단 후 추가(제압 지속 조건이 병목). 측정(ai_bn_meeting 시드 1-8): 끔 = 항복 0·승 3/8·시간초과 1/8 / 카드 옵션 A(0.6·20·0.15) = 항복 0 / P1(A+막힘 완화 2배+제압 0.6/5초) = 항복 3·승 3/8·시간초과 2 / P2(chance 0.3·막힘 3배·제압 0.5/3초) = 항복 11(시드당 1.4)이나 **승 1/8·시간초과 4/8**(항복자가 생존 집계 → 종료 지연). `KD_OBS_SURR` 도구 전용 환경변수 추가.
+- **AG1** 켤 값 선택: A★ 켜지 않음(키만 보존; IsAi 복원 AF1 + 종료 조건 T31b 가 선행) / B P1 / C P2. 무응답 시 A.
+- 선행 조건 재확인: AI 한정 키라 자유전 리플레이에서는 IsAi 복원(AF1) 전에는 켜면 안 됨.

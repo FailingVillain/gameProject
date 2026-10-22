@@ -106,6 +106,7 @@
 | 12:1x | T10b 리뷰 완료(sonnet, 65k, 64초): 차단 0. 난이도의 스냅샷·체크섬·리플레이 머리말 포함을 독립 검증. 발견 — **Faction.IsAi 가 자유전 리플레이에 복원 안 됨(기존 결함, AF1)**: T31c 항복 확대·AI 배수 안 A 의 선행 조건 → 진행 중 T31c 에 SendMessage 로 IsAi 비의존 지시. difficulty.json 검증 부재 → 수정 에이전트(haiku) 발주. FV_RESERVATIONS 에 후보 번호 기재 | 리뷰 14/14 |
 | 12:1x | T10b 검증 보강 완료(haiku, 69k, 104초): 270172f — 깨진 JSON → 기본값+경고, commsRules 범위 clamp(반경 1~50·확률 0~1·checkSec≥1·NaN→기본), 시험 2, 유효 파일 경고 0, GOLDEN 일치 | 리뷰→수정 8회째 |
 | 12:1x | T30a 리뷰 수정 완료(sonnet, 82k, 237초): t30a 863f9d1 — 정수 PosFix(Blocked 에서 float 제거), 정지 중 Blocked 재계산, 입력 방어 17시험, 해시 필드 추가(FV58 유지), 골든 불변. 진행 중 T30b 에 SendMessage 로 863f9d1 체리픽 지시 | 리뷰→수정 9회째 |
+| 12:2x | T31c wip-ready (sonnet, 100k, 1773초): kd/t31c-surrender e9cd527. 키 6개(AI 한정, 기본 끔)·시험 TestRelaxed, GOLDEN 불변, SendMessage 지시(IsAi 비의존/선행 조건 명시) 반영. 켠 값은 수용 기준 미달: 항복을 늘리면 승/종료가 나빠짐(항복자가 생존 집계) → 종료 조건(T31b)과 함께 설계 필요 | 완료 30/45 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
