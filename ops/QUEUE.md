@@ -35,6 +35,7 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T20 | 저장소 이동 마무리 (옛 폴더 삭제 = 사용자 U02) | docs | D下 R1 S H0 Wlight | U02 | blocked(U02) |
 | T35 | IsAi 리플레이 머리말·체크섬 복원 (AF1, FV 60 / Replay 24) | sim | D上 R3 S H2 Wlight | 없음 (main) | wip-ready (kd/isai-restore 5c08a38) |
 | T32a | 전투공병 유닛 데이터 infantry_pioneer (wireCutter·수류탄2·한국군 전용) | feature | D中 R1 S H1 Wlight | ai3b2 위 스택 | wip-ready (kd/t32a-pioneer 26cc9fd) |
+| T32b | 전술 AI 연막 수류탄 (개활 횡단·사격 아래·참호 돌격 smokeHook, 기본 꺼짐, FV 56→예약 62) | sim | D上 R3 SM H2 Wheavy | ai3b2 위 스택 | wip-ready (kd/t32b-ai-smoke 33284fa) |
 | T43 | 병종 기호 곡사포·저격 추가 | feature | D下 R1 S H0 Wlight | 없음 (main) | wip-ready (kd/t43-branch-symbols b9c97a9) |
 | T39c | 하천 렌더(합성 여울 타일)·test_river 지도/미션 | feature | D中 R1 S H0 Wlight | river-r2 위 스택 | wip-ready (river-r3 26df7f6) |
 
