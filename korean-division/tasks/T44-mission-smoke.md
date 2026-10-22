@@ -21,9 +21,28 @@ KD_SELFTEST_ONLY=smoke · tools/smoke_missions.ps1 (reports/smoke_<날짜>.md)
 - 질문 답 (카드 권고 채택): (1) 정지 기준 300 시뮬초(KD_SMOKE_STALL) (2) 16인 지도 없으면 보고에 'none', 새 지도는 카드 밖 (3) 통합 관문 편입 안 함.
 - 정지 판정: 1 시뮬초마다 이동(>0.05)·사망·발사 하나라도 있으면 진행. 호송(escort) id 는 정지 시 '합법 후보' 표기. 벽시계 TIMEOUT(기본 240s)은 PC 부하에 따라 달라 비결정적 — 경고로만 취급.
 - 환경 변수: KD_SMOKE_ID(한 미션) · KD_SMOKE_WALL · KD_SMOKE_STALL. 결정성 1건 = 첫 미션 60 시뮬초 2회 체크섬 동일(전체 실행 시).
-- **검증 결과: 미실행 (heavy_gate 25분+ 대기로 막힘 — kd-rerender 의 `heavy_gate.ps1 -Render` 대기자 다수가 풀 점유). 미션별 상태 표는 비어 있음.** 게이트가 열리면: `tools/smoke_missions.ps1` 1회 (또는 KD_SELFTEST_ONLY=smoke) -> reports/smoke_<날짜>.md 를 이 표에 옮긴다.
+- **검증 결과 (2026-10-22, heavy_gate 경유 `tools/smoke_missions.ps1` 1회, 20개 전부 LOAD_OK·예외/정지 0; c1_01_hoeryong 만 TIME_LIMIT):**
 | 미션 | 상태 |
 |---|---|
-| (미측정) | - |
+| ai_bn_assault / LOAD_OK / END (winner 1) / ticks 12027 / sim 200s / wall 17.9s / checksum E9643CCD9D143006 |
+| ai_bn_meeting / LOAD_OK / END (winner 1) / ticks 11100 / sim 185s / wall 8.1s / checksum D718A21671CA118B |
+| ai_kr_vs_ft_1000 / LOAD_OK / END (winner 1) / ticks 13130 / sim 219s / wall 33.3s / checksum E9680F3E02E7CCDF |
+| ai_kr_vs_jp_trench / LOAD_OK / END (winner 2) / ticks 144000 / sim 2400s / wall 8.9s / checksum EE0B2E1564E2DF1A |
+| armour_test / LOAD_OK / END (winner 1) / ticks 4802 / sim 80s / wall 0.6s / checksum E706359316AB1D36 |
+| artillery_spotters / LOAD_OK / END (winner 1) / ticks 12496 / sim 208s / wall 4.8s / checksum 731B2310D4271AAA |
+| bandit_raid / LOAD_OK / END (winner 1) / ticks 19589 / sim 326s / wall 1.6s / checksum 68408F96F96302C9 |
+| c0_01_bandits / LOAD_OK / END (winner 1) / ticks 4168 / sim 69s / wall 1.0s / checksum 25350416A0825087 |
+| c0_02_yalu / LOAD_OK / END (winner 1) / ticks 19727 / sim 329s / wall 20.4s / checksum 32684BE5E70E99E0 |
+| c1_01_hoeryong / LOAD_OK / TIME_LIMIT / ticks 109799 / sim 1830s / wall 19.9s / checksum D19CC222E9B60493 |
+| c1_01_yalu / LOAD_OK / END (winner 1) / ticks 37977 / sim 633s / wall 16.0s / checksum B8D19BA609238F9D |
+| c1_02_tumen / LOAD_OK / END (winner 1) / ticks 37977 / sim 633s / wall 16.3s / checksum 99EC825D9FF72809 |
+| forest_ambush / LOAD_OK / END (winner 2) / ticks 9703 / sim 162s / wall 4.2s / checksum F1788F81798B192F |
+| supply_escort / LOAD_OK / END (winner 2) / ticks 54000 / sim 900s / wall 6.4s / checksum 9EFB61A65B36BB2C |
+| test_river_crossing / LOAD_OK / END (winner 2) / ticks 72000 / sim 1200s / wall 17.6s / checksum C3605D7CE7A59863 |
+| train_escort_demo / LOAD_OK / END (winner 1) / ticks 7833 / sim 131s / wall 1.7s / checksum 9A2678EB5AD3B496 |
+| trench_assault / LOAD_OK / END (winner 1) / ticks 17174 / sim 286s / wall 4.8s / checksum 3E709308D96F14A2 |
+| units_showcase / LOAD_OK / END (winner 1) / ticks 9393 / sim 157s / wall 1.3s / checksum B9506DC190B007B3 |
+| village_defense / LOAD_OK / END (winner 1) / ticks 28800 / sim 480s / wall 3.3s / checksum 4E6A3F7E64C4C034 |
+| yalu_crossing / LOAD_OK / END (winner 2) / ticks 90000 / sim 1500s / wall 8.5s / checksum 4B9410D29F607DA3 |
 
 - 2차 시도: 게이트 열림 직후 1회 실행에서 `.exe`(GUI 서브시스템)가 stdout 없이 즉시 반환해 NO_OUTPUT 로 나옴 -> 스크립트를 `dotnet <dll>` 호출로 수정(콘솔 호스트, 블록). 수정 뒤 재실행은 게이트 재점유(kd-rerender -Render 대기자)로 대기 중 중단 — 표는 여전히 미측정.
