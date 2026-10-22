@@ -218,6 +218,7 @@
 | 15:5x | 제목 최종 반영 완료(font agent): gt-paper-ui-v2 e689cf5·ui/fonts-ofl c4a4006 — '제17 대한 사단'(게임 소스에 0건 → 제목 교체 카드에서 신규 추가). T44 커밋(8df1bea, 카드 wip-ready) — 게이트 25분+ 막혀 스모크 미실행(구 재렌더 대기 영향), 현재 게이트 열림 heavy=5/10 → 스모크 실행 재개 통보 | 기록 |
 | 15:5x | T48c wip-ready(sonnet, 99k, 256초; t48c-favor c24c423, t48a 위): 호감 4단계(냉담<10/보통/호의 40/신뢰 70, 배율 0.5·1.0·1.15·1.3, scalingEnabled), 태그 ±1·이벤트 증감 {1,2,3,5}, 해임 -2·쿨다운 1·재기용 최소 호감 -5 초과(economy JSON 값 읽음), 규칙은 commander_favor.json 별도, 저장 스키마 v8 불변(Favor 는 기존 풀 항목). commanders 22건·savecompat·missions·골든·퍼즈 PASS. T48b 연결 필요: ApplyDismissPenalty·CanRehire·ApplyMissionTags(태그 산출 기준 미정), 쿨다운=해임일+쿨다운×missionDays | 완료 ~92 |
 | 15:5x | T49a wip-ready(sonnet, 132k, 356초; t49a-save-messages 4896113, t48a 위): 정책 §4 한국어 안내(옛/새 미션 저장·리플레이·캠페인 새 버전 거부), 옛 스키마 campaign.json 첫 저장 때 .bak 정확히 1개(기존 .bak 불덮어씀·복사 실패 시 저장 안 함), 슬롯 목록 회색 행+사유 자르기+호버, 미션 저장 목록 분류 버그 수정(StartsWith('저장 형식') 불일치 → 항상 '읽을 수 없음'). savecompat/missions/uiicons·퍼즈·골든 PASS(--fuzz-campaign 은 t38h 에만 있어 미실행). 스크린샷 2장. 미정리: bin/t49a/saves 더미(삭제는 사용자) | 완료 ~93 |
+| 15:5x | tabs-c 시안 완료(art sonnet, 141k, 404초; gt-paper-ui-v2-tabs-c 24b5fee): 좌 11 정보·12 부대 기록·14 일정, 우 7 외교·8 참모진 4장(연대장 3x3/후보 풀/대대장·참모/학파)·9 진급·군령권, 연대장 인사 기록 카드·해임 확인 창 = 11장+시트(tabs_c_*.png), OFL 글꼴·최종 제목 적용, 텍스트 넘침 자동 검사 0건(겹침은 미검사). 후속 구현 표시(점선+도장): 전사자 명부·훈장·군령권·명령 기한. 한계: 해임 불가 도장 겹침은 사용자 확인 필요. tabs-a(922b5f7) 완료, tabs-b 진행 중 | 완료 ~94 · 시안 검수 대기 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
