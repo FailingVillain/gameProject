@@ -170,6 +170,7 @@
 | 14:3x | **release 첫 실가동 완료**(sonnet, 79k, 77분; main ec9f713, 문서 b25d185): 전체 selftest 2008 OK/FAIL 0(약 12분), detcheck 8변형 골든 일치, snaptest OK, dist 새로 생성. 환경 이슈: bin apphost 가 .NET 런타임을 못 찾아 `dotnet x.dll` 로 실행, tools/detcheck.ps1 실패(코드 불변, STATE 기록). gate 첫 호출 'timeout heavy=11' 후 진행 | 병합 단계 검증 1회 통과 |
 | 14:3x | river-r2/r3 리뷰(sonnet, 77k, 63초): 차단 0, 병합 가능(rail→r1→r2→r3 순서 필수, FV 53 rail/54 r1). 비차단: waterBlocksFire 키 balance.json 에 없음(병합 때 1줄 추가), 주석 중복. 미확인: 도하 AI 실제 도하, 병합 후 컴파일 | 리뷰 완료 |
 | 14:3x | T38f wip-ready(sonnet, 168k, 4077초; t38f-home-readonly-tabs b622d1d, t19d 위): 홈 기록(12)·장비(5)·편제(3) 읽기 전용 탭, CampaignState 만 읽음·스키마 불변, savecompat 7건 추가, 퍼즈 3종 PASS, 골든 일치. 게이트 60분 닫힘 후 timeout 뒤 진행(규정 경계 재발 — 게이트 수정 이전 구간 추정). QUEUE T38f 행은 spec/ui-backlog 에만 있음. 발주: T42a(sonnet, t38f 위) | 완료 ~66 |
+| 14:3x | t32a/t32d/t43 리뷰(sonnet, 91k, 174초): **블로커 1** = uiicons FAIL 은 breach2(6ad6c50)가 smokegrenade·cutwire 를 추가해 돌격보병 카드 11버튼>9칸 → 겹침(t32a 공병 10버튼도 동일); main 에는 없음 → 병합 큐 차단 요인. 비차단: UnitSymbols 기병 판정이 mounted 미사용(t43 이전부터), 공병이 Assault 기호, QUEUE T43 행 중복(병합 때 정리). t32a/t32d 자체는 병합 OK. 발주: T46 카드 칸 초과 수정(sonnet, wip/breach2 위) | 리뷰 완료 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
