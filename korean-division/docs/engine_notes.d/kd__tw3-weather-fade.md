@@ -1,0 +1,3 @@
+- 날씨 전환 페이드 (TW3, 화면 전용): `WeatherFx.Draw` 가 `World.Weather.Changes` 변화를 감지해 이전 (종류, 시간대) 층을 `1-t`, 도착 층을 `t` 알파로 `FadeSeconds`(=2f, 상수 한 곳, 벽시계 dt) 동안 겹쳐 그린다. 월드 교체(ReferenceEquals) 는 즉시 스냅. 입자 · 안개 덩어리 상태는 도착 층만 갱신. 시뮬 · 저장 · 체크섬 접촉 0 (detcheck 골든 일치).
+- 눈보라 입자 상한은 보류: WeatherKind.Blizzard 가 없음(TW2 사용자 보류). 기존 MaxRain/MaxSnow 그대로.
+- 렌더 프레임 ms 측정 도구는 없음(PERF_BASELINE 렌더 항목 없음) - 전후 비교 미실시. 페이드 중 비용 = 막/비네트 층 2회(사각형 몇 개), 입자는 1회분 그대로.
