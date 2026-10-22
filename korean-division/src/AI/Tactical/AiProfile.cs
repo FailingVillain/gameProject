@@ -167,6 +167,19 @@ public sealed class TacticsProfile
     public float CounterOdds = 0f;
     /// <summary>S4 진지 히스테리시스: 방어 중대가 진지를 옮기는 최소 거리 (소총 사거리 배수, 하한 8칸). 0 = 8칸 (옛 값).</summary>
     public float DefendRepick = 0f;
+    // ---- 3C-1 (T34a, docs/T34_3CD_SPEC.md — TacticalAi.Coop3C.cs): 기본 끔, 겹침 3c · 3c_suppthr · 3c_coverwd · no3c
+    /// <summary>S5 AI 화력 우세 문턱 (보이는 적 평균 제압). 0 = 엔진 틀 값 그대로 (tactics.json behaviour.superioritySupp) — AI 층은 비틀 중대 약진 허가에만 쓴다.</summary>
+    public float SuperioritySupp = 0f;
+    /// <summary>S5 AI 사격선 전진 (비틀 중대 약진) 의 자기 중대 제압 상한. 0 = 옛 상수 0.4.</summary>
+    public float BoundSuppression = 0f;
+    /// <summary>S5 표적 가중: 엎드린 적 (Prone) 을 이 값 × 사거리 칸만큼 가깝게 친다 (침투 원칙). 0 = 가장 가까운 적 (옛 동작).</summary>
+    public float PinnedTargetWeight = 0f;
+    /// <summary>S5 아군 엎드림 비율이 이 값 이상이면 사격선 전진 대신 그 자리 화력 기반 (사격만). 0 = 끔.</summary>
+    public float OwnPronePivot = 0f;
+    /// <summary>S9 엄호 철수: 후퇴 결정 때 사격 진지 점수 높은 분대 (몫 withdrawStep) · 기관총이 coverSec 초 남아 사격한 뒤 이탈.</summary>
+    public bool CoverWithdraw = false;
+    public float WithdrawStep = 0.34f;
+    public float CoverSec = 15f;
     public object Clone() => MemberwiseClone();
 }
 
