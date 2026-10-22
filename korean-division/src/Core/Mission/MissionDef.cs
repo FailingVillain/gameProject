@@ -25,6 +25,8 @@ public sealed class MissionDef
     /// <summary>날씨 · 시간대 (그대로 전달만 — 효과는 날씨 작업이 지도 json "weather"/"time" 과 같은 이름으로 구현).</summary>
     public string? Weather { get; set; }
     public string? Time { get; set; }
+    /// <summary>민가 그림 양식 (korean | manchu | mixed, 생략 = 지도 파일의 houseStyle, 그것도 없으면 예전 4종). 렌더 전용 — 시뮬 · 체크섬 · 스냅샷과 무관 (T55s).</summary>
+    public string? HouseStyle { get; set; }
     /// <summary>세력 정의 (세력 N = N번째). 지도 파일의 factions 를 대신한다.</summary>
     public List<MissionFaction> Factions { get; set; } = new();
     /// <summary>플레이어 세력 번호 (1부터).</summary>

@@ -1,0 +1,25 @@
+{
+  "_doc": "T55s 민가 양식 표 (렌더 전용 - 시뮬/체크섬/세이브와 무관). 미션/지도 json 의 houseStyle = korean | manchu | mixed. 생략 = 예전 4종 (building_art.house.thatch/tile/brick/barn). 클래스 키 = keyPrefix + prefix + 두 자리 번호 (없는 그림은 건너뜀, 클래스에 하나도 없으면 fallback 키). 구운 변형 B = 키 + '.b' (없으면 A). weights = [정사각, 가로형, 큰 건물(면적>=largeArea)]. tones = 그릴 때 곱하는 RGB 3단계.",
+  "keyPrefix": "building_art.house.",
+  "frameMb": 2.0,
+  "lod0Share": 0.75,
+  "wideRatio": 1.4,
+  "largeArea": 16,
+  "retry": 3,
+  "tones": [ [255, 255, 255], [238, 230, 218], [222, 230, 240] ],
+  "classes": {
+    "choga":    { "prefix": "ko-cho-",   "count": 6,  "baked": 1, "fallback": "building_art.house.thatch" },
+    "giwa":     { "prefix": "ko-giwa-",  "count": 9,  "baked": 2, "fallback": "building_art.house.tile" },
+    "heotgan":  { "prefix": "ko-bar-",   "count": 4,  "baked": 1, "fallback": "building_art.house.barn" },
+    "inn":      { "prefix": "ko-inn-",   "count": 2,  "baked": 1, "fallback": "building_art.house.tile" },
+    "mud":      { "prefix": "zh-mud-",   "count": 10, "baked": 2, "fallback": "building_art.house.brick" },
+    "zhgiwa":   { "prefix": "zh-giwa-",  "count": 5,  "baked": 2, "fallback": "building_art.house.tile" },
+    "earth":    { "prefix": "zh-earth-", "count": 3,  "baked": 1, "fallback": "building_art.house.brick" },
+    "zhbarn":   { "prefix": "zh-bar-",   "count": 3,  "baked": 1, "fallback": "building_art.house.barn" }
+  },
+  "styles": {
+    "korean": { "weights": { "choga": [5, 1, 2], "giwa": [3, 5, 4], "heotgan": [1, 4, 0], "inn": [0, 1, 3] } },
+    "manchu": { "weights": { "mud": [6, 2, 3], "zhgiwa": [2, 4, 4], "earth": [3, 2, 1], "zhbarn": [1, 3, 0] } },
+    "mixed":  { "mix": { "korean": 1, "manchu": 1 } }
+  }
+}

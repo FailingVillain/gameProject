@@ -676,3 +676,6 @@
 - 산개 파상 횡대 (`formations.json lineShape = "line_waves"`) · choke (`combat.chokeEnabled`) 는 **기본 끔**. 측정 변형 `KD_OBS_VARIANT` = FMOFF · LWON · LWX(`KD_OBS_LW`) · CHOKE · RST0 등 (TacticsObs.ApplyVariant, --collide 도 같음). `--collide` 끝에 `[rev]` 역전 유닛 상태 분류.
 - 측정 (같은 빌드, 2026-10-22): --collide 역전/s 대형 완화 끔→켬 amove 1.63→1.29 · battle 0.77→0.71 · march 0.20→0.11. tactics-obs 5시드 B(ai_bn_assault) 승: 끔 5 · 켬 4 · 산개 파상 1 · 간격만 1.3 2 (넓은 횡대는 공격 측 불리). choke 켬: tactics-obs A 2→4/5 · B 4→5/5 이지만 --choke 다리 통과 틱 2193→2748 (w3 co3) · 2524→4641 (co5) · 역전/유닛-분 34→56 — 큐가 통과를 늦춤 → 끔 유지.
 - 테스트 `KD_SELFTEST_ONLY=formrelax` · `choke`, 측정 `--choke [w=3] [co=3] [terrain=bridge|ford] [off=1]`.
+
+## T55s 민가 양식 선택 (렌더 전용)
+`houseStyle` (지도 json / 미션 json, 미션 우선; korean | manchu | mixed, 생략 = 예전 4종) -> `HouseStyles.Assign` 이 지도 전체 조각을 순서대로 한 번에 배정 (좌표 해시, 왼쪽·위 2칸 안 같은 (키,구운 B) 면 salt 올려 최대 3회 재시도). 가중치·색조·42 키 등록 = assets/data/house_styles.json (키 = building_art.house.<prefix>NN, B 변형 = 키+".b", 없는 키는 건너뜀, 클래스에 하나도 없으면 fallback 예전 키). 반전 = CellFit/Cell 음수 원본 폭, 색조 = plain(기본 셰이더) 에서 정점 색 곱. 팀 셰이더는 불투명 픽셀에 정점 색을 곱하지 않으므로 색조엔 plain 필수. 폐허 칸 = 'ruined' / 'ruined_b' 프레임 (없으면 1번). 스냅샷·체크섬·FormatVersion 불변.

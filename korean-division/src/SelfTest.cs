@@ -37,7 +37,8 @@ public static partial class SelfTest
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "ai") { Tests.AiSelfTest.Run(opt, Check); Tests.BattleSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "combat4") { Tests.Combat4SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "combat3") { Tests.Combat3SelfTest.Run(opt, Check); Tests.Combat2SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
-        if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "terrain") { Tests.TerrainSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+        if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "housestyle") { Tests.HouseStyleSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+        if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "terrain") { Tests.TerrainSelfTest.Run(opt, Check); Tests.HouseStyleSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "weather") { Tests.WeatherSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "mapsizes") { TestMapTiers(opt); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "shells") { Tests.ShellFlightSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
@@ -116,6 +117,7 @@ public static partial class SelfTest
         Tests.FogSelfTest.Run(opt, Check);
         Console.WriteLine("[지형 · 높이 · 지형 시야]");
         Tests.TerrainSelfTest.Run(opt, Check);
+        Tests.HouseStyleSelfTest.Run(opt, Check);
         Tests.WeatherSelfTest.Run(opt, Check);
         Console.WriteLine("[참호 자동 점유 · 포탄 구덩이]");
         Tests.TrenchSelfTest.Run(opt, Check);

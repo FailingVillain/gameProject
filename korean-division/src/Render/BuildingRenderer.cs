@@ -40,7 +40,14 @@ public static class BuildingRenderer
     static readonly int[] SquareKeys = { 0, 2, 0, 2, 1 }, WideKeys = { 1, 3 };
 
     /// <summary>테마에 가옥 그림이 있는지 (있으면 지형 타일은 가옥 칸을 마당 흙으로 굽고 가옥은 여기서 건물 단위로 그린다 — MapRenderer.SlotInfo).</summary>
-    public static bool HasHouseArt(Theme? th) => th?.Get(HouseKeys[0])?.Lod != null;
+    public static bool HasHouseArt(Theme? th)
+    {
+        if (th?.Get(HouseKeys[0])?.Lod != null) return true;
+        if (!ReferenceEquals(th, artTheme)) { artTheme = th; artAny = th != null && HouseStyles.AnyArt(HouseStyles.Current, HasKey); }   // 새 양식 그림만 있는 테마도 (테마마다 한 번)
+        return artAny;
+    }
+    static Theme? artTheme; static bool artAny;
+    static bool HasKey(string key) => Theme.Current?.Get(key)?.Lod != null;
 
     static uint Hash(int x, int y)
     {
@@ -57,18 +64,32 @@ public static class BuildingRenderer
     static void DrawHouses(GameMap map, RtsCamera cam, Vector2 min, Vector2 max)
     {
         if (Theme.Current == null) return;
+        var table = HouseStyles.Current;
+        string? style = HouseStyles.Resolve(table, MapFile.HouseStyleOf(map));   // null = 예전 4종 (houseStyle 생략)
+        var picks = style != null ? HouseStyles.AssignCached(map, style, Theme.Current, HasKey) : null;
         foreach (var b in HouseBlocks.Of(map))
         {
             if (b.X + b.W < min.X - 1 || b.X > max.X + 1 || b.Y + b.H < min.Y - 1 || b.Y > max.Y + 2) continue;
             foreach (var p in HouseBlocks.Pieces(b))
             {
-                uint h = Hash(p.X, p.Y);
-                bool wide = p.W >= p.H * 1.4f;
-                int k = wide ? WideKeys[h % (uint)WideKeys.Length] : SquareKeys[h % (uint)SquareKeys.Length];
-                if (Theme.Current.Get(HouseKeys[k])?.Lod is not { } lod) continue;
+                LodSprite lod; bool mirror = false; Color tint = Color.White; bool plain = false;
+                if (picks == null)
+                {
+                    uint h = Hash(p.X, p.Y);
+                    bool wide = p.W >= p.H * 1.4f;
+                    int k = wide ? WideKeys[h % (uint)WideKeys.Length] : SquareKeys[h % (uint)SquareKeys.Length];
+                    if (Theme.Current.Get(HouseKeys[k])?.Lod is not { } l0) continue;
+                    lod = l0;
+                }
+                else
+                {
+                    if (!picks.TryGetValue(((long)p.Y << 32) | (uint)p.X, out var pk)) continue;
+                    if ((Theme.Current.Get(pk.DrawKey)?.Lod ?? Theme.Current.Get(pk.Key)?.Lod) is not { } l1) continue;
+                    lod = l1; mirror = pk.Mirror; tint = ToneColor(table, pk.Tone); plain = true;
+                }
                 const float m = 0.06f;   // 발자국 가장자리 여백 (칸) — 이웃 칸 병사와 겹치지 않게
                 var r = new Rectangle((p.X + m) * TS, (p.Y + m) * TS, (p.W - 2 * m) * TS, (p.H - 2 * m) * TS);
-                LodDraw.CellFit(lod, 0, r, cam.Zoom, Color.White);
+                LodDraw.CellFit(lod, 0, r, cam.Zoom, tint, mirror, plain);
                 TeamShader.Leave();
             }
         }
@@ -81,12 +102,28 @@ public static class BuildingRenderer
             if (map.Get(x, y) != TerrainType.Rubble) continue;
             uint h = Hash(x, y);
             if ((h >> 8) % 3 != 0) continue;   // 잔해 칸은 3칸에 1칸만 폐가 그림 (겹쳐서 너저분해지는 것 방지)
-            var sp = Theme.Current.Get(HouseKeys[h % 4]);
-            if (sp?.Lod is not { } lod) continue;
-            LodDraw.Cell(lod, 0, false, 1, new Vector2((x + 0.5f) * TS, (y + 0.5f) * TS), lod.Scale, lod.Scale * cam.Zoom, Color.White);
+            LodSprite? lod; bool flip = false; Color tint = Color.White; bool alt = (h >> 20 & 1) == 1;
+            if (style == null) lod = Theme.Current.Get(HouseKeys[h % 4])?.Lod;
+            else
+            {
+                if (HouseStyles.PickRuin(table, style, x, y, HasKey) is not { } rp) continue;
+                lod = Theme.Current.Get(rp.Key)?.Lod; flip = rp.Mirror; tint = ToneColor(table, rp.Tone); alt = rp.AltRuin;
+            }
+            if (lod == null) continue;
+            LodDraw.Cell(lod, 0, flip, RuinFrame(lod, alt), new Vector2((x + 0.5f) * TS, (y + 0.5f) * TS), lod.Scale, lod.Scale * cam.Zoom, tint, 255, style != null);
             TeamShader.Leave();
         }
     }
+
+    /// <summary>폐허 칸: T39i 의 'ruined' (a) / 'ruined_b' 프레임 (없으면 예전처럼 1번 칸). 변형 비트는 좌표 해시에서.</summary>
+    static int RuinFrame(LodSprite lod, bool alt)
+    {
+        if (alt && lod.Frame("ruined_b") is int b && b >= 0) return b;
+        return lod.Frame("ruined") is int a && a >= 0 ? a : 1;
+    }
+
+    static Color ToneColor(HouseStyleTable t, int tone) =>
+        (uint)tone < (uint)t.Tones.Count && t.Tones[tone].Length >= 3 ? new Color((byte)t.Tones[tone][0], (byte)t.Tones[tone][1], (byte)t.Tones[tone][2], (byte)255) : Color.White;
 
     static bool InView(int tx, int ty, int size, Vector2 min, Vector2 max) =>
         tx + size >= min.X && tx <= max.X && ty + size >= min.Y && ty <= max.Y;
