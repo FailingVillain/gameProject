@@ -1,0 +1,74 @@
+# 모든 버튼을 실제 클릭 (버튼 중앙에 마우스 입력). 새 버튼은 여기에 한 줄 추가하지 않으면 selftest 실패.
+new 64 64
+button tool_line
+assert tool=line
+button tool_rect
+assert tool=rect
+button tool_circle
+assert tool=circle
+button tool_fill
+assert tool=fill
+button tool_eraser
+assert tool=eraser
+button tool_brush
+assert tool=brush
+button pal_0
+assert terrain=grass
+button pal_1
+assert terrain=dirt
+button pal_2
+assert terrain=sand
+button pal_3
+assert terrain=water
+button pal_4
+assert terrain=rock
+button pal_5
+assert terrain=forest
+button pal_6
+assert terrain=rubble
+button pal_7
+assert terrain=house
+button pal_8
+assert terrain=wire
+button pal_9
+assert terrain=trench
+button pal_10
+assert terrain=crater
+button pal_11
+assert terrain=high
+button pal_12
+assert terrain=low
+button size_inc
+assert size=2
+button size_dec
+button size_dec
+assert size=1
+button grid
+assert grid=on
+button grid
+assert grid=off
+button high
+assert high=on
+button high
+button zoomin
+button zoomout
+button fit
+button undo
+button redo
+button pal_7
+button tool_rect
+drag 8 8 14 12
+assert t(10,10)=house dirty=1 undo=1
+button save
+assert dirty=0
+button new
+assert undo=0 paint=0 dirty=0
+button open
+assert popup=1
+button popup_close
+assert popup=0
+button open
+button item_0
+assert popup=0 dirty=0
+shot buttons.png
+expect 04EE7B9D9CE8EB41
