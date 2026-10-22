@@ -102,6 +102,7 @@
 | 11:56(실측) | 자동 점검(2차 1회): 진행 중 T15·T16b·T10b·T30a·T31a·T31c(워크트리 생성 완료, harness working 1·나머지 idle = 시험/측정 대기 추정; 발주 후 10~30분이라 정지 판정 안 함). 신규 발주 없음(T31b 는 heavy 풀 여유 대기) | 대기 |
 | 12:0x | T30a wip-ready (opus, 203k — 한도 근접, 1648초, 70회): t30a-train-move 1800d5a (rail 위). 새 파일 Train.cs, TrainCar 는 Units 밖 World.Trains, 정수 호장, 스크립트 이동, FV58/R23, train 26검사·replay·snapshot·savecompat PASS, 열차 없는 지도 골든 불변, 틱 비용 잡음 수준. 발주: T30b(opus, t30a 위, FV59)·T30a 리뷰(sonnet) | 완료 28/43 |
 | 12:0x | T30a 리뷰 완료(sonnet, 87k, 91초): 차단 0, train 묶음 PASS 확인. 지적 — PosAt/TrackBlocked 가 Vector2·Normalize 로 Blocked(해시 포함)를 정함(플랫폼 위험) · 방향 전환 뒤 Blocked 가 최대 6틱 잔존 · cars:null/NaN waits 등 입력 방어 구멍·시험 부재 · 해시 누락 필드. 수정 에이전트 발주(sonnet, t30a 위 1커밋; T30b 가 체리픽) | 리뷰 13/13 결함 포착 |
+| 12:1x | T10b wip-ready (opus, 117k, 1957초, 53회): kd/t10b-difficulty 4ac07b4. 난이도가 스냅샷·해시·리플레이 머리말에 이미 포함됨을 확인 → commsRules(기본 꺼짐)로 전령 사로잡힘·유선 끊김 구현, 새 상태 없음(FV57/R22 유지), comms 18/18, 골든 불변. AI 배수는 설계 두 안(A 권장). 발견: gapfill 예외는 T10 기반에도 있음(fix/n12-forest 로 해소 확인). 에이전트가 main 폴더 ops/QUEUE.md 를 직접 수정(커밋 안 함) — 경계 위반 소지. 발주: T10b 리뷰 | 완료 29/44 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
