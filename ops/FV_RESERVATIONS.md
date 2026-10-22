@@ -34,3 +34,5 @@ river-r1 (T39a) FV 54 / Replay 변경 없음, 기반 rail, wip-ready 5b7b9f1. ri
 **T39d 다리(river-r4-bridge 9d4b7be, river-r3 위, 2026-10-22 15:0x):** 지형 `Bridge`(바이트 13) 추가로 브랜치 내 FormatVersion 55(river-r1 54 위), Replay 불변. 병합 시 river 스택(rail→r1→r2→r3→r4)은 rail 58·t30a 59·t30b 60·IsAi 61·AE2 62 뒤로 재번호 필요 → 후보 63. 지도 편집기(T33)의 지형 목록에도 Bridge 추가 필요(T33c/T33d 에 전달).
 
 **T34a(kd/t34a-suppress 29c2479, ai3b2 위):** TacticsProfile 필드 7개 추가로 브랜치 내 FV 55→56 (T32b 도 56; 두 브랜치는 서로 독립 스택 → 병합 때 둘 다 재번호: T32b·T34a 모두 AE2(62) 뒤 63 이후). Replay 불변(21).
+
+**C1E1 예약(2026-10-22 16:2x, 에피소드 1 구현 체인):** 캠페인 스키마 — T48 체인이 v8(T48a)·v9(T48b1)·필요 시 v10(T48b2)을 쓰므로 C1E1 은 **v11 부터 체인 순서대로**: TC-D=v11, TC-E=v12, TC-F=v13, g1/TC-A/TC-C 가 추가 필드를 쓰면 v14 이후(카드 순서대로 1씩; 번호는 병합 때 최종 정렬). sim FormatVersion — 병합 계획 번호(rail 58, t30a 59, t30b 60, IsAi 61, AE2 62, river 63, 다리 64, T32b 65, T34a 66, T48b1 67) 뒤 **TC-G=68, TC-C=69**(필요할 때만; Replay 불변이 기본). 에이전트는 이 표에서 자기 번호를 쓰고 병합 때 fv_renumber 로 정렬.
