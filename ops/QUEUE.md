@@ -33,6 +33,16 @@ wip/* 복원 작업(T01 T03 T04 T05 T07): 역할 란의 앞 역할이 main 에�
 | T25 | 착검 멈춤 범위 = 모든 돌격 (D02 A); 전환 거리 3칸 유지 (D01 B, 코드 변경 없음) | sim | D中 R3 S H3 Wlight | T03 위 스택 | assigned |
 | T26 | 레거시 이메일 차단 git 훅 설치 (D20 A) | docs | D下 R1 S H0 Wlight | 없음 | done (훅 설치됨 .git/hooks pre-commit·commit-msg; 2026-10-22) |
 | T20 | 저장소 이동 마무리 (옛 폴더 삭제 = 사용자 U02) | docs | D下 R1 S H0 Wlight | U02 | blocked(U02) |
+| T39a | 하천 1: Ford 지형 + 이동 배수 + paint 폭 (rail 위 스택, FV rail+1) | feature | D中 R2 S H2 Wlight | rail(T07) | queued |
+| T39b | 하천 2: ClearFor 물 사선 측정 + 길찾기 · 도하 AI · NearWater | sim | D上 R2 SM H2 Wlight | T39a | queued |
+| T39c | 하천 3: 렌더 + 시험 지도 + 접촉 시트 | feature | D中 R1 SM H1 Wlight | T39a | queued |
+| T39d | 하천 4(선택): Bridge 지형 | feature | D中 R1 S H1 Wlight | T39a T39c | queued (선택 · 사용자 확인 뒤) |
+| T39e | 행진 사격 총구 앵커 재계산 | art | D中 R1 S H0 Wheavy | T11 완료 | queued (blocked: T11) |
+| T39f | 한국 x0.78 / 봉천 x1.22 색 적용 확인 | art | D中 R1 S H0 Wlight | T11 완료 | queued (blocked: T11) |
+| T39g | 간도 의용대 복식 | art | D中 R1 S H0 Wlight | T11 완료 | queued (blocked: T11) |
+| T39h | 보병 모션 2차 (분할 권장 h1/h2) | art | D中 R1 L H0 Wheavy | T11 완료; T39j 와 직렬 | queued (blocked: T11) |
+| T39i | 가옥 폐허 새 그림 | art | D中 R1 S H0 Wlight | T11 완료 | queued (blocked: T11) |
+| T39j | 엎드려쏴 재확인 | art | D中 R1 S H0 Wlight | T11 완료; T39h 와 직렬 | queued (blocked: T11) |
 
 **정책 (사용자 2026-10-22, 강조): WIP 는 병합하지 않는다. WIP 작업은 재개해서 완료(wip-ready)까지만 한다.** merger 는 발주하지 않는다. 선행이 '병합'인 카드는 선행 카드의 wip 브랜치 위에 쌓아(스택) 진행한다. main 에는 WIP 가 들어가지 않는다(사용자 지시 전까지).
 
