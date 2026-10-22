@@ -1,0 +1,307 @@
+{
+  "Version": 12,
+  "CampaignId": "c1",
+  "NextMission": "c1_02_tumen",
+  "Completed": [
+    "c0_01_bandits",
+    "c1_01_hoeryong"
+  ],
+  "History": [
+    {
+      "MissionId": "c1_01_hoeryong",
+      "Title": "1-1",
+      "DurationSeconds": 931.5,
+      "EnemyKills": 40,
+      "Lost": 5,
+      "Survivors": 55,
+      "SavedAt": "2026-10-22T10:00:00"
+    }
+  ],
+  "PromotionLog": [
+    {
+      "AfterMission": "c1_01_hoeryong",
+      "Officer": false,
+      "UnitId": 7,
+      "Key": 0,
+      "FromRank": 0,
+      "ToRank": 1
+    }
+  ],
+  "PromotionsThisBreak": 1,
+  "PrisonersRepatriated": 3,
+  "PrisonersInterned": 2,
+  "Day": 12,
+  "Timeline": [
+    {
+      "Day": 6,
+      "Kind": "mission",
+      "Id": "c1_01_hoeryong",
+      "Title": "1-1",
+      "Choice": 0
+    }
+  ],
+  "CommanderPool": [
+    {
+      "Id": "sample_a",
+      "Status": "hired",
+      "Regiment": 1,
+      "Favor": 40,
+      "FavorLastMission": "c1_01_hoeryong",
+      "HiredDay": 3,
+      "DismissedDay": 0,
+      "TimesHired": 1
+    }
+  ],
+  "CampaignOfficers": [
+    {
+      "Key": 1,
+      "Name": "이 참위",
+      "Rank": 0,
+      "Xp": 0,
+      "School": "",
+      "Assignment": "",
+      "Battalion": 0,
+      "StaffSlot": "",
+      "Status": "alive",
+      "WoundedUntilMission": 0,
+      "AlwaysWounded": false,
+      "TerminalReady": false,
+      "Merits": 12,
+      "Traits": [
+        "brave"
+      ],
+      "DeathMission": "",
+      "DeathDay": 0
+    }
+  ],
+  "NextOfficerKey": 2,
+  "Units": [
+    {
+      "Id": 7,
+      "Unit": "rifleman",
+      "Name": "김 일병",
+      "Kills": 4,
+      "Rank": 1,
+      "StartRank": 0
+    }
+  ],
+  "Officers": [
+    {
+      "Id": 2,
+      "Unit": "officer",
+      "Name": "박 참위",
+      "Kills": 1,
+      "Rank": 0,
+      "StartRank": 0,
+      "OfficerRank": 2,
+      "Xp": 30,
+      "Post": "company",
+      "Key": 1
+    }
+  ],
+  "HowitzerCompany": true,
+  "Difficulty": "normal",
+  "EntryUnits": [
+    {
+      "Id": 7,
+      "Unit": "rifleman",
+      "Name": "김 일병",
+      "Kills": 4,
+      "Rank": 1,
+      "StartRank": 0
+    }
+  ],
+  "EntryOfficers": [
+    {
+      "Id": 2,
+      "Unit": "officer",
+      "Name": "박 참위",
+      "Kills": 1,
+      "Rank": 0,
+      "StartRank": 0,
+      "OfficerRank": 2,
+      "Xp": 30,
+      "Post": "company",
+      "Key": 1
+    }
+  ],
+  "EntryMission": "c1_01_hoeryong",
+  "Manpower": {
+    "Recruits": 2000,
+    "Wounded": 0,
+    "Reserve": 0
+  },
+  "Supply": 2500,
+  "Stock": {
+    "Rifles": {
+      "ru": 3000
+    },
+    "Ammo": {
+      "ru": 100000,
+      "jp": 100000,
+      "de": 100000,
+      "fr": 100000,
+      "jpOld": 100000
+    },
+    "Shells": {
+      "infGun": 500,
+      "field": 300,
+      "howitzer": 150
+    },
+    "Heavy": {},
+    "Horses": 100,
+    "Prisoners": 4,
+    "RecentLog": [
+      "보급 +100"
+    ]
+  },
+  "Roster": [
+    {
+      "Id": "b1_c1",
+      "BattalionNumber": 1,
+      "BattalionName": "제1대대",
+      "Kind": "infantry",
+      "Name": "제1중대",
+      "Strength": 60,
+      "MaxStrength": 60,
+      "Wounded": 2,
+      "UnhealedOps": 1,
+      "Available": true,
+      "Mandatory": false,
+      "Caliber": "ru",
+      "Regiment": 1,
+      "Fatigue": 20,
+      "Morale": 65
+    },
+    {
+      "Id": "b1_c2",
+      "BattalionNumber": 1,
+      "BattalionName": "제1대대",
+      "Kind": "infantry",
+      "Name": "제2중대",
+      "Strength": 60,
+      "MaxStrength": 60,
+      "Wounded": 2,
+      "UnhealedOps": 1,
+      "Available": true,
+      "Mandatory": false,
+      "Caliber": "ru",
+      "Regiment": 1,
+      "Fatigue": 20,
+      "Morale": 65
+    },
+    {
+      "Id": "b1_c3",
+      "BattalionNumber": 1,
+      "BattalionName": "제1대대",
+      "Kind": "infantry",
+      "Name": "제3중대",
+      "Strength": 60,
+      "MaxStrength": 60,
+      "Wounded": 2,
+      "UnhealedOps": 1,
+      "Available": true,
+      "Mandatory": false,
+      "Caliber": "ru",
+      "Regiment": 1,
+      "Fatigue": 20,
+      "Morale": 65
+    },
+    {
+      "Id": "mg",
+      "BattalionNumber": 0,
+      "BattalionName": "직할",
+      "Kind": "mg",
+      "Name": "기관총중대",
+      "Strength": 30,
+      "MaxStrength": 30,
+      "Wounded": 2,
+      "UnhealedOps": 1,
+      "Available": true,
+      "Mandatory": false,
+      "Caliber": "ru",
+      "Regiment": 1,
+      "Fatigue": 20,
+      "Morale": 65
+    }
+  ],
+  "Flags": {
+    "heir_mood": 60,
+    "cmd_favor": 50
+  },
+  "Seed": 19200401,
+  "Pending": {
+    "MissionId": "c1_02_tumen",
+    "DeployedCompanyIds": [
+      "b1_c1"
+    ],
+    "SupplySpent": 100,
+    "AmmoLoaded": 6000,
+    "AmmoScale": 1,
+    "AmmoByCaliber": {
+      "ru": 6000
+    },
+    "ShellsLoaded": {
+      "field": 30
+    },
+    "ShellScale": {
+      "field": 1
+    },
+    "RefusedMandatory": false
+  },
+  "Episode": {
+    "EpisodeId": "c1e1",
+    "NodeId": "OP1",
+    "SelectNode": "sk1",
+    "DaysUsed": 2,
+    "Selected": [
+      "sk1"
+    ],
+    "FailedSk": [
+      "sk2"
+    ],
+    "Variant": "a",
+    "Waited": true,
+    "DeadlineDay": 14,
+    "Late": false,
+    "Outcomes": [
+      {
+        "Node": "BT1",
+        "Outcome": "win"
+      }
+    ],
+    "Checkpoint": {
+      "Vars": [],
+      "Supply": 1200
+    },
+    "Finished": false
+  },
+  "LastDebrief": {
+    "MissionId": "c1_01_hoeryong",
+    "Title": "1-1",
+    "TotalLost": 5,
+    "WoundedReturned": 0,
+    "Dead": 0,
+    "DischargedWounded": 0,
+    "EnemyKills": 40,
+    "SupplyBefore": 0,
+    "SupplyAfter": 0,
+    "RegularSupplyAdded": 0,
+    "RecruitsAdded": 0,
+    "LootedSupply": 0,
+    "LootedRifles": 0,
+    "LootedAmmo": 0,
+    "LootedHorses": 0,
+    "AmmoRefunded": 0,
+    "ShellsFired": {
+      "field": 10
+    },
+    "LootedShells": {
+      "field": 2
+    },
+    "PrisonersTaken": 4
+  },
+  "NextAvailable": true,
+  "NextName": "두만강 도하",
+  "HasProgress": true
+}

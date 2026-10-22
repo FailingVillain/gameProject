@@ -102,6 +102,7 @@ public static class CompatGateSelfTest
         s.Pending = new CampaignState.PendingOperation { MissionId = "c1_02_tumen", DeployedCompanyIds = new() { "b1_c1" }, SupplySpent = 100f, AmmoLoaded = 6000, AmmoByCaliber = new() { ["ru"] = 6000 }, ShellsLoaded = new() { ["field"] = 30 }, ShellScale = new() { ["field"] = 1f } };
         s.NextOfficerKey = 2;
         s.Funds = 7; s.EpisodePermanentSupplyLoss = 3f; s.Pending.EpisodeSupplyReserved = 50f;   // v11 (TC-D)
+        s.Episode = new EpisodeState { EpisodeId = "c1e1", NodeId = "OP1", SelectNode = "sk1", DaysUsed = 2, Selected = new() { "sk1" }, FailedSk = new() { "sk2" }, Variant = "a", Waited = true, DeadlineDay = 14, Outcomes = new() { new EpisodeOutcome { Node = "BT1", Outcome = "win" } }, Checkpoint = new EpisodeCheckpoint { Supply = 1200f } };   // v12 (C1E1-g1)
         s.LastDebrief = new CampaignState.DebriefReport { MissionId = "c1_01_hoeryong", Title = "1-1", TotalLost = 5, EnemyKills = 40, ShellsFired = new() { ["field"] = 10 }, LootedShells = new() { ["field"] = 2 }, PrisonersTaken = 4 };
         return s;
     }
