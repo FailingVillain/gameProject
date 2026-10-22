@@ -94,6 +94,14 @@ public static class ForestSelfTest
 
     static void TestProbe()
     {
+        // formation (FV51): 이 장면은 정리 안 된 덩어리로 시작해 8초 뒤 휴식 정렬 (FormRelax.cs) 이 행군 상태를 만들어 정찰 방향을 바꾼다 — 숲 탐색만 보도록 끈다.
+        float restWas = defs.CombatRules.RestAlignSec;
+        defs.CombatRules.RestAlignSec = 0;
+        try { ProbeBody(); } finally { defs.CombatRules.RestAlignSec = restWas; }
+    }
+
+    static void ProbeBody()
+    {
         using var nd = TestDefs.NoCommandDelay();
         // 켬: 적이 없고 앞에 숲이 있으면 중대가 서 있어도 (교착) 정찰조가 숲 속으로 들어간다
         var (w, c, sc) = Setup();
