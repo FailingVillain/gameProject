@@ -7,7 +7,7 @@ namespace KoreanDivision.Core;
 /// <code>
 /// {
 ///   "name": "4인 평지", "width": 128, "height": 128, "base": "grass",
-///   "paint": [ { "terrain": "water", "rect": [x, y, w, h] }, { "terrain": "rock", "circle": [cx, cy, r] } ],
+///   "paint": [ { "terrain": "water", "rect": [x, y, w, h] }, { "terrain": "rock", "circle": [cx, cy, r] }, { "terrain": "rail", "line": [x0, y0, x1, y1, ...] } ],
 ///   "starts": [ [16, 112], ... ],                 // 세력 1, 2, ... 의 대도시 중심 타일
 ///   "factions": [ { "name": "한국", "en": "korean", "lang": "ko", "color": [r, g, b], "team": 1 }, ... ],   // 선택: 세력 N = N번째 정의 (표시 이름 · id(en, --faction 용) · 보이스 언어 · 색). id: korean japanese fengtian russian soviet
 ///   "sites":  [ { "at": [26, 102], "type": "city", "owner": 0 } ], // 점령 시설 중심 타일, type = 건물 키 (기본 village), owner = 시작 소유 세력 (0 = 중립)
@@ -127,6 +127,10 @@ public sealed partial class MapFile
             if (p.Tiles != null)
                 foreach (var tp in p.Tiles)
                     if (tp is { Length: 2 } && map.InBounds(tp[0], tp[1])) Put(tp[0], tp[1]);
+            if (p.Line is { Length: >= 4 } ln)
+                for (int k = 0; k + 3 < ln.Length; k += 2)   // 꺾은선 [x0, y0, x1, y1, x2, y2, ...] — 8방향 이어진 1칸 폭 (선로 · 길)
+                    foreach (var (lx, ly) in LineTiles(ln[k], ln[k + 1], ln[k + 2], ln[k + 3]))
+                        if (map.InBounds(lx, ly)) Put(lx, ly);
         }
         Require(Factions.Count <= Starts.Count, $"세력 정의 {Factions.Count}개가 시작 위치 {Starts.Count}개보다 많음");
         foreach (var f in Factions) Require(f.Color == null || f.Color.Length == 3, "세력 색은 [r, g, b]");
@@ -189,12 +193,27 @@ public sealed partial class MapFile
         "wire" => TerrainType.Wire,
         "trench" => TerrainType.Trench,
         "crater" => TerrainType.Crater,
-        _ => throw new InvalidDataException($"알 수 없는 지형 '{name}' (grass, dirt, sand, water, rock, forest, rubble, house, wire, trench, crater / 높이만: high, low)"),
+        "rail" => TerrainType.Rail,
+        _ => throw new InvalidDataException($"알 수 없는 지형 '{name}' (grass, dirt, sand, water, rock, forest, rubble, house, wire, trench, crater, rail / 높이만: high, low)"),
     };
 
     static void Require(bool ok, string msg)
     {
         if (!ok) throw new InvalidDataException(msg);
+    }
+
+    /// <summary>두 칸 사이 직선 (브레즌햄, 8방향 이웃으로 이어짐, 양 끝 포함).</summary>
+    internal static IEnumerable<(int X, int Y)> LineTiles(int x0, int y0, int x1, int y1)
+    {
+        int dx = Math.Abs(x1 - x0), dy = -Math.Abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1, err = dx + dy;
+        while (true)
+        {
+            yield return (x0, y0);
+            if (x0 == x1 && y0 == y1) yield break;
+            int e2 = 2 * err;
+            if (e2 >= dy) { err += dy; x0 += sx; }
+            if (e2 <= dx) { err += dx; y0 += sy; }
+        }
     }
 }
 
@@ -217,12 +236,14 @@ public sealed class FactionDef
 
 public sealed class Paint
 {
-    /// <summary>지형 이름 (grass · dirt · sand · water · rock · forest · rubble · house · wire · trench) 또는 높이만 바꾸는 "high" · "low".</summary>
+    /// <summary>지형 이름 (grass · dirt · sand · water · rock · forest · rubble · house · wire · trench · crater · rail — 선로는 1칸 폭 rect · tiles 로 이어 칠한다, 꺾임 · 대각선 연결은 RailRenderer 가 이웃으로 정함) 또는 높이만 바꾸는 "high" · "low".</summary>
     public string Terrain { get; set; } = "grass";
     public int[]? Rect { get; set; }
     public int[]? Circle { get; set; }
     /// <summary>낱칸 목록 [[x, y], ...] (가옥 · 철조망 · 참호선을 한 칸씩 그릴 때).</summary>
     public int[][]? Tiles { get; set; }
+    /// <summary>꺾은선 [x0, y0, x1, y1, ...] — 1칸 폭으로 이어 칠한다 (선로 · 길).</summary>
+    public int[]? Line { get; set; }
     /// <summary>지형과 함께 고지 표시도 바꾼다 (생략 = 그대로).</summary>
     public bool? High { get; set; }
 }

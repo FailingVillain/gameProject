@@ -487,6 +487,11 @@ public sealed partial class MapRenderer : IDisposable
                 Raylib.ImageDrawRectangle(ref img, 4, 4, 23, 21, c);
                 Raylib.ImageDrawRectangle(ref img, 4, 14, 23, 2, Palette.Shade(c, -25));
                 break;
+            case TerrainType.Rail:
+                // 선로 자갈 바닥 (테마 그림 없음 → 절차 타일). 침목 · 레일은 RailRenderer 가 이웃 방향으로 덧그린다.
+                for (int k = 0; k < 14; k++)
+                    Raylib.ImageDrawPixel(ref img, (int)((h >> (k * 2)) % 32), (int)((h >> (k * 2 + 7)) % 32), Palette.Shade(c, k % 2 == 0 ? -26 : 20));
+                break;
             case TerrainType.Wire:
                 for (int k = 0; k < 3; k++)
                 {

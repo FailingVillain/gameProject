@@ -712,3 +712,7 @@
 
 ### 전투공병 infantry_pioneer (T32a, 2026-10-22, 브랜치 `kd/t32a-pioneer`, ai3b2 위 스택)
 - 철조망 절단 전용 병종 데이터 (규칙 15: 설치 · 폭파 · 참호 구축 제외). 기존 `wireCutter: true` (CutWireCommand, breach.wireCutSec) 만 사용 — 코드 · Defs 필드 · 저장 변경 없음 (FormatVersion/Replay 불변). hp 100 · 속도 3.2 · 소총 `rifle_mosin` + 총검 · 수류탄 2 · 연막 수류탄 0 · `koreaOnly` · 그림은 `artAs: infantry_regular` 임시 (T32d). 어떤 편성 · 미션에도 없음. 시험 `KD_SELFTEST_ONLY=pioneer` (PioneerSelfTest), Combat4 "수류탄 보유" 기대 목록에 전투공병 추가.
+## 철도 선로 지형 (2026-10-22, 브랜치 `rail`, T07, FormatVersion 53)
+- `TerrainType.Rail` (enum 끝 값): 통행 · 이동 배수 1 · 엄폐 없음 · 시야/사선 안 막음 (= 맨땅). 포탄 구덩이 안 생김 (TryCrater 대상 아님). 선로 파괴 · 장갑열차는 범위 밖.
+- 지도 json paint `"line": [x0, y0, x1, y1, ...]` = 브레즌햄 1칸 폭 꺾은선 (`MapFile.LineTiles`). 렌더: 자갈 절차 타일 (MapRenderer) + 침목 · 레일 덧그림 `src/Render/RailRenderer.cs` (TerrainVersion 캐시).
+- 테스트 `KD_SELFTEST_ONLY=terrain` (선로 블록 6검사).

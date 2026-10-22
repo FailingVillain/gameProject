@@ -20,6 +20,7 @@ public static class BuildingRenderer
     {
         var (min, max) = cam.VisibleWorld();
         curZoom = cam.Zoom;
+        RailRenderer.Draw(world.Map, cam, min, max);   // 선로 침목 · 레일 (지형 다음, 가옥 · 건물 앞)
         DrawHouses(world.Map, cam, min, max);
         foreach (var g in world.Fog.Ghosts(me))
         {
