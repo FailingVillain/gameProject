@@ -193,9 +193,10 @@ public sealed partial class GameMap
     {
         EnsureTerrain();
         int seeDepth = Defs.Current.Terrain.ForestSeeDepth;
+        bool waterOpen = !Defs.Current.Terrain.WaterBlocksFire;   // T39b: false 면 물 위 사선 허용
         var (x, y) = TileOf(a);
         var (ex, ey) = TileOf(b);
-        if (!ClearFor(x, y, ignoreA, ignoreB)) return false;
+        if (!ClearFor(x, y, ignoreA, ignoreB, waterOpen)) return false;
         bool shooterLow = !high[y * Width + x];
         bool passedHigh = false;
         Vector2 d = b - a;
@@ -211,10 +212,10 @@ public sealed partial class GameMap
             else if (tMaxY < tMaxX) { y += stepY; tMaxY += tDeltaY; }
             else
             {
-                if (!ClearFor(x + stepX, y, ignoreA, ignoreB) || !ClearFor(x, y + stepY, ignoreA, ignoreB)) return false;
+                if (!ClearFor(x + stepX, y, ignoreA, ignoreB, waterOpen) || !ClearFor(x, y + stepY, ignoreA, ignoreB, waterOpen)) return false;
                 x += stepX; y += stepY; tMaxX += tDeltaX; tMaxY += tDeltaY;
             }
-            if (!ClearFor(x, y, ignoreA, ignoreB)) return false;
+            if (!ClearFor(x, y, ignoreA, ignoreB, waterOpen)) return false;
             if (passedHigh) return false;                                  // 평지 사격자: 고지 칸 너머
             int i = y * Width + x;
             if ((x != ex || y != ey) && forestDepth[i] > seeDepth) return false;   // 깊은 숲 (사이 칸)
@@ -261,11 +262,11 @@ public sealed partial class GameMap
         return LosBlock.None;
     }
 
-    bool ClearFor(int x, int y, int ignoreA, int ignoreB)
+    bool ClearFor(int x, int y, int ignoreA, int ignoreB, bool waterOpen = false)
     {
         if (!InBounds(x, y)) return false;
         int i = y * Width + x;
-        if (!walkable[i] && tiles[i] != TerrainType.Wire) return false;   // N38: 철조망은 통행만 막고 사선은 막지 않는다 (Terrain.cs) — 물 · 바위 · 집은 그대로 막음
+        if (!walkable[i] && tiles[i] != TerrainType.Wire && !(waterOpen && tiles[i] == TerrainType.Water)) return false;   // T39b: waterOpen (terrain.waterBlocksFire=false) = 직사 사선만 물 위를 지난다   // N38: 철조망은 통행만 막고 사선은 막지 않는다 (Terrain.cs) — 물 · 바위 · 집은 그대로 막음
         int o = occupant[i];
         return o == 0 || passable[i] || o == ignoreA || o == ignoreB;
     }

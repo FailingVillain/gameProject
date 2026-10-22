@@ -305,6 +305,8 @@ public sealed class TerrainRulesDef
     public int ForestSeeDepth { get; set; } = 2;
     /// <summary>여울 (얕은 물) 칸 이동 배수 — 가칭 (T39a, 측정 보류).</summary>
     public float FordMove { get; set; } = 0.6f;
+    /// <summary>true (기본, 현행) = 물 칸이 직사 사선을 막는다. false = 직사 (los) 사격이 물 위를 지난다 (강 건너 사격, T39b Q6 — 이동용 직선 검사는 그대로). 기본을 false 로 바꾸는 것은 0.3 밸런스 패스 결정 (시험 장면에서 유닛 20→126 · 사격 2530→6119).</summary>
+    public bool WaterBlocksFire { get; set; } = true;
     public float RubbleMove { get; set; } = 0.6f;
     public float RubbleHit { get; set; } = 0.5f;
     public float RubbleSuppress { get; set; } = 0.6f;

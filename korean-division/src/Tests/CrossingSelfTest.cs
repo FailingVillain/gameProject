@@ -23,6 +23,9 @@ public static class CrossingSelfTest
         {
             TestValues();
             TestFindCrossing();
+            TestRiverFire();
+            TestRiverCrossingLanes();
+            TestFordSlows();
             TestCounterPosture();
             TestBridgeCrossing();
             TestCrossingSnapshot();
@@ -114,6 +117,78 @@ public static class CrossingSelfTest
         for (int y = 0; y < 120; y++) for (int x = 0; x < 160; x++) m4.Set(x, y, x is >= 75 and <= 82 && y is >= 50 and <= 56 ? TerrainType.Water : TerrainType.Grass);
         check(!TacticalAi.FindCrossing(m4, new Vector2(79.5f, 70.5f), new Vector2(79.5f, 38.5f), C, out _, out _, out _, out _), "병목 찾기: 작은 못 (옆 8칸) 은 돌아감 — 병목 아님");
         check(!TacticalAi.FindCrossing(RiverMap((78, 4)), new Vector2(60.5f, 90.5f), new Vector2(100.5f, 70.5f), C, out _, out _, out _, out _), "병목 찾기: 직선이 강을 안 지나면 없음");
+    }
+
+    // ---------------------------------------------------------------- 하천 (T39b): 물 위 사선 · 여울 도하 병목 · NearWater
+
+    static GameMap RiverMapText(int riverW, bool ford)
+    {
+        string paint = $"{{\"terrain\":\"water\",\"rect\":[30,0,{riverW},64]}}" + (ford ? ",{\"terrain\":\"ford\",\"rect\":[30,20,6,4]}" : "");
+        string json = $"{{\"name\":\"rv\",\"width\":64,\"height\":64,\"base\":\"grass\",\"starts\":[[4,4],[60,60]],\"paint\":[{paint}]}}";
+        var w = TestDefs.Strip(World.CreateStandard(MapFile.LoadText(json, "rv", 1), defs));
+        return w.Map;
+    }
+
+    /// <summary>T39b Q6: terrain.waterBlocksFire (기본 true = 현행) — true 면 물 칸이 직사 사선 (HasFiringLine, rifle los) 을 막고, false 면 물 위를 지난다 (이동용 HasLineOfSight 는 항상 막음). 바위 등은 항상 막음. 두 설정 모두 2 사수 실사격으로 확인.</summary>
+    static void TestRiverFire()
+    {
+        var T = defs.Terrain;
+        check(T.WaterBlocksFire, "terrain.waterBlocksFire 기본 true (현행 동작 · 골든 불변)");
+        bool save = T.WaterBlocksFire;
+        try
+        {
+            foreach (bool blocks in new[] { true, false })
+            {
+                T.WaterBlocksFire = blocks;
+                foreach (int rw in new[] { 1, 3, 6 })
+                {
+                    var m = RiverMapText(rw, false);
+                    var a = new Vector2(28.5f, 32.5f); var b = new Vector2(30 + rw + 1.5f, 32.5f);
+                    bool fl = m.HasFiringLine(a, b, 0, 0), los = m.HasLineOfSight(a, b);
+                    check(fl == !blocks && !los, $"waterBlocksFire={blocks} 폭 {rw}: 물 건너 사선 {(fl ? "트임" : "막힘")} · 이동용 직선 검사 {(los ? "트임" : "막힘")} (이동용은 항상 막힘)");
+                }
+                var mr = RiverMapText(1, false);
+                mr.Set(40, 32, TerrainType.Rock);
+                check(!mr.HasFiringLine(new Vector2(38.5f, 32.5f), new Vector2(42.5f, 32.5f), 0, 0), $"waterBlocksFire={blocks}: 바위는 사선을 막음");
+                var w = TestDefs.Strip(World.CreateStandard(MapFile.LoadText("{\"name\":\"rv\",\"width\":64,\"height\":64,\"base\":\"grass\",\"starts\":[[4,4],[60,60]],\"paint\":[{\"terrain\":\"water\",\"rect\":[30,0,1,64]}]}", "rv", 1), defs));
+                w.Fog.Enabled = false;
+                var s = w.SpawnUnit(defs.Units["infantry"], 1, new Vector2(27.5f, 32.5f));
+                var foe = w.SpawnUnit(defs.Units["infantry"], 2, new Vector2(33.5f, 32.5f));
+                foe.Weapon = null; w.Hold(1, new[] { s }); w.Hold(2, new[] { foe });
+                for (int i = 0; i < 60 * 8; i++) { foe.Hp = 100000; w.Step(); }
+                bool fired = s.LastShotTick > 0 && s.Target == foe;
+                check(fired == !blocks, $"waterBlocksFire={blocks}: 물 한 칸 건너 두 사수 사격 {(fired ? "함" : "안 함")} (틱 {s.LastShotTick})");
+            }
+        }
+        finally { T.WaterBlocksFire = save; }
+    }
+
+    /// <summary>폭 1~6 하천 + 여울(폭 6): FindCrossing 이 건널 곳을 잡는지 · NearWater 는 Water 만.</summary>
+    static void TestRiverCrossingLanes()
+    {
+        var C = defs.Tactics.Crossing;
+        for (int rw = 1; rw <= 6; rw++)
+        {
+            var m = RiverMapText(rw, true);
+            bool f = TacticalAi.FindCrossing(m, new Vector2(20.5f, 40.5f), new Vector2(45.5f, 40.5f), C, out var en, out var ex, out var n, out float wd);
+            if (rw >= defs.Tactics.Crossing.MinObstacle) check(f && wd == 4 && MathF.Abs(en.Y - 22f) < 0.6f, $"하천 폭 {rw} + 여울(폭 4): 건널 곳 폭 {wd} 입구 ({en.X:0.0},{en.Y:0.0})");
+            else check(!f, $"하천 폭 {rw} (< minObstacle {defs.Tactics.Crossing.MinObstacle}): 병목 아님 (현행; 좁은 띠는 일반 이동 · 여울을 길찾기가 알아서 사용)");
+        }
+    }
+
+    /// <summary>여울에서 실제로 느려진다 (MoveMul 값만이 아니라 이동 거리): 같은 시간 여울 띠 위 보병 이동량 ≈ 풀밭 × fordMove. 길찾기 비용에는 MoveMul 을 쓰지 않는다 (속도만) — 카드 허용.</summary>
+    static void TestFordSlows()
+    {
+        const string J = "{\"name\":\"fs\",\"width\":64,\"height\":64,\"base\":\"grass\",\"starts\":[[4,4],[60,60]],\"paint\":[{\"terrain\":\"ford\",\"rect\":[5,40,50,3]}]}";
+        var w = TestDefs.Strip(World.CreateStandard(MapFile.LoadText(J, "fs", 1), defs));
+        w.Fog.Enabled = false;
+        var g = w.SpawnUnit(defs.Units["infantry"], 1, new Vector2(8.5f, 20.5f));
+        var f = w.SpawnUnit(defs.Units["infantry"], 1, new Vector2(8.5f, 41.5f));
+        w.Move(1, new[] { g }, new Vector2(55.5f, 20.5f)); w.Move(1, new[] { f }, new Vector2(55.5f, 41.5f));
+        for (int i = 0; i < 60 * 10; i++) w.Step();
+        float dg = g.Pos.X - 8.5f, df = f.Pos.X - 8.5f, ratio = df / MathF.Max(dg, 0.001f);
+        float fm = defs.Terrain.FordMove;
+        check(dg > 3f && df > 1f && df < dg && MathF.Abs(ratio - fm) < 0.12f, $"여울 감속 실측: 10초 이동 풀밭 {dg:0.0} · 여울 {df:0.0} (비 {ratio:0.00} ≈ fordMove {fm})");
     }
 
     static void TestCounterPosture()
