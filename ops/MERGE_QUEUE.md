@@ -40,6 +40,7 @@
 | 21085f4 | kd/t24-crossing-fix | 도하 단계 observer keep=0 (B5b) · FV 55/21 · detcheck ccfbd1ddab1c1dfe 불변 · crossing/tactical/officer/command PASS · uiicons FAIL 1건(정상) |
 | efb0850 | kd/acting-delay-tier | T37 대리 부사관 지연 등급 (B6) · FV 55/21 · detcheck 6c96b4d6c1603324 ac9ae47194d72378 (units=86 shots=3454; golden 파일은 HEAD 유지라 MISMATCH 정상, 재생성 안 함) · officer/command/replay/crossing PASS |
 | 97472a0 | kd/t25-bayonet-all | T25 착검 전체 (B7) · FV 55/21 · detcheck b7c3761c573cad25 477d7cb573a6d943 (units=112 shots=2890; T37 포함이라 리허설 bef5ffb0 과 다름, 기록만) · charge/pursuit/crossing PASS |
+| 5a64b1f | kd/t31a-regroup | T31a 재집결 제한 (B8, 기본 꺼짐) · FV 55/21 · detcheck b7c3761c573cad25 유지 · pursuit2/tactical/crossing PASS |
 
 **큐 닫음 (release, 2026-10-22)**: fix/n12-forest 큐 — 전체 selftest 2008 OK/FAIL 0 · detcheck 8변형 동일 · snaptest OK · dist 발행. (T03~T05 큐의 T13 은 별도, 아직 queued.)
 
