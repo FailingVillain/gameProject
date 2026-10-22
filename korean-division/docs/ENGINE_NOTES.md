@@ -692,5 +692,5 @@
 ## T24 D08 수정안 ①②③ (2026-10-22, wip kd/t24-s1s3, 값은 후보 — 사용자 승인 대기)
 - ① `officers.actingMinRank` (0): 부사관 분대장이 하나도 없으면 사병 계급 ≥ 값인 중대원 중 최고 계급 (같으면 Id 작은 쪽) 이 대리 (`World.ActingNco`). −1 = 옛 규칙. 대리 능력은 기존 Nco 그대로 (화력-기동만).
 - ② `artilleryAi.observerMinEnemyDist` (15, tactics.json): 보이는 적이 관측자 15칸 안이면 엄폐 (N22 Cover) 중이라도 AI 가 물러나게 하고, 고른 관측 지점이 보이는 적 15칸 안이면 지점 대신 지금 자리에서 적 무게중심 반대로 곧장 물러남 (`ObserverThink`). 첫 시도 (Cover 건너뛰기 해제 + 반경만) 는 D 관측반 생존 7→5 로 효과 없음 — 원인은 전선 기준 지점 · 엄폐 찾기가 적 쪽을 지나가게 한 것.
-- ③ `chargeMinSuppression` (0.2, ai_profiles default tactics + tactics.json drill): 공격 돌격 (AI TryAssault attack · 기동조 TryDrillCharge 의 chargeRange 밖) 이 수 우세 (chargeOdds) 만으로 넘을 때도 표적 둘레 적 평균 제압 ≥ 값. 역습 · 근접 (chargeRange 안) 은 그대로.
+- ③ `chargeMinSuppression` (기본 0 = 끔, 사용자 2026-10-22 결정; 켤 때 후보 0.2; ai_profiles default tactics + tactics.json drill): 공격 돌격 (AI TryAssault attack · 기동조 TryDrillCharge 의 chargeRange 밖) 이 수 우세 (chargeOdds) 만으로 넘을 때도 표적 둘레 적 평균 제압 ≥ 값. 역습 · 근접 (chargeRange 안) 은 그대로.
 - tactics-obs 시각: TacticsObs [관측반] 사망 항목에 마지막 표본 상태 (정찰 상태/명령/보이는 적 거리/종류) 추가 (읽기 전용).

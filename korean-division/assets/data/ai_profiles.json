@@ -76,7 +76,7 @@
       "tactics": {
         "aggressiveness": 0.5, "retreatStrength": 0.67, "retreatSuppression": 0.6, "trench": 0.6,
         "chargeRange": 7, "chargeSuppression": 0.45, "chargeOdds": 1.6, "engageFrac": 0.6,
-        "chargeMinSuppression": 0.2,   // T24 ③ (D08, 후보값 — 사용자 승인 대기): 공격 돌격이 수 우세로만 조건을 넘어도 표적 둘레 적 평균 제압이 이 이상이어야 (0 = 끔)
+        "chargeMinSuppression": 0,     // T24 ③ (D08, 사용자 2026-10-22: 끔 — 켜려면 0.2 등): 공격 돌격이 수 우세로만 조건을 넘어도 표적 둘레 적 평균 제압이 이 이상이어야 (0 = 끔)
         "fireAndMovement": true, "boundLength": 0.35, "prepSeconds": 20, "liftDistance": 10,
         "outposts": true, "outpostDistance": 0.6, "depth": 0.8,
         "coverWeight": 1.0, "highWeight": 0.7, "losWeight": 0.8, "threatWeight": 0.8,

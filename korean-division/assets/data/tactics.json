@@ -43,7 +43,7 @@
     "chargeSuppression": 0.4, // 표적 둘레 적 평균 제압이 이 이상이면 chargeMaxDist 안에서 돌격
     "chargeMaxDist": 12,
     "chargeOdds": 1.6,        // 또는 기동조 돌격 가능 인원이 적 (표적 둘레 chargeStatsRadius) 의 이 배 이상이면 돌격 (둘레 chargeMgRadius 에 쏘는 기관총이 없을 때)
-    "chargeMinSuppression": 0.2,   // T24 ③ (D08, 후보값 — 사용자 승인 대기): chargeOdds 로만 넘는 기동조 돌격 (chargeRange 밖) 도 표적 둘레 적 평균 제압이 이 이상이어야 (0 = 끔)
+    "chargeMinSuppression": 0,     // T24 ③ (D08, 사용자 2026-10-22: 끔 — 켜려면 0.2 등): chargeOdds 로만 넘는 기동조 돌격 (chargeRange 밖) 도 표적 둘레 적 평균 제압이 이 이상이어야 (0 = 끔)
     "chargeStatsRadius": 10,
     "chargeMgRadius": 8,
     "replanDist": 5,          // 자리 잡은 기동조: 적과의 거리가 standoff + 이 값을 넘으면 (적이 옮김) 새 위치로

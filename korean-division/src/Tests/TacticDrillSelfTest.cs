@@ -313,6 +313,29 @@ public static class TacticDrillSelfTest
         float supp2 = foe2.Where(f => f.Alive).Select(f => f.SuppressionRatio).DefaultIfEmpty(0).Average();
         float dm = Vector2.Distance(Mean(Role(c2, UnitRole.Manoeuvre).Select(u => u.Pos)), c2.Drill.Enemy);
         check(charge2, $"화력-기동: 기동조가 자리에서 제압된 · 가까운 적에게 돌격 {charge2} (판단 {w2.Stats.DrillCharges}회, 적 생존 {foe2.Count(f => f.Alive)}, 적 제압 {supp2:0.00}, 기동조 상태 {c2.Drill.Man} 거리 {dm:0.0}, 목표까지 {Vector2.Distance(Mean(Role(c2, UnitRole.Manoeuvre).Select(u => u.Pos)), c2.Drill.ManGoal):0.0}, 적 {c2.Drill.Enemy} 목표 {c2.Drill.ManGoal} 기동조 {Mean(Role(c2, UnitRole.Manoeuvre).Select(u => u.Pos))} 국면 {c2.DrillPhase}, {w2.Tick}틱)");
+
+        // T24 ③ (사용자 2026-10-22: 기본 끔): 키는 남아 있고 0.2 로 명시해도 제압된 표적 (평균 ≥ chargeSuppression) 에는 그대로 돌격
+        check(defs.Tactics.Behaviour.ChargeMinSuppression == 0f, $"T24 ③ chargeMinSuppression 기본 = 0 (끔) {defs.Tactics.Behaviour.ChargeMinSuppression}");
+        float oldMin = defs.Tactics.Behaviour.ChargeMinSuppression;
+        defs.Tactics.Behaviour.ChargeMinSuppression = 0.2f;
+        try
+        {
+            var w3 = Bare();
+            for (int x = 70; x <= 90; x++) { w3.Map.Set(x, 97, TerrainType.Trench); w3.Map.Set(x, 98, TerrainType.Trench); }
+            var c3 = Placed(w3, CompanyTactic.FireManoeuvre, new Vector2(80, 124));
+            var foe3 = Foes(w3, 12, new Vector2(80, 97));
+            w3.AttackMove(1, c3.Members, new Vector2(80, 70), new FormSpec(0, 0, North));
+            bool charge3 = false;
+            for (int i = 0; i < 3000 && !charge3; i++)
+            {
+                Pin(foe3);
+                w3.Step();
+                charge3 = Role(c3, UnitRole.Manoeuvre).Any(u => u.Charging);
+                if (foe3.All(f => !f.Alive)) break;
+            }
+            check(charge3, $"T24 ③ chargeMinSuppression 0.2 명시: 제압된 표적에는 돌격 {charge3}");
+        }
+        finally { defs.Tactics.Behaviour.ChargeMinSuppression = oldMin; }
     }
 
     // ---------------------------------------------------------------- 지원 = 위협 우선
