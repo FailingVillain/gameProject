@@ -581,6 +581,7 @@ public sealed partial class Game : IDisposable
         else if (CodexBox != null) { }   // 도감 입력은 Draw 쪽 (CodexMenu.Draw) — 그동안 게임 입력은 막힘   // 도움말이 열려 있는 동안 게임 입력은 막힘 (F1 은 HandleGlobalKeys)
         else if (World.Winner != 0) { if (World.Mission != null) HandleMissionOver(); else HandleGameOver(); }
         else if (DeployPhase) UpdateDeploy();   // 미션 배치 단계 (GameMission.cs)
+        else if (DecisionBlocked) UpdateDecision();   // [g3] 미션 중 결정 팝업 (응답 전까지 시뮬 정지)
         else if (Input.IsKeyPressed(KeyboardKey.Enter) || Input.IsKeyPressed(KeyboardKey.KpEnter)) CommandBox.Open();
         else
         {
@@ -596,7 +597,7 @@ public sealed partial class Game : IDisposable
         if (replay != null && World.Tick >= replay.EndTick) Paused = true;
 
         // 고정 틱 시뮬레이션 (게임 속도 배율 적용)
-        if (!Paused && CodexBox == null && World.Winner == 0 && !DeployPhase)
+        if (!Paused && CodexBox == null && World.Winner == 0 && !DeployPhase && !DecisionBlocked)
         {
             accumulator += dt * Speed;
             int steps = 0, maxSteps = Config.MaxStepsPerFrame * 3;

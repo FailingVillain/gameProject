@@ -1,0 +1,1 @@
+2026-10-22 | FV+1 | Replay+1 | Schema+0 | base 2dbada7 (구 기반 FV53/Replay19) | g3 미션 이벤트 행동: MISN 끝 EventArmed/Vars/StartVars/PendingDecisions/Decisions + 리플레이 missiondecision 명령·머리말 시작 변수 (임시 FV 54 / Replay 20); 병합 라인(K3)이 지휘자 대신 작성, diff 로 확인
