@@ -247,7 +247,7 @@ public sealed class MainMenu
 
     void DrawSettings()
     {
-        float pw = MathF.Min(760, screenW - 40), ph = 600;
+        float pw = MathF.Min(760, screenW - 40), ph = 526 + 2 * (RowH + 16);   // 알림 줄 + 언어 줄
         var panel = new Rectangle((screenW - pw) / 2, MathF.Max(16, (screenH - ph) / 2 - 10), pw, ph);
         Ui.Panel(panel, Palette.Alpha(Palette.PanelDark, 235), Palette.HudTrim);
         Ui.Text(S.MenuSettings, panel.X + 24, panel.Y + 16, 26, Palette.Accent);
@@ -306,6 +306,15 @@ public sealed class MainMenu
         if (Button(new Rectangle(cx, y, 120, 32), UserSettings.AlertBand ? S.SetAlertBandOn : S.SetAlertBandOff, true, UserSettings.AlertBand))
         { UserSettings.AlertBand = !UserSettings.AlertBand; UserSettings.Save(); }
         Ui.Text(S.SetAlertBandNote, cx + 132, y + 8, 14, Palette.TextDim);
+        y += RowH + 16;
+
+        Ui.Text(S.SetLanguage, lx, y + 6, 16, Palette.TextDim);
+        float lgx = cx;
+        foreach (var (code, lab) in new[] { ("ko", "한국어"), ("en", "English") })
+        {
+            if (Button(new Rectangle(lgx, y, 120, 32), lab, true, KoreanDivision.Core.Loc.Language == code)) { KoreanDivision.Core.Loc.Language = code; UserSettings.Save(); }
+            lgx += 128;
+        }
         y += RowH + 16;
 
         Ui.Text(S.SetKeys, lx, y + 6, 16, Palette.TextDim);

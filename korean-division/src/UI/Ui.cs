@@ -87,11 +87,20 @@ public static class Ui
         for (int c = 32; c < 127; c++) set.Add(c);
         foreach (var s in extraText.Concat(TitleStrings))
             foreach (char ch in s) set.Add(ch);
-        if (displayOnly) { foreach (char ch in S.GameTitle) set.Add(ch); return set.ToArray(); }
+        if (displayOnly) { foreach (char ch in KoreanDivision.Core.Loc.WithKo(() => S.GameTitle)) set.Add(ch); return set.ToArray(); }
         foreach (var type in new[] { typeof(S), typeof(KoreanDivision.Core.SnapMsg) })   // SnapMsg = 저장 파일 오류 메시지 (불러오기 목록 · 알림에 그대로 표시)
+        {
             foreach (var f in type.GetFields(BindingFlags.Public | BindingFlags.Static))
                 if (f.IsLiteral && f.GetRawConstantValue() is string s)
                     foreach (char ch in s) set.Add(ch);
+            // [TI1] Loc.T 로 바뀐 프로퍼티 (한국어 원문은 ko 로 강제해 얻는다) - 언어를 바꿔도 아틀라스를 다시 만들지 않는다
+            foreach (var p in type.GetProperties(BindingFlags.Public | BindingFlags.Static))
+                if (p.PropertyType == typeof(string) && p.GetIndexParameters().Length == 0 && p.GetMethod != null)
+                    if (KoreanDivision.Core.Loc.WithKo(() => p.GetValue(null)) is string s2)
+                        foreach (char ch in s2) set.Add(ch);
+        }
+        foreach (var en in KoreanDivision.Core.Loc.AllText())   // 영어 사전 전체
+            foreach (char ch in en) set.Add(ch);
         return set.ToArray();
     }
 
