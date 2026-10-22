@@ -251,6 +251,7 @@
 | 17:0x | T48d 완료(t48d-commander-ui b5a10af, t48b2 위; 206k): 탭 8 소탭 4(연대장 3x3 인사 카드판·대대장/참모·후보 풀·학파), 확인 대화상자(해임 호감 하락 예고), 탭 9 종착 배정, 탭 12 인사 일지, 탭 14 연대장 연표, 규칙은 API 결과 그대로(해임 불가는 버튼 없음), commanders UI 시험 35건·savecompat·missions·uiicons·퍼즈·골든 PASS. 이 기반에 없는 것: --fuzz-campaign(t38h), commanders.enabled 스위치(명단 비면 '규칙 꺼짐' 안내), 초상 파일 없으면 실루엣. 스크린샷은 scratchpad shots/ | 기록 |
 | 17:0x | T11b 엎드려쏴 import 완료(kd/prone-wide-assets bdd8d9a): 보병 25유닛 폴더 반영(darkgrey·kepi 는 게임 폴더 없어 제외), C# 변경 없음(레이아웃 frame 크기 사용). **LOD0 상주 보병 8종 69MB 전후 동일**(투명 영역 잘림), 로드 5.4~6.6초 차이 없음, 시트 원본은 일시 빌드 때만 +30~40%. 엎드림 칸 잘림 0(기수 5종 깃대 9칸은 엎드림 아님·기존), units·uiicons·골든 PASS, lodaudit 2 FAIL(기존, wave_flag). 인게임 시트 prone_wide_ingame.png(E·W 전후). → 병합 권장 조건 충족(LOD0 +0%) | 기록 |
 | 17:0x | T33e 완료(kd/t33e-map-size 3dfab34, t33d 위): 편집기 상한 1024→1500(MapDoc.MaxDim, 테스트가 Config.MaxMapSize 와 대조), MAP-A·MAP-B fixture 로드, 합성 1200/1500, 검사기 증분화(커밋 340→165ms)·채우기 할당 제거, 1500 열기·저장·undo 정상, 프레임 중앙값 16.66ms, 작업 메모리 1200 ~500MB·1500 ~670MB, KD_EDITOR_PERF=1 진단(요청 밖), MapEditor.Tests 625·selftest 81413 PASS. 남은 제안: 커밋마다 게임 지도 전체 재굽기(1500 ~115ms)는 증분 렌더러 필요(게임 코드, 별도 결정) | 기록 |
+| 17:0x | T38e 완료(t38e-unitlist-codex e9e1642, t38a 위): 도감(F2)·목록 휠/막대 스크롤·자동 스크롤, uiicons·퍼즈(1192/1886프레임 예외 0)·골든 PASS, 시트 1024x640·1280x720 갱신(hud-list40·hud-codex 추가). **게이트 총 1시간+ 대기 후 'timeout, proceed carefully' 로 진행 — 게이트가 여전히 장시간 막힘(원인 조사 필요: 재렌더 레인·병합 빌드·벤치 점유)**. 이메일 오타 커밋 amend 정정 | 기록 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
