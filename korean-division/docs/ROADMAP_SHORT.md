@@ -34,3 +34,4 @@
 - [결정 2026-10-22] 보류: 세력 추가 후보 (적군 / 극동공화국)
 - [결정 2026-10-22] 추후 (사용자 진행): 유닛 설명 입력 · 에피소드 설계
 - [나중에 할 일 2026-10-22] **GitHub 관련 일괄**: ① seungwoo3656 계정의 새 private 저장소 URL 받기 → game-tools 내부 bare(`C:/works/_git/game-tools.git`, 1커밋 스냅샷) 최신으로 갱신 후 push ② korean-division 도 새 저장소로 새로 시작할지 결정(현재 origin push 차단) ③ 레거시 주소 커밋 거부 git 훅 설치 허용/직접 설치 ④ GitHub 계정 이메일 목록 정리 · Education 영향 확인(사용자). 상세 = `docs/DECISIONS_PENDING.md`, `docs/HANDOFF.md` '레거시 이메일 처리'
+- [결정 2026-10-22] 추후 (사용자 진행): 캠페인 호감 · 사기 — 증감 값(+1/+2/+3/+5)과 소비처(임계값 · 효과) (상세: campaign/spec_c1e1.txt R11, 캠페인 디자인 v1.txt §28)
