@@ -247,7 +247,7 @@ public sealed class MainMenu
 
     void DrawSettings()
     {
-        float pw = MathF.Min(760, screenW - 40), ph = 526;
+        float pw = MathF.Min(760, screenW - 40), ph = 600;
         var panel = new Rectangle((screenW - pw) / 2, MathF.Max(16, (screenH - ph) / 2 - 10), pw, ph);
         Ui.Panel(panel, Palette.Alpha(Palette.PanelDark, 235), Palette.HudTrim);
         Ui.Text(S.MenuSettings, panel.X + 24, panel.Y + 16, 26, Palette.Accent);
@@ -300,6 +300,12 @@ public sealed class MainMenu
             ox += 98;
         }
         Ui.Text(S.SetOverlayNote, ox + 6, y + 8, 14, Palette.TextDim);
+        y += RowH + 16;
+
+        Ui.Text(S.SetAlertBand, lx, y + 6, 16, Palette.TextDim);
+        if (Button(new Rectangle(cx, y, 120, 32), UserSettings.AlertBand ? S.SetAlertBandOn : S.SetAlertBandOff, true, UserSettings.AlertBand))
+        { UserSettings.AlertBand = !UserSettings.AlertBand; UserSettings.Save(); }
+        Ui.Text(S.SetAlertBandNote, cx + 132, y + 8, 14, Palette.TextDim);
         y += RowH + 16;
 
         Ui.Text(S.SetKeys, lx, y + 6, 16, Palette.TextDim);

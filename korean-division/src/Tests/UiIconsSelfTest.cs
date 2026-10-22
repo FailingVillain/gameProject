@@ -147,9 +147,41 @@ public static class UiIconsSelfTest
         try { CheckRemap(check); } catch (Exception ex) { check(false, $"단축키 재지정 테스트 예외: {ex.GetType().Name}: {ex.Message}\n{ex.StackTrace}"); }
         Console.WriteLine("[머리 위 표시 단계 (T38m)]");
         try { CheckOverlay(check); } catch (Exception ex) { check(false, $"머리 위 표시 테스트 예외: {ex.GetType().Name}: {ex.Message}\n{ex.StackTrace}"); }
+        Console.WriteLine("[교전 알림 이력 (T52a)]");
+        try { CheckAlerts(check); } catch (Exception ex) { check(false, $"교전 알림 테스트 예외: {ex.GetType().Name}: {ex.Message}"); }
         Console.WriteLine("[도움말 단축키 = CONTROLS.md]");
         try { CheckListScroll(check); } catch (Exception ex) { check(false, $"T38e 목록 스크롤 테스트 예외: {ex.GetType().Name}: {ex.Message}"); }
         try { CheckControlsDoc(check); } catch (Exception ex) { check(false, $"도움말 문서 동기 테스트 예외: {ex.GetType().Name}: {ex.Message}"); }
+    }
+
+    /// <summary>T52a: AlertLog.Feed 순수 함수 — 16칸 · 8초 병합, 8건 제한, 효과음 8초 간격, 공지 종류별 8초.</summary>
+    static void CheckAlerts(Action<bool, string> check)
+    {
+        var A = KoreanDivision.UI.AlertKind.UnderAttack; var C = KoreanDivision.UI.AlertKind.SiteContested;
+        var log = new KoreanDivision.UI.AlertLog();
+        var r1 = log.Feed(A, new Vector2(10, 10), 100);
+        check(r1.Added && r1.Sound && r1.Notice && log.Entries.Count == 1, "알림: 첫 건 = 추가 + 효과음 + 공지");
+        var r2 = log.Feed(A, new Vector2(20, 14), 103);   // 거리 ~10.8 <= 16, 3초
+        check(!r2.Added && log.Entries.Count == 1 && log.Latest!.Count == 2 && log.Latest.Pos == new Vector2(20, 14), "알림: 16칸 · 8초 이내 같은 종류 = 병합 (횟수 2, 위치 최근)");
+        check(!r2.Sound && !r2.Notice, "알림: 3초 뒤 = 효과음 · 공지 없음 (8초 간격)");
+        var r3 = log.Feed(A, new Vector2(60, 10), 104);   // 멀다
+        check(r3.Added && log.Entries.Count == 2, "알림: 16칸 밖 = 별개 항목");
+        var r4 = log.Feed(C, new Vector2(60, 10), 105);   // 같은 자리 다른 종류
+        check(r4.Added && log.Entries.Count == 3, "알림: 종류가 다르면 병합 안 함");
+        check(r4.Notice && !r4.Sound, "알림: 공지는 종류별 8초, 효과음은 전체 8초");
+        var r5 = log.Feed(A, new Vector2(20, 14), 112);   // 마지막 갱신 103 으로부터 9초 > 8초
+        check(r5.Added && log.Entries.Count == 4, "알림: 마지막 알림에서 8초 넘으면 병합 안 함");
+        check(r5.Sound && r5.Notice, "알림: 8초 넘기면 효과음 · 공지 다시");
+        var r6 = log.Feed(A, new Vector2(20, 14), 108.0 + 8.0);   // 8초 이내 경계(112 → 116: 4초)
+        check(!r6.Added, "알림: 직전 항목 갱신 후 4초 = 병합");
+        var big = new KoreanDivision.UI.AlertLog();
+        for (int i = 0; i < 20; i++) big.Feed(A, new Vector2(i * 40, 0), i * 20.0);
+        check(big.Entries.Count == KoreanDivision.UI.AlertLog.MaxEntries, "알림: 이력 최대 8건");
+        check(big.Entries[0].Pos.X == 12 * 40 && big.Latest!.Pos.X == 19 * 40, "알림: 가장 오래된 것부터 밀려남 (최근 8건 유지)");
+        check(KoreanDivision.UI.AlertLog.Zone(new Vector2(0, 0)) == "A1" && KoreanDivision.UI.AlertLog.Zone(new Vector2(40, 33)) == "C3", "알림: 구역 표기 16칸 격자 (A1, C3)");
+        check(KoreanDivision.UI.AlertLog.Ago(3) == KoreanDivision.UI.S.AlertJustNow && KoreanDivision.UI.AlertLog.Ago(125).StartsWith("2"), "알림: 경과 표기 (방금 · N분 전)");
+        check(KoreanDivision.UI.UserSettings.AlertBand, "알림 띠 기본값 = 켜짐");
+        check(KoreanDivision.UI.Bindings.All().Count(b => b.Key == "Backspace") == 1, "Backspace 는 도움말 목록에 한 번 (최근 알림 이동)");
     }
 
     /// <summary>T38a: 단축키 재지정 — 충돌 거부 · settings.json 왕복 · 기본값 복원 · 손상 파일 방어 · 도움말/카드 반영. 임시 settings 파일 사용, 끝에 원복.</summary>

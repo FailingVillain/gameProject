@@ -153,7 +153,44 @@ public sealed class Hud : IDisposable
         DrawTopBar(mouse);
         DrawBottom(mouse);
         DrawGroupBar(mouse);
+        DrawAlertBand(mouse);
         if (game.World.Winner != 0) DrawGameOver(mouse);
+    }
+
+    // ---- 교전 알림 띠 (T52a): 대대 막대 바로 위, 뷰포트 왼쪽 아래. 최근 3건, 6초 후 흐려짐(이력엔 남음), 클릭 = 그 위치로 카메라 이동
+    const float AlertRowH = 22, AlertFadeAfter = 6, AlertHideAfter = 60;
+    const int AlertRows = 3;
+
+    /// <summary>띠에 보일 항목 (최근 것이 아래)과 그 칸. 끄면 비어 있다. 1024x640 에서도 뷰포트 안에 들어가도록 폭을 줄인다.</summary>
+    public IEnumerable<(AlertLog.Entry E, Rectangle R)> AlertRowsNow()
+    {
+        if (!UserSettings.AlertBand || game.Observer) yield break;
+        double now = Raylib.GetTime();
+        var shown = game.Alerts.Entries.Where(e => now - e.LastTime <= AlertHideAfter).TakeLast(AlertRows).ToList();
+        float w = MathF.Min(300, MathF.Max(120, Viewport.Width * 0.4f));
+        float bottom = BarY - 6;
+        for (int i = 0; i < shown.Count; i++)
+            yield return (shown[i], new Rectangle(Viewport.X + 8, bottom - (shown.Count - i) * AlertRowH, w, AlertRowH - 2));
+    }
+
+    public AlertLog.Entry? AlertAt(Vector2 p)
+    {
+        foreach (var (e, r) in AlertRowsNow()) if (Ui.Contains(r, p)) return e;
+        return null;
+    }
+
+    void DrawAlertBand(Vector2 mouse)
+    {
+        double now = Raylib.GetTime();
+        foreach (var (e, r) in AlertRowsNow())
+        {
+            bool fresh = now - e.LastTime <= AlertFadeAfter;
+            int a = fresh ? 235 : 130;
+            bool hot = Ui.Contains(r, mouse);
+            Raylib.DrawRectangleRec(r, Palette.Alpha(hot ? Palette.Panel : Palette.PanelDark, a));
+            Raylib.DrawRectangleLinesEx(r, 1, Palette.Alpha(e.Kind == AlertKind.UnderAttack ? Palette.HpLow : Palette.Warning, a));
+            Ui.TextFit(AlertLog.Line(e, now), r.X + 6, r.Y + 3, 15, Palette.Alpha(e.Kind == AlertKind.UnderAttack ? Palette.BadInk : Palette.Text, a), r.Width - 12, 11);
+        }
     }
 
     // ---- 대대 막대: 뷰포트 왼쪽 아래(하단 HUD 바로 위). 맨 앞 [기본] 대형 단추 + 편성된 대대 1~9. 위쪽 = 선택, 아래쪽 = 대형 단추
