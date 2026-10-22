@@ -1,0 +1,8 @@
+{
+  "name": "train-loco",
+  "kind": "vehicle",
+  "model": "train_loco",
+  "turret": "cupola",
+  "anims": "vehicle",
+  "dirs": "all"
+}

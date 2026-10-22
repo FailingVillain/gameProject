@@ -1,0 +1,8 @@
+{
+  "name": "train-guncar",
+  "kind": "vehicle",
+  "model": "train_guncar",
+  "turret": "gun",
+  "anims": "vehicle",
+  "dirs": "all"
+}
