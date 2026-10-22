@@ -56,6 +56,7 @@ public sealed partial class World
 
     void ExecuteInner(GameCommand command, int f)
     {
+        if (NeutralZoneRejects(command, f)) return;   // TC-G 중립 구역 (NeutralZone.cs)
         TaCancelByOrder(command);   // N32: 이 중대 유닛에 내린 다른 명령 = 참호 돌격 취소
         QueueCancelByOrder(command);   // N74: Shift 없는 명령 = 대기열에서 빠짐 (OrderQueue.cs)
         switch (command)

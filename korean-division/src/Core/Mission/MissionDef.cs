@@ -136,6 +136,7 @@ public sealed partial class MissionDef
         foreach (var f in Factions) Require(f.AiWithdrawAt is null or (>= 0 and < 1) && f.AiCommitment is null or (>= 0 and <= 1), $"세력 '{f.Name}': aiWithdrawAt 0~1 미만 · aiCommitment 0~1");
         foreach (var pr in Props) Require(PropDefs.Current.TryGet(pr.Type, out _), $"소품 종류 '{pr.Type}' 없음 (props.json)");
         foreach (var (name, a) in Areas) Require(a.Valid, $"구역 '{name}' 은 rect [x,y,w,h] 또는 circle [cx,cy,r]");
+        ValidateNeutralZones();   // TC-G (NeutralZone.cs)
         foreach (var z in DeployZones) Require(z.Faction >= 1 && z.Faction <= Factions.Count && z.Valid, "배치 구역: faction 범위 · rect/circle");
         var ids = new HashSet<string>();
         foreach (var f in Forces.Concat(Reinforcements))
@@ -236,7 +237,7 @@ public sealed class MissionFaction
 }
 
 /// <summary>사각형 또는 원 구역.</summary>
-public class MissionArea
+public partial class MissionArea
 {
     public float[]? Rect { get; set; }
     public float[]? Circle { get; set; }
