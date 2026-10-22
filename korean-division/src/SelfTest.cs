@@ -95,6 +95,7 @@ public static partial class SelfTest
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "tweak1") { Tests.Tweak1SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "crossing") { Tests.CrossingSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "comms") { Tests.CommsSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
+        if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "morale") { Tests.MoraleSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "arty3") { Tests.Arty3SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "arty2") { Tests.Arty2SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "forest") { Tests.ForestSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
@@ -199,6 +200,7 @@ public static partial class SelfTest
         Tests.CrossingSelfTest.Run(opt, Check);            // 도하 · 병목 돌파 · 역습 교리 (2026-10-19)
         Tests.ArtyAiSelfTest.Run(opt, Check);              // N20 포병 AI (관측자 · 준비사격 · 돌격 지원 · 재배치 쿨다운 · 직사포 사거리)
         Tests.CommsSelfTest.Run(opt, Check);               // comms 통신 · 난이도 조각 ① (전달 지연 · 분실 · 저장 · 리플레이)
+        Tests.MoraleSelfTest.Run(opt, Check);              // M1 세력 사기 ↔ 제압 감소 배수 (50 중립 · 0/100 배수 · 저장 · 리플레이)
         Tests.Arty3SelfTest.Run(opt, Check);               // arty3 포병 · 중화기 묶음 (방렬 난수 · 자리 유지 · heavy 간격 · 야전포 간접 · 조정 사격 · 최후 저지선)
         Tests.Arty2SelfTest.Run(opt, Check);               // N22 보병포 동행 · 사선 막힘 재배치 · 정찰병 시야 48 · 피격 엄폐
         Tests.Tweak1SelfTest.Run(opt, Check);              // tweak1 대열 정비 화력조 제외 · 돌격 중 보류 · 방어 유닛만 엄폐 · 참호 0.5 · 보병포 · 관측자 노출 회피 · 야전포 방열

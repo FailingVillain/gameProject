@@ -19,7 +19,7 @@ public readonly record struct ChecksumRecord(long Tick, ulong Checksum);
 /// </summary>
 public sealed class ReplayFile
 {
-    public const int FormatVersion = 24;   // 24: 머리말 AiFactions (자유전 · 미션 리플레이에 Faction.IsAi 복원, AF1 isai-restore) · 23: 열차 조종 명령 (trainmove, T30a) · 22: T10 조명탄 명령 (flare, FieldOps.cs) · 21: 명령 대기열 (queue, N74 orderq) · 20: 연막 수류탄 · 철조망 절단 명령 (smokegrenade · cutwire) + 지점 포격 연막 종류 실행 (N59 · N65, Breach.cs) · 19: comms 대대장 앞 명령 전달 (dispatch) + 머리말 Difficulty · 18: arty3 최후 저지선 명령 (finalline) · 17: 참호 돌격 명령 (trenchassault, N32) · 16: 집결 지점 · 포격 종류 명령 (rally · groundfireex · retreat UseRally, N79a) · 15: 중대 대형 유지 명령 (keepform, F1 2차) · 14: 기병 하마/승마 명령 (mount, N61) · 13: 중대 자세 명령 (posture, tweak1) · 12: 명령 선택 인원 Sel (N37, 플레이어 명령 지연 곡선) · 11: 진지 점유 명령 (occupy, engage) · 10: 대열 정비 명령 (closeranks, gapfill) · 9: 돌격 사격 켜기 명령 (marchfire) · 8: 참호 파기 · 참호선 명령 삭제 (dig · digline — 건설 제거 2026-10-19) · 7: 미션 (머리말 Mission = 미션 JSON + 배치 단계 결과, MissionEndCommand) · 6: 연대 → 대대 이름 변경 (battalion · batnumber · batform 명령) · 5: 외교 명령 삭제 (정적 팀) · 4: 교전 4차 (수류탄 · 돌격만 명령, 유닛 id 이름 규칙 변경) · 3: 방향 변경 (생산 · 건설 · 자원 명령 삭제, 참호 파기 추가)
+    public const int FormatVersion = 25;   // 25: 머리말 Morale (M1 세력 사기, 틱 0 전 적용; 브랜치 임시 번호 — 병합 때 fv_renumber) · 24: 머리말 AiFactions (자유전 · 미션 리플레이에 Faction.IsAi 복원, AF1 isai-restore) · 23: 열차 조종 명령 (trainmove, T30a) · 22: T10 조명탄 명령 (flare, FieldOps.cs) · 21: 명령 대기열 (queue, N74 orderq) · 20: 연막 수류탄 · 철조망 절단 명령 (smokegrenade · cutwire) + 지점 포격 연막 종류 실행 (N59 · N65, Breach.cs) · 19: comms 대대장 앞 명령 전달 (dispatch) + 머리말 Difficulty · 18: arty3 최후 저지선 명령 (finalline) · 17: 참호 돌격 명령 (trenchassault, N32) · 16: 집결 지점 · 포격 종류 명령 (rally · groundfireex · retreat UseRally, N79a) · 15: 중대 대형 유지 명령 (keepform, F1 2차) · 14: 기병 하마/승마 명령 (mount, N61) · 13: 중대 자세 명령 (posture, tweak1) · 12: 명령 선택 인원 Sel (N37, 플레이어 명령 지연 곡선) · 11: 진지 점유 명령 (occupy, engage) · 10: 대열 정비 명령 (closeranks, gapfill) · 9: 돌격 사격 켜기 명령 (marchfire) · 8: 참호 파기 · 참호선 명령 삭제 (dig · digline — 건설 제거 2026-10-19) · 7: 미션 (머리말 Mission = 미션 JSON + 배치 단계 결과, MissionEndCommand) · 6: 연대 → 대대 이름 변경 (battalion · batnumber · batform 명령) · 5: 외교 명령 삭제 (정적 팀) · 4: 교전 4차 (수류탄 · 돌격만 명령, 유닛 id 이름 규칙 변경) · 3: 방향 변경 (생산 · 건설 · 자원 명령 삭제, 참호 파기 추가)
     public const int ChecksumInterval = 600;   // 10초마다 체크섬 기록
 
     public int Format { get; set; } = FormatVersion;
@@ -35,6 +35,8 @@ public sealed class ReplayFile
     public bool CheatsUsed { get; set; }
     /// <summary>AI 세력 id (Faction.IsAi — 시뮬이 읽는다: Surrender.cs). 틱 0 전에 적용 (스냅샷 시작이면 스냅샷 값). IsAi 는 시작 뒤 바뀌지 않는다.</summary>
     public int[] AiFactions { get; set; } = Array.Empty<int>();
+    /// <summary>M1 세력 사기 (세력 1.. 순서, Morale.cs). null = 전부 기본 50. 틱 0 전에 적용 (스냅샷 시작이면 스냅샷 값).</summary>
+    public int[]? Morale { get; set; }
     /// <summary>교전 테스트 설정 (있으면 이 설정으로 월드를 만든다 — 건물 · 경제 없음).</summary>
     public BattleSetup? Battle { get; set; }
     /// <summary>미션 설정 (있으면 미션 정의 + 배치 결과로 월드를 만든다).</summary>
@@ -66,6 +68,7 @@ public sealed class ReplayFile
         FactionCount = w.Factions.Count - 1,
         CheatsUsed = w.CheatsUsed,
         AiFactions = w.Factions.Where(f => f.Id > 0 && f.IsAi).Select(f => f.Id).ToArray(),
+        Morale = w.Factions.Any(f => f.Id > 0 && f.Morale != Faction.MoraleDefault) ? w.Factions.Where(f => f.Id > 0).Select(f => f.Morale).ToArray() : null,
         Battle = w.Battle,
         Mission = MissionReplayInfo.From(w),
         FogEnabled = w.Fog.Enabled,
@@ -137,6 +140,8 @@ public sealed class ReplayFile
         }
         if (StartSnapshot == null)
             for (int f = 1; f < world.Factions.Count; f++) world.Faction(f).IsAi = Array.IndexOf(AiFactions ?? Array.Empty<int>(), f) >= 0;   // AI 세력 (Surrender.cs) — 생성 경로(자유전 · 교전 · 미션)는 AI 를 붙이지 않으므로 머리말이 정본
+        if (StartSnapshot == null && Morale != null)
+            for (int f = 1; f < world.Factions.Count && f - 1 < Morale.Length; f++) world.SetFactionMorale(f, Morale[f - 1]);   // M1 세력 사기 (Morale.cs)
         if (StartSnapshot == null && Difficulty != null) world.Difficulty = Difficulty;   // 난이도 (Comms.cs — 스냅샷 시작이면 스냅샷 값)
         world.Fog.Enabled = FogEnabled;
         world.RecordCommands = false;

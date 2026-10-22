@@ -427,6 +427,9 @@ public sealed class CombatRulesDef
     // ---- 제압 재설계 (N25, 2026-10-19, Suppression.cs): 비례 감소 · 근접 탄착 · 명중률 · 고정 (엎드림)
     /// <summary>초당 감소에 더하는 비례 항 (현재 제압 × 값). 지속 사격에서 상한에 붙지 않고 평형.</summary>
     public float SuppressDecayProp { get; set; } = 0f;
+    /// <summary>M1 세력 사기 0 / 100 일 때 제압 감소 배수 (50 = 1, 사이 선형; Morale.cs). 자리표시 0.75 / 1.25 — 0.3 밸런스.</summary>
+    public float MoraleSuppressDecayAt0 { get; set; } = 0.75f;
+    public float MoraleSuppressDecayAt100 { get; set; } = 1.25f;
     /// <summary>가산 포화: 제압 가산 × (1 − 값 × 제압비). 1 = 상한에서 0 (상한에 붙지 않음).</summary>
     public float SuppressGainSat { get; set; } = 0f;
     /// <summary>N39 (2026-10-19 사용자 결정: 제압이 너무 빨리 빠짐): 최근 calmSec 초 안에 노려진 (Unit.LastFiredAtTick — 명중 · 빗나감 · 흩뿌림 · 폭발) 병사의 감소 × fireDecayMul. 0 = 끔.</summary>
@@ -916,7 +919,8 @@ public sealed class Defs
             Require(u.ArtAs == null || Units.ContainsKey(u.ArtAs), $"유닛 {u.Key}: artAs '{u.ArtAs}' 없음");
             Require(!u.MeleeOnly || (u.Melee != null && u.Weapon == u.Melee), $"유닛 {u.Key}: meleeOnly 는 주무기 = 근접 무기여야 함");
         }
-        Require(CombatRules.SquadMax >= 2 && CombatRules.SquadMergeBelow >= 0 && CombatRules.SquadMergeBelow <= CombatRules.SquadMax, "combat.squadMax >= 2, 0 <= squadMergeBelow <= squadMax");
+        Require(CombatRules.MoraleSuppressDecayAt0 is >= 0f and <= 1f && CombatRules.MoraleSuppressDecayAt100 is >= 1f and <= 10f, "combat.moraleSuppressDecayAt0 0..1, moraleSuppressDecayAt100 1..10 (M1, NaN 거부)");
+        Require(CombatRules.SquadMax >= 2 &&CombatRules.SquadMergeBelow >= 0 && CombatRules.SquadMergeBelow <= CombatRules.SquadMax, "combat.squadMax >= 2, 0 <= squadMergeBelow <= squadMax");
 Require(CombatRules.SquadLeaderRank >= 0 && CombatRules.SquadLeaderRank <= CombatRules.RankKills.Length, "combat.squadLeaderRank 는 0..계급 수");
                 Require(CombatRules.RankKills.Length > 0 && CombatRules.RankKills.Zip(CombatRules.RankKills.Skip(1), (a, b) => a < b).All(x => x), "combat.rankKills 는 오름차순");
         Require(Buildings.Values.Any(b => b.Headquarters), "시작 거점(headquarters) 건물이 하나는 있어야 함");

@@ -646,7 +646,7 @@ public static class SnapshotSelfTest
             "Selected");
         Audit1(typeof(MoveGroup), "Target Goal Field ArriveRadius MemberCount Big Inited Members Leader Route RouteL Plan", "");
         Audit1(typeof(WeatherState), "Kind Time StartKind StartTime Schedule Next TimeStepTicks Changes", "");   // WTHR
-        Audit1(typeof(Faction), "Id Name Lang IsAi RevealAll Defeated Revealed NoHqTime Team", "");
+        Audit1(typeof(Faction), "Id Name Lang IsAi RevealAll Defeated Revealed NoHqTime Team Morale", "");
         Audit1(typeof(FogOfWar), "world width height own memory Enabled Version seeded stampEpoch",
             "grids circles forget stampMark vision due fversion smokeNear smokeMark");   // smokeNear · smokeMark = 연막 찍기 작업 버퍼 · 표시 (N59)   // grids = own 의 동맹 합침 (불러올 때 다시 만듦) · 원 표 캐시 · 작업 버퍼 · 표시 마크 (epoch 로 무효화) · 지형 시야 메모 (지형만의 순수 함수)
         Audit1(typeof(GameMap),
