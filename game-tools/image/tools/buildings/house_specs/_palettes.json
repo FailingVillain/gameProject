@@ -1,0 +1,12 @@
+{
+  "_doc": "Baked colour variants: name -> {material: replacement material}. A house/variant refers to a palette by name, or inline dict. Only material names from bcommon.MATS. Applied to body + paint materials, then (ruin) charring. Add new palettes here, never edit the generator.",
+  "giwa_blue":  {"kiwa": "kiwa_blue", "kiwa2": "kiwa_blue"},
+  "giwa_red":   {"kiwa": "tile_red", "kiwa2": "clay"},
+  "giwa_grey":  {"kiwa": "kiwa2", "kiwa2": "kiwa"},
+  "thatch_fresh": {"thatch": "thatch_gold", "thatch_old": "thatch"},
+  "thatch_aged": {"thatch": "thatch_old", "thatch_old": "mud_dark"},
+  "wall_pale":  {"mud": "earth_pale", "earth": "earth_pale", "mud_dark": "earth"},
+  "wall_dark":  {"mud": "mud_dark", "earth": "mud_dark", "plaster": "stone"},
+  "brick_red":  {"brick_grey": "brick_red", "brick_dark": "brick_dark"},
+  "brick_dark": {"brick_grey": "brick_dark", "brick_dark": "stone"}
+}

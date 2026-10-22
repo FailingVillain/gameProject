@@ -1,6 +1,7 @@
 """Render building sprites (3D primitives, fixed orientation, quarter view ELEV 36 deg).
 
-    python make_building.py <name|all|houses|village> [--lod 0,1,2] [--out DIR]
+    python make_building.py <name|all|houses|village|gen> [--lod 0,1,2] [--out DIR] [--set proto,ko,zh] [--shard i/n]
+(generated houses: JSON specs in tools/buildings/house_specs/, see HOUSEGEN_SCHEMA.md; `gen` = every house of --set)
 
 Per building -> <out>/buildings/<name>/:
   <name>.png / _team.png            full LOD (128 px per tile), frames side by side (states), same size each
@@ -25,6 +26,7 @@ from bcommon import frame_for, make_res, render, TILE_PX  # noqa: E402
 from common import composite  # noqa: E402
 import houses  # noqa: E402
 import village  # noqa: E402
+import housegen  # noqa: E402
 
 DEFAULT_OUT = r"C:\gameProject\game-tools\korean-division-image-out"
 GRASS = (78, 110, 64, 255)
@@ -32,12 +34,15 @@ TEAM_RED = (210, 40, 40)
 SUFFIX = ["", "@64", "@32"]
 
 
-def registry():
+def registry(gen_sets=None):
+    """legacy houses + villages; gen_sets (list of set names, or ["*"]) additionally loads tools/buildings/house_specs/*.json"""
     reg = {}
     for n, (fn, bbox, fp, label) in houses.HOUSES.items():
         reg[n] = dict(states={"intact": lambda fn=fn: fn(ruin=False), "ruined": lambda fn=fn: fn(ruin=True)}, bbox=bbox, footprint=fp, label=label)
     for n, d in village.VILLAGES.items():
         reg[n] = d
+    if gen_sets:
+        reg.update(housegen.REGISTRY(only_sets=None if "*" in gen_sets else set(gen_sets)))
     return reg
 
 
@@ -173,9 +178,14 @@ def main():
     ap.add_argument("name")
     ap.add_argument("--lod", default="0,1,2")
     ap.add_argument("--out", default=DEFAULT_OUT)
+    ap.add_argument("--set", default="", help="generated-house set(s) to load, comma list (e.g. proto,ko,zh); 'gen' name then = every house of those sets")
+    ap.add_argument("--shard", default="", help="i/n: render every n-th name starting at i (0-based), for parallel-safe batches")
     a = ap.parse_args()
-    reg = registry()
-    if a.name == "all":
+    gen_sets = [x for x in a.set.split(",") if x] or (["*"] if a.name not in ("all", "houses", "village") and not a.name.startswith("house-") and not a.name.startswith("village") else None)
+    reg = registry(gen_sets)
+    if a.name == "gen":
+        names = [n for n, d in reg.items() if "set" in d]
+    elif a.name == "all":
         names = list(reg)
     elif a.name == "houses":
         names = list(houses.HOUSES)
@@ -183,6 +193,9 @@ def main():
         names = list(village.VILLAGES)
     else:
         names = a.name.split(",")
+    if a.shard:
+        si, sn = (int(v) for v in a.shard.split("/"))
+        names = names[si::sn]
     lods = [int(x) for x in a.lod.split(",")]
     out_root = os.path.join(a.out, "buildings")
     os.makedirs(out_root, exist_ok=True)
