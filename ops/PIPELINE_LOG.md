@@ -210,6 +210,7 @@
 | 15:4x | T41 보강 완료(haiku, 70k; kd/crash-log 5fc4aa5): 프로필 경로·사용자명 마스킹, crashlog 11/11, 실제 종료 코드 -532462766(0xE0434352; 127=bash 래퍼 부산물), 골든 불변. **재렌더 현황(haiku, 63k; kd-rerender e589068): 48/81 완료·33 남음(디퍼드 10 제외 23개)**, 레인 +2(E/F, BelowNormal) → 총 6레인, ETA 약 60분(이전 '20시간+' 추정은 낡음 → T39e~j 그림 카드 곧 착수 가능). 주의: 레인 6개는 메모리 '동시 2개' 구 규칙 초과 → 멈춤 시 E·F 부터 중단 | 완료 ~88 |
 | 15:4x | **속도 증진 승인(사용자)**: 에이전트 한도 30·opus 8·게이트 12(빈 RAM>=6GB)·selftest 병렬화·병합 2갈래·재렌더 레인 확대·의존 없는 일 병렬 → LIMITS 갱신. 병합 2갈래 착수: 라인 1(sim, kd-merge/merge/0.2: B2 연기, B3~B5b 계속), 라인 2(캠페인+UI, kd-merge-b/merge/0.2-ui: F+G, t38c-on-ui 포함), 마지막에 합치기. 저장 호환 정책(e0eff35)·편집기 안전 수정(022647f; 가드·pid 임시명, 603/81413 PASS) 완료 | 진행 |
 | 15:4x | 종이 UI 시안 v2 완료(art sonnet, 134k; gt-paper-ui-v2 9e1f39d): 중앙 책상·좌 기록실·우 인사실·메뉴/설정·전투 HUD 5장+접촉 시트(폴더 21_paper_ui_v2_*.png). 지어낸 것: 방 배경·코르크판·화살표 판·이름/숫자/초상·HUD 지형. 한계: 글꼴이 Windows 시스템 글꼴(OFL 아님 → 출시 전 나눔명조 등 교체), 작전 지도 탭 '책상 위' 임의 처리, 활성 탭은 1개만 그림 | 완료 ~89 · 사용자 검수 대기 |
+| 15:4x | T48a wip-ready(sonnet, 131k, 405초; t48a-commander-data e31406d, t42d 위): 스키마 v8(CommanderPool·CampaignOfficers, v3~v7 이행), CommanderDefs 항목 단위 검증·한국어 사유, 샘플 3명, 임시값 JSON(해임 -2·쿨다운 1·호감 -20~100), commanders 시험·savecompat·missions·골든·퍼즈 PASS. 범위 밖 1줄: 일정 탭이 commander 연표를 미션으로 세지 않게 수정. 게이트 한도 12 반영(93bbc8e; tools/gate-12 dbbbc96). 발주: T48b1(opus)·T49a | 완료 ~90 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
