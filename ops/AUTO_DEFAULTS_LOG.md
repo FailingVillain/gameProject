@@ -24,3 +24,10 @@ T49bc: settings tolerant read per-key via reflection; compat fixtures v1-v8 key-
 T47 campaign map zoom: range 1-8x, wheel x1.18, button x1.5, node pick radius 14px, drag slop 5px (UI-only, per-session)
 2026-10-22 | 제목 순서 | 프로젝트=KOREAN DIVISION, 게임명='KOREAN DIVISION : MARCH ON MANCHURIA'(프랜차이즈 먼저; 확장·후속 대비) | 사용자 이의 시 역순 'MARCH ON MANCHURIA : KOREAN DIVISION'
 2026-10-22 | 민가 | T55g 생성기 시트는 사용자 승인 대기 없이 T55a/b 자동 착수(시트는 추후 일괄 검수) | 사용자 '그래픽 시안은 추후 한 번에 검토'
+T50d perf bench: Prof hooks reused, 3 seeds x ACE x 1k/5k/10k, 10% regress threshold, PerfProbe no call sites
+- T48b2: hire cost not charged (chargeHireCost=false, JSON; cost unit undefined); regiment-companies/minRegiments checks off (JSON switches)
+- T48b2: mission tags (provisional, commander_assign.json): 인명보존 loss<=10%, 속전속결 <=900s, 공세 loss>=30%; only on won missions
+- T48b2: staff weight=1000+100*(rank-4)+50*xpTier clamp 500..2000; base supply 5%, intel 2 lines, research 10%, doctrine 5%
+- T48b2: wounded officers: no new battalion assignment, staff allowed; staff->battalion return allowed; dead officers free their slot at settlement
+- T48b2: supply staff bonus = floor(regular supply * permille/1000) added at first-win settlement; journal = Stock.RecentLog; schema stays v9
+2026-10-22 | 엎드려쏴 | 보병 칸 폭 확장(176x160/192x160) 동의 처리 → 27종 import 발주(사용자 '정확한 직각' 요구; C# 변경 없음) | 이의 시 되돌림
