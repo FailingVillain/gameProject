@@ -212,6 +212,7 @@
 | 15:4x | 종이 UI 시안 v2 완료(art sonnet, 134k; gt-paper-ui-v2 9e1f39d): 중앙 책상·좌 기록실·우 인사실·메뉴/설정·전투 HUD 5장+접촉 시트(폴더 21_paper_ui_v2_*.png). 지어낸 것: 방 배경·코르크판·화살표 판·이름/숫자/초상·HUD 지형. 한계: 글꼴이 Windows 시스템 글꼴(OFL 아님 → 출시 전 나눔명조 등 교체), 작전 지도 탭 '책상 위' 임의 처리, 활성 탭은 1개만 그림 | 완료 ~89 · 사용자 검수 대기 |
 | 15:4x | T48a wip-ready(sonnet, 131k, 405초; t48a-commander-data e31406d, t42d 위): 스키마 v8(CommanderPool·CampaignOfficers, v3~v7 이행), CommanderDefs 항목 단위 검증·한국어 사유, 샘플 3명, 임시값 JSON(해임 -2·쿨다운 1·호감 -20~100), commanders 시험·savecompat·missions·골든·퍼즈 PASS. 범위 밖 1줄: 일정 탭이 commander 연표를 미션으로 세지 않게 수정. 게이트 한도 12 반영(93bbc8e; tools/gate-12 dbbbc96). 발주: T48b1(opus)·T49a | 완료 ~90 |
 | 15:4x | 게이트 RAM 예산 14GB 반영(haiku, 56k; main 23eb1c7·tools/gate-12 7f88498): heavy 프로세스 WorkingSet 합>14GB 면 닫힘, 상태줄 heavyRAM 표시, 15GB 닫힘/13GB 열림 ALL PASS. 발주(사용자 결정 AZ·제목 정정 반영): OFL 글꼴(general sonnet; ui/fonts-ofl·시안 재생성·T38k 카드·제목 문자열 목록), 활성 탭 시안 3갈래(tabs-a: 1~5 / tabs-b: 6·10(줌)·13·15 / tabs-c: 11·12·14·7·8·9+연대장 도시에), T47 캠페인 지도 줌(sonnet, t38i 위), T48c 호감도(sonnet, t48a 위), T49b+c 호환 시험(sonnet), T48b1(opus)·T49a 진행 중 | 진행 |
+| 15:4x | 공병 총구 잘림 수정(art sonnet, 147k, 2389초; kd/t32d-pioneer-art af357ce): **근본 원인 = 192x240 칸이 좁음**(새 엎드려쏴 자세 E 방향 ≈255px) → 공병은 E 62°·NE 20° 회전으로 임시 회피(사선=사용자 금지와 충돌), 소총병 시트는 옛 짧은 자세라 멀쩡해 보였을 뿐 새 코드로 재렌더하면 같은 잘림. LodAtlas 가 시트별 칸 크기를 읽지 않음. edge_check.py(테두리 0칸) 추가, 공병만 재렌더(18분). → opus 총구 정렬 에이전트에 근본 수정 권한 통보(넓은 칸 지원 kd/prone-wide-cells, 총구 ≤0.5°), 공병은 후속 재렌더 | 완료 ~91 · 근본 수정 진행 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
