@@ -29,6 +29,7 @@ public static class PropsSelfTest
             TestSuppress();
             TestSnapshot();
             TestCoverClusterForest();
+            TestPropsV2();
         }
         catch (Exception e) { check(false, $"props 테스트 중 예외: {e.GetType().Name}: {e.Message}\n{e.StackTrace}"); }
     }
@@ -322,6 +323,39 @@ public static class PropsSelfTest
             check(Math.Abs(a1 - a0) <= a0 * 0.10, $"T28 직사각형 숲 면적 {a0} -> {a1} (±10%)");
         }
         finally { rules.OrganicForest = o0; rules.Scatter.Clump = c0; }
+    }
+
+    /// <summary>PR1: 자연 엄폐 소품 13종 정의 (범위 · 파괴 변종 참조 무결성 · 지형표 참조) + propsV2 (기본 꺼짐): 꺼짐 = 기존 배치, 켬 = 같은 시드 두 번 동일 + 기존 소품은 그대로 + 새 종류가 놓임.</summary>
+    static void TestPropsV2()
+    {
+        var pd = PropDefs.Current;
+        var rules = pd.Rules;
+        string[] v2 = { "bush", "sorghum", "stump", "log_pile", "log_pile_scattered", "rock_outcrop", "dead_tree", "dead_tree_fallen", "dirt_mound", "willow", "willow_fallen", "reed", "snow_mound" };
+        bool has = v2.All(k => pd.Types.ContainsKey(k));
+        bool range = pd.Types.Values.All(t => t.Cover > 0f && t.Cover <= 1f && t.LosBlock >= 0f && t.LosBlock <= 1f && t.Radius > 0f && t.Radius <= 2f && t.Hp >= 0f);
+        bool refs = pd.Types.Values.All(t => t.Destroyed.Length == 0 || (pd.Types.TryGetValue(t.Destroyed, out var d) && d.Hp == 0f && t.Hp > 0f && t.Destroyed != t.Key));
+        bool noHpNoRef = pd.Types.Values.All(t => t.Hp > 0f || t.Destroyed.Length == 0);
+        bool tables = rules.Scatter.V2.All(kv => GameMap.V2Biomes.Contains(kv.Key) && kv.Value.All(e => e.W >= 0 && pd.Types.ContainsKey(e.Type)))
+                      && GameMap.V2Biomes.All(b => rules.Scatter.V2.TryGetValue(b, out var l) && l.Any(e => e.W > 0));
+        check(has && range && refs && noHpNoRef && tables, $"PR1 소품 정의: 13종 있음 {has} · 범위 {range} · 파괴 변종 참조 {refs}/{noHpNoRef} · 지형표 참조 {tables}");
+        bool v0 = rules.Scatter.PropsV2;
+        try
+        {
+            check(!v0, "PR1 propsV2 기본 꺼짐");
+            bool det = true, prefix = true, added = false; int nOff = 0, nOn = 0;
+            foreach (int seed in new[] { 1, 2, 3, 4 })
+            {
+                rules.Scatter.PropsV2 = false; var a = GameMap.Generate(160, 160, seed); var a2 = GameMap.Generate(160, 160, seed);
+                det &= a.PropSeeds.SequenceEqual(a2.PropSeeds);
+                rules.Scatter.PropsV2 = true; var b = GameMap.Generate(160, 160, seed); var b2 = GameMap.Generate(160, 160, seed);
+                det &= b.PropSeeds.SequenceEqual(b2.PropSeeds);
+                prefix &= b.PropSeeds.Take(a.PropSeeds.Count).SequenceEqual(a.PropSeeds);
+                added |= b.PropSeeds.Skip(a.PropSeeds.Count).Any(p => v2.Contains(p.Type) && p.Type != "rock_outcrop") ;
+                nOff += a.PropSeeds.Count; nOn += b.PropSeeds.Count;
+            }
+            check(det && prefix && added && nOn > nOff, $"PR1 propsV2: 같은 시드 -> 같은 소품 {det} · 켜도 기존 소품 그대로(앞부분 동일) {prefix} · 새 종류 놓임 {added} · 총 {nOff} -> {nOn}");
+        }
+        finally { rules.Scatter.PropsV2 = v0; }
     }
 
     static long TerrainHash(GameMap m) { long h = 17; for (int y = 0; y < m.Height; y++) for (int x = 0; x < m.Width; x++) h = h * 31 + (int)m.Get(x, y) + (m.IsHigh(x, y) ? 100 : 0); return h; }

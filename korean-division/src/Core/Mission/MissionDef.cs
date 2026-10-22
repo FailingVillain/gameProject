@@ -72,6 +72,8 @@ public sealed partial class MissionDef
     public int? MaxDeploy { get; set; }
     /// <summary>[T19b 캠페인 포탄] 플레이어 세력 유닛의 무기 키별 시작 탄약 비율 (0~1). 이 무기를 든 유닛은 중대 ammoScale 대신 이 값 (CampaignCarry 가 씀). 없으면 영향 없음.</summary>
     public Dictionary<string, float>? AmmoScaleByWeapon { get; set; }
+    /// <summary>PR1: true = propScatter 에 자연 엄폐 소품 (props.json scatter.v2) 을 더한다 (기본 꺼짐; props.json scatter.propsV2 로도 켬).</summary>
+    public bool PropsV2 { get; set; }
 
     [JsonIgnore] public string Json { get; internal set; } = "";
     [JsonIgnore] public string Hash { get; internal set; } = "";

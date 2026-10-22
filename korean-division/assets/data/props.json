@@ -8,7 +8,15 @@
     "losMaxBlock": 0.6,
     "minShellDamage": 40,
     "spotCoverWeight": 1.0,
-    "scatter": { "cell": 12, "clusterPct": 55, "forestEdgePct": 85, "fieldPct": 30, "clusterMin": 2, "clusterMax": 5, "clusterRadius": 3.0, "spacing": 1.1, "startClear": 12, "rockPct": 30, "bigRockPct": 25 }
+    "scatter": { "cell": 12, "clusterPct": 55, "forestEdgePct": 85, "fieldPct": 30, "clusterMin": 2, "clusterMax": 5, "clusterRadius": 3.0, "spacing": 1.1, "startClear": 12, "rockPct": 30, "bigRockPct": 25,
+      "propsV2": false, "v2Cell": 14, "v2ClusterPct": 45, "v2ClusterMin": 2, "v2ClusterMax": 4, "v2ClusterRadius": 2.6,
+      "v2": {
+        "forestEdge": [ { "type": "bush", "w": 40 }, { "type": "stump", "w": 25 }, { "type": "log_pile", "w": 15 }, { "type": "dead_tree", "w": 15 } ],
+        "field":      [ { "type": "sorghum", "w": 40 }, { "type": "bush", "w": 30 }, { "type": "dirt_mound", "w": 20 }, { "type": "stump", "w": 10 } ],
+        "river":      [ { "type": "reed", "w": 50 }, { "type": "willow", "w": 30 }, { "type": "dirt_mound", "w": 20 } ],
+        "highland":   [ { "type": "rock_outcrop", "w": 35 }, { "type": "dirt_mound", "w": 25 }, { "type": "dead_tree", "w": 20 }, { "type": "bush", "w": 20 } ],
+        "snow":       [ { "type": "snow_mound", "w": 50 }, { "type": "dead_tree", "w": 20 }, { "type": "bush", "w": 15 }, { "type": "stump", "w": 15 } ]
+      } }
   },
   "types": {
     "rock_s":         { "cover": 0.70, "losBlock": 0.15, "radius": 0.40, "blocksMove": false, "hp": 120, "destroyed": "rock_s_cracked" },
@@ -24,6 +32,19 @@
     "tree_birch_fallen": { "cover": 0.92, "losBlock": 0.04, "radius": 0.40, "blocksMove": false, "hp": 0, "destroyed": "" },
     "tree_larch_fallen": { "cover": 0.90, "losBlock": 0.05, "radius": 0.45, "blocksMove": false, "hp": 0, "destroyed": "" },
     "tree_pine_fallen":  { "cover": 0.88, "losBlock": 0.06, "radius": 0.50, "blocksMove": false, "hp": 0, "destroyed": "" },
-    "tree_oak_fallen":   { "cover": 0.85, "losBlock": 0.08, "radius": 0.55, "blocksMove": false, "hp": 0, "destroyed": "" }
+    "tree_oak_fallen":   { "cover": 0.85, "losBlock": 0.08, "radius": 0.55, "blocksMove": false, "hp": 0, "destroyed": "" },
+    "bush":              { "cover": 0.90, "losBlock": 0.03, "radius": 0.35, "blocksMove": false, "hp": 0,   "destroyed": "" },
+    "sorghum":           { "cover": 0.92, "losBlock": 0.12, "radius": 0.45, "blocksMove": false, "hp": 0,   "destroyed": "" },
+    "stump":             { "cover": 0.80, "losBlock": 0.05, "radius": 0.25, "blocksMove": false, "hp": 0,   "destroyed": "" },
+    "log_pile":          { "cover": 0.60, "losBlock": 0.25, "radius": 0.55, "blocksMove": true,  "hp": 180, "destroyed": "log_pile_scattered" },
+    "log_pile_scattered":{ "cover": 0.75, "losBlock": 0.10, "radius": 0.55, "blocksMove": true,  "hp": 0,   "destroyed": "" },
+    "rock_outcrop":      { "cover": 0.50, "losBlock": 0.40, "radius": 0.90, "blocksMove": true,  "hp": 0,   "destroyed": "" },
+    "dead_tree":         { "cover": 0.90, "losBlock": 0.03, "radius": 0.25, "blocksMove": false, "hp": 60,  "destroyed": "dead_tree_fallen" },
+    "dead_tree_fallen":  { "cover": 0.92, "losBlock": 0.04, "radius": 0.40, "blocksMove": false, "hp": 0,   "destroyed": "" },
+    "dirt_mound":        { "cover": 0.65, "losBlock": 0.20, "radius": 0.70, "blocksMove": false, "hp": 0,   "destroyed": "" },
+    "willow":            { "cover": 0.84, "losBlock": 0.08, "radius": 0.40, "blocksMove": false, "hp": 90,  "destroyed": "willow_fallen" },
+    "willow_fallen":     { "cover": 0.90, "losBlock": 0.05, "radius": 0.50, "blocksMove": false, "hp": 0,   "destroyed": "" },
+    "reed":              { "cover": 0.93, "losBlock": 0.08, "radius": 0.35, "blocksMove": false, "hp": 0,   "destroyed": "" },
+    "snow_mound":        { "cover": 0.85, "losBlock": 0.10, "radius": 0.55, "blocksMove": false, "hp": 0,   "destroyed": "" }
   }
 }

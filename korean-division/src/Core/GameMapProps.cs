@@ -24,7 +24,7 @@ public sealed partial class GameMap
     /// 둘레 2칸에 다른 막는 바위가 없을 때만 (아니면 작은 바위로) - 길이 끊기지 않는다. mirror 면 180 도 회전 대칭 (지도 앞쪽 절반만 만들고 복사).
     /// 돌려주는 값 = 놓은 소품 수.
     /// </summary>
-    internal int ScatterProps(bool mirror, Func<float, float, bool>? avoid = null, float density = 1f, int cellOverride = 0)
+    internal int ScatterProps(bool mirror, Func<float, float, bool>? avoid = null, float density = 1f, int cellOverride = 0, bool propsV2 = false)
     {
         var pd = PropDefs.Current;
         if (!pd.Rules.Enabled || pd.Types.Count == 0) return 0;
@@ -155,6 +155,69 @@ public sealed partial class GameMap
                 if (mirror) Put(Width - x, Height - y, type);
             }
         }
+        if (propsV2 || sr.PropsV2) ScatterPropsV2(sr, pd, mirror, Plantable, NearForest, Put, H);
         return PropSeeds.Count - before;
+    }
+
+    internal static readonly string[] V2Biomes = { "forestEdge", "field", "river", "highland", "snow" };
+
+    /// <summary>
+    /// PR1 (기본 꺼짐) 자연 엄폐 소품 한 층: 기존 흩뿌리기가 끝난 뒤 따로 한 번 더 (해시 salt 1000+ - 기존 난수와 안 겹침, 꺼져 있으면 호출조차 안 함).
+    /// 칸 묶음 (v2Cell) 마다 군집 중심 하나를 잡고 그 둘레 지형으로 종류 표를 고른다: 눈 날씨 -> snow, 물 · 여울 3칸 안 -> river, 고지 -> highland, 숲 2칸 안 -> forestEdge, 그 외 -> field.
+    /// 종류는 props.json scatter.v2 의 가중치 목록 (목록 순서 누적 - 딕셔너리 열거 안 씀).
+    /// </summary>
+    void ScatterPropsV2(PropScatterRules sr, PropDefs pd, bool mirror, Func<int, int, bool> plantable, Func<int, int, bool> nearForest,
+        Func<float, float, string, bool> put, Func<int, int, int, uint> H)
+    {
+        int cell = Math.Max(4, sr.V2Cell);
+        int gw = Width / cell + 1, gh = Height / cell + 1;
+        bool snow = MapFile.WeatherOf(this) is { } ws && ws.Kind == WeatherKind.Snow;
+        bool NearWater(int x, int y)
+        {
+            for (int dy = -3; dy <= 3; dy++)
+            for (int dx = -3; dx <= 3; dx++)
+                if (InBounds(x + dx, y + dy) && Get(x + dx, y + dy) is TerrainType.Water or TerrainType.Ford) return true;
+            return false;
+        }
+        for (int gy = 0; gy < gh; gy++)
+        for (int gx = 0; gx < gw; gx++)
+        {
+            int cxBase = gx * cell, cyBase = gy * cell;
+            if (mirror)
+            {
+                int ccx = cxBase + cell / 2, ccy = cyBase + cell / 2;
+                if (ccy * Width + ccx >= (Height - 1 - ccy) * Width + (Width - 1 - ccx)) continue;
+            }
+            if (H(gx, gy, 1001) % 100 >= (uint)Math.Min(100, sr.V2ClusterPct)) continue;
+            int cx = -1, cy = -1;
+            for (int k = 0; k < 8 && cx < 0; k++)
+            {
+                int x = cxBase + (int)(H(gx, gy, 1010 + k) % (uint)cell), y = cyBase + (int)(H(gx, gy, 1030 + k) % (uint)cell);
+                if (plantable(x, y)) { cx = x; cy = y; }
+            }
+            if (cx < 0) continue;
+            string biome = snow ? "snow" : NearWater(cx, cy) ? "river" : IsHigh(cx, cy) ? "highland" : nearForest(cx, cy) ? "forestEdge" : "field";
+            if (!sr.V2.TryGetValue(biome, out var table)) continue;
+            int total = 0;
+            foreach (var e in table) if (e.W > 0 && pd.TryGet(e.Type, out _)) total += e.W;
+            if (total <= 0) continue;
+            int count = sr.V2ClusterMin + (int)(H(gx, gy, 1002) % (uint)Math.Max(1, sr.V2ClusterMax - sr.V2ClusterMin + 1));
+            for (int j = 0; j < count; j++)
+            {
+                float dx = ((int)(H(gx, gy, 1100 + j) % 2001) - 1000) / 1000f * sr.V2ClusterRadius;
+                float dy = ((int)(H(gx, gy, 1130 + j) % 2001) - 1000) / 1000f * sr.V2ClusterRadius;
+                float x = cx + 0.5f + dx, y = cy + 0.5f + dy;
+                int roll = (int)(H(gx, gy, 1160 + j) % (uint)total);
+                string type = "";
+                foreach (var e in table)
+                {
+                    if (e.W <= 0 || !pd.TryGet(e.Type, out _)) continue;
+                    if (roll < e.W) { type = e.Type; break; }
+                    roll -= e.W;
+                }
+                if (type.Length == 0 || !put(x, y, type)) continue;
+                if (mirror) put(Width - x, Height - y, type);
+            }
+        }
     }
 }
