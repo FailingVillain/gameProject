@@ -107,6 +107,7 @@
 | 12:1x | T10b 검증 보강 완료(haiku, 69k, 104초): 270172f — 깨진 JSON → 기본값+경고, commsRules 범위 clamp(반경 1~50·확률 0~1·checkSec≥1·NaN→기본), 시험 2, 유효 파일 경고 0, GOLDEN 일치 | 리뷰→수정 8회째 |
 | 12:1x | T30a 리뷰 수정 완료(sonnet, 82k, 237초): t30a 863f9d1 — 정수 PosFix(Blocked 에서 float 제거), 정지 중 Blocked 재계산, 입력 방어 17시험, 해시 필드 추가(FV58 유지), 골든 불변. 진행 중 T30b 에 SendMessage 로 863f9d1 체리픽 지시 | 리뷰→수정 9회째 |
 | 12:2x | T31c wip-ready (sonnet, 100k, 1773초): kd/t31c-surrender e9cd527. 키 6개(AI 한정, 기본 끔)·시험 TestRelaxed, GOLDEN 불변, SendMessage 지시(IsAi 비의존/선행 조건 명시) 반영. 켠 값은 수용 기준 미달: 항복을 늘리면 승/종료가 나빠짐(항복자가 생존 집계) → 종료 조건(T31b)과 함께 설계 필요 | 완료 30/45 |
+| 12:3x | T30b wip-ready (opus, 237k — 한도 근접, 1131초, 101회): t30b-train-weapons ca1cdb8, FV59. 지휘자가 보낸 863f9d1 을 a2e0f97 로 체리픽 확인. 저장 위치 이동(ORG_ 끝→ENTS 끝)·엔티티 참조 태그 3(표적 지정 상태 저장 파손 방지). trainweapons 19검사 PASS. **밸런스: 열차 8승 0패(보병 전멸)** → AH1. 발주: T30c(opus, t30b 위)·T30b 리뷰(sonnet) | 완료 31/47 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
