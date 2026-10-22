@@ -28,6 +28,8 @@ public static class MissionText
             "eliminate" => !string.IsNullOrEmpty(o.Tag) ? string.Format(S.ObjEliminateTag, o.Tag) : string.Format(S.ObjEliminate, (int)o.Percent),
             "defend" => o.Area != null ? string.Format(S.ObjDefendArea, (int)o.Seconds, o.Area) : string.Format(S.ObjDefend, (int)o.Seconds),
             "escort" => string.Format(S.ObjEscort, o.Tag, Math.Max(1, o.Count), o.Area),
+            "surrender" => string.Format(S.ObjSurrender, (int)o.Percent),
+            "nOfM" => string.Format(S.ObjNofM, o.Count, o.Of?.Count ?? 0),
             _ => o.Id,
         };
     }
@@ -39,6 +41,7 @@ public static class MissionText
         {
             "losses" => string.Format(S.FailLosses, (int)f.Percent),
             "keyUnit" => string.Format(S.FailKeyUnit, f.Tag),
+            "groupWiped" => string.Format(S.FailGroupWiped, f.Tag),
             "timeLimit" => string.Format(S.FailTimeLimit, Clock(f.Seconds)),
             _ => f.Type,
         };
@@ -56,6 +59,8 @@ public static class MissionText
             "eliminate" => string.IsNullOrEmpty(o.Tag) && o.Train == null ? string.Format(S.MsHudEliminate, m.ObjProgress[i]) : string.Format(S.MsHudEliminate, m.ObjProgress[i] * 100),   // 태그 · 화물열차 = 0~1 비율
             "defend" => Clock(o.Seconds - w.Time),
             "escort" => string.Format(S.MsHudEscort, (int)m.ObjProgress[i], Math.Max(1, o.Count)),
+            "surrender" => string.Format(S.MsHudSurrender, m.ObjProgress[i]),
+            "nOfM" => string.Format(S.MsHudEscort, (int)m.ObjProgress[i], o.Count),
             _ => "",
         };
     }

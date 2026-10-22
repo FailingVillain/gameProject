@@ -96,6 +96,7 @@ public static partial class SelfTest
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "pursuit2") { Tests.Pursuit2SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "ai412") { Tests.Ai412SelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "trainweapons") { Tests.TrainWeaponsSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }   // T30b 열차 무기
+        if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "objectives") { Tests.ObjectivesSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }   // C1E1-g4 목표 확장
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "freight") { Tests.FreightSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }   // T30c 화물열차 목표
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "neutralzone") { Tests.NeutralZoneSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }   // TC-G 중립 구역
         if (Environment.GetEnvironmentVariable("KD_SELFTEST_ONLY") == "traindemo") { Tests.TrainDemoSelfTest.Run(opt, Check); Console.WriteLine(failures == 0 ? "SELFTEST PASS" : $"SELFTEST FAIL ({failures})"); return failures == 0 ? 0 : 1; }   // T30e 시연 미션
@@ -177,6 +178,7 @@ public static partial class SelfTest
         Tests.TrainWeaponsSelfTest.Run(opt, Check);   // T30b 열차 무기
         Tests.FreightSelfTest.Run(opt, Check);   // T30c 화물열차 목표
         Tests.NeutralZoneSelfTest.Run(opt, Check);   // TC-G 중립 구역
+        Tests.ObjectivesSelfTest.Run(opt, Check);   // C1E1-g4 목표 확장
         Tests.TrainDemoSelfTest.Run(opt, Check);   // T30e 시연 미션
         Console.WriteLine("[기본 4인 맵 · 세력 선택 · 부대 지정]");
         Tests.FactionsSelfTest.Run(opt, Check);

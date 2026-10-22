@@ -758,3 +758,7 @@
 - 행동 `spawn` 의 `delay` 초 (0~3600, 기본 0 = 즉시): `MissionState.ReinforcementDue` (도착 틱) 에 예약, 매 틱 UpdateMission 이 등장. 병력 `patrol` ([x,y] 두 점 이상): 부대원 전원이 한가하고 경계 상태 (World.IsAlerted) 가 아니면 30틱마다 다음 점으로 이동 명령 (`PatrolLeg`).
 - 저장: MISN 끝 ReinforcementDue · PatrolLeg, FormatVersion 67 (임시 — 병합 때 fv_renumber). 체크섬은 값이 있을 때만 → 기존 미션·detcheck 불변. Replay 번호 불변 (새 명령 없음). 시험 `KD_SELFTEST_ONLY=tcb`.
 - c1e1_sk2.json 교체 안: sk2_alarm `when {seenBy:2}` + `[message, {spawn:r_alarm, delay:N}]`, 순찰조 e_patrol_w/e 에 `patrol`, 소초 존 진입 조건 삭제. id 그대로.
+## C1E1-g4 목표 확장 (미션 JSON)
+- 목표 `surrender` {faction?, percent(기본100), count(항복자 최소, 기본1)}: 대상 세력 생존 병력(항복자 포함) 중 항복 비율 >= percent. 목표 `nOfM` {of:[앞선 목표 id], count:N}: of 중 N 개 달성 (OR = count 1), 달성+진행중 < N 이면 실패. 하위 목표는 보통 primary:false.
+- 패배 `groupWiped` {tag}: 태그 그룹 전원 사망 (keyUnit 은 1명만 죽어도 발동 - 불변). 패배 `losses` + `tag`: 그 태그 유닛만 집계 (항복자 = 손실).
+- `MissionDef.Load(id, maxCasualtyFrac)`: losses.percent 를 frac*100 으로 덮어씀 (없으면 losses 추가); 텍스트 패치라 저장 형식 불변. 세력 `surrenderChance/Casualty/MaxLeft/SuppAt/SuppSec`: chance 를 적은 세력만 T31c 항복 규칙 덮어씀 (기본 꺼짐). 시험 KD_SELFTEST_ONLY=objectives.

@@ -587,6 +587,33 @@ public sealed partial class World
                 if (t >= o.Seconds) m.ObjState[i] = MissionState.Done;
                 break;
             }
+            case "surrender":   // C1E1-g4: 대상 세력 생존 병력(항복자 포함) 중 항복 비율
+            {
+                int surr = 0, alive = 0;
+                foreach (var u in Units)
+                {
+                    if (u.Hp <= 0) continue;
+                    if (!(o.Faction > 0 ? u.Owner == o.Faction : IsHostile(m.Player, u.Owner))) continue;
+                    if (u.Surrendered) surr++; else alive++;
+                }
+                float pct = surr + alive == 0 ? 0 : surr * 100f / (surr + alive);
+                m.ObjProgress[i] = pct;
+                if (surr >= Math.Max(1, o.Count) && pct >= o.Percent) m.ObjState[i] = MissionState.Done;
+                break;
+            }
+            case "nOfM":   // C1E1-g4: 앞선 목표 M 개 중 N 개 (하위 목표는 이미 이번 틱에 평가됨 - 정의 순서 보장)
+            {
+                int done = 0, active = 0;
+                foreach (int k in o.OfIdx)
+                {
+                    if (m.ObjState[k] == MissionState.Done) done++;
+                    else if (m.ObjState[k] == MissionState.Active) active++;
+                }
+                m.ObjProgress[i] = done;
+                if (done >= o.Count) m.ObjState[i] = MissionState.Done;
+                else if (done + active < o.Count) m.ObjState[i] = MissionState.Failed;
+                break;
+            }
             case "escort":
             {
                 var ids = m.TagUnits(o.Tag);
@@ -656,6 +683,13 @@ public sealed partial class World
         {
             case "losses":
             {
+                if (!string.IsNullOrEmpty(f.Tag))   // C1E1-g4: tag 가 있으면 그 태그 유닛만 집계 (예: 기병 70% 상실). 항복자는 손실.
+                {
+                    var tids = m.TagUnits(f.Tag);
+                    int talive = 0;
+                    foreach (int id in tids) if (Find(id) is Unit tu && !tu.Surrendered) talive++;
+                    return tids.Count > 0 && (tids.Count - talive) * 100f / tids.Count >= f.Percent;
+                }
                 int sp = m.Spawned[m.Player];
                 return sp > 0 && (sp - m.Alive[m.Player]) * 100f / sp >= f.Percent;
             }
@@ -663,6 +697,11 @@ public sealed partial class World
             {
                 var ids = m.TagUnits(f.Tag);
                 return ids.Count > 0 && AliveOf(ids) < ids.Count;
+            }
+            case "groupWiped":   // C1E1-g4: 태그 그룹 전원 사망 (keyUnit 은 한 명만 죽어도 발동 - 불변)
+            {
+                var ids = m.TagUnits(f.Tag);
+                return ids.Count > 0 && AliveOf(ids) == 0;
             }
             case "timeLimit": return f.Seconds > 0 && t >= f.Seconds && !allDone;
         }

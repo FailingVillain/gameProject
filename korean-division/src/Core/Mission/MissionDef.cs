@@ -114,6 +114,38 @@ public sealed partial class MissionDef
         return Parse(text, id);
     }
 
+    /// <summary>C1E1-g4: 캠페인 변수 maxCasualtyFrac (0 초과 1 이하) 로 패배 조건 losses 의 percent 를 덮어써서 읽는다 (없으면 losses 조건 하나를 추가).
+    /// 미션 텍스트가 바뀌는 것이라 스냅샷 · 리플레이는 덮어쓴 텍스트를 그대로 싣는다 (결정적, 저장 형식 불변). frac 이 null 이면 <see cref="Load(string)"/> 과 동일.</summary>
+    public static MissionDef Load(string id, float? maxCasualtyFrac)
+    {
+        if (maxCasualtyFrac is not float frac) return Load(id);
+        string path = PathOf(id);
+        if (!File.Exists(path)) throw new FileNotFoundException($"미션 파일 없음: {path}");
+        string text = File.ReadAllText(path);
+        if (CampaignCarry.WantsCarry(text)) text = CampaignCarry.Patch(text, id, CampaignState.Load());
+        return Parse(WithLossesFrac(text, frac), id);
+    }
+
+    /// <summary>미션 텍스트의 failures[type=losses].percent 를 frac×100 으로 (losses 가 없으면 추가). 범위 밖이면 InvalidDataException.</summary>
+    public static string WithLossesFrac(string text, float frac)
+    {
+        if (!(frac > 0f && frac <= 1f)) throw new InvalidDataException($"maxCasualtyFrac {frac} (0 초과 1 이하)");
+        System.Text.Json.Nodes.JsonNode? root;
+        try { root = System.Text.Json.Nodes.JsonNode.Parse(text, null, new JsonDocumentOptions { CommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true }); }
+        catch (JsonException e) { throw new InvalidDataException($"미션 JSON 오류: {e.Message}", e); }
+        if (root is not System.Text.Json.Nodes.JsonObject obj) throw new InvalidDataException("빈 미션 파일");
+        float pct = MathF.Round(frac * 100f, 4);
+        var fails = obj["failures"] as System.Text.Json.Nodes.JsonArray;
+        if (fails == null) { fails = new System.Text.Json.Nodes.JsonArray(); obj["failures"] = fails; }
+        bool any = false;
+        foreach (var f in fails)
+            if (f is System.Text.Json.Nodes.JsonObject fo && string.Equals(fo["type"]?.GetValue<string>(), "losses", StringComparison.OrdinalIgnoreCase)) { fo["percent"] = pct; any = true; }
+        if (!any) fails.Add(new System.Text.Json.Nodes.JsonObject { ["type"] = "losses", ["percent"] = pct });
+        using var ms = new MemoryStream();
+        using (var w = new Utf8JsonWriter(ms, new JsonWriterOptions { Indented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping })) obj.WriteTo(w);
+        return System.Text.Encoding.UTF8.GetString(ms.ToArray());
+    }
+
     /// <summary>시작 화면 목록용 (깨진 파일은 null).</summary>
     public static MissionDef? Peek(string id)
     {
@@ -166,6 +198,7 @@ public sealed partial class MissionDef
         Require(Map != null || MapData is { ValueKind: JsonValueKind.Object }, "지도가 없음 (map 또는 mapData)");
         foreach (var f in Factions) Require(MissionFaction.Postures.Contains(f.Posture ?? "attack"), $"세력 자세 '{f.Posture}' (attack · defend · hold · counter)");
         foreach (var f in Factions) Require(f.AiWithdrawAt is null or (>= 0 and < 1) && f.AiCommitment is null or (>= 0 and <= 1), $"세력 '{f.Name}': aiWithdrawAt 0~1 미만 · aiCommitment 0~1");
+        foreach (var f in Factions) Require(f.SurrenderChance is null or (>= 0 and <= 1) && f.SurrenderCasualty is null or (>= 0 and <= 1) && f.SurrenderSuppAt is null or (>= 0 and <= 1) && f.SurrenderMaxLeft is null or >= 0 && f.SurrenderSuppSec is null or >= 0, $"세력 '{f.Name}': surrender* 범위 (chance · casualty · suppAt 0~1, maxLeft · suppSec 0 이상)");
         foreach (var pr in Props) Require(PropDefs.Current.TryGet(pr.Type, out _), $"소품 종류 '{pr.Type}' 없음 (props.json)");
         foreach (var (name, a) in Areas) Require(a.Valid, $"구역 '{name}' 은 rect [x,y,w,h] 또는 circle [cx,cy,r]");
         ValidateNeutralZones();   // TC-G (NeutralZone.cs)
@@ -203,14 +236,36 @@ public sealed partial class MissionDef
         foreach (var o in Objectives)
         {
             Require(!string.IsNullOrWhiteSpace(o.Id) && oids.Add(o.Id), $"목표 id '{o.Id}' 가 비었거나 중복");
-            Require(MissionObjective.Types.Contains(o.Type), $"목표 '{o.Id}' 종류 '{o.Type}' (capture · eliminate · defend · escort)");
+            Require(MissionObjective.Types.Contains(o.Type), $"목표 '{o.Id}' 종류 '{o.Type}' (capture · eliminate · defend · escort · surrender · nOfM)");
             if (o.Train != null) { ValidateFreightObjective(o, defs); continue; }   // T30c 화물열차 목표 (FreightObjective.cs)
+            if (o.Type == "surrender")   // C1E1-g4
+            {
+                Require(o.Percent > 0 && o.Percent <= 100, $"목표 '{o.Id}': surrender percent 는 0 초과 100 이하");
+                Require(o.Count >= 1, $"목표 '{o.Id}': surrender count(항복자 최소 수) 는 1 이상");
+                Require(o.Faction >= 0 && o.Faction <= Factions.Count, $"목표 '{o.Id}': 세력 {o.Faction} 이 범위 밖");
+            }
+            if (o.Type == "nOfM")   // C1E1-g4
+            {
+                Require(o.Of is { Count: > 0 }, $"목표 '{o.Id}': nOfM 은 of (목표 id 목록) 필요");
+                int self = Objectives.IndexOf(o);
+                var idx = new int[o.Of!.Count];
+                for (int k = 0; k < idx.Length; k++)
+                {
+                    idx[k] = Objectives.FindIndex(x => x.Id == o.Of[k]);
+                    Require(idx[k] >= 0 && idx[k] < self, $"목표 '{o.Id}': of '{o.Of[k]}' 가 없거나 이 목표보다 앞에 정의되지 않음");
+                    Require(Array.IndexOf(idx, idx[k], 0, k) < 0, $"목표 '{o.Id}': of '{o.Of[k]}' 중복");
+                }
+                Require(o.Count >= 1 && o.Count <= idx.Length, $"목표 '{o.Id}': nOfM count {o.Count} (1~{idx.Length})");
+                o.OfIdx = idx;
+            }
             if (o.Type is "capture" or "escort") Require(Area(o.Area) != null, $"목표 '{o.Id}': 구역 '{o.Area}' 없음");
             if (o.Type == "defend") Require(o.Seconds > 0, $"목표 '{o.Id}': defend 는 seconds 필요");
             if (o.Type == "escort") Require(!string.IsNullOrEmpty(o.Tag), $"목표 '{o.Id}': escort 는 tag 필요");
             if (o.Type == "defend" && o.Area != null) Require(Area(o.Area) != null, $"목표 '{o.Id}': 구역 '{o.Area}' 없음");
         }
-        foreach (var f in Failures) Require(MissionFailure.Types.Contains(f.Type), $"패배 조건 종류 '{f.Type}' (losses · keyUnit · timeLimit)");
+        foreach (var f in Failures) Require(MissionFailure.Types.Contains(f.Type), $"패배 조건 종류 '{f.Type}' (losses · keyUnit · timeLimit · groupWiped)");
+        foreach (var f in Failures) if (f.Type == "groupWiped") Require(!string.IsNullOrEmpty(f.Tag), "패배 조건 groupWiped 는 tag 필요");
+        foreach (var f in Failures) if (f.Type == "losses" && !string.IsNullOrEmpty(f.Tag)) Require(f.Percent > 0 && f.Percent <= 100, "패배 조건 losses percent 는 0 초과 100 이하");
         foreach (var e in Events)
         {
             Require(e.When.Area == null || Area(e.When.Area) != null, $"사건 '{e.Id}': 구역 '{e.When.Area}' 없음");
@@ -270,6 +325,13 @@ public sealed class MissionFaction
     public float? AiWithdrawAt { get; set; }
     /// <summary>전술 AI 목표 고수 정도 0~1 (0.5 = 프로필 그대로, 1 = 공격 한계 · 철수 없음, 0 = 문턱 2배). 없으면 프로필 commitment.</summary>
     public float? AiCommitment { get; set; }
+    /// <summary>C1E1-g4 / T31c: 이 세력 병사의 항복 규칙 덮어쓰기 (balance.json combat.surrender* 의 세력별 값). surrenderChance 를 적은 세력만 켜진다 (없으면 전역 규칙 그대로 = 기본 꺼짐). 나머지 키는 없으면 전역 값.
+    /// 확률 0~1 · 중대 손실 비율 0~1 · 남은 병력 상한 · 제압비 0~1 · 제압 지속 초.</summary>
+    public float? SurrenderChance { get; set; }
+    public float? SurrenderCasualty { get; set; }
+    public int? SurrenderMaxLeft { get; set; }
+    public float? SurrenderSuppAt { get; set; }
+    public float? SurrenderSuppSec { get; set; }
 }
 
 /// <summary>사각형 또는 원 구역.</summary>
@@ -400,10 +462,11 @@ public sealed class MissionCompany
     };
 }
 
-/// <summary>목표: capture (구역 N초 확보) · eliminate (적 전멸 / N% / 태그) · defend (N초 버티기, 구역 있으면 빼앗기면 실패) · escort (태그 유닛이 구역 도착).</summary>
+/// <summary>목표: capture (구역 N초 확보) · eliminate (적 전멸 / N% / 태그) · defend (N초 버티기, 구역 있으면 빼앗기면 실패) · escort (태그 유닛이 구역 도착).
+/// C1E1-g4: surrender (대상 세력 생존 병력 중 항복 비율 percent% 이상, 항복자 count 명 이상) · nOfM (of 에 적은 앞선 목표 M 개 중 count 개 달성 — 거점 N점 점령 · 'A 또는 B' 조합).</summary>
 public sealed class MissionObjective
 {
-    public static readonly string[] Types = { "capture", "eliminate", "defend", "escort" };
+    public static readonly string[] Types = { "capture", "eliminate", "defend", "escort", "surrender", "nOfM" };
     public string Id { get; set; } = "";
     public string Type { get; set; } = "capture";
     public string? Text { get; set; }
@@ -426,11 +489,15 @@ public sealed class MissionObjective
     public string? Train { get; set; }
     /// <summary>T30c capture + train: 화물 객차 둘레 확보 반경 (칸, 기본 3).</summary>
     public float Radius { get; set; } = 3;
+    /// <summary>C1E1-g4 nOfM: 묶을 목표 id 들 (이 목표보다 앞에 정의된 것만 — 순환 없음). count = 달성해야 할 개수 N (기본 1 = 하나라도), 'M 전부' = count 를 of 길이로.
+    /// 달성 개수 + 아직 진행 중인 개수 &lt; count 가 되면 실패. 묶인 하위 목표는 보통 primary:false. surrender 의 count = 항복자 최소 수.</summary>
+    public List<string>? Of { get; set; }
+    [JsonIgnore] internal int[] OfIdx { get; set; } = Array.Empty<int>();
 }
 
 public sealed class MissionFailure
 {
-    public static readonly string[] Types = { "losses", "keyUnit", "timeLimit" };
+    public static readonly string[] Types = { "losses", "keyUnit", "timeLimit", "groupWiped" };
     public string Type { get; set; } = "losses";
     public string? Text { get; set; }
     public float Percent { get; set; } = 80;
