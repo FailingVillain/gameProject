@@ -180,6 +180,7 @@
 | 14:4x | T42d wip-ready(sonnet, 123k, 246초; t42d-schedule-log 0d5a676, t42c 위): 스키마 v7(Day·Timeline 200건, v3~v6 이행), 첫 승리 정산 시 일수(missionDays 임시 1), 탭 14 연표(읽기 전용)·탭 12 [N일] 접두, savecompat 10건·골든 일치. T42a~d 체인 완료 → 체인 리뷰 발주(sonnet) | 완료 ~73 |
 | 14:4x | T42a~d 체인 리뷰(sonnet, 94k, 76초): 차단 0, 병합 가능. 비차단 7: ①항복자 EnemyKills·포로 이중 계산(항복 켤 때; 사용자 결정) ②패배 분기 죽은 코드 ③마지막 미션 재승리 시 진급 정원 초기화 ④장교 XP 미소모로 연속 진급 ⑤Day/Timeline 상한 없음 ⑥첫 미션 전 이벤트 Day=0 ⑦경제 JSON null 원소 시 전체 폴백. → ③⑤⑥ 수정 발주(sonnet, t42d 위); ①②④⑦ 은 카드에 미결로 기록 | 리뷰 완료 |
 | 14:5x | **통합 리허설 완료**(sonnet, 202k, 6088초; integration/rehearsal 984c404, 측정 생략): 전 스택 병합 충돌 대부분 ops 문서·버전 줄(기계적), 어려운 곳 = 캠페인 스택(같은 수정 두 벌: gemini-import 뒤 t19d 만 병합 권장), t30a/t30b(열차 저장 위치; t30b 부터 또는 재스택). 실제 FV: breach2 53/R20 … rail 58 · t30a 59/R23 · t30b 60 → IsAi 61/24, AE2 62/25 로 예약표 정정. 체크섬 변화 3곳(breach2→t24→t25) → 통합 골든 bef5ffb0 822cdacd. 전체 selftest FAIL 4: ①uiicons 11버튼(T38c 로 해소 경로) ②crossing 2건 — T24 의심(t24 단독도 실패, 07ac80c 재확인 필요) ③안개 0.311ms(부하 탓 추정). snaptest·uifuzz OK. → crossing 진단 발주 | 완료 ~74 |
+| 14:5x | T42 체인 리뷰 수정 완료(sonnet, 66k, 109초; t42d 57f5440): ③재승리 시 진급 정원·이월 불변(재승리 생존자 사살 수는 미반영), ⑤Day 상한 100000·Timeline 200 절단, ⑥Day≥1. savecompat·missions·골든 PASS. 열린 항목 3건(이중 집계·죽은 패배 분기·장교 XP) 카드 기록 → 최종 T42d 팁 = 57f5440 | 완료 ~75 |
 
 ## 파이프라인 v1 중간 점검 요약 (2026-10-22 08:19 실측, 취침 중 자율 가동 ~2시간 반)
 | 지표 | v1 이전 | 지금 | 판단 |
