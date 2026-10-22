@@ -311,12 +311,12 @@
       "suppressRecoverMul": 1.5, "movingHitMul": 0.75, "shellCenterKillRadius": 0.5, "chargeHopRange": 6, "chargeHopMaxHit": 0.85, "chargeHopMinDist": 9, "chargeHopMaxSec": 4,   // assaultinf (2026-10-22): A 제압 저항 (받는 제압 suppressResist 0.5 는 N23 부터 ×0.6 보다 강해 유지) + 회복 ×1.5 · B 이동 중 피격 ×0.75 · 포탄 착탄 중심 0.5칸 즉사 · C 돌격 접근 6칸 안 엄폐 약진 (체력 130 은 이미 반영)
       "marchFire": true, "grenades": 2, "smokeGrenades": 1, "wireCutter": true, "koreaOnly": true, "marchFireDefault": true, "marchAccMul": 0.8, "marchIntervalMul": 1.0, "marchMoveMul": 0.5, "marchGrenadeFrac": 0.5, "sidearm": "pistol_assault", "sidearmRange": 6, "canCapture": true, "autoAttack": true,
     },
-    // T32a (2026-10-22): 전투공병 — 철조망 절단 전용 (규칙 15: 설치/폭파/참호 구축 제외). 소총 + 총검 + 수류탄 2, 연막 없음 (연막은 돌격대 몫). 한국군 전용. 그림은 임시 별칭 (T32d 에서 전용 그림). 어떤 편성/미션에도 아직 없음.
+    // T32a (2026-10-22): 전투공병 — 철조망 절단 전용 (규칙 15: 설치/폭파/참호 구축 제외). 소총 + 총검 + 수류탄 2, 연막 없음 (연막은 돌격대 몫). 한국군 전용.  그림은 전용 (T32d). 어떤 편성/미션에도 아직 없음.
     "infantry_pioneer": {
       "name": "전투공병", "description": "소총과 철조망 절단 도구를 든 한국군 전용 공병. 철조망을 잘라 길을 엽니다. 철조망 설치, 폭파, 참호 구축은 하지 못합니다.",
       "hp": 100, "speed": 3.2, "radius": 0.35, "sight": 32, "sightNear": 20, "sightFar": 32, "accuracy": 1.0,
       "weapon": "rifle_mosin", "melee": "bayonet", "armor": "none", "category": "infantry", "suppressResist": 0.75, "marchFire": true,
-      "grenades": 2, "wireCutter": true, "koreaOnly": true, "artAs": "infantry_regular", "canCapture": true, "autoAttack": true,
+      "grenades": 2, "wireCutter": true, "koreaOnly": true, "canCapture": true, "autoAttack": true,
     },
     // ---- 교전 4차 (ROADMAP 추가 병종 / 이름 규칙). 그림은 기존 별칭 (theme.json)
     "infantry_regular": {

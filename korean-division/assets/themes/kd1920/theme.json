@@ -3,6 +3,26 @@
   "inherit": "ww2",
   "names": {},
   "sprites": {
+    "unit.infantry_pioneer": {
+      "layouts": [
+        "units/infantry-pioneer/infantry-pioneer_layout.json",
+        "units/infantry-pioneer/infantry-pioneer@96_layout.json",
+        "units/infantry-pioneer/infantry-pioneer@48_layout.json"
+      ],
+      "scale": 0.166667
+    },
+    "unit.recruit": {
+      "alias": "unit.infantry"
+    },
+    "unit.veteran": {
+      "alias": "unit.infantry"
+    },
+    "unit.scout": {
+      "alias": "unit.infantry"
+    },
+    "unit.infantry_default_old": {
+      "alias": "unit.infantry_reserve"
+    },
     "unit.common_hunter": {
       "layouts": [
         "units/infantry-hunter/infantry-hunter_layout.json",
@@ -34,18 +54,6 @@
         "units/infantry-militia/infantry-militia@32_layout.json"
       ],
       "scale": 0.25
-    },
-    "unit.recruit": {
-      "alias": "unit.infantry"
-    },
-    "unit.veteran": {
-      "alias": "unit.infantry"
-    },
-    "unit.scout": {
-      "alias": "unit.infantry"
-    },
-    "unit.infantry_default_old": {
-      "alias": "unit.infantry_reserve"
     },
     "unit.standard_bearer": {
       "layouts": [

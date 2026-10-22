@@ -49,9 +49,10 @@ UNIFORMS = {**UNIFORMS, **kd_new.UNIFORMS}
 from parts import kd_new2  # noqa: E402
 HEADGEAR = {**HEADGEAR, **kd_new2.HEADGEAR}
 UNIFORMS = {**UNIFORMS, **kd_new2.UNIFORMS}
+from parts import pioneer as _pioneer  # noqa: E402
 
 WEAPONS = {**rifles.WEAPONS, **sidearms.WEAPONS, **blades.WEAPONS, **heavy_weapons.WEAPONS, **smg.WEAPONS, **grenade.WEAPONS, **dadao.WEAPONS, **_sniper.WEAPONS, **horse.WEAPONS, **scout.WEAPONS, **kd_new.WEAPONS, **kd_new2.WEAPONS}
-GEAR = {**packs.GEAR, **sidearms.GEAR, **blades.GEAR, **dadao.GEAR, **_sniper.GEAR, **scout.GEAR, **grenade.GEAR, **kd_new2.GEAR}
+GEAR = {**packs.GEAR, **sidearms.GEAR, **blades.GEAR, **dadao.GEAR, **_sniper.GEAR, **scout.GEAR, **grenade.GEAR, **kd_new2.GEAR, **_pioneer.GEAR}
 
 UNITS_DIR = os.path.join(ROOT, "units")
 ANIMS_DIR = os.path.join(ROOT, "anims")
