@@ -19,7 +19,7 @@ public sealed partial class CampaignMenu
         try { doctrines = Doctrines.Load(); } catch (Exception ex) { doctrinesError = ex.Message; }
     }
 
-    void DrawTabStaff(Rectangle body)
+    void DrawTabSchools(Rectangle body)
     {
         EnsureDoctrines();
         float x = body.X + 20, y = body.Y + 16;

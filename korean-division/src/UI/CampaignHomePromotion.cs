@@ -25,7 +25,8 @@ public sealed partial class CampaignMenu
 
         Ui.Text(S.CmPromoCandHead, x, y, 16, Palette.Accent); y += 24;
         var cands = CampaignPromotion.Candidates(state);
-        float bottom = body.Y + body.Height - 150;
+        bool cmdOn = CommanderHomeModel.RulesOn;   // T48d: 종착 배정 구역
+        float bottom = body.Y + body.Height - 150 - (cmdOn ? 118 : 0);
         if (cands.Count == 0) { Ui.Text(S.CmPromoNone, x + 10, y, 14, Palette.TextDim); y += 22; }
         int shown = 0;
         foreach (var c in cands)
@@ -40,6 +41,7 @@ public sealed partial class CampaignMenu
         if (shown < cands.Count) { Ui.Text(string.Format(S.CmPromoMore, cands.Count - shown), x + 10, y, 13, Palette.TextDim); y += 20; }
 
         y = Math.Max(y + 8, bottom + 4);
+        if (cmdOn) y += DrawTerminalSection(x, y, w, 2, S.CmdPromoTermHead) + 6;
         Ui.Text(S.CmPromoLogHead, x, y, 16, Palette.Accent); y += 22;
         var log = state.PromotionLog;
         if (log.Count == 0) Ui.Text(S.CmPromoLogEmpty, x + 10, y, 14, Palette.TextDim);

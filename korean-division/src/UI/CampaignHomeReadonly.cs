@@ -35,6 +35,7 @@ public sealed partial class CampaignMenu
         var d = v.Debrief;
         if (d == null) Ui.Text(S.CmRecDebriefEmpty, x + 10, y, 14, Palette.TextDim);
         else Ui.Text(string.Format(S.CmRecDebrief, string.IsNullOrEmpty(d.Title) ? d.MissionId : d.Title, d.Dead, d.WoundedReturned, d.DischargedWounded, d.EnemyKills), x + 10, y, 14, Palette.Text);
+        if (CommanderHomeModel.RulesOn && y + 130 < body.Y + body.Height - 52) DrawCommanderLog(x, y + 30, 3);   // T48d 인사 일지
         ReadonlyFooter(body, S.CmRecLater);
     }
 
