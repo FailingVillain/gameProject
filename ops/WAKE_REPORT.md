@@ -8,3 +8,6 @@
 - 12:50 soak 재개(measure): WATER s3 5/5 OK 이상 0, AIPLAN 0건 - heavy_gate RAM(<8GB) 대기로 진행 느림(~2회/10분). 결과 C:/works/_notes/soak_allon_logs/run3_*, 요약 ops/SOAK_2026-10-23.md. 드라이버 백그라운드 계속.
 - 13:05 NEW-4 완료 kd/new4-choke-queue a7636dad (detcheck 변경 0322cbe0 b4d5f80d; 골든은 G1/G2 와 묶어 재생성). chokeEnabled 승인됨.
 - 13:09 merge lock kd-merge.lock released by conductor (user approved deleting started.txt).
+- 14:30 MERGE-A done: 6 branches merged, tip 0dfe2bfc, detcheck unchanged; lock released by conductor.
+- 14:51 MERGE-B done: 6 non-golden branches merged (tool-assemble 03005a7d, gate-v3 584cafe9, ti2-p3 e9a756f8, t61e da49d51a, a3-rerender df611ddd, a5 702b1c9d), tip 702b1c9d, detcheck unchanged 672804207fc4e486 3c42aea49324248e; lock released by conductor.
+- 15:00 soak: WATER 60/60 OK, AIPLAN 34/36 (STALL c1_01_hoeryong s3, 재현됨); 나머지 진행 중. ops/SOAK_2026-10-23.md

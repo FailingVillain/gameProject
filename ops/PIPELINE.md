@@ -36,6 +36,7 @@ Version: v2 · updated: 2026-10-22 · source of truth: this file is the source o
 3. **snapshot classification** (LESSONS_ARCHIVE 23·28): did you classify the new field so snapshot and `--snaptest` handle it (saved / derived cache / presentation-only)? Write one line of classification rationale in the review report.
 
 ### 1-d Common tail of order prompts (2026-10-22 v2.1; append to the end of every order. Do not write limit numbers — a cause of contradiction, numbers only in ops/LIMITS.md)
+Single source of the common tail: `ops/DISPATCH_TAIL.md` (see docs/specs/DISPATCH_TEMPLATE_SPEC.md); the text below is kept as-is and must match it.
 Required 3 fields + one line: ① base branch·commit hash ② FV: if raising, claim `fv_claim` (temporary value base+1) / if not, 'none' ③ hotspot file list ④ write the 1-line result of `preflight.ps1 <card id>` in the report.
 - Common prohibitions: no push · no modifying main·merge lines (merge/*) · no modifying ops/ on work branches (`queue_guard`) · shared docs via fragment files (`docs/decisions_pending.d/`, `docs/engine_notes.d/`).
 - Report: within the role card's line count (the conductor's value if set). At the end an **'임의 결정' item** (list every value·assumption·interpretation·deletion·relaxation the card did not decide; 'none' if none).

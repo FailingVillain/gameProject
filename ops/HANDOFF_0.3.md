@@ -1,64 +1,37 @@
-# HANDOFF_AUTO - measured 2026-10-23 03:31 (generated; do not hand-edit)
+# HANDOFF 0.3 - conductor session handoff (written 2026-10-23 15:3x, by the conductor before /clear)
+Auto-measured state: ops/STATE_LIVE.md (refreshed 15:24) and `python C:/works/agentHub/handoff_gen.py` (-> agentHub/out/HANDOFF_AUTO.md; its 'merge line HEAD' line can be stale, trust `git -C C:/gameProject/kd-develop/kd-final log -1`). Index of all md files: ops/md_guide.md. Abbreviations: ops/ABBREVIATIONS.md (2-letter, 27). New md = English (user-edited md stays Korean: DECISIONS, USER_DECISIONS_QUEUE, WAKE_REPORT, DELETE_LIST, APPROVAL_NEEDED).
 
-## State (STATE_LIVE age 0 min; refresh: tools/agent/state_snapshot.ps1 -Write)
-- main: `82b8f9c3 tools/agent: gate art pool limit 2 (KD_GATE_ART_LIMIT), run_game muted by default, AGENT_RULES ObjCodec rule`
-- worktrees: 149 total ((top)=1 gt-develop=5 kd-develop=143)
-- merge lock: none
-- merge lines:
-  - `merge/0.2-final` at kd-final: HEAD `2531ec1` latest tag `v0.3` dirty files 3
-- this checkout (gameProject): Snapshot FV 67 / Replay 24
-- heavy processes: 1 (validate 0 / measure 0 / render 1)
+## 1. Rules in force (user, 2026-10-23)
+- Always answer the user in Korean. NEVER push. Local commits only. Ask before new mechanics. Log every self-made decision (ops/AUTO_DEFAULTS_LOG.md).
+- Agents: max 12 concurrent (LIMITS.md; env CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS is still 30, user changes it), opus <= 3 and only for sim output / save-replay format / perf / one failed sonnet attempt; default sonnet; NO haiku (30k tokens per call) -> Gemini flash for 下 work; fresh agent per task, never resume old ones for new scope; 'DO WORK' (user keyword) = check agents + queue and launch as many safe tasks as possible up to the limit.
+- Heavy gate = tools/agent/heavy_gate.ps1 v3 (merge line 584cafe9, main checkout a9522f84/a7e65549/561ff864): budget 20 GB (user's choice), free-RAM floor 7 GB today, 6.5 on 10-24, 6 on 10-25 (automatic at local midnight, tools/agent/gate_config.json floor_heavy_stages; delete later stages to halt), render floor 8, emergency 4, priority floor 5, waiter cap 6 (exit 75 = overloaded: stop, report, never bypass). `tools/agent/gate_stats.ps1` = daily wait stats. Watch for freezes (PC froze 10-18, 10-22).
+- kd_guard hook blocks: destructive git (worktree remove, branch -D, reset --hard...) = hard block (user does it; list in ops/DELETE_LIST.md); a command mixing a write verb/redirect with C:/Program Files/dotnet; heredocs containing destructive git words (write docs with Write/Edit). Pending user admin patch: ops/guard_patch/patch_kd_guard.ps1 (dotnet exception + kd_delete_allow.txt). Never retry/reword a blocked command.
+- md_guide: record by layer (L0 rules, L1 decisions, L2 queue, L3 state, L4 review/measure, L5 design, L6 memory).
+- Token-saving: first 8 hash chars in reports, cache-stable CLAUDE.md/MEMORY.md, reports <= 12 lines, Gemini more actively (flash 3 pts, pro 10 pts; pro calls time out at 420 s on big inputs -> use flash or split; call with the command itself in run_in_background and a direct redirect, not a subshell). Gemini used today ~94/300.
 
-## Active queue rows (36; merged/closed/done excluded)
-- T11 전 유닛 재렌더 (rerender-1, gt-brender, gt-rer :: main
-- T12 통합 밸런스 측정 (A/B/C 시나리오 시드 8) → BASELINE_C :: ai3b2 스택
-- T13 release (전체 selftest · 골든 · publish · 기록 :: T12
-- T15 밤 soak 갱신 → 전투 문제 9건 재보고 :: ai3b2 스택
-- T20 저장소 이동 마무리 (옛 폴더 삭제 = 사용자 U02) :: -
-- T48b 장교 신원 영속 · 진급 종착 · 배정 · 연대장 기용/해임 · 전사/항 :: -
-- T48e 2단계 전투 연결 (기본 꺼짐 키 4개, FV 예약 필요) :: -
-- C1E1-m2 MAP-B 지도 생성 (large) :: -
-- C1E1-u1 유닛/무기/세력 점검 (보고서) :: -
-- C1E1-g2 에피소드 화면 UI :: -
-- C1E1-g3 미션 이벤트 행동 확장 :: -
-- C1E1-d1 결정 16개·노드 데이터 JSON :: -
-- M2 캠페인 사기·호감·민심 0~100 기본 50 통일 + 전투 후 탈영 +  :: -
-- C1E1-s6 OP1 강공 미션 JSON :: -
-- C1E1-v1 변형 데이터 적용 :: -
-- C1E1-t1 기능 문구 (서사 키만) :: -
-- C1E1-p1 VIP 포트레이트 자리표시 (선택) :: -
-- C1E1-q1 종단 시험 S1~S4 :: -
-- C1E1-q2 OP1 성능 스모크 :: -
-- NEW-1 지도 크기별 과부하 시험 (N13; measure) :: -
-- NEW-2 LOD0 그림 누락 버그 조사 :: -
-- NEW-3 제압으로 엎드린 병사가 대열 이동에 끌려가는 현상 :: -
-- NEW-4 좁은 길목 우왕좌왕 :: -
-- NEW-5 일본군 45식 군모·기수 깃발 3:2·보병 겹침 일괄 수정 (collid :: -
-- T32c - :: T32b
-- ... 11 more in ops/QUEUE.md
+## 2. Code state (merge line merge/0.2-final at C:/gameProject/kd-develop/kd-final, tip 702b1c9d, tag post-MB-6-a5-sheet; v0.3 tag = 2531ec16; detcheck 672804207fc4e486 3c42aea49324248e, FV Snapshot 74 / Replay 27 on the line; merge lock released)
+Merged today: N3e tools+specs, MERGE-A (ui-log-transparent incl. top bar + viewport y=0, ti2-p0, t61d, f3-followups, review-followups-small, t57f), MERGE-B (tool-assemble, gate-v3, ti2-p1..p3, t61e personnel UI + Esc fix, a3-rerender 10 units imported, a5 sheet script).
+Finished, NOT merged (all local branches, no push):
+| branch | tip | note |
+|---|---|---|
+| kd/ti2-p4 | c808c967 | SnapMsg 35 + StringsDelegation 14 consts; P5 (Strings.cs 578) remains |
+| kd/cmd-portraits | 05430d26 | commander portrait tool (gen_cmd/pick_cmd, pixel2) + 3 temporary placeholder portraits applied |
+| kd/a4-mid-sheet | 1c5a6c19 | mid style hook + sheet script (base of the two below) |
+| kd/a4-mid-buildings | 2a686168 | 71 buildings mid re-render imported (footprints identical); sheet + screenshots; AWAITING USER OK |
+| kd/a4-mid-props-terrain | 27a28ba7 | props 609 / terrain 308x3 / decals 25x3 mid POST-PROCESS (not a re-render); seam-checked; AWAITING USER OK |
+| gt/taegukgi-detail | 040cfd87 | Taegukgi + standard-bearer re-render imported; user still to delete 'original files' (nothing found; see DELETE_LIST) |
+| kd/b2-deferred-units-2 | 254850d2 | tachanka + horse-artillery (zoom_mult 0.88: looks smaller than tachanka; user may prefer 0.90 = +50 min render) + cavalry; review sheets in game-tools/korean-division-image-out/_review/. NOTE: last horse-art render ran make_unit.py outside the gate driver |
+GOLDEN BUNDLE (merge LAST, regenerate goldens ONCE, needs user approval of the regeneration): kd/water-fire-open 6142cb8c (G1, not started: merge+verify balance.json waterBlocksFire), kd/new3-prone-drag 6c8a7ae7 (alone detcheck 4481beae442aa119 cf3d48521804e40b), kd/new4-choke-queue a7636dad (alone 0322cbe0f2f711e3 b4d5f80dc861a47d; chokeEnabled=true approved). Combined value UNKNOWN. Plan: ops/GOLDEN_BUNDLE_PLAN.md (order, conflicts: NEW-3 vs t57f line already resolved on the line, regeneration recipe `--detcheck --update`, tools/detcheck.ps1 8 variants, traindemo golden only if it fails; wip/chokefix NOT merged; run perf group for StepChokeQueue).
 
-## Merge-line progress (last lines)
-- kd-develop\kd-final\ops\MERGE_PROGRESS.md:
-  - - 2026-10-23 02:54 step N3d-4 PASS d86804a7 (merge/0.2-final) tag post-N3d-4 | build:ok detcheck=672804207fc4e486 3c42aea49324248e selftest-snapshot:allowedFAIL=0 selftest-replay:allowedFAIL=0 selftest-crashlog:allowedFA
-  - - 2026-10-23 03:13 step N3f-1 PASS 2531ec16 (merge/0.2-final) tag post-N3f-1 | build:ok detcheck=672804207fc4e486 3c42aea49324248e selftest-snapshot:allowedFAIL=0 selftest-compatgate:allowedFAIL=0 selftest-savecompat:all
-- kd-develop\kd-final\ops\MERGE_PROGRESS_UI.md:
-  - - Final combine of merge/0.2 + merge/0.2-ui is by the commander (campaign-side files overlap with sim: Snapshot/Replay FV lines untouched here).
-  - Resume point: ui-post-H partial; nothing in progress, working tree clean.
+## 3. Main checkout (C:/gameProject, branch main; docs/ops/tools only) local commits: e2834368 (English translation, ENGINE_NOTES split into docs/engine/, roadmap sync, abbreviations, md_guide, log rotation, reports), a9522f84 + a7e65549 + 561ff864 (gate v3 install). The merge line has its OWN copy of docs: the English/engine-split docs are NOT on the merge line yet (sync step: cherry-pick docs, conflicts expected in docs/ENGINE_NOTES.md; MERGE_PLAN.md 'section union' rule must be updated to cover docs/engine/*.md and _inbox.md). CONTROLS.md translation: the uiicons group compares its BINDINGS table - run `KD_SELFTEST_ONLY=uiicons` after syncing (user approved, deferred for the gate).
 
-## Agents active now: 0
+## 4. Decisions made today (details ops/DECISIONS.md tail)
+T61d auto-assign stays manual for annihilated companies; supply-reserve flag added; PersonnelLog (schema +1) held; T61e P1-P12 decided (age = Korean counting age 1920-year+1, toggle for international age, FNV-1a birthdays); chokeEnabled on; commander portraits = pixel style, current 3 are temporary; 33 commanders input -> 0.4; mid style approved for environment (A4); desk campaign home approved: docs/specs/CAMPAIGN_HOME_DESK.md section 7a (Q4 painted map -> 0.4; Q7 stamp cosmetic until data) + Gemini lead section 8 (modal stack, font clamp <= 32 px, pre-baked paper, extra acceptance criteria) -> fold into cards T38d2b, a, c, d, e (serial, sonnet, order b/a first) when dispatched; mid colour for units (A5) = low priority (difference mild); hold: UNDO-b/c, TPOW-c, CK3, delegation UI (0.4); NEW-2 LOD0 not reproducible (needs user info).
 
-## Gemini today: 55/300 pts
+## 5. Open for the user (ops/USER_DECISIONS_QUEUE.md + below)
+1. OK to merge the A4 mid buildings + props/terrain/decals (look at uilog-shots/a4_*_before/after.png and the two sheets)? 2. Approve golden regeneration and the order G1 -> NEW-3 -> NEW-4 (merge round MERGE-C). 3. B2 horse-artillery scale 0.88 vs 0.90. 4. Taegukgi: which 'original' files to delete. 5. LOD0 case info. 6. Gate floor descent 6.5/6 is automatic: confirm or halt. 7. kd_guard admin patch (user). 8. DELETE_LIST.md items (perf-bench, kd-rerender-5, temp worktrees kd-meas-*, kd-m2-morale-unify, gt-a5, kd-a5 leftovers, bin/a4mp_before...). 9. 1024x640 top-text overlap fix (held; fix together). 10. env var CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS (user).
 
-## Conductor adds by hand (<= 10 lines): user decisions pending, next card order, known problems
-
-## 손으로 쓴 인계 (10줄 이내)
-1. 기준: 태그 v0.3 = merge/0.2-final 2531ec16 (Config 0.2.1, FV Snapshot 74 / Replay 27 / 캠페인 스키마 15, selftest 133 그룹 PASS, detcheck 672804207fc4e486 3c42aea49324248e). 0.2.1 zip: C:/works/_dist_out/KoreanDivision-0.2.1-2531ec1622.zip. 백업 MANIFEST: C:/works/_backup/MANIFEST-v0.3.txt. push 금지.
-2. 첫 일: ops/QUEUE_0.3.md(웨이브 1~3, 수면 모드 규칙) → ops/USER_DECISIONS_QUEUE.md(결정 대기 14건). 한도: 에이전트 9개·상급 3개, 재활용 없음, 중단은 사용자 지시 때만.
-3. 사용자는 0.3 시작 후 취침 예정: 승인 버튼이 필요한 작업 금지, 거부되면 재시도 말고 ops/APPROVAL_NEEDED.md, 결정은 쌓기, 보고는 ops/WAKE_REPORT.md 에 누적.
-4. WIP·미병합: kd/review-followups-small(WIP 354c02cf), gt/taegukgi-detail(41eab625, 승인됨), kd-b2-units(미커밋 wagon.py), N3e 브랜치(tools/autoplay-summary·soak-allon(충돌 Program.cs)·pro-pilot-save-timing·snapbench-map, spec/*), water-fire-open(골든 변경).
-5. 병합 규칙: 병합 여부는 git merge-base --is-ancestor(rev-list --count 오판), FV·스키마 병합 단계는 compatgate 필수, 병합 잠금(.git/kd-merge.lock)은 병합 담당만 쥐고 지휘자가 해제, 새 FAIL 이면 멈추고 보고, 시험 완화 금지.
-6. Gemini: flash(3점,슬롯3)·pro(10점,슬롯2)·flash_lite(1점,슬롯1), 300점/일, API는 웹 검색 전용(폴백 off), argon 미사용; 긴 로그·다중 파일 읽기는 route.py/agy_delegate flash 로, 결과는 단서(인용 줄 확인).
-7. 안전 훅 kd_guard: 막히면 재시도·우회 말고 의도 판단 후 보고, 문서는 Write/Edit 로. 승격 스크립트 promote_v03.ps1 verify 단계 버그(LESSONS 참조).
-8. 게이트: 렌더 풀 기본 2(KD_GATE_ART_LIMIT 로 병합 밖에서 3~4), B2 중단 뒤 남은 렌더 프로세스는 정리함(03:3x), 이후 STATE_LIVE 로 재확인.
-9. 정리 대기(승인 필요): tools/perf-bench 워크트리·브랜치, kd-rerender-5 워크트리, main 의 추적 안 되는 옛 파일 약 2800개. main 에는 로컬 커밋만 있음(aa93ff18, 82b8f9c3 + 이번 인계 커밋).
-10. 사용자 주의: 위임 UI 는 현재 수준 확정(개선 0.4), 연대장 12명 테스트 동안 즉시 채용 가능, 5개 유닛 재렌더는 0.3 에서 재시작, 번역은 보류.
+## 6. Background / not finished
+- soak (measure): drivers may still run: C:/works/_notes/soak_allon_logs/run3_WATER (60/60 ok) and run3_AIPLAN (34/36; c1_01_hoeryong seed 3 STALL twice, needs a BASE control run; repro command in ops/SOAK_2026-10-23.md); ~570 of 672 games left, resumable with the same soak_allon.py command; summary: `python tools/soak_allon/soak_allon.py --out x --report <dir>`.
+- Next candidates (no agents are running now): MERGE-C = golden bundle round (after user OK) and merge of ti2-p4, cmd-portraits, a4 branches, taegukgi, b2; TI2-P5; desk cards T38d2b/a; T61e4 (company-commander link, schema +1, excluded by P2); T12/T15 integrated balance pass after goldens (0.3 core: casualty speed #23, AG1 AI surrender, 9 combat problems #22); artillery-delay link (#31); T13 release; sync docs main -> merge line; DISPATCH step 2 (dispatch.ps1 / roadmap_check HITS|NONE; spec docs/specs/DISPATCH_TEMPLATE_SPEC.md; guard warnings already live in agentHub/dispatch_guard.py warn mode); GATE: observe gate_stats after the 10-24/25 floor steps.
+- Gemini pro 2nd opinions of NEW-3/NEW-4 diffs and of heavy_gate.ps1 timed out (420 s); static reviews exist (REVIEW-2, REVIEW-3 in ops/REVIEW_2026-10-23.md).

@@ -16,6 +16,9 @@ Classification (current cards):
 - 0.4 (AI): T34a~e, T32b·T32c (AI smoke·barbed wire), AI difficulty multiplier option A (AE2), AI items after T10b. (T31c turning on the surrender key moved to 0.3 above) **T32b·T34a in progress are finished (default-off key), but the remaining AI cards (T32c, T34b~e) are deferred to 0.4.** (changes if the user corrects)
 - 0.4 (sound effects): in-game sound effects overhaul (user night of 2026-10-22).
 
+- 0.4 (moved 2026-10-23 by the user): entering the 33 regiment commanders (favor preferences, unique traits, rank, bio -> commanders.json; the 12 hireable stay available during tests). Regiment-commander portraits stay temporary AI placeholders (kd/cmd-portraits, pixel2).
+- 0.3 (added 2026-10-23): commander's-desk campaign home (docs/specs/CAMPAIGN_HOME_DESK.md, cards T38d2a-e) and mid-style environment re-render (A4: buildings, props, terrain, decals; user approved 2026-10-23).
+
 ## Milestone transition procedure (user night of 2026-10-22, round 2)
 - Principle: fix bugs at the current level and then move to 0.3. **Only when the user commands** raise the milestone to 0.3 and run the backup procedure. Do not run before the command.
 - Procedure (same as the v0.2.1 backup):

@@ -196,3 +196,23 @@
 - T60 · weather-fx-fade · spec · 2026-10-22 · spec/balance-pass-0.3
 - T61 · weather-fx-fade · agent · 2026-10-22 · main
 - C1E1-g3b · weather-fx-fade · agent · 2026-10-22 · kd/g3-win-and-delay
+- RV2 · [충돌] RV2-replay-cursor.md | RV2-replay-followup.md · scan · 2026-10-23 · spec/regiment-delegation-r
+- T50c · fog-blocks · scan · 2026-10-23 · spec/regiment-delegation-r
+- T57f · delegation-followups · scan · 2026-10-23 · spec/followups-2026-10-23
+- T61e · personnel-ui · scan · 2026-10-23 · kd/a4-mid-sheet
+- T61e1 · personnel-tab · scan · 2026-10-23 · kd/a4-mid-sheet
+- T61e2 · personnel-officers · scan · 2026-10-23 · kd/a4-mid-sheet
+- T61e3 · personnel-roster · scan · 2026-10-23 · kd/a4-mid-sheet
+- T61e4 · company-commander-link · scan · 2026-10-23 · kd/a4-mid-sheet
+- T61g · roster-save-followups · scan · 2026-10-23 · spec/followups-2026-10-23
+- TPOW-a · loot-by-weapon · scan · 2026-10-23 · spec/regiment-delegation-r
+- TPOW-b · secure-and-hooks · scan · 2026-10-23 · spec/regiment-delegation-r
+- TPOW-c · field-secured · scan · 2026-10-23 · kd/a4-mid-sheet
+- UNDO-a · ground-undo · scan · 2026-10-23 · kd/a4-mid-sheet
+- UNDO-b · countermand-sim · scan · 2026-10-23 · kd/a4-mid-sheet
+- UNDO-c · countermand-ui · scan · 2026-10-23 · kd/a4-mid-sheet
+- T38d2a · countermand-ui · spec-desk · 2026-10-23 · main
+- T38d2b · countermand-ui · spec-desk · 2026-10-23 · main
+- T38d2c · countermand-ui · spec-desk · 2026-10-23 · main
+- T38d2d · countermand-ui · spec-desk · 2026-10-23 · main
+- T38d2e · countermand-ui · spec-desk · 2026-10-23 · main
