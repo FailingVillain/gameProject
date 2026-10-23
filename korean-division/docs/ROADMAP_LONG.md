@@ -2,6 +2,9 @@ Long-term · on hold · detailed originals. Do not read whole in a session — G
 
 ## User approval 2026-10-23
 
+- **(z) Approved items 2026-10-23 (details; short list in ROADMAP_SHORT)** — (1) save/load audit: in-mission save, auto-save before engagement, campaign slots, verify real state vs Snapshot 74 compat policy. (2) settings menu: resolution, volume, key rebinding, default mute. (3) complete the tutorial (only chapter 0 exists). (4) colour-blind support: team colour plus pattern/emblem, combine with the mid-style transition. (5) performance budget card: baseline tick cost at campaign scale (thousands of units), 10,000-unit load test, link to scene-A top-5% tick issue. (7) soak as a mini-gate per merge round (AIPLAN stall in c1_01_hoeryong seed 3 is the motivating case, root-cause bisect running). (8) roadmap diet: split ROADMAP_LONG (88 KB) into done / on hold / active. (9) 0.3/0.4 boundary: 0.4 = AI improvements (T34b-e, T32b/c, difficulty multiplier, surrender expansion), separate from 0.3 balance.
+- **(z2) Decisions 2026-10-23** — A4 mid art approved · golden bundle regeneration approved (order G1, NEW-3, NEW-4) · B2 horse-artillery zoom 0.88 · taegukgi finished (user deleted originals, ratio kept; no more taegukgi work) · march-fire MarchMuzzle code fix approved · temporary sounds kept (sound policy: keep temp mapping) · AI 3B pincerShare stays 0.5 default · translation open items held to 0.4 · 0.2.1 dist exe verified present (C:/works/_dist_out/KoreanDivision-0.2.1-2531ec1622.zip).
+
 - **(a) 4 design documents on hold** — prisoners·loot (`spec/prisoners-loot`), auto-pause (`spec/auto-pause`), order cancel (`spec/order-undo`), checkpoint (`spec/mission-checkpoint`). Questions are in each branch's `docs/decisions_pending.d/`. Wounded evacuation stays excluded.
 - **(b) Candidates required before the official version**
   - Save compatibility rules (`kd/save-compat`, re-issue after merge N3).

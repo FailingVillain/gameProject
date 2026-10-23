@@ -6,18 +6,18 @@
 1. Merge round MERGE-A (running): ui-log-transparent merged (6a47f3c8). Pending, in order: t57f-override-header be1d5a7f (T57→T57c→T57f) · review-followups-small a10c6055 · f3-followups 9b2eeed5 · t61d-company-merge 545dbe84 · ti2-p0 217207d0. compatgate mandatory on FV/schema steps; report results in ops/MERGE_PROGRESS.md
 2. Golden bundle (上, one window): G1 kd/water-fire-open 6142cb8c (not started) + NEW-3 kd/new3-prone-drag 6c8a7ae7 + NEW-4 kd/new4-choke-queue a7636dad (chokeEnabled approved 2026-10-23; choke + N33/N51 jitter) → regenerate goldens once (detcheck now 672804207fc4e486 3c42aea49324248e)
 3. Personnel line: T61d (in MERGE-A; 12:1x decisions: annihilated-company re-form stays manual · supply-reserve setting for auto recruits · PersonnelLog held) → T61e personnel UI (kd/t61e-personnel-ui 12cc70f1, WIP, stacked on T61d 714da8f2; P1~P12 decided)
-4. Art A1~A5: taegukgi (gt/taegukgi-detail 040cfd87) + B2 re-render (kd/b2-deferred-units-2 8340da71) + A3 shape-changed re-render (kd/a3-rerender) → A4 mid buildings·terrain·props·decals (sheet approval) → A5 unit colour draft
+4. Art A1~A5: B2 re-render (kd/b2-deferred-units-2 8340da71; horse-artillery zoom 0.88 decided) + A3 shape-changed re-render (kd/a3-rerender) → A4 mid buildings·terrain·props·decals (A4 mid art APPROVED 2026-10-23) → A5 unit colour draft. Taegukgi finished (no more taegukgi work)
 5. Integrated balance pass after goldens (T12/T15, n>=24): casualty speed tuning (中~上: long-range hit ×0.5 · rifle close ×0.85 · company retreat 30~40%, #23) · AG1 surrender enable · 9 combat problems re-report (#22; soak resumed 12:50, ops/SOAK_2026-10-23.md)
 6. Tactical AI: stage 3A/3B/3B2 merged; mass test = soak above; 3C/3D and the rest = 0.4
 7. GitHub batch only on the user's command (see Waiting)
 
 ## In progress · awaiting confirmation
-- Agents in flight: T61e (kd/t61e-personnel-ui 12cc70f1) · A3 re-render (kd/a3-rerender, tip f979e23f = base, no own commit yet) · B2 re-render (kd/b2-deferred-units-2 8340da71; horse-artillery edge-contact 8 cells fix decided) · taegukgi (gt/taegukgi-detail 040cfd87, v2 approved by the user; merges with the Korean standard-bearer re-render) · soak (measure)
-- Awaiting user decisions: ops/USER_DECISIONS_QUEUE.md items 8~16 (33 regiment commanders, translation open items, flag law text, held branches, 0.2.1 play notes, NEW-2 LOD0 not reproducible)
+- Agents in flight: T61e (kd/t61e-personnel-ui 12cc70f1) · A3 re-render (kd/a3-rerender, tip f979e23f = base, no own commit yet) · B2 re-render (kd/b2-deferred-units-2 8340da71; horse-artillery edge-contact 8 cells fix decided) · soak (measure)
+- Awaiting user decisions: ops/USER_DECISIONS_QUEUE.md items 8, 11, 13, 14, 16 (33 regiment commanders [held to 0.4], held branches, harness/deletion chores, held designs, NEW-2 LOD0 not reproducible)
 - Quickstep walking motion (quickstep) — awaiting confirmation (sheet only, no branch; unverified)
 - armour · 쇼샤 re-render sheet + Austin team-color marker (austin_fix3.png) — (unverified: ART_STATE 'unknown'), then trench width 2x (trenchvis)
 - mongol-look sheet 18 — confirm Mongol cavalry pointed hat · waist belt (look merged as lookfix; user review U03 pending)
-- Art · UI awaiting confirmation (unverified): missing_theme_units · surrender_pose (discard candidates) · new_units (post-hoc review) · progress bar · march-fire muzzle flash (T39e c837eb87, needs a game-side MarchMuzzle fix = user decision) · 4 UI checks (details: LONG)
+- Art · UI awaiting confirmation (unverified): missing_theme_units · surrender_pose (discard candidates) · new_units (post-hoc review) · progress bar · march-fire muzzle flash (T39e c837eb87; MarchMuzzle code fix APPROVED 2026-10-23) · 4 UI checks (details: LONG)
 
 ## Decided · short-term queue
 - Engineers (上): assault troops also take the engineer role — (unverified; pioneers + wire cutting are done)
@@ -34,3 +34,14 @@
 - [To do later 2026-10-22] **GitHub batch**: ① get the URL of the new private repository on the seungwoo3656 account → update the game-tools internal bare (`C:/works/_git/game-tools.git`, 1-commit snapshot) to latest, then push ② decide whether to start korean-division fresh in the new repository too (origin push currently blocked) ③ allow/directly install the git hook that rejects commits with legacy addresses ④ clean up GitHub account email list · check Education impact (user). Details = `docs/DECISIONS_PENDING.md`, `docs/HANDOFF.md` 'legacy email handling'
 - [Decided 2026-10-22] Later (user proceeds): campaign favor · morale — increment values (+1/+2/+3/+5) and sinks (thresholds · effects) (details: campaign/spec_c1e1.txt R11, 캠페인 디자인 v1.txt §28)
 - [Decided 2026-10-23] Held designs: prisoners·loot · auto-pause · order cancel · checkpoint (UNDO-b/c · TPOW-c · CK3) · delegation UI improvement (0.4)
+
+## Approved 2026-10-23 (user) — added to the queue
+- Save/load audit: in-mission save · auto-save before engagement · campaign slots · verify real state vs Snapshot 74 compat policy
+- Settings menu: resolution · volume · key rebinding · default mute
+- Complete the tutorial (only chapter 0 exists)
+- Colour-blind support: team colour plus pattern/emblem, combine with the mid-style transition
+- Performance budget card: baseline tick cost at campaign scale (thousands of units), 10,000-unit load test, link to scene-A top-5% tick issue
+- Soak as a mini-gate per merge round (catch STALL early; AIPLAN stall in c1_01_hoeryong seed 3 is the motivating case, root-cause bisect running)
+- Roadmap diet: split ROADMAP_LONG (88 KB) into done / on hold / active
+- Define 0.3/0.4 boundary: 0.4 = AI improvements (T34b-e, T32b/c, difficulty multiplier, surrender expansion), separate from 0.3 balance
+- Decided: golden bundle regeneration (order G1, NEW-3, NEW-4) · temp sounds kept (keep temp mapping) · AI 3B pincerShare stays 0.5 · translation open items held to 0.4 · 0.2.1 dist exe verified (C:/works/_dist_out/KoreanDivision-0.2.1-2531ec1622.zip) · flag law closed (ratio kept)
