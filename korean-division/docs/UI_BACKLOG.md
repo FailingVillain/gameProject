@@ -1,57 +1,57 @@
-# UI 개선 백로그 (T38a~g) - 2026-10-22, 설계/카드만 (코드 변경 없음)
-근거: ROADMAP_LONG (단기 로드맵 2·3, 장기 UI, 'UI 확인'), 브랜치 t08-ui-bundle · t17-cmd-convenience · t27-cmd-ui2 · t19c-home-tabs 코드 확인, docs/CONTROLS.md. 원칙: 시뮬/저장 형식 무변경(FV 불변), 사용자가 요청하지 않은 기능 추가 금지.
+# UI Improvement Backlog (T38a~g) - 2026-10-22, design/cards only (no code changes)
+Basis: ROADMAP_LONG (short-term roadmap 2·3, long-term UI, 'UI check'), code check of branches t08-ui-bundle · t17-cmd-convenience · t27-cmd-ui2 · t19c-home-tabs, docs/CONTROLS.md. Principles: no change to sim/save format (FV unchanged), no adding features the user did not request.
 
-## 브랜치 체인 사실
-- t08-ui-bundle(종이 질감 1차, Paper.cs) <- t17-cmd-convenience(미션 중 저장·전과 보고), t27-cmd-ui2(도감·부대 목록·색각) 은 t08 위 병렬. **main 에는 아직 없음 (WIP 비병합 정책)**: UI 카드는 t27-cmd-ui2 위에 스택.
-- t19c-home-tabs 는 t08 의 후손이 아님 (Paper.cs 없음, T19a~b2 스택). 캠페인 홈 화면의 종이 스킨은 둘이 합쳐진 뒤에야 확인 가능 -> T38d 에서 캠페인 홈은 "재적용 단계"로 분리.
+## Branch chain facts
+- t08-ui-bundle (paper texture round 1, Paper.cs) <- t17-cmd-convenience (in-mission save · results report), t27-cmd-ui2 (codex · unit list · color-blind) is parallel on top of t08. **Not in main yet (WIP no-merge policy)**: UI cards are stacked on top of t27-cmd-ui2.
+- t19c-home-tabs is not a descendant of t08 (no Paper.cs, T19a~b2 stack). The paper skin of the campaign home screen can only be checked after the two are combined -> in T38d the campaign home is split off as a "re-application stage".
 
-## 인벤토리 (있음 / 일부 / 없음)
-| 항목 | 상태 | 근거 | 카드 |
+## Inventory (present / partial / absent)
+| Item | State | Basis | Card |
 |---|---|---|---|
-| 해상도 · 창 모드 · 음량 설정 | 있음 | MainMenu.DrawSettings, UserSettings(settings.json), 해상도 5종 | - |
-| 색각 대응 팀색 | 있음 | T27 ⑧ UserSettings.ColorBlind, 미니맵/HUD 깃발은 미적용 | (질문 Q7) |
-| 단축키 재지정 | 없음 | Commands.Hotkey 고정 | T38a |
-| 게임 내 도움말/단축키 오버레이 | 없음 | 콘솔 help/keys 만 | T38b |
-| Bindings = CONTROLS 단일 출처 | 일부 | Bindings.All 은 카드 키 자동 + Extra 수동, 동기 테스트 없음 | T38b |
-| 명령 카드 칸 넘침 | 일부 | 3x3 카드, 빈 칸 없으면 집결/포격 종류 탈락, 전투 탭엔 집결 상시 | T38c |
-| 종이 질감 1차 (알갱이 + 갈색 톤) | 있음 | t08 Paper.cs, Palette | - |
-| 밝은 종이 + 어두운 글자 | 없음 | 글자색 직접 지정 334곳 (Palette.Text/TextDim/Accent) | T38d |
-| 사령관 책상 배경/세부 | 없음 | 시안만 (ui_paper_mock.png 33eed0f) | T38d |
-| 소해상도 레이아웃 감사 (1024x640) | 없음 | Config.MinScreen 1024x640, 퍼즈는 크기 변경만 | T38d + T38g |
-| 부대 목록 | 일부 | Hud.DrawBatList 있음, 18행 초과 스크롤 없음 | T38e |
-| 도감 | 일부 | CodexMenu 메인 메뉴만, 전투 중 불가 | T38e |
-| 툴팁 | 일부 | 카드/탭 있음, 다른 HUD 요소 누락 목록 없음 | T38e |
-| 속도 조절 · 일시정지 중 명령 | 있음 | T27 ② 종결 (Game PlaySpeeds, pending 대기열) | - |
-| 미션 중 저장 · 전과 보고 | 있음 | t17 (BattleAutosave, 전과 보고) | - |
-| 교전 알림 · 미니맵 표시 (⑦) | 없음 | 미승인("추후 심도 논의") | 카드 없음 (Q8) |
-| 캠페인 홈 3화면 + MVP 5탭 | 있음 | t19c | - |
-| 캠페인 홈 후속 10탭 | 없음 | 자리표시 | T38f |
-| uifuzz 작은 버튼 | 한계 | T19c 결과: [-][+] 못 맞힘 | T38g |
-| 화면별 스크린샷 시트 3해상도 | 없음 | run_game.ps1 은 tools/monitor-launch 에만 | T38g |
-| 저장 호환 정책 · 충돌 로그 | 없음 | 설정/배포 묶음의 일부, UI 아님 | 범위 밖 |
+| Resolution · window mode · volume settings | present | MainMenu.DrawSettings, UserSettings (settings.json), 5 resolutions | - |
+| Color-blind-friendly team colors | present | T27 ⑧ UserSettings.ColorBlind, not applied to minimap/HUD flags | (question Q7) |
+| Hotkey rebinding | absent | Commands.Hotkey fixed | T38a |
+| In-game help/hotkey overlay | absent | only console help/keys | T38b |
+| Bindings = CONTROLS single source | partial | Bindings.All is automatic card keys + manual Extra, no sync test | T38b |
+| Command card cell overflow | partial | 3x3 card, without an empty cell rally / barrage type drop out, the combat tab always has rally | T38c |
+| Paper texture round 1 (grain + brown tone) | present | t08 Paper.cs, Palette | - |
+| Bright paper + dark text | absent | text color specified directly in 334 places (Palette.Text/TextDim/Accent) | T38d |
+| Commander's desk background/details | absent | mockup only (ui_paper_mock.png 33eed0f) | T38d |
+| Low-resolution layout audit (1024x640) | absent | Config.MinScreen 1024x640, the fuzz only changes size | T38d + T38g |
+| Unit list | partial | Hud.DrawBatList exists, no scrolling beyond 18 rows | T38e |
+| Codex | partial | CodexMenu only in the main menu, not in combat | T38e |
+| Tooltips | partial | present for cards/tabs, no list of missing other HUD elements | T38e |
+| Speed control · orders while paused | present | T27 ② closed (Game PlaySpeeds, pending queue) | - |
+| In-mission save · results report | present | t17 (BattleAutosave, results report) | - |
+| Engagement alerts · minimap display (⑦) | absent | not approved ("deeper discussion later") | no card (Q8) |
+| Campaign home 3 screens + MVP 5 tabs | present | t19c | - |
+| Campaign home follow-up 10 tabs | absent | placeholders | T38f |
+| uifuzz small buttons | limit | T19c result: cannot hit [-][+] | T38g |
+| Per-screen screenshot sheets at 3 resolutions | absent | run_game.ps1 only in tools/monitor-launch | T38g |
+| Save compatibility policy · crash log | absent | part of the settings/distribution bundle, not UI | out of scope |
 
-## 카드 (각 <=150k 토큰, 모두 시뮬 무변경)
-| 카드 | 요지 | 스택 base | 등급 |
+## Cards (each <=150k tokens, all sim unchanged)
+| Card | Gist | Stack base | Grade |
 |---|---|---|---|
-| T38b | 도움말 오버레이 + CONTROLS 동기 테스트 | t27-cmd-ui2 | 中 S |
-| T38a | 단축키 재지정 (settings.json) | T38b | 中 S~M |
-| T38c | 명령 카드 넘침 감사 + 수정 | t27-cmd-ui2 (Hud.cs 충돌 -> T38b 뒤 직렬) | 中 S |
-| T38e | 부대 목록 스크롤 + 전투 중 도감 + 툴팁 | T38c | 中 S |
-| T38d | 종이 UI 2단계 (중앙 팔레트, 책상, 세부, 소해상도) | T38e | 中 M (크면 d1/d2 분할) |
-| T38g | UI 하네스 (작은 버튼 퍼즈 + 시트) | main + run_game.ps1 | 中 S |
-| T38f | 캠페인 홈 후속 탭 읽기 전용 | t19c-home-tabs | 中 M |
+| T38b | Help overlay + CONTROLS sync test | t27-cmd-ui2 | 中 S |
+| T38a | Hotkey rebinding (settings.json) | T38b | 中 S~M |
+| T38c | Command card overflow audit + fix | t27-cmd-ui2 (Hud.cs conflict -> serial after T38b) | 中 S |
+| T38e | Unit list scrolling + in-combat codex + tooltips | T38c | 中 S |
+| T38d | Paper UI phase 2 (central palette, desk, details, low resolution) | T38e | 中 M (split d1/d2 if large) |
+| T38g | UI harness (small button fuzz + sheets) | main + run_game.ps1 | 中 S |
+| T38f | Campaign home follow-up tabs read-only | t19c-home-tabs | 中 M |
 
-실행 순서 제안: T38g(도구, 독립 - 이후 모든 카드 검수에 사용) -> T38b -> T38a -> T38c -> T38e -> T38d -> (t19c 정리 뒤) T38f. Hud.cs 를 모두 만지므로 UI 카드끼리는 병렬 금지 (T38g, T38f 제외).
+Proposed execution order: T38g (tool, independent - used for the review of all later cards) -> T38b -> T38a -> T38c -> T38e -> T38d -> (after t19c cleanup) T38f. Since all of them touch Hud.cs, UI cards are not run in parallel with each other (except T38g, T38f).
 
-## 우선순위 제안
-1. T38g - 이후 카드의 검수 비용을 낮춤. 2. T38c - 기존 기능이 숨는 버그성. 3. T38b -> T38a - 출시 전 필수 설정. 4. T38e. 5. T38d - 사용자 승인은 났으나 "10-23 이후" 시점, 글자색 일괄 변경이라 마지막에 해야 재작업 최소. 6. T38f - 캠페인 쪽 결정(후속 탭 우선순위)에 종속.
+## Priority proposal
+1. T38g - lowers the review cost of later cards. 2. T38c - bug-like because existing features get hidden. 3. T38b -> T38a - required settings before release. 4. T38e. 5. T38d - user approval is given but timing is "after 10-23", and since it is a bulk text color change doing it last minimizes rework. 6. T38f - depends on campaign-side decisions (priority of follow-up tabs).
 
-## 열린 질문 (사용자 결정 필요, <=8)
-- Q1 재지정 대상: 카드 키만? 카메라/전역 키 포함? 충돌 시 거부 vs 교환? 전투 중 Esc 메뉴에서 설정 진입을 허용? (T38a)
-- Q2 도움말 오버레이 키: F1 은 구역 테두리 표시와 충돌 - 다른 키(예 F2/H 아님/?)? (T38b)
-- Q3 카드 넘침 해결 방식: 칸 재배치 / 페이지·탭 추가 / 우선순위로 덜 쓰는 명령 이동? (T38c)
-- Q4 "작전 지도 이미지 개선" 범위(캠페인 홈 지도 탭만? 그림 재제작 포함?)와 밝은 종이 전환을 전 화면 일괄로 할지? (T38d)
-- Q5 도감을 전투 중에도 여는가(일시정지 강제)? 키는? (T38e, T27 미결과 동일)
-- Q6 캠페인 홈 후속 탭 우선순위 (3 편제 / 5 장비 / 12 기록 중 무엇부터?) (T38f)
-- Q7 색각 표식을 미니맵 · HUD 깃발에도 적용? 표식 형태 시안 검수 (T27 미결)
-- Q8 교전 알림 · 미니맵 표시(⑦)를 승인해 카드화할지 (현재 미승인 -> 카드 없음).
+## Open questions (user decision needed, <=8)
+- Q1 Rebinding scope: card keys only? Include camera/global keys? On conflict reject vs swap? Allow entering settings from the Esc menu during combat? (T38a)
+- Q2 Help overlay key: F1 conflicts with the area border display - another key (e.g. F2/not H/?)? (T38b)
+- Q3 Card overflow solution: rearrange cells / add pages·tabs / move less-used commands by priority? (T38c)
+- Q4 Scope of "operations map image improvement" (campaign home map tab only? including art re-creation?) and whether to switch to bright paper on all screens at once? (T38d)
+- Q5 Open the codex during combat too (forced pause)? Which key? (T38e, same as the open item of T27)
+- Q6 Priority of campaign home follow-up tabs (which first among 3 organization / 5 equipment / 12 records?) (T38f)
+- Q7 Apply color-blind markers to the minimap · HUD flags too? Review the marker shape mockup (open item of T27)
+- Q8 Whether to approve and card the engagement alerts · minimap display (⑦) (currently not approved -> no card).

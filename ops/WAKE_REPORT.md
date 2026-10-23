@@ -1,1 +1,10 @@
 # WAKE_REPORT (생성 2026-10-23; 수면 모드에서 한 줄씩 누적)
+- 03:4x 수면 모드 시작(~12:30). settings.json 환경변수 수정은 deny 규칙으로 거부됨(사용자 직접 조치 필요, 한도 9는 지휘자 자율 준수).
+- 03:48 F1 완료 kd/review-followups-small a10c6055 (build+8그룹 PASS, detcheck 일치). 임의: HUD 높이 상한 45%(최소 54px). 미완: HUD 너비 캐시, 1024x640 스크린샷. queue_guard FAIL 은 오탐 의심(병합 전 확인). wip-ready 미설정.
+- 03:55 F2 완료 kd/t57f-override-header be1d5a7f (기반 kd/t57c-delegation-ui; FV 불변; delegation/replay/snapshot/savecompat/compatgate PASS, detcheck 일치). 병합 순서 T57→T57c→T57f, 병합 때 compatgate 필수. 남음: 불러온 저장+설정 변경 시 기한이 새 값(FV 필요해서 미처리), 카드 2~4번 항목, QUEUE/카드 wip-ready 갱신은 지휘자.
+- 03:55 T61d 완료 kd/t61d-company-merge 714da8f2 (기반 v0.3, 워크트리 kd-develop/kd-t61d). FV·스키마 불변(스키마15). savecompat+11그룹 PASS, detcheck 일치. 병합 시 compatgate. 결정 대기: USER_DECISIONS_QUEUE 15번(자동 배정의 전멸 중대 신편 포함 여부), decisions_pending T61d-2~4. 미확인: 명부 탭 새 줄 실제 클릭 확인 없음.
+- 04:43 옛 B2 에이전트(a27775b8) 종료: tachanka·horse-artillery wagon.py 수정+재렌더 충돌 0건. 커밋은 kd_guard 가 git add/commit 을 막아 못 함(우회 안 함). 미커밋: kd-b2-units wagon.py, RERENDER_PROGRESS.txt(2줄 추가 필요). horse-artillery 가장자리 접촉 8칸 처리 결정 필요. A2 에이전트(ada3e9c8)가 같은 워크트리를 다루는 중 — 겹침 주의.
+- 12:49 ENGINE_NOTES split (MD-DIET-3): 15 topic files in korean-division/docs/engine/, index docs/ENGINE_NOTES.md, original in docs/legacy/. TODO (not done): tools/agent/assemble_notes.ps1 -Write still appends to ENGINE_NOTES.md (should target docs/engine/); ops/MERGE_PLAN.md conflict rule 'section union' assumes old layout; Grep-by-section-name refs in other docs now need docs/engine/. Docs QUEUE-SYNC: QUEUE.md 8 rows + QUEUE_0.3.md 6 rows updated (unverified: C1E1-m2, T50d, A2, soak).
+- 12:50 soak 재개(measure): WATER s3 5/5 OK 이상 0, AIPLAN 0건 - heavy_gate RAM(<8GB) 대기로 진행 느림(~2회/10분). 결과 C:/works/_notes/soak_allon_logs/run3_*, 요약 ops/SOAK_2026-10-23.md. 드라이버 백그라운드 계속.
+- 13:05 NEW-4 완료 kd/new4-choke-queue a7636dad (detcheck 변경 0322cbe0 b4d5f80d; 골든은 G1/G2 와 묶어 재생성). chokeEnabled 승인됨.
+- 13:09 merge lock kd-merge.lock released by conductor (user approved deleting started.txt).

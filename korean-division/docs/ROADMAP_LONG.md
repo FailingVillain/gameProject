@@ -1,472 +1,486 @@
-장기 · 보류 · 상세 원문. 세션에서 통째로 읽지 않는다 — 항목 이름으로 Grep.
+Long-term · on hold · detailed originals. Do not read whole in a session — Grep by item name.
 
-## 사용자 승인 2026-10-23
+## User approval 2026-10-23
 
-- **(a) 설계서 4건 보류 중** — 포로·노획 (`spec/prisoners-loot`), 자동 일시정지 (`spec/auto-pause`), 명령 취소 (`spec/order-undo`), 체크포인트 (`spec/mission-checkpoint`). 질문은 각 브랜치 `docs/decisions_pending.d/` 에 있음. 부상병 후송은 제외 유지.
-- **(b) 정식 버전 전 필수 후보**
-  - 저장 호환 규칙 (`kd/save-compat`, 병합 N3 뒤 재발주).
-  - AI 대 AI 자동 플레이 집계 (`tools/autoplay-summary`).
-  - 배포 패키징 (`tools/package-dist`, 완료).
-- **(c) 정식 전 큰 항목 (미배정)**: 캠페인 본편 시나리오 · 외부 플레이테스트 루프 · 영어 외 언어 · 튜토리얼 전면 제작 · 업적·도감 · 모딩 지원 · 접근성.
-- **(d) 사용자 결정 (대기)**:
-  - 게임 실행 기본 음소거 (`run_game.ps1 --mute`).
-  - 영어 표기 이씨 = Lee.
+- **(a) 4 design documents on hold** — prisoners·loot (`spec/prisoners-loot`), auto-pause (`spec/auto-pause`), order cancel (`spec/order-undo`), checkpoint (`spec/mission-checkpoint`). Questions are in each branch's `docs/decisions_pending.d/`. Wounded evacuation stays excluded.
+- **(b) Candidates required before the official version**
+  - Save compatibility rules (`kd/save-compat`, re-issue after merge N3).
+  - AI-vs-AI autoplay aggregation (`tools/autoplay-summary`).
+  - Distribution packaging (`tools/package-dist`, done).
+- **(c) Large items before official release (unassigned)**: main campaign scenarios · external playtest loop · languages other than English · full tutorial production · achievements·codex · mod support · accessibility.
+- **(d) User decisions (pending)**:
+  - Game launch muted by default (`run_game.ps1 --mute`).
+  - English spelling of 이씨 = Lee.
   - `e2_credit_steal.title` = Merit Stolen.
+- **Done (moved from SHORT 2026-10-23)** — verified with `git merge-base --is-ancestor <branch> merge/0.2-final` and ops/MERGE_PROGRESS.md · MERGE_QUEUE.md; evidence hash = 8 chars. Original SHORT wording kept.
+  - Formation relaxation + 2-rank line default + choke + N33/N51 (上) — short moves as parallel translation · tolerance 1.5~2 cells · line spacing (details: LONG). Evidence: branch `formation` in the first main snapshot a1a35e6b (FV51; choke · skirmish line off). Still open: choke (NEW-4 kd/new4-choke-queue a7636dad) + remaining jitter, kept in SHORT.
+  - Artillery · heavy weapons bundle (上) — deployment delay · hold position · heavy spacing · heavy MG range 32 · howitzer spotted fire · heavy MG last stop line · field gun 70→100 · howitzer splash 3 (details: LONG). Evidence: `arty3` in snapshot a1a35e6b (FV50, Replay18).
+  - Tactical AI stage 3 (3B · 3B2 part; mass test stays in SHORT) (Friday 10-23 target, docs/TACTICAL_AI_STAGE3_PLAN.md). Evidence: ai3b2 merge 7d5c124c (B4).
+  - Prone firing posture problem (中) — shoots sideways of the rifle · stock clipping, re-render prone frames (details: LONG). Evidence: kd/prone-import 8066152c (shards 1-4, 26 units; merged N3d-3) + kd/pioneer-prone a69e6acf.
+  - Mongol · bandit look distinction (下) — del robe · pointed hat / assorted civilian clothes · head cloth (details: LONG). Evidence: `lookfix` in snapshot a1a35e6b + B1 bandit 5 types kd/b1-import f1c8d4bc (user review U03 of the Mongol sheet still pending, kept in SHORT).
+  - Building size increase (上) — houses 3×3~3×4, large buildings 4×6, update map · cover · pathfinding (details: LONG). Evidence: wip/bigbldg 8d22ad53 + I4-houses 23cb7ce0.
+  - Armored train · freight train (上 design · implementation) — controlled + scripted movement, freight = mission objective, railway terrain (details: LONG). Evidence: rail c7929fea (C1) · D1 b396991e · D2 · D4 dfe9d4f9 · D5 cb850fbb · D6 fixup 7611a0d0; train sprites kd/d-train-sprites-r 4faa3e0a.
+  - Include rivers (上) — after the armored train, same framework (details: LONG). Evidence: E2a-d (river-r1..r4), tag post-E2 ac77417b.
+  - Engineers (上) — barbed wire cutting, trench building excluded, together with the trench breakthrough bundle (details: LONG). Evidence: breach2 ffc41293 · t32a-pioneer 6f2d1465 · t32d-pioneer-art 5a9e0bbd. The sub-item 'assault troops also take the engineer role' is NOT verified and stays in SHORT.
+  - Communication · command structure alpha (上) — division HQ · communication delay, mounted messenger · wire · regiment command post · battalion simple table, difficulty setting (details: LONG). Evidence: comms ① in snapshot a1a35e6b (FV52) · t10-comms-b 578ef29f · t10b-difficulty 60be3990.
+  - Campaign home tab (上) — design document first (docs/CAMPAIGN_HOME_DESIGN.md) → approval → implementation (details: LONG). Evidence: design spec/t23-campaign-home 42fa4566 · tabs t19c-home-tabs 9260e367 (merge 63485c05) · read-only tabs T38f (merge 1257e426).
+  - Command conveniences ①~⑥ — the done parts only: ①⑤ in-mission autosave · result report (t17-cmd-convenience 0eb92e86) and order queue (orderq2 d1947b05). The rest stays in SHORT.
 
-## 그래픽 진행 상태 (갱신 2026-10-23, 사실만)
-- 엎드려쏴 재렌더 (gt-prone-fix 26 보병, 4샤드): 1/4 (kd/prone-rerender-1, 7유닛) · 2/4 (kd/prone-rerender-2, 7유닛) · 3/4 (kd/prone-rerender-3, 7유닛; scout 는 frame_wide 없음 → 0.3 유닛 재렌더 때) 재렌더 완료 · 4/4 진행 중. 풀해상도 여백 2칸 통과. 작은 LOD(@96/@48) 는 여백 1칸 기준 승인 (사용자 2026-10-23).
-- B1 마적 5종: 병합 완료 (N3).
-- B2: cavalry-bandit·cavalry-mongol 렌더 정상 (미커밋). heavy-horse-artillery 관통 75건. heavy-tachanka 렌더 실패 → 후속 에이전트 진행 중.
-- 간도 복식 (T39g): 렌더·import 병합 완료 (N3-17).
-- PR2 소품: P-A(9종)·P-B·P-C 병합 완료. 사용자 시트 이상 없음.
-- 다리 재작업 (kd/bridge-rework): 병합 완료·승인 (사용자).
-- 물거품 수정: 병합 완료 (N3b-3).
-- 열차 D: 병합 완료 (N3-4).
-- 목표 HUD·UI 낮은 등급 수정: 병합 상태. HUD 는 N3c 대기.
-- 0.3 화풍 mid 재렌더: 승격 뒤 그대로 — 건물·지형·소품·데칼 먼저, 유닛은 후반 (사용자 2026-10-23).
-- 인사관리·연대장 초상화: 연대장 초상화는 지금 만들지 않고, 나중에 AI 로 가볍게 (사용자 결정 2026-10-23).
+## Graphics progress status (updated 2026-10-23 ~13:30, facts only)
+- Prone-firing re-render (gt-prone-fix, 26 infantry, 4 shards): all 4 shards re-rendered and imported into the kd1920 theme — kd/prone-import 8066152c, merged into merge/0.2-final (N3d-3 bf6bb9e1); in-game sheet 63 approved by the user. Pioneer/scout kept as is (scout has no frame_wide → at the 0.3 unit re-render); the 5 non-res96 units of shard 2 (hunter·japanese·militia·regular·pioneer) → recommended at the 0.3 unit re-render, awaiting confirmation. Full-resolution margin 2 cells passed. Small LOD (@96/@48) approved on a 1-cell margin basis (user 2026-10-23). (Previous: 3/4 re-rendered, 4/4 in progress.)
+- B1 bandit 5 types: merged (N3, kd/b1-import f1c8d4bc).
+- B2 (kd/b2-deferred-units-2 8340da71, not merged): cavalry-bandit·cavalry-mongol res96 re-render 0 collide hits, edge ok (commit 8340da71); tachanka·horse-artillery wagon.py fixed and re-rendered with 0 collisions but left uncommitted by the old agent (WAKE_REPORT 04:43); user 12:1x: horse-artillery edge-contact 8 cells to be fixed, B2 commit allowed. Current state after the 03:3x cleanup of render processes: unverified. (Previous: horse-artillery 75 clipping cases; heavy-tachanka render failed.)
+- Taegukgi (gt/taegukgi-detail 040cfd87, unmerged): Korean standard-bearer re-render + import (kd1920) and render scripts prepared; v2 design approved by the user (41eab625); merges at 0.3 early with the standard-bearer re-render. Open: flag-law text check (face width = vertical), low-LOD readability.
+- A3 re-render (kd/a3-rerender): branch tip f979e23f = base commit, no own commit yet (in flight).
+- Gando dress (T39g): render·import merged (kd/t39g-gando-import, N3-17 b28a5608).
+- PR2 props: P-A (9 types)·P-B·P-C merged (props-shape-fix N3-2 d80c3694). User sheet no issues.
+- Bridge rework (kd/bridge-rework d37041a8): merged · approved (user).
+- Water foam fix: merged (N3b-3 4d2bd5de).
+- Train D: merged (N3-4 4faa3e0a).
+- Objective HUD (kd/objective-hud-audit): merged; HUD low-grade UI fixes: ui-log-transparent merged 6a47f3c8 (battle log/top bar/hover text-only, no panel); other low-grade UI fixes: state unverified.
+- 0.3 art-style mid re-render: 0.3 promoted 2026-10-23 03:29 (tag v0.3 = 2531ec16); A4 not started (QUEUE_0.3 wave 2) — buildings·terrain·props·decals first, units in the later part (user 2026-10-23).
+- Personnel management · regiment commander portraits: regiment commander portraits are not made now, lightly with AI later (user decision 2026-10-23).
 
-# [1] 진행 순서 상세 (원문: 구 docs/QUEUE_2026-10-21.md, 2026-10-21)
+# [1] Progress order details (original: old docs/QUEUE_2026-10-21.md, 2026-10-21)
 
-# 대기열 2026-10-21 (클리어 뒤 세션) — HANDOFF 갱신 전 임시 기록
+# Queue 2026-10-21 (session after clear) — temporary record before HANDOFF update
 
-순서대로 (이동·자세·포병 코드가 겹치므로 앞 작업 병합 뒤 다음):
+In order (movement·posture·artillery code overlaps, so next after the previous is merged):
 
-2. **대형 완화** (上) — 사용자 "대형 관련으로는 네 제안대로 한다":
-   짧은 이동(15~20칸) = 슬롯 재배정 없이 평행이동 · 즉시 출발 · 행군 허용 오차 0.5→1.5~2칸 · 구역 도착(정확한 재정렬은 L 명령/비접적 휴식 때만) · 작은 오차 데드밴드 · 종대/횡대 전환 히스테리시스.
-   + **횡대 2열 기본 수정** (사용자: "대형 개선하면서 수정하자" — 1918식 분대 종대/산개 파상, 간격 넓힘 검토).
-   + choke 브랜치 (efe5f98, 다중 중대 길목 교착) + N33/N51 접적 떨림 잔여. 켜고 끄기 설정 + --collide 움찔 지표 · tactics-obs 비교.
-3. **포병 · 중화기** (上):
-   - 방렬 시작 0~3초 지연 + 방렬 시간 ±15% (PairNoise, 상태 없음).
-   - 방렬 자리 유지: 사거리 밖 오래 · 사격각 크게 벗어남 · 명시 이동만 재방렬, 사격각 안이면 포신만, 재방렬 냉각.
-   - heavy 간격: 최소 3칸 · 가능하면 5칸 (방렬/거치/전투 대형 자리 잡을 때만, 행군 종대 · 좁은 길 · 참호 자리 제외).
-   - **중기관총 사거리 24 → 32** (사용자 결정; 거치 시 적용 · 먼 거리 명중 상향 검토).
-   - **야전포 = 직사 + 곡사(간접) 둘 다** (사용자 결정; 관측병 있으면 간접).
-4. armour · 쇼샤 재렌더 → 시트 확인(사용자) → 병합. 그 뒤 참호 폭 2배 (trenchvis).
+2. **Formation relaxation** (上) — user "On formations, we go with your proposal":
+   short moves (15~20 cells) = parallel translation without slot reassignment · immediate departure · march tolerance 0.5→1.5~2 cells · arrival by zone (exact realignment only on the L command / non-contact rest) · small-error deadband · column/line transition hysteresis.
+   + **2-rank line default fix** (user: "let's fix it while improving formations" — 1918-style squad column/skirmish wave, consider wider spacing).
+   + choke branch (efe5f98, multi-company chokepoint deadlock) + remaining N33/N51 contact jitter. On/off setting + --collide flinch metric · tactics-obs comparison.
+3. **Artillery · heavy weapons** (上):
+   - Deployment start 0~3 s delay + deployment time ±15% (PairNoise, stateless).
+   - Hold deployment position: re-deploy only for long out of range · far off the firing arc · explicit move; barrel only if within the firing arc; re-deploy cooldown.
+   - heavy spacing: minimum 3 cells · 5 if possible (only when taking deployment/emplacement/combat formation positions, excluding march column · narrow roads · trench positions).
+   - **Heavy MG range 24 → 32** (user decision; applies when emplaced · consider raising long-range hit).
+   - **Field gun = both direct + indirect (howitzer-style)** (user decision; indirect if there is a spotter).
+4. armour · 쇼샤 re-render → sheet check (user) → merge. Then trench width 2x (trenchvis).
 
-5. **건물 크기 확대** (사용자: "건물들의 크기를 병사들의 크기를 고려해서, 좀 더 키우자. 지금은 너무 작다") — 현재 가옥 = 지형 칸 1칸 (32px) ≈ 병사 1명 폭. **결정: 민가 3×3~3×4칸, 큰 건물 4×6칸** (엄폐 · 시선 · 길찾기 · 수작업 미션 지도 갱신).
-6. **장갑열차 · 화물 열차** (사용자: "슬슬 작업을 시작해보자") — 철도 지형 없음 (새로). 결정: 장갑열차 = **조종 가능 유닛 + 미션 스크립트 이동 둘 다** (선로 위 전진 · 정지 · 후진, 야포 + 중기관총, 중장갑, 객차 단위 파괴), 화물 열차 = **미션 목표** (호송 · 탈취 · 파괴), 선로 파괴 = **나중에** (1차는 선로 = 지형). 上 설계·구현 + 中 그림.
-8. **강 소형 포함 (하천 포함)** (사용자 "만들어보겠나?") — 장갑열차 다음, 같은 틀로 설계.
-9. **중기관총 최후 저지선** (사용자 "동의한다") — 거치 중기관총이 지정 사격선을 따라 사격 (사격 통제 K 확장). 3번 포병·중화기 묶음에 포함.
-10. **몽골 기병 ↔ 마적 외형 구분** (사용자 "진행 대기열에 올리자") — 몽골: 델 두루마기 · 원색 허리띠 · 뾰족 모자 / 마적: 잡다한 민간복 · 머리 수건. 下 그림 수정 + 시트.
-11. **일본 보병 기본 착검 + 발도 자세** (사용자 "제안대로 / 추천안대로 한다") — 일본 보병 = 처음부터 BayonetFixed (돌격 명령에도 멈춤 없음, 다른 효과 없음). 칼 병종 = 0.3~0.5초 칼 뽑기 유지, 그동안 조준 자세 대신 돌격 자세 (새 그림 없음). 中.
+5. **Building size increase** (user: "Considering the size of the soldiers, let's make buildings a bit bigger. They're too small now") — currently a house = 1 terrain cell (32px) ≈ one soldier's width. **Decision: houses 3×3~3×4 cells, large buildings 4×6 cells** (update cover · sight · pathfinding · hand-made mission maps).
+6. **Armored train · freight train** (user: "let's start on this gradually") — no railway terrain (new). Decision: armored train = **both controllable unit + mission-scripted movement** (advance · stop · reverse on the track, field gun + heavy MG, heavy armor, per-car destruction), freight train = **mission objective** (escort · seize · destroy), track destruction = **later** (first pass: track = terrain). 上 design·implementation + 中 art.
+8. **Small rivers included (river inclusion)** (user "will you make it?") — after the armored train, designed with the same framework.
+9. **Heavy MG last stop line** (user "I agree") — an emplaced heavy MG fires along a designated fire line (fire-control K extension). Included in the artillery·heavy weapons bundle of #3.
+10. **Mongol cavalry ↔ bandit look distinction** (user "put it in the progress queue") — Mongol: del robe · primary-color belt · pointed hat / bandit: assorted civilian clothes · head cloth. 下 art fix + sheet.
+11. **Japanese infantry default bayonet + draw posture** (user "as proposed / go with the recommendation") — Japanese infantry = BayonetFixed from the start (no halt on charge orders either, no other effect). Blade branch = keep 0.3~0.5 s blade draw, and during that a charge posture instead of an aiming posture (no new art). 中.
 
-13. **포병 수치** (사용자 동의): 야전포 중심 피해 70 → 100, 곡사포 splash 2.5 → 3. 3번 포병 묶음에 포함.
-14. **곡사포 조정 사격** (사용자 "동의한다. 대기열에 올려") — 같은 표적 구역 연속 사격 시 퍼짐이 발마다 줄어듦 (예: 9 → 5발째 3칸), 표적 바꾸면 초기화. 3번 묶음 또는 별도 上.
-15. **공병** (사용자 승인) — 철조망 절단 (+ 나중 선로 파괴). **참호 구축 제외**. **돌격대(돌격보병)도 공병 역할(철조망 절단 등) 수행 가능**. 참호 돌파 묶음과 함께.
-18. ~~**기병 돌격 B안**~~ **취소 (사용자 2026-10-21 "기병 돌격도 현재 그대로")** (사용자 "기병은 B안으로 간다") — 돌격 피격 보병 마비 chargeStunMin/Max 1.5 → 2.0, cavMeleeMaxTargets 3 → 4. 17번과 같은 묶음. 中.
-19. UI 명칭 '접적' → **'교전!'** (사용자) — progbar 에이전트에 추가 지시함 ('비접적' 표기 → '대기').
-20. **오스틴 포탑 겹침 (팀색띠)** — 진행 중 (armour 브랜치, 시트 austin_fix.png, 병합은 사용자 확인 뒤).
-22. **전투 문제 (Gemini 분석, 사용자 결정 전)**: village_defense 4% (방어 배치 vs 마을 구역) · 도시 무승부 52~74% + 0발 66 · bandit_raid 37% 잔당 교착 · artillery_spotters 36% · 장교 1명 중대 영구 지휘 결손 · 기병 대 기관총 교착 · 전차 보병 미추격 (재확인) · 저격 대량 편성 · 유닛 설명 수치 불일치.
-23. **사상자 속도 조정** (사용자 2026-10-21: "장거리 명중률을 낮추는 방안에 동의한다", "3번 중대 단위 후퇴 판단도 적당해보인다. 그렇게 하자", "AI 끼리 항복하는 것도 개선") — 대형 완화 · 17/18 묶음 뒤 中~上:
-    - 먼 거리 명중 약 ×0.5 (accFar 계열, 돌격 그대로). + **소총 근거리 명중 소폭 하향** (사용자 "소총의 근거리 명중률도 소폭 하향하자" — 안: accNear 약 ×0.85, 예 0.35 → 0.30, 소총 계열 전부).
-    - 전투 내적 확인은 사용자가 개편 작업이 다 끝난 뒤 직접 (사용자). 목표: 보병 200:200 평지 50% 손실 2~3분 (현재 ~50초), 대대전 10분 20~40% 손실.
-    - 중대 단위 후퇴 판단 (붕괴 아님 — 지휘관 판단): **기준 중대 사상률 30~40%** (사용자 2026-10-21 "일반적으로 후퇴의 기준이 되는 중대 사상률은 30~40% 수준으로 설정해두자. 세력과 지휘관 성향에 따라 다르게 적용될 수 있게끔 하자") 또는 장기 제압 시 질서 있는 후퇴. 세력별 기본값 + 지휘관 성향 보정.
-    - (지금은 세력별 기본값만. 지휘관 보정은 장교 성향이 들어온 뒤.)
-    - **장교 성향 설계 → 장기 로드맵** (사용자 "장교 성향은 장기 로드맵으로 올린다"): "신중함, 과감함 등으로 단순화하지 않는다. 학파, 성격 2가지로 나눈다." **학파** = 장교의 기본 전술 교리 성향 (예: 독일 학파 · 노서아 학파 · 평양 학파 등) — 주된 영향. **성격** = 신중함 · 과감함 등 — "큰 영향은 주지 못한다" (작은 보정). 새 시스템 (장교 데이터 · 저장 상태) → 학파 목록 · 학파별 효과 (후퇴 문턱 · 돌격 성향 · 약진/화력 비중 등) 표를 구현 전에 사용자에게 제안하고 승인받기. 上.
-    - AI 대 AI 항복 개선 (현재 0건 — 조건: 퇴각 불가 · 제압 10초 · 중대 80% 소멸이 거의 안 맞음).
-24. **밤 soak 갱신** (사용자 "오늘 밤에 기타 필요한 것들 다 진행되면 진행하라") — 오늘 병합 대기 작업이 끝나면 `tools/agent/soak.ps1` 실행 (무거운 작업 단독), 끝나면 22번 전투 문제 9건을 새 수치로 다시 보고 (사용자 "전투문제 9건은 다시 보고해").
-- armour: 오스틴 외 3종 OK (사용자). 오스틴 = 포탑 대각 배치로 겹침 해소 (armour 7bf78e3, game-tools d83a638, austin_fix2.png; e 방향 살짝 맞닿음). **다음**: 사용자 "오스틴 장갑차 포탑의 팀 색 원형 띠를 빼자. 그 대신, 차체 후방에 표식을 넣는 걸로 하자." → austin.py 포탑 팀색 띠 제거 + 차체 후면 팀색 표식, 재렌더 · 시트 austin_fix3.png → 확인 뒤 armour 병합 (kd-armour 미커밋 쇼샤 8파일은 되돌리거나 무시 — chauchat 병합분과 같음). 中.
-- 의무병 = 제외 (사용자: 체력 회복 기능 없음).
+13. **Artillery values** (user agreed): field gun center damage 70 → 100, howitzer splash 2.5 → 3. Included in the artillery bundle of #3.
+14. **Howitzer spotted fire** (user "I agree. Put it in the queue") — when firing continuously at the same target zone, the spread shrinks per shot (e.g. 9 → 3 cells at the 5th shot), reset when the target changes. Bundle #3 or a separate 上.
+15. **Engineers** (user approved) — barbed wire cutting (+ later track destruction). **Trench building excluded**. **Assault troops (assault infantry) can also take the engineer role (barbed wire cutting etc.)**. Together with the trench breakthrough bundle.
+18. ~~**Cavalry charge option B**~~ **Cancelled (user 2026-10-21 "cavalry charge also stays as is")** (user "cavalry goes with option B") — charge-hit infantry paralysis chargeStunMin/Max 1.5 → 2.0, cavMeleeMaxTargets 3 → 4. Same bundle as #17. 中.
+19. UI label '접적' → **'교전!'** (user) — added as an instruction to the progbar agent ('비접적' label → '대기').
+20. **Austin turret overlap (team-color band)** — in progress (armour branch, sheet austin_fix.png, merge after user confirmation).
+22. **Combat problems (Gemini analysis, before user decision)**: village_defense 4% (defense placement vs village zone) · city draws 52~74% + 66 zero-shot games · bandit_raid 37% remnant deadlock · artillery_spotters 36% · one-officer company permanent command deficit · cavalry vs machine gun deadlock · tank does not chase infantry (re-check) · mass sniper formation · unit description number mismatch.
+23. **Casualty speed tuning** (user 2026-10-21: "I agree with lowering long-range hit rate", "#3 company-level retreat judgment also seems reasonable. Let's do that", "also improve AI-vs-AI surrender") — after the formation relaxation · #17/18 bundle, 中~上:
+    - Long-range hit about ×0.5 (accFar family, charge unchanged). + **slightly lower rifle close-range hit** (user "let's slightly lower rifle close-range hit rate too" — proposal: accNear about ×0.85, e.g. 0.35 → 0.30, all rifle family).
+    - In-combat feel check by the user directly after all overhaul work is done (user). Target: infantry 200:200 flat 50% losses in 2~3 minutes (currently ~50 s), battalion battle 20~40% losses in 10 minutes.
+    - Company-level retreat judgment (not collapse — commander's judgment): **threshold company casualty rate 30~40%** (user 2026-10-21 "let's set the company casualty rate that is the general retreat criterion at about 30~40%. Let it apply differently by faction and commander disposition") or orderly retreat under prolonged suppression. Per-faction defaults + commander disposition modifier.
+    - (For now only per-faction defaults. Commander modifier after officer dispositions come in.)
+    - **Officer disposition design → long-term roadmap** (user "officer disposition goes to the long-term roadmap"): "Do not simplify to cautious, bold etc. Split into two: school and personality." **School** = the officer's basic tactical doctrine tendency (e.g. German school · Russian school · Pyongyang school etc.) — main influence. **Personality** = cautious · bold etc. — "should not give a big influence" (small modifier). New system (officer data · save state) → propose to the user and get approval for the school list · per-school effects (retreat threshold · assault tendency · dash/firepower weighting etc.) table before implementation. 上.
+    - AI-vs-AI surrender improvement (currently 0 cases — conditions: no retreat possible · 10 s suppression · 80% company wipe-out almost never met).
+24. **Night soak refresh** (user "if everything else needed tonight is done, proceed") — once today's merge-pending work is done, run `tools/agent/soak.ps1` (heavy job alone), and when done re-report the 9 combat problems of #22 with the new numbers (user "re-report the 9 combat problems").
+- armour: 3 types besides Austin OK (user). Austin = turret overlap resolved by diagonal placement (armour 7bf78e3, game-tools d83a638, austin_fix2.png; slight contact in direction e). **Next**: user "remove the team-color circular band on the Austin armored car turret. Instead, put a marker on the rear of the hull." → remove the austin.py turret team-color band + hull-rear team-color marker, re-render · sheet austin_fix3.png → after confirmation merge armour (the 8 uncommitted 쇼샤 files of kd-armour: revert or ignore — same as the merged chauchat). 中.
+- Medic = excluded (user: no HP recovery function).
 
-## 로드맵 추가 (사용자 2026-10-21)
-- **엎드려쏴 자세 문제** (사용자 "엎드려쏴 자세에 문제가 너무 많다. 총을 옆으로 쏘는 건 뭔 이슈고, 개머리판은 여전히 통과하는 부분이 있다. 이건 로드맵에 올려둬") — prone 사격 프레임: 총구 방향이 몸 방향과 어긋나 옆으로 쏨 + 개머리판이 몸/지면 통과. 원인 조사 (방향별 프레임 매핑 · 모델 포즈) → 재렌더 · 시트. 中. (갱신 2026-10-23: 엎드려쏴 재렌더 샤드 진행 — 상세는 '그래픽 진행 상태' 절.)
-- **세력 Major / Minor 구분** (사용자 "현재 5개 세력을 Major, 그외에는 Minor 로 둔다. 이건 로드맵에만 올려두고, 추후 작업한다") — Major = 한국 · 일본 · 봉천 · **러시아 백군 · 적군** (사용자 정정 "마적 역시 Minor 세력이다. 러시아 백군과 적군이 각각 5대 세력에 들어간다"), Minor = 마적 · 세묘노프 · 직예 · 체코 군단 · 운게른 등. 적군은 지금 별도 세력 아님 (units 브랜치에 soviet 키 있음 — 확인). 장기.
+## Roadmap additions (user 2026-10-21)
+- **Prone-firing posture problem** (user "The prone-firing posture has far too many problems. What's with shooting the gun sideways, and the stock still clips through in places. Put this on the roadmap") — prone firing frames: muzzle direction mismatched with body direction so it shoots sideways + stock clips through body/ground. Investigate cause (per-direction frame mapping · model pose) → re-render · sheet. 中. (Updated 2026-10-23: prone re-render shards in progress — details in the 'Graphics progress status' section.)
+- **Faction Major / Minor split** (user "currently the 5 factions are Major, the others Minor. Put this on the roadmap only, work on it later") — Major = Korea · Japan · Fengtian · **Russian White Army · Red Army** (user correction "bandits are also a Minor faction. Russian White Army and Red Army each count among the 5 major factions"), Minor = bandits · Semyonov · Zhili · Czech Legion · Ungern etc. The Red Army is not a separate faction now (the units branch has a soviet key — check). Long-term.
 
-## 단기 로드맵 — 전투 외 검토 (사용자 2026-10-21 "단기 로드맵에 올려둬. 내일이나 weekly token 한도 초기화 이후 진행한다")
-→ ROADMAP.md 로 이관 (2026-10-21)
+## Short-term roadmap — non-combat review (user 2026-10-21 "put it on the short-term roadmap. We proceed tomorrow or after the weekly token limit resets")
+→ moved to ROADMAP.md (2026-10-21)
 
-→ ROADMAP.md 로 이관 (2026-10-21)
+→ moved to ROADMAP.md (2026-10-21)
 
-## 캠페인 · 외형 결정 (사용자 2026-10-21 02:30 이후)
-- **한국 · 봉천 색 구분**: "회색 계열은 유지하되 조금 더 짙게 하고, 봉천군의 색상을 좀 더 밝게" — 한국 군복 회색 명도 낮춤, 봉천 회색 밝게 (팀색 · 모자 실루엣은 Claude 제안, 미확정). 축소판 비교 시트로 확인. 下~中.
-- **시작 지역 = 압록강변** (사용자). 기존 1-1 회령 · 1-2 두만강 = 러시아 편 앞부분으로 옮기는 안 (확인 필요). 압록강 1-1 · 1-2 새로.
-- **편제 관리: 소대 제외** ("사실상 제외"), **화력 지원 체계는 주로 중대 단위**.
-- **민심 수치 넣음 — 추후 적용**.
-- 캠페인 홈 탭 (사용자 구성 + 승인 추가): 신병·부대 관리 (대대 편성·배치) · 편제 관리 (분대 · 중대 …) · 병참 (무기 배분) · 가벼운 외교 (선택지 · 대민 지원) · 참모진 (작전 참모 · 연대장 · 협력 세력 리더) · 진급 · 군령권 + **작전 지도 · 정보(첩보) · 부대 기록 · 본국** (사용자 "좋다"). 플레이어 = '김 참장' (이름 미공개), 부대 = 제17사단 '대한'.
-- 설계 문서 먼저 (탭별 데이터 · 화면 · 기존 시스템 연결) → 사용자 승인 → 구현. 上.
-- **전투 중 연대 선택** (사용자 "전투 중 연대 선택 기능을 넣자. 단축키는 숫자키다") — 연대 최대 9개, **여단 기능 사용 안 함** (여단 · 소대 = 명목상만). 플레이어 쪽 연대 편제는 지금 없음 (전술 AI 의 TacRegiment 만). **충돌**: 숫자 1~9 = 지금 '그 번호 대대 선택' (CONTROLS.md) → 대대 선택을 다른 키로 옮길지 사용자 확인 필요. 中~上.
-- **연대장에게 교전 위임** — 로드맵 (추후, 사용자).
-- 한국 · 봉천 색 비교 시트 = `docs/art_review/kr_ft_colour.png` (그림 보정 미리보기: 한국 회색 ×0.78 · 봉천 ×1.22, 팀색 미적용) — 사용자 확인 뒤 실제 모델 색 수정 · 재렌더.
+## Campaign · look decisions (user after 2026-10-21 02:30)
+- **Korea · Fengtian color distinction**: "keep the gray family but a bit darker, and make Fengtian army's color a bit brighter" — lower Korean uniform gray brightness, brighten Fengtian gray (team color · cap silhouette are Claude's proposal, unconfirmed). Check with a reduced comparison sheet. 下~中.
+- **Starting region = Yalu riverside** (user). Plan to move the existing 1-1 회령 · 1-2 두만강 to the front part of the Russian route (needs confirmation). Yalu 1-1 · 1-2 new.
+- **Organization management: platoon excluded** ("effectively excluded"), **fire support system mainly at company level**.
+- **Public-sentiment value included — applied later**.
+- Campaign home tab (user composition + approved additions): recruits·unit management (battalion formation·deployment) · organization management (squad · company …) · logistics (weapon distribution) · light diplomacy (options · civilian aid) · staff (operations staff · regiment commanders · allied faction leaders) · promotion · command authority + **operations map · intelligence (espionage) · unit records · homeland** (user "good"). Player = '김 참장' (name undisclosed), unit = 17th Division '대한'.
+- Design document first (per-tab data · screens · connection to existing systems) → user approval → implementation. 上.
+- **Regiment selection in combat** (user "let's add a regiment selection function in combat. The hotkey is number keys") — max 9 regiments, **brigade function unused** (brigade · platoon = nominal only). The player-side regiment organization does not exist now (only the tactical AI's TacRegiment). **Conflict**: number keys 1~9 = currently 'select that-number battalion' (CONTROLS.md) → need user confirmation on moving battalion selection to another key. 中~上.
+- **Delegate engagement to regiment commander** — roadmap (later, user).
+- Korea · Fengtian color comparison sheet = `docs/art_review/kr_ft_colour.png` (art adjustment preview: Korean gray ×0.78 · Fengtian ×1.22, team color not applied) — after user confirmation, actual model color fix · re-render.
 
-## 캠페인 규칙 결정 (사용자 2026-10-21, 캠페인 재설계 때 설계 문서에 반영)
-1. 자원 = 소총 · 탄약 · 중화기 · 말 등. **예산 없음**, 대신 **보급품 한계** — 한계를 넘는 부대 편성 불가.
-2. 노획 기능 = 넣음.
-3. 사상자 = 기본 **25% 확률로 부상자로 부대 복귀**, 치료에 보급품 필요.
-4. 한국 · 봉천 색 = 미리보기안 확정 (한국 회색 ×0.78, 봉천 ×1.22) → 모델 색 수정 · 재렌더 (下~中).
-5. 사단 규모 최대 **1만**.
-6. 패배: **대규모 작전 = 재도전**, **소형 작전 = 캠페인 분기**.
-7. 시간 · 계절 = 추후 다시 설계.
-8. 캠페인 **저장 슬롯** 둠.
-9. 연대 · 대대 선택키 = **안 1 확정** (사용자 "추천안 1안으로 한다"): 숫자 = 연대, Alt+숫자 = 대대; 지금의 Alt+숫자 '대대 편입' 은 다른 키로 옮김.
-10. 훈련 시스템 도입. 11. 사기 · 피로 도입. 12. 장비 개량 · 도입 = **장비 관리 탭**에 합침. 13. 포로 처리 넣음. 14. 일정 · 이벤트 기록 넣음. 15. 사단 상태 요약 (홈 첫 화면) 넣음.
-- **신병 수급 = 오로지 본국 지원**, 매 캠페인(작전)마다 보충.
-- **용병식 유닛** (코사크 · 간도 의용병 등) = 관련 탭에서 고용, "주로 자금과 무기를 소모" — **자금 = 외교용 자금** (사용자 "예산은 외교용 자금이다. 부대관리에는 들어가지 않는다"): 외교 · 용병 고용에만 쓰고 부대 관리(편성 · 병참)에는 쓰지 않음.
+## Campaign rule decisions (user 2026-10-21, reflect in the design document at campaign redesign)
+1. Resources = rifles · ammo · heavy weapons · horses etc. **No budget**, instead a **supply limit** — units beyond the limit cannot be formed.
+2. Loot function = included.
+3. Casualties = by default **25% chance to return to the unit as wounded**, treatment needs supplies.
+4. Korea · Fengtian color = preview proposal confirmed (Korean gray ×0.78, Fengtian ×1.22) → model color fix · re-render (下~中).
+5. Division size max **10,000**.
+6. Defeat: **large operation = retry**, **small operation = campaign branch**.
+7. Time · season = designed again later.
+8. Campaign **save slots** included.
+9. Regiment · battalion selection keys = **option 1 confirmed** (user "go with recommended option 1"): number = regiment, Alt+number = battalion; the current Alt+number 'battalion assignment' moves to another key.
+10. Training system introduced. 11. Morale · fatigue introduced. 12. Equipment improvement · introduction = merged into the **equipment management tab**. 13. Prisoner handling included. 14. Schedule · event log included. 15. Division status summary (home first screen) included.
+- **Recruit supply = homeland support only**, replenished every campaign (operation).
+- **Mercenary-style units** (Cossacks · Gando volunteers etc.) = hired in the relevant tab, "mainly consuming funds and weapons" — **funds = diplomacy funds** (user "the budget is diplomacy funds. It does not go into unit management"): used only for diplomacy · mercenary hiring, not for unit management (formation · logistics).
 
-→ ROADMAP.md 로 이관 (2026-10-21)
+→ moved to ROADMAP.md (2026-10-21)
 
-## 2026-10-21 아침 결정
-- **trench_assault 하락 (soak 100% → 31%) 원인 조사** — 작업 명령에만 올림 (사용자 "원인 조사를 작업 명령에 올려만 둬"). 의심: nobreak (참호 방어군이 무너지지 않음) · N32 참호 돌격 교리. yalu_crossing · ai_bn_assault 하락도 같은 원인 가능. 上. 근거 `docs/legacy/SOAK_REVIEW_2026-10-21.md`.
-- **N79a '후퇴' 버튼 · 콘솔 rally = 유지** (사용자 "유지하자").
-- 엄폐물 밀도 체감 = 추후 재논의 (사용자).
-- **저장소를 OneDrive 밖으로 이동** (사용자 "옮기자") — 진행 중인 에이전트가 끝난 뒤: korean-division · kd-develop · game-tools 를 `C:\works\` 로 (상대 배치 유지), `git worktree repair`, AGENT_RULES · HANDOFF · CLAUDE.md · 메모리의 절대 경로 갱신.
-- 그림 확인 목록 = `game-tools/korean-division-image-out/checklist/CHECKLIST.md` (사용자 요청).
-- 사용자가 직접 확인 예정: 진행 막대 · '교전!' · 일본 착검 · 새 유닛 7종 (기수 깃발 흔들기) · 행진 사격 화염.
-- UI 종이 질감 시안 = 다음 세션.
-
-
-# [2] 구 로드맵 전문 (원문: 구 docs/ROADMAP.md, 2026-10-21 시점)
-
-# Korean Division 로드맵
-
-> 사용자 지시 · 확정 결정 · 미결 사항을 여기에 모은다 (wargame 의 ROADMAP_v0.4 와 같은 역할). 진행 기록은 `WORKPLAN.md`.
-> 지시가 오면 해당 절을 갱신하고 날짜를 붙인다. 코딩 전에 이 문서와 맞는지 확인한다.
-> 완료 상세 · 긴 구현 기록 · 옛 수치 과정: `docs/legacy/ROADMAP_DONE.md` (같은 절 번호, 원문 보관). 이 문서에는 미결 · 확정 규칙 · 보류만.
-
-## 0. 게임 개요 (2026-10-18, 세부는 추후 토론)
-- 배경: 가상 1920년 대체역사 — 러일전쟁 러시아 승리, 한일합방을 면한 대한제국의 **만주 북벌**.
-- 구조: 스타크래프트식 선형 + 전략 지도에서 분기.
-- 미션 1판 1~2시간, 보병 위주, 아군 · 적 각각 수천 기.
-- 세력 (2026-10-19): korean 한국 (기본) · japanese 일본 · fengtian 봉천 군벌 · russian 러시아 백군 · soviet 러시아 적군 (소비에트)
-
-## 0-1. 방향 변경 (2026-10-19)
-- **자원 시스템 폐지**: 화폐 · 연료 · 인구 (인력 · 강철 · 보급품 재고 포함) 사용 안 함.
-- **생산 폐지**: 주어진 유닛만으로 전투. 병영 · 군수공장 등 기존 건물 시스템 사용 안 함.
-- **보급 (탄약) 새 방식**: 유닛마다 보급품 한도는 따로 (무기별 `ammo`), 교전 소모는 지금과 동일, **비전투 상황에서 서서히 회복**, **아군이 점거 중인 점령지 (도시 등) 근처면 더 빨리**. 세력 재고 · 보급소 · 비용 없음. 미결: 비전투 판정 (예: 10초간 사격 · 피격 없음), 회복 속도, 점령지 범위 · 배율, 차량 · 포 탄약. **[사용자 2026-10-21: 현재 적용값 승인 — regenDelay 30초 · 0.15%/초 · 도시 8칸 ×3 · 보급 마차 6칸 ×4]**
-- ~~**건설 기능** (확정 2026-10-19, ②+③)~~ **→ 2026-10-19 사용자 결정으로 건설 전체 제거 (아래 1-1 "건설(참호 파기) 기능 제외", 정리 묶음 2 완료). 참호 = 지도 · 미션 지형 + 자동 점유.** (옛 내용) **건설 기능** (확정 2026-10-19, ②+③): 건물 · 건설 시스템 제거. **1단계 = 보병 개인 참호** (유닛 상태: 정지 · '참호 파기' 명령 후 N초 → 엄폐, 이동하면 해제). **2단계 = 참호선** (드래그로 긋기 → 보병이 시간 들여 팜 → 지형으로 남아 누구나 엄폐). 미션 지도에는 참호 · 철조망 미리 배치 가능.
-- **엄폐 시스템** (확정 2026-10-19): 엄폐 중인 유닛은 **맞을 확률 감소 + 받는 제압 감소** 둘 다. 첫 엄폐원 = 참호 (건설 방식은 미결), 이후 숲 · 언덕 · 건물 잔해 등 같은 구조로 추가. 초기값 (balance.json): 참호 명중 **×0.6** (2026-10-19 사용자 결정, 개인 참호 · 참호 지형 모두; 이전 0.7) · 제압 ×0.5.
-  - ✅ 참호선 2단계 · 포탄 구덩이 지형 (2026-10-19) (→ docs/legacy/ROADMAP_DONE.md)
-- **보급 회복 초안 확정** (2026-10-19): 비전투 = 10초간 사격 · 피격 없음, 회복 = 한도의 1%/초, 아군 점거 도시 8칸 이내 ×3, 차량 · 포도 같은 규칙 (연료 없음).
-- 영향: 경제 · 생산 · 건물 · 공병 · 경제형 표준 AI · 관련 테스트 정리 필요 (§4 '불필요 기능 정리' 를 앞당김). 도시 · 점령지는 **점령 대상 (목표 · 보급 가속)** 으로 남김.
-- ✅ **구현 완료 (2026-10-19)**: 자원 · 생산 · 건설 · 공병 · 연료 삭제, 주어진 병력 + 탄약 회복 · 보급 마차 · 엄폐 · 개인 참호 · AI 축소, FormatVersion 7. 상세와 템포 측정 기록 (완료 상세: docs/legacy/ROADMAP_DONE.md §0-1).
-  - 미결 · 다음: 숲/언덕 엄폐, 캠페인 AI. (✅ `cover.autoDig` = false 확정 2026-10-19 — 개인 참호는 명령으로만) **[사용자 2026-10-21: 대기]**
-
-## 1. 현재 집중 (2026-10-18)
-**교전 시스템 + 유닛 그래픽.** 캠페인 계층 · 불필요 기능 정리 · 대규모 지휘 UI 는 뒤로.
-### 1-1. 최근 갱신 (2026-10-19)
-> 완료 bullet (✅ 구현 기록, 2026-10-19) → `docs/inherited/ROADMAP_ARCHIVE_2026-10.md` §1-1. 사용자 결정 · 미결 bullet 은 아래에 남김.
-- ✅ **도하 · 병목 돌파 + 역습 교리 (2026-10-19 사용자 결정, 브랜치 `crossing`, Snapshot v33)**: 결정 = AI 가 단일 다리 · 여울을 강제 도하할 수 있어야 (병력 · 화력이 충분하면 가능, 늘 성공은 아님), 1.5:1 역습이 참호선을 되찾을 수 있어야 (방어 전역 약화 금지). 구현 = 화력 기반 → 도하 (중대 종대 연속) → 교두보 → 계속 (tactics.json `crossing`), 건널 곳이 여럿이면 옛 동작; 미션 posture `counter` = 예비 투입 · 고정 사격 → 일제 돌격 (tactics.json `counter`). 측정 BATTALION_CAMPAIGN '도하 · 역습 (crossing)'. **사용자 결정 대기**: 2:1 소총만 도하 문턱, 화력 지원 도하 속도 대 손실, 역습 1.5:1 이 engage 뒤 이미 8/8 인 점. → 결정 2026-10-20: 도하 문턱 유지 (10-19 임시값 확정).
-- ✅ **gapfill 대열 정비 (2026-10-19 사용자 결정, 브랜치 `gapfill`)**: 결정 = 교전 중 빈자리 메우기는 명령으로만 — ① 플레이어 "대열 정비" (L, 리플레이 기록) ② 장교 (승계 지휘관 · 대리 부사관 포함) 가 교전 중 대열이 크게 흐트러지면 (지표 3종 · 히스테리시스 · 재명령 간격) 명령 ③ 병사 숙련: 신병은 사격 중에도 곧장, 노병은 교전을 먼저 (확률 · 지연 표). N12 의 나머지는 그대로. Snapshot v27 · 리플레이 v10, 수치 balance.json `combat` close*, 상세 ENGINE_NOTES 'gapfill', 측정 TACTICS_OBS '10차' (승 · K/E 잡음 범위, 후보 3개 — 사용자 결정 대기), 테스트 `KD_SELFTEST_ONLY=gapfill`. → 결정 2026-10-20: gapfill 기준값 = F1 이 대체.
-- ✅ **결정 4 돌격 허가 · 결정 12 대대 역할 · 부사관 기본 편성 (2026-10-19 사용자 승인, 브랜치 `ai412`)**: 공격 돌격 (엔진 기동조 · 전술 AI 중대) = 옛 조건 + 화력 우세 신호 또는 엄호 확인 + 병력비, 없으면 교전 150초 뒤 예비 타이머 (tactics.json `assaultGate` · `assaultMinOdds` · `overwatchSec/Radius/Min` · `assaultFallbackSec`). 장교 · 행진 사격 3칸 자동 돌격 · 방어 역습 그대로. 소총 병력 40 미만 대대는 화력 기반 · 기동 대대가 아님, 전투 대대 하나 = 분할 (`battalionRoles.minStrength`). 미션 보병 분대장 = 하사 기본 (balance.json `combat.squadLeaderRank`, 미션 `squadLeaderRank` 덮어씀). 측정 TACTICS_OBS '9차': 허가된 돌격 97% 가 신호 · 엄호 뒤, 돌격 16.8 → 6.6, 40초 후퇴 49 → 39%, B 기동 역할 10배지만 B 승 4/5 → 2/5. **사용자 결정 대기**: 부사관 배수 (`ncoHesitateMul` · `ncoDecayMul`) 재조정 여부, B 기동 중대 접근 방식 (엄폐 홉 · 측면 우회). 테스트 `KD_SELFTEST_ONLY=ai412`. → 결정 2026-10-20: 부사관 배수 유지 · 공격 기동 중대 접근 = F1 이 대체 (대기 해제).
-- ✅ **N3 지휘 계급 직책화 · 임시 진급 · 승계 · 장교 경험치 (2026-10-19, 브랜치 `command-ranks`, Snapshot v23)**: 결정 = `docs/TACTICAL_AI_STAGE3_PLAN.md` '지휘 계급 · 경험치 결정'. 편성 때 직책 계급 (중대 첫 장교 대위 · 둘째 중위 · 나머지 소위, 대대장 소령 / 중대 3개 이상 중령 — 배치 단계는 정식, 전투 중은 임시 진급 최대 +3), 미션 `officerRanks` · `officerXp`. 지휘관 전사 → 다음 서열 장교가 인계 5초 뒤 지휘 (임시 진급), 장교 없으면 부사관 대리 8초 뒤 (단순 틀만), 아무도 없으면 기본 대형. 장교 경험치 (교전 시간 · 중대 사살 · 목표) → 판단 빈도 · 지휘 지연 · 인계 시간 개선, 결과 파일 기록. 수치 balance.json `officers`. N4 용 `CommanderOf(company)` · `CommandLevelOf` · `TacticAllowed`. 상세 ENGINE_NOTES '지휘 계급 · 임시 진급 · 승계 · 장교 경험치', 테스트 `KD_SELFTEST_ONLY=command`. **다음**: N4 전술 대형 2단계 (틀 전환 시 `TacticAllowed` 로 막기). → 결정 2026-10-20: 장교 수치 유지.
-- **사용자 결정 (2026-10-19, 승인)**:
-  - 케피 띠 = 고정 진홍색.
-  - 말 견인은 곡사포만.
-  - 경기관총 사격 = 무릎 + 모래주머니 흉벽 위 양각대 (유지). ✅ 사격 방향 · 그림 정합 (N2, 2026-10-19): 총열 = 그려진 행 방향, 경기관총 16방향 · 넓은 칸, 거치 조준 회전 90°/s (traverseRate, 사계 제한 · 재거치 없음). 상세 ENGINE_NOTES.
-  - 정찰병 쌍안경 자세 카빈 위치 유지.
-  - 포격 구덩이 확률 승인: 곡사포 35% · 중곡사포 50% · 야전포 20% · 보병포 8%.
-  - 날씨 최저 시야 8칸 (✅ 구현, `03c7243`).
-  - 명령 전달 지연 세부값 승인: 돌격 전부 · 부사관 12칸 · 차량 0 · 분대 합치기 6명 미만.
-  - 지도 크기 현재대로 승인.
-  - 밸런스 수치: 전술 AI 2단계 합친 뒤 재측정 → 새 제안.
-  - 운영 규칙: 무거운 작업 (빌드 · 전체 시험 · 성능 측정 · 대량 렌더) 동시 2개까지 (2026-10-18 PC 강제 종료 후; 현재 풀 한도 = ops/LIMITS.md).
-- **사용자 결정 (2026-10-19, 추가 승인)**:
-  - 장교 인계 시간 5초 (장교) · 8초 (부사관 대리) 유지.
-  - 장교 경험치는 미션 목표 획득으로 오르지 않음.
-  - 장교 경험치 기준 60 / 180 / 420 / 900 승인.
-  - 대대 부관 (소령) 은 자동 배정, 대령은 미션에서만 지정.
-  - 캠페인이 정한 계급 밖에서는 지휘권이 경험치 최고 장교에게 가고 승진하지 않음 (승진은 전사로 승계될 때만).
-  - 행진 사격 발동 거리 = 유효 사거리의 0.7배.
-  - 직사포 지점 사격 = 흩어짐만 (명중 판정 없음) 승인.
-  - 일본군 휘장 아이콘 유지.
-  - 전술 AI 는 틀 (템플릿) 을 사용.
-  - 진행 중: "칸 끝 닿는 그림 수정" (game-tools).
-- **완료**: 장갑차량 ×1.5 크기 조정 · 소련 부됸놉카 더 높게 (대전차소총병은 낮은 높이 유지) · 튜닝 값은 JSON 으로 (정책: `image/tune/*.json`) · 아트 임포트 공백 발견 (게임에 유닛 7종만 들어 있었음) → 아트 임포트 진행 중.
-- **진행 중 (병렬 에이전트)**: ④ 분대 · 계급 · 부사관 · 대대 · 선택 (+ 장교 공백 점검 ≥10초, 33% sword_wave) · 참호선 (건설 2단계) + 포탄 구덩이 지형 (승인: 구덩이 = 엄폐 ×0.8 · 이동 ×0.85) · 날씨 · 시간대 (승인) · 사실적 절차 효과음 (승인, 샘플 `coding/game-tools/korean-division-audio-default`) · 전 유닛 아트 임포트 · 보병 모션 2차 (기어가기 · 부상자 끌기 · 돌격 수류탄 투척 · 참호 사격) · 앉기 · 무릎 자세 골반 돌출 수정.
-- **결정 (2026-10-19)**: 철조망 = 통과 불가 장애물 (임시) · 멈칫 (반응 지연 · 이동 중 멈칫) 보류 · 가옥 옆 엄폐 ×0.8/×0.8 · 참호 명중 ×0.6 (개인 · 지형 공통), 제압 ×0.5 · 시야 차단 2×2 승인 · 지형 타일 승인 · 모션 1차 승인.
-- **후속: 가옥 폐허 그림**
-- **승인 (사용자 2026-10-21 '전부 승인') — 구현 대기열**: 미션 프레임워크 (배치 · 승리 조건 · 브리핑 · 결과 화면), 인게임 맵 에디터, 장교 · 부사관 없을 때 명령 지연, 의무병 · 부상자. 밸런스 수치 제안은 사용자의 다음 배치 지시 대기 (`docs/BALANCE_OBS_2026-10-19.md`, 브랜치 `balance-obs-tool`).
-
-- **순서 (2026-10-19 확정)**: ① 교전 4차 (완료) → ② 외교 제거 (✅ 2026-10-19, 아래 "외교 제거 → 정적 팀") → ③ 지형 시뮬 (✅ 2026-10-19, 아래 "지형 · 높이 ✅ 구현") → ④ 분대 · 계급 · 편제 · 선택 (§2-4c · §2-7) → ⑤ 전술 AI 1단계.
-- **마지막 일괄 (순서 맨 끝)**: 체형 슬림화 · 내부 윤곽선 · 머리띠 · 휘장 · 세력 변형 · 전체 재렌더.
-- ✅ 미션 틀 (2026-10-19) (→ docs/legacy/ROADMAP_DONE.md)
-- **전술 AI 승인 (2026-10-19)**: 지휘관 → 대대 → 중대 3층. 가장 기본형부터. 세력별 + 미션별 AI 프로필 JSON (공격성 · 후퇴 임계 · 참호 성향 · 포병/기병 사용 · 선호 전술; 미션 파일로 덮어쓰기). 옛 AI (스커미시 RTS 잔재) 는 교체 대상.
-- ✅ ⑤ 전술 AI 1단계 (2026-10-19) (→ docs/legacy/ROADMAP_DONE.md)
-  - **관찰 (밸런스 값 변경 없음)**: 옛 BattleAi 는 곡사포를 4초마다 재명령해 방열 (6초) 을 끝내지 못함 → 곡사포 사격 0발 · 전멸; 전술 AI 는 같은 구성에서 방열 35~46%, 9~13발, 포 4/4 생존. 기병: 옛 AI 근접 0회 → 전술 AI 근접 60~97회 (돌격 2~3회, 돌격 중 18%). 기관총: 옛 AI 도 자동 거치는 했음 (방열 46~54%) — 전술 AI 는 거리 두고 거치 (58~66%), 맞대결 사격 3배. 맞대결 (전술 vs 옛, 양쪽 바꿔): 보병 200 평지 6/8 승 · 지형 1/4 승, 기관총 혼성 4/4, 기병 혼성 3/4, 곡사포 혼성 4/4. "포병 · 기병 · 기관총이 약해 보였던" 관찰의 상당 부분 (특히 포병 · 기병) 은 옛 AI 탓으로 보임 — 수치 판단은 전술 AI 로 다시 관찰한 뒤.
-- ✅ **⑤ 전술 AI 2단계 (2026-10-18, 브랜치 `tactical-ai-2` → main 병합)**: 사용자 지시 두 주층 = **세력 전략** (지시 그룹별 태세 · 목표 · 연대 정면 배분 · 주공/조공 · 예비 연대 · 증원 편입 · 포병/기병 배정) + **연대 전술** (AI 묶음 = 대대 2~4: 접근 → 준비사격 → 돌격 / 종심 방어 = 주저항선 + 역습 예비, 화력 기반 · 기동 역할, 포병 연신) 아래 1단계 대대 · 중대 실행 (+ 분대 교대 약진 · 방어 전초 · TacMap 사격 진지). 프로필 = `strategy` · `tactics` 두 절. 미션 병력별 지시 그룹 (흩어진 매복조 분리), 증원 편입, 월드 대대 번호 연결, 마차 대피 (보조 AI). 설계 · 결과 · 미룬 일 = `docs/TACTICAL_AI_DESIGN.md`, 엔진 메모 `docs/ENGINE_NOTES.md` '전술 AI 2단계'.
-  - **결과 (1단계 대비, 밸런스 값 변경 없음)**: 미션 10시드 승수 yalu_crossing 10 → 8, village_defense 5 → 8, supply_escort 4 → 5. 전술 대 옛 battle AI 보병 200:200 12시드 평지 12 → 12 · 지형 11 → 9, 혼성 · 곡사포 준비사격 3/3 둘 다 (준비사격은 승리를 97 → 153초로 늦춤), 참호 사수 공격 = 1단계 전멸 → 2단계 멈춘 채 무승부. AI 비용 4008기 avg 0.038 ms/틱 (1단계 0.029, +31%).
-  - **3단계로 미룸**: 미션 목표 연결 · 침투 · 엄호 철수 · 탄막 이동 · 명령 전령 지연 · 참호선 계획 + 검증에서 남은 것 (지형 보병전 열세, 준비사격 대기 조정, 참호 속 적 공격, 곡사포 관측자 의존, 호위 배치).
-  - **미결 · 다음 단계 제안**: 지형 맵 보병전 약함 (엄폐 선택 · 고지 점유 개선), 증원 편입, 미션 목표 (점령 지점 외) 연결, 예비 투입 규칙 다듬기 (작은 대등전에서는 예비가 손해 — 지금은 대등 접촉 시 곧 투입), 참호선 · 포탄 구덩이 병합 후 엄폐 점수 확인. **[사용자 2026-10-21: 보류]**
-
-- ✅ 외교 제거 → 정적 팀 (2026-10-19) (→ docs/legacy/ROADMAP_DONE.md)
-- **성능 방침 (사용자, 2026-10-19)**: 멀티스레드는 필요하고 안전한 곳에만 — 지형 청크 굽기 (이미 스레드) 와 지형 시야 계산 (경량판으로도 느릴 때만 중대 단위 병렬화, 결과는 고정 순서로 합쳐 결정성 유지). 시뮬 이동 · 밀어내기 · 교전은 단일 스레드 유지. 표적 탐색 · AI 병렬화는 나중에 측정이 요구할 때만.
-- ✅ **버그 (2026-10-19, 사용자 관찰)**: 보병 · 기병이 이동할 때 움찔거림 (기병도 같은 현상 → 공통 원인 가능성: 유닛 렌더 · 이동 · 밀어내기 쪽) (프레임 · 위치가 튀어 보임). 원인 후보: 걷기 프레임 전환 · walk_shoulder 33% 전환 · 깃발 대형 재정렬 · 멈칫(반응 지연) · 밀어내기 · LOD 전환 중 기준점 차이 — 재현 후 원인 확정. 中
-- **버그 (2026-10-19, 사용자 관찰)**: 보병 엎드려 쏴 (aim_prone / fire_prone / go_prone) 모션 오류 — 일괄 재렌더(슬림화) 결과로 다시 확인 후 자세 · 총 위치 수정 (game-tools). 中
-- ✅ 대규모 전투 충돌 · 대형 재설계 (2026-10-18) (→ docs/legacy/ROADMAP_DONE.md)
-- ✅ 건설(참호 파기) 기능 제외 (2026-10-19 결정) (→ docs/legacy/ROADMAP_DONE.md)
-- **버그 (2026-10-19 사용자)**: 돌격(행진) 사격 중 총구 화염이 기관총처럼 계속 번쩍임 — walk_fire 4프레임 중 2 · 4번에 화염이 그려져 있어서. → **실제로 쏜 순간에만 화염**: walk_fire 시트에서 화염을 빼고 (game-tools 재렌더 때), 게임이 사격 사건 때만 총구 화염 오버레이를 그림 (기관총 · 소총 공통 방식으로). 中
-- **다음 (2026-10-19 사용자)**: 축소 화면의 **NATO 중대 기호 → 각 세력 휘장**으로 교체 (병과 구분은 휘장 옆 작은 표시로 유지 검토). 휘장 원본 = game-tools `image/tools/parts/badges.py` (모자 휘장, `323c08c`) + 초안 `korean-division-image-out/_drafts/badges/` (badge-korean · japanese · fengtian · russian-white · russian-red, badges_compare.png) → 2D 아이콘 (32/64px) 으로 뽑아 게임 테마에 등록. 中
-- ✅ 표적 분산 흔들림 5 · 장교 선공 금지 (2026-10-19 결정) (→ docs/legacy/ROADMAP_DONE.md)
-- **결정 (2026-10-19 사용자)**: 한국군 장식 색 = **A 놋쇠** (`acc_brass`, 휘장 · 깃/소맷부리 · 바지 옆줄 · 케피 띠/테두리; 장교 금색 줄은 `badge_gold` 로 구분). 재렌더에 적용.
-- ~~**(보류)** 보병 삽질 모션~~ → **취소** (2026-10-19 건설 제거로 쓸 곳 없음).
-- **결정 (2026-10-19)**: 보병 체형 슬림화는 현재 수준(game-tools `456f47e`)으로 확정, 추가로 줄이지 않음.
-- **다음 (2026-10-19 사용자 지시, 북한군 · 붉은 군대 연상 줄이기)**: 한국군 기본 셋의 **휘장 · 단추 · 붉은 줄 (깃 · 소맷부리 · 바지 줄) · 케피 모자 띠** 를 붉은색 → **놋쇠색 또는 노란색** 계열로 변경 (케피 띠 "고정 진홍" 결정을 대체). 견본 렌더 후 적용, 장교 금색 장식과 겹치지 않게 구분. 中
-- (옛 메모, 해결) 교전 테스트는 기본 무음 — 2026-10-19 부터 N 으로 켤 수 있음.
-
-## 2. 교전 개편
-
-### 2-2. 피해 · 명중 · 사거리 (확정 부분, ✅ 구현 — §2-5)
-- 소총 피해 40 이상. 기준 = **기본 보병 체력 100 → 소총 3발 사망** (체력은 추후 조정).
-- **시야 · 사거리 2배** (현재 소총 8 → 16, 보병 시야 sightNear/sightFar 도 2배).
-- 기본 명중률 현저히 낮춤 + 거리에 따른 명중률 감소 (현재 3구간 직선 `Combat2.AccuracyCurve` → 확장).
-
-### 2-3. 확정 (2026-10-18 2차)
-- **소총**: 피해 40, 사거리 16, **발사 간격 = [최소, 최대] 사이 결정적 난수** (무기별 `cooldownMin/Max`, 소총 기본 1.8~2.4초; 해시 기반 Roll, 1발당 1회).
-- **명중 곡선**: 근거리 0.30 → 최대 사거리 0.04, 연속 곡선 (거리 제곱 비례 감소) — 3구간 직선 대체. 유닛 명중 배수 0.7~1.2 유지.
-- **2배 적용**: 모든 유닛 시야 + 직사 무기 사거리. **곡사포는 대기** (로직 개편 예정, 손대지 않음).
-- **탄약**: 소총병 100발 휴대, 병과(무기)별로 다름 (무기 `ammo` 값).
-- **바주카 → 대전차소총**으로 개편. 전차 유지 (모델링은 새로).
-- **제압** (사기 · 패주 없음): 명중률 · 연사 속도 · 이동 속도에만 영향. 고급 유닛일수록 덜 받음 (유닛 `suppressResist`).
-- **지도 크기 3종** (유동 조절): 소형 ≤1000기 · 중형 3000~4000기 · 대형 1만 기 이상. 실제 크기는 나중에 측정 후 (지금은 그대로).
-- **대포 2종** (2026-10-18 3차): **직사포** = 장애물에 막힘 (사선 검사, `GameMap.HasLineOfSight` 활용), **곡사포** = 장애물 완전 무시. 모든 대포는 사격하려면 고정 (방열). 방열/철수 (load/unload) 를 전투 · 이동 명령에 따라 **자동 전환** (기존 견인포 `DeployPhase` 확장).
-- **착검 돌격 · 근접전** (기능 + 모션): 보병 돌격 모션 · 근접 교전 모션 추가. 돌격 = **명령**, 초근접이면 **자동**. 돌격 중 이동 속도 **소폭 증가**. 미결: 근접 피해 · 판정, 자동 발동 거리, 증가 폭, 제압과의 관계. **[사용자 2026-10-21: 현재 규칙 그대로 (돌격 +30% · 자동 1칸 · 제압 400 이상 자동 안 함 · 판정 0.3칸 · 착검 피해 60/명중 0.6/1.5~2초). 기병 돌격 충격도 현재 그대로 (마비 1.5초 · 쿨다운 10~15초 · 제압 +300) → QUEUE 18번 기병 B안 취소]**
-- **모션** (2026-10-18 4차): 고유 모션 **10개 수준**, **몸체 공유** (같은 몸 · 동작 + 모자 · 장비 층만 다름). 병종에 따라 고유 모션 추가 가능. 시트 레이아웃은 데이터로 (애니메이션 목록 → 시트/칸 색인, 시트 폭 ≤4096).
-
-### 2-4b. 확정 (2026-10-18 5차) — ✅ 2차 구현 (§2-6) · 편제 ✅ (§2-7)
-- ✅ **착검 돌격**: 근접 피해 60 (기본 보병 2회에 사망), 공격 간격 1.5~2.0초 난수. 돌격 중 이동 속도 +30%, 적이 2칸 이내면 자동 돌격. 구현값: 근접 명중률 0.6 (유닛 배수 없음), 돌격 중 사격 없음, 사수 유닛은 자동 돌격 안 함, 건물에는 자동 돌격 안 함 (§2-6).
-- ✅ **대전차소총** = 현행 바주카 수치 · 로직 그대로, 이름 · 그래픽만 교체 (범위 피해 없음). 무기 키 `at_rifle`, 유닛 이름 '대전차소총병' (그림 키 `unit.at_infantry` 유지).
-- ✅ **제압 효과에서 명중률 제외** (6차): 연사 속도 · 이동 속도만. 초기 수치 (balance.json, 나중에 조정): 범위 0~1000, 공격 1회당 소총 +60 · 기관총 +150 · 포격(폭발 반경 안 전원) +400, 초당 −80, 1000일 때 사격 간격 ×2 · 이동 −50% (선형), 저항 = 증가량 배수 (징집 1.0 · 정규 0.75 · 정예 0.5). 제압 상태 화면 표시 필요.
-- 부대 편제 (7~10차 확정 · 키 · 카드 · 대형) → 구현 완료. 현재 규칙은 §2-7 (완료 상세: docs/legacy/ROADMAP_DONE.md §2-4b).
-- 보류 (수치 결정 후): 1920 무기 목록. (제압 · 착검 돌격 · 대전차소총 · 표적 분산은 2차 구현 ✅)
-
-### 2-4c. 장교 · 분대 (11차, 2026-10-18) — 장교 · 계급 ✅ 2차 구현, 고정 분대 · 부사관 · 9단계 계급 · 빈자리 점검 · 칼 흔들기 ✅ ④ (2026-10-19)
-- ✅ **장교 유닛** (확정, `officer` — 그림은 보병 별칭): 제압 면역. 무장 = 권총, 근거리 = 곡도 (검). 돌격 시 검을 치켜들고 돌진. 주변 병사의 제압 수치가 빠르게 감소 (지휘 범위). 소부대에 여러 명 가능. 빈자리 메우기 판단 담당 (9차).
-  - (12차 확정) 효과 **중첩 없음**, 장교는 모두 동등. **체력 200, 비용 = 보병의 10배**. 지휘 범위 안 병사: 제압 감소 가속 + **사격 속도 소폭 개선**. 초기값 (balance.json, 조정 가능): 지휘 범위 8칸, 제압 감소 ×3, 사격 간격 ×0.9. 권총 = 피해 40 · 사거리 6 · 간격 1.2~1.6초 · 명중 0.35→0.05, 곡도 = 근접 피해 60 · 간격 1.2~1.6초.
-  - **빈자리 점검** (12차): 근처에 장교가 있으면 **10초 이상 간격**으로 인근 대형을 점검해 빈자리를 메움. 대형은 조금 느슨해도 됨. (깃발 대형 작업 때 구현)
-  - **칼 흔들기** (15차): 전투 중 장교가 대형 정비(빈자리 점검)를 할 때 **33% 확률**로 `sword_wave` 모션 (칼을 허공에 흔듦). 그림은 진행 중, 동작 연결은 빈자리 점검과 함께.
-  - **(2026-10-19 확정, 이전 4단계 계급 · 14차 대체, 원문 docs/legacy/ROADMAP_DONE.md §2-4c) 고정 분대 · 부사관 · 계급**: 분대 = 최대 12명 고정 편성 (자동 합치기 · 재편성만). 공식 부사관 (하사 이상) — 분대장 효과: 멈칫 −50%, 분대 안 제압 감소 ×1.5, 장교 효과와 중첩 안 함. 계급 **사병 9단계** (삼등병 … 원사), 사살 수 0 / 2 / 5 / 10 / 18 / 30 / 48 / 75 / 110 (상한 128). **장교 계급 7개** (기본 '장교' + 소위 … 대령), 기본 '장교' = 계급 0 (장교끼리 동등, 역할별 차등은 나중). 이름은 세력별 JSON.
-  - 그래픽: 같은 몸체 + 장교 모자 · 권총 · 곡도. 고유 모션 = 검 치켜든 돌격 · 검 베기 · 권총 사격.
-- ~~**자동 분대 (squad)** (12차 확정)~~ → 2026-10-19 고정 분대로 대체 (아래 ④ 구현): 교전 중 장교를 중심으로 임시 편성, 교전 끝나면 자동 해체, 화면에 안 보임. 장교 중심 대형 구축 · 간격 벌림 · 가능하면 장교를 따라 이동. **최대 12명**, 자동 구성 · 상황에 따라 조정. 갱신 **2~3초 간격** (소부대별 분산). 플레이어 명령 (깃발 대형 이동) 이 우선.
-- **순서** (12차): 교전 1차 마무리 → **제압 · 장교** (+ 착검 돌격 · 대전차소총 · 표적 분산) → ✅ 편제 · 깃발 대형 (§2-7) → 자동 분대 · 빈자리 점검.
-
-> 구현 완료 기록 (2-4d 반응 · 2-4e 기관총병 · 2-4f 대전차소총 · 2-6 2차 구현 · 2-7 편제 구현) → `docs/inherited/ROADMAP_ARCHIVE_2026-10.md` §2
-### 2-4. 미결 (토론 필요)
-- 지도 크기 3종의 실제 칸 수 (초안: 소형 160² · 중형 256² · 대형 400~512²) 와 생성 방식. (2026-10-19: 생성 지도 한 변 ×1.5 적용 — §2-8. 3종 프리셋은 아직) **[사용자 2026-10-21: 초안 승인]**
-- 병과별 탄약 수 (기관총 500 · 대전차소총 8 은 초기값), 제압 수치 조정 (초기값 §2-6). **[사용자 2026-10-21: 보류]**
-- 1920년 무기 목록 (기관총 · 야포/산포 · 박격포 · 기병 · 장갑차 등), 다른 무기 피해 재조정. **[사용자 2026-10-21: 보류]**
-- ~~사거리 증가 → 수천 기 표적 탐색 비용~~: docs/legacy/ROADMAP_DONE.md §2-4g C 로 완화 (E 1만 기 44 → 5 ms/틱, docs/legacy/ROADMAP_DONE.md §2-6).
-
-### 2-6. 예정
-- **전투 추가 개편** (사용자 예고, 2026-10-18): 내용은 사용자가 지시할 예정 — 교전 2차 결과를 바탕으로.
-- 교전 테스트 모드 무음 + `--mute` · 음소거 키 (교전 2차 배치에 추가).
-
-> 구현 완료 기록 (2-8 사거리 · 시야 · 지도 ×1.5 묶음 · 2-7 정리) → `docs/inherited/ROADMAP_ARCHIVE_2026-10.md` §2
-## 3. 유닛 그래픽 (방법론 토론 중)
-- 그림 규칙 · 결정: `docs/ART_SPEC.md`
-
-- **보병 겹침 오류 일괄 수정 — opus 5.5 로** (2026-10-19 사용자 지정): 소총 개머리판이 몸에 끼어 보이는 등 무기 · 장비가 몸과 겹치는 현상 전부. 관통 검사 도구 (`tools/collide.py`, 허위 양성 보정 필요) 와 함께 진행.
-- ✅ `infantry-japanese` 보존본 (game-tools `b1e67e4`, 재질 `jkhaki` + `japanese_cap`; 옛 밝은 카키 값은 git 에 없어 현재 바지 카키와 같음 — 다른 값을 원하면 jkhaki 만 수정). **나중: 일본군 유닛에 재활용** — 밝은 카키 1차대전 군복 (+ 일본식 군모) 을 `units/infantry-japanese.json` 으로 보존 (24차).
-- **그래픽 대기열** (순서): 위 수정 → 기관총병 → **대전차소총병** (거치형) → **infantry-regular** (한국 이름 **정규병** (2026-10-19, 철모 보병에서 변경), **독일 M1916 슈탈헬름** 보병 (아드리안에서 변경, 2026-10-19; haiku 1차 `9c95eef` 불만족 → 다음 세션 sonnet)) → **르노 FT 전차 암컷 · 수컷** → **`armored_car`** (차량은 별도 에이전트, 브랜치 `vehicles` / `coding/game-tools-vehicles`).
-- 일본군 테스트 보병 군모 → 1차대전기 45식 풍: haiku 시도 (`f929eda`) 결과 불만족 → **다음 세션에 sonnet 으로 재작업** (사용자 2026-10-19).
-- ✅ 보병 배낭 색 = 군복 들회색 (`17f53c8`), 들회색 조정 (회청색과 녹회색 중간), 야전모 챙 22% 단축 (`aee4c4b`), 장교 칼 손잡이 (`a93c8ce`). (_doc 문구 정리 완료 — 일본군 보존 설정만 light khaki 유지).
-- **보병 체형 슬림화** (2026-10-19, 피드백: 전반적으로 퉁퉁해서 인형 같음): 몸통 · 팔 · 다리 굵기와 어깨 폭을 줄여 날씬하게 (tune JSON 의 몸 치수 + 몸체 공유라 모든 보병 · 장교 · 중화기 · 기병 기수에 함께 적용). 줄인 뒤 관통 검사 · 가장자리 재확인. 中. **순서: 다른 작업이 모두 끝난 뒤 맨 마지막** (사용자 지시).
-- **보병 모션 추가 계획** (2026-10-19 확정, 최종 일괄 재렌더 직전): 1차 = 대기 4종 (담배 피우기 · 모자 고쳐 쓰기 · 소총 점검 · 앉아 쉬기) + 축하 2종 (소총 들어 환호 · 경례; 점령 · 돌격 승리 · 미션 승리 때). 2차 = 기어가기 · 부상자 끌기 · 수류탄 투척 (돌격) · 참호 사격.
-- 다음 후보: ③ 매끄러운 결합 (렌더러 수정).
-### 세력별 외형 (2026-10-19, 중요)
-- **기본 (공용) 병종 묶음 · 세력 고유 병종**: 초안 확정 (사용자 2026-10-21).
-- **(2026-10-19) 세력 변형 보류**: 기병 · 포병 · 저격수의 세력 변형은 **최종 일괄 재렌더 때** 진행 (사용자 승인).
-### 추가 병종 (2026-10-19)
-- **보류**: 전투공병 `infantry-pioneer` (참호선 · 철조망 절단/설치 · 폭파), 박격포반 `heavy-mortar` (2인, 가벼운 곡사), **의무병 + 부상 시스템** (즉사 대신 쓰러짐 → 일정 시간 뒤 사망, 의무병이 구조).
-### 행진 사격 (돌격 사격) (2026-10-19 확정, 中 — 다음 교전 배치)
-- 그림: 보병 계열 `walk_fire` 2프레임 추가 (中, 겹침 오류 작업 끝난 뒤 — 같은 자세 파일을 건드림). 몸체 공유라 대부분의 보병 병종에 같이 적용.
-### 지형 그래픽 다듬기 (2026-10-19 추가, 中 — 외출 중 그림 줄)
-- **C. 확장** (나중, 로드맵만): **겨울 만주 테마** (눈 · 계절 전환), **철도**, 물 반짝임 애니메이션, 포탄 구덩이 (포격 자국 연결 — 포격 자국 지형 ✅ 2026-10-19, 그림은 임시 절차 타일). 새 지형 (숲 · 잔해 · 가옥 · 철조망 · 고지) 그림은 지형 · 높이 작업 때.
-- **버그 (2026-10-19 사용자)**: 대전차소총수 등 일부 유닛이 **최대 확대 (LOD0) 그림이 없음** — 확대하면 그림이 빠지거나 작은 LOD 로만 보임. 원인 후보: 그림 메모리 줄이기 (LodAtlas 지연 로드 · 30초 내림 · 256MB 예산 · 업로드 대기 중 작은 LOD 대체) 의 페이지 미생성, 임포터의 LOD 선택 (1/2 · 1/4 규칙 — 칸 크기가 다른 유닛), `UsedAnimNames` 누락, 세력 변형 키. 중 (N8)
-- **다음 (2026-10-19 사용자)**: 축소 화면 표시 — **부대(중대)에 지정된 유닛만 세력 휘장**으로 묶어 표시 (보병 · 다른 병종 모두). **부대 지정 안 된 유닛은 다시 팀색(파란색 등) 점**으로. 下 (N9, N8 과 함께)
-- **나중 (2026-10-19 사용자)**: 휘장 밑에 **병종별 유닛 구분 기호** (보병 · 기관총 · 포병 · 기병 등) 를 단다.
-- ✅ 포병 재조준 · 사거리 40/80/120 · 지도 크기 5단계 (2026-10-19) (→ docs/legacy/ROADMAP_DONE.md)
-- **다음**: 지도 크기별 과부하 시험 (생성 · 길찾기 · 미니맵 · 안개 · AI 위협 지도 · 저장 · 틱 비용). 中 (N13)
-## UI 확인 (사용자 2026-10-20, 나중에)
-- LOS 표시 키 B: 사선 표시 · 범례 가독성 (초록 바탕에서 잘 안 보임) 확인. **[사용자 2026-10-21: 추후 검토]**
-- 사격 통제 키 K: 순환 (사격 금지 → 응사만 → 자유) 확인. **[사용자 2026-10-21: 추후 검토]**
-- F1 구역 테두리: 중대 (반경 5) 보다 크게 보임 → 줄이기 검토. **[사용자 2026-10-21: 추후 검토]**
-- 진행 링 (progress ring): 색 · 크기 확인. **[사용자 2026-10-21: 추후 검토]**
-- 시각 대개편 예정 (사용자 2026-10-20) — 엄폐물 그림 v1 (cover_props_v1.png) 은 대개편 때 다시.
-- 참호 돌파 묶음 N59/N60/N65 · 명령 대기열 N74 = 추후.
-
-## 4. 나중 (보류)
-- **스토리 · 캠페인 (장기, 2026-10-19 등록)**: 사용자 지시서를 받은 뒤 착수. 순서: ① 세계관 · 연표 설정서 (대체역사 분기점 러일전쟁 → 1920 만주 북벌) ② 캠페인 구조 (분기형 선형 — 기억: branching linear) · 장(章) 구성 · 미션 목록 초안 ③ 미션 사이 화면 (부대 관리 · 진급 (사병/장교 캠페인 진급) · 보충 · 해금) 설계 ④ 결과 파일 → 병력 계승 연결 ⑤ 첫 장 (3~5 미션) 시제품 ⑥ 등장인물 · 브리핑 문체. 기존 기반: 미션 틀 · 결과 파일 (사살 · 진급 후보 · 장교 경험치) · 정적 팀 · 날씨/시간 · 전술 AI 프로필. 上 (설계) / 中 (미션 제작).
-- **2026-10-19 방향 정리**: 맵 · 전술 (전술 AI, 맵 병력 배치 · 승리 조건, 맵 편집) 은 **천천히, 나중에**. **포병 병과 보류** (세분화 필요). **시야 차단 (숲 · 언덕 · 건물이 시야를 가림) 동의** — 지형 추가와 함께. **지형 추가**: 숲 · 언덕 · 건물 잔해 · 철조망 · 민간 가옥 등 + **고지대 / 저지대** (검토안은 대화 기록, 사용자 결정 대기). **보급 마차 유닛 추가** (보급 회복 반경을 전선으로 넓혀 주는 수송 유닛 — 방향 변경 대작업의 새 보급과 함께). **수류탄 방식 역제안** (대화 기록, 결정 대기). **최대 줌 4.0**. 봉천 보병 소총은 비스듬히 멤. **기병 그림 착수** (上, `game-tools-u4`).
-- **맵 편집기 (2026-10-19, 사용자 결정)**: 로드맵만, 나중에 (지금은 구현 안 함).
-- **기병 돌격 충격 (차징)** (2026-10-19): ~~돌격 2초 이상 뒤 첫 적중 피해 300 + 0.4~0.6초 마비~~ → **개정 (사용자 2026-10-19)**: 피해 보너스 없음 (일반 곡도 피해), 충격 이벤트 = 마비 0.6초 · 기병마다 쿨다운 10~15초 · 충격 지점 2칸 안 적 보병 제압 +300. 돌격 속도 ×1.8 유지. **전차 · 장갑차에는 근접 공격 불가** (착검 · 검 · 대도 · 기병 모두; 수류탄은 근접이 아님).
-- 기병 돌격 충격 피해 제거 (사용자 2026-10-19): 피해 보너스 없음 (`chargeImpact` 삭제), 일반 곡도 피해. 돌격 충격 이벤트는 유지 — 기병마다 쿨다운 10~15초 (`chargeCooldownMin/Max`), 충격 뒤 마비 0.6초 고정 (`chargeStunMin = Max = 0.6`), 충격 지점 2칸 안 적 보병 제압 +300 (`chargeSuppress` · `chargeSuppressRange`). 속도 ×1.8 유지 (브랜치 cav-nocharge, 저장 FormatVersion 24)
-- **기병 유닛** (2026-10-19 추가): 기본 = **총기병** (카빈 사격), 이동 속도 = 보병의 **1.5배 이상**, 돌격 속도 = **1.8배**, 스태미나 한도 = 보병의 **3배**. 근접 돌격은 **검**. **토글: 사격 대신 돌격만** 하게 설정 가능. **하마 (말에서 내리기) 기능은 구현 안 함**. 그림 = 말 + 기수 (새 모델 — 上/中 판단은 착수 때), 스태미나 시스템 (§4 스태미나 · 속보) 이후.
-- **스태미나 · 속보** (2026-10-19, 나중): 돌격 시 스태미나 천천히 감소 → 감소 폭에 따라 돌격 속도 저하, 스태미나가 낮으면 이동 속도도 느림. **순찰 (Patrol) 기능 제거**, 대신 **속보 (quick step)** = 평상시 스태미나를 써서 걷기보다 빠르고 돌격보다 느린 이동. 미결: 최대치 · 소모/회복 속도 · 속도 곡선, 단축키, 그림 (속보 걷기 모션). **[이미 구현 2026-10-19: staminaMax 100 · 돌격 소모 8 · 속보 3 · 회복 이동 2/정지 5 · Q 키 · HUD 기력 막대. 남은 것 = 속보 걷기 모션 그림만]** **[2026-10-21 속보 걷기 모션 진행 시작]**
-- 캠페인 계층: 미션 스크립트 (목표 · 트리거 · 증원 · 대사), 전략 지도 분기, 미션 간 진행 저장. **병종 · 장비 해금 = 미션 보상** (연구 탭 삭제 2026-10-19, 연구 시스템 없음).
-- **지형 세분화 (나중)**: 지형 종류 · 변형 · 색 다양화 (2026-10-19 지시).
-- 불필요 기능 정리 (16인 대전 AI 등) — 캠페인 구조 확정 직후. (외교 ✅ 2026-10-19 삭제 · 경제 ✅ 삭제)
-- 수천 기 지휘 UI (중대 · 대대 단위 편제 명령).
-- ✅ 스태미나 · 속보 (2026-10-19) (→ docs/legacy/ROADMAP_DONE.md)
-- **대열 (Formation) 기능 수정** — 현재 문제 많음 (사용자, 2026-10-18). 나중에 문제 목록부터 정리.
-
-### 밸런스 결정 (사용자 승인 2026-10-19, LETHALITY Part B) ✅ 적용
-- ✅ 밸런스 결정 LETHALITY Part B 적용 (2026-10-19) (→ docs/legacy/ROADMAP_DONE.md)
-
-- [결정 2026-10-19] 기관총 밸런스: 맥심 1기 ≈ 소총 10명(1v10 약 40%, 1v5 승, 1v20 패), 경기관총 1기 ≈ 소총 5명(1v5 약 40~50%). lmg/hmg accNear 0.3 · accFar 0.12, 맥심 hp 340 · suppressResist 0.3, 기관총병 hp 160 · suppressResist 0.4. 근위대는 특수 병종 — 현행 유지 (사용자).
-- 2026-10-19 묶음 3 완료: 돌격 사격 토글 · 사병 전투 중 진급 제거 (StartKills) · 비전투 어택땅 · 잔재 정리 (ENGINE_NOTES 묶음 3). 축소 휘장: 플레이어가 중대 없이 낱 유닛이면 점으로 보임 (미션은 중대라 휘장) — 미해결/사용자 확인 필요. **[사용자 2026-10-21: 지금처럼 점으로 둔다 — 해결]**
-- [결정 2026-10-19] 경기관총 점사 (lmg): 10~20발 점사 (유닛 Id · 틱 해시 결정적) 뒤 1~2초 휴지, 점사 안은 cooldown. 표적을 놓으면 점사 끊고 휴지, 새 표적은 새 점사. 값은 balance.json lmg (burstMin/Max, burstPauseMin/Max). 중기관총 (hmg) 은 지속 사격. 점사 가동률 약 66% 보상으로 lmg cooldown 0.2→0.13, accNear 0.3→0.38, accFar 0.12→0.16. 1v3/1v5/1v8 (전술 AI, 평지, 8시드) = 8/8 · 4/8 · 1/8 (`KD_SELFTEST_ONLY=lmgtable`). FormatVersion 24 (CMB2 유닛마다 BurstLeft).
-- [결정 2026-10-19] 중대 후퇴 = 사상률 30~40% (retreatStrength 0.60~0.70), 2026-10-19. 공격형 0.60~0.63 (40% 사상) · 신중형 0.67~0.70 (30%). `retreatSuppression` · Spent 반감 · 대대/연대 ×0.75 는 그대로 (제압 · 사기 재설계 때 같이 결정).
-- ✅ 포병 AI 6항 · 기여 · 추격 · 후퇴 사격 (2026-10-19 결정) (→ docs/legacy/ROADMAP_DONE.md)
-- **(2026-10-19 사용자 결정, `rankui`)** 장교 진급 상한 = 중령 (`officers.maxPromotionRank`). 축소 중대 기호 = 세력 휘장 + 그 아래 **병종 이미지** (NATO 기호는 옛 테마 대체만). 세력별 계급 · 부대 이름 문서는 사용자가 따로 줄 예정 (이름 짓지 않음).
-- ✅ 교전 거리 engageRangeFrac 0.7 (2026-10-19 결정) (→ docs/legacy/ROADMAP_DONE.md)
-- [결정 2026-10-19] 참호 · 엄폐 적극 활용 + 방어 시 방어 지형 우선 (참호선 → 가옥 · 숲 거점, 기관총 진지, 다음 참호선으로 후퇴, 예비 엄폐 뒤) ✅ 적용 (N25) — 진지 점유 명령 · 피격 시 엄폐 찾기 · 공격 엄폐 경유 (가벼운 판, 본격은 3단계) · 방어 정면 상한 `defendSpacing` (참호 없는 정면). 조정 후보 (엄폐 찾기 범위 · 참호 배수 · trenchPerTile · 공격 진지 거리) 는 BATTALION_CAMPAIGN 'engage', 사용자 결정 대기. 다음: 제압 재설계 (근접 탄착 제압 · 정확도 · 엎드림). → 결정 2026-10-20: N25 조정 후보 = F1/F6 에서.
-- [결정 2026-10-19] 전술 AI 3단계 (STAGE3_REVIEW §7 결정 1~13) — **3A ✅ 적용 (s3a)**: 협동 지표 먼저 → 2단계 대비 승률 (1) · 3A 를 제압 재설계와 병렬 (2) · 저장 형식 한 번 올림 = v31 (3) · 측면 우회 ≤ 정면 ×2 · 120초 (4) · 철수 허용 + 미션별 값 `factions[].aiWithdrawAt` · `aiCommitment` (5) · 세력 성격 보류 = 계획 편향 0 (7) · 침투 대신 S1 (9) · 미션 목표 연결 포함 (10) · 8시드 3+3+2 측정 (12). 모든 3A 행동은 프로필 키 뒤 (`strategy.manoeuvre` 등), 2단계 비교 = 겹침 `korean+stage2`. 결과 · 남은 일 = STAGE3_REVIEW '3A 결과'. 다음 3B.
-- [결정 2026-10-19] 숲 전투 (사용자, 브랜치 forest) ✅ 적용: ① 숲에서 적이 안 보이거나 교착이면 정찰조가 숲 속으로 적극 들어가 찾는다 (`scoutAi.forestProbe*`, 피격 엄폐 우선) ② 숲 은폐 조금 약화 (`terrain.forestSeeDepth` 3 · `forestHit` 0.8 · `forestSuppress` 0.85), 방어 이점은 유지 (종대 매복 ×1.9, 숲 방어 2:1 교환 2.3). 측정 · 미결 사항: BATTALION_CAMPAIGN '숲 전투'. 열린 질문: 깊이 3 이 종대 매복 방어를 너무 키웠다 (깊이 2 복원 시 탐색만 적용) — 사용자 판단. → 결정 2026-10-20: 숲 시야 깊이 3 유지.
-- [결정 2026-10-19] 기병 지휘 (사용자): ① 기병 장교 `officer_cavalry` (기병 중대 지휘 · 지휘 범위 · 장교 규칙 그대로, 말 위 권총 · 군도, 그림 = 기병 모델 복사 + 장교 장비, 한국 · 봉천) ② 기병 분대 부사관 기본 편성 (장교 상실 뒤 N3 부사관 대리, 미션 `squadLeaderRank` 덮어쓰기) ③ 기병 중대 미션은 보병 장교 대신 기병 장교 ④ 기병 측면 강도 (`flankOddsMul` 등) 는 미결 유지. ✅ 적용 (브랜치 cavcmd — AI 기병 돌격 때 장교는 뒤 10칸에서 따라감 `cavalry.officerBack`, TACTICS_OBS 13차). 미결: 기병 측면 강도 수치 (12차).
-- [결정 2026-10-19] N44 전투 조정 묶음 (tweak1) ✅ 적용: 대열 정비 화력조 제외 · 돌격 중 보류, 피격 엄폐 방어 유닛만, 참호 0.5, engageFrac 0.6, 관측자 노출 회피, 야전포 도착 방열, 보병포 70 · 1.5 · 250 — 남은 일: 한국 돌격 후퇴 원인 분리 (TACTICS_OBS 14차).
-- [결정 2026-10-19] 저격수 · 비 (사용자): ① 저격총 발사 간격 4.5 (4~5) → **8 (7~9)**, 사거리 · 명중 유지 — 30 대 30 교환비 6.8 → 1.45 (EXCHANGE_TABLE 끝). 대량 편성(25%+) 은 여전히 우세 → 편성 상한 또는 사거리 조정은 후속 검토. ② 비의 공격측 불리 = 의도 아님 → `weather.states.rain.move` 0.9 → 1.0 (TACTICS_OBS 끝). ✅ 적용 (브랜치 snrain, 수치만).
-- ✅ 마적 · 공용 유닛 · 소총 변형 · 한국군 보병 단계 (2026-10-19 결정) (→ docs/legacy/ROADMAP_DONE.md)
-- [해결] 제압 재설계 2 (supp) 스위치 3개 켤지: 엎드림 `proneAt` 0.35 (S1 55→37%) · 붕괴 `breakChance` 0.15 (참호 공격 sim 1/5→3/5, 도하 AI 실패) · 엄폐 회복 `coverDecayMul` 1.25 — ENGINE_NOTES '제압 재설계 2'. — 2차(supp2)에서 적용됨: 엎드림 0.35 · 엄폐 회복 ×1.25 켬, 붕괴 breakChance 0 (사용자 '붕괴 규칙은 굳이 넣지 않고 싶은데'). 사용자 2026-10-21 '추천안대로' = 현 상태 유지.
-
-## 장갑 차량 (사용자 확정 2026-10-20, 시기 미정)
-- Mark V 중전차 **수컷형만** (6파운더 2문 + 기관총) — 대한제국 · 러시아 백군 소수 · 적군 일부 (노획분). 참호 돌파용, 약 7.4 km/h, 승무원 8.
-- Lanchester 장갑차 (범용) — 대한제국 · 러시아 백군 · 적군. 일본 · 봉천 · 마적 없음.
-- 봉천군 **급조 장갑차** (트럭 개조) 신규. 마적떼는 장갑 차량 없음. 근거 · 수치 = docs/ISSUES_2026-10-20.md (Gemini 웹 검색 단서, 구현 전 재확인).
-- (보류) N33/N51 떨림 잔여 (접촉 시 뒤 열 비빔, 上) — 2026-10-22 쯤 재제안.
-- (사용자 2026-10-21 0시) **엎드린 병사가 대열 이동에 끌려감** — 제압으로 엎드린 병사가 엎드린 자세 그대로 대열과 함께 미끄러지듯 이동. 해결안: ① 제압으로 엎드린 병사 = 묶임 (대열 이동 명령에 따라가지 않음, 제압이 내려가면 일어나서 합류) ② 명시 명령이 오면 제압 높음 → 포복 (속도 ×0.3, crawl 애니) / 제압 낮음 → 일어서기 (약 0.8초) 뒤 걷기 ③ 엎드린 자세로 걷기 이동은 금지 (자세 · 애니 · 속도 일치 검사 테스트). 中.
-- (사용자 2026-10-21 0시) **좁은 길목 (다리 · 여울 · 골목 · 숲길) 에서 우왕좌왕** — 해결안: ① 길목 감지 시 자동 종대 (분대 순서대로 한 줄) ② 길목 통과 순서 큐 (도착 순서 · 분대 단위, 앞이 빠지면 다음) ③ 통과 중 대형 슬롯 재배정 · 빈자리 점검 끔, 건너편 집결 지점에서 대형 재구성 ④ 길목 안 충돌 밀어내기 약화. 기존 도하 교리 (중대 종대 연속) 와 F2 '막히면 보통 대형' 경로를 재사용. 中~上.
-- (사용자 2026-10-21 0시) **돌격 사격 (행진 사격 · 걸으며 쏘기) 총구 화염 위치가 이상함** — 걷기 사격 프레임의 총구 앵커 (anchors.json muzzle) 가 실제 총구와 어긋난 것으로 추정. 해결안: game-tools 에서 행진 사격 애니 (march_fire 등) 의 총구 앵커를 방향 · 프레임별로 재계산 (엎드려쏴 때 쓴 총구 측정 방식 재사용) → 재렌더 · import, 게임 쪽은 해당 애니가 사격 앵커를 올바른 프레임에서 읽는지 확인. 下~中 (그림).
-
-## 2026-10-21 결정 (단기 · 장기) — 원문 · 세부는 `docs/QUEUE_2026-10-21.md`
-- **단기 (내일 / 주간 한도 초기화 뒤)**: 전투 외 검토 6묶음 (그림·UI 확인 대기 · 조작/정보 · 설정/배포 · 성능 · 소리 · 캠페인 기반) · 엎드려쏴 자세 (총 옆으로 쏨 · 개머리판 통과) · 간도 의용대 복식 · 몽골/마적 외형 구분 · 오스틴 팀색 표식 차체 후면. (갱신 2026-10-23: 엎드려쏴·간도 복식은 상단 '그래픽 진행 상태' 절 참조.)
-- **진행 대기열**: 대형 완화 · 포병/중화기 묶음 · 사상자 속도 · 건물 크기 (민가 3×3~3×4, 큰 건물 4×6) · 장갑열차 (조종 + 스크립트)/화물열차 (미션 목표) · 하천 포함 · 공병 (참호 구축 제외, 돌격대도 공병 역할) · 3년식 중기관총.
-- **장기**: 장교 성향 (학파 = 독일 · 노서아 · 평양 등 교리 / 성격 = 신중 · 과감 등 작은 보정) · 세력 Major (한국 · 일본 · 봉천 · 러시아 백군 · 적군) / Minor (마적 · 그 밖) · 체코 군단 · 경박격포 사거리 36 (참호 돌파 묶음).
-- **보류 · 취소**: 총류탄 보병 = 넣지 않음 · 신호탄 방어 포격 = 취소 · 의무병 = 제외 (체력 회복 없음) · 병력 수송 트럭/마차 = 넣지 않음.
-- **캠페인 인물 후보 (로드맵, 사용자 2026-10-21)**: 연대장 3~4명 · 본국 병참감 · 원수부 감찰관 · 부사관 대표. 확정 인물은 `docs/CAMPAIGN_HOME_DESIGN.md` §8. 부대 이름 · 계보 기능도 로드맵.
-- **가벼운 지도 편집기** (로드맵, 사용자 2026-10-21): 자동 생성 지도를 사용자가 조금 수정 — 지형 칠하기 · 참호/철조망 · 목표 · 시작 위치 · 저장. 미션별 배치는 사용자가 구술 → 생성 파라미터.
-- **지도 엄폐물 · 숲 모양** (로드맵, 사용자 2026-10-21): 엄폐물 소품이 너무 흩어져 배치됨 → 군집 (울타리 줄 · 돌담 · 마을 둘레 · 숲 가장자리 · 참호 앞) 위주로. 숲이 사각형이라 이상함 → 불규칙한 윤곽 (노이즈 경계 · 가장자리 성긴 나무). 지도 묶음 (건물 크기 · 철도 지형 · 생성 파라미터) 과 함께.
-- **기수 깃발 비율 1:1 → 3:2** (가로가 길게, 사용자 2026-10-21 "조금 더 길어 보이게") — 로드맵, **다음 세션 (주간 한도 초기화) 때 진행** (사용자). 下.
-- **그래픽 로드맵 = `game-tools/GRAPHICS_ROADMAP.md`** (2026-10-21: 장르 RTT · 칸 48x60/96x120/192x240 · 도트풍 유지 (Blender 포기) · 엎드려쏴 재설계 08 확정 · 전 유닛 재렌더 묶음 · 지형/건물/광원 통일은 추후).
-
-## 장기 — 엔딩 루트 (사용자 2026-10-21 구상)
-- **A**: 북벌 성공, 고종 황위 유지.
-- **B**: 북벌 성공, 쿠데타로 순종 즉위.
-- **C**: 북벌 제한적 성공. 쿠데타에 실패한 장교들이 주인공 중심으로 만주에 **북간도 군정청** 설치 → 사실상 군벌.
-- **D**: 북벌 도중 회군, **대한 공화국** 수립 (DLC 예상).
-- 쿠데타 구상 2가지: (1) 노망나 전쟁만 외치는 황제에 대한 반감 → 순종 즉위 요구 → **수도 쿠데타** (B 성공 / C 실패와 연결). (2) **군부의 자체 쿠데타** → 좌익 세력 제압 후 대한 공화국 수립 (D 와 연결).
-- 분기 변수 후보 (Claude, 설계 시 검토): 북벌 진척도 · 황손 이태 / 민 대장 / 이석 관계 · 본국 신뢰 · 민심 · 장교 학파 · 사상자 (`maxCasualtyFrac` 강요 이력).
-- **장교 학파 5종 · 적 세력 성향 = `docs/OFFICER_DOCTRINES.md`** (학파표 승인 · 연구 연결 · 적 장교는 학파 없이 세력별 성향 2~3개 (봉천 4, 마적 = 봉천 최하위 공유) — 적 성향표 승인 2026-10-21).
-
-## 지휘 편의 · 시스템 (사용자 2026-10-21)
-- **승인 (진행 대기열)**: ① 미션 중 저장 + 큰 교전 직전 자동 저장 (캠페인 저장 슬롯과 묶음) ② 게임 속도 조절 (0.5~3배) + 일시정지 중 명령 (현재 구현 정도 먼저 확인) ③ 부대 목록 패널 (연대 › 대대 › 중대 나무 구조, 병력 · 탄약 · 상태 표시, 클릭 선택) ④ 명령 대기열 Shift+명령 (N74 앞당김) ⑤ 전과 보고 화면 (= 캠페인 작전 후 화면) ⑥ 병종 도감 (유닛 설명 · 포트레이트 · 수치; 정보 탭 · 튜토리얼 공용) ⑧ 색각 이상 대응 팀색 (색 + 무늬/표식).
-- **추후 심도 논의**: ⑦ 교전 알림 · 미니맵 표시.
-- **추후 도입**: ⑨ 연대장 위임 강화 (방어 · 공격 · 지연 태도 지정, 학파 연동) ⑩ 사진 모드.
-
-## 전투 시스템 추가 (사용자 2026-10-21 승인)
-- 알파: **① 사단 사령부 · 통신 지연**. 알파 뒤: ② 대포병 사격 ③ 야간 전투 보강 (조명탄 · 야간 시야/명중) ④ 전투 중 행군 피로.
-- **통신 · 지휘 구조 (사용자 설계)**:
-  - A. **전령 재도입 — 기마 전령** (말 타고 다님).
-  - B. **유선 전화 · 유선 모스** 추가. **무선 모스 = 추후 연구**.
-  - C. **연대 지휘소** 추가 — 각 지휘소는 사단 지휘부와 전령 · 유선으로 연결. **대대 지휘소는 두지 않고, 대대장이 적당한 위치에 간이 지휘 테이블** 설치 (사용자 제안, Claude 동의).
-  - **연대장에게 내린 명령은 유선 · 전령으로 실제 전달된 경우에만 수행.** 연대장 → 대대장 재하달. 플레이어가 대대장에게 직접 명령도 가능.
-  - 세부 · 다른 통신 수단 = Claude 검토 (아래 대화 · 결정 대기). **[사용자 2026-10-21: 채택]**
-- **통신 확정 (사용자 2026-10-21, 로드맵만)**: 1차 = 기마 전령 (사로잡힐 수 있음 → 명령 분실/노출) · 유선 전화 · 모스 (포격 · 적이 끊을 수 있음, 통신병 수리) · **신호탄** (미리 정한 짧은 신호) · **전서구** (앞선 부대 → 사령부 보고) · 연대 지휘소 · 대대 간이 지휘 테이블 · **'전달 중' 표시** · **적 AI 도 같은 규칙**. 수기 · 신호등 = 2차, 무선 모스 = 연구.
-- **편의성 원칙 (사용자)**: 유닛 1개 단위 통솔 가능은 그대로, 플레이어가 중대에 직접 명령하는 것도 가능 — 편의성 영역. (조작감 대책 = 아래 대화 · Claude 제안: 통신 현실성 옵션 등)
-- **통신 규칙 확정 (사용자 2026-10-21)**: 통신 현실성 = **난이도 설정 (쉬움 · 보통 · 어려움)** 영역. **유선 명령 1~3초 안**. **전령은 상당히 빠르게 — 통상 10~20초 안 도착**. **명령이 사라지면 반드시 알림**. **쉬움 = 유선이 끊기지 않음**. **중대 직접 명령 = 즉시 전달** (조작감 영역 — 수천 명 규모에선 중요 부대만 직접, 나머지는 위임하게 될 것이라는 사용자 판단). 연대장 명령 = 유선 · 전령으로 전달된 경우에만 수행 (위 결정 유지).
-
-## 단기 로드맵 — 전투 외 검토 (사용자 2026-10-21 "단기 로드맵에 올려둬. 내일이나 weekly token 한도 초기화 이후 진행한다") — QUEUE 에서 이관
-ROADMAP.md 로 옮길 것 (병합 잠금 없을 때). 진행은 내일 이후.
-1. 확인 대기 그림 · UI: prone_batch.png (E 뷰 총 짧음) · missing_theme_units.png · surrender_pose.png · new_units 시트 · N79a 묻지 않은 '후퇴' 버튼/콘솔 rally 유지 여부 · 행진 사격 화염 다른 병종 · 진행 막대 게임 내 확인 · ROADMAP 'UI 확인' 묶음. **[사용자 2026-10-21: '후퇴' 버튼(N79a) 유지 · 행진 사격 화염 다른 병종 적용 = 승인. 나머지는 확인 대기]**
-2. 조작 · 정보: 명령 카드 칸 넘침 (보병 카드 차면 집결 · 포격 종류 빠짐) · 단축키 정리 (CONTROLS.md + 게임 내 도움말) · 대규모 전장 정보 (교전 알림 · 미니맵 표시).
-3. 설정 · 배포: 설정 메뉴 (해상도 · 창 모드 · 음량 · 단축키 재지정) · 저장 형식 호환 정책 (오늘 46까지 오름 — 출시 전 호환/거부 결정) · 충돌 로그.
-4. 성능: 캠페인 규모 (1~2시간 · 수천 명) 프레임 · 시뮬 측정 (오늘 기능 추가로 비용 증가 가능), 1만 부하 시험.
-5. 소리: 무전 음성 임시본 교체 · 세력별 음성/함성 방침 (Gemini TTS 거절됨 10-20).
-6. 캠페인 기반 (스토리 · 진행 방식 사용자 구상 중 — 구상 뒤 정리, 먼저 손대지 않음): 브리핑 · 미션 선택 · 미션 사이 편성/보충 · 분기 조건 · 튜토리얼 챕터 0.
-
-## 추가 로드맵 (2026-10-21 QUEUE 에서 이관)
-- 소총 척탄 (총류탄) — **보류 · 넣지 않음** (사용자 "조금 부정적", 중화기 많음 — Claude 동의). 경박격포 뒤 분대 곡사 화력이 부족하면 돌격보병 장비로만 재검토.
-- 체코 군단 — 추후 추가 계획만 (사용자).
-- 취소: 신호탄 방어 포격 (SOS 탄막) — 사용자 취소.
-- 병력 수송 트럭/마차 = 넣지 않음 (사용자 "별로라고 본다. 복잡하다", Claude 동의).
-- 메모: **경박격포 사거리 36** (사용자 결정) — 아직 게임에 없음, 참호 돌파 묶음(연막 · 철조망 절단 · 경박격포 · 연막 수류탄) 만들 때 적용.
-- 제안 대기: soak 에서 사상 원인 비율 (포병 비중) 측정.
-- **UI 개편 — 종이 질감** (사용자 "현재는 너무 웹게임스러운 UI 형식", "종이 질감을 내는 걸 선호") — 종이 질감 방향 확정 (사용자 2026-10-21 '결정'; CAMPAIGN_HOME_DESIGN '제안대로').
-- **캠페인 홈 설계 초안 = `docs/CAMPAIGN_HOME_DESIGN.md`** (사용자 "이 안대로 캠페인 설계 문서에 넣는다"; 자원 3층 = 인력 + 보급품 + 장비 재고 (포탄 재고 포함), 구경별 탄약은 캠페인 단위에서만, UI 종이 질감 "제안대로"). 연구 기능 승인 (사용자 2026-10-21). **[사용자 2026-10-21: 종이 질감 시안 1장 먼저 (docs/art_review/ui_paper_mock.png) → 실제 구현은 10-23 주간 한도 초기화 뒤]**
-- 캠페인 설계 v0.2 반영 (사용자): 자동 편성·보충 · 보급 미리보기 · 참모 조언 · 난이도 승인, 부대 이름·계보 = 로드맵, 사단 1만 = 편성 기준 · 신병 풀 7,000, 승인 정원 없음 (신병 송출량으로 조절), 연구 = 자금 + 보급품 소모 · 장교 학파 연결, **황손 부사단장 · 총사령관 부조리 축** (황자 → 황손 설정 변경). `docs/CAMPAIGN_HOME_DESIGN.md` §6 · §7.
-- **철도 지형 추가** (사용자 "철도 지형은 추가를 하는걸로 하자") — 새 TerrainType (선로) + 생성 · 길찾기 · 시야 · 렌더, 장갑열차 (챕터 2) · 화물열차 전제. 건물 크기 확대와 같은 지도 묶음으로. 上.
-  - 북간도 의용군 = 나중 (두만강 WIP 미션 · 북간도/연해주 편) — 보류.
-
-## 장기 — UI
-- **종이 질감 UI · 사령관 책상** (사용자 2026-10-21 "사령관 책상은 나쁘지 않다. 일단은 이정도로 하고, 추후 지도 이미지의 개선 및 세부 사항 수정을 들어가자") — 시안 `docs/art_review/ui_paper_mock.png` (33eed0f) 현 수준 승인. 추후: 작전 지도 이미지 개선 · 세부 수정 (사기/피로 줄 간격, 보충 버튼 잘림 등). 실제 구현은 10-23 뒤.
+## 2026-10-21 morning decisions
+- **Investigate the cause of the trench_assault drop (soak 100% → 31%)** — put in the work order only (user "just put the cause investigation in the work order"). Suspects: nobreak (trench defenders do not collapse) · N32 trench assault doctrine. The yalu_crossing · ai_bn_assault drops may have the same cause. 上. Basis `docs/legacy/SOAK_REVIEW_2026-10-21.md`.
+- **N79a '후퇴' button · console rally = keep** (user "let's keep it").
+- Cover density feel = discuss again later (user).
+- **Move repository out of OneDrive** (user "let's move it") — after running agents finish: korean-division · kd-develop · game-tools to `C:\works\` (keep relative layout), `git worktree repair`, update absolute paths in AGENT_RULES · HANDOFF · CLAUDE.md · memory.
+- Art check list = `game-tools/korean-division-image-out/checklist/CHECKLIST.md` (user request).
+- User plans to check directly: progress bar · '교전!' · Japanese bayonet · 7 new units (standard-bearer flag waving) · march-fire muzzle flash.
+- UI paper texture mockup = next session.
 
 
-## 그래픽 개선 후보 (Fable 검수 2026-10-22)
-점수 5 이하 24개 중 개선 후보 11개를 원본 시트로 재확인함(2026-10-22). 상세: C:/works/_notes/ART_IMPROVEMENT_CANDIDATES.md, 큐 표: ops/BACKLOG_2026-10-22.md 의 'E. 그래픽 개선 후보'.
-- 발주 가능(지금): 기수 엎드림 깃발 통일(엎드려쏴 재렌더 샤드와 함께), 나무 다리 폭·진입부, scorch 데칼 다양화, 병종 기호 @16, 피난민·의용병 식별 표식.
-- 병합 후: 황손 초상 귀(gt/vip-portraits), 부상자 끌기 s 계열(kd/t39h2).
-- 보류: 구 다크 UI battle 1024 겹침(종이 UI v2 채택 결정 뒤), quickstep 장교.
-- 폐기 후보: missing_theme_units 기병 3종(B2·c1e1 기병으로 대체).
-- 나머지 13개는 진행 중 9·대체 2·결정 대기(폐허 질문 52)로 BACKLOG E 절에 한 줄씩 표시.
+# [2] Full old roadmap (original: old docs/ROADMAP.md, as of 2026-10-21)
 
-## 인사관리·로스터 운영 (사용자 2026-10-22)
-- 인사관리 기능 신설 — 대기 장교 풀·수동 배정/교체/해임·자동 배정 결과 보고 (T61e 후보, 0.3)
-- 자동 배정·중대 병합 UI (T61d, 0.3)
-- 병합 시 장교·장비 처리 (Q-F, 0.3)
-- 포병통 포병 지연 연결 (31번, 0.3, 통신 알파 조각 ③·포 블록 매핑과 함께)
-- (갱신 2026-10-23, 사용자 결정) 연대장 초상화는 지금 만들지 않음. 나중에 AI 로 가볍게.
+# Korean Division Roadmap
 
-## 화풍 방향 — 중간값 전환 (사용자 2026-10-22, 0.3 진행)
-- 결정 (사용자 2026-10-22 밤): 화풍 방향을 '중간값'(도트·카툰 기반 유지 + 조금 더 리얼리스틱)으로 변경하되 0.3 때 진행한다. 선택지 중 **중간값** 채택 (현재 유지 대비), 진행 시점 **0.3**. 로드맵에 올려둘 것.
-- 확정(2026-10-22): mid 프로파일 — 값은 ART_SPEC 참조 (`docs/ART_SPEC.md` '확정 mid 프로파일 (2026-10-22)').
-- 방향 정의:
-  - 유지: 픽셀·복셀 렌더, 검은 윤곽선, 팀색 고리, 높은 대비 실루엣, 제한 팔레트.
-  - 올림: 채도 낮춘 흙·천 중심 색, 군복 때·낡음 표현, 자연스러운 체형 비율, 질감 디테일(나이테·껍질·기와), 고증 복식·건축.
-  - 지양: 사진풍, 과도한 질감, 원색 위주 팔레트, 만화적 과장.
-- 추가 결정 (사용자 2026-10-22 밤): 유닛 재렌더(mid 화풍 적용)는 0.3 에서 다시 한다. 지금(현 단계)은 건물·지형 계열만 mid 로 재렌더하며, 이 재렌더는 0.3 초기 버전에서 진행한다 (0.3 착수 직후 첫 작업, 유닛 재렌더는 그 뒤).
-- 적용 순서 (최신, 추가 결정 2026-10-22 밤):
-  ① 0.3 초기: 건물·지형 계열 mid 재렌더 (민가·폐허·지형 타일 등). **확정(2026-10-22): 건물·지형 타일·소품·데칼 전부 포함(차량·열차 제외 → 유닛 쪽 0.3 후반). 소요: 건물 1~2시간 · 지형 1시간 이내 · 소품 30분 이내 · 데칼 소규모, 합계 약 3~4시간 렌더.**
-  ② 0.3 후반: 유닛 재렌더 — 색 후처리 우선, 부족한 유닛만 완전 재렌더 (유닛 93종, 완전 재렌더 약 7~12시간 벽시계).
-  ③ (완료) 비교 시트 승인 — 시트 `51_style_house_compare.png`, 사용자 mid 확정.
-- (갱신 2026-10-23, 사용자) 승격 뒤 적용 순서는 그대로: 건물·지형·소품·데칼 먼저, 유닛은 후반.
-- (이전 안, 2026-10-22 추가 결정 이전 — 참고 보존)
-  ② 적용 순서:
-    - 민가·소품·지형·데칼·차량을 합쳐서 먼저 적용 (약 3~4시간 렌더).
-    - 유닛 93종은 '색 후처리(레이어 단위, 팀색 보호)' 를 먼저 하고, 부족한 유닛만 완전 재렌더한다. 완전 재렌더는 유닛당 평균 24분·중앙값 16.5분 × 93종 = 직렬 25~37시간, 렌더 레인 3~4개 병렬 약 7~12시간 — 이 방식을 검토한다.
-  ③ 선행 엔지니어링:
-    - voxel.MATERIALS 램프 렌더 시 변환 + make_frame 직후 후처리 훅 (base 레이어만; 재질 마스크 노출 시 재질별 효과).
-    - 소품 훅 (소).
-    - 지형·데칼 후처리 (중).
-    - 차량 훅 (소~중).
-  - 적용 가능성 메모 (자산군별): 민가는 `make_building.py --style mid` 로 바로 적용 가능. 소품·차량은 훅 추가가 필요하고 (소~중), 지형·데칼은 후처리 작업이 필요하다 (중). 유닛은 램프 변환 + make_frame 후처리 훅 방식으로, 재질 마스크가 노출되면 재질별 효과를 나눠 적용한다.
-  - (이전 적용 순서, 2026-10-22 mid 확정 이전 — 참고 보존)
-  1. 0.3 시작 시 기본 보병 1종 + 소품 1종 + 민가 1종을 '현재 / 중간 / 더 사실적' 3단계 비교 시트로 렌더 → 사용자가 단계 선택·확정.
-  2. `docs/ART_SPEC.md` 에 화풍 규칙 기록 (아래 '화풍 방향' 절).
-  3. 기존 유닛은 이미 로드맵에 있는 '마지막 일괄 재렌더'에 채도·낡음 표현을 함께 적용 (별도 재렌더 불필요).
-  4. 시인성 보호 시험: 톤을 낮춘 뒤에도 지형 위 팀색·실루엣이 줌 레벨별로 구분되는지 시트로 확인.
-- 제약:
-  - 0.3 전까지 새 자산은 현행 방향 유지.
-  - 해상도·LOD·메모리 예산(256MB) 유지.
-  - 사진풍으로 가지 않는다.
+> User directives · confirmed decisions · open items are collected here (same role as wargame's ROADMAP_v0.4). Progress records in `WORKPLAN.md`.
+> When a directive arrives, update the relevant section and attach the date. Check against this document before coding.
+> Completed details · long implementation records · old value histories: `docs/legacy/ROADMAP_DONE.md` (same section numbers, original kept). This document holds only open items · confirmed rules · on hold.
 
-## 게임 음악 (사용자 2026-10-22, 로드맵만 — 착수 안 함)
-- 상태: **착수 안 함.** 시기 = 미정 (사용자가 후보 곡 목록을 줄 때 착수).
-- 구상: 옛 군가·포크송을 개사해 사용. 상업 이용 가능해야 함.
-- 확인된 제약·조사 메모:
-  - Claude 는 음원 오디오를 직접 생성하지 못함. 파이프라인 안에서 할 수 있는 것 = 악보(MIDI·ABC·LilyPond·MusicXML)·개사·편곡 작성, 그리고 상업 이용 가능한 합성(자체 numpy 칩튠 합성 또는 FluidSynth + 라이선스 확인된 사운드폰트)으로 OGG 렌더.
-  - 사람 같은 보컬은 불가. 인스트루멘털 + 가사 텍스트로 제공하고, 보컬은 사람 가수 권장.
-  - AI 음악 모델: MusicGen 가중치는 비상업(CC-BY-NC) → 제외. Stable Audio Open 은 조건부 라이선스 → 최신 약관 확인 필요.
-- 저작권 체크리스트:
-  - 곡 저작자 사후 70년 경과 여부 (한국 기준 1955년 이전 사망 저작자).
-  - 원 가사 저작권 만료 여부.
-  - 특정 녹음본·편곡본은 사용 금지 → 악보에서 직접 편곡.
-  - 개사는 2차적저작물이므로 원 가사 만료가 필요.
-  - 순수 AI 생성물의 권리 한계.
-- 진행 순서 제안:
-  1. 후보 곡 목록 수령 → 곡별 저작권 만료 확인 (웹 검색은 Gemini).
-  2. 만료 확인 곡 1곡으로 시험곡 (칩튠 행진곡 편곡 + 개사 + 게임용 OGG 루프).
-  3. 확대.
-- 결정 필요: 장면별 (전투 BGM · 캠페인 홈 · 승리/패배) · 분위기.
-- 선행 질문: 어떤 장면·분위기인지, 후보 곡 목록.
+## 0. Game overview (2026-10-18, details to be discussed later)
+- Setting: fictional 1920 alternate history — Russia won the Russo-Japanese War, the Korean Empire escaped annexation and launches the **northern expedition into Manchuria**.
+- Structure: StarCraft-style linear + branching from the strategy map.
+- One mission 1~2 hours, infantry-centered, thousands of units each for ally · enemy.
+- Factions (2026-10-19): korean Korea (default) · japanese Japan · fengtian Fengtian warlord · russian Russian White Army · soviet Russian Red Army (Soviet)
 
-## 0.4 — 인게임 효과음 재정비 (사용자 2026-10-22)
-- 항목: 인게임 효과음 재정비 (사격·폭발·행진·명령 응답·UI·환경음·함성 등).
-- 현황 조사 과제 (0.4 착수 전):
-  - 현재 효과음 목록·출처·라이선스.
-  - 볼륨 균형.
-  - 중첩·우선순위.
-  - 거리 감쇠.
-  - ROADMAP 의 함성 방침 R01 '잠정 B(재보고)' 항목 연결 (근거: `docs/SOUND_POLICY_2026-10-22.md`, 브랜치 sfxnew; 결정 기록은 `ops/DECISIONS.md` R01).
-- 상세 설계는 0.4 착수 때.
+## 0-1. Direction change (2026-10-19)
+- **Resource system abolished**: currency · fuel · population (including manpower · steel · supply stock) not used.
+- **Production abolished**: fight with only the given units. Existing building systems such as barracks · munitions factory not used.
+- **Supply (ammo) new method**: each unit's supply limit is separate (per-weapon `ammo`), engagement consumption same as now, **slow recovery in non-combat situations**, **faster near occupied territory held by allies (cities etc.)**. No faction stock · depot · cost. Open: non-combat judgment (e.g. 10 s without firing · being hit), recovery speed, occupied-territory range · multiplier, vehicle · gun ammo. **[User 2026-10-21: current applied values approved — regenDelay 30 s · 0.15%/s · city 8 cells ×3 · supply wagon 6 cells ×4]**
+- ~~**Construction function** (confirmed 2026-10-19, ②+③)~~ **→ By user decision 2026-10-19 all construction removed (below, 1-1 "construction (trench digging) function excluded", cleanup bundle 2 done). Trench = map · mission terrain + auto-occupation.** (old content) **Construction function** (confirmed 2026-10-19, ②+③): remove building · construction system. **Stage 1 = individual infantry trench** (unit state: stationary · after the 'dig trench' command N seconds → cover, released on move). **Stage 2 = trench line** (draw by dragging → infantry dig over time → remains as terrain so anyone gets cover). Trenches · barbed wire can be pre-placed on mission maps.
+- **Cover system** (confirmed 2026-10-19): a unit in cover gets **both reduced chance to be hit + reduced suppression received**. First cover source = trench (construction method open), later forest · hill · building rubble etc. added in the same structure. Initial values (balance.json): trench hit **×0.6** (user decision 2026-10-19, both individual trench · trench terrain; previously 0.7) · suppression ×0.5.
+  - ✅ Trench line stage 2 · shell crater terrain (2026-10-19) (→ docs/legacy/ROADMAP_DONE.md)
+- **Supply recovery draft confirmed** (2026-10-19): non-combat = 10 s without firing · being hit, recovery = 1%/s of limit, ×3 within 8 cells of an ally-held city, vehicles · guns same rule (no fuel).
+- Impact: economy · production · buildings · engineers · economy-type standard AI · related tests need cleanup (§4 'unneeded feature cleanup' brought forward). Cities · occupied territory remain as **capture targets (objective · supply acceleration)**.
+- ✅ **Implementation done (2026-10-19)**: resources · production · construction · engineers · fuel deleted, given forces + ammo recovery · supply wagon · cover · individual trench · AI reduced, FormatVersion 7. Details and tempo measurement record (completed details: docs/legacy/ROADMAP_DONE.md §0-1).
+  - Open · next: forest/hill cover, campaign AI. (✅ `cover.autoDig` = false confirmed 2026-10-19 — individual trench only by command) **[User 2026-10-21: waiting]**
 
-## 0.4 — 연대장 위임 UI 개선 (사용자 2026-10-23)
-- T57c 위임 UI 는 현재 수준(별도 패널·태도 단추 4개·지도 점선 표식)으로 확정하고, 개선(대대 목록 통합·단축키·"전달 중" 표식·목표 구역 지정·자동 해제 조건 등)은 0.4 에서 다룬다.
+## 1. Current focus (2026-10-18)
+**Engagement system + unit graphics.** Campaign layer · unneeded feature cleanup · large-scale command UI later.
+### 1-1. Recent updates (2026-10-19)
+> Completed bullets (✅ implementation records, 2026-10-19) → `docs/inherited/ROADMAP_ARCHIVE_2026-10.md` §1-1. User decision · open bullets remain below.
+- ✅ **River crossing · chokepoint breakthrough + counterattack doctrine (user decision 2026-10-19, branch `crossing`, Snapshot v33)**: decision = the AI must be able to force a crossing at a single bridge · ford (possible with enough force · firepower, not always successful), and a 1.5:1 counterattack must be able to retake a trench line (no weakening of defense overall). Implementation = firepower-based → crossing (company column in succession) → bridgehead → continue (tactics.json `crossing`), old behavior if there are multiple places to cross; mission posture `counter` = reserve commitment · fixed fire → volley assault (tactics.json `counter`). Measurement BATTALION_CAMPAIGN 'crossing · counterattack (crossing)'. **Awaiting user decision**: 2:1 rifle-only crossing threshold, firepower-supported crossing speed vs losses, the fact that the 1.5:1 counterattack is already 8/8 after engage. → decision 2026-10-20: crossing threshold kept (10-19 provisional value confirmed).
+- ✅ **gapfill line tidying (user decision 2026-10-19, branch `gapfill`)**: decision = gap filling in combat by command only — ① player "line tidying" (L, replay recorded) ② an officer (including succession commander · acting NCO) commands when the line is badly disordered in combat (3 metrics · hysteresis · re-order interval) ③ soldier veteran skill: recruits go straight in even while firing, veterans engage first (probability · delay table). The rest of N12 unchanged. Snapshot v27 · Replay v10, values balance.json `combat` close*, details ENGINE_NOTES 'gapfill', measurement TACTICS_OBS 'round 10' (win · K/E within noise, 3 candidates — awaiting user decision), test `KD_SELFTEST_ONLY=gapfill`. → decision 2026-10-20: gapfill reference value = replaced by F1.
+- ✅ **Decision 4 assault permission · decision 12 battalion role · default NCO organization (user approved 2026-10-19, branch `ai412`)**: offensive assault (engine maneuver group · tactical AI company) = old condition + firepower superiority signal or overwatch confirmation + force ratio, otherwise reserve timer 150 s after engagement (tactics.json `assaultGate` · `assaultMinOdds` · `overwatchSec/Radius/Min` · `assaultFallbackSec`). Officer · march-fire 3-cell auto-assault · defensive counterattack unchanged. A battalion with fewer than 40 rifle troops is a firepower-based, not maneuver battalion; one combat battalion = split (`battalionRoles.minStrength`). Mission infantry squad leader = corporal by default (balance.json `combat.squadLeaderRank`, overridden by mission `squadLeaderRank`). Measurement TACTICS_OBS 'round 9': 97% of permitted assaults after signal · overwatch, assaults 16.8 → 6.6, 40 s retreat 49 → 39%, B maneuver role 10x but B wins 4/5 → 2/5. **Awaiting user decision**: whether to readjust the NCO multipliers (`ncoHesitateMul` · `ncoDecayMul`), B maneuver company approach method (cover hop · flank bypass). Test `KD_SELFTEST_ONLY=ai412`. → decision 2026-10-20: NCO multipliers kept · offensive maneuver company approach = replaced by F1 (wait lifted).
+- ✅ **N3 command rank by post · temporary promotion · succession · officer experience (2026-10-19, branch `command-ranks`, Snapshot v23)**: decision = `docs/TACTICAL_AI_STAGE3_PLAN.md` 'command rank · experience decisions'. At organization the post rank (company's first officer captain · second lieutenant · rest second lieutenant, battalion commander major / lieutenant colonel with 3+ companies — deployment stage is formal, in combat temporary promotion up to +3), mission `officerRanks` · `officerXp`. Commander killed → next-ranking officer commands after 5 s handover (temporary promotion), with no officer the NCO acts after 8 s (simple framework only), with nobody the default formation. Officer experience (engagement time · company kills · objectives) → improves judgment frequency · command delay · handover time, recorded in the result file. Values balance.json `officers`. For N4 `CommanderOf(company)` · `CommandLevelOf` · `TacticAllowed`. Details ENGINE_NOTES 'command rank · temporary promotion · succession · officer experience', test `KD_SELFTEST_ONLY=command`. **Next**: N4 tactical formation stage 2 (block at framework switch with `TacticAllowed`). → decision 2026-10-20: officer values kept.
+- **User decisions (2026-10-19, approved)**:
+  - Kepi band = fixed crimson.
+  - Horse towing for howitzers only.
+  - Light machine gun firing = kneeling + bipod on sandbag parapet (kept). ✅ Firing direction · art alignment (N2, 2026-10-19): barrel = drawn row direction, light MG 16 directions · wide cell, emplaced aim rotation 90°/s (traverseRate, field-of-fire limit · no re-emplacing). Details ENGINE_NOTES.
+  - Scout binoculars posture carbine position kept.
+  - Shell crater probability approved: howitzer 35% · heavy howitzer 50% · field gun 20% · infantry gun 8%.
+  - Weather minimum sight 8 cells (✅ implemented, `03c7243`).
+  - Order delivery delay details approved: assault all · NCO 12 cells · vehicles 0 · squad merge under 6 men.
+  - Map size approved as it is.
+  - Balance values: re-measure after merging tactical AI stage 2 → new proposal.
+  - Operating rule: heavy jobs (build · full test · performance measurement · mass render) up to 2 at once (after the PC forced shutdown 2026-10-18; current pool limit = ops/LIMITS.md).
+- **User decisions (2026-10-19, additional approval)**:
+  - Officer handover time 5 s (officer) · 8 s (acting NCO) kept.
+  - Officer experience does not rise by capturing mission objectives.
+  - Officer experience thresholds 60 / 180 / 420 / 900 approved.
+  - Battalion adjutant (major) assigned automatically, colonel designated only in missions.
+  - Outside ranks set by the campaign, command goes to the highest-experience officer and no promotion (promotion only when succeeding through death).
+  - March fire trigger distance = 0.7x effective range.
+  - Direct-fire gun point fire = scatter only (no hit judgment) approved.
+  - Japanese insignia icon kept.
+  - Tactical AI uses frameworks (templates).
+  - In progress: "fix art touching cell edges" (game-tools).
+- **Done**: armored vehicle ×1.5 size adjustment · Soviet budyonovka higher (anti-tank rifleman keeps low height) · tuning values as JSON (policy: `image/tune/*.json`) · art import gap found (only 7 unit types were in the game) → art import in progress.
+- **In progress (parallel agents)**: ④ squad · rank · NCO · battalion · selection (+ officer gap check ≥10 s, 33% sword_wave) · trench line (construction stage 2) + shell crater terrain (approved: crater = cover ×0.8 · movement ×0.85) · weather · time of day (approved) · realistic procedural sound effects (approved, samples `coding/game-tools/korean-division-audio-default`) · all-unit art import · infantry motion round 2 (crawling · dragging the wounded · assault grenade throw · trench firing) · sitting · fix pelvis protrusion in kneeling posture.
+- **Decision (2026-10-19)**: barbed wire = impassable obstacle (provisional) · hesitation (reaction delay · hesitation while moving) on hold · cover beside a house ×0.8/×0.8 · trench hit ×0.6 (individual · terrain common), suppression ×0.5 · sight block 2×2 approved · terrain tiles approved · motion round 1 approved.
+- **Follow-up: house ruin art**
+- **Approved (user 2026-10-21 'approve all') — implementation queue**: mission framework (placement · victory conditions · briefing · result screen), in-game map editor, order delay when no officer · NCO, medic · wounded. Balance value proposals wait for the user's next batch directive (`docs/BALANCE_OBS_2026-10-19.md`, branch `balance-obs-tool`).
+
+- **Order (confirmed 2026-10-19)**: ① engagement round 4 (done) → ② diplomacy removal (✅ 2026-10-19, below "diplomacy removal → static teams") → ③ terrain sim (✅ 2026-10-19, below "terrain · height ✅ implemented") → ④ squad · rank · organization · selection (§2-4c · §2-7) → ⑤ tactical AI stage 1.
+- **Last batch (very end of the order)**: body slimming · inner outlines · headband · insignia · faction variants · full re-render.
+- ✅ Mission framework (2026-10-19) (→ docs/legacy/ROADMAP_DONE.md)
+- **Tactical AI approval (2026-10-19)**: commander → battalion → company, 3 layers. Start from the most basic form. Per-faction + per-mission AI profile JSON (aggressiveness · retreat threshold · trench tendency · artillery/cavalry use · preferred tactics; overridden by mission file). The old AI (leftover from skirmish RTS) is to be replaced.
+- ✅ ⑤ Tactical AI stage 1 (2026-10-19) (→ docs/legacy/ROADMAP_DONE.md)
+  - **Observation (no balance value change)**: the old BattleAi re-ordered howitzers every 4 s so they never finished deployment (6 s) → howitzer fire 0 shots · annihilated; the tactical AI in the same composition deployed 35~46%, 9~13 shots, guns 4/4 survived. Cavalry: old AI melee 0 times → tactical AI melee 60~97 times (charges 2~3, 18% during a charge). Machine guns: the old AI also auto-emplaced (deployed 46~54%) — the tactical AI emplaced at distance (58~66%), head-to-head fire 3x. Head-to-head (tactical vs old, sides swapped): infantry 200 flat 6/8 wins · terrain 1/4 wins, MG mixed 4/4, cavalry mixed 3/4, howitzer mixed 4/4. A large part of the observation that "artillery · cavalry · machine guns looked weak" (especially artillery · cavalry) seems to be the old AI's fault — value judgment after observing again with the tactical AI.
+- ✅ **⑤ Tactical AI stage 2 (2026-10-18, branch `tactical-ai-2` → merged to main)**: user directive, two layers = **faction strategy** (per-directive-group posture · objective · regiment front allocation · main/secondary attack · reserve regiment · reinforcement incorporation · artillery/cavalry assignment) + **regiment tactics** (AI bundle = 2~4 battalions: approach → preparatory fire → assault / defense in depth = main resistance line + counterattack reserve, firepower-based · maneuver roles, artillery extension) below stage 1 battalion · company execution (+ squad alternating dash · defensive outpost · TacMap firing positions). Profile = two sections `strategy` · `tactics`. Per-directive-group by mission force (separating scattered ambush groups), reinforcement incorporation, world battalion number linking, wagon evacuation (auxiliary AI). Design · results · deferred work = `docs/TACTICAL_AI_DESIGN.md`, engine notes `docs/ENGINE_NOTES.md` 'tactical AI stage 2'.
+  - **Results (vs stage 1, no balance value change)**: mission 10-seed wins yalu_crossing 10 → 8, village_defense 5 → 8, supply_escort 4 → 5. Tactical vs old battle AI infantry 200:200 12 seeds flat 12 → 12 · terrain 11 → 9, mixed · howitzer preparatory fire 3/3 both (preparatory fire delayed victory 97 → 153 s), attack on trench defenders = stage 1 annihilation → stage 2 stationary draw. AI cost 4008 units avg 0.038 ms/tick (stage 1 0.029, +31%).
+  - **Deferred to stage 3**: mission objective linking · infiltration · covering withdrawal · barrage movement · order messenger delay · trench line planning + what remains from verification (terrain infantry battle disadvantage, preparatory-fire wait adjustment, attacking enemies inside trenches, howitzer spotter dependence, escort placement).
+  - **Open · next stage proposal**: terrain-map infantry battle weak (better cover selection · hill occupation), reinforcement incorporation, mission objective (other than capture point) linking, refine reserve commitment rule (in a small even battle the reserve is a loss — now committed soon on even contact), check cover score after merging trench line · shell crater. **[User 2026-10-21: on hold]**
+
+- ✅ Diplomacy removal → static teams (2026-10-19) (→ docs/legacy/ROADMAP_DONE.md)
+- **Performance policy (user, 2026-10-19)**: multithreading only where needed and safe — terrain chunk baking (already threaded) and terrain sight computation (company-level parallelization only if still slow even in the lightweight version, results merged in fixed order to keep determinism). Sim movement · push-apart · engagement stay single-threaded. Target search · AI parallelization later only if measurement demands.
+- ✅ **Bug (2026-10-19, user observation)**: infantry · cavalry flinch when moving (cavalry shows the same → possible common cause: unit render · movement · push-apart) (frame · position appears to jump). Cause candidates: walk frame switching · walk_shoulder 33% switching · flag formation realignment · hesitation (reaction delay) · push-apart · reference point difference during LOD switching — confirm cause after reproducing. 中
+- **Bug (2026-10-19, user observation)**: infantry prone-firing (aim_prone / fire_prone / go_prone) motion error — re-check with the batch re-render (slimming) result, then fix posture · gun position (game-tools). 中
+- ✅ Large-scale combat collision · formation redesign (2026-10-18) (→ docs/legacy/ROADMAP_DONE.md)
+- ✅ Construction (trench digging) function excluded (2026-10-19 decision) (→ docs/legacy/ROADMAP_DONE.md)
+- **Bug (2026-10-19 user)**: during assault (march) fire the muzzle flash keeps flashing like a machine gun — because flash is drawn on frames 2 and 4 of the 4 walk_fire frames. → **flash only at the moment of actually firing**: remove the flash from the walk_fire sheet (at game-tools re-render), and the game draws the muzzle flash overlay only on fire events (same method for machine gun · rifle). 中
+- **Next (2026-10-19 user)**: replace the **NATO company symbol → each faction's insignia** on the zoomed-out screen (keep considering retaining branch distinction as a small mark next to the insignia). Insignia source = game-tools `image/tools/parts/badges.py` (cap insignia, `323c08c`) + drafts `korean-division-image-out/_drafts/badges/` (badge-korean · japanese · fengtian · russian-white · russian-red, badges_compare.png) → extract as 2D icons (32/64px) and register in the game theme. 中
+- ✅ Target scatter wobble 5 · officer first-strike ban (2026-10-19 decision) (→ docs/legacy/ROADMAP_DONE.md)
+- **Decision (2026-10-19 user)**: Korean army accent color = **A brass** (`acc_brass`, insignia · collar/cuff · trouser stripe · kepi band/edging; officer gold stripe distinguished with `badge_gold`). Applied at re-render.
+- ~~**(on hold)** infantry digging motion~~ → **cancelled** (2026-10-19 no use after construction removal).
+- **Decision (2026-10-19)**: infantry body slimming confirmed at the current level (game-tools `456f47e`), no further reduction.
+- **Next (2026-10-19 user directive, reduce resemblance to the North Korean army · Red Army)**: change the Korean army base set's **insignia · buttons · red stripes (collar · cuff · trouser stripe) · kepi hat band** from red → **brass or yellow** family (replaces the "fixed crimson" kepi band decision). Apply after sample render, distinguish so as not to overlap officer gold decoration. 中
+- (old memo, resolved) engagement tests are muted by default — can be turned on with N since 2026-10-19.
+
+## 2. Engagement overhaul
+
+### 2-2. Damage · hit · range (confirmed part, ✅ implemented — §2-5)
+- Rifle damage 40 or more. Standard = **basic infantry HP 100 → dies from 3 rifle hits** (HP adjusted later).
+- **Sight · range 2x** (currently rifle 8 → 16, infantry sight sightNear/sightFar also 2x).
+- Significantly lower base hit rate + hit rate decrease with distance (currently 3-segment line `Combat2.AccuracyCurve` → extend).
+
+### 2-3. Confirmed (2026-10-18 round 2)
+- **Rifle**: damage 40, range 16, **fire interval = deterministic random between [min, max]** (per-weapon `cooldownMin/Max`, rifle default 1.8~2.4 s; hash-based Roll, once per shot).
+- **Hit curve**: close range 0.30 → max range 0.04, continuous curve (decreases proportionally to distance squared) — replaces the 3-segment line. Unit hit multiplier 0.7~1.2 kept.
+- **2x applied**: all unit sight + direct-fire weapon range. **Howitzer waits** (logic overhaul planned, untouched).
+- **Ammo**: rifleman carries 100 rounds, differs by branch (weapon) (weapon `ammo` value).
+- **Bazooka → reworked to anti-tank rifle**. Tank kept (modeling new).
+- **Suppression** (no morale · rout): affects only hit rate · rate of fire · movement speed. Higher-grade units receive less (unit `suppressResist`).
+- **3 map sizes** (adjustable): small ≤1000 units · medium 3000~4000 units · large 10,000+ units. Actual size after measurement later (as is for now).
+- **2 kinds of guns** (2026-10-18 round 3): **direct-fire gun** = blocked by obstacles (line-of-sight check, using `GameMap.HasLineOfSight`), **howitzer** = ignores obstacles entirely. All guns must be fixed (deployed) to fire. Deploy/withdraw (load/unload) **auto-switch** according to combat · move orders (extending existing towed gun `DeployPhase`).
+- **Bayonet charge · melee** (function + motion): add infantry charge motion · melee engagement motion. Charge = **command**, **automatic** at point-blank. Movement speed **slightly increased** during a charge. Open: melee damage · judgment, auto-trigger distance, increase size, relation to suppression. **[User 2026-10-21: current rules as they are (charge +30% · auto 1 cell · no auto at suppression 400 or more · judgment 0.3 cell · bayonet damage 60/hit 0.6/1.5~2 s). Cavalry charge impact also as it is now (paralysis 1.5 s · cooldown 10~15 s · suppression +300) → QUEUE #18 cavalry option B cancelled]**
+- **Motion** (2026-10-18 round 4): about **10 unique motions**, **shared body** (same body · movements, only hat · equipment layers differ). Unique motions can be added by branch. Sheet layout as data (animation list → sheet/cell index, sheet width ≤4096).
+
+### 2-4b. Confirmed (2026-10-18 round 5) — ✅ round 2 implementation (§2-6) · organization ✅ (§2-7)
+- ✅ **Bayonet charge**: melee damage 60 (basic infantry dies in 2 hits), attack interval 1.5~2.0 s random. Movement speed +30% during a charge, automatic charge when an enemy is within 2 cells. Implemented values: melee hit rate 0.6 (no unit multiplier), no firing during a charge, gun-crew units do not auto-charge, no auto-charge at buildings (§2-6).
+- ✅ **Anti-tank rifle** = current bazooka values · logic as is, only name · graphics replaced (no area damage). Weapon key `at_rifle`, unit name '대전차소총병' (art key `unit.at_infantry` kept).
+- ✅ **Hit rate excluded from suppression effect** (round 6): only rate of fire · movement speed. Initial values (balance.json, adjusted later): range 0~1000, per attack rifle +60 · machine gun +150 · barrage (everyone within the blast radius) +400, −80 per second, at 1000 fire interval ×2 · movement −50% (linear), resistance = increase multiplier (conscript 1.0 · regular 0.75 · elite 0.5). Suppression state display needed on screen.
+- Unit organization (rounds 7~10 confirmed · keys · cards · formations) → implementation done. Current rules in §2-7 (completed details: docs/legacy/ROADMAP_DONE.md §2-4b).
+- On hold (after values decided): 1920 weapon list. (Suppression · bayonet charge · anti-tank rifle · target scatter are round 2 implementation ✅)
+
+### 2-4c. Officers · squads (round 11, 2026-10-18) — officers · ranks ✅ round 2 implementation, fixed squad · NCO · 9-level rank · gap check · sword waving ✅ ④ (2026-10-19)
+- ✅ **Officer unit** (confirmed, `officer` — art is an infantry alias): immune to suppression. Armament = pistol, melee = saber (sword). Charges with the sword raised during an assault. Suppression value of nearby soldiers decreases quickly (command range). Several allowed in a small unit. In charge of gap-filling judgment (round 9).
+  - (Round 12 confirmed) effects **do not stack**, all officers equal. **HP 200, cost = 10x infantry**. Soldiers within command range: suppression decrease accelerated + **slight rate-of-fire improvement**. Initial values (balance.json, adjustable): command range 8 cells, suppression decrease ×3, fire interval ×0.9. Pistol = damage 40 · range 6 · interval 1.2~1.6 s · hit 0.35→0.05, saber = melee damage 60 · interval 1.2~1.6 s.
+  - **Gap check** (round 12): if an officer is nearby, at **intervals of 10 s or more** check the nearby formation and fill gaps. The formation may be a bit loose. (Implemented during the flag formation work)
+  - **Sword waving** (round 15): during combat, when an officer does formation tidying (gap check), **33% chance** of the `sword_wave` motion (waving the sword in the air). Art in progress, motion linking together with the gap check.
+  - **(Confirmed 2026-10-19, replaces the earlier 4-level rank · round 14, original docs/legacy/ROADMAP_DONE.md §2-4c) Fixed squad · NCO · rank**: squad = fixed organization of up to 12 men (only auto-merge · reorganization). Official NCO (corporal or above) — squad leader effect: hesitation −50%, in-squad suppression decrease ×1.5, does not stack with the officer effect. Enlisted **9 levels** (삼등병 … 원사), kill counts 0 / 2 / 5 / 10 / 18 / 30 / 48 / 75 / 110 (cap 128). **7 officer ranks** (base '장교' + 소위 … 대령), base '장교' = rank 0 (officers equal to each other, role-based differentiation later). Names as per-faction JSON.
+  - Graphics: same body + officer hat · pistol · saber. Unique motions = sword-raised charge · sword slash · pistol fire.
+- ~~**Auto squad (squad)** (round 12 confirmed)~~ → replaced by fixed squads 2026-10-19 (④ implementation below): temporary organization around an officer in combat, auto-dissolved when combat ends, not shown on screen. Build a formation centered on the officer · spread out · follow the officer if possible. **Max 12 men**, auto-composed · adjusted by situation. Update **every 2~3 s** (staggered per small unit). Player command (flag formation move) takes priority.
+- **Order** (round 12): engagement round 1 wrap-up → **suppression · officers** (+ bayonet charge · anti-tank rifle · target scatter) → ✅ organization · flag formation (§2-7) → auto squad · gap check.
+
+> Implementation-complete records (2-4d reaction · 2-4e machine gunner · 2-4f anti-tank rifle · 2-6 round 2 implementation · 2-7 organization implementation) → `docs/inherited/ROADMAP_ARCHIVE_2026-10.md` §2
+### 2-4. Open (discussion needed)
+- Actual cell counts of the 3 map sizes (draft: small 160² · medium 256² · large 400~512²) and generation method. (2026-10-19: generated map side ×1.5 applied — §2-8. 3-size presets not yet) **[User 2026-10-21: draft approved]**
+- Ammo count per branch (machine gun 500 · anti-tank rifle 8 are initial values), suppression value adjustment (initial values §2-6). **[User 2026-10-21: on hold]**
+- 1920 weapon list (machine guns · field/mountain guns · mortars · cavalry · armored cars etc.), readjust other weapon damage. **[User 2026-10-21: on hold]**
+- ~~Range increase → target search cost for thousands of units~~: mitigated by docs/legacy/ROADMAP_DONE.md §2-4g C (E 10,000 units 44 → 5 ms/tick, docs/legacy/ROADMAP_DONE.md §2-6).
+
+### 2-6. Planned
+- **Additional combat overhaul** (user notice, 2026-10-18): the user will direct the contents — based on engagement round 2 results.
+- Engagement test mode muted + `--mute` · mute key (add to engagement round 2 batch).
+> Implementation-complete records (2-8 range · sight · map ×1.5 bundle · 2-7 cleanup) → `docs/inherited/ROADMAP_ARCHIVE_2026-10.md` §2
+## 3. Unit graphics (methodology under discussion)
+- Art rules · decisions: `docs/ART_SPEC.md`
+
+- **Batch fix of infantry overlap errors — with opus 5.5** (user-specified 2026-10-19): all cases where weapons · equipment overlap the body, such as the rifle stock appearing stuck in the body. Proceed together with the clipping check tool (`tools/collide.py`, false-positive correction needed).
+- ✅ `infantry-japanese` preserved version (game-tools `b1e67e4`, material `jkhaki` + `japanese_cap`; the old light khaki value is not in git so it equals the current trouser khaki — modify only jkhaki if a different value is wanted). **Later: reuse for Japanese army units** — preserve the light khaki WWI uniform (+ Japanese-style cap) as `units/infantry-japanese.json` (round 24).
+- **Art queue** (order): the fix above → machine gunner → **anti-tank rifleman** (emplaced type) → **infantry-regular** (Korean name **정규병** (2026-10-19, changed from steel-helmet infantry), **German M1916 Stahlhelm** infantry (changed from Adrian, 2026-10-19; haiku round 1 `9c95eef` unsatisfactory → next session sonnet)) → **Renault FT tank female · male** → **`armored_car`** (vehicles by a separate agent, branch `vehicles` / `coding/game-tools-vehicles`).
+- Japanese test infantry cap → WWI-era Type 45 style: haiku attempt (`f929eda`) result unsatisfactory → **redo with sonnet next session** (user 2026-10-19).
+- ✅ Infantry backpack color = uniform field gray (`17f53c8`), field gray adjusted (between blue-gray and green-gray), field cap visor shortened 22% (`aee4c4b`), officer saber handle (`a93c8ce`). (_doc wording cleanup done — only the Japanese preserved setting keeps light khaki).
+- **Infantry body slimming** (2026-10-19, feedback: overall too chubby, doll-like): reduce torso · arm · leg thickness and shoulder width to be slimmer (body dimensions in tune JSON + shared body so it applies to all infantry · officers · heavy weapons · cavalry riders). After reducing, re-check clipping · edges. 中. **Order: the very last, after all other work is done** (user directive).
+- **Infantry motion addition plan** (confirmed 2026-10-19, just before the final batch re-render): round 1 = 4 idle (smoking · adjusting cap · inspecting rifle · sitting rest) + 2 celebration (cheering with rifle raised · salute; on capture · assault victory · mission victory). Round 2 = crawling · dragging the wounded · grenade throw (assault) · trench firing.
+- Next candidate: ③ smooth joining (renderer fix).
+### Per-faction look (2026-10-19, important)
+- **Basic (common) branch bundle · faction-specific branches**: draft confirmed (user 2026-10-21).
+- **(2026-10-19) Faction variants on hold**: faction variants of cavalry · artillery · sniper proceed **at the final batch re-render** (user approved).
+### Additional branches (2026-10-19)
+- **On hold**: combat engineer `infantry-pioneer` (trench line · barbed wire cutting/placing · demolition), mortar crew `heavy-mortar` (2 men, light howitzer-style fire), **medic + wound system** (collapse instead of instant death → death after a set time, medic rescues).
+### March fire (assault fire) (confirmed 2026-10-19, 中 — next engagement batch)
+- Art: add 2 `walk_fire` frames for the infantry family (中, after the overlap error work is done — touches the same posture file). Shared body so it applies to most infantry branches together.
+### Terrain graphics polish (added 2026-10-19, 中 — art line while out)
+- **C. Extension** (later, roadmap only): **winter Manchuria theme** (snow · season change), **railway**, water sparkle animation, shell craters (link to barrage marks — barrage mark terrain ✅ 2026-10-19, art is temporary procedural tiles). Art for new terrain (forest · rubble · house · barbed wire · highland) at the terrain · height work.
+- **Bug (2026-10-19 user)**: some units such as the anti-tank rifleman **lack maximum zoom (LOD0) art** — zoomed in the art disappears or only the small LOD shows. Cause candidates: page not created in art memory reduction (LodAtlas lazy load · 30 s drop · 256MB budget · small LOD substitute while upload pending), importer LOD selection (1/2 · 1/4 rule — units with different cell sizes), `UsedAnimNames` omission, faction variant key. 中 (N8)
+- **Next (2026-10-19 user)**: zoomed-out display — **only units assigned to a unit (company) shown with the faction insignia** grouped (infantry · all other branches). **Units not assigned to a unit return to team-color (blue etc.) dots**. 下 (N9, together with N8)
+- **Later (2026-10-19 user)**: attach a **per-branch unit distinction mark** (infantry · machine gun · artillery · cavalry etc.) under the insignia.
+- ✅ Artillery re-aiming · range 40/80/120 · 5 map size levels (2026-10-19) (→ docs/legacy/ROADMAP_DONE.md)
+- **Next**: overload test per map size (generation · pathfinding · minimap · fog · AI threat map · save · tick cost). 中 (N13)
+## UI check (user 2026-10-20, later)
+- LOS display key B: check line-of-sight display · legend readability (hard to see on green background). **[User 2026-10-21: review later]**
+- Fire control key K: check cycling (hold fire → return fire only → free). **[User 2026-10-21: review later]**
+- F1 zone border: looks larger than the company (radius 5) → consider shrinking. **[User 2026-10-21: review later]**
+- Progress ring: check color · size. **[User 2026-10-21: review later]**
+- Major visual overhaul planned (user 2026-10-20) — cover prop art v1 (cover_props_v1.png) redone at the overhaul.
+- Trench breakthrough bundle N59/N60/N65 · order queue N74 = later.
+
+## 4. Later (on hold)
+- **Story · campaign (long-term, registered 2026-10-19)**: start after receiving the user's directive. Order: ① worldbuilding · timeline document (alternate-history branch point Russo-Japanese War → 1920 Manchurian northern expedition) ② campaign structure (branching linear — remember: branching linear) · chapter composition · mission list draft ③ between-mission screen (unit management · promotion (enlisted/officer campaign promotion) · replenishment · unlock) design ④ result file → force inheritance link ⑤ first chapter (3~5 missions) prototype ⑥ characters · briefing style. Existing foundation: mission framework · result file (kills · promotion candidates · officer experience) · static teams · weather/time of day · tactical AI profiles. 上 (design) / 中 (mission production).
+- **2026-10-19 direction summary**: map · tactics (tactical AI, map force placement · victory conditions, map editing) **slowly, later**. **Artillery branch on hold** (needs subdivision). **Agreed on sight blocking (forest · hill · building block sight)** — together with terrain addition. **Terrain addition**: forest · hill · building rubble · barbed wire · civilian houses etc. + **highland / lowland** (review proposal in conversation record, awaiting user decision). **Add supply wagon unit** (transport unit that extends the supply recovery radius to the front — together with the new supply of the direction-change major work). **Grenade method counter-proposal** (conversation record, awaiting decision). **Max zoom 4.0**. Fengtian infantry rifle is slung diagonally. **Start cavalry art** (上, `game-tools-u4`).
+- **Map editor (2026-10-19, user decision)**: roadmap only, later (not implemented now).
+- **Cavalry charge impact (charging)** (2026-10-19): ~~first-hit damage 300 + 0.4~0.6 s paralysis after 2+ s of charging~~ → **revised (user 2026-10-19)**: no damage bonus (normal saber damage), impact event = paralysis 0.6 s · per-cavalry cooldown 10~15 s · suppression +300 on enemy infantry within 2 cells of the impact point. Charge speed ×1.8 kept. **No melee attack on tanks · armored cars** (bayonet · sword · large blade · cavalry all; grenades are not melee).
+- Cavalry charge impact damage removed (user 2026-10-19): no damage bonus (`chargeImpact` deleted), normal saber damage. Charge impact event kept — per-cavalry cooldown 10~15 s (`chargeCooldownMin/Max`), paralysis after impact fixed 0.6 s (`chargeStunMin = Max = 0.6`), suppression +300 on enemy infantry within 2 cells of the impact point (`chargeSuppress` · `chargeSuppressRange`). Speed ×1.8 kept (branch cav-nocharge, save FormatVersion 24)
+- **Cavalry unit** (added 2026-10-19): default = **carbine cavalry** (carbine fire), movement speed = **1.5x or more** infantry, charge speed = **1.8x**, stamina limit = **3x** infantry. Melee charge is **saber**. **Toggle: charge only instead of firing** can be set. **Dismount function not implemented**. Art = horse + rider (new model — 上/中 decided at start), after the stamina system (§4 stamina · quick step).
+- **Stamina · quick step** (2026-10-19, later): stamina decreases slowly on charge → charge speed drops with the decrease, movement speed also slows at low stamina. **Patrol function removed**, instead **quick step** = normally uses stamina, faster than walking and slower than a charge. Open: maximum · consumption/recovery speed · speed curve, hotkey, art (quick step walking motion). **[Already implemented 2026-10-19: staminaMax 100 · charge consumption 8 · quick step 3 · recovery moving 2/standing 5 · Q key · HUD stamina bar. Remaining = only the quick step walking motion art]** **[2026-10-21 quick step walking motion started]**
+- Campaign layer: mission scripts (objectives · triggers · reinforcements · dialogue), strategy map branching, save progress between missions. **Branch · equipment unlock = mission reward** (research tab deleted 2026-10-19, no research system).
+- **Terrain subdivision (later)**: terrain kinds · variants · color diversification (2026-10-19 directive).
+- Unneeded feature cleanup (16-player battle AI etc.) — right after campaign structure is confirmed. (Diplomacy ✅ deleted 2026-10-19 · economy ✅ deleted)
+- Command UI for thousands of units (company · battalion-level organization orders).
+- ✅ Stamina · quick step (2026-10-19) (→ docs/legacy/ROADMAP_DONE.md)
+- **Formation function fix** — many problems currently (user, 2026-10-18). Later start by organizing the problem list.
+
+### Balance decisions (user approved 2026-10-19, LETHALITY Part B) ✅ applied
+- ✅ Balance decision LETHALITY Part B applied (2026-10-19) (→ docs/legacy/ROADMAP_DONE.md)
+
+- [Decision 2026-10-19] Machine gun balance: 1 Maxim ≈ 10 riflemen (1v10 about 40%, 1v5 win, 1v20 loss), 1 light machine gun ≈ 5 riflemen (1v5 about 40~50%). lmg/hmg accNear 0.3 · accFar 0.12, Maxim hp 340 · suppressResist 0.3, machine gunner hp 160 · suppressResist 0.4. The Guard is a special branch — keep as is (user).
+- 2026-10-19 bundle 3 done: charge fire toggle · enlisted in-combat promotion removed (StartKills) · non-combat attack-ground · leftover cleanup (ENGINE_NOTES bundle 3). Zoomed-out insignia: if the player has a lone unit without a company it shows as a dot (missions use companies so insignia) — unresolved/user confirmation needed. **[User 2026-10-21: leave as dots as now — resolved]**
+- [Decision 2026-10-19] Light machine gun burst (lmg): 10~20 round burst (unit Id · tick hash deterministic) then 1~2 s pause, cooldown within the burst. On losing the target the burst breaks and pauses, a new target starts a new burst. Values in balance.json lmg (burstMin/Max, burstPauseMin/Max). Heavy MG (hmg) fires continuously. Compensating for burst uptime of about 66%: lmg cooldown 0.2→0.13, accNear 0.3→0.38, accFar 0.12→0.16. 1v3/1v5/1v8 (tactical AI, flat, 8 seeds) = 8/8 · 4/8 · 1/8 (`KD_SELFTEST_ONLY=lmgtable`). FormatVersion 24 (CMB2 BurstLeft per unit).
+- [Decision 2026-10-19] Company retreat = casualty rate 30~40% (retreatStrength 0.60~0.70), 2026-10-19. Aggressive 0.60~0.63 (40% casualties) · cautious 0.67~0.70 (30%). `retreatSuppression` · Spent halving · battalion/regiment ×0.75 unchanged (decided together at suppression · morale redesign).
+- ✅ Artillery AI 6 items · contribution · pursuit · retreat fire (2026-10-19 decision) (→ docs/legacy/ROADMAP_DONE.md)
+- **(2026-10-19 user decision, `rankui`)** Officer promotion cap = lieutenant colonel (`officers.maxPromotionRank`). Zoomed-out company symbol = faction insignia + a **branch image** below it (NATO symbols only replace the old theme). The user will provide the per-faction rank · unit name document separately (no inventing names).
+- ✅ Engagement distance engageRangeFrac 0.7 (2026-10-19 decision) (→ docs/legacy/ROADMAP_DONE.md)
+- [Decision 2026-10-19] Active use of trenches · cover + defense terrain priority when defending (trench line → house · forest strongpoints, machine gun position, retreat to the next trench line, after reserve cover) ✅ applied (N25) — occupy-position order · find cover when hit · attack via cover (light version, full version in stage 3) · defense front cap `defendSpacing` (front without trenches). Adjustment candidates (cover search range · trench multiplier · trenchPerTile · attack position distance) in BATTALION_CAMPAIGN 'engage', awaiting user decision. Next: suppression redesign (close-impact suppression · accuracy · prone). → decision 2026-10-20: N25 adjustment candidates = at F1/F6.
+- [Decision 2026-10-19] Tactical AI stage 3 (STAGE3_REVIEW §7 decisions 1~13) — **3A ✅ applied (s3a)**: cooperation metrics first → win rate vs stage 2 (1) · 3A in parallel with suppression redesign (2) · save format bumped once = v31 (3) · flank bypass ≤ front ×2 · 120 s (4) · withdrawal allowed + per-mission values `factions[].aiWithdrawAt` · `aiCommitment` (5) · faction personality on hold = plan bias 0 (7) · S1 instead of infiltration (9) · mission objective linking included (10) · 8-seed 3+3+2 measurement (12). All 3A behaviors behind profile keys (`strategy.manoeuvre` etc.), stage 2 comparison = overlay `korean+stage2`. Results · remaining work = STAGE3_REVIEW '3A results'. Next 3B.
+- [Decision 2026-10-19] Forest combat (user, branch forest) ✅ applied: ① if the enemy is not visible in the forest or it is deadlocked the scout party actively enters the forest to find them (`scoutAi.forestProbe*`, hit-cover first) ② forest concealment slightly weakened (`terrain.forestSeeDepth` 3 · `forestHit` 0.8 · `forestSuppress` 0.85), defensive advantage kept (column ambush ×1.9, forest defense 2:1 exchange 2.3). Measurement · open items: BATTALION_CAMPAIGN 'forest combat'. Open question: depth 3 made column ambush defense too strong (restoring depth 2 applies only to search) — user judgment. → decision 2026-10-20: forest sight depth 3 kept.
+- [Decision 2026-10-19] Cavalry command (user): ① cavalry officer `officer_cavalry` (commands the cavalry company · command range · officer rules as is, pistol · saber on horseback, art = copy of cavalry model + officer equipment, Korea · Fengtian) ② cavalry squad NCO default organization (after officer loss N3 acting NCO, overridden by mission `squadLeaderRank`) ③ cavalry company missions use a cavalry officer instead of an infantry officer ④ cavalry flank intensity (`flankOddsMul` etc.) kept open. ✅ Applied (branch cavcmd — during AI cavalry charges the officer follows 10 cells behind `cavalry.officerBack`, TACTICS_OBS round 13). Open: cavalry flank intensity values (round 12).
+- [Decision 2026-10-19] N44 combat adjustment bundle (tweak1) ✅ applied: line tidying excludes firepower groups · deferred during a charge, hit cover for defending units only, trench 0.5, engageFrac 0.6, observer exposure avoidance, field gun arrival deployment, infantry gun 70 · 1.5 · 250 — remaining: separate the cause of the Korean charge retreat (TACTICS_OBS round 14).
+- [Decision 2026-10-19] Sniper · rain (user): ① sniper rifle fire interval 4.5 (4~5) → **8 (7~9)**, range · hit kept — 30 vs 30 exchange ratio 6.8 → 1.45 (end of EXCHANGE_TABLE). Mass formation (25%+) still dominant → formation cap or range adjustment for later review. ② rain disadvantage for the attacker = not intended → `weather.states.rain.move` 0.9 → 1.0 (end of TACTICS_OBS). ✅ Applied (branch snrain, values only).
+- ✅ Bandits · common units · rifle variants · Korean army infantry stages (2026-10-19 decision) (→ docs/legacy/ROADMAP_DONE.md)
+- [Resolved] Whether to turn on the 3 switches of suppression redesign 2 (supp): prone `proneAt` 0.35 (S1 55→37%) · collapse `breakChance` 0.15 (trench attack sim 1/5→3/5, crossing AI failure) · cover recovery `coverDecayMul` 1.25 — ENGINE_NOTES 'suppression redesign 2'. — Applied in round 2 (supp2): prone 0.35 · cover recovery ×1.25 on, collapse breakChance 0 (user 'I'd rather not put in the collapse rule'). User 2026-10-21 'go with the recommendation' = keep the current state.
+
+## Armored vehicles (user confirmed 2026-10-20, timing undecided)
+- Mark V heavy tank **male type only** (2 six-pounders + machine gun) — Korean Empire · Russian White Army few · Red Army some (captured). For trench breakthrough, about 7.4 km/h, crew 8.
+- Lanchester armored car (general purpose) — Korean Empire · Russian White Army · Red Army. None for Japan · Fengtian · bandits.
+- Fengtian army **improvised armored car** (converted truck) new. Bandit gangs have no armored vehicles. Basis · values = docs/ISSUES_2026-10-20.md (Gemini web search lead, re-confirm before implementation).
+- (On hold) remaining N33/N51 jitter (rubbing of the rear rank on contact, 上) — re-propose around 2026-10-22.
+- (User 2026-10-21 0:00) **Prone soldiers are dragged by the formation move** — soldiers who went prone from suppression slide along with the formation in the prone posture. Solutions: ① soldiers prone from suppression = pinned (do not follow the formation move order, stand up and rejoin when suppression drops) ② when an explicit order arrives with high suppression → crawl (speed ×0.3, crawl anim) / with low suppression → stand up (about 0.8 s) then walk ③ forbid walking movement in the prone posture (posture · anim · speed consistency test). 中.
+- (User 2026-10-21 0:00) **Milling about at narrow chokepoints (bridge · ford · alley · forest path)** — solutions: ① automatic column when a chokepoint is detected (one line in squad order) ② chokepoint passing order queue (arrival order · per squad, next when the front clears) ③ turn off formation slot reassignment · gap check while passing, rebuild the formation at the rally point on the far side ④ weaken collision push-apart inside the chokepoint. Reuse the existing crossing doctrine (company column in succession) and the F2 'normal formation when blocked' path. 中~上.
+- (User 2026-10-21 0:00) **Assault fire (march fire · shooting while walking) muzzle flash position is off** — presumed that the muzzle anchor (anchors.json muzzle) of the walking fire frames deviates from the real muzzle. Solution: in game-tools recompute the muzzle anchor of the march fire anim (march_fire etc.) per direction · frame (reuse the muzzle measurement method used for prone firing) → re-render · import, on the game side check that the anim reads the fire anchor on the correct frame. 下~中 (art).
+
+## 2026-10-21 decisions (short · long term) — original · details in `docs/QUEUE_2026-10-21.md`
+- **Short-term (tomorrow / after the weekly limit resets)**: non-combat review 6 bundles (art·UI confirmation pending · controls/info · settings/distribution · performance · sound · campaign foundation) · prone-firing posture (shoots sideways · stock clips through) · Gando volunteer corps dress · Mongol/bandit look distinction · Austin team-color marker on hull rear. (Updated 2026-10-23: for prone-firing · Gando dress see the 'Graphics progress status' section above.)
+- **Progress queue**: formation relaxation · artillery/heavy weapons bundle · casualty speed · building size (houses 3×3~3×4, large buildings 4×6) · armored train (controlled + scripted)/freight train (mission objective) · river inclusion · engineers (trench building excluded, assault troops also take the engineer role) · Type 3 heavy machine gun.
+- **Long-term**: officer disposition (school = German · Russian · Pyongyang etc. doctrine / personality = cautious · bold etc. small modifier) · faction Major (Korea · Japan · Fengtian · Russian White Army · Red Army) / Minor (bandits · others) · Czech Legion · light mortar range 36 (trench breakthrough bundle).
+- **On hold · cancelled**: rifle grenadier infantry = not included · signal-flare defensive barrage = cancelled · medic = excluded (no HP recovery) · troop transport trucks/wagons = not included.
+- **Campaign character candidates (roadmap, user 2026-10-21)**: 3~4 regiment commanders · homeland quartermaster general · Wonsubu inspector · NCO representative. Confirmed characters in `docs/CAMPAIGN_HOME_DESIGN.md` §8. Unit name · lineage function is also roadmap.
+- **Light map editor** (roadmap, user 2026-10-21): the user modifies an auto-generated map a little — terrain painting · trenches/barbed wire · objectives · start positions · save. Per-mission placement dictated by the user → generation parameters.
+- **Map cover props · forest shape** (roadmap, user 2026-10-21): cover props are placed too scattered → mainly clusters (fence lines · stone walls · village perimeter · forest edge · in front of trenches). Forests are rectangular so odd → irregular outline (noise boundary · sparse trees at the edge). Together with the map bundle (building size · railway terrain · generation parameters).
+- **Standard-bearer flag ratio 1:1 → 3:2** (longer horizontally, user 2026-10-21 "make it look a bit longer") — roadmap, **proceed at the next session (weekly limit reset)** (user). 下.
+- **Graphics roadmap = `game-tools/GRAPHICS_ROADMAP.md`** (2026-10-21: genre RTT · cells 48x60/96x120/192x240 · keep pixel-art style (Blender abandoned) · prone-firing redesign 08 confirmed · all-unit re-render bundle · terrain/building/lighting unification later).
+
+## Long-term — ending routes (user concept 2026-10-21)
+- **A**: northern expedition succeeds, Gojong keeps the throne.
+- **B**: northern expedition succeeds, Sunjong enthroned by coup.
+- **C**: northern expedition of limited success. Officers who failed the coup, centered on the protagonist, set up the **Northern Gando Military Government** in Manchuria → effectively warlords.
+- **D**: retreat during the northern expedition, **Republic of Korea (대한 공화국)** established (DLC expected).
+- Two coup concepts: (1) resentment of an emperor gone senile who only shouts for war → demand Sunjong's enthronement → **capital coup** (linked to B success / C failure). (2) **Military's own coup** → suppress leftist forces then establish the Republic of Korea (linked to D).
+- Branch variable candidates (Claude, to review at design): northern expedition progress · relations with imperial grandson Yi Tae / General Min / Yi Seok · homeland trust · public sentiment · officer school · casualties (`maxCasualtyFrac` forcing history).
+- **5 officer schools · enemy faction dispositions = `docs/OFFICER_DOCTRINES.md`** (school table approved · research link · enemy officers have no school but 2~3 faction dispositions (Fengtian 4, bandits = share Fengtian lowest) — enemy disposition table approved 2026-10-21).
+
+## Command conveniences · systems (user 2026-10-21)
+- **Approved (progress queue)**: ① in-mission save + autosave just before a big engagement (bundled with campaign save slots) ② game speed control (0.5~3x) + orders while paused (check the current implementation level first) ③ unit list panel (regiment › battalion › company tree, shows strength · ammo · state, click to select) ④ order queue Shift+order (N74 brought forward) ⑤ battle results report screen (= campaign post-operation screen) ⑥ branch codex (unit description · portrait · values; shared with info tab · tutorial) ⑧ color-blind-friendly team colors (color + pattern/mark).
+- **Deeper discussion later**: ⑦ engagement alerts · minimap display.
+- **Introduce later**: ⑨ stronger regiment commander delegation (specify defense · attack · delay attitude, linked to school) ⑩ photo mode.
+
+## Combat system additions (user approved 2026-10-21)
+- Alpha: **① division HQ · communication delay**. After alpha: ② counter-battery fire ③ night combat reinforcement (flares · night sight/hit) ④ march fatigue in combat.
+- **Communication · command structure (user design)**:
+  - A. **Reintroduce messengers — mounted messengers** (travel on horseback).
+  - B. Add **wire telephone · wire Morse**. **Wireless Morse = research later**.
+  - C. Add **regiment command posts** — each command post is connected to the division HQ by messenger · wire. **No battalion command post; the battalion commander sets up a simple command table at a suitable location** (user proposal, Claude agreed).
+  - **Orders given to a regiment commander are carried out only if actually delivered by wire · messenger.** Regiment commander → battalion commander re-delivery. The player can also give orders directly to the battalion commander.
+  - Details · other communication means = Claude review (conversation below · awaiting decision). **[User 2026-10-21: adopted]**
+- **Communication confirmed (user 2026-10-21, roadmap only)**: round 1 = mounted messenger (can be captured → order loss/exposure) · wire telephone · Morse (shelling · enemy can cut, signalman repairs) · **signal flare** (short pre-arranged signal) · **carrier pigeon** (forward unit → HQ report) · regiment command post · battalion simple command table · **'in transit' indicator** · **enemy AI follows the same rules**. Handwritten notes · signal lamps = round 2, wireless Morse = research.
+- **Convenience principle (user)**: commanding at the single-unit level stays, and the player directly commanding a company is also possible — a convenience area. (Control-feel countermeasures = conversation below · Claude proposal: communication realism option etc.)
+- **Communication rules confirmed (user 2026-10-21)**: communication realism = **difficulty setting (easy · normal · hard)** area. **Wire orders within 1~3 s**. **Messengers fairly fast — normally arrive within 10~20 s**. **Always notify when an order is lost**. **Easy = wire is never cut**. **Direct company orders = delivered instantly** (control-feel area — the user's judgment that at thousands-of-troops scale only important units will be commanded directly and the rest delegated). Regiment commander orders = carried out only when delivered by wire · messenger (above decision kept).
+
+## Short-term roadmap — non-combat review (user 2026-10-21 "put it on the short-term roadmap. We proceed tomorrow or after the weekly token limit resets") — moved from QUEUE
+To be moved to ROADMAP.md (when there is no merge lock). Proceed after tomorrow.
+1. Art · UI awaiting confirmation: prone_batch.png (E view rifle short) · missing_theme_units.png · surrender_pose.png · new_units sheet · whether to keep the unasked '후퇴' button/console rally of N79a · march-fire flash on other branches · in-game check of progress bar · ROADMAP 'UI check' bundle. **[User 2026-10-21: keep the '후퇴' button (N79a) · applying march-fire flash to other branches = approved. The rest awaiting confirmation]**
+2. Controls · info: command card cell overflow (when the infantry card is full, rally · barrage type drop out) · hotkey cleanup (CONTROLS.md + in-game help) · large battlefield info (engagement alerts · minimap display).
+3. Settings · distribution: settings menu (resolution · window mode · volume · key rebinding) · save format compatibility policy (rose to 46 today — decide compatible/reject before release) · crash log.
+4. Performance: campaign scale (1~2 hours · thousands of men) frame · sim measurement (cost may rise with today's added features), 10,000 load test.
+5. Sound: replace the temporary radio voice · per-faction voice/battle-cry policy (Gemini TTS rejected 10-20).
+6. Campaign foundation (story · progression method being conceived by the user — organize after the concept, do not touch first): briefing · mission selection · between-mission organization/replenishment · branch conditions · tutorial chapter 0.
+
+## Additional roadmap (moved from QUEUE 2026-10-21)
+- Rifle grenadier (rifle grenade) — **on hold · not included** (user "a bit negative", many heavy weapons — Claude agreed). If squad howitzer-style firepower is lacking after the light mortar, reconsider only as assault infantry equipment.
+- Czech Legion — later addition plan only (user).
+- Cancelled: signal-flare defensive barrage (SOS barrage) — cancelled by the user.
+- Troop transport trucks/wagons = not included (user "I think it's not good. It's complicated", Claude agreed).
+- Memo: **light mortar range 36** (user decision) — not in the game yet, apply when making the trench breakthrough bundle (smoke · barbed wire cutting · light mortar · smoke grenade).
+- Proposal pending: measure casualty cause ratios (artillery share) in the soak.
+- **UI overhaul — paper texture** (user "the current UI format is too web-game-like", "I prefer a paper texture") — paper texture direction confirmed (user 2026-10-21 'decided'; CAMPAIGN_HOME_DESIGN 'as proposed').
+- **Campaign home design draft = `docs/CAMPAIGN_HOME_DESIGN.md`** (user "put it in the campaign design document as this proposal"; 3-layer resources = manpower + supplies + equipment stock (including shell stock), per-caliber ammo only at the campaign level, UI paper texture "as proposed"). Research function approved (user 2026-10-21). **[User 2026-10-21: one paper-texture mockup first (docs/art_review/ui_paper_mock.png) → actual implementation after the 10-23 weekly limit reset]**
+- Campaign design v0.2 reflected (user): auto organization·replenishment · supply preview · staff advice · difficulty approved, unit name·lineage = roadmap, division 10,000 = organization standard · recruit pool 7,000, no approved authorized strength (adjusted by recruit dispatch volume), research = consumes funds + supplies · linked to officer school, **imperial grandson deputy division commander · supreme commander absurdity axis** (imperial son → imperial grandson setting change). `docs/CAMPAIGN_HOME_DESIGN.md` §6 · §7.
+- **Add railway terrain** (user "let's add railway terrain") — new TerrainType (track) + generation · pathfinding · sight · render, prerequisite for the armored train (chapter 2) · freight train. In the same map bundle as the building size increase. 上.
+  - Northern Gando volunteer army = later (Tumen WIP mission · Northern Gando/Primorye route) — on hold.
+
+## Long-term — UI
+- **Paper texture UI · commander's desk** (user 2026-10-21 "the commander's desk isn't bad. For now leave it at this, and later go on to improving the operations map image and fixing details") — mockup `docs/art_review/ui_paper_mock.png` (33eed0f) approved at the current level. Later: operations map image improvement · detail fixes (morale/fatigue line spacing, replenish button clipped etc.). Actual implementation after 10-23.
+
+
+## Graphics improvement candidates (Fable review 2026-10-22)
+Of the 24 scoring 5 or below, 11 improvement candidates were re-checked against the original sheets (2026-10-22). Details: C:/works/_notes/ART_IMPROVEMENT_CANDIDATES.md, queue table: section 'E. Graphics improvement candidates' of ops/BACKLOG_2026-10-22.md.
+- Orderable (now): standard-bearer prone flag unification (together with the prone-firing re-render shards), wooden bridge width·entry, scorch decal variety, branch symbol @16, refugee·volunteer identification marker.
+- After merge: imperial grandson portrait ears (gt/vip-portraits), wounded dragging s series (kd/t39h2).
+- On hold: old dark UI battle 1024 overlap (after the paper UI v2 adoption decision), quickstep officer.
+- Discard candidates: missing_theme_units 3 cavalry types (replaced by B2·c1e1 cavalry).
+- The remaining 13 are marked one line each in BACKLOG section E: 9 in progress · 2 replaced · decision pending (ruin question 52).
+
+## Personnel management · roster operation (user 2026-10-22)
+- New personnel management function — waiting officer pool·manual assignment/replacement/dismissal·automatic assignment result report (T61e candidate, 0.3)
+- Automatic assignment·company merge UI (T61d, 0.3)
+- Officer·equipment handling on merge (Q-F, 0.3)
+- Artillery delay link to artillery barrel (#31, 0.3, together with communication alpha piece ③·gun block mapping)
+- (Updated 2026-10-23, user decision) Regiment commander portraits are not made now. Lightly with AI later.
+
+## Art style direction — shift to the middle value (user 2026-10-22, 0.3 in progress)
+- Decision (user night of 2026-10-22): change the art style direction to the 'middle value' (keep the pixel·cartoon basis + slightly more realistic) but proceed at 0.3. Among the options **middle value** adopted (vs keeping current), timing **0.3**. Put it on the roadmap.
+- Confirmed (2026-10-22): mid profile — see ART_SPEC for values (`docs/ART_SPEC.md` 'Confirmed mid profile (2026-10-22)').
+- Direction definition:
+  - Keep: pixel·voxel render, black outlines, team-color ring, high-contrast silhouette, limited palette.
+  - Raise: earth·cloth-centered desaturated colors, uniform dirt·wear expression, natural body proportions, texture detail (tree rings·bark·roof tiles), historically accurate dress·architecture.
+  - Avoid: photographic look, excessive texture, primary-color-centered palette, cartoonish exaggeration.
+- Additional decision (user night of 2026-10-22): unit re-render (mid art style applied) is redone at 0.3. For now (current stage) only the building·terrain family is re-rendered in mid, and this re-render proceeds in the 0.3 initial version (first work right after 0.3 starts, unit re-render after that).
+- Application order (latest, additional decision night of 2026-10-22):
+  ① 0.3 initial: building·terrain family mid re-render (houses·ruins·terrain tiles etc.). **Confirmed (2026-10-22): includes all buildings·terrain tiles·props·decals (excluding vehicles·trains → unit side, 0.3 late). Time: buildings 1~2 hours · terrain within 1 hour · props within 30 minutes · decals small, total about 3~4 hours of rendering.**
+  ② 0.3 late: unit re-render — color post-processing first, full re-render only for the units that need it (93 unit types, full re-render about 7~12 hours wall clock).
+  ③ (Done) Comparison sheet approved — sheet `51_style_house_compare.png`, user confirmed mid.
+- (Updated 2026-10-23, user) The application order after promotion stays: buildings·terrain·props·decals first, units in the later part.
+- (Previous proposal, before the additional decision of 2026-10-22 — kept for reference)
+  ② Application order:
+    - Apply houses·props·terrain·decals·vehicles together first (about 3~4 hours of rendering).
+    - For the 93 unit types do 'color post-processing (per layer, team color protected)' first, and fully re-render only the units that need it. Full re-render averages 24 min per unit·median 16.5 min × 93 types = serial 25~37 hours, with 3~4 render lanes in parallel about 7~12 hours — this method is under review.
+  ③ Prerequisite engineering:
+    - Convert voxel.MATERIALS ramp at render time + post-processing hook right after make_frame (base layer only; per-material effects if the material mask is exposed).
+    - Prop hook (small).
+    - Terrain·decal post-processing (medium).
+    - Vehicle hook (small~medium).
+  - Applicability memo (per asset group): houses can be applied directly with `make_building.py --style mid`. Props·vehicles need a hook added (small~medium), terrain·decals need post-processing work (medium). Units use the ramp conversion + make_frame post-processing hook method, applying per-material effects separately once the material mask is exposed.
+  - (Previous application order, before the mid confirmation of 2026-10-22 — kept for reference)
+  1. At the start of 0.3 render 1 basic infantry + 1 prop + 1 house as a 3-level 'current / middle / more realistic' comparison sheet → the user selects·confirms a level.
+  2. Record the art style rules in `docs/ART_SPEC.md` (section 'Art style direction' below).
+  3. For existing units, apply the saturation·wear expression together at the 'final batch re-render' already on the roadmap (no separate re-render needed).
+  4. Visibility protection test: after lowering the tone, check with a sheet that the team color·silhouette on terrain is still distinguishable per zoom level.
+- Constraints:
+  - Until 0.3 new assets keep the current direction.
+  - Keep resolution·LOD·memory budget (256MB).
+  - Do not go photographic.
+
+## Game music (user 2026-10-22, roadmap only — not started)
+- Status: **not started.** Timing = undecided (start when the user gives a candidate song list).
+- Concept: use old military songs·folk songs with rewritten lyrics. Must be commercially usable.
+- Confirmed constraints·research memo:
+  - Claude cannot generate music audio directly. What can be done within the pipeline = writing scores (MIDI·ABC·LilyPond·MusicXML)·lyrics rewriting·arrangements, and rendering OGG with commercially usable synthesis (own numpy chiptune synthesis or FluidSynth + a soundfont with verified license).
+  - Human-like vocals are not possible. Provide instrumental + lyrics text, a human singer recommended for vocals.
+  - AI music models: MusicGen weights are non-commercial (CC-BY-NC) → excluded. Stable Audio Open has a conditional license → latest terms need checking.
+- Copyright checklist:
+  - Whether 70 years have passed since the song author's death (by Korean standard authors who died before 1955).
+  - Whether the original lyrics copyright has expired.
+  - Specific recordings·arrangements must not be used → arrange directly from the score.
+  - Rewritten lyrics are derivative works, so the original lyrics must have expired.
+  - Rights limits of purely AI-generated output.
+- Proposed order:
+  1. Receive the candidate song list → check copyright expiry per song (web search via Gemini).
+  2. A test song with 1 song confirmed expired (chiptune march arrangement + rewritten lyrics + OGG loop for the game).
+  3. Expand.
+- Decisions needed: per scene (battle BGM · campaign home · victory/defeat) · mood.
+- Prior questions: which scenes·moods, candidate song list.
+
+## 0.4 — In-game sound effects overhaul (user 2026-10-22)
+- Item: overhaul of in-game sound effects (firing·explosions·marching·order responses·UI·ambient sounds·battle cries etc.).
+- Survey tasks (before 0.4 starts):
+  - Current sound effect list·sources·licenses.
+  - Volume balance.
+  - Overlap·priority.
+  - Distance attenuation.
+  - Link to the ROADMAP battle-cry policy R01 'provisional B (re-report)' item (basis: `docs/SOUND_POLICY_2026-10-22.md`, branch sfxnew; decision record in `ops/DECISIONS.md` R01).
+- Detailed design when 0.4 starts.
+
+## 0.4 — Regiment commander delegation UI improvement (user 2026-10-23)
+- The T57c delegation UI is confirmed at the current level (separate panel·4 attitude buttons·dotted map marker), and improvements (integration with the battalion list·hotkeys·"in transit" marker·target zone designation·auto-release conditions etc.) are handled in 0.4.

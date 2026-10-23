@@ -1,8 +1,8 @@
-# CARD_REGISTRY - 카드 id 예약 장부 (append-only)
+# CARD_REGISTRY - Card id reservation ledger (append-only)
 
-> 한 줄 = `- <id> · <제목> · <예약자> · <날짜> · <브랜치>`. 제목 앞 `[충돌]` = 스캔 시 서로 다른 카드 파일이 같은 id 를 쓰고 있었다는 표시(이동·개명 뒤에도 장부에는 남는다; 현재 충돌 여부는 `card_id.ps1 -Check <id>`).
-> 줄을 고치거나 지우지 않는다. id 는 `tools/agent/card_id.ps1` 로만 예약한다 (직접 번호 붙이기 금지 - ops/PIPELINE.md '로드맵/카드 추가 전 절차').
-> 예약자 `scan` = 도구가 기존 카드 파일/QUEUE/CARD_INDEX 에서 발견해 장부에 옮긴 id.
+> One line = `- <id> · <title> · <reserver> · <date> · <branch>`. `[충돌]` [conflict] before the title = at scan time different card files were using the same id (it stays in the ledger even after a move·rename; for the current conflict status use `card_id.ps1 -Check <id>`).
+> Do not edit or delete lines. Reserve ids only with `tools/agent/card_id.ps1` (no numbering by hand - ops/PIPELINE.md 'procedure before adding roadmap/cards').
+> Reserver `scan` = an id the tool found in existing card files/QUEUE/CARD_INDEX and moved into the ledger.
 
 - C1E1-d1 · decisions-data · scan · 2026-10-22 · spec/cards-c1e1
 - C1E1-d2 · start-economy · scan · 2026-10-22 · spec/cards-c1e1

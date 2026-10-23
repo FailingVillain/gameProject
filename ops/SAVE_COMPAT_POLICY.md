@@ -1,51 +1,51 @@
-# 저장 호환 정책 (권고 기본값) - 2026-10-22
+# Save compatibility policy (recommended defaults) - 2026-10-22
 
-상태: **권고안, 자동 적용 대상** (사용자가 다른 결정을 내리기 전까지 이 표대로 진행). ROADMAP_LONG '설정 · 배포 - 저장 형식 호환 정책' 항목의 답.
-근거 코드: main 의 Snapshot.cs / Replay.cs / CampaignState.cs + 병합 대기 체인 끝(t42d-schedule-log, t48a-commander-data). 캠페인 스키마는 main 에서 v1, 체인 끝에서 v7 (T48a 가 v8). sim FormatVersion 은 main 52, 병합 계획상 post-E 에서 65~66, 리플레이는 따로 19 에서 올라간다.
+Status: **recommendation, auto-applied** (proceed per this table until the user decides otherwise). The answer to the ROADMAP_LONG item 'Settings · Distribution - save format compatibility policy'.
+Basis code: main's Snapshot.cs / Replay.cs / CampaignState.cs + the end of the pending-merge chain (t42d-schedule-log, t48a-commander-data). Campaign schema is v1 on main, v7 at the chain end (T48a makes it v8). sim FormatVersion is 52 on main, 65~66 at post-E per the merge plan; replay is a separate number rising from 19.
 
-## 1. 저장 종류와 지금 동작 (버전이 안 맞을 때)
-| 종류 | 위치 / 버전 | 지금 동작 |
+## 1. Save kinds and current behavior (on version mismatch)
+| Kind | Location / version | Current behavior |
 |---|---|---|
-| 캠페인 진행 + 슬롯 1~9 + 자동 저장 2개 (작전 시작 직전, 정산 직후) | `%LOCALAPPDATA%/KoreanDivision/campaign/` campaign.json, slotN.json, auto_*.json. `Version`(스키마) | 옛 파일은 **그대로 열고 빠진 필드는 기본값** (더하기만 한다는 규칙). Version 0/음수·깨짐·**더 새 버전은 거부** (한국어 사유). 깨진 원본은 .bak 로 보존 |
-| 미션 중 저장 F6/F7 (quicksave) + 10분마다 자동 저장 (autosave_1..3) | `saves/*.kds`, 머리말 Format(FormatVersion) + 게임 버전 | 형식이 다르면(**옛것도 새것도**) 거부: "이 저장은 이전 버전에서 만들어져 열 수 없습니다 (저장 형식 v52 · 현재 v66)". 게임 버전만 다르면 경고만. 검사값·잘림 검사 있음 |
-| 리플레이 | json, `Format`(별도 번호, 19) | 번호가 다르면 거부 (옛/새 구분 메시지). 시작 저장 조각이 깨져도 사유 표시 |
-| 설정 | `settings.json` (UserSettings) | 읽기 실패는 조용히 기본값. 모르는 키는 무시 |
-| 지도 / 미션 JSON (게임 동봉) | data/ | 게임과 같이 배포 - 버전 문제 없음 |
-| 사용자가 만든 지도 · 지휘관 JSON (지도 편집기 T33, 연대장 T48a) | 사용자 폴더 | 현재 정책 없음 (T48a 는 스키마 v8 로 캠페인에 들어감) |
+| Campaign progress + slots 1~9 + 2 autosaves (right before an operation, right after settlement) | `%LOCALAPPDATA%/KoreanDivision/campaign/` campaign.json, slotN.json, auto_*.json. `Version` (schema) | Old files **open as-is, missing fields get defaults** (additive-only rule). Version 0/negative, corrupt, **newer version are rejected** (Korean reason). Corrupt original kept as .bak |
+| In-mission save F6/F7 (quicksave) + autosave every 10 min (autosave_1..3) | `saves/*.kds`, header Format(FormatVersion) + game version | Rejected if the format differs (**older or newer**): "이 저장은 이전 버전에서 만들어져 열 수 없습니다 (저장 형식 v52 · 현재 v66)" (this save was made by an earlier version and cannot be opened). Game version mismatch alone is only a warning. Has checksum and truncation checks |
+| Replay | json, `Format` (separate number, 19) | Rejected if the number differs (distinct old/new messages). Reason shown even if the start-save fragment is corrupt |
+| Settings | `settings.json` (UserSettings) | Read failure silently falls back to defaults. Unknown keys ignored |
+| Map / mission JSON (bundled with game) | data/ | Shipped with the game - no version issue |
+| User-made map · commander JSON (map editor T33, regiment commander T48a) | user folder | No current policy (T48a enters the campaign as schema v8) |
 
-selftest `savecompat` 가 옛/새/잘림/빈/임의 바이트 파일이 크래시 없이 사유를 돌려주는지 이미 검사한다.
+selftest `savecompat` already checks that old/new/truncated/empty/arbitrary-byte files return a reason without crashing.
 
-## 2. 선택지
-A. 옛 것 전부 거부 (메시지만). 구현 쉬움, 플레이어 진행 손실.
-B. 변환(이행) 코드 유지. 캠페인 파일은 더하기만이라 거의 공짜. 전투 중 스냅샷은 sim FV 가 20번 넘게 바뀐 구조라 이행이 사실상 불가능 (결정성 때문에 필드 하나만 달라도 재생 불일치).
-C. 직전 버전(N-1) 읽기 코드 유지. 유지비가 커서 비추천.
+## 2. Options
+A. Reject all old ones (message only). Easy to implement, loses player progress.
+B. Keep conversion (migration) code. Nearly free for campaign files since they are additive-only. For in-battle snapshots, the sim FV has changed 20+ times so migration is practically impossible (determinism: a single differing field breaks replay).
+C. Keep previous-version (N-1) read code. Not recommended due to upkeep cost.
 
-## 3. 권고 기본값 (종류별)
-| 종류 | 정책 | 이유 |
+## 3. Recommended defaults (by kind)
+| Kind | Policy | Reason |
 |---|---|---|
-| 캠페인 (슬롯·자동 포함) | **항상 이행(B)**: 필드는 더하기만, 새 필드의 C# 기본값 = 옛 파일 값. 필드 삭제 · 뜻 변경이 꼭 필요하면 이행 코드를 같은 카드에 넣는다 (거부 금지). 더 새 버전은 거부. 처음 이행 저장 전에 `campaign.json.v<옛>.bak` 한 번 보존 | 며칠치 진행이 걸린 유일한 자산 |
-| 미션 중 저장 (F6/F7, 자동) | **옛 형식은 거부(A)** + 분명한 한국어 안내. 형식 번호는 머리말에 계속 보관. 목록 화면에서는 열 수 없는 저장을 회색 + 사유로 보여주고 지우지 않는다 | 미션은 1~2시간이라 손실이 작고, 이행 불가 |
-| 리플레이 | **옛 형식은 거부(A)**. 파일 이름에 형식 번호 꼬리(`_r19`) 선택, 머리말에는 이미 있음 | 같은 이유 + 재생은 같은 코드여야 의미 있음 |
-| 설정 | **관대하게**: 모르는 키 무시, 빠진 키 기본값, 값이 이상하면 그 키만 기본값. 파일째 못 읽으면 .bak 보존 후 기본값 | 설정 때문에 게임이 안 켜지면 안 됨 |
-| 동봉 데이터 | 호환 없음 (게임과 한 몸) | |
-| 사용자 지도 · 지휘관 | 캠페인과 같은 규칙: 더하기만, 모르는 키 무시, 빠진 값 기본값. 못 읽는 파일은 **건너뛰고** 목록에 사유 표시 (게임은 계속) | 사용자가 직접 쓴 파일 |
+| Campaign (including slots·autosaves) | **Always migrate (B)**: fields are additive-only, a new field's C# default = the old file's value. If a field deletion · meaning change is unavoidable, put migration code in the same card (no rejection). Reject newer versions. Keep `campaign.json.v<old>.bak` once before the first migrated save | The only asset holding days of progress |
+| In-mission save (F6/F7, auto) | **Reject old format (A)** + clear Korean message. Keep the format number in the header. In the list screen, show unopenable saves greyed out + reason and do not delete them | Missions are 1~2 hours so loss is small, and migration is impossible |
+| Replay | **Reject old format (A)**. Optional format-number tail in the filename (`_r19`), already in the header | Same reason + replay only makes sense with the same code |
+| Settings | **Lenient**: ignore unknown keys, defaults for missing keys, only the key gets default when a value is odd. If the whole file is unreadable, keep .bak then use defaults | The game must not fail to start because of settings |
+| Bundled data | No compatibility (one body with the game) | |
+| User maps · commanders | Same rule as campaign: additive-only, ignore unknown keys, defaults for missing values. **Skip** unreadable files and show the reason in the list (game continues) | Files the user wrote by hand |
 
-시점: **출시 전(0.x) 에는 sim FV 를 자유롭게 올린다** (미션 저장·리플레이 거부 허용). **출시 이후에도** 캠페인 이행 규칙은 유지. 출시 후 sim FV 변경은 '진행 중 미션 저장이 끊김'을 패치 노트에 한 줄 적는다. 출시 전 마지막 한 번 FV 를 확정 번호로 고정하는 것은 하지 않는다 (별도 결정 아님).
+Timing: **before release (0.x) the sim FV may be raised freely** (mission-save·replay rejection allowed). **After release too**, the campaign migration rule stays. After release, a sim FV change adds one patch-note line that 'in-progress mission saves are cut off'. We do not freeze FV to a final number once before release (not a separate decision).
 
-## 4. 사용자에게 보이는 메시지 (한국어, 기존 SnapMsg 문구 유지 + 아래 추가)
-- 미션 저장 옛 형식 (기존): "이 저장은 이전 버전에서 만들어져 열 수 없습니다 (저장 형식 v{0} · 현재 v{1})". **추가 한 줄**: "진행 중이던 미션만 이어할 수 없습니다. 캠페인 진행은 그대로 안전합니다."
-- 새 형식 (기존): "이 저장은 더 새로운 버전에서 만들어져 열 수 없습니다 …". 추가: "게임을 최신 버전으로 올려 주세요."
-- 리플레이 (기존 문구) + "이 리플레이는 v{0} 게임에서만 볼 수 있습니다."
-- 캠페인 이행됨 (새, 한 번만): "캠페인 저장을 새 버전으로 옮겼습니다. 원본은 campaign.json.v{n}.bak 로 보관했습니다."
-- 캠페인 더 새로움 (기존) + "파일은 지우지 않고 그대로 둡니다."
-- 사용자 지도/지휘관 건너뜀 (새): "'{파일}' 을 읽을 수 없어 건너뜁니다: {사유}".
+## 4. User-visible messages (Korean, keep existing SnapMsg wording + add below)
+- Mission save old format (existing): "이 저장은 이전 버전에서 만들어져 열 수 없습니다 (저장 형식 v{0} · 현재 v{1})". **Added line**: "진행 중이던 미션만 이어할 수 없습니다. 캠페인 진행은 그대로 안전합니다." (only the in-progress mission cannot continue; campaign progress is safe)
+- New format (existing): "이 저장은 더 새로운 버전에서 만들어져 열 수 없습니다 …". Add: "게임을 최신 버전으로 올려 주세요." (update the game)
+- Replay (existing wording) + "이 리플레이는 v{0} 게임에서만 볼 수 있습니다." (this replay can only be viewed on a v{0} game)
+- Campaign migrated (new, once only): "캠페인 저장을 새 버전으로 옮겼습니다. 원본은 campaign.json.v{n}.bak 로 보관했습니다." (campaign save moved to the new version; original kept as .bak)
+- Campaign newer (existing) + "파일은 지우지 않고 그대로 둡니다." (file is left, not deleted)
+- User map/commander skipped (new): "'{파일}' 을 읽을 수 없어 건너뜁니다: {사유}" (cannot read '{file}', skipping: {reason}).
 
-## 5. 구현 카드 (새 카드는 ops/QUEUE.md 에 한 줄씩)
-| 카드 | 내용 | 크기 | 상태 |
+## 5. Implementation cards (new cards go to ops/QUEUE.md one line each)
+| Card | Content | Size | Status |
 |---|---|---|---|
-| (있음) | 캠페인 더하기 규칙 + 이행 v3~v7, SaveCompatSelfTest, 깨진 원본 .bak, 슬롯·자동 저장 | - | T01/T19a~d/T42a~d 에 이미 있음 (병합 대기 F그룹) |
-| **T49a** | 정책 적용 1: 메시지 추가 줄, 이행 시 .bak 한 번 보존, 목록 화면에서 못 여는 저장 회색+사유 | S | 신규 queued |
-| **T49b** | 정책 적용 2: 설정 관대 읽기(키별 기본값) + 사용자 지도/지휘관 건너뛰기 메시지 + savecompat 테스트에 설정·지휘관 케이스 | S | 신규 queued (T48a 이후) |
-| **T49c** | 출시 게이트: 캠페인 v1..현재 옛 파일 고정 샘플을 테스트 자료로 보관, 열려야 통과 (이행 깨짐 방지) + 스키마 올릴 때 샘플 추가를 카드 체크리스트에 넣기 | S | 신규 queued |
+| (exists) | Campaign additive rule + migration v3~v7, SaveCompatSelfTest, corrupt original .bak, slot·autosave | - | Already in T01/T19a~d/T42a~d (pending-merge group F) |
+| **T49a** | Policy application 1: added message line, keep .bak once on migration, greyed-out + reason for unopenable saves in the list screen | S | new queued |
+| **T49b** | Policy application 2: lenient settings read (per-key defaults) + user map/commander skip message + settings·commander cases in the savecompat test | S | new queued (after T48a) |
+| **T49c** | Release gate: keep fixed old-file samples of campaign v1..current as test data, they must open to pass (prevents migration breakage) + add 'add a sample when raising the schema' to the card checklist | S | new queued |
 
-미결 질문 없음 (모두 기본값으로 진행). 사용자가 바꾸고 싶으면 '캠페인도 옛 것 거부' 정도가 유일한 분기.
+No open questions (proceed with all defaults). If the user wants to change something, 'reject old campaign files too' is the only branch.

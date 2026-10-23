@@ -1,37 +1,36 @@
-# Korean Division 단기 로드맵 — 지시 · 진행 순서 · 대기열 (세션마다 읽음, 50줄 이내)
-> 목적: 지금 할 일 순서 · 확인 대기 · 결정된 단기 항목만. 상세 · 장기 · 보류 = `docs/ROADMAP_LONG.md` (항목 이름으로 Grep). 규칙: 지시 없으면 여기 저장 · 50줄 초과 시 가장 오래된 항목을 ROADMAP_LONG 으로.
+# Korean Division Short-Term Roadmap — Directives · Progress Order · Queue (read every session, within 50 lines)
+> Purpose: order of what to do now · awaiting confirmation · decided short-term items only. Details · long-term · on hold = `docs/ROADMAP_LONG.md` (Grep by item name). Rule: if there is no directive, save here · when over 50 lines, move the oldest item to ROADMAP_LONG.
+> State 2026-10-23 ~13:30: version 0.3 reached (tag v0.3 = 2531ec16; 0.4 = AI improvements, ops/VERSIONS.md). Merge line merge/0.2-final tip 6a47f3c8. Verified-finished items moved to LONG 'Done (moved from SHORT 2026-10-23)'.
 
-## 진행 순서
-2. 대형 완화 + 횡대 2열 기본 + choke + N33/N51 (上) — 짧은 이동 평행이동 · 허용 오차 1.5~2칸 · 횡대 간격 (상세: LONG)
-3. 포병 · 중화기 묶음 (上) — 방렬 지연 · 자리 유지 · heavy 간격 · 중기관총 사거리 32 · 곡사포 조정 사격 · 중기관총 최후 저지선 · 야전포 70→100 · 곡사 splash 3 (상세: LONG)
-23. 사상자 속도 조정 (中~上) — 먼 거리 명중 ×0.5 · 소총 근거리 ×0.85 · 중대 후퇴 기준 사상률 30~40% (상세: LONG)
-22. 전투 문제 9건 — 24번 밤 soak 뒤 새 수치로 재보고 (상세: LONG)
-- 전술 AI 3단계 + 대량 시험 (금요일 10-23 목표, docs/TACTICAL_AI_STAGE3_PLAN.md)
+## Progress order
+1. Merge round MERGE-A (running): ui-log-transparent merged (6a47f3c8). Pending, in order: t57f-override-header be1d5a7f (T57→T57c→T57f) · review-followups-small a10c6055 · f3-followups 9b2eeed5 · t61d-company-merge 545dbe84 · ti2-p0 217207d0. compatgate mandatory on FV/schema steps; report results in ops/MERGE_PROGRESS.md
+2. Golden bundle (上, one window): G1 kd/water-fire-open 6142cb8c (not started) + NEW-3 kd/new3-prone-drag 6c8a7ae7 + NEW-4 kd/new4-choke-queue a7636dad (chokeEnabled approved 2026-10-23; choke + N33/N51 jitter) → regenerate goldens once (detcheck now 672804207fc4e486 3c42aea49324248e)
+3. Personnel line: T61d (in MERGE-A; 12:1x decisions: annihilated-company re-form stays manual · supply-reserve setting for auto recruits · PersonnelLog held) → T61e personnel UI (kd/t61e-personnel-ui 12cc70f1, WIP, stacked on T61d 714da8f2; P1~P12 decided)
+4. Art A1~A5: taegukgi (gt/taegukgi-detail 040cfd87) + B2 re-render (kd/b2-deferred-units-2 8340da71) + A3 shape-changed re-render (kd/a3-rerender) → A4 mid buildings·terrain·props·decals (sheet approval) → A5 unit colour draft
+5. Integrated balance pass after goldens (T12/T15, n>=24): casualty speed tuning (中~上: long-range hit ×0.5 · rifle close ×0.85 · company retreat 30~40%, #23) · AG1 surrender enable · 9 combat problems re-report (#22; soak resumed 12:50, ops/SOAK_2026-10-23.md)
+6. Tactical AI: stage 3A/3B/3B2 merged; mass test = soak above; 3C/3D and the rest = 0.4
+7. GitHub batch only on the user's command (see Waiting)
 
-## 진행 중 · 확인 대기
-- 속보 걷기 모션 (quickstep) — 확인 대기
-- armour · 쇼샤 재렌더 시트 + 오스틴 팀색 표식 (austin_fix3.png) — 확인 뒤 병합, 그 뒤 참호 폭 2배 (trenchvis)
-- mongol-look 시트 18 — 몽골 기병 뾰족 모자 · 허리띠 프로토타입 확인
-- 확인 대기 그림 · UI — prone_batch · missing_theme_units · surrender_pose · new_units · 진행 막대 · 행진 사격 화염 · UI 확인 4건 (상세: LONG)
+## In progress · awaiting confirmation
+- Agents in flight: T61e (kd/t61e-personnel-ui 12cc70f1) · A3 re-render (kd/a3-rerender, tip f979e23f = base, no own commit yet) · B2 re-render (kd/b2-deferred-units-2 8340da71; horse-artillery edge-contact 8 cells fix decided) · taegukgi (gt/taegukgi-detail 040cfd87, v2 approved by the user; merges with the Korean standard-bearer re-render) · soak (measure)
+- Awaiting user decisions: ops/USER_DECISIONS_QUEUE.md items 8~16 (33 regiment commanders, translation open items, flag law text, held branches, 0.2.1 play notes, NEW-2 LOD0 not reproducible)
+- Quickstep walking motion (quickstep) — awaiting confirmation (sheet only, no branch; unverified)
+- armour · 쇼샤 re-render sheet + Austin team-color marker (austin_fix3.png) — (unverified: ART_STATE 'unknown'), then trench width 2x (trenchvis)
+- mongol-look sheet 18 — confirm Mongol cavalry pointed hat · waist belt (look merged as lookfix; user review U03 pending)
+- Art · UI awaiting confirmation (unverified): missing_theme_units · surrender_pose (discard candidates) · new_units (post-hoc review) · progress bar · march-fire muzzle flash (T39e c837eb87, needs a game-side MarchMuzzle fix = user decision) · 4 UI checks (details: LONG)
 
-## 결정됨 · 단기 대기열
-- 엎드려쏴 자세 문제 (中) — 총 옆으로 쏨 · 개머리판 통과, prone 프레임 재렌더 (상세: LONG)
-- 몽골 · 마적 외형 구분 (下) — 델 두루마기 · 뾰족 모자 / 잡다한 민간복 · 머리 수건 (상세: LONG)
-- 건물 크기 확대 (上) — 민가 3×3~3×4, 큰 건물 4×6, 지도 · 엄폐 · 길찾기 갱신 (상세: LONG)
-- 장갑열차 · 화물열차 (上 설계 · 구현) — 조종 + 스크립트 이동, 화물 = 미션 목표, 철도 지형 (상세: LONG)
-- 하천 포함 (上) — 장갑열차 다음, 같은 틀 (상세: LONG)
-- 공병 (上) — 철조망 절단, 참호 구축 제외, 돌격대도 공병 역할, 참호 돌파 묶음과 함께 (상세: LONG)
-- 통신 · 지휘 구조 알파 (上) — 사단 사령부 · 통신 지연, 기마 전령 · 유선 · 연대 지휘소 · 대대 간이 테이블, 난이도 설정 (상세: LONG)
-- 지휘 편의 ①~⑥ (上) — 미션 중 저장 · 속도 0.5~3배 · 부대 목록 패널 · 명령 대기열 등 (상세: LONG)
-- 전투 중 연대 선택 (中~上) — 숫자 = 연대, Alt+숫자 = 대대 (규칙 결정 9 안 1), 기존 Alt+숫자 편입 키 이동 (상세: LONG)
-- 캠페인 홈 탭 (上) — 설계 문서 먼저 (docs/CAMPAIGN_HOME_DESIGN.md) → 승인 → 구현 (상세: LONG)
-- 캠페인 규칙 결정 1~15 — 보급품 한계 · 사상자 25% 부상 복귀 · 패배 재도전 / 분기 · 저장 슬롯 (상세: LONG)
-- 전투 외 검토 6묶음 (中~下) — 조작 · 정보 · 설정 · 성능 · 소리 · 캠페인 기반, 내일 이후 (상세: LONG)
-- 저장소 C:\works\ 이동 (上) — 에이전트 끝난 뒤, worktree repair · 절대 경로 갱신 (상세: LONG)
+## Decided · short-term queue
+- Engineers (上): assault troops also take the engineer role — (unverified; pioneers + wire cutting are done)
+- Command conveniences ①~⑥ (上) — remaining: speed 0.5~3x · unit list panel · etc. (unverified; ①⑤ and order queue are done) (details: LONG)
+- Regiment selection in combat (中~上) — number = regiment, Alt+number = battalion (rule decision 9 option 1), move the existing Alt+number assignment key (unverified, details: LONG)
+- Campaign rule decisions 1~15 — supply limit · 25% of casualties return as wounded · defeat retry / branching · save slots (unverified; T19 split T19a~d, details: LONG)
+- Non-combat review, 6 bundles (中~下) — controls · info · settings · performance · sound · campaign foundation (unverified, details: LONG)
+- Move repository (上) — repo now at C:/gameProject; deleting the old folders is blocked on U02 (ops/QUEUE.md T20) (details: LONG)
 
-## 대기 · 보류 · 추후 (2026-10-22 결정)
-- [결정 2026-10-22] 대기 중 재보고: 돌격 예비 시간 (N47) · 착검 멈춤 범위 (N57) (상세: LONG)
-- [결정 2026-10-22] 보류: 세력 추가 후보 (적군 / 극동공화국)
-- [결정 2026-10-22] 추후 (사용자 진행): 유닛 설명 입력 · 에피소드 설계
-- [나중에 할 일 2026-10-22] **GitHub 관련 일괄**: ① seungwoo3656 계정의 새 private 저장소 URL 받기 → game-tools 내부 bare(`C:/works/_git/game-tools.git`, 1커밋 스냅샷) 최신으로 갱신 후 push ② korean-division 도 새 저장소로 새로 시작할지 결정(현재 origin push 차단) ③ 레거시 주소 커밋 거부 git 훅 설치 허용/직접 설치 ④ GitHub 계정 이메일 목록 정리 · Education 영향 확인(사용자). 상세 = `docs/DECISIONS_PENDING.md`, `docs/HANDOFF.md` '레거시 이메일 처리'
-- [결정 2026-10-22] 추후 (사용자 진행): 캠페인 호감 · 사기 — 증감 값(+1/+2/+3/+5)과 소비처(임계값 · 효과) (상세: campaign/spec_c1e1.txt R11, 캠페인 디자인 v1.txt §28)
+## Waiting · on hold · later (decided 2026-10-22)
+- [Decided 2026-10-22] Re-report while waiting: assault reserve time (N47) · bayonet-fix halt range (N57) (details: LONG)
+- [Decided 2026-10-22] On hold: faction addition candidates (Red Army / Far Eastern Republic)
+- [Decided 2026-10-22] Later (user proceeds): unit description input · episode design
+- [To do later 2026-10-22] **GitHub batch**: ① get the URL of the new private repository on the seungwoo3656 account → update the game-tools internal bare (`C:/works/_git/game-tools.git`, 1-commit snapshot) to latest, then push ② decide whether to start korean-division fresh in the new repository too (origin push currently blocked) ③ allow/directly install the git hook that rejects commits with legacy addresses ④ clean up GitHub account email list · check Education impact (user). Details = `docs/DECISIONS_PENDING.md`, `docs/HANDOFF.md` 'legacy email handling'
+- [Decided 2026-10-22] Later (user proceeds): campaign favor · morale — increment values (+1/+2/+3/+5) and sinks (thresholds · effects) (details: campaign/spec_c1e1.txt R11, 캠페인 디자인 v1.txt §28)
+- [Decided 2026-10-23] Held designs: prisoners·loot · auto-pause · order cancel · checkpoint (UNDO-b/c · TPOW-c · CK3) · delegation UI improvement (0.4)

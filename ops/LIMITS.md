@@ -1,30 +1,30 @@
-# LIMITS - 현재 한도 (한 곳, 2026-10-22; 값 변경은 사용자 지시 때만)
+# LIMITS - current limits (one place, 2026-10-22; values change only on user instruction)
 
-| 항목 | 값 | 비고 |
+| Item | Value | Note |
 |---|---|---|
-| 에이전트 동시 수 | **9 (0.3 부터, 다음 세션부터)** | 사용자 지시 2026-10-23 (이전 30). 하네스 환경변수 CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS 는 사용자가 바꾼다(현재 30) |
-| 上(opus) 슬롯 | **3 (0.3 부터)** | 사용자 지시 2026-10-23 (이전 8). 재활용 없음, 중단은 사용자 지시 때만 |
-| 아트 렌더 풀 | 8 (빈 RAM <6GB 이면 7) | 사용자 지시 2026-10-22. `heavy_gate.ps1 -Render`. 대기 프로세스는 슬롯을 세지 않고 실행 중 make_unit 자식만 센다 |
-| 비아트 heavy 풀 (빌드·selftest·stress) | 3 (그중 빌드 전용 1 예약) | 아트와 별도 풀. 빌드는 `-Build`(3칸까지), 그 외는 2칸까지. 아트는 합산 한도의 마지막 칸을 못 쓴다 |
-| 무거운 작업 합산 | 10(빈 RAM >=6GB 이면 12) | 사용자 승인 2026-10-22 15:3x 상향 12; 사용자 승인 AO1(2026-10-22): 8→10, 빈 RAM 3GB 미만이면 게이트 닫힘(heavy_gate.ps1 RAM 가드). 렌더 레인은 make_unit 자식만 센다(드라이버 이중 계산 버그 수정 564cc53). 게이트 v2: 대기 시간 로그 `ops/gate_wait.log`(시작·대기초·점유자 PID/이름), 다른 PID 는 절대 종료하지 않음 |
-| Gemini pro | 3 | 동시 |
-| Gemini flash | 3 | 동시. 일일 예산은 `hub.py policy` |
-| 한 파도 에이전트 | 12 권장 (24 는 상한) | |
-| 병합 잠금 | 병합 담당(merger, 상시)만 보유 | `C:/gameProject/.git/kd-merge.lock` 디렉터리 + `started.txt`(시작 시각). 작업 에이전트는 잠금을 잡지 않고 wip-ready 로 끝. 30분 넘으면 만료(merger 가 보유자 확인 후 정리). 잠금이 있으면 대기 루프 없이 보고·정지 |
-| 지휘자 세션 | 파도(한 번의 발주 묶음)마다 교체 권장 | 세션 컨텍스트 200k 전에 STATE.md 갱신 후 새 세션. Fable 권고(2026-10-22): 에이전트 12 · 上 3 · 무거운 작업 6 으로 낮추기 — 사용자 지시 우선, 값은 그대로 둠 |
-| 에이전트 컨텍스트 | 200k 넘기 전 정지 | S=L 은 사전 분할 |
+| Concurrent agents (max_total) | **12** (opus <= 3) | user instruction 2026-10-23 13:5x (earlier same day: 9; before that 30). Harness env var CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS is changed by the user (currently 30); the conductor session keeps to 12. agentHub/guard_config.json max_total = 12 |
+| 上(opus) slots | **3 (from 0.3)** | user instruction 2026-10-23 (was 8). No recycling; stop only on user instruction |
+| Art render pool | 8 (7 if free RAM <6GB) | user instruction 2026-10-22. `heavy_gate.ps1 -Render`. Waiting processes do not count as slots; only running make_unit children count |
+| Non-art heavy pool (build·selftest·stress) | 3 (1 of them reserved for builds) | Separate pool from art. Builds use `-Build` (up to 3 slots), others up to 2. Art cannot use the last slot of the combined limit |
+| Heavy jobs combined | 10 (12 if free RAM >=6GB) | user approval 2026-10-22 15:3x raised to 12; user approval AO1 (2026-10-22): 8→10; gate closes if free RAM <3GB (heavy_gate.ps1 RAM guard). Render lane counts only make_unit children (driver double-count bug fixed 564cc53). Gate v2: wait-time log `ops/gate_wait.log` (start·wait seconds·holder PID/name), never kills another PID |
+| Gemini pro | 3 | concurrent |
+| Gemini flash | 3 | concurrent. Daily budget via `hub.py policy` |
+| Agents per wave | 12 recommended (24 is the cap) | |
+| Merge lock | held only by the merge role (merger, always-on) | `C:/gameProject/.git/kd-merge.lock` directory + `started.txt` (start time). Work agents do not take the lock; they finish with wip-ready. Expires after 30 min (merger checks the holder and cleans up). If the lock exists, report and stop, no wait loop |
+| Conductor session | replace every wave (one ordering batch) recommended | Update STATE.md and start a new session before session context reaches 200k. Fable advice (2026-10-22): lower to agents 12 · 上 3 · heavy jobs 6 — user instruction takes precedence, values left as is |
+| Agent context | stop before exceeding 200k | S=L cards are split in advance |
 
-현재 실제 운영 상태 vs 목표: 목표 = 아트 렌더 8 + 비아트 heavy 3 분리 풀 (gate-v2 설치 뒤) · 실제 운영 = 단일 풀 10/12 (heavy_gate.ps1, gate-v2 미반영; 표의 값은 목표·상한 기준).
+Current actual operating state vs target: target = art render 8 + non-art heavy 3 separate pools (after gate-v2 install) · actual = single pool 10/12 (heavy_gate.ps1, gate-v2 not yet in; table values are target/cap).
 
-## 20분 보조 점검 루프 (유휴 시에만, 이벤트가 없을 때) (8줄)
-1. harness `GET http://localhost:8500/api/state` 조회 (컨텍스트 · 캐시 · 토큰 · 슬롯).
-2. 컨텍스트 >=200k 에이전트 → 병합/커밋 후 정지 지시.
-3. 한도(에이전트 · 上 · 무거운 작업) 초과면 발주 보류.
-4. 빈 슬롯 → QUEUE.md 의 선행 해소된 다음 카드 (上 슬롯은 R3 우선).
-5. wip-ready 가 1개라도 있고 merger 가 없으면 merger 발주(상시), MERGE_QUEUE.md 순서 확인.
-6. ops/STATE.md 갱신 (main 해시 · 에이전트 · 락 · 한도).
-7. 낭비 패턴 발견 시 watch/LEAKS.md 에 숫자와 함께 기록 (숫자 없으면 기록하지 않음).
-8. 사용자 결정이 필요하면 ops/DECISIONS.md 에만 적고, 사용자에게는 한 줄로 알림.
+## 20-minute auxiliary check loop (idle only, when there are no events) (8 lines)
+1. Query harness `GET http://localhost:8500/api/state` (context · cache · tokens · slots).
+2. Agent with context >=200k → order merge/commit then stop.
+3. If limits (agents · 上 · heavy jobs) are exceeded, hold orders.
+4. Free slot → next card in QUEUE.md whose prerequisites are resolved (上 slot: R3 first).
+5. If at least one wip-ready exists and there is no merger, order a merger (always-on); check MERGE_QUEUE.md order.
+6. Update ops/STATE.md (main hash · agents · lock · limits).
+7. On finding a waste pattern, record it in watch/LEAKS.md with numbers (no numbers, no record).
+8. If a user decision is needed, write it only in ops/DECISIONS.md and notify the user in one line.
 
-## 지휘자(코디네이터) 역할 한정
-발주 · 요약 · 결정 장부 · 점검만(흐름 = ops/PIPELINE.md). 코드 작성 · 직접 병합 · 긴 조사는 하지 않고 에이전트(scout 포함)에게 맡긴다. 파도마다, 또는 컨텍스트가 커지면 STATE.md 로 인계하고 새 세션으로 교체(L8).
+## Conductor (coordinator) role limits
+Ordering · summarizing · decision ledger · checks only (flow = ops/PIPELINE.md). Does not write code, merge directly, or do long investigations; leaves them to agents (including scouts). Each wave, or when context grows, hand off via STATE.md and replace with a new session (L8).

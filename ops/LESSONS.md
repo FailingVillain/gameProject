@@ -1,35 +1,33 @@
-# LESSONS - 지휘자 핵심 규칙 (13개, 2026-10-22 감독관 A절 반영; 원본 31+ = LESSONS_ARCHIVE.md, 읽지 않음)
-> 에이전트용 교훈(원 9·13~17·19~22·26·27)은 역할 카드/AGENT_RULES/PIPELINE §1-d 로 옮겼다. 도구가 main 에 반영되면 K1·K4·K10 을 한 줄씩 줄인다.
+# LESSONS - conductor core rules (13, reflects supervisor section A of 2026-10-22; original 31+ = LESSONS_ARCHIVE.md, not read)
+> Agent-facing lessons (orig. 9·13~17·19~22·26·27) moved to role cards/AGENT_RULES/PIPELINE §1-d. Once tools land in main, shrink K1·K4·K10 by one line each.
 
-1. **발주 전 preflight** (원 1·24·30): `preflight.ps1` + `card_id.ps1` + `roadmap_check.ps1` 결과를 프롬프트에 1줄 첨부. QUEUE 행은 낡을 수 있다 → MERGE_QUEUE 완료표·main 코드·워크트리 `git status`·브랜치 중복 대조 (중복 발주 4건 336k).
-2. **역할은 작업 종류에 맞게** (원 2): 코드 작업을 docs(haiku)에 주지 않는다 (T26). 도구로 못 막는 지휘자 판단.
-3. **스택 발주** (원 3): 기반 커밋 해시 · 선행 리뷰 blocker 상태 명시. 웨이브 2 이후 base 는 통합 브랜치 하나, 스택 ≤3 (PIPELINE §1-a).
-4. **번호 올리는 브랜치** (원 4): FV/Replay 는 발주 때 정하지 않는다 — 임시값(기반+1) + `fv_claim`, 병합 라인이 `fv_assign` 으로 확정.
-5. **L 카드 사전 분할** (원 5): 190k 이상 12건. 200k 넘는 카드는 쪼개고, 재개 대신 새 에이전트.
-6. **세부 설계 없는 카드** (원 6): '기본 꺼짐 스위치 + 초안 수치'를 수용 기준에 적는다. 결정 선택지에는 키 이름·대상을 명시.
-7. **목표 미달은 정직 보고, wip-ready 금지** (원 7): T06·T16·T31c.
-8. **wip-ready 보고마다 QUEUE·FV 동기화** (원 10): 낡은 행이 중복 발주 원인. QUEUE 상태가 카드 파일에서 생성되면 삭제.
-9. **리뷰 필수** (원 11): 리뷰 29건 전부 결함 포착, 차단 5건 이상. 병합 안 하는 정책에서도 유지.
-10. **재발주 전 정지 확인** (원 8+18 병합): 출력 0바이트·워크트리 무변화만으로 정지 아님 — 러너 PID · scratchpad · heavy_gate 확인 (`watchdog.ps1`, SUSPECT_STALL 만 재발주). 장시간 렌더는 에이전트 수명과 분리.
-11. **지휘자 컨텍스트 = 최대 누수** (원 29): 파도마다 교체(세션 규칙은 사용자 결정), 완료 알림당 핵심 3~4줄, 로그 줄 ≤200자.
-12. **게이트는 빌드를 굶긴다** (원 25, 게이트 v2 main 반영 뒤 삭제): 렌더 레인이 풀을 채우면 정체 25분+ (8회 이상). 현재 main 에 v2 미반영이라 유지.
+1. **Preflight before ordering** (orig. 1·24·30): attach the result of `preflight.ps1` + `card_id.ps1` + `roadmap_check.ps1` to the prompt in 1 line. QUEUE rows can be stale → cross-check MERGE_QUEUE completion table · main code · worktree `git status` · duplicate branches (4 duplicate orders, 336k).
+2. **Role fits the work type** (orig. 2): do not give code work to docs (haiku) (T26). Conductor judgment that tools cannot block.
+3. **Stacked orders** (orig. 3): state base commit hash · status of prerequisite review blockers. After wave 2 the base is a single integration branch, stack ≤3 (PIPELINE §1-a).
+4. **Branches that bump numbers** (orig. 4): do not fix FV/Replay at order time — temporary value (base+1) + `fv_claim`, the merge line finalizes with `fv_assign`.
+5. **Pre-split L cards** (orig. 5): 12 cases at 190k+. Split cards over 200k; new agent instead of resume.
+6. **Cards without detailed design** (orig. 6): write 'default-off switch + draft numbers' in the acceptance criteria. For decision options, name the key and target.
+7. **Report shortfalls honestly, no wip-ready** (orig. 7): T06·T16·T31c.
+8. **Sync QUEUE·FV on every wip-ready report** (orig. 10): stale rows cause duplicate orders. Delete once QUEUE status is generated from card files.
+9. **Review is mandatory** (orig. 11): all 29 reviews caught defects, 5+ blockers. Kept even under the no-merge policy.
+10. **Confirm stall before reorder** (orig. 8+18 merged): 0-byte output and unchanged worktree alone do not mean stalled — check runner PID · scratchpad · heavy_gate (`watchdog.ps1`, reorder only SUSPECT_STALL). Long renders are decoupled from agent lifetime.
+11. **Conductor context = biggest leak** (orig. 29): replace every wave (session rule is a user decision), 3~4 key lines per completion notice, log lines ≤200 chars.
+12. **The gate starves builds** (orig. 25, delete after gate v2 lands in main): when the render lane fills the pool, stalls of 25+ min (8+ times). Kept since main does not yet have v2.
 
-13. **규칙을 바꾸는 카드는 그 규칙을 검증하는 묶음을 전부 돌린다** (사용자 승인 2026-10-22): 자기 묶음만 돌리면 다른 묶음의 낡은 기대값을 놓친다 — T37 대리 지연 단계 변경이 `squads` 2건을 깨뜨림(병합 전부터 FAIL), 새 미션 JSON 7개가 `PropsSelfTest`(propScatter 요구)를 놓침. 발주 프롬프트에 '관련 묶음(예: squads·command·drill·officer / props·n77·n12·terrain·missions)을 모두 돌릴 것'을 적는다.
+13. **A card that changes a rule runs every suite that verifies that rule** (user approval 2026-10-22): running only its own suite misses stale expectations in others — the T37 proxy delay step change broke 2 `squads` tests (FAIL even before merge), 7 new mission JSONs missed `PropsSelfTest` (requires propScatter). Write 'run all related suites (e.g. squads·command·drill·officer / props·n77·n12·terrain·missions)' in the order prompt.
 
-보관 처리: 23=28·24=30 중복 삭제, 12(옛 저장소 패치)는 복원 단계 종료로 보관.
+Archive handling: 23=28·24=30 duplicates deleted, 12 (old repo patch) archived as the restore phase ended.
 
-- 2026-10-23 발주 규칙(사용자 승인, 토큰 집계 근거): general-purpose 에이전트를 지양하고 전문 역할(feature/sim/reviewer/docs/measure/spec/merger)만 쓴다. 집계상 서브에이전트 합계가 지휘자 세션보다 크고(캐시 읽기 9.5B 대 최대 세션 1.6B) general-purpose opus 가 에이전트당 평균 약 38M 으로 가장 무겁다.
-- 2026-10-23 발주 규칙: opus 에이전트는 카드를 더 잘게 쪼개고 프롬프트에 턴 상한(예: 80턴)을 적는다. 상한에 닿으면 멈추고 현재 상태·남은 일을 보고하게 한다.
+- 2026-10-23 ordering rule (user approval, based on token totals): avoid general-purpose agents; use only specialist roles (feature/sim/reviewer/docs/measure/spec/merger). By totals, subagents sum to more than the conductor session (cache reads 9.5B vs largest session 1.6B), and general-purpose opus is heaviest at about 38M per agent on average.
+- 2026-10-23 ordering rule: split opus agent cards finer and write a turn cap in the prompt (e.g. 80 turns). On hitting the cap, stop and report current state · remaining work.
 
-- 2026-10-23 규칙(사용자 승인): 150줄 넘는 명령 출력은 `python C:/works/agentHub/route.py -- <명령>` 으로 돌려 로그 경로와 요약만 본다(요약은 단서; 인용 줄은 저장 로그에서 확인).
-- 2026-10-23 규칙(사용자 승인): 인계는 `python C:/works/agentHub/handoff_gen.py` 출력(out/HANDOFF_AUTO.md, 측정값만)에 손으로 쓴 10줄 이내만 더한다. 저장소에는 쓰지 않는다.
+- 2026-10-23 rule (user approval): run command output over 150 lines via `python C:/works/agentHub/route.py -- <command>` and see only the log path and summary (summary is a lead; verify quoted lines in the saved log).
+- 2026-10-23 rule (user approval): handoff = `python C:/works/agentHub/handoff_gen.py` output (out/HANDOFF_AUTO.md, measured values only) plus at most 10 hand-written lines. Not written to the repo.
 
-- 2026-10-23 측정 교훈(사실): 에이전트 시작 비용 실측 — 아무 일도 안 하는 haiku 에이전트 첫 호출이 36.8k 토큰, 전부 캐시 생성(해당 모델 캐시가 식은 상태). 데워진 sonnet 에이전트는 시작 시 약 24.2k 캐시 읽기(시스템 프롬프트·도구·CLAUDE.md·메모리 인덱스 공유 접두부) + 약 14k 캐시 생성. 즉 에이전트 1개 기동 ≈ 38k 토큰이고, 해당 모델 접두부가 데워져 있을 때만 싸다. 매 턴 컨텍스트 전체 재읽기는 새 에이전트·재사용 에이전트 모두 동일. 근거: 서브에이전트 jsonl 의 usage 필드(첫 assistant 줄). (출처: seung-23 세션 측정, 재사용 규칙은 사용자 결정 전)
+- 2026-10-23 measurement lesson (fact): measured agent startup cost — first call of a do-nothing haiku agent is 36.8k tokens, all cache creation (that model's cache was cold). A warm sonnet agent at start reads about 24.2k cache (shared prefix: system prompt·tools·CLAUDE.md·memory index) + creates about 14k. So starting one agent ≈ 38k tokens, cheap only when that model's prefix is warm. Re-reading the whole context each turn is the same for new and reused agents. Source: usage field of the subagent jsonl (first assistant line). (Source: seung-23 session measurement; reuse rule not yet a user decision)
 
-- 2026-10-23 교훈(병합 시험 그룹): FV·Replay·스키마 번호를 올리는 병합 단계는 savecompat 외에 **compatgate(스키마마다 호환 샘플 1개 필요)** 를 반드시 돌린다. N3c-7(T61 스키마 15)에서 빠져 0.2.1 전체 selftest 에서 발견됨.
+- 2026-10-23 measurement (fact, seung-23 session): subagent cache lifetime is about 5 minutes. Resuming a haiku probe at 3-minute interval reads cache including the agent-specific part (29,142 read/7,715 created); at 8 minutes it reads only the shared prefix 23,886 and recreates the specific part 12,971. 15/30-minute measurements aborted.
 
-- 2026-10-23 측정(사실, seung-23 세션): 서브에이전트 캐시 유지 시간은 약 5분. haiku 프로브 재개 시 3분 간격은 에이전트 고유 부분까지 캐시 읽기(29,142 읽기/7,715 생성), 8분 간격은 공통 접두부 23,886만 읽고 고유 부분 12,971 을 다시 생성. 15분/30분 측정은 중단.
+- 2026-10-23 lesson (safety-hook block response, user approval): when the safety hook (kd_guard.ps1) blocks a command, **do not retry or look for a rewording workaround.** First judge the intent — if it is a real destructive action, report to the user and proceed only after approval; if it is a false positive from text in a document, do not touch the hook, report that fact and the evidence to the user, then proceed (write documents with the Write/Edit tools). The hook regex-checks Bash command text, so writing destructive command names into a document via a Bash heredoc is falsely flagged.
 
-- 2026-10-23 교훈(안전 훅 차단 대응, 사용자 승인): 안전 훅(kd_guard.ps1)이 명령을 막으면 **재시도하거나 우회 표현을 찾지 않는다.** 먼저 의도를 판단한다 — 실제 파괴 동작이면 사용자에게 보고하고 승인 뒤에만, 문서 속 글자가 걸린 오탐이면 훅을 건드리지 않고 그 사실과 근거를 사용자에게 보고한 뒤(문서는 Write/Edit 도구로 적는다) 진행한다. 훅은 Bash 명령 텍스트를 정규식으로 검사하므로 문서에 파괴적 명령 이름을 Bash heredoc 으로 적으면 오탐된다.
-
-- 2026-10-23 교훈(승격 스크립트): promote_v03.ps1 의 verify 단계가 `git bundle verify ... 2>&1` 의 stderr("is okay")를 PowerShell 5.1 NativeCommandError 로 받아 중단했다. 다음 승격 전 `2>&1` 제거 또는 ErrorActionPreference 처리 필요. 태그·번들·복사는 verify 앞 단계에서 이미 완료됐고 수동 검증으로 마무리함.
+- 2026-10-23 lesson (promotion script): the verify step of promote_v03.ps1 received the stderr ("is okay") of `git bundle verify ... 2>&1` as a PowerShell 5.1 NativeCommandError and aborted. Before the next promotion remove `2>&1` or handle ErrorActionPreference. Tag·bundle·copy steps before verify had already completed, and it was finished with manual verification.

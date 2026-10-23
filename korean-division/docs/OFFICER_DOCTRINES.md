@@ -1,49 +1,49 @@
-# 장교 학파 · 적 세력 성향 (2026-10-21)
+# Officer Schools · Enemy Faction Dispositions (2026-10-21)
 
-> 장기 로드맵 (장교 성향). 학파 = 대한제국군 장교에만. 적 장교 = 학파 없음, **세력별 성향 2~3개** (봉천 4개, 마적 = 봉천 최하위 성향 1개 공유).
-> AI 경향 축 (공통): 지휘 지연 · 기동 선호 (정면 ↔ 측면/침투) · 돌격 성향 · 화력 준비 길이 · 후퇴 문턱 (기준 = 중대 사상률 30~40%) · 예비대 투입 방식 · 목표 도달 뒤 행동 (계속 ↔ 굳히기) · 특기.
+> Long-term roadmap (officer dispositions). Schools = Korean Empire army officers only. Enemy officers = no school, **2~3 dispositions per faction** (Fengtian 4, bandits = share Fengtian's lowest disposition 1).
+> AI tendency axes (common): command delay · maneuver preference (frontal ↔ flank/infiltration) · assault tendency · length of firepower preparation · retreat threshold (criterion = company casualty rate 30~40%) · how reserves are committed · behavior after reaching the objective (continue ↔ consolidate) · specialty.
 
-## 1. 대한제국군 학파 (사용자 승인 2026-10-21)
-| 학파 | 장교 성향 | 전술 성향 | AI 경향 | 연구 연결 |
+## 1. Korean Empire army schools (user approved 2026-10-21)
+| School | Officer disposition | Tactical disposition | AI tendency | Research link |
 |---|---|---|---|---|
-| 독일 | 독단 · 재량 (임무형 지휘), 부사관 신뢰 | 1918 돌격대식 침투 · 약점 돌파 · 측면 우회 · 탄력 방어 후 즉각 반격 | 지휘 지연 짧음 · 측면/침투 선호 · 돌격보병 활용 · 후퇴 문턱 중 · 반격 빠름 | 침투 전술 · 돌격대 |
-| 불란서 | 신중 · 계획적, 상부 통제 · 시간표 | "화력이 죽인다" — 포병 준비 → 정해진 목표까지 단계 전진 | 포격 준비 김 · 화력 후 전진 · 진격 느림 · 손실 적음 · 목표에서 굳힘 | 이동탄막 협동 · 포병 |
-| 노서아 | 완고 · 인내, 손실 감수 | 병력 집중 · 정면 공세 · 착검 돌격 전통 · 끈질긴 방어 | 돌격 선호 · 후퇴 문턱 높음 · 예비대 일괄 투입 · 정찰/조율 약함 | 착검 돌격 · 방어 진지 |
-| 평양 (영국식 + 러시아식) | 규율 · 훈련, 균형형 | 영국식 소총 사격술 · 화력과 기동 · 점령 후 굳히기 + 러시아식 끈기 | 소총 사격 효율 · 점령 후 굳히기 · 후퇴 문턱 중상 · 표준형 (신설 부대 기본) | 사격술 · 대형 |
-| 북경 (보정군관학교, 보정학파) | 실리 · 정치적, 병력 보존 | 일본식 공세 정신 (야습 · 기습) + 군벌식 실리 · 포위/우회 · 불리하면 빠른 철수 | 후퇴 문턱 낮음 · 야간/기습 · 포위 기동 · 화력 준비 짧음 | 야간 전투 · 기병/기동 |
-- 인물: 김 참장 · 김주현 · 남 참장 = 독일 / 황손 이태 = 평양 / 황자 이석 · 민 대장 = 노서아.
+| German (독일) | Independent action · discretion (mission-type command), trusts NCOs | 1918 stormtrooper-style infiltration · weak-point breakthrough · flank bypass · elastic defense then immediate counterattack | short command delay · prefers flank/infiltration · uses assault infantry · medium retreat threshold · fast counterattack | infiltration tactics · assault troops |
+| French (불란서) | Cautious · planned, higher-level control · timetable | "Firepower kills" — artillery preparation → phased advance to a fixed objective | long barrage preparation · advance after firepower · slow advance · few losses · consolidate at the objective | creeping barrage cooperation · artillery |
+| Russian (노서아) | Stubborn · patient, accepts losses | Force concentration · frontal offensive · bayonet charge tradition · tenacious defense | prefers assaults · high retreat threshold · commits reserves all at once · weak reconnaissance/coordination | bayonet charge · defensive positions |
+| Pyongyang (평양) (British style + Russian style) | Discipline · training, balanced | British-style rifle marksmanship · firepower and maneuver · consolidate after occupation + Russian-style tenacity | rifle fire efficiency · consolidate after occupation · medium-high retreat threshold · standard type (default for newly formed units) | marksmanship · formations |
+| Beijing (북경) (Baoding Military Academy, Baoding school) | Pragmatic · political, preserves forces | Japanese-style offensive spirit (night raids · surprise attacks) + warlord-style pragmatism · encirclement/bypass · quick withdrawal when unfavorable | low retreat threshold · night/surprise · encirclement maneuver · short firepower preparation | night combat · cavalry/maneuver |
+- People: 김 참장 · 김주현 · 남 참장 = German / imperial grandson 이태 = Pyongyang / imperial son 이석 · General 민 = Russian.
 
-## 2. 적 세력 성향 (사용자 승인 2026-10-21 "제안대로 한다")
-### 일본 (관동군) — 3
-| 성향 | 성격 | AI 경향 |
+## 2. Enemy faction dispositions (user approved 2026-10-21 "go with the proposal")
+### Japan (Kwantung Army) — 3
+| Disposition | Character | AI tendency |
 |---|---|---|
-| 공세파 (관동군 정예) | 공격 정신 · 야습 · 착검 돌격, 위험 감수 — "폭주" 이벤트의 주역 | 돌격 성향 높음 · 야간 공격 · 후퇴 문턱 높음 · 기관총 엄호 후 돌격 |
-| 철도수비대 | 철도 부속지 · 역 고수, 거점 방어 | 거점 고수 · 기관총 진지 · 장갑열차 · 철도 따라 증원 · 반격은 국지적 |
-| 참모형 | 계산적 · 기만, 국지 충돌 수위 조절 | 포위 · 우회 · 화력 준비 · 손실 회피 · 불리하면 협상/정전 (스크립트) |
+| Offensive faction (Kwantung Army elite) | Offensive spirit · night raids · bayonet charges, risk-taking — the lead in the "runaway" event | high assault tendency · night attacks · high retreat threshold · assault after machine gun cover |
+| Railway guard | Holds the railway zone · stations, strongpoint defense | holds strongpoints · machine gun positions · armored trains · reinforcement along the railway · counterattacks are local |
+| Staff type | Calculating · deceptive, regulates the level of local clashes | encirclement · bypass · firepower preparation · loss avoidance · negotiation/ceasefire when unfavorable (scripted) |
 
-### 봉천 — 4 (아래로 갈수록 하위, 4번 = 마적 공유)
-| 성향 | 성격 | AI 경향 |
+### Fengtian (봉천) — 4 (lower going down, #4 = shared with bandits)
+| Disposition | Character | AI tendency |
 |---|---|---|
-| 1. 직속 정예 (장작림 위대 · 강무당 출신) | 비교적 정규, 충성 | 포병 활용 · 끈질긴 방어 · 역습 · 후퇴 문턱 중 |
-| 2. 강무당 신식파 (일본식 교육 영향) | 공세적, 일본 교관 영향 | 우회 · 기습 · 야습 · 기관총 운용 양호 |
-| 3. 구식 지방군 (순방대 · 녹림 출신 장교) | 병력 보존, 사기 낮음 | 화력 약함 · 정면 대치 · 후퇴 문턱 낮음 · 예비대 늦게 |
-| 4. 토비형 (최하위 — **마적 공유**) | 약탈 · 매복, 규율 없음 | 매복 · 기습 · 대도 돌격 · 불리하면 즉시 흩어져 도주 · 거점 방어 약함 |
+| 1. Direct-line elite (장작림 guard · 강무당 graduates) | Relatively regular, loyal | uses artillery · tenacious defense · counterattack · medium retreat threshold |
+| 2. 강무당 new-style faction (Japanese education influence) | Offensive, Japanese instructors' influence | bypass · surprise · night raids · good machine gun handling |
+| 3. Old-style local army (순방대 · 녹림 origin officers) | Preserves forces, low morale | weak firepower · frontal standoff · low retreat threshold · commits reserves late |
+| 4. Bandit type (lowest — **shared with bandits**) | Plunder · ambush, no discipline | ambush · surprise · large-blade charge · scatters and flees immediately when unfavorable · weak strongpoint defense |
 
-### 러시아 백군 — 3
-| 성향 | 성격 | AI 경향 |
+### Russian White Army — 3
+| Disposition | Character | AI tendency |
 |---|---|---|
-| 제정 장교단 (정통파) | 명예 · 장교 선두, 사기 의존 | 정면 돌격 · 장교 앞장 · 장교 잃으면 급격히 약화 |
-| 아타만형 (세묘노프식 코사크) | 기병 습격 · 약탈 · 불안정 | 기병 기동 · 습격 · 후퇴 문턱 낮음 · 장갑열차 |
-| 철도 방어형 | 철도 · 도시 고수, 패배주의 | 거점 방어 · 장갑열차 · 철수 판단 빠름 |
+| Imperial officer corps (orthodox) | Honor · officers lead, morale-dependent | frontal assault · officers in front · weakens sharply if officers are lost |
+| Ataman type (Semyonov-style Cossacks) | Cavalry raids · plunder · unstable | cavalry maneuver · raids · low retreat threshold · armored train |
+| Railway defense type | Holds railways · cities, defeatist | strongpoint defense · armored train · quick withdrawal judgment |
 
-### 적군 (극동공화국 포함) — 3
-| 성향 | 성격 | AI 경향 |
+### Red Army (including Far Eastern Republic) — 3
+| Disposition | Character | AI tendency |
 |---|---|---|
-| 정치위원 통제형 | 후퇴 금지 · 손실 감수 | 후퇴 문턱 매우 높음 · 대중 공세 · 정면 반복 공격 |
-| 내전 기동파 (붉은 기병) | 기병 집단 돌파 · 타찬카 | 기병 · 타찬카 기동 · 측면 · 추격 |
-| 빨치산형 (극동 빨치산) | 매복 · 기습 · 철도 파괴 | 매복 · 숲/산 활용 · 치고 빠지기 · 거점 방어 약함 |
+| Political commissar control type | No retreat · accepts losses | very high retreat threshold · mass offensive · repeated frontal attacks |
+| Civil war maneuver faction (Red cavalry) | Cavalry mass breakthrough · tachanka | cavalry · tachanka maneuver · flank · pursuit |
+| Partisan type (Far Eastern partisans) | Ambush · surprise · railway destruction | ambush · uses forest/mountains · hit and run · weak strongpoint defense |
 
-## 3. 적용 방식 (승인)
-- 미션 · 적 부대마다 성향 하나 지정 (미션 json). 같은 세력이라도 부대마다 다르게 → 전장마다 다른 상대.
-- 정보 (첩보) 탭에서 적 지휘관 성향이 드러남 (민심 · 정찰로 정확도) → 대응 전략 선택.
-- 구현 = 전술 AI 프로필 (`assets/data/ai_profiles.json`) 에 성향별 프로필을 두고 위 축 값으로 차등. 장교 학파 · 성격 시스템 (장기) 과 같은 축을 공유.
+## 3. How it is applied (approved)
+- One disposition is assigned per mission · enemy unit (mission json). Even within the same faction each unit differs → a different opponent in each battlefield.
+- The enemy commander's disposition is revealed in the intelligence (espionage) tab (accuracy by public sentiment · reconnaissance) → choose a counter strategy.
+- Implementation = put a profile per disposition in the tactical AI profiles (`assets/data/ai_profiles.json`) and differentiate by the axis values above. Shares the same axes as the officer school · personality system (long-term).

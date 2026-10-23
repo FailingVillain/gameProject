@@ -1,83 +1,83 @@
-# 작업 인계 (HANDOFF)
+# Work handoff (HANDOFF)
 
-> **상태는 ops/STATE.md · 대기열은 ops/QUEUE.md 가 정본** (병합 = ops/MERGE_QUEUE.md · 한도 = ops/LIMITS.md · 작업 카드 = korean-division/tasks/).
+> **State is sourced from ops/STATE.md, queue from ops/QUEUE.md** (merge = ops/MERGE_QUEUE.md · limits = ops/LIMITS.md · work cards = korean-division/tasks/).
 
-> 사용량 한계 · 세션 종료 대비. **새 세션은 `ops/STATE.md` 부터 읽는다**(재개 5단계 = `ops/PIPELINE.md`). 이 파일은 저장 절차 + 이사 전(2026-10-22 04:14) 기록 보관.
-> 사용자가 "상황 저장" (또는 `/save-state`) 하면 아래 절차대로 **ops/STATE.md** 를 갱신한다. 재개는 "이어서" (또는 `/resume`).
-> 끝난 항목 = docs/legacy/HANDOFF_ARCHIVE*.md (Grep 만).
+> Prep for usage limits · session end. **A new session reads `ops/STATE.md` first** (5 resume steps = `ops/PIPELINE.md`). This file keeps the save procedure + the pre-move record (2026-10-22 04:14).
+> When the user says "상황 저장" (or `/save-state`), update **ops/STATE.md** per the procedure below. Resume with "이어서" (or `/resume`).
+> Finished items = docs/legacy/HANDOFF_ARCHIVE*.md (Grep only).
 
-## 저장 절차 (Claude 용)
-1. 진행 중인 에이전트마다 SendMessage: "지금 단계에서 멈추고, 빌드되는 상태로 WIP 커밋, 카드 상태 갱신, 남은 일 · 다음 단계를 한국어로 짧게 보고".
-2. 보고를 받으면 (또는 기다릴 수 없으면 git log · git status · git worktree list 로 확인) `ops/STATE.md` 갱신: main 해시 · 에이전트 · 잠금 · 워크트리 · "지금 진행 중 / 다음 한 걸음". 에이전트에 메시지로만 준 지시는 해당 작업 카드에 옮겨 적는다(세션이 끝나면 에이전트 대화는 사라진다). 새 결정거리는 `ops/DECISIONS.md`.
-3. 로컬 커밋 (push 금지). game-tools 도 남은 변경이 있으면 WIP 커밋.
-4. 사용자에게 "저장 완료 + 재개 방법" 한 줄 보고.
+## Save procedure (for Claude)
+1. SendMessage to each running agent: "Stop at the current step, WIP-commit in a buildable state, update the card status, and report the remaining work · next step briefly in Korean".
+2. On receiving reports (or, if you cannot wait, checking via git log · git status · git worktree list) update `ops/STATE.md`: main hash · agents · lock · worktrees · "in progress now / next step". Copy instructions given to agents only by message onto the relevant work card (agent conversations vanish when the session ends). New decision items go to `ops/DECISIONS.md`.
+3. Local commit (no push). If game-tools also has remaining changes, WIP-commit it.
+4. Report to the user in one line: "save done + how to resume".
 
-## 재개 절차
-`ops/PIPELINE.md` §지휘자 세션 재개 5단계 (STATE → QUEUE → DECISIONS → PIPELINE → 발주).
+## Resume procedure
+`ops/PIPELINE.md` §conductor session resume 5 steps (STATE → QUEUE → DECISIONS → PIPELINE → order).
 
 ---
 
-## ⏸ 이사 전 기록 (2026-10-22 04:14 정리 — 아래 해시 · 한도 · 대기열은 옛 저장소 값, 현재값은 ops/)
-main `ba4033fb` (2026-10-22 arty3 병합, FormatVersion 50 · Replay 18). 옛 상태 (2026-10-21 02:25 · 밤 중단 · 저녁 저장 · 밤샘 큐 · 2026-10-18~19 기록) 원문 → `docs/legacy/HANDOFF_ARCHIVE_2026-10-22.md`.
-에이전트 규칙: `tools/agent/AGENT_RULES.md` (한도 · 잠금 · 게이트 값은 규칙 파일이 최신).
-**오늘 결정 · 대기열 전체 = `docs/ROADMAP_SHORT.md` (상세 · 사용자 원문 인용 = `docs/ROADMAP_LONG.md` [1] — 재개 시 SHORT 부터)**.
+## ⏸ Pre-move record (organized 2026-10-22 04:14 — hashes · limits · queues below are old-repo values, current values in ops/)
+main `ba4033fb` (2026-10-22 arty3 merge, FormatVersion 50 · Replay 18). Original text of old states (2026-10-21 02:25 · night halt · evening save · overnight queue · 2026-10-18~19 records) → `docs/legacy/HANDOFF_ARCHIVE_2026-10-22.md`.
+Agent rules: `tools/agent/AGENT_RULES.md` (the rules file is latest for limits · lock · gate values).
+**Today's decisions · full queue = `docs/ROADMAP_SHORT.md` (details · verbatim user quotes = `docs/ROADMAP_LONG.md` [1] — on resume start with SHORT)**.
 
-### WIP 브랜치 (kd-develop/kd-…) — 재개 시 새 에이전트
-| 브랜치 | 커밋 | 다음 |
+### WIP branches (kd-develop/kd-…) — new agent on resume
+| Branch | Commit | Next |
 |---|---|---|
-| `arty3` | ✅ 병합 완료 (2026-10-22, ba4033fb, FV 50 · Replay 18) | 방렬 지연 · 자리 유지 · heavy 간격 · 중기관총 32 · 야전포 간접 + 100 · 곡사 splash 3 + 조정 사격 · 최후 저지선 (ENGINE_NOTES arty3). 해석 · 추측 수치는 DECISIONS_PENDING |
-| `pronemove` | ✅ 병합 완료 (2026-10-21, FV 48) | 교두보 집계에 Released 중대 포함 (TacticalAi.Crossing CpBridgehead) → crossing PASS. selftest 1905 OK |
-| `units` | ✅ 병합 완료 (2026-10-21, Snapshot 47) | 선택: 기수 깃발 ×1.5 · 흔들기 4프레임 (-12/6/32/6°) · 카자크 = 러시아 계열 + 한국군 · 털모자 높임 + 털 질감 · 간도 의용병 1920년대 카키 복식. 그림 시트 docs/art_review/units_fix_cossack_gando.png (사용자 확인 대기) |
-| `choke` | `efe5f98` WIP (기본 끔) | 대형 완화 묶음에 포함 (QUEUE 2번). 上 |
+| `arty3` | ✅ merged (2026-10-22, ba4033fb, FV 50 · Replay 18) | deployment delay · hold position · heavy spacing · medium machine gun 32 · field gun indirect + 100 · howitzer splash 3 + adjusted fire · last stand line (ENGINE_NOTES arty3). Interpretations · guessed values in DECISIONS_PENDING |
+| `pronemove` | ✅ merged (2026-10-21, FV 48) | include Released companies in the bridgehead count (TacticalAi.Crossing CpBridgehead) → crossing PASS. selftest 1905 OK |
+| `units` | ✅ merged (2026-10-21, Snapshot 47) | optional: standard-bearer flag ×1.5 · waving 4 frames (-12/6/32/6°) · Cossack = Russian line + Korean army · raise fur hat + fur texture · Gando volunteers 1920s khaki dress. Sheet docs/art_review/units_fix_cossack_gando.png (awaiting user check) |
+| `choke` | `efe5f98` WIP (default off) | included in the large-formation relief bundle (QUEUE no. 2). 上 |
 
-### 📋 2026-10-22 승인 대기열 (사용자 일괄 승인 — 슬롯 나는 대로 새 에이전트로 시작)
-**한도**(2026-10-22 당시 기록, 현재 = ops/LIMITS.md): 에이전트 20 · 上 6 · Gemini pro 3 + flash 3 · 무거운 작업 5 (임시, 주간 초기화 직전 몰아치기). 진행 중이면 중복 시작 금지.
-**진행 중(2026-10-22 낮)**: gemini-import UI 병합 · 캠페인 WIP 검토 · 기마 포병 · 대형 완화+choke · 포병/중화기 · 돌격보병 강화 · 몽골/마적 외형 · 건물 크기→철도 지형(장갑열차 제외) · 참호 돌파(연막 · 철조망 · 경박격포 · 연막 수류탄) · 사격 통제/명령 대기열/사선 표시 · 전술 AI 3B · 기병 하마 사격/정찰병 · 튜토리얼 0-1/0-2 · 전 유닛 재렌더 · 저장 호환 정책 · '총기병'→'기병' · 신규 병종 N68/N71.
-**승인·미착수 (순서 = 의존)**: 1) 사상자 속도 조정(돌격보병+대형 완화 병합 뒤) 2) 밤 soak 갱신→전투 문제 9건 재보고 3) trench_assault 하락 원인 조사(上) 4) S1~S5 5) 조작 UI 묶음(gemini-import 병합 뒤; 연대 선택 키는 플레이어 연대 편제 설계 포함) + UI 종이 질감 개편(우선, UI 묶음 뒤) 8) 공병(선로 파괴 등 남은 부분) 9) 통신·지휘 구조 알파(上) 10) 지휘 편의: 미션 중 저장·자동 저장 · 전과 보고 · 교전 알림/미니맵 12) 대포병 · 야간 전투 · 행군 피로 15b) 한국군 타찬카(기마 포병 병합 뒤) 16) N79 승인 항목 17) Major/Minor · 장교 학파/성향 구현 · 연대장 위임 18) 캠페인 홈 MVP(승인 범위) 19) 캠페인 규칙 1~15 구현 26) 엄폐물 군집 · 숲 모양 · 지형 세분화(건물 크기 병합 뒤) 29b) 소리: 무전 음성 교체 · 세력별 음성 방침 31) harness_local 구동 시험 · 문서/kd 폴더 정리 · CLAUDE.md selftest 수 갱신 30) 저장소 C:\works 이동(맨 마지막, 모든 에이전트 종료 뒤).
-**보류**: 6b 장갑열차(철도 지형만 진행) · 7 하천 · 11 전술 AI 3C/3D+1만 부하(전부 끝난 뒤) · 28 지도 편집기 구현 · 20~22 캠페인 순서 연결/챕터 1/엔딩/북간도·체코 군단(추후 명령). 24 일본 군모 45식은 완료 여부 확인 필요(코디네이터 확인 중), 25 오스틴 완료(사용자).
+### 📋 2026-10-22 approved queue (user bulk approval — start with new agents as slots free up)
+**Limits** (recorded as of 2026-10-22, current = ops/LIMITS.md): agents 20 · 上 6 · Gemini pro 3 + flash 3 · heavy jobs 5 (temporary, burst before weekly reset). Do not start duplicates if in progress.
+**In progress (2026-10-22 daytime)**: gemini-import UI merge · campaign WIP review · horse artillery · large-formation relief + choke · artillery/heavy weapons · assault infantry strengthening · Mongol/bandit appearance · building size→railway terrain (excluding armored train) · trench breach (smoke · barbed wire · light mortar · smoke grenade) · fire control/order queue/firing-line display · tactical AI 3B · cavalry dismounted fire/scouts · tutorial 0-1/0-2 · re-render all units · save compat policy · '총기병'→'기병' · new branches N68/N71.
+**Approved·not started (order = dependency)**: 1) casualty speed adjustment (after assault infantry + large-formation relief merge) 2) night soak refresh→re-report 9 combat problems 3) investigate trench_assault drop (上) 4) S1~S5 5) control UI bundle (after gemini-import merge; regiment selection key includes player regiment organization design) + UI paper-texture overhaul (priority, after UI bundle) 8) engineers (remaining parts such as track destruction) 9) comms·command structure alpha (上) 10) command convenience: in-mission save·autosave · battle result report · engagement alert/minimap 12) counter-battery · night combat · march fatigue 15b) Korean army tachanka (after horse artillery merge) 16) N79 approved items 17) Major/Minor · officer school/disposition implementation · regiment commander delegation 18) campaign home MVP (approved scope) 19) implement campaign rules 1~15 26) cover clustering · forest shape · terrain subdivision (after building size merge) 29b) sound: replace radio voice · per-faction voice policy 31) harness_local run test · docs/kd folder cleanup · update CLAUDE.md selftest count 30) move repo to C:\works (very last, after all agents end).
+**Held**: 6b armored train (only railway terrain proceeds) · 7 river · 11 tactical AI 3C/3D + 10k load (after all else ends) · 28 map editor implementation · 20~22 campaign order linking/chapter 1/ending/North Gando·Czech Legion (later command). 24 Japanese Type-45 cap needs completion check (coordinator checking), 25 Austin done (user).
 
-### 📦 2026-10-22 최종 이관 (사용자 지시, **맨 마지막 작업**): game-tools · korean-division → `C:/gameProject/` + 새 .git
-- 위치(사용자가 만들어 둠): `C:/gameProject/korean-division`, `C:/gameProject/game-tools` (C 드라이브 직속 — OneDrive 동기화 밖, 앞서 우려한 동기화 부담 해소). 워크트리(kd-develop · gt-develop)는 새 위치 아래 필요 시 재생성.
-- 정정: 온라인 GitHub 의 FailingVillain 저장소는 단순 백업본이며, 사용자 요구는 **GitHub 에 올라간 그 저장소들을 지우는 것**(계정은 지우지 않음). GitHub 저장소 삭제는 사용자의 GitHub 로그인이 필요(Settings → Danger Zone → Delete this repository) — 이 PC 에는 삭제 도구/토큰이 없어 사용자가 직접 하며, 하신 뒤 알려 주면 확인. 로컬 옛 .git 삭제와 온라인 삭제가 모두 끝나면 옛 이력은 복구 불가(남는 것 = 새 스냅샷).
-- 사용자 결정: 두 저장소 모두 **새 .git(커밋 1개 스냅샷, 이메일 seungwoo3656 만)**, 옛 .git(레거시 이메일) 로컬 삭제.
-- **옛 이메일 로컬 잔존 금지(사용자 2026-10-22)**: `-old` 보관 없이, 새 저장소 검증 직후 옛 .git · 옛 작업 폴더 · 임시 번들/백업(C:/works/_git 포함 레거시 이력본) 즉시 삭제. 스냅샷 만들기 전에 문서/메모리/설정에서 레거시 주소 문자열을 grep 으로 전부 제거(HANDOFF · DECISIONS_PENDING · ROADMAP_SHORT · AGENT_RULES 등). 남는 곳: ~/.claude 세션 기록(jsonl)에는 명령 텍스트로 남을 수 있음 → 사용자가 원하면 해당 기록 삭제(사용자 몫).
-- **이력 소실 보완**: 이관 직전에 `docs/legacy/GIT_HISTORY_DIGEST.md` 생성(병합 커밋 + 주요 커밋의 날짜 · 제목만, 이메일 · 작성자 제외) — 에이전트가 "이미 구현됐나"를 `git log` 대신 이 파일 Grep 으로 확인(N61/N63/N78 중복 조사 낭비 방지). BASELINE_CURRENT · SELFTEST_HISTORY · ROADMAP_DONE 은 유지.
-- 선행 조건(순서): ① 모든 에이전트 종료 · 병합 큐 끝(미병합 브랜치는 이력 삭제 시 영구 손실) · 렌더 샤드 종료 ② 작업 폴더째 이동(추적 안 되는 산출물 포함: game-tools/korean-division-image-out · icons · audio-*, 게임 docs/soak · art_review 등) ③ 새 위치에서 git init + 단일 커밋 → 빌드 · detcheck · selftest 로 검증 ④ 검증 끝난 뒤에만 옛 .git 삭제(권한 필요 시 사용자 직접/허용 요청) ⑤ 절대 경로 갱신: AGENT_RULES(heavy_gate 경로 등) · CLAUDE.md · HANDOFF · 메모리 · publish.ps1 · 도구 스크립트(import_kd1920 의 game-tools 경로 등) · harness_local 설정 ⑥ dist 재발행 ⑦ 임시 내부 bare(C:/works/_git/*.git)는 새 GitHub 주소가 정해질 때까지 유지, push 는 사용자 주소 수령 후.
+### 📦 2026-10-22 final migration (user instruction, **very last task**): game-tools · korean-division → `C:/gameProject/` + new .git
+- Location (created by the user): `C:/gameProject/korean-division`, `C:/gameProject/game-tools` (directly under C drive — outside OneDrive sync, resolving the earlier sync-burden concern). Worktrees (kd-develop · gt-develop) are recreated under the new location when needed.
+- Correction: the FailingVillain repos on online GitHub are plain backups, and the user's requirement is to **delete those repos uploaded to GitHub** (the account is not deleted). Deleting a GitHub repo needs the user's GitHub login (Settings → Danger Zone → Delete this repository) — this PC has no delete tool/token so the user does it themselves and tells us afterward to confirm. Once both local old .git deletion and online deletion finish, old history is unrecoverable (what remains = the new snapshot).
+- User decision: both repos get a **new .git (1-commit snapshot, email seungwoo3656 only)**, locally delete the old .git (legacy email).
+- **No old email left locally (user 2026-10-22)**: no `-old` archive; right after the new repos are verified, immediately delete old .git · old working folders · temp bundles/backups (including the legacy history copy at C:/works/_git). Before making the snapshot, grep-remove the legacy address string from docs/memory/settings (HANDOFF · DECISIONS_PENDING · ROADMAP_SHORT · AGENT_RULES, etc.). What remains: ~/.claude session records (jsonl) may keep it as command text → delete those records if the user wants (user's part).
+- **Compensating for history loss**: just before migration create `docs/legacy/GIT_HISTORY_DIGEST.md` (date · title only of merge commits + major commits, no email · author) — agents check "is it already implemented" by Grepping this file instead of `git log` (avoids the wasted duplicate investigation of N61/N63/N78). BASELINE_CURRENT · SELFTEST_HISTORY · ROADMAP_DONE are kept.
+- Preconditions (order): ① all agents ended · merge queue finished (unmerged branches are permanently lost when history is deleted) · render shards ended ② move the working folders whole (including untracked outputs: game-tools/korean-division-image-out · icons · audio-*, game docs/soak · art_review, etc.) ③ git init + single commit at the new location → verify with build · detcheck · selftest ④ delete the old .git only after verification (if permission is needed, the user does it or request allowance) ⑤ update absolute paths: AGENT_RULES (heavy_gate path etc.) · CLAUDE.md · HANDOFF · memory · publish.ps1 · tool scripts (game-tools path in import_kd1920, etc.) · harness_local settings ⑥ re-publish dist ⑦ keep the temporary internal bare (C:/works/_git/*.git) until the new GitHub address is decided, push after receiving the user's address.
 
-### 📧 2026-10-22 레거시 이메일 처리 (사용자 정정 — 이전 이관/삭제 계획은 **취소**)
-- 사용자 정정: 레거시 주소(retired legacy school email)를 git 에서 지우라는 명령이 아니다. **이력 재작성 · 원격 저장소 삭제 · 계정 삭제 하지 않는다.** 요구는 하나: **레거시 이메일로 등록된 온라인 git(`FailingVillain/korean-division`)에 더 이상 push 하지 말 것**(korean-division 만, 더 이상 업데이트되지 않게). 새 커밋은 `seungwoo3656@gmail.com`.
-- 조치(2026-10-22): korean-division 의 `origin` push URL 을 `DISABLED_legacy_email_no_push` 로 막음(`git remote -v` 로 확인 가능, fetch URL 은 그대로). 워크트리 모두 같은 설정 공유. 되돌리려면 `git remote set-url --push origin <URL>` — 사용자 명령 시에만.
-- game-tools: 원격 push URL 도 차단(2026-10-22). 새 출발 = 현재 상태 1커밋 스냅샷을 임시 내부 bare 저장소 `C:/works/_git/game-tools.git` 에 올림(커밋 `d16163c`, 이메일 seungwoo3656 만). 작업 끝나면 스냅샷 갱신(`git archive HEAD` → 새 커밋) + 사용자가 새 GitHub 저장소 URL 을 주면 거기로 push.
+### 📧 2026-10-22 legacy email handling (user correction — the earlier migration/deletion plan is **cancelled**)
+- User correction: this is not a command to erase the legacy address (retired legacy school email) from git. **No history rewrite · remote repo deletion · account deletion.** One requirement only: **do not push any more to the online git registered with the legacy email (`FailingVillain/korean-division`)** (korean-division only, so it is no longer updated). New commits use `seungwoo3656@gmail.com`.
+- Action (2026-10-22): blocked korean-division's `origin` push URL with `DISABLED_legacy_email_no_push` (verifiable with `git remote -v`, fetch URL unchanged). All worktrees share the same setting. To revert, `git remote set-url --push origin <URL>` — only on user command.
+- game-tools: the remote push URL is also blocked (2026-10-22). Fresh start = pushed a 1-commit snapshot of the current state to the temporary internal bare repo `C:/works/_git/game-tools.git` (commit `d16163c`, email seungwoo3656 only). When work ends, refresh the snapshot (`git archive HEAD` → new commit) + push to the new GitHub repo URL when the user gives it.
 
-### 🚀 2026-10-22 04:xx 속도 개선 5안 승인 + 한도 18/5
-- 한도(당시 기록, 현재 = ops/LIMITS.md): 에이전트 18 · 上 5 · 무거운 작업 5(렌더 예약 1). 최우선 = 병합 잠금 해소 + 첫 병합.
-- 적용: ① 병합 직전 검증 단축(빌드·detcheck·자기 묶음·snaptest; 전체 selftest 는 큐 마지막 AI 3B 병합자가 1회) ② 묶음별 시험 병렬 최대 2 ③ 병합 큐 종료 뒤 렌더 예약 3칸 ④ 큰 sim 작업 분할 병합(포병·참호 돌파) ⑤ 통합 밸런스 측정+soak 은 큐 종료 뒤 1회. 잠금 보유자는 `heavy_gate.ps1 -Priority`.
+### 🚀 2026-10-22 04:xx 5 speedup proposals approved + limits 18/5
+- Limits (recorded then, current = ops/LIMITS.md): agents 18 · 上 5 · heavy jobs 5 (1 render reserved). Top priority = release the merge lock + first merge.
+- Applied: ① shorter pre-merge verification (build·detcheck·own suite·snaptest; full selftest once by the AI 3B merger at the end of the queue) ② suites in parallel max 2 per bundle ③ reserve 3 render slots after the merge queue ends ④ split merge of big sim work (artillery·trench breach) ⑤ integrated balance measurement+soak once after the queue ends. The lock holder uses `heavy_gate.ps1 -Priority`.
 
-### 🧊 2026-10-22 도구 고정 (사용자 승인)
-- agentHub · harness_local · 에이전트 템플릿 · 규칙 문서는 현 상태로 **고정**. 새 도구/규칙은 "이 도구 없이 최근 일주일에 몇 시간을 잃었나"에 구체적 숫자로 답할 수 있을 때만.
-- 이번 일주일 기록 3가지(기존 로그/보고에서만): ① 게이트 대기 합계 시간 ② 병합 때마다 반복한 검증 횟수·시간 ③ Antigravity 플랜 대 API 평균 응답 시간(`agy_usage.jsonl`). 병합 큐 종료 뒤 "병합 직전엔 결정성+해당 시험, 전체 시험은 큐 끝에 한 번" 절차 개선 보고.
-- 유일한 수정: agy_delegate 기본값(짧은 flash · 웹검색 = API 직행, 긴 입력 · pro · argon = 플랜).
+### 🧊 2026-10-22 tool freeze (user approval)
+- agentHub · harness_local · agent templates · rule docs are **frozen** in their current state. New tools/rules only when "how many hours were lost in the last week without this tool" can be answered with concrete numbers.
+- Three records for this week (only from existing logs/reports): ① total gate wait time ② number·time of verification repeated at every merge ③ average response time Antigravity plan vs API (`agy_usage.jsonl`). After the merge queue ends, report the procedure improvement "determinism + relevant suite before merge, full suite once at the queue end".
+- Only fix: agy_delegate defaults (short flash · web search = direct API, long input · pro · argon = plan).
 
-### ✅ 2026-10-22 추가 승인 (역제안 A/B) — 대기열에 추가
-- 추천안 "다음 한 걸음": ① **통합 밸런스 측정 1회** — 돌격보병 · 대형 완화 · 포병 · 기병 · 탄약 등 병합이 몇 개 끝난 뒤 A/B/C 시나리오 시드 8, 결과를 기준선으로 고정(`docs/BASELINE_CURRENT.md`) ② **결정 사항 한 장 정리** — N47 · N57 · n50 K/E 악화 수치 · 대형 완화 기본값 · 에이전트가 올린 질문을 모아 사용자에게 ③ **캠페인 수직 슬라이스** — 튜토리얼 0-1→0-2→1-1(압록강 도하)을 "미션 선택→편성→전투→결과→보충" 한 사이클로 끝까지, 그 뒤에 탭 확장. 먼저 Gemini 캠페인 WIP 의 **저장 트랜잭션(미션 진입 전 임시 상태 → 결과 확정 시 원자적 커밋)** 수정 + 캠페인 저장 `schemaVersion`/필드별 기본값 규칙.
-- **난이도 구조 처음부터**(승인): 통신 현실성(쉬움/보통/어려움)과 같은 슬라이더 구조에 AI 정확도 · 탄약 · 증원도 묶음 — 통신 구조 알파 작업에 포함.
-- **병합 큐**(승인): 병합 순서 돌격보병 → 대형 완화 → 포병 → 기병 → 참호 돌파 → 사격 통제 → AI 3B. 코디네이터가 순서 조정, 충돌 시 뒤 작업이 main 병합 후 해결.
-- 그 외 "보완" · "뺄 것" 승인. "추가하면 좋을 것" = **설계 단계 → `docs/wishadd.md`** 에 보관, 해당 차례에 사용자에게 재보고 후 결정(구현 금지).
-- 한도(당시 기록, 현재 = ops/LIMITS.md): 첫 병합 이후 에이전트 13 · 上 4 (진행 중 16/6 은 자연 감소 대기).
+### ✅ 2026-10-22 additional approval (counter-proposals A/B) — added to the queue
+- Recommended "next step": ① **one integrated balance measurement** — after several merges (assault infantry · large-formation relief · artillery · cavalry · ammunition, etc.) finish, A/B/C scenarios seed 8, freeze the result as baseline (`docs/BASELINE_CURRENT.md`) ② **one-page decision summary** — gather N47 · N57 · n50 K/E worsening numbers · large-formation relief defaults · questions raised by agents for the user ③ **campaign vertical slice** — tutorial 0-1→0-2→1-1 (압록강 crossing) through one full cycle "mission select→organize→battle→result→resupply", then expand tabs. First fix the Gemini campaign WIP's **save transaction (temporary state before mission entry → atomic commit when the result is confirmed)** + campaign save `schemaVersion`/per-field default rule.
+- **Difficulty structure from the start** (approved): same slider structure as comms realism (easy/normal/hard) also bundles AI accuracy · ammunition · reinforcements — included in the comms structure alpha work.
+- **Merge queue** (approved): merge order assault infantry → large-formation relief → artillery → cavalry → trench breach → fire control → AI 3B. The coordinator adjusts the order; on conflict the later work resolves after main merge.
+- Other "supplements" · "things to cut" approved. "Nice to add" = **design stage → kept in `docs/wishadd.md`**, re-reported to the user at that turn and decided (no implementation).
+- Limits (recorded then, current = ops/LIMITS.md): after the first merge agents 13 · 上 4 (in-progress 16/6 wait to decrease naturally).
 
-### 다음 순서 (QUEUE 번호)
-- **(2026-10-21 추가) 캠페인을 게임에 넣는 첫 묶음 — 주간 한도 초기화 뒤**: ① 튜토리얼 0-1 (90 vs 마적 30, 50% 피해 시 퇴각 → 자동 승리) · 0-2 (약 600명, 다리 여러 개, 초소 1곳만 보임, 이벤트 2개: 마적 기병 30 · 서간도 의용군 40 합류, 산채 파괴 = 승리, 쓰러진 병사 50% = 패배) — 미션 파일 · 지도 생성 · 이벤트 스크립트 (中~上) ② 캠페인 순서: c1_01 회령 · c1_02 두만강 → WIP 보관, 튜토리얼을 앞에 ③ 캠페인 홈 MVP (`docs/CAMPAIGN_MVP_SPEC.md` S1~S5, 上 포함). 설계 = `game-tools/campaign/EPISODES.md` · `docs/CAMPAIGN_HOME_DESIGN.md` · `docs/CHARACTERS.md` · `docs/OFFICER_DOCTRINES.md`.
+### Next order (QUEUE numbers)
+- **(2026-10-21 added) First bundle to put the campaign in the game — after the weekly limit reset**: ① tutorial 0-1 (90 vs 30 bandits, retreat at 50% damage → auto win) · 0-2 (about 600 men, several bridges, only 1 outpost visible, 2 events: bandit cavalry 30 · West Gando volunteer army 40 join, destroy the stronghold = win, 50% fallen soldiers = loss) — mission file · map generation · event scripts (中~上) ② campaign order: c1_01 회령 · c1_02 두만강 → keep as WIP, tutorial first ③ campaign home MVP (`docs/CAMPAIGN_MVP_SPEC.md` S1~S5, includes 上). Design = `game-tools/campaign/EPISODES.md` · `docs/CAMPAIGN_HOME_DESIGN.md` · `docs/CHARACTERS.md` · `docs/OFFICER_DOCTRINES.md`.
 
-### 사용자 결정 대기 · 검수
-- 시트: type3_hmg.png · austin_fix3.png (렌더 후) · progress_bar 는 게임에서 직접 (스크린샷에 안 찍힘).
-- 세력 추가 후보 (적군/극동공화국 추천) · 저장소를 OneDrive 밖으로 옮길지 (bin 3.6 GB · kd-develop 1.8 GB 동기화 부담).
-- 기존: N79a '후퇴' 버튼 유지? · 행진 사격 화염 다른 병종 · 캠페인 1-1/1-2 직접 플레이 · prone_batch / missing_theme_units / surrender / new_units 시트.
+### Awaiting user decision · review
+- Sheets: type3_hmg.png · austin_fix3.png (after render) · progress_bar directly in game (does not show in screenshots).
+- Faction addition candidates (enemy/Far Eastern Republic recommended) · whether to move the repo out of OneDrive (bin 3.6 GB · kd-develop 1.8 GB sync burden).
+- Existing: N79a keep the '후퇴' button? · marching-fire muzzle flash for other branches · play campaign 1-1/1-2 directly · prone_batch / missing_theme_units / surrender / new_units sheets.
 
-### 사용자에게 받을 결정 · 검수
-- (2026-10-19 `retreat`) 중대 후퇴 임계를 사상률 30~40% 로 (retreatStrength 0.60~0.70, 데이터만). 미결: `retreatSuppression` (중대 평균 제압 0.003~0.02 라 사실상 발동 안 함), Spent 후 반감, 대대/연대 ×0.75 — 사용자가 제압 · 사기를 재설계할 때 함께 정함.
-- 효과음 전체 청취 (`C:/gameProject/game-tools/korean-division-audio-default/index.html`).
-- 일괄 재렌더 후 세력별 개요 · 슬림화 전후 비교 검수.
-- 전술 AI 2단계 결과 · 새 밸런스 수치 제안 승인.
+### Decisions · reviews to receive from the user
+- (2026-10-19 `retreat`) company retreat threshold at casualty rate 30~40% (retreatStrength 0.60~0.70, data only). Open: `retreatSuppression` (company average suppression is 0.003~0.02 so effectively never triggers), halving after Spent, battalion/regiment ×0.75 — decided together when the user redesigns suppression · morale.
+- Full listen to sound effects (`C:/gameProject/game-tools/korean-division-audio-default/index.html`).
+- Per-faction overview after batch re-render · before/after slimming comparison review.
+- Tactical AI stage 2 results · approve new balance value proposals.
 
-### 잔여 N 대기 (아카이브로 옮긴 원문 참조)
-- N46 · N56 · N56b · N57 · N60 · N62 · N64 · N65 · N66 · N67 · N69 · N70 · N78 · N79 세부 · S1–S5 — 승인 대기열 · ROADMAP_SHORT 와 대조해 살릴 것만 남길 것.
+### Remaining N waiting (see the original text moved to the archive)
+- N46 · N56 · N56b · N57 · N60 · N62 · N64 · N65 · N66 · N67 · N69 · N70 · N78 · N79 details · S1–S5 — compare with the approved queue · ROADMAP_SHORT and keep only what is worth saving.

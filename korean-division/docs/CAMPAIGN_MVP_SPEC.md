@@ -1,83 +1,83 @@
-# 캠페인 홈 MVP 명세 (초안 v0.1, 2026-10-21)
+# Campaign Home MVP Spec (draft v0.1, 2026-10-21)
 
-> 근거: `docs/CAMPAIGN_HOME_DESIGN.md` (이하 §) + 사용자 승인 "최소 기능판 MVP 만드는 것도 좋다. 승인한다." 수치·이벤트는 전부 **초안 — 사용자 확인 대기**. 코드 없음.
+> Basis: `docs/CAMPAIGN_HOME_DESIGN.md` (hereafter §) + user approval "building a minimal-feature MVP is also good. Approved." All values·events are **drafts — awaiting user confirmation**. No code.
 
-## 0. 현재 있는 것 (코드 확인)
-- `CampaignState` (`src/Core/Campaign/CampaignState.cs`): `campaign.json` (`%LOCALAPPDATA%/KoreanDivision/campaign/`, `KD_CAMPAIGN_DIR`), `Version=1`, 끝낸 미션 · `NextMission` · `History` · 이월 사병/장교 (`Units`/`Officers` = `MissionResults.UnitLine`) · `HowitzerCompany` · `Entry*` (재도전용 입장 병력). 미션 순서 = `Chain` 표 (c1_01_hoeryong → c1_02_tumen → c1_03 파일 없음). 시뮬/스냅샷/체크섬과 **무관한 별도 저장** (임시 파일 → 교체 방식).
-- `CampaignCarry.Patch` (`MissionDef.Load` 가 `"carry": true` 미션에서 호출): 생존 소총병 계급·장교를 미션 텍스트 `b1` 중대에 써 넣음. 병력 수·중대 구성은 **미션 JSON 이 정함** (캠페인이 정하지 않음).
-- UI: `CampaignMenu` (65줄: 새 캠페인/진행 요약/다음 미션 '준비 중'), `StringsCampaign.cs`, 결과 화면 저장 알림. 자원·보급·홈 화면·투입 선택·이벤트 **없음**.
+## 0. What exists now (code check)
+- `CampaignState` (`src/Core/Campaign/CampaignState.cs`): `campaign.json` (`%LOCALAPPDATA%/KoreanDivision/campaign/`, `KD_CAMPAIGN_DIR`), `Version=1`, finished missions · `NextMission` · `History` · carried-over enlisted/officers (`Units`/`Officers` = `MissionResults.UnitLine`) · `HowitzerCompany` · `Entry*` (entry force for retries). Mission order = `Chain` table (c1_01_hoeryong → c1_02_tumen → c1_03 no file). A separate save **unrelated** to simulation/snapshot/checksum (temp file → replace method).
+- `CampaignCarry.Patch` (called by `MissionDef.Load` for missions with `"carry": true`): writes the surviving riflemen's ranks·officers into the mission text's `b1` company. Force size·company composition is **decided by the mission JSON** (not by the campaign).
+- UI: `CampaignMenu` (65 lines: new campaign/progress summary/next mission 'in preparation'), `StringsCampaign.cs`, results-screen save notice. Resources·supply·home screen·deployment selection·events **absent**.
 
-## 1. MVP 범위
-| 구분 | 내용 |
+## 1. MVP scope
+| Category | Content |
 |---|---|
-| **IN** | 사단 상태 요약 · 부대 관리(편성 목록 · 투입 가능 표시) · 병참(보급품 · 재고 · 치료 · 신병 배치) · 작전 지도(다음 작전 1~2개, 목록 수준) · 본국(총사령관/황손 이벤트 3~5개) · 작전 전(브리핑 → 투입 부대 선택 + 보급 비용 게이지) · 작전 후(전과 보고 → 홈) · 자원(인력 · 보급품 · 장비 재고) 저장 · 노획 · 부상자 25% 복귀 |
-| **OUT (후속)** | 편제 관리 · 장비 관리/개량 · 훈련(숙련) · 외교/용병/포로 · 참모진 상세 · 진급·군령권 · 정보(첩보) · 부대 기록(일지·훈장) · 일정/시간·계절 · 연구(§4) · 민심 적용 · 거점·철도 수입 · 자동 편성/보충 버튼 · 보급 계산 미리보기(게이지로 대체) · 참모 조언 쪽지(이벤트 대사로 대체) · 난이도 배수 · 종이 질감 스킨(§5) · 사기·피로 · 연대(≤9) 배속 · 패배 분기 · 저장 슬롯 다수(MVP = 현행 1개) · 11사단 연락 · 군단(이석) 경유 상세 · 자금 |
+| **IN** | Division status summary · unit management (organization list · deployable indication) · logistics (supplies · stock · treatment · recruit placement) · operations map (next 1~2 operations, list level) · homeland (supreme commander/imperial grandson events 3~5) · pre-operation (briefing → deployed unit selection + supply cost gauge) · post-operation (results report → home) · resource (manpower · supplies · equipment stock) save · loot · 25% of wounded return |
+| **OUT (follow-up)** | Organization management · equipment management/improvement · training (proficiency) · diplomacy/mercenaries/prisoners · staff details · promotion·command authority · intelligence (espionage) · unit records (log·medals) · schedule/time·season · research (§4) · public sentiment application · strongholds·railway income · auto organization/replenishment button · supply calculation preview (replaced by the gauge) · staff advice notes (replaced by event dialogue) · difficulty multiplier · paper texture skin (§5) · morale·fatigue · regiment (≤9) speed assignment · defeat branching · multiple save slots (MVP = current 1) · 11th Division liaison · corps (이석) routing details · funds |
 
-## 2. 데이터 모델 (`CampaignState` 확장)
-**버전**: `Version` 1 → **2**. v1 파일을 읽으면 새 필드는 기본값으로 채움 (System.Text.Json 은 없는 속성 = 기본값) + 시작 자원은 §3 시작값. `Roster` 는 다음 미션 입장 시 미션 JSON 의 편성으로 1회 생성. 로드 실패 = 현행처럼 null (새 캠페인).
-**검증 규칙**: 캠페인 저장은 시뮬 상태가 아니므로 `Snapshot.FormatVersion` · 체크섬 · `SnapshotSelfTest.Audit` **불필요** (CLAUDE.md '새 상태 필드' 규칙은 시뮬 상태에만 적용). 단 미션 텍스트가 바뀌면 (Patch 확장) 스냅샷은 써 넣은 텍스트를 싣는 현행 방식 그대로 → 리플레이 결정성 유지 (S3 에서 `--snaptest`/`--detcheck` 확인). 새 규칙은 `KD_SELFTEST_ONLY=missions` (또는 신규 `home`) 단위 테스트, 난수는 저장된 `Seed` 기반 해시 — 벽시계 금지.
+## 2. Data model (`CampaignState` extension)
+**Version**: `Version` 1 → **2**. When reading a v1 file new fields are filled with defaults (System.Text.Json: missing property = default) + starting resources are the §3 start values. `Roster` is generated once from the mission JSON's organization on entry to the next mission. Load failure = null as now (new campaign).
+**Verification rules**: the campaign save is not simulation state, so `Snapshot.FormatVersion` · checksum · `SnapshotSelfTest.Audit` are **not needed** (the CLAUDE.md 'new state field' rule applies only to sim state). However if the mission text changes (Patch extension), the snapshot carries the written text as it does now → replay determinism is kept (confirm `--snaptest`/`--detcheck` at S3). New rules get unit tests in `KD_SELFTEST_ONLY=missions` (or a new `home`), randomness is hash-based on the stored `Seed` — no wall clock.
 
-추가 필드:
-| 필드 | 형 | 설명 |
+Added fields:
+| Field | Type | Description |
 |---|---|---|
-| `Manpower` | `{Recruits, Wounded, Reserve}` int | 신병 풀(≤7000) · 부상자 · 편성 안 된 예비 |
-| `Supply` | float | 보급품 단일 수치 |
-| `Stock` | 객체 | 소총(종류별 dict) · 탄약 5종(`ru`·`jp`·`de`·`fr`·`jpOld`) · 포탄 3종(`infGun`·`field`·`howitzer`) · 중화기 dict · 말 |
-| `Roster` | 목록 | 투입 단위 = **중대**: `{Id, Kind(병종), Name, Strength, Wounded, Available}`. 분대 이하·개인 계급은 현행 `Units`/`Officers` 이월 유지 |
-| `Flags` | dict<string,int> | 숨은 값: `heir_mood`(황손 심기 0~100, 시작 60) · `cmd_favor`(총사령관 신임, 시작 50) · 이벤트 완료 id 목록 |
-| `Seed` | uint | 이벤트/노획 난수 시드 |
-| `Pending` | 객체? | 진행 중 작전 `{MissionId, DeployedIds, SupplySpent, AmmoLoaded}` (비정상 종료 대비) |
-**사기·피로: MVP 제외** (연속 작전 규칙이 없으므로 필드도 안 만듦). 민심 필드 없음.
+| `Manpower` | `{Recruits, Wounded, Reserve}` int | Recruit pool (≤7000) · wounded · unorganized reserve |
+| `Supply` | float | Single supply value |
+| `Stock` | object | Rifles (dict by kind) · ammo 5 types (`ru`·`jp`·`de`·`fr`·`jpOld`) · shells 3 types (`infGun`·`field`·`howitzer`) · heavy weapons dict · horses |
+| `Roster` | list | Deployment unit = **company**: `{Id, Kind(branch), Name, Strength, Wounded, Available}`. Squad and below·individual ranks keep the current `Units`/`Officers` carry-over |
+| `Flags` | dict<string,int> | Hidden values: `heir_mood` (imperial grandson's mood 0~100, start 60) · `cmd_favor` (supreme commander's trust, start 50) · list of completed event ids |
+| `Seed` | uint | Seed for event/loot randomness |
+| `Pending` | object? | Operation in progress `{MissionId, DeployedIds, SupplySpent, AmmoLoaded}` (against abnormal termination) |
+**Morale·fatigue: excluded from the MVP** (no consecutive-operation rules so no fields either). No public sentiment field.
 
-## 3. 규칙 (초안 수치)
-- **투입 비용** = Σ 병종 소요 × 규모 배수(소형 1.0 · 대규모 1.5). 소요: 보병·신병 1 · 돌격/저격 1.5 · 기관총 2 · 기병 3 · 보병포/야전포/곡사포 5/7/9 · 장갑차 12 · 장갑열차 40. 보급 < 비용이면 투입 잠김 (게이지 빨강, [출격] 비활성). 유지비 없음.
-- **투입 상한**: 보급품 한도 + 미션 JSON b1 병력 총수 (또는 `maxDeploy`, 질문 3). 선택은 중대 단위 체크박스.
-- **탄약 연결**: 출격 시 구경별 재고에서 기본 휴대량(소총 60 등)만큼 차감; 재고 부족이면 비율(예 50%)로 감량해 `ammoScale` 로 미션 텍스트에 반영. 전투 뒤 **남은 양은 재고로 환원** (쓴 만큼만 차감). 포탄 동일. 전투 내 탄약 규칙 불변.
-- **전과 정산**: 사상자의 25% = 부상자, 나머지 전사. 치료 = 보급품 0.5/명 ([치료] 버튼). 미치료 부상자는 출전 불가, 작전 3회 후 전역.
-- **신병**: 도착 = 본국 정기 보급/이벤트로만 (무료). 배치 = 보급품 0.5 + 소총 1. 소총 0 이면 배치 불가.
-- **시작값/정기 보급 (초안)**: 보급 3000 · 작전 후 +1500 · 신병 풀 2000 · +1000 (≤7000) · 소총 3000 · 탄약 종별 100,000 · 포탄 보병포/야전포/곡사포 500/300/150.
-- **노획** (승리 후): 적 전사 1명당 보급품 0.3 · 소총 0.5(적 세력 종류) · 해당 구경 탄약 20 · 말(적 기병 손실분). 포 노획은 MVP 제외.
-- **황손/총사령관 효과**: 정기 보급 배수 = 1 − 패널티. `heir_mood`<40 신병 −10%, <20 신병 −20~30%; `cmd_favor` 낮으면 보급 동일 구조. **합산 패널티 ≤ 30%, 게임 오버 없음.** 달래면 이득 (하사품 보급 +, 증원 +).
+## 3. Rules (draft values)
+- **Deployment cost** = Σ branch requirement × scale multiplier (small 1.0 · large-scale 1.5). Requirements: infantry·recruit 1 · assault/sniper 1.5 · machine gun 2 · cavalry 3 · infantry gun/field gun/howitzer 5/7/9 · armored car 12 · armored train 40. If supply < cost, deployment is locked (gauge red, [sortie] disabled). No upkeep.
+- **Deployment cap**: supply limit + total of the mission JSON b1 force (or `maxDeploy`, question 3). Selection is by company checkbox.
+- **Ammo link**: at sortie deduct the default carried amount (rifle 60 etc.) from the per-caliber stock; if stock is short reduce by a ratio (e.g. 50%) and reflect it in the mission text as `ammoScale`. After combat the **remaining amount returns to stock** (deduct only what was used). Shells the same. Ammo rules in combat unchanged.
+- **Results settlement**: 25% of casualties = wounded, the rest killed. Treatment = supplies 0.5/man ([treat] button). Untreated wounded cannot sortie and are discharged after 3 operations.
+- **Recruits**: arrival = only by regular homeland supply/events (free). Placement = supplies 0.5 + 1 rifle. With 0 rifles placement is impossible.
+- **Start values/regular supply (draft)**: supplies 3000 · +1500 after operations · recruit pool 2000 · +1000 (≤7000) · rifles 3000 · ammo 100,000 per type · shells infantry gun/field gun/howitzer 500/300/150.
+- **Loot** (after victory): per enemy killed supplies 0.3 · rifle 0.5 (enemy faction's kind) · 20 ammo of that caliber · horses (enemy cavalry losses). Gun loot excluded from the MVP.
+- **Imperial grandson/supreme commander effects**: regular supply multiplier = 1 − penalty. `heir_mood`<40 recruits −10%, <20 recruits −20~30%; low `cmd_favor` supply, same structure. **Combined penalty ≤ 30%, no game over.** Placating gives gains (gift supplies +, reinforcements +).
 
-## 4. 화면 (MVP = 현행 raylib UI 위젯, 종이 스킨은 후속. 좌측 탭 + 우측 본문 레이아웃으로 스킨만 교체 가능하게)
-1. **홈 프레임**: 상단 바(보급품 · 병력 · 다음 작전), 좌측 탭 [요약][부대][병참][지도][본국], 하단 [작전 개시]. `CampaignMenu` 확장 (새 캠페인·초기화 버튼 유지).
-2. **사단 상태 요약** (일일 보고서): 편성 병력/1만 · 신병 풀 · 부상자 · 보급품 · 소총 충족률 · 다음 작전 · 최신 쪽지 1건.
-3. **부대 관리**: Roster 표 (이름 · 병종 · 인원 · 부상 · 투입 가능), 신병 배치 [+100] 버튼(소모량 표시).
-4. **병참**: 보급품 · 소총 · 탄약 5종 · 포탄 3종 · 말 표, 부상자 [치료] 버튼(비용 표시), 최근 입고 5건.
-5. **작전 지도**: `Chain` 의 다음 미션(분기 시 2개) 목록 + 정적 지역 도식 1장 가능, 선택 → 작전 전 화면.
-6. **본국**: 미확인 이벤트 목록 → 카드(발신 · 전문 · 선택지 2~3개 + 효과 미리 표시). 총사령관 경유 표시.
-7. **작전 전**: 브리핑 → 투입 선택(중대 체크, **비용 게이지 = 보급품 대비**, 탄약 부족 경고) → [출격].
-8. **작전 후(전과 보고)**: 사상 · 부상 · 노획 · 탄약 환원 · 보급 변화 (진급 후보 · 포로는 후속) → [홈으로]; 정기 보급 도착 + 이벤트 1건 발생 가능. 현 결과 화면(`MissionResults`) 뒤에 연결.
-문자열은 `StringsCampaign.cs` const. Esc = 취소.
+## 4. Screens (MVP = current raylib UI widgets, paper skin later. Left tab + right body layout so only the skin can be swapped)
+1. **Home frame**: top bar (supplies · manpower · next operation), left tabs [summary][units][logistics][map][homeland], bottom [start operation]. Extends `CampaignMenu` (keep the new campaign·reset buttons).
+2. **Division status summary** (daily report): organized force/10,000 · recruit pool · wounded · supplies · rifle fulfillment rate · next operation · 1 latest note.
+3. **Unit management**: Roster table (name · branch · strength · wounded · deployable), recruit placement [+100] button (shows consumption).
+4. **Logistics**: table of supplies · rifles · ammo 5 types · shells 3 types · horses, wounded [treat] button (shows cost), 5 recent receipts.
+5. **Operations map**: list of the next mission(s) in `Chain` (2 at a branch) + possibly 1 static regional diagram, selection → pre-operation screen.
+6. **Homeland**: list of unread events → card (sender · telegram · 2~3 choices + effect preview). Shows routing via the supreme commander.
+7. **Pre-operation**: briefing → deployment selection (company checks, **cost gauge = against supplies**, ammo shortage warning) → [sortie].
+8. **Post-operation (results report)**: casualties · wounded · loot · ammo return · supply change (promotion candidates · prisoners are follow-up) → [to home]; regular supply arrives + 1 event may occur. Connected after the current results screen (`MissionResults`).
+Strings are consts in `StringsCampaign.cs`. Esc = cancel.
 
-## 5. 샘플 이벤트 (**초안 — 사용자 검토용**, "부조리" 축)
-1. **E1 시위대 전진 배치** (황손 이태 ← 시위대장): "황손 전하 하명. 시위대 1개 중대를 선봉에 세워 전공을 올리게 하라. 시위대장 배서." (a) 따름 → 다음 작전에 시위대 중대 의무 포함(전투력 낮음), `heir_mood` +10, 보급 +200 하사 / (b) 설득(참모장 김주현 쪽지: "형님, 후위로 돌리심이…") → 50% 성공 `heir_mood` +0, 실패 −10 / (c) 무시 → `heir_mood` −15.
-2. **E2 공적 가로채기** (민 대장, 군단 이석 경유로 지연): "17사단의 전과는 군단 지휘 하의 성과로 보고함. 훈장 상신은 본관이 정리. 민." (a) 수용 → `cmd_favor` +5 / (b) 항의 → `cmd_favor` −10, 다음 정기 보급 −10% / (c) 11사단장 남 참장에게 사실 통보 → 즉시 효과 없음, 플래그 `nam_ally`=1 (후속 분기용).
-3. **E3 출혈 강요** (민 대장): "금번 작전 기한 내 필히 확보. 손실은 불문. 증원 불가." (a) 수락 → 보급 +300, 다음 작전 기한 단축(구현 전엔 텍스트만) / (b) 사정 상신 → `cmd_favor` −10, 보급 −10% / (c) 참모장 건의 → 50% (a), 50% (b). 보급 패널티 ≤ 20%.
-4. **E4 황손의 훈수** (이태, 과시욕; 직전 작전에 시위대 미투입 시): "본관의 방침과 다르오. 사단장은 체면을 아시오." (a) 사과 → `heir_mood` +10 / (b) 타협: 다음 작전에 시위대 소수 동행 → +5, 보급 −50 / (c) 무시 → `heir_mood` −10, <20 이면 신병 −20%.
-5. **E5 군단장의 만류** (황자 이석): "무리한 공세는 삼가시오. 방어선을 굳히는 것이 상책이오." (a) 수용 → 보급 +200, `heir_mood` −5 (황손은 공세 선호) / (b) 공세 유지 → `cmd_favor` +0, `heir_mood` +5. 황손↔총사령관 충돌 연결 (E1 직후).
-모든 선택: 합산 패널티 상한 30%, 즉사/패배 없음.
+## 5. Sample events (**draft — for user review**, "absurdity" axis)
+1. **E1 Guard unit placed forward** (imperial grandson 이태 ← guard unit commander): "By His Highness's command. Place 1 company of the 시위대 [Royal Guard] in the vanguard to win merit. Signed, guard unit commander." (a) follow → the next operation must include a 시위대 company (low combat power), `heir_mood` +10, gift supplies +200 / (b) persuade (note from chief of staff 김주현: "Brother, it would be better to turn them to the rear…") → 50% success `heir_mood` +0, failure −10 / (c) ignore → `heir_mood` −15.
+2. **E2 Taking credit** (General 민, delayed via corps commander 이석): "The 17th Division's results are reported as achievements under corps command. I will handle the recommendation for decorations. 민." (a) accept → `cmd_favor` +5 / (b) protest → `cmd_favor` −10, next regular supply −10% / (c) inform 11th Division commander 남 참장 of the facts → no immediate effect, flag `nam_ally`=1 (for later branching).
+3. **E3 Forced bleeding** (General 민): "Secure it within the deadline of this operation without fail. Losses are no object. No reinforcements." (a) accept → supplies +300, next operation deadline shortened (text only until implemented) / (b) submit circumstances → `cmd_favor` −10, supplies −10% / (c) chief of staff's recommendation → 50% (a), 50% (b). Supply penalty ≤ 20%.
+4. **E4 The imperial grandson's meddling** (이태, craving display; if no 시위대 was deployed in the previous operation): "This differs from my policy. The division commander should know about face." (a) apologize → `heir_mood` +10 / (b) compromise: a small number of 시위대 accompany the next operation → +5, supplies −50 / (c) ignore → `heir_mood` −10, recruits −20% if <20.
+5. **E5 The corps commander's dissuasion** (imperial son 이석): "Refrain from reckless offensives. Consolidating the defensive line is the best course." (a) accept → supplies +200, `heir_mood` −5 (the imperial grandson prefers offensives) / (b) keep the offensive → `cmd_favor` +0, `heir_mood` +5. Connected to the imperial grandson ↔ supreme commander conflict (right after E1).
+All choices: combined penalty cap 30%, no instant death/defeat.
 
-## 6. 구현 단계 (각각 병합 가능한 브랜치)
-| # | 브랜치 | 내용 | 건드리는 코드 | 난이도 |
+## 6. Implementation stages (each a mergeable branch)
+| # | Branch | Content | Code touched | Difficulty |
 |---|---|---|---|---|
-| S1 | `home-state` | `CampaignState` v2 필드 + 마이그레이션 + 정산 순수 함수(비용 · 치료 · 25% · 노획 · 정기 보급) + 단위 테스트 | `CampaignState.cs`, 신규 `CampaignEconomy.cs`, `MissionSelfTest` | 中 |
-| S2 | `home-ui` | 홈 프레임 + 요약/부대/병참/지도 탭 (치료 · 배치 버튼) | `CampaignMenu.cs`, `StringsCampaign.cs`, `MainMenu` 진입 | 中 |
-| S3 | `home-deploy` | 작전 전 화면(투입 선택 · 게이지) + 선택 중대/탄약 비율을 미션 텍스트에 반영 (`Patch` 확장, `Pending`) | `CampaignCarry.cs`, `MissionDef.Load`, `--snaptest`/`--detcheck` 확인 | 上 (시뮬 입력 변경) |
-| S4 | `home-debrief` | 전과 보고 화면 + `Apply` 에서 사상/부상/노획/탄약 환원 정산 | `CampaignState.Apply`, `MissionResults`, `GameMission` 결과 화면 | 中 |
-| S5 | `home-events` | 본국 탭 + 이벤트 데이터(`assets/data/campaign_events.json`) + 5개 이벤트 + 효과/상한 | 신규 `CampaignEvents.cs`, `CampaignMenu`, 테스트 | 中 |
+| S1 | `home-state` | `CampaignState` v2 fields + migration + pure settlement functions (cost · treatment · 25% · loot · regular supply) + unit tests | `CampaignState.cs`, new `CampaignEconomy.cs`, `MissionSelfTest` | 中 |
+| S2 | `home-ui` | Home frame + summary/units/logistics/map tabs (treat · placement buttons) | `CampaignMenu.cs`, `StringsCampaign.cs`, `MainMenu` entry | 中 |
+| S3 | `home-deploy` | Pre-operation screen (deployment selection · gauge) + reflect selected companies/ammo ratio in the mission text (`Patch` extension, `Pending`) | `CampaignCarry.cs`, `MissionDef.Load`, `--snaptest`/`--detcheck` check | 上 (sim input change) |
+| S4 | `home-debrief` | Results report screen + casualty/wounded/loot/ammo return settlement in `Apply` | `CampaignState.Apply`, `MissionResults`, `GameMission` results screen | 中 |
+| S5 | `home-events` | Homeland tab + event data (`assets/data/campaign_events.json`) + 5 events + effects/cap | new `CampaignEvents.cs`, `CampaignMenu`, tests | 中 |
 
-## 7. 사용자 확인 질문
-1. §3 시작값/정기 보급 수치(보급 3000 +1500, 신병 2000 +1000, 탄약·포탄 재고) 괜찮은가?
-2. 투입 단위 = **중대** 로 시작해도 되는가 (분대 선택은 후속)?
-3. 투입 상한 기준을 미션 JSON b1 병력 수로 할지, 별도 `maxDeploy` 로 할지?
-4. 이벤트 5개의 톤 · 선택지 · 효과 방향 맞는가? 시위대 의무 포함 같은 강제 요소 허용?
-5. 황손 심기: MVP 는 숫자 숨김 + 대사 단서만으로 제안 — 괜찮은가?
-6. 압록강 시작 · 1-1/1-2 재배치는 MVP 에서 보류하고 현 `Chain` 유지해도 되는가?
+## 7. Questions for user confirmation
+1. Are the §3 start values/regular supply numbers (supplies 3000 +1500, recruits 2000 +1000, ammo·shell stock) OK?
+2. May we start with deployment unit = **company** (squad selection later)?
+3. Should the deployment cap be based on the mission JSON b1 force count, or a separate `maxDeploy`?
+4. Are the tone · choices · effect direction of the 5 events right? Are forced elements like mandatory inclusion of the 시위대 allowed?
+5. Imperial grandson's mood: the MVP proposes hiding the number and using only dialogue hints — OK?
+6. Defer the Yalu River start · 1-1/1-2 relocation in the MVP and keep the current `Chain`?
 
-## 사용자 답 (2026-10-21)
-- 시작값 · 정기 보급 = **초안대로** (보급품 3,000 / 작전마다 +1,500, 신병 2,000 / +1,000).
-- 투입 단위 = **대대 단위 + 중대 빼기/더하기**.
-- 투입 상한 = **미션별 `maxDeploy`** (실제 투입 = min(보급 한도, maxDeploy)).
-- 강제 조건 (예: 시위대 필수 포함) = **넣되 거부 가능** (거부 시 심기 · 보급 불이익, 상한 안).
-- 경로: 안동 → 봉황성 → (수암) → 안산 → 요양 → 봉천 → 장춘 → 하얼빈. 기존 c1_01 · c1_02 = WIP 미션 보관 (`CAMPAIGN_HOME_DESIGN.md` §9).
+## User answers (2026-10-21)
+- Start values · regular supply = **as in the draft** (supplies 3,000 / +1,500 per operation, recruits 2,000 / +1,000).
+- Deployment unit = **battalion unit + remove/add companies**.
+- Deployment cap = **per-mission `maxDeploy`** (actual deployment = min(supply limit, maxDeploy)).
+- Forced conditions (e.g. mandatory inclusion of the 시위대) = **include but refusable** (refusing carries a mood · supply penalty, within the cap).
+- Route: Andong → 봉황성 → (수암) → 안산 → 요양 → 봉천 → 장춘 → 하얼빈. Existing c1_01 · c1_02 = WIP missions kept (`CAMPAIGN_HOME_DESIGN.md` §9).

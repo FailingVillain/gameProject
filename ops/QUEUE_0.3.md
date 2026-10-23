@@ -1,57 +1,57 @@
-# QUEUE 0.3 (초안 2026-10-23 03:20; 승격 직후 첫 세션이 읽는다)
+# QUEUE 0.3 (draft 2026-10-23 03:20; read by the first session right after promotion)
 
-한도(사용자 2026-10-23, 0.3 부터): **동시 에이전트 최대 9개, 상급(opus) 최대 3개**. 재활용 없음(항상 새 에이전트). 중단은 사용자 지시 때만. 게이트: 렌더(art) 풀 기본 2(병합 라운드 밖에서는 3~4로 올릴 수 있음, KD_GATE_ART_LIMIT), 무거운 풀 2+빌드 1.
-기준선: 병합선 post-N3f-1 (Config 0.2.1, FV Snapshot 74 / Replay 27 / 캠페인 스키마 15, detcheck 672804207fc4e486 3c42aea49324248e). 모델 등급: 상=opus, 중=sonnet, 하=haiku.
+Limits (user 2026-10-23, from 0.3): **max 9 concurrent agents, max 3 senior (opus)**. No recycling (always a new agent). Stop only on user instruction. Gate: render (art) pool default 2 (can be raised to 3~4 outside merge rounds, KD_GATE_ART_LIMIT), heavy pool 2 + build 1.
+Baseline: merge line post-N3f-1 (Config 0.2.1, FV Snapshot 74 / Replay 27 / campaign schema 15, detcheck 672804207fc4e486 3c42aea49324248e). Model grade: 상=opus, 중=sonnet, 하=haiku.
 
-## 웨이브 1 — 승격 직후 (병렬 최대 9, 상급 3)
-| # | 카드 | 등급 | 내용 | 선행·메모 |
+## Wave 1 — right after promotion (max 9 parallel, 3 senior)
+| # | Card | Grade | Content | Prereq·note |
 |---|---|---|---|---|
-| 1 | G1 골든 변경 묶음 | 상 | `kd/water-fire-open`(6142cb8c) 병합 + 골든 재생성 1회 | 골든을 바꾸는 작업은 이 창에 모아 마지막에 재생성; NEW-3·NEW-4 와 같은 상급 에이전트가 하지 않도록 분리 |
-| 2 | G2 NEW-3 엎드린 병사가 대열에 끌려가는 현상 | 상 | 자세/이동 분리(제압으로 엎드린 병사) | 골든 변경 가능 → G1 창에 포함 |
-| 3 | G3 NEW-4 좁은 길목 우왕좌왕(`wip/chokefix` D14 보류와 함께) | 상 | 자동 종대·통과 큐 | 골든 변경 가능, D14 판단 필요 |
-| 4 | F1 후속 소수정 묶음 | 중 | `kd/review-followups-small`(WIP 354c02cf) 재개: DiskVersion 이행, HUD 높이 상한, 시험 4건 | 새 에이전트로 재발주(이어받기 아님) |
-| 5 | F2 T57f 위임 후속 | 상(또는 중) | OverrideSeconds 를 리플레이 머리말/defs 해시에 | FU-5 결정(만료 틱 명령 vs 머리말; 추천 머리말) |
-| 6 | F3 T61g·CKf 후속 | 중 | T61g-1·2, CKf-3·4·5 코드/시험 | T61g-3·4, CKf-1·2 는 사용자 결정 후 |
-| 7 | TI2-P0 | 중 | UI 문자열 상수→키 이관 첫 조각(공용 헬퍼·`static readonly` 캐시 3곳) | spec/ti2-plan 의 Q1~Q7 답 필요; N3e 문서 병합 후 |
-| 8 | N3e 병합 | 중(merger) | autoplay-summary·soak-allon-r(Program.cs 충돌)·pro-pilot-save-timing·snapbench-map·spec/*(followups, ti2-plan, runbook, personnel-ui, prisoners-loot-r, regiment-delegation-r, auto-pause, order-undo, mission-checkpoint) | 충돌 3건 사전 해소 필요(soak-allon, prisoners-loot, regiment-delegation) |
-| 9 | 정리 haiku | 하 | QUEUE 낡은 값(C1E1-g3 등) 정리, 워크트리 B 17개 확인, kd-rerender-5·perf-bench 정리 안내 | 삭제는 사용자 승인 |
+| 1 | G1 golden-change bundle | 상 | merge `kd/water-fire-open`(6142cb8c) + regenerate golden once | Gather golden-changing work in this window and regenerate last; keep separate so the same senior agent does not do NEW-3·NEW-4 |
+| 2 | G2 NEW-3 prone soldiers dragged along by formation | 상 | split posture/movement (soldiers prone from suppression) | golden may change → included in the G1 window |
+| 3 | G3 NEW-4 dithering in narrow chokepoints (together with `wip/chokefix` D14 hold) | 상 | automatic column · pass-through queue | golden may change, D14 judgment needed |
+| 4 | F1 follow-up small-fix bundle | 중 | resume `kd/review-followups-small`(WIP 354c02cf): DiskVersion migration, HUD height cap, 4 tests | reorder with a new agent (not a continuation) · wip-ready (not merged): `kd/review-followups-small` @a10c6055 |
+| 5 | F2 T57f delegation follow-up | 상(or 중) | put OverrideSeconds into the replay header/defs hash | FU-5 decision (expiry-tick command vs header; recommended header) · wip-ready (not merged): `kd/t57f-override-header` @be1d5a7f |
+| 6 | F3 T61g·CKf follow-up | 중 | T61g-1·2, CKf-3·4·5 code/tests | T61g-3·4, CKf-1·2 after user decision · wip-ready (not merged): `kd/f3-followups` @9b2eeed5 |
+| 7 | TI2-P0 | 중 | first piece of migrating UI string constants→keys (shared helper · 3 `static readonly` caches) | needs answers to Q1~Q7 of spec/ti2-plan; after N3e docs merge · wip-ready (not merged): `kd/ti2-p0` @217207d0 |
+| 8 | N3e merge | 중(merger) | autoplay-summary · soak-allon-r (Program.cs conflict) · pro-pilot-save-timing · snapbench-map · spec/* (followups, ti2-plan, runbook, personnel-ui, prisoners-loot-r, regiment-delegation-r, auto-pause, order-undo, mission-checkpoint) | 3 conflicts to resolve beforehand (soak-allon, prisoners-loot, regiment-delegation) · merged into merge/0.2-final @33ee9be3 |
+| 9 | cleanup haiku | 하 | tidy QUEUE stale values (C1E1-g3 etc.), check 17 worktrees B, guidance for cleaning kd-rerender-5·perf-bench | deletion needs user approval |
 
-## 웨이브 2 — 아트 (렌더 풀 3~4, 병합 라운드 밖)
-| # | 카드 | 등급 | 내용 | 메모 |
+## Wave 2 — art (render pool 3~4, outside merge rounds)
+| # | Card | Grade | Content | Note |
 |---|---|---|---|---|
-| 10 | A1 태극기 | 중 | `gt/taegukgi-detail`(41eab625) 병합 + 한국 기수(standard-bearer) 재렌더·import | 시안 승인됨; 렌더 스크립트(scratch/tg·tg2)를 tools/ 로 커밋; 법령 원문 확인 대기 |
-| 11 | A2 B2 재개 | 중 | tachanka 렌더 결과 확인(정상 종료·collide/edge 통과, 커밋 전), horse-artillery 관통 75건 조사·재렌더, 기병 2종 시트 검수 | 렌더 프로세스는 정리됐으므로 새로 돌려야 함 |
-| 12 | A3 형태 변경 유닛 재렌더 | 중 ×2~3 | 45식 군모 일본군, 보병 겹침 일괄 수정(collide), 샤드 2 의 비 res96 5종, scout 엎드림(frame_wide) 등 약 10~15종 | 유닛당 2~15분(게이트 포함), 2~4시간 |
-| 13 | A4 mid 건물·지형·소품·데칼 | 중 | 화풍 mid 재렌더(건물 1~2h·지형 1h·소품 30분·데칼) + 비교 시트 승인 | 사용자 시트 승인 필수, 차량·열차 제외 |
-| 14 | A5 유닛 색 통일 시안 | 중 | 나머지 유닛에 mid 색 후처리를 적용한 보병 5종 비교 시트 | 승인 시 일괄 적용(렌더 없음) |
+| 10 | A1 태극기 | 중 | merge `gt/taegukgi-detail`(41eab625) + re-render·import Korean standard-bearer | draft approved; commit render scripts (scratch/tg·tg2) to tools/; awaiting legal text check |
+| 11 | A2 B2 resume | 중 | check tachanka render result (normal exit · collide/edge pass, before commit), investigate·re-render 75 horse-artillery clipping cases, review sheet of 2 cavalry types | render processes were cleaned up so must run anew |
+| 12 | A3 shape-changed unit re-render | 중 ×2~3 | about 10~15 types: Type-45 cap Japanese army, infantry overlap batch fix (collide), 5 non-res96 types in shard 2, scout prone (frame_wide), etc. | 2~15 min per unit (including gate), 2~4 hours |
+| 13 | A4 mid buildings·terrain·props·decals | 중 | art-style mid re-render (buildings 1~2h · terrain 1h · props 30 min · decals) + comparison sheet approval | user sheet approval required, vehicles·trains excluded |
+| 14 | A5 unit color unification draft | 중 | comparison sheet of 5 infantry types with mid color post-processing applied to the remaining units | batch-apply on approval (no render) |
 
-## 웨이브 3 — 기능·측정
-| # | 카드 | 등급 | 내용 | 메모 |
+## Wave 3 — features·measurement
+| # | Card | Grade | Content | Note |
 |---|---|---|---|---|
-| 15 | T61d 중대 병합·병합 제안·자동 배정 | 상 | 정원 40% 이하 제안, 같은 연대·병과·구경, 대기 장교 배정(Q-F·Q-K~Q-N) | 인사관리 UI(T61e)와 함께 설계 질문 12개 해제 후 |
-| 16 | T61e1~e4 인사관리 UI | 중 | spec/personnel-ui(b429bfc0); e4 만 스키마 +1(중대장 연결) | 사용자 결정 Q-P1~P12 |
-| 17 | 연대장 33명 입력 | 하·중 | 호감 선호·고유 특성·계급·약력 작성 후 commanders.json | 사용자 작성 대기, 시험 Defs.Count 갱신 |
-| 18 | 통합 밸런스 패스 | 중(measure ×2) | T12/T15, n≥24, 시드 구간 2개, 종료선 50% 기준선 | 골든 재생성 후; AG1 항복 켜기·T31c 결정 포함 |
-| 19 | soak 재개 | 중(measure) | WATER·AIPLAN 단독 나머지 미션·시드 3~8 | tools/soak-allon 병합 후 |
-| 20 | 포병통 '포병 지연' 연결(31번) | 상 | 통신 알파 조각 ③·포 블록 매핑과 함께 | 설계 확인 필요 |
-| 21 | 도구 소카드 | 하·중 | 에이전트 조회 도구 보류(재활용 폐지), `--snapbench` 정밀도, 하네스 Gemini 사용량 표시 | 우선순위 낮음 |
+| 15 | T61d company merge · merge proposal · auto assignment | 상 | proposal at 40% or below of strength, same regiment·branch·caliber, assign waiting officers (Q-F·Q-K~Q-N) | after the 12 design questions are cleared together with personnel-management UI (T61e) · wip-ready (not merged): `kd/t61d-company-merge` @545dbe84 |
+| 16 | T61e1~e4 personnel-management UI | 중 | spec/personnel-ui(b429bfc0); only e4 adds schema +1 (company commander link) | user decisions Q-P1~P12 |
+| 17 | Enter 33 regiment commanders | 하·중 | write favor preferences · unique traits · rank · bio then commanders.json | awaiting user writing, update test Defs.Count |
+| 18 | Integrated balance pass | 중(measure ×2) | T12/T15, n≥24, 2 seed ranges, end-line 50% baseline | after golden regeneration; includes AG1 surrender enable · T31c decision |
+| 19 | Resume soak | 중(measure) | remaining missions of WATER·AIPLAN alone · seeds 3~8 | after tools/soak-allon merges |
+| 20 | Connect artillery-barrel 'artillery delay' (no. 31) | 상 | together with comms alpha piece ③ · gun block mapping | design check needed |
+| 21 | Small tool cards | 하·中 | hold the agent query tool (recycling abolished), `--snapbench` precision, harness Gemini usage display | low priority |
 
-## 사용자 결정 대기(웨이브 시작 전 알려 주면 좋은 것)
-- TI2 Q1~Q7, T57f FU-5, T61g-3(전멸 중대 부상자 소멸 규칙)·T61g-4, CKf-1(연습 칸 접두)·CKf-2(옛 전역 칸 삭제/숨김).
-- 인사관리 UI 질문 12개(0.3 에서 해제), 연대장 계급·호감·고유 특성 작성, 번역 열린 항목(영어 신규 189 키 중 판단 갈림, 성향 8종 영어 표기, 귀화자 표기, 외국 장군 표기).
-- 법령 원문 확인(태극기 깃면 너비=세로 해석), D14 chokefix 판단, 연대장 12명 채용 가능 상태(테스트 동안 유지로 결정됨).
+## Awaiting user decision (nice to tell before a wave starts)
+- TI2 Q1~Q7, T57f FU-5, T61g-3 (rule for wounded vanishing in an annihilated company)·T61g-4, CKf-1 (practice-cell prefix)·CKf-2 (delete/hide old global cell).
+- 12 personnel-management UI questions (cleared in 0.3), writing regiment commander rank·favor·unique traits, open translation items (judgment split among 189 new English keys, English names for the 8 dispositions, naturalized-person naming, foreign general naming).
+- Legal text check (태극기 flag face width = vertical interpretation), D14 chokefix judgment, 12 regiment commanders hireable state (decided to keep during testing).
 
-## 0.4 이후(참고)
-AI 개선(T34b~e·T32b/c·난이도 배수·항복 확대), 인게임 효과음 재정비, 위임 UI 개선, 성능(A 장면 상위 5% 틱·큰 지도 안개), 장갑 차량(시기 미정), 음악(로드맵만), 캠페인 본편·플레이테스트·튜토리얼 등 장기 항목(ROADMAP_LONG).
+## After 0.4 (reference)
+AI improvements (T34b~e·T32b/c · difficulty multiplier · surrender expansion), in-game sound effect overhaul, delegation UI improvements, performance (top 5% ticks in scene A · fog on big maps), armored vehicles (timing undecided), music (roadmap only), long-term items such as campaign main story·playtest·tutorial (ROADMAP_LONG).
 
-## 운영 메모
-- 병합 라운드 규칙: 병합 여부는 `git merge-base --is-ancestor`, FV·스키마 병합 단계는 compatgate 필수, 잠금은 병합 담당만, 렌더 풀 상한은 병합 중 2.
-- 각 에이전트 발주 시 모델 등급·이유 한 줄, 턴 상한(상급은 약 80), 읽을 문서·파일 직접 지정, 보고 12줄 이내. Gemini 위임(flash 읽기·로그·검색, pro 문서 초안·1건 코딩 시범 결과는 제한적).
+## Operating notes
+- Merge round rules: use `git merge-base --is-ancestor` to tell merged status, compatgate is mandatory for FV·schema merge steps, lock only by the merge role, render pool cap during merge is 2.
+- When ordering each agent: one line of model grade·reason, turn cap (about 80 for senior), specify the docs·files to read directly, report within 12 lines. Gemini delegation (flash reading·logs·search, pro doc drafts · 1 coding pilot; results limited).
 
-## 수면 모드 (사용자 취침 중 운영 규칙; 사용자 2026-10-23 03:1x)
-목적: 사용자가 자는 동안 **승인 버튼이 필요한 작업을 하지 않고**, **사용자 결정은 쌓아 두며**, **토큰을 아낀다.**
-1. 승인이 필요한 명령 금지: 파일·폴더·워크트리·브랜치 삭제, 프로세스 강제 종료, 설정·전역 파일 수정, 외부 드라이브(G:/D:) 쓰기는 하지 않는다. 거부되면 **재시도하지 않고** `ops/APPROVAL_NEEDED.md` 에 '명령·이유' 한 줄만 적고 넘어간다.
-2. 사용자 결정이 필요한 것은 기존처럼 각 브랜치 decisions_pending.d 조각과 `ops/USER_DECISIONS_QUEUE.md`(한 줄 항목: 질문·추천안·영향)에 쌓는다. 임의 결정은 `ops/AUTO_DEFAULTS_LOG.md` 에 한 줄(추천값 적용 가능한 것만). 새 메카닉·규칙 변경·삭제는 임의로 하지 않는다.
-3. 토큰 절약: 폴링·주기 점검 금지(완료 알림만 기다림). 알림에는 3줄 이내로 처리하고 큰 출력은 보지 않는다(필요하면 `route.py`/flash 요약). 에이전트는 **동시 4개 이하**, 상급(opus) **0~1개**, 턴 상한 명시(중 약 60, 상 약 80), 읽을 파일 지정, 보고 12줄 이내. 사용자에게 길게 보고하지 않고 기상 후 한 번에 요약(`ops/WAKE_REPORT.md` 에 누적).
-4. 수면 중 실행할 작업(승인·결정 불필요한 것만): A3 형태 변경 유닛 재렌더(렌더 풀 3), B2 재개, 태극기 병합 준비, F1 소수정 재발주(시험 포함), N3e 병합(충돌 해소 포함, 병합 잠금은 지휘자가 해제), soak 재개. **수면 중 미실행**: 골든 변경 묶음(G1~G3, 상급·고위험), TI2(질문 대기), 인사관리 UI·T61d(설계 결정 대기), 연대장 입력, mid 재렌더(사용자 시트 승인 필요 — 시안 시트만 만들고 대기), 통합 밸런스(골든 재생성 뒤).
-5. 병합 라운드는 FV·스키마를 바꾸지 않는 단계만 하고, 새 FAIL 이면 멈추고 `WAKE_REPORT.md` 에 기록한다(자동 수정·완화 금지).
+## Sleep mode (operating rules while the user sleeps; user 2026-10-23 03:1x)
+Purpose: while the user sleeps, **do not do work that needs an approval button**, **pile up user decisions**, and **save tokens.**
+1. Commands needing approval forbidden: do not delete files·folders·worktrees·branches, force-kill processes, modify settings·global files, or write to external drives (G:/D:). If denied, **do not retry**; write one line 'command·reason' in `ops/APPROVAL_NEEDED.md` and move on.
+2. Things needing a user decision pile up as before in each branch's decisions_pending.d fragment and `ops/USER_DECISIONS_QUEUE.md` (one-line items: question·recommendation·impact). Self-made decisions go as one line in `ops/AUTO_DEFAULTS_LOG.md` (only those where the recommended value can be applied). Do not decide new mechanics·rule changes·deletions on your own.
+3. Token saving: no polling·periodic checks (wait only for completion notices). Handle notices in 3 lines or fewer and do not view big outputs (if needed, `route.py`/flash summary). Agents **4 or fewer concurrent**, senior (opus) **0~1**, state the turn cap (中 about 60, 上 about 80), specify files to read, report within 12 lines. Do not report at length to the user; summarize once after waking (accumulate in `ops/WAKE_REPORT.md`).
+4. Work to run during sleep (only items needing no approval·decision): A3 shape-changed unit re-render (render pool 3), B2 resume, 태극기 merge prep, F1 small-fix reorder (including tests), N3e merge (including conflict resolution; the merge lock is released by the conductor), soak resume. **Not run during sleep**: golden-change bundle (G1~G3, senior·high-risk), TI2 (awaiting questions), personnel-management UI·T61d (awaiting design decisions), regiment commander entry, mid re-render (needs user sheet approval — only make the draft sheet and wait), integrated balance (after golden regeneration).
+5. Merge rounds do only steps that do not change FV·schema; on a new FAIL stop and record in `WAKE_REPORT.md` (no auto-fix·relaxation).

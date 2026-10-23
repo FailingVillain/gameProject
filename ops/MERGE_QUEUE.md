@@ -1,67 +1,67 @@
-# MERGE_QUEUE - wip-ready 브랜치 순서 + 버전 번호 예약 (갱신 2026-10-22)
+# MERGE_QUEUE - wip-ready branch order + version number reservations (updated 2026-10-22)
 
-규칙: merger 는 **상시** — `wip-ready` 카드가 1개라도 있으면 지휘자가 merger 를 띄우고 이 순서대로 직렬 처리. 잠금(`.git/kd-merge.lock`)은 merger 만(만료 30분, docs/procedures/merge-procedure.md). 병합 직전 검증 = 빌드 · detcheck · 자기 묶음 · snaptest; 전체 selftest 는 release(T13) 1회.
-쓰는 사람: merger(상태 · 완료 표 · 번호 확정) · 지휘자(wip-ready 행 추가) · release(큐 닫음 한 줄).
+Rule: the merger is **always on** — if there is even 1 `wip-ready` card, the conductor launches the merger and it processes in this order serially. The lock (`.git/kd-merge.lock`) is held only by the merger (expires in 30 minutes, docs/procedures/merge-procedure.md). Verification right before merging = build · detcheck · own bundle · snaptest; the full selftest is once at release (T13).
+Who writes: merger (state · completed table · number confirmation) · conductor (adds wip-ready rows) · release (one line closing the queue).
 
-## 현재 main 값 (코드 상수; 병합 때마다 다시 읽을 것)
-- Snapshot.cs `FormatVersion = 52` · Replay.cs `FormatVersion = 19` (둘 다 comms ①). main 해시: `git -C C:/gameProject log -1 --format=%h main`.
+## Current main values (code constants; re-read at every merge)
+- Snapshot.cs `FormatVersion = 52` · Replay.cs `FormatVersion = 19` (both comms ①). main hash: `git -C C:/gameProject log -1 --format=%h main`.
 
-## 병합 완료 표 (main 에 들어간 것)
-규칙: 조사·측정·spec 카드는 시작 전에 이 표 + `docs/legacy/GIT_HISTORY_DIGEST.md` 를 grep 해 이미 구현됐는지 확인. '스냅샷' = 첫 커밋 a1a35e6 에 포함.
-| 해시 | 브랜치 | 들어간 것 |
+## Merge completed table (what went into main)
+Rule: before starting, investigation·measurement·spec cards grep this table + `docs/legacy/GIT_HISTORY_DIGEST.md` to check whether it is already implemented. 'Snapshot' = included in the first commit a1a35e6.
+| Hash | Branch | What went in |
 |---|---|---|
-| 스냅샷 | assaultinf | 돌격보병 강화 (FV49) |
-| 스냅샷 | horseart | 기마 포병 (타찬카 마차 + 보병포) |
-| 스냅샷 | savecompat | 저장 형식 호환 정책 |
-| 스냅샷 | arty3 | 포병·중화기 묶음 (FV50, Replay18) |
-| 스냅샷 | tachanka | 한국군 타찬카 확인 + 시트 |
-| 스냅샷 | newunits | 신규 병종 4종 (사냥꾼·마적 엽총수·초안 마적·민단) |
-| 스냅샷 | tutorial | 튜토리얼 챕터0 0-1 · 0-2 |
-| 스냅샷 | lookfix | 몽골/마적 외형 |
-| 스냅샷 | formation | 대형 완화 (FV51; choke·산개 횡대 꺼짐) |
-| 스냅샷 | comms | 통신 알파 ① (FV52, Replay19) |
-| 스냅샷 | trenchdiag | trench_assault · S1~S3 진단 문서 |
-| 8d22ad5 | wip/bigbldg | 건물 크기 확대 (HouseBlocks 렌더) |
-| ba696b7 | gate-lanes | heavy_gate 3레인 (기본 비활성) |
-| 53712e9 · 4d19119 | - | 도구 정리 · 결정 장부 D01~D22 |
-| b5918a8 · a4c79c7 | docs-ops · docs-roles | 문서 재정비 (ops/tasks, 헌장/역할/절차) |
-| 562e578 | docs-fable | PIPELINE v1 · STATE/QUEUE 현행화 · T13 |
-| bfe5641 | fix/n12-forest | 낡은 시험 4건 수정 (N12/Forest/GapFill 시험 3파일만; 사용자 승인 예외 2026-10-22) |
+| snapshot | assaultinf | assault infantry buff (FV49) |
+| snapshot | horseart | horse artillery (tachanka wagon + infantry gun) |
+| snapshot | savecompat | save format compatibility policy |
+| snapshot | arty3 | artillery·heavy weapons bundle (FV50, Replay18) |
+| snapshot | tachanka | Korean army tachanka check + sheet |
+| snapshot | newunits | 4 new branches (hunter·bandit shotgunner·draft bandit·militia) |
+| snapshot | tutorial | tutorial chapter 0, 0-1 · 0-2 |
+| snapshot | lookfix | Mongol/bandit look |
+| snapshot | formation | formation relaxation (FV51; choke·skirmish line off) |
+| snapshot | comms | communication alpha ① (FV52, Replay19) |
+| snapshot | trenchdiag | trench_assault · S1~S3 diagnostic document |
+| 8d22ad5 | wip/bigbldg | building size increase (HouseBlocks render) |
+| ba696b7 | gate-lanes | heavy_gate 3 lanes (disabled by default) |
+| 53712e9 · 4d19119 | - | tool cleanup · decision ledger D01~D22 |
+| b5918a8 · a4c79c7 | docs-ops · docs-roles | document overhaul (ops/tasks, charter/roles/procedures) |
+| 562e578 | docs-fable | PIPELINE v1 · STATE/QUEUE updated · T13 |
+| bfe5641 | fix/n12-forest | fixed 4 stale tests (only 3 files of N12/Forest/GapFill tests; user-approved exception 2026-10-22) |
 | a8552f9 | tools/fv-renumber | fv_renumber.ps1 (merge/0.2 A1) · FV 52/19 · detcheck 8aa6448b9690b922 |
-| 9b2cbff | tools/monitor-launch | run_game.ps1 (A2) · AGENT_RULES 절 합집합 · FV 52/19 |
-| 5d8149f | kd/crash-log | T41 충돌 로그 (A3) · FV 52/19 · detcheck 8aa6448b9690b922 · crashlog PASS · uifuzz 30 0건 |
-| 32180a0 | kd/endline-50 | 종료선 70→50 미션 json (A4) · FV 52/19 · detcheck 8aa6448b9690b922 · missions PASS |
-| a0611ad | sfxnew | T21 효과음 (A5) · FV 52/19 · detcheck 8aa6448b9690b922 · sounds.json 유효 |
-| 2231459 · abbe77f | gt-face-proto · t30d-train-art | T22 얼굴 시안 · T30d 열차 그림 (A6, src 변경 없음) · FV 52/19 · detcheck 8aa6448b9690b922 |
-| ffc4129 | wip/breach2 | T03 돌파 (B1) · FV 53/20 · detcheck 19501757040f0d62 · breach/snapshot/replay/crossing PASS · snaptest OK · uiicons FAIL 1건(정상, 카드 칸) |
-| d1947b0 | wip/orderq2 | T04 명령 대기열 · 사격선 (B3) · FV 54/21 · detcheck 19501757040f0d62 · orderq/firectl/replay/command/crossing PASS · snaptest OK · uiicons FAIL 1건(정상) |
-| 7d5c124 | ai3b2 | T05 AI 블랙보드 3B (B4) · FV 55/21 · detcheck 19501757040f0d62 · ai3b/snapshot/crossing PASS · snaptest OK · uiicons FAIL 1건(정상) |
-| 89ca250 | kd/t24-s1s3 | T24 D08 ①②③ (B5) · FV 55/21 · detcheck ccfbd1ddab1c1dfe · cavcmd/command/drill/officer PASS · snaptest OK · crossing FAIL 2건(B5b 전 정상) · uiicons FAIL 1건(정상) |
-| 21085f4 | kd/t24-crossing-fix | 도하 단계 observer keep=0 (B5b) · FV 55/21 · detcheck ccfbd1ddab1c1dfe 불변 · crossing/tactical/officer/command PASS · uiicons FAIL 1건(정상) |
-| efb0850 | kd/acting-delay-tier | T37 대리 부사관 지연 등급 (B6) · FV 55/21 · detcheck 6c96b4d6c1603324 ac9ae47194d72378 (units=86 shots=3454; golden 파일은 HEAD 유지라 MISMATCH 정상, 재생성 안 함) · officer/command/replay/crossing PASS |
-| 97472a0 | kd/t25-bayonet-all | T25 착검 전체 (B7) · FV 55/21 · detcheck b7c3761c573cad25 477d7cb573a6d943 (units=112 shots=2890; T37 포함이라 리허설 bef5ffb0 과 다름, 기록만) · charge/pursuit/crossing PASS |
-| 5a64b1f | kd/t31a-regroup | T31a 재집결 제한 (B8, 기본 꺼짐) · FV 55/21 · detcheck b7c3761c573cad25 유지 · pursuit2/tactical/crossing PASS |
-| 4e11ece | kd/t31c-surrender | T31c AI 항복 (B9, 기본 꺼짐) · FV 55/21 · detcheck b7c3761c573cad25 유지 · surr/crossing PASS · **snapshot 묶음 · snaptest FAIL 1건: 'World 필드 모두 분류됨 — 분류 안 된 새 필드: actingCache' (원인 B6 T37, 보고)** |
+| 9b2cbff | tools/monitor-launch | run_game.ps1 (A2) · AGENT_RULES section union · FV 52/19 |
+| 5d8149f | kd/crash-log | T41 crash log (A3) · FV 52/19 · detcheck 8aa6448b9690b922 · crashlog PASS · uifuzz 30 0 cases |
+| 32180a0 | kd/endline-50 | end line 70→50 mission json (A4) · FV 52/19 · detcheck 8aa6448b9690b922 · missions PASS |
+| a0611ad | sfxnew | T21 sound effects (A5) · FV 52/19 · detcheck 8aa6448b9690b922 · sounds.json valid |
+| 2231459 · abbe77f | gt-face-proto · t30d-train-art | T22 face mockup · T30d train art (A6, no src change) · FV 52/19 · detcheck 8aa6448b9690b922 |
+| ffc4129 | wip/breach2 | T03 breakthrough (B1) · FV 53/20 · detcheck 19501757040f0d62 · breach/snapshot/replay/crossing PASS · snaptest OK · uiicons FAIL 1 case (normal, card cell) |
+| d1947b0 | wip/orderq2 | T04 order queue · fire line (B3) · FV 54/21 · detcheck 19501757040f0d62 · orderq/firectl/replay/command/crossing PASS · snaptest OK · uiicons FAIL 1 case (normal) |
+| 7d5c124 | ai3b2 | T05 AI blackboard 3B (B4) · FV 55/21 · detcheck 19501757040f0d62 · ai3b/snapshot/crossing PASS · snaptest OK · uiicons FAIL 1 case (normal) |
+| 89ca250 | kd/t24-s1s3 | T24 D08 ①②③ (B5) · FV 55/21 · detcheck ccfbd1ddab1c1dfe · cavcmd/command/drill/officer PASS · snaptest OK · crossing FAIL 2 cases (normal before B5b) · uiicons FAIL 1 case (normal) |
+| 21085f4 | kd/t24-crossing-fix | crossing stage observer keep=0 (B5b) · FV 55/21 · detcheck ccfbd1ddab1c1dfe unchanged · crossing/tactical/officer/command PASS · uiicons FAIL 1 case (normal) |
+| efb0850 | kd/acting-delay-tier | T37 acting NCO delay tier (B6) · FV 55/21 · detcheck 6c96b4d6c1603324 ac9ae47194d72378 (units=86 shots=3454; the golden file stays at HEAD so MISMATCH is normal, not regenerated) · officer/command/replay/crossing PASS |
+| 97472a0 | kd/t25-bayonet-all | T25 bayonet for all (B7) · FV 55/21 · detcheck b7c3761c573cad25 477d7cb573a6d943 (units=112 shots=2890; differs from rehearsal bef5ffb0 because T37 is included, record only) · charge/pursuit/crossing PASS |
+| 5a64b1f | kd/t31a-regroup | T31a regroup limit (B8, default off) · FV 55/21 · detcheck b7c3761c573cad25 kept · pursuit2/tactical/crossing PASS |
+| 4e11ece | kd/t31c-surrender | T31c AI surrender (B9, default off) · FV 55/21 · detcheck b7c3761c573cad25 kept · surr/crossing PASS · **snapshot bundle · snaptest FAIL 1 case: 'all World fields classified — new unclassified field: actingCache' (cause B6 T37, reported)** |
 
-**큐 닫음 (release, 2026-10-22)**: fix/n12-forest 큐 — 전체 selftest 2008 OK/FAIL 0 · detcheck 8변형 동일 · snaptest OK · dist 발행. (T03~T05 큐의 T13 은 별도, 아직 queued.)
+**Queue closed (release, 2026-10-22)**: fix/n12-forest queue — full selftest 2008 OK/FAIL 0 · detcheck 8 variants identical · snaptest OK · dist published. (T13 of the T03~T05 queue is separate, still queued.)
 
-## 병합 순서 (wip-ready 가 된 것만 처리; 예정 순서)
-| 순 | 브랜치 | 카드 | R | 상태 | 비고 |
+## Merge order (only those that became wip-ready are processed; planned order)
+| Order | Branch | Card | R | Status | Note |
 |---|---|---|---|---|---|
-| 1 | wip-resolved/breach | T03 | R3 | 복원됨, 검증 대기 | FV53/R20 적용본, reviewer 뒤 wip-ready |
-| 2 | gemini-import (복원) | T01 | R2 | 패치 보관 | 저장 트랜잭션 선행 |
-| 3 | orderq (복원) | T04 | R3 | 패치 보관 | breach 뒤 |
-| 4 | ai3b2 (복원) | T05 | R3 | 패치 보관 | 마지막; 전체 selftest 는 release |
-| 후 | rail (복원) | T07 | R2 | 패치 보관 | 선행 없음 |
-| 후 | wip/casualty | T06 | R3 | 브랜치 | D19 뒤 |
-| 후 | chokefix · battlereport · doctrines · sfxnew | -/T17/T19/- | - | 브랜치·패치 | 카드 발주 때 복원; chokefix 는 D14 |
-| 비병합 | rerender-1 · gt-brender · gt-rerender-prep · gt-face-proto | T11 | R1 | game-tools | 렌더 3칸, 시트 검수 뒤 |
+| 1 | wip-resolved/breach | T03 | R3 | restored, awaiting verification | FV53/R20 applied version, wip-ready after reviewer |
+| 2 | gemini-import (restored) | T01 | R2 | patch kept | save transaction first |
+| 3 | orderq (restored) | T04 | R3 | patch kept | after breach |
+| 4 | ai3b2 (restored) | T05 | R3 | patch kept | last; the full selftest is at release |
+| later | rail (restored) | T07 | R2 | patch kept | no prerequisite |
+| later | wip/casualty | T06 | R3 | branch | after D19 |
+| later | chokefix · battlereport · doctrines · sfxnew | -/T17/T19/- | - | branch·patch | restored when the card is ordered; chokefix is D14 |
+| non-merge | rerender-1 · gt-brender · gt-rerender-prep · gt-face-proto | T11 | R1 | game-tools | 3 render cells, after sheet review |
 
-## 버전 번호 예약표 (merger 가 병합 때 확정; 겹치면 병합 순서가 앞선 쪽이 먼저. 골든 재생성은 큐 전체 1회)
-| 브랜치 | Snapshot 예약 | Replay 예약 | 변경 내용 | 확정 |
+## Version number reservation table (confirmed by the merger at merge time; on collision the earlier in merge order goes first. Golden regeneration once for the whole queue)
+| Branch | Snapshot reservation | Replay reservation | Change | Confirmed |
 |---|---|---|---|---|
-| breach | 53 | 20 | 연막 · 철조망 절단 (wip-resolved/breach 에 적용됨) | 미확정 |
-| orderq | 54 | 21 | 명령 대기열 / 사격선 | 미확정 |
-| ai3b2 | 55 | - | AI 블랙보드 3B (46 은 구 3B, 재확인) | 미확정 |
-| rail | 56 | - | 철도 지형 (지도 직렬화) | 미확정 |
-| casualty · gemini-import | 확인 필요 | 확인 필요 | 값 위주 / 캠페인 schemaVersion 별도 | 미확정 |
+| breach | 53 | 20 | smoke · barbed wire cutting (applied in wip-resolved/breach) | unconfirmed |
+| orderq | 54 | 21 | order queue / fire line | unconfirmed |
+| ai3b2 | 55 | - | AI blackboard 3B (46 is the old 3B, re-check) | unconfirmed |
+| rail | 56 | - | railway terrain (map serialization) | unconfirmed |
+| casualty · gemini-import | needs checking | needs checking | mostly values / campaign schemaVersion is separate | unconfirmed |

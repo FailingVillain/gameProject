@@ -1,149 +1,149 @@
-# 유닛 그림 · 그래픽 규칙
+# Unit Art · Graphics Rules
 
-> ROADMAP §3 에서 옮긴 그림 규칙 · 결정 (2026-10-19 정리, 문장 그대로). 미결 · 진행 TODO 는 `docs/ROADMAP_LONG.md` §3 에 남김.
+> Art rules · decisions moved from ROADMAP §3 (organized 2026-10-19, sentences as is). Open items · in-progress TODOs remain in `docs/ROADMAP_LONG.md` §3.
 
-## 3. 유닛 그래픽 (방법론 토론 중)
+## 3. Unit graphics (methodology under discussion)
 
-- 3D 모델링 (`game-tools/image/tools/voxel.py` 기본도형 + 자세 · 동작) 만 재활용, 그림 (군복 · 장비 · 색 · 스타일) 은 새로.
-- 작업 방식 (확정): 사용자가 확인, Claude 는 렌더 후 contact sheet 1장 경로만 전달 (그림을 직접 보지 않음). 새 보병 = 기존 모델 복사 + 장비만 교체.
-- **해상도 3벌** (2026-10-18): 128×160 · 64×80 · 32×40 시트를 모두 출력 (각 크기 직접 렌더, 픽셀아트 유지). 게임은 확대 배율에 따라 골라 씀 (현재는 GPU 밉맵 자동 축소 + 0.5배 미만은 점).
-- **기본 보병 1차대전 풍으로 변경** (15차, 진행 중): 철모 없음, **밝은 카키** 군복, 모자 = **오스트리아 1차대전 야전모 (Feldkappe) 형태** (일본군 군모는 장교 모자와 비슷해 변경), 각반, 가죽 탄약 주머니, 볼트액션 소총. 옛 WW2 모습은 `units/infantry-ww2.json` 으로 보존.
-- (15~17차 지시) 보병: 상의 · 모자 **진한 카키**, 바지 조금 진하게, 모자 **챙 보이게**. 장교: 모자 크게, 바지 = 보병 바지 색 + **팀색 세로줄**, idle_alt 칼끝 바닥, 돌격 · 근접 팔 편 상태, sword_wave 원 그리기 (머리와 안 겹침).
-- **어깨총 걷기** (20차): 보병 `walk_shoulder` (총을 어깨에 걸치고 전진, 4프레임). 게임에서 이동 시작 시 **33% 확률**로 걷기 대신 선택 (유닛 · 명령별 결정적 난수). 게임 반영 때 연결.
-- **병종 추가 방침** (2026-10-19): 일반 보병 모델을 거의 그대로 쓰고 모자 · 색만 바꾼 병종을 여럿 추가 (스펙은 기본 보병과 동일로 시작).
-  - **예비군 `infantry-reserve`** (한국 세력 · 레거시 아님, 2026-10-19 개명; 中, 진행 중): 일본 보병 디자인 (45식 군모 · 군복) 을 가져와 **아주 짙은 남색 (검정에 가까움)** + 군복 겉테두리에 **얇은 적색 선**. 일본 보병 디자인이 최종 완성되면 다시 맞춤.
-  - **시위대 (친위대) `infantry-guard`** (2026-10-19, 그림 완료 `units-u1`, 피켈하우베 뿔 5.8 유지): **피켈하우베**, 구식 보병과 같은 색 · 군복 (짙은 남색 + 적색 테두리), 소총은 다른 보병보다 **조금 더 김**. 고급 병종: **체력 150** (2026-10-19 변경, 소총 40 기준 4발 사망), 소총 기본 피해 **40**. 게임 데이터 (유닛 정의) 는 다음 교전 배치 때.
-  - **봉천 보병 `infantry-fengtian`** (2026-10-19, 그림 中 진행 중): 성능 = 일반 보병과 동일. 군모 = 아주 약식 (기본 보병 야전모와 헷갈리지 않게), 군복 상하 = **밝은 청회색**. **착검 돌격 안 함** — 근접전 · 돌격은 **중국식 대도** (장교 검보다 짧고 두꺼움). 게임 데이터 (근접 무기 = 대도, 착검 없음) 는 다음 교전 배치 때.
-  - **봉천 장교 `officer-fengtian`** (2026-10-19, 中 진행 중): 장교 팔레트 교체 수준 (봉천 청회색 군복), 대도가 아니라 **일반 장교 도검**. 봉천 군복은 조금 더 파랗게 (너무 흰색). 아드리안 · 슈탈헬름은 장식 축소 + 얼굴 보이게, 피켈하우베 뿔 더 길게.
-  - 대전차소총병 사격 자세 = **한쪽 무릎 꿇고 쏴** (2026-10-19 정정, 앉아쏴 아님).
-  - **중기관총병 `hmg-maxim`** (2026-10-19, 그림 中 진행 중): **2인 운용**, **맥심 기관총**. 스펙 = 경기관총과 동일, **체력 200** (경기관총병 150 이므로). 넓은 프레임 (차량처럼). 게임 데이터는 다음 교전 배치.
-- **돌격보병 `infantry-assault`** (2026-10-19 추가, 그림 = sonnet): **카빈 (단축 소총형, 2026-10-19 N21 결정으로 기관단총 대체 — 그림 재렌더는 별도 작업) + 근접 권총** 무장, **아드리안 철모**, 장교처럼 **도검 패용** (장교 곡도보다 **조금 짧게**). 돌격 모션 · 근접 전투는 **도검으로**. 그림은 **장교 그래픽 재활용** (검 돌격 · 베기 · 칼집 자세, 손잡이 부품) + 보병 몸 · 군복 + 새 부품 (기관단총 · 아드리안 철모). **기관단총 수치 (확정 2026-10-19)**: 연사 = 소총의 **3.5배** (간격 ≈0.51~0.69초), 피해 **25** (보병 100 HP → **4발 사망**), 사거리 = 소총의 **1/3** (≈5.3칸). 근접 (도검) 수치는 장교 곡도 기준 (교전 3차).
-- (21차) 보병 모자: 색 하나로 통일 (몸체 · 덮개 · 챙), **들회색 (field grey)** 계열. **상의도 들회색** (23차, 진한 카키 대체).
-- **디자인 원칙** (22차): 보병이 **일본군 느낌이 나면 안 된다** (일본식 군모 · 황카키 톤 · 아리사카 실루엣 · 일본식 휘장 금지). 1차대전 중 · 동유럽풍의 일반적인 모습 유지.
-- **일본군 · 봉천군 구분** (2026-10-19 확정, 그림 합치기 뒤): ① 색 = 일본 겨자 카키 (따뜻 · 중간 밝기) / 봉천 진한 슬레이트 회청색 (차갑 · 어둡게) (下) ② 봉천 모자 = 만주식 겨울 털모자 (귀덮개) (中) ③ 장비 = 일본 배낭 위 말발굽형 외투 말이 + 대검 꽂은 소총 / 봉천 가슴 X자 천 탄띠 (中). 세력 변형 (장교 · 중화기) 에도 같은 키로 반영.
-- **검은 윤곽선 강조 → 전체 유닛 적용 확정** (2026-10-19, 게임 화면 확인 후 최종 승인) — **그림 합치기 끝나면 `outline-test` 브랜치를 game-tools main 에 합치고 렌더 기본값을 강조 윤곽선으로 전환** (이후 새 렌더는 자동 적용, 기존 유닛은 마지막 일괄 재렌더 때): 색 (8,8,8), 바깥선 128=3px · 64=2px · 32=1px (브랜치 `outline-test` `94cd98d` 의 옵션을 기본값으로, crew 유닛 포함). **체형 슬림화와 같은 마지막 일괄 재렌더 때** 함께 적용.
-- **팀색 띠 제거 + 피아 식별 머리띠** (2026-10-19, 슬림화 때 함께): 모자 띠 · 어깨 패치 · 장교 바지 줄 등 세력 색 표시를 기본 그림에서 뺀다 (세력 구분 = 세력별 군복 · 모자). 대신 **팀 층에는 '머리띠' 하나만** 남겨, **같은 세력끼리 싸울 때만** 게임이 머리띠를 그린다 (추후 **반란군** 기능의 피아 식별 띠로 재사용). 발밑 · 선택 표시는 그대로.
-- **축소 팀색 발밑 고리** (2026-10-19, 사용자 "발밑 고리만"): 줌 ≤ 0.8 에서 얇은 팀색 고리 (알파 210, 선택선보다 가는 타원), 0.8→1.0 선형 페이드, 1.0 이상은 안 그림 (근접 발밑 원 제거 결정 유지). 줌 < 0.5 는 점 · 중대 휘장이 대신. 선택 · 호버 유닛은 고리 없이 선택선만. 군복 틴트 없음. `UnitRenderer.RingFull/RingOff`, 그림자 텍스처(`Blob.Thin`) 한 배치. 확인용 `KD_NORING=1`.
-- (보류, 적용 안 함) 견장 계급 표시: 사살 수 계급 (이병~병장) 을 견장 줄 수로 — 사용자 판단으로 지금은 불필요.
-- **모자 휘장 (cap badge) 승인** (2026-10-19, 초안 `_drafts/badges`, outline-test `b145f24`): 최종 일괄 때 팀색 띠 제거 · 같은 세력 머리띠와 함께 적용.
-- **휘장 · 문장 디테일** (2026-10-19, 슬림화 때 함께): 팀색 띠를 뺀 자리 (모자 정면 · 깃 · 어깨) 에 세력별 휘장 · 문장 · 견장 같은 작은 디테일 추가. 좌우 반전 안전하게 **대칭 도안**, 실제 국가 상징은 그대로 쓰지 않고 양식화.
-- **내부 윤곽선도 검게** (2026-10-19, 슬림화 때 함께): 몸 안쪽 깊이선 (팔과 몸통 사이, 장비 경계 등) 을 지금보다 검은 쪽으로 진하게 해 부위 구분을 선명하게 (바깥선보다는 약하게).
-  - **모션 초안 1차 승인 (2026-10-19)**: idle_rest · look · adjust · stretch (대기) + 경례 (salute) · 소총 들어 환호 (present_arms) 사용자 승인.
+- Reuse only the 3D modeling (`game-tools/image/tools/voxel.py` primitives + poses · motions), the art (uniforms · equipment · colors · style) is new.
+- Work method (confirmed): the user reviews, Claude after rendering passes only the path of 1 contact sheet (does not look at the art directly). New infantry = copy the existing model + swap only the equipment.
+- **3 resolution sets** (2026-10-18): output all of 128×160 · 64×80 · 32×40 sheets (rendered directly at each size, pixel art kept). The game picks by zoom factor (currently automatic GPU mipmap reduction + a dot below 0.5x).
+- **Basic infantry changed to a WWI look** (round 15, in progress): no steel helmet, **light khaki** uniform, cap = **Austrian WWI field cap (Feldkappe) shape** (changed because the Japanese cap resembles an officer's cap), puttees, leather ammo pouches, bolt-action rifle. The old WW2 look is preserved as `units/infantry-ww2.json`.
+- (Rounds 15~17 directive) Infantry: tunic · cap **dark khaki**, trousers slightly darker, cap **visor visible**. Officer: larger cap, trousers = infantry trouser color + **team-color vertical stripe**, idle_alt sword tip on the ground, arm extended in assault · melee, sword_wave drawing a circle (not overlapping the head).
+- **Shouldered-rifle walk** (round 20): infantry `walk_shoulder` (advancing with the rifle on the shoulder, 4 frames). In the game it is chosen **33% of the time** at move start instead of the normal walk (deterministic random per unit · command). Connected when reflected in the game.
+- **Branch addition policy** (2026-10-19): add several branches that use the general infantry model almost as is and only change the cap · color (spec starts the same as basic infantry).
+  - **Reserves `infantry-reserve`** (Korean faction · not legacy, renamed 2026-10-19; 中, in progress): take the Japanese infantry design (Type 45 cap · uniform) and make it **very dark navy (close to black)** + a **thin red line** on the uniform's outer edge. Re-align when the Japanese infantry design is finally complete.
+  - **시위대 (Royal Guard) `infantry-guard`** (2026-10-19, art done `units-u1`, pickelhaube spike 5.8 kept): **pickelhaube**, same color · uniform as the old-style infantry (dark navy + red piping), rifle **slightly longer** than other infantry. Elite branch: **HP 150** (changed 2026-10-19, dies in 4 hits at rifle 40), base rifle damage **40**. Game data (unit definition) at the next engagement batch.
+  - **Fengtian infantry `infantry-fengtian`** (2026-10-19, art 中 in progress): performance = same as general infantry. Cap = very informal (not to be confused with the basic infantry field cap), uniform top and bottom = **light blue-gray**. **No bayonet charge** — melee · assault with the **Chinese large blade (dadao)** (shorter and thicker than the officer's sword). Game data (melee weapon = dadao, no bayonet) at the next engagement batch.
+  - **Fengtian officer `officer-fengtian`** (2026-10-19, 中 in progress): level of an officer palette swap (Fengtian blue-gray uniform), a **regular officer's sword** rather than a dadao. The Fengtian uniform slightly bluer (too white). Adrian · Stahlhelm with reduced decoration + face visible, longer pickelhaube spike.
+  - Anti-tank rifleman firing posture = **fire kneeling on one knee** (corrected 2026-10-19, not sitting fire).
+  - **Heavy machine gunner `hmg-maxim`** (2026-10-19, art 中 in progress): **2-man crew**, **Maxim machine gun**. Spec = same as the light machine gun, **HP 200** (since the light machine gunner is 150). Wide frame (like vehicles). Game data at the next engagement batch.
+- **Assault infantry `infantry-assault`** (added 2026-10-19, art = sonnet): armed with a **carbine (short rifle type, replaced the submachine gun by decision N21 2026-10-19 — art re-render is separate work) + melee pistol**, **Adrian steel helmet**, **wears a sword** like an officer (**slightly shorter** than the officer's saber). Assault motion · melee combat **with the sword**. Art **reuses the officer graphics** (sword assault · slash · scabbard posture, handle part) + infantry body · uniform + new parts (submachine gun · Adrian steel helmet). **Submachine gun values (confirmed 2026-10-19)**: rate of fire = **3.5x** the rifle (interval ≈0.51~0.69 s), damage **25** (infantry 100 HP → **dies in 4 hits**), range = **1/3** of the rifle (≈5.3 cells). Melee (sword) values are based on the officer saber (engagement round 3).
+- (Round 21) Infantry cap: unified to one color (body · cover · visor), **field grey** family. **The tunic is also field grey** (round 23, replaced dark khaki).
+- **Design principle** (round 22): infantry **must not feel Japanese** (no Japanese caps · yellow-khaki tone · Arisaka silhouette · Japanese insignia). Keep the common mid-WWI · Eastern European look.
+- **Japanese · Fengtian distinction** (confirmed 2026-10-19, after merging the art): ① color = Japan mustard khaki (warm · medium brightness) / Fengtian dark slate blue-gray (cool · dark) (下) ② Fengtian cap = Manchurian winter fur cap (ear flaps) (中) ③ equipment = Japanese horseshoe-shaped overcoat roll on the backpack + rifle with fixed bayonet / Fengtian X-shaped cloth bandolier on the chest (中). Reflected with the same keys in faction variants (officers · heavy weapons).
+- **Black outline emphasis → applied to all units confirmed** (2026-10-19, final approval after checking the game screen) — **once the art merge is finished, merge the `outline-test` branch into game-tools main and switch the render default to the emphasized outline** (new renders thereafter apply automatically, existing units at the final batch re-render): color (8,8,8), outer line 128=3px · 64=2px · 32=1px (the option of branch `outline-test` `94cd98d` as default, including crew units). Applied together **at the same final batch re-render as the body slimming**.
+- **Remove team-color bands + friend-or-foe headband** (2026-10-19, together with slimming): remove faction-color marks such as cap bands · shoulder patches · officer trouser stripes from the base art (faction distinction = per-faction uniform · cap). Instead keep **only a 'headband' in the team layer**, and the game draws the headband **only when the same faction fights itself** (later reused as the friend-or-foe band for the **rebel army** feature). Foot and selection marks unchanged.
+- **Zoomed-out team-color foot ring** (2026-10-19, user "foot ring only"): at zoom ≤ 0.8 a thin team-color ring (alpha 210, an ellipse thinner than the selection line), linear fade 0.8→1.0, not drawn at 1.0 or above (the decision to remove the close-up foot circle is kept). At zoom < 0.5 the dot · company insignia takes over. Selected · hovered units have only the selection line, without the ring. No uniform tint. `UnitRenderer.RingFull/RingOff`, shadow texture (`Blob.Thin`) in one batch. For checking `KD_NORING=1`.
+- (On hold, not applied) shoulder-strap rank marks: kill-count ranks (private ~ sergeant) by the number of strap stripes — by the user's judgment unnecessary for now.
+- **Cap badge approved** (2026-10-19, draft `_drafts/badges`, outline-test `b145f24`): applied at the final batch together with removing team-color bands · same-faction headbands.
+- **Insignia · emblem details** (2026-10-19, together with slimming): in the spots where the team-color bands were removed (cap front · collar · shoulder) add small details such as per-faction insignia · emblems · epaulets. **Symmetric designs** to be safe under left-right flipping, actual national symbols are not used as is but stylized.
+- **Black inner outlines too** (2026-10-19, together with slimming): make the interior depth lines of the body (between arm and torso, equipment boundaries etc.) darker toward black than now so body parts are distinguished clearly (weaker than the outer line).
+  - **Motion draft round 1 approved (2026-10-19)**: idle_rest · look · adjust · stretch (idle) + salute · cheering with the rifle raised (present_arms) approved by the user.
 
-### 세력별 외형 (2026-10-19, 중요)
-- 플레이어 (한국) 고유 유닛이 아닌 **공용 병종은 세력마다 외형을 다르게** (군모 · 군복 색 · 장비). 시뮬 부하 없음 (표시 전용, 유닛 정의는 공용 · 테마 키만 세력별). 메모리는 **미션에 등장하는 세력 시트만 로드** + LOD 지연 로드로 관리 (검토 내용은 대화 기록). 1단계 = 기존 파이프라인의 유닛 JSON 변형 (모자 · 색만 교체, haiku 수준), 2단계 (필요 시) = 팔레트 교체 셰이더 + 모자 층 분리.
-- 세력 외형 초안: 한국 = 들회색 + 오스트리아 야전모 (현행) · 일본 = 카키 + 45식 군모 (현 infantry-japanese) · 봉천 = 청회색 + 약식 모자 (현 infantry-fengtian) · 러시아 백군 = 카키 올리브 + 챙 모자 (푸라시카) · 러시아 적군 = 회갈색 외투 + 부됸놉카 (휘장 대신 붉은 띠).
-- **(2026-10-19, 진행 中) 일본군 군복 = 루에스 오커 (황토색, 따뜻 · 중간 밝기, 피부색 대비)**. 일본 · 봉천 구분은 아래 '일본군 · 봉천군 구분' 항목.
+### Per-faction look (2026-10-19, important)
+- **Common branches that are not unique to the player (Korea) have a different look per faction** (cap · uniform color · equipment). No sim load (display only, unit definitions shared · only theme keys per faction). Memory is managed by **loading only the faction sheets that appear in the mission** + LOD lazy loading (review in the conversation record). Stage 1 = unit JSON variants of the existing pipeline (swap only cap · color, haiku level), stage 2 (if needed) = palette swap shader + cap layer separation.
+- Faction look draft: Korea = field grey + Austrian field cap (current) · Japan = khaki + Type 45 cap (current infantry-japanese) · Fengtian = blue-gray + informal cap (current infantry-fengtian) · Russian White Army = khaki olive + visor cap (furazhka) · Russian Red Army = gray-brown overcoat + budenovka (red band instead of insignia).
+- **(2026-10-19, in progress) Japanese uniform = Rues ochre (yellow-earth, warm · medium brightness, contrast with skin tone)**. For the Japan · Fengtian distinction see the item 'Japanese · Fengtian distinction' below.
 
-### 추가 병종 (2026-10-19)
-- **저격수 `infantry-sniper`** (채택, 그림 中 진행 중 `game-tools-u6`, 기능 = 다음 교전 배치): 사거리 = 소총의 1.5배 (24), 먼 거리 명중 높음 (곡선 근 0.45 → 원 0.35), 발사 간격 4~5초, 숲 · 고지에서 잘 안 보임 (은폐), **장교 우선 표적**.
-- **제외**: 나팔수.
-- **제외**: 화염방사병 `heavy-flamer` (2026-10-19).
+### Additional branches (2026-10-19)
+- **Sniper `infantry-sniper`** (adopted, art 中 in progress `game-tools-u6`, function = next engagement batch): range = 1.5x the rifle (24), high long-range hit (curve near 0.45 → far 0.35), fire interval 4~5 s, hard to see in forest · highland (concealment), **officers are priority targets**.
+- **Excluded**: bugler.
+- **Excluded**: flamethrower trooper `heavy-flamer` (2026-10-19).
 
-### 행진 사격 (돌격 사격) (2026-10-19 확정, 中 — 다음 교전 배치)
+### March fire (assault fire) (confirmed 2026-10-19, 中 — next engagement batch)
 
-### 지형 그래픽 다듬기 (2026-10-19 추가, 中 — 외출 중 그림 줄)
-- 원칙: **지형은 차분하게, 유닛은 눈에 띄게** (지형 채도 · 대비를 유닛보다 낮게, 빛 방향 = 유닛과 같은 왼쪽 위).
+### Terrain graphics polish (added 2026-10-19, 中 — art line while out)
+- Principle: **terrain calm, units conspicuous** (terrain saturation · contrast lower than units, light direction = same as units, upper left).
 
-### 지형 · 높이 (2026-10-19 확정, 上 — 방향 변경 대작업 다음)
-- 제안안 전부 채택: 숲 (이동 ×0.7, 명중 ×0.7 · 제압 ×0.8, 안쪽 2칸까지만 보임, 깊으면 사선 막힘) · 건물 잔해 (×0.6, 명중 ×0.5 · 제압 ×0.6) · 민간 가옥 (진입 불가, 붙으면 엄폐, 시야 · 사선 막힘) · 철조망 (×0.3 + 멈칫) · 참호 (명중 · 제압 ×0.5) + **시야 차단**.
-- **높이 = 평지 / 고지 2단계 (칸마다 bool)**: 고지 시야 +25%, 고지→평지 사격 명중 ×1.15 · 반대 ×0.85, 평지에서는 사이에 있는 고지 너머를 못 봄, 경사 칸 이동 ×0.8. 렌더 = 고지 색 + 경계선.
-- **지형 시야 차단 방식 (사용자 결정 2026-10-19)**: 경량판 — 굵은 칸 묶음 위에서 shadowcasting, 갱신은 시차를 두어 분산 (staggered), 시야는 중대 단위로 모아 계산. 시야에서 벗어난 적은 **"마지막 목격 위치" 표시**를 남긴다.
-- **역할별 시야 (2026-10-19)**: 장교 = 쌍안경으로 더 긴 시야, 정찰병 = 그보다 더 길게 (수치는 구현 때 결정).
-- ✅ **구현 완료 (2026-10-19, ③)**: 지형 5종 · 고지 bool · 직사 사선 · 지형 시야 경량판 · 마지막 목격 표시 · 장교 쌍안경 · FormatVersion 10, 상세 (완료 상세: ROADMAP_DONE.md §지형 · 높이). 엄폐 · 가옥 등 아래 규칙은 현재 값.
-  - 미결: 건물 배치 편집기 (범위 밖).
-  - **사용자 결정 (2026-10-19)**: 엄폐는 겹치지 않음 (가장 좋은 하나) 확정 · 가옥 옆 ×0.8/×0.8 · 참호 명중 ×0.6 (제압 ×0.5 유지) · **시야 묶음 2×2 유지 (승인)** · **철조망 = 통과 불가 장애물 (임시, 2026-10-19)**: 모든 유닛이 가옥 칸처럼 못 지나감 (이동 · 길찾기), 시야 · 사선은 막지 않음. 멈칫 · 이동 ×0.3 코드와 balance 값은 남기되 쓰이지 않음 (멈칫은 돌격 중 포함 보류, 나중에 다시 논의).
-- **정찰병 유닛 (2026-10-19 사양, ✅ 구현 — 위 "정찰병 유닛" 줄)**: 보병보다 조금 빠르고 교전 시 본대보다 앞서 감. 전용 AI — 정찰을 나갔다가 정찰이 끝나거나 위험하면 자기 장교에게 돌아옴. 곡사포 관측 (spotter) 역할. 나중에 기마 정찰병 (기병) 을 붙일 수 있게 설계.
+### Terrain · height (confirmed 2026-10-19, 上 — after the direction-change major work)
+- All proposals adopted: forest (movement ×0.7, hit ×0.7 · suppression ×0.8, visible only up to 2 cells inside, deep blocks line of fire) · building rubble (×0.6, hit ×0.5 · suppression ×0.6) · civilian houses (impassable, cover when adjacent, block sight · line of fire) · barbed wire (×0.3 + hesitation) · trench (hit · suppression ×0.5) + **sight blocking**.
+- **Height = flat / highland 2 levels (bool per cell)**: highland sight +25%, highland→flat fire hit ×1.15 · reverse ×0.85, from flat cannot see beyond highland in between, slope cell movement ×0.8. Render = highland color + boundary line.
+- **Terrain sight-blocking method (user decision 2026-10-19)**: lightweight version — shadowcasting over coarse cell groups, updates staggered, sight computed gathered at the company level. Enemies that leave sight leave a **"last seen position" mark**.
+- **Sight by role (2026-10-19)**: officer = longer sight with binoculars, scout = even longer than that (values decided at implementation).
+- ✅ **Implementation complete (2026-10-19, ③)**: 5 terrain types · highland bool · direct-fire line of sight · lightweight terrain sight · last seen mark · officer binoculars · FormatVersion 10, details (completed details: ROADMAP_DONE.md §terrain · height). The rules below such as cover · houses are the current values.
+  - Open: building placement editor (out of scope).
+  - **User decision (2026-10-19)**: cover does not stack (the best single one) confirmed · beside houses ×0.8/×0.8 · trench hit ×0.6 (suppression ×0.5 kept) · **sight grouping 2×2 kept (approved)** · **barbed wire = impassable obstacle (provisional, 2026-10-19)**: no unit can pass like house cells (movement · pathfinding), does not block sight · line of fire. The hesitation · movement ×0.3 code and balance values remain but are unused (hesitation, including during assaults, on hold, to be discussed again later).
+- **Scout unit (2026-10-19 spec, ✅ implemented — "scout unit" line above)**: slightly faster than infantry and goes ahead of the main body in engagement. Dedicated AI — goes out to scout and returns to its own officer when scouting ends or is dangerous. Role of howitzer spotter. Designed so a mounted scout (cavalry) can be attached later.
 
-### 날씨 · 시간 ✅ (2026-10-19 구현, 사용자 승인 사양 — `src/Core/Weather.cs`, 테스트 `KD_SELFTEST_ONLY=weather`, FormatVersion 12)
-- 날씨 5종 (맑음 · 흐림 · 안개 · 비 · 눈 — 만주 겨울) × 시간대 4종 (새벽 · 낮 · 해질녘 · 밤). 최종 배수 = 날씨 × 시간대 (balance.json `weather`). 제압은 영향 없음, 진창은 나중.
-- 수치: **시야** 흐림 ×0.9 · 안개 ×0.45 · 비 ×0.7 · 눈 ×0.8 / 새벽 ×0.8 · 해질녘 ×0.75 · 밤 ×0.45 (곱 하한 `minSightMul` 0.3, 칸 하한 `minSight` 6, 사용자 확정). **명중** 안개 · 비 ×0.9 · 눈 ×0.95 / 새벽 · 해질녘 ×0.95 · 밤 ×0.85. **이동** 비 ×0.9 · 눈 ×0.85. **장교 쌍안경 보너스 남는 비율** 새벽 0.7 · 해질녘 0.6 · 밤 0.3.
-- 지도 json `"weather"` · `"time"` · `"timeStep"` (분마다 시간대 한 단계) · `"schedule": [{ "at": 분, "weather"?, "time"? }]`. 생성 맵 = 맑은 낮. 시험용 `--weather fog --time night` (리플레이 머리말에 시작 날씨 기록).
-- 화면: 시간대 색조 · 비네트, 흐림/안개 막 + 안개 덩어리, 비 · 눈 입자 (화면 좌표, 상한 420/300), 밤에는 안개(전장) 탐색됨 영역을 덜 어둡게. 상단 바 "안개 · 밤", 바뀌면 알림. 환경음 고리 `Sfx.SetAmbient` (`ambient_rain` · `ambient_wind` · `ambient_night` — 소리 파일은 별도 작업).
+### Weather · time ✅ (2026-10-19 implemented, user-approved spec — `src/Core/Weather.cs`, test `KD_SELFTEST_ONLY=weather`, FormatVersion 12)
+- 5 weathers (clear · overcast · fog · rain · snow — Manchurian winter) × 4 times of day (dawn · day · dusk · night). Final multiplier = weather × time of day (balance.json `weather`). No effect on suppression, mud later.
+- Values: **sight** overcast ×0.9 · fog ×0.45 · rain ×0.7 · snow ×0.8 / dawn ×0.8 · dusk ×0.75 · night ×0.45 (product floor `minSightMul` 0.3, cell floor `minSight` 6, user confirmed). **Hit** fog · rain ×0.9 · snow ×0.95 / dawn · dusk ×0.95 · night ×0.85. **Movement** rain ×0.9 · snow ×0.85. **Remaining ratio of the officer binoculars bonus** dawn 0.7 · dusk 0.6 · night 0.3.
+- Map json `"weather"` · `"time"` · `"timeStep"` (one time-of-day step per minute) · `"schedule": [{ "at": minute, "weather"?, "time"? }]`. Generated maps = clear day. For testing `--weather fog --time night` (the starting weather is recorded in the replay header).
+- Screen: time-of-day tint · vignette, overcast/fog veil + fog clumps, rain · snow particles (screen coordinates, cap 420/300), at night the explored area of the fog (battlefield) is less dark. Top bar "fog · night", notification on change. Ambient sound loops `Sfx.SetAmbient` (`ambient_rain` · `ambient_wind` · `ambient_night` — sound files are separate work).
 
-### 포병 (2026-10-19 재개 — 그림 中 진행 중 `game-tools-u5`)
-- **곡사포 `heavy-howitzer`**: 포방패 없음, 크게, **말이 끌고 4인 운용**.
-- **보병포 `heavy-infantry-gun`**: 37mm 보병포 참고, **포방패**, **2인 운용**.
-- **야전포 `heavy-field-gun`**: **말이 끌고**, 포방패, 보병포보다 큼, **3인 운용**.
-- **게임 규칙 (2026-10-19)**: 보병포 · 야전포 = **직사** (사선 검사), 곡사포 = **장교 또는 정찰병이 본 곳에만** 사격. 연사 = 보병포 > 야전포 > 곡사포, 위력 · 폭발 범위 = 곡사포 > 야전포 > 보병포, 사거리 = **곡사포 > 야전포 > 보병포** (정정), 보병포 사거리는 소총 (16) 보다 조금 김. 초기 수치 (balance.json, 조정 가능): 보병포 사거리 18 · 간격 3.0~3.6초 · 피해 45 · 반경 0.8 · 방열 2/1.5초 · HP 200 / 야전포 26 · 5~6초 · 70 · 1.5 · 4/3초 · HP 300 / 곡사포 40 · 9~11초 · 100 · 2.5 · 6/4초 · HP 350. 포는 차량에 피해 들어감.
-- 장교 이름 = `officer` 계열로 통일 (`officer`, `officer-fengtian`).
-- 그림은 wargame 의 견인포 · 자주포 모델 (`vox_towed.py`, `vox_artillery.py`) 재활용. 말 끄는 이동 그림은 기병 말 모델 완성 후. 게임 수치 · 곡사 로직 (관측 등) 은 미결.
+### Artillery (resumed 2026-10-19 — art 中 in progress `game-tools-u5`)
+- **Howitzer `heavy-howitzer`**: no gun shield, large, **horse-drawn with a 4-man crew**.
+- **Infantry gun `heavy-infantry-gun`**: referencing the 37mm infantry gun, **gun shield**, **2-man crew**.
+- **Field gun `heavy-field-gun`**: **horse-drawn**, gun shield, larger than the infantry gun, **3-man crew**.
+- **Game rules (2026-10-19)**: infantry gun · field gun = **direct fire** (line-of-sight check), howitzer = **fires only at places seen by an officer or scout**. Rate of fire = infantry gun > field gun > howitzer, power · blast radius = howitzer > field gun > infantry gun, range = **howitzer > field gun > infantry gun** (corrected), the infantry gun range is slightly longer than the rifle (16). Initial values (balance.json, adjustable): infantry gun range 18 · interval 3.0~3.6 s · damage 45 · radius 0.8 · deploy 2/1.5 s · HP 200 / field gun 26 · 5~6 s · 70 · 1.5 · 4/3 s · HP 300 / howitzer 40 · 9~11 s · 100 · 2.5 · 6/4 s · HP 350. Guns take damage from vehicles.
+- Officer naming unified to the `officer` family (`officer`, `officer-fengtian`).
+- The art reuses wargame's towed gun · self-propelled gun models (`vox_towed.py`, `vox_artillery.py`). The horse-drawn movement art after the cavalry horse model is complete. Game values · howitzer logic (observation etc.) undecided.
 
-### 수류탄 (2026-10-19 확정, 교전 다음 배치 · 中)
-- **보유** (2026-10-19 변경): **돌격보병만 1개** (정규병 · 다른 병종 없음). 전차 대응은 **보병포**가 맡는다. **아주 느리게 회복** (보급 회복과 별도, 예: 비전투 상태에서 3분에 1개).
-- 나머지는 제안안대로: 자동 투척 (엄폐 중인 적 4칸 이내, 전차 3칸 이내) + 수동 명령 (지점 지정, 중대 일제 투척), 사거리 5칸, 1.5초 뒤 폭발 (결정적 흩어짐), 반경 1.5칸 피해 60→20 · **엄폐 무시** · 제압 +300, 전차에는 붙어서 쓰는 묶음 수류탄 피해 40 (3~4명이 붙어야 FT 격파). 그림 = 던지기 2프레임 + 폭발 효과 (포격 효과 재사용).
-- **정규병** = `infantry-regular` (기본 보병 + 슈탈헬름), 스펙은 기본 보병과 같음 (추후 제압 저항만 올릴 예정).
+### Grenades (confirmed 2026-10-19, next engagement batch · 中)
+- **Holders** (changed 2026-10-19): **assault infantry only, 1 each** (not regulars · other branches). Anti-tank response is handled by the **infantry gun**. **Very slow recovery** (separate from supply recovery, e.g. 1 per 3 minutes in non-combat).
+- The rest as proposed: automatic throw (enemy in cover within 4 cells, tank within 3 cells) + manual command (point designation, company volley throw), range 5 cells, explodes after 1.5 s (deterministic scatter), radius 1.5 cells damage 60→20 · **ignores cover** · suppression +300, against tanks a bundled grenade used while adjacent with damage 40 (3~4 men must attach to destroy an FT). Art = 2 throwing frames + explosion effect (reuse barrage effect).
+- **Regulars (정규병)** = `infantry-regular` (basic infantry + Stahlhelm), spec same as basic infantry (only the suppression resistance will be raised later).
 
-### 기병 장교 `cavalry-officer` (2026-10-19 사용자 결정 1, 브랜치 cavcmd)
-- 게임 유닛 `officer_cavalry` (기병 중대 지휘관). 그림 = **기병 모델 (`cavalry-default`) 복사 + 장비만 교체** (사용자 작업 방식): 같은 말 · 안장 · 자세 · 애니메이션 (`anims/cavalry.json` 27열), 기수 = **장교 모자 (`officer_cap`, 진한 들회색 + 놋쇠)**, 진한 들회색 장교 상의 · 승마바지 + **놋쇠 테두리 · 바지 줄**, 승마장화, **권총집 · 지도 가방**, 카빈 없음.
-- 무기: 사격 = **한 손 권총** (오른팔을 앞으로, 왼손은 고삐 — `bases/cavalry.py` `_pistol`, 조정값 `tune/poses.json cavalry.pistol`, 없으면 장교 권총 위치 기본값), 돌격 · 근접 = 기병과 같은 **군도** (안장 왼쪽 칼집).
-- 세력 변형: 기병을 내는 세력만 — 지금 미션은 한국 · 봉천 → `cavalry-officer-fengtian` (봉천 장교 모자 `fengtian_officer_cap` + 봉천 청회색 장교 군복, 승마장화). 일본 · 러시아는 기병 미션이 생길 때 같은 방식으로 추가 (테마 키 `unit.officer_cavalry@<세력>`, 없으면 기본 그림).
-- 검수: `docs/art_review/cav_officer_contact.png` (한국 · 봉천 2종). 관통 검사 0 hit.
+### Cavalry officer `cavalry-officer` (user decision 1 2026-10-19, branch cavcmd)
+- Game unit `officer_cavalry` (cavalry company commander). Art = **copy of the cavalry model (`cavalry-default`) + swap only the equipment** (user's work method): same horse · saddle · posture · animations (`anims/cavalry.json` 27 columns), rider = **officer cap (`officer_cap`, dark field grey + brass)**, dark field grey officer tunic · riding breeches + **brass edging · trouser stripe**, riding boots, **holster · map case**, no carbine.
+- Weapons: fire = **one-handed pistol** (right arm forward, left hand on the reins — `bases/cavalry.py` `_pistol`, adjustment values `tune/poses.json cavalry.pistol`, default is the officer pistol position if absent), assault · melee = the same **saber** as the cavalry (scabbard on the left of the saddle).
+- Faction variants: only factions that field cavalry — current missions are Korea · Fengtian → `cavalry-officer-fengtian` (Fengtian officer cap `fengtian_officer_cap` + Fengtian blue-gray officer uniform, riding boots). Japan · Russia added the same way when cavalry missions arise (theme key `unit.officer_cavalry@<faction>`, default art if absent).
+- Review: `docs/art_review/cav_officer_contact.png` (Korea · Fengtian 2 types). Clipping check 0 hits.
 
-### 이름 규칙 (2026-10-19)
-- 유닛 이름 = **병과 접두어**: `infantry-*` (보병), `heavy-*` (중화기 · 거치 무기: `heavy-machinegunner`, `heavy-at-rifleman`, `heavy-maxim`), `tank-*` (장갑 차량: `tank-ft-female`, `tank-ft-male`, `tank-armored_car`). 그림 (game-tools) 은 바로 적용, 게임 유닛 id (balance.json: machinegunner · at_infantry · armored_car 등) 와 테마 연결은 브랜치 합치기 뒤 일괄 변경.
-- **병과 표기 = 그림 실루엣, 초안 (2026-10-19, `icons2`)**: `icon.branch.*` 을 흰색 + 어두운 윤곽 그림 실루엣 (보병 · 기관총 · 대전차 · 포병 · 곡사포 · 기병 · 정찰 · 돌격 · 저격 · 기갑 · 보급 · 지휘 officer) 으로 교체. 생성 `game-tools/icons/branch_silhouettes.py`, 옛 NATO 식 글리프 = `icons/_old_glyph/`. 지휘도 이미지 (NATO 깃발 대체 불필요). 분대 상태 아이콘: 크기 축소 · 중간 줌 흐림 · 지휘관 없음은 교전 · 선택 때만. 접촉표 `branch_silhouettes.png` · `squad_icons_v2.png`.
-- **병종 마커 (2026-10-19 결정, `rankui`)**: 축소 표시 = 세력 휘장 + 아래 병종 이미지 (`icon.branch.*`, branch_icons 12~32px). NATO 기호 삭제 (옛 테마 대체 · 지휘 깃발만 남음). 접촉표 `docs/art_review/branch_markers.png`.
-- **전투공병 (T32d, 2026-10-22)**: `infantry-pioneer` = 진위대 복사 + 등에 대각 장대 와이어 커터 + 허리 공구 주머니 (`tools/parts/pioneer.py`). 시트 `docs/art_review/pioneer_t32d.png`.
+### Naming rules (2026-10-19)
+- Unit name = **branch prefix**: `infantry-*` (infantry), `heavy-*` (heavy weapons · emplaced weapons: `heavy-machinegunner`, `heavy-at-rifleman`, `heavy-maxim`), `tank-*` (armored vehicles: `tank-ft-female`, `tank-ft-male`, `tank-armored_car`). Art (game-tools) applied immediately, game unit ids (balance.json: machinegunner · at_infantry · armored_car etc.) and theme links changed in bulk after branch merging.
+- **Branch notation = art silhouette, draft (2026-10-19, `icons2`)**: replace `icon.branch.*` with white + dark-outline art silhouettes (infantry · machine gun · anti-tank · artillery · howitzer · cavalry · scout · assault · sniper · armor · supply · command officer). Generated by `game-tools/icons/branch_silhouettes.py`, the old NATO-style glyphs = `icons/_old_glyph/`. Command is also an image (no need to replace the NATO flag). Squad state icons: size reduced · blurred at medium zoom · no-commander only shown in engagement · selection. Contact sheets `branch_silhouettes.png` · `squad_icons_v2.png`.
+- **Branch marker (2026-10-19 decision, `rankui`)**: zoomed-out display = faction insignia + a branch image below (`icon.branch.*`, branch_icons 12~32px). NATO symbols deleted (replaced the old theme · only the command flag remains). Contact sheet `docs/art_review/branch_markers.png`.
+- **Combat engineer (T32d, 2026-10-22)**: `infantry-pioneer` = copy of the 진위대 + a diagonal long-handled wire cutter on the back + tool pouch at the waist (`tools/parts/pioneer.py`). Sheet `docs/art_review/pioneer_t32d.png`.
 
-## 세력별 복식표 (2026-10-21)
-- 범례: **현행** = 코드 · 유닛 JSON 에 이미 있음. **(예정)** = 오늘 결정했으나 그림 · 코드 미반영. 색 값은 `game-tools/image/tune/materials.json` 앵커 (어두운 → 밝은 4단, dark → light). 출처 경로는 `game-tools/` 기준.
-- 구분 포인트는 @32 (축소 표시, 줌 0.5 미만 · 세력 휘장 옆) 에서 식별되는 것 위주.
+## Per-faction dress table (2026-10-21)
+- Legend: **current** = already in code · unit JSON. **(planned)** = decided today but art · code not yet reflected. Color values are anchors of `game-tools/image/tune/materials.json` (4 levels dark → light). Source paths are relative to `game-tools/`.
+- Distinguishing points mainly those identifiable at @32 (zoomed-out display, zoom below 0.5 · beside the faction insignia).
 
-| 세력 | 군복 색 (앵커 · 값) | 모자 | 표식 · 계급장 | 깃발 | 구분 포인트 (@32) | 출처 |
+| Faction | Uniform color (anchor · value) | Cap | Marks · rank insignia | Flag | Distinguishing point (@32) | Source |
 |---|---|---|---|---|---|---|
-| 대한제국군 (한국) | 들회색 `fgrey_dark` 4단 (39,43,41)→(76,83,79) (×0.78 반영, 418c1dc; 바지 `fgrey_dark_trouser` (34,38,38)→(72,78,76), 각반 `fgrey_dark_wrap` (45,49,46)→(86,92,87)); 그림은 거의 검정에 가까운 짙은 들회색 + 적색 깃 · 바지 옆선 | 표준 모자 = `korean_kepi` (사용자 결정 2026-10-21; headgear.py:186). 옛 Feldkappe 기술 (`feldkappe` = headgear.py:60) 은 폐기 | 매화 휘장 `plum_blossom` (badges.py) · 적색 깃 · 바지 줄 | 백 바탕 + 적 · 청 원반 + 흑 모서리 막대 (kd_new.py:71-77) | 들회색 + 적색 포인트 (깃 · 옆선); 일본과 달리 황토색 없음 | `game-tools/image/units/infantry-default.json` (_doc), ART_SPEC.md:10 · 35, `tune/materials.json:41` |
-| 시위대 (친위대) | 짙은 남색 `navy_old` (11,13,24)→(44,52,84) + 적색 테두리 `piping_red` | 피켈하우베 `pickelhaube` (뿔 5.8 유지) | 적색 테두리 (고정, 세력 띠 아님) | 한국 깃 공용 | 뿔 달린 투구 (유일) | `units/infantry-guard.json`, ART_SPEC.md:15, `tune/materials.json:48,90` |
-| 서간도 의용군 (간도 · 1920 년대 복장) | 염색한 회갈 면 `kd_gando_khaki` (66,58,40)→(144,133,100) (`kd_new.py:19`); 바지 진회색 `kd_gando_dark` (`:20`); 각반 갈황 `kd_gando_wrap` (`:21`) | 황갈 덮개 모자 `gando_cap` (kd_new.py:45, 헤드밴드) | 가슴 **탄띠 (bandolier) (예정 — 그림 확인 필요)**, 표식 없음 | 없음 | 황갈 면옷 + 어두운 바지 + 각반 — 제복 아닌 민간 복장 (무장 · 탄띠 중심) | `tools/parts/kd_new.py:19-21, 45, 54`, `units/infantry-gando.json` (_doc) |
-| 일본군 (관동군) | 루에스 오커 (황토색) `jkhaki` (92,66,24)→(172,132,52), 따뜻 · 중간 밝기 | 45식 군모 `japanese_cap` (챙 9.2 · 기울기 55°, badges.py) | 황색 별 `badge_yellow` (badges.py:52) | **일장기** 흰 바탕 + 붉은 원 (지름 = 깃 높이 3/5) — `flag_japanese` (kd_new.py:78-81). **욱일기 = 미구현 (예정 · 고증상 일부 사용 여부 결정 필요)** | 황토 군복 + 말발굽형 외투 말이 + 대검 꽂은 소총 (봉천은 X자 탄띠) | `tune/materials.json:39,96`, ART_SPEC.md:23 · 36, `badges.py:52,78`, `kd_new.py:78-81` |
-| 봉천군 | 청회색 `fengtian_bg` 앵커 (41,54,73)→(107,124,151) (`fengtian.py:10`); ×1.22 밝게 반영 (418c1dc); 장교 동일 (`fengtian.py:51-53`) | 만주식 겨울 털모자 · 귀덮개 `fengtian_cap` (ART_SPEC.md:23 최신안; 초안은 약식 모자 = ART_SPEC.md:16 — **확인 필요**); 장교 `fengtian_officer_cap` | 오색 원형 휘장 `cockade_fengtian` (badges.py) | 오색기: 적 · 황 · 청 · 백 · 흑 띠 (`flag_fengtian`, kd_new.py:82-85) | 차갑고 어두운 청회색 (일본보다 파랑) + 가슴 X자 천 탄띠 + 털모자 | `tune/materials.json`, `tools/parts/fengtian.py:10,51-53`, `tools/parts/kd_new.py:82-85`, ART_SPEC.md:16-17 · 23 |
-| 러시아 백군 | 카키 올리브 `ru_olive` (78,78,44)→(152,150,98) | 챙 모자 푸라시카 `furazhka` | 흰 · 청 · 적 동심 타원 휘장 `cockade_russian_white` (badges.py) | 백-청-적 삼색 (kd_new.py:86-87) | 올리브 군복 + 챙 모자 + 흰 타원 휘장 | `tune/materials.json:5`, ART_SPEC.md:35, `units/infantry-russian-white.json`, `make_variants.py:7` |
-| 러시아 적군 | 회갈색 `ru_greybrown` (70,62,52)→(142,129,108) | 부됸놉카 `budenovka` | 붉은 별 `star_red` (badges.py) | 붉은 단색 (kd_new.py:88-89) | 회갈 외투 + 부됸놉카 (붉은 별) | `tune/materials.json:6`, ART_SPEC.md:35, `units/infantry-russian-red.json`, `make_variants.py:7` |
-| 코사크 | 짙은 남색 외투 (`cavalry-cossack.json` _doc); 회색 없음 | 검은 파파하 `papakha` (kd_new.py:26; 털 `kd_fur_black` :17, 2026-10-21 회색 제거) | 파파하 밑단 얇은 팀 띠 (kd_new.py:27) | 없음 | **검은 털모자** (높고 평평한 윗면) — 회색 모자 없음 | `units/cavalry-cossack.json`, `tools/parts/kd_new.py:17-27` |
-| 몽골 기병 | 짙은 갈색 델 (deel) 외투 (`bandit_brown`) — 현행 | 현행 = 갈색 털모자 `bandit_fur` (`cavalry-mongol.json`). **(예정) 뾰족 모자 + 밝은 허리띠 (sash)** — sheet 18 프로토타입 대기 | **(예정)** 밝은 허리띠 (sash) | 없음 | 델 외투 + 밝은 허리띠 + 뾰족 모자 (예정 후); 현행은 마적과 모자로만 구분 | `units/cavalry-mongol.json` (_doc), `tools/parts/bandit.py:75-78`, GRAPHICS_ROADMAP.md (sheet 18) |
-| 마적 | 짝짝이 민간 면옷: 재킷 `bandit_tan` (TAN) · 바지 CHOC; 변형 navy · black · brown · green (`bandit.py:75-78`) | 갈색 털모자 · 귀덮개 `bandit_fur` (bandit.py:42-43) — 두건 (head cloth) 은 **(예정)** | 없음 | 없음 | 제복 통일 없음 (짝짝이 색) + 털모자 | `tools/parts/bandit.py:42-43, 66, 75-78`, `units/infantry-bandit.json`, `units/cavalry-bandit.json` |
+| Korean Empire army (Korea) | field grey `fgrey_dark` 4 levels (39,43,41)→(76,83,79) (×0.78 applied, 418c1dc; trousers `fgrey_dark_trouser` (34,38,38)→(72,78,76), puttees `fgrey_dark_wrap` (45,49,46)→(86,92,87)); art is a dark field grey close to black + red collar · trouser side stripe | standard cap = `korean_kepi` (user decision 2026-10-21; headgear.py:186). The old Feldkappe description (`feldkappe` = headgear.py:60) is discarded | plum blossom insignia `plum_blossom` (badges.py) · red collar · trouser stripe | white ground + red · blue disc + black corner bars (kd_new.py:71-77) | field grey + red points (collar · side stripe); unlike Japan, no ochre | `game-tools/image/units/infantry-default.json` (_doc), ART_SPEC.md:10 · 35, `tune/materials.json:41` |
+| 시위대 (Royal Guard) | dark navy `navy_old` (11,13,24)→(44,52,84) + red piping `piping_red` | pickelhaube `pickelhaube` (spike 5.8 kept) | red piping (fixed, not a faction band) | shared Korean collar | spiked helmet (only one) | `units/infantry-guard.json`, ART_SPEC.md:15, `tune/materials.json:48,90` |
+| West Gando volunteer army (Gando · 1920s dress) | dyed gray-brown cotton `kd_gando_khaki` (66,58,40)→(144,133,100) (`kd_new.py:19`); trousers dark gray `kd_gando_dark` (`:20`); puttees brown-yellow `kd_gando_wrap` (`:21`) | yellow-brown cover cap `gando_cap` (kd_new.py:45, headband) | chest **bandolier (planned — art check needed)**, no marks | none | yellow-brown cotton clothes + dark trousers + puttees — civilian dress, not a uniform (armed · bandolier centered) | `tools/parts/kd_new.py:19-21, 45, 54`, `units/infantry-gando.json` (_doc) |
+| Japanese army (Kwantung Army) | Rues ochre (yellow-earth) `jkhaki` (92,66,24)→(172,132,52), warm · medium brightness | Type 45 cap `japanese_cap` (visor 9.2 · angle 55°, badges.py) | yellow star `badge_yellow` (badges.py:52) | **Hinomaru** white ground + red disc (diameter = 3/5 of the flag height) — `flag_japanese` (kd_new.py:78-81). **Rising Sun flag = not implemented (planned · whether to use it partly for historical accuracy needs a decision)** | ochre uniform + horseshoe-shaped overcoat roll + rifle with fixed bayonet (Fengtian has an X bandolier) | `tune/materials.json:39,96`, ART_SPEC.md:23 · 36, `badges.py:52,78`, `kd_new.py:78-81` |
+| Fengtian army | blue-gray `fengtian_bg` anchor (41,54,73)→(107,124,151) (`fengtian.py:10`); ×1.22 brighter applied (418c1dc); officers the same (`fengtian.py:51-53`) | Manchurian winter fur cap · ear flaps `fengtian_cap` (ART_SPEC.md:23 latest proposal; the draft was an informal cap = ART_SPEC.md:16 — **needs checking**); officer `fengtian_officer_cap` | five-color circular insignia `cockade_fengtian` (badges.py) | five-color flag: red · yellow · blue · white · black bands (`flag_fengtian`, kd_new.py:82-85) | cool dark blue-gray (bluer than Japan) + chest X-shaped cloth bandolier + fur cap | `tune/materials.json`, `tools/parts/fengtian.py:10,51-53`, `tools/parts/kd_new.py:82-85`, ART_SPEC.md:16-17 · 23 |
+| Russian White Army | khaki olive `ru_olive` (78,78,44)→(152,150,98) | visor cap furazhka `furazhka` | white · blue · red concentric oval insignia `cockade_russian_white` (badges.py) | white-blue-red tricolor (kd_new.py:86-87) | olive uniform + visor cap + white oval insignia | `tune/materials.json:5`, ART_SPEC.md:35, `units/infantry-russian-white.json`, `make_variants.py:7` |
+| Russian Red Army | gray-brown `ru_greybrown` (70,62,52)→(142,129,108) | budenovka `budenovka` | red star `star_red` (badges.py) | solid red (kd_new.py:88-89) | gray-brown overcoat + budenovka (red star) | `tune/materials.json:6`, ART_SPEC.md:35, `units/infantry-russian-red.json`, `make_variants.py:7` |
+| Cossacks | dark navy overcoat (`cavalry-cossack.json` _doc); no gray | black papakha `papakha` (kd_new.py:26; fur `kd_fur_black` :17, gray removed 2026-10-21) | thin team band at the hem of the papakha (kd_new.py:27) | none | **black fur hat** (tall flat top) — no gray cap | `units/cavalry-cossack.json`, `tools/parts/kd_new.py:17-27` |
+| Mongol cavalry | dark brown deel overcoat (`bandit_brown`) — current | current = brown fur cap `bandit_fur` (`cavalry-mongol.json`). **(planned) pointed hat + bright waist sash** — awaiting sheet 18 prototype | **(planned)** bright waist sash | none | deel overcoat + bright sash + pointed hat (after planned); currently distinguished from bandits only by the hat | `units/cavalry-mongol.json` (_doc), `tools/parts/bandit.py:75-78`, GRAPHICS_ROADMAP.md (sheet 18) |
+| Bandits | mismatched civilian cotton clothes: jacket `bandit_tan` (TAN) · trousers CHOC; variants navy · black · brown · green (`bandit.py:75-78`) | brown fur cap · ear flaps `bandit_fur` (bandit.py:42-43) — head cloth (head cloth) is **(planned)** | none | none | no uniform consistency (mismatched colors) + fur cap | `tools/parts/bandit.py:42-43, 66, 75-78`, `units/infantry-bandit.json`, `units/cavalry-bandit.json` |
 
-- 공통 규칙: 세력 구분 = 군복 · 모자 · 휘장 (팀색 띠 없음, ART_SPEC.md:25). 같은 세력끼리만 머리띠 (팀 층). 코사크 · 몽골 · 마적 · 서간도는 깃발 없음.
-- 결정 (2026-10-21): **한국 기본 모자 = `korean_kepi` 기준** (사용자; 10번 줄의 Feldkappe 기술은 옛 기록). 한국 ×0.78 · 봉천 ×1.22 = game-tools 418c1dc 에서 materials.json · fengtian.py 에 반영됨. 욱일기 = 고증상 넣되 기본은 일장기 (사용자).
-- 미결 (예정): 몽골 sheet 18 프로토타입 (색 검수 대기) · 서간도 탄띠 · 마적 두건 · 마적 장교 두건 여부.
+- Common rules: faction distinction = uniform · cap · insignia (no team-color bands, ART_SPEC.md:25). Headband only between same factions (team layer). Cossacks · Mongols · bandits · West Gando have no flags.
+- Decision (2026-10-21): **Korean base cap = based on `korean_kepi`** (user; the Feldkappe description on line 10 is an old record). Korea ×0.78 · Fengtian ×1.22 were reflected in materials.json · fengtian.py in game-tools 418c1dc. Rising Sun flag: include for historical accuracy but the default is the Hinomaru (user).
+- Open (planned): Mongol sheet 18 prototype (awaiting color review) · West Gando bandolier · bandit head cloth · whether bandit officers get a head cloth.
 
-## 열차 그림 규격 (T30d, 2026-10-22, 블록아웃 완료 · 사용자 검수 대기)
-- 접촉표 `docs/art_review/train_blockout.png` (5종 × 5방향 × 평상/파괴). 모델 = `game-tools/image/tools/vehicles/train_*.py` + `units/train-*.json` (기존 차량 파이프라인 `make_vehicle.py`, 새 코드 경로 없음; `outroute.py` 가 `train-*` → `vehicles/`).
-- **크기 (잠정 — T30a 카드에 객차 크기 값이 없어 직접 정함, T30a Q-A4 가 확정하면 모델 단위 상수만 조정)**: 1칸 = 모델 32단위 (Mark V 선체 64 = 2칸). 객차 몸통 길이 2.0칸 (+완충기 포함 약 2.25), 폭 0.6칸, 모든 객차 동일 → 연결 간격 0.25칸(완충기 겹침). 열차 6량 ≈ 13.5칸. 선로 칸 폭 1칸 안에 들어감.
-- **종류**: 기관차 `train-loco` (장갑 보일러 · 장갑 운전실 · 연통, 운전실 지붕 전망 큐폴라) / 포차 `train-guncar` (76mm 회전포탑 1, 포구 섬광 · 후좌) / 기관총차 `train-mgcar` (MG 큐폴라 2, 포탑 시트 공유) / 화차 `train-freight` (목재 유개화차, 문 팀색띠) / 잔해 `train-wreck` (파괴된 객차가 제거된 뒤 남는 정적 더미, 팀색 없음). 파괴 후 = 각 객차 `dead` 프레임 (탄 도장 · 기울어진 지붕/포탑 · 터진 옆면 · 그을음 타원), 잔해는 그 다음 단계.
-- **방향 수 (Q-D2 권장 채택)**: 렌더 9행(22.5° 단위) 중 게임은 **8방향** (S SE E NE N + 좌우 반전) 사용. 선로 곧은선 · 대각이면 충분; 곡선 칸은 가장 가까운 8방향으로 스냅. 22.5° 중간 행은 이미 렌더에 포함되어 있어 곡선이 어색할 때 16방향으로 올리는 비용 0 (코드만).
-- **프레임**: 선체 idle · move_1~4 (바퀴 회전) · dead; 포탑 시트(포차 `gun`, 기관총차 `mg`) idle · fire · fire_2 · dead. 기관차/화차/잔해의 포탑 시트는 파이프라인 요구용 자리표시 (게임에서 안 그림 — 임포트 때 생략 가능).
-- **팀색 자리**: 기관차 운전실 띠 + 완충대 판 / 포차 · 기관총차 양끝 판 + 지붕 테두리 줄 + 포탑 띠 / 화차 문 줄무늬. 팀색 레이어 `_team.png` 는 다른 차량과 동일 규약.
-- **시대 고증 (Q-D1 권장 채택)**: 모델 1종 (1918~20 러시아식 장갑열차 외형), 세력 차이 = 팀색 + 소품/도색 변형 (올리브 = 기본, 일본 황토 · 러시아 회갈 등은 재질 앵커만 교체, 별도 모델 없음). 소품 차이(깃발 · 휘장)는 필요 시 후속.
-- **자리표시 교체 계획**: T30e 는 그림 없으면 단색 사각형(길이 2칸 × 0.6칸)을 그림. 승인 뒤: `import_kd1920.py --only train-loco,train-guncar,train-mgcar,train-freight,train-wreck` → theme.json `unit.train_*`(+`.turret`) 항목 (scale 0.25, 다른 차량과 동일) 만 추가. **승인 전 임포트 안 함.**
-- 알려진 한계: 바퀴 보기 단순, 객차 사이 연결 틈(완충기)은 겹침으로 처리 안 보임, 선로 그림(T07)과의 높이 맞춤은 T30e 에서 확인.
+## Train art spec (T30d, 2026-10-22, blockout done · awaiting user review)
+- Contact sheet `docs/art_review/train_blockout.png` (5 types × 5 directions × normal/destroyed). Model = `game-tools/image/tools/vehicles/train_*.py` + `units/train-*.json` (existing vehicle pipeline `make_vehicle.py`, no new code path; `outroute.py` routes `train-*` → `vehicles/`).
+- **Size (provisional — the T30a card has no car size value so decided directly; if T30a Q-A4 confirms, only the model-unit constants are adjusted)**: 1 cell = 32 model units (Mark V hull 64 = 2 cells). Car body length 2.0 cells (about 2.25 including buffers), width 0.6 cells, same for all cars → coupling gap 0.25 cells (buffer overlap). 6-car train ≈ 13.5 cells. Fits within the 1-cell track width.
+- **Kinds**: locomotive `train-loco` (armored boiler · armored cab · chimney, observation cupola on the cab roof) / gun car `train-guncar` (76mm rotating turret 1, muzzle flash · recoil) / machine gun car `train-mgcar` (MG cupola 2, turret sheet shared) / freight car `train-freight` (wooden covered freight car, team-color band on the door) / wreck `train-wreck` (static pile left after a destroyed car is removed, no team color). After destruction = each car's `dead` frame (burnt paint · tilted roof/turret · burst side · soot ellipse), the wreck is the next stage.
+- **Number of directions (Q-D2 recommendation adopted)**: of the 9 render rows (22.5° steps) the game uses **8 directions** (S SE E NE N + left-right flip). Straight · diagonal track is enough; curved cells snap to the nearest 8 directions. The 22.5° intermediate rows are already included in the render, so raising to 16 directions when curves look awkward costs 0 (code only).
+- **Frames**: hull idle · move_1~4 (wheel rotation) · dead; turret sheet (gun car `gun`, machine gun car `mg`) idle · fire · fire_2 · dead. The turret sheets of the locomotive/freight car/wreck are placeholders required by the pipeline (not drawn in the game — can be skipped at import).
+- **Team-color places**: locomotive cab band + buffer plate / gun car · MG car end plates + roof edge line + turret band / freight car door stripes. The team-color layer `_team.png` follows the same convention as other vehicles.
+- **Period accuracy (Q-D1 recommendation adopted)**: 1 model (1918~20 Russian-style armored train look), faction differences = team color + prop/paint variants (olive = default, Japanese ochre · Russian gray-brown etc. swap only material anchors, no separate model). Prop differences (flags · insignia) later if needed.
+- **Placeholder replacement plan**: without art T30e draws a solid rectangle (length 2 cells × 0.6 cells). After approval: `import_kd1920.py --only train-loco,train-guncar,train-mgcar,train-freight,train-wreck` → add only theme.json `unit.train_*` (+`.turret`) entries (scale 0.25, same as other vehicles). **Not imported before approval.**
+- Known limitations: wheels look simple, the coupling gap between cars (buffers) is handled as overlap and not visible, height matching with the track art (T07) is checked in T30e.
 
-## 화풍 방향 (결정 2026-10-22, 0.3 적용 예정)
-- 결정 (사용자 2026-10-22 밤): 화풍 방향을 '중간값'(도트·카툰 기반 유지 + 조금 더 리얼리스틱)으로 변경하되 0.3 때 진행. 로드맵: `docs/ROADMAP_LONG.md` '화풍 방향 — 중간값 전환' 절.
-- 방향 정의 요약:
-  - 유지: 픽셀·복셀 렌더, 검은 윤곽선, 팀색 고리, 높은 대비 실루엣, 제한 팔레트.
-  - 올림: 채도 낮춘 흙·천 중심 색, 군복 때·낡음 표현, 자연스러운 체형 비율, 질감 디테일(나이테·껍질·기와), 고증 복식·건축.
-  - 지양: 사진풍, 과도한 질감, 원색 위주 팔레트, 만화적 과장.
-- 적용 순서 (추가 결정 2026-10-22 밤): 유닛 재렌더(mid 적용)는 0.3 에서 다시 한다. ① 0.3 초기: 건물·지형 계열 mid 재렌더 (민가·폐허·지형 타일 등). **확정(2026-10-22): 건물·지형 타일·소품·데칼 전부 포함(차량·열차 제외 → 유닛 쪽 0.3 후반). 소요: 건물 1~2시간 · 지형 1시간 이내 · 소품 30분 이내 · 데칼 소규모, 합계 약 3~4시간 렌더.** ② 0.3 후반: 유닛 재렌더 (색 후처리 우선, 부족한 유닛만 완전 재렌더; 유닛 93종, 완전 재렌더 약 7~12시간 벽시계).
-- 현재 규칙은 0.3 전까지 유효 (새 자산은 현행 방향 유지, 해상도·LOD·메모리 예산 256MB 유지). 사진풍으로 가지 않는다.
+## Art style direction (decided 2026-10-22, to be applied at 0.3)
+- Decision (user night of 2026-10-22): change the art style direction to the 'middle value' (keep the pixel·cartoon basis + slightly more realistic) but proceed at 0.3. Roadmap: `docs/ROADMAP_LONG.md` section 'Art style direction — shift to the middle value'.
+- Direction definition summary:
+  - Keep: pixel·voxel render, black outlines, team-color ring, high-contrast silhouette, limited palette.
+  - Raise: earth·cloth-centered desaturated colors, uniform dirt·wear expression, natural body proportions, texture detail (tree rings·bark·roof tiles), historically accurate dress·architecture.
+  - Avoid: photographic look, excessive texture, primary-color-centered palette, cartoonish exaggeration.
+- Application order (additional decision night of 2026-10-22): unit re-render (mid applied) is redone at 0.3. ① 0.3 initial: building·terrain family mid re-render (houses·ruins·terrain tiles etc.). **Confirmed (2026-10-22): includes all buildings·terrain tiles·props·decals (excluding vehicles·trains → unit side, 0.3 late). Time: buildings 1~2 hours · terrain within 1 hour · props within 30 minutes · decals small, total about 3~4 hours of rendering.** ② 0.3 late: unit re-render (color post-processing first, full re-render only for the units that need it; 93 unit types, full re-render about 7~12 hours wall clock).
+- The current rules are valid until 0.3 (new assets keep the current direction, keep resolution·LOD·memory budget 256MB). Do not go photographic.
 
-### 확정 mid 프로파일 (2026-10-22)
-- 사용자 승인 (2026-10-22 밤): 비교 시트 `51_style_house_compare.png` 를 보고 mid 프로파일 확정.
-- 값 (mid, 확정):
+### Confirmed mid profile (2026-10-22)
+- User approval (night of 2026-10-22): the mid profile confirmed after viewing the comparison sheet `51_style_house_compare.png`.
+- Values (mid, confirmed):
 
-| 항목 | 값 |
+| Item | Value |
 |---|---|
-| 채도 배율 | 0.78 |
-| 명도 대비 | 1.0 (변화 없음) |
-| 흙빛 당김 | 0.14 |
-| 때 오버레이 | 0.22 (색 84,68,48) |
-| 낡음 노이즈 | 0.07 |
-| 가장자리 마모 | 0.30 |
-| 질감 입자 | @128 2px · @64 1px · @32 1px |
+| Saturation multiplier | 0.78 |
+| Brightness contrast | 1.0 (no change) |
+| Earth-tone pull | 0.14 |
+| Dirt overlay | 0.22 (color 84,68,48) |
+| Wear noise | 0.07 |
+| Edge wear | 0.30 |
+| Texture grain | @128 2px · @64 1px · @32 1px |
 
-- 비교용 real (채택 안 함): 채도 0.52 · 대비 0.9 · 흙빛 0.26 · 때 0.42 · 낡음 0.14 · 가장자리 0.55 · 입자 1px.
-- 프로파일 파일: `game-tools/image/tools/style/style_profiles.json` (브랜치 gt/style-mid-test; 커밋 5ed6cb05 메커니즘 · 99d3f4ea 시험 렌더 설정 · 45305bff 시트).
-- 적용 방법: `make_building.py --style mid`. `--style` 미지정 또는 `current` 는 기존 렌더와 바이트 동일.
-- 불변: 윤곽선·투명도·팀색 레이어·프레임·앵커·LOD.
-- 시인성 확인 결과: 풀·흙·눈 지형 3종에서 윤곽·지붕 대비 구분. @32 지붕-지형 색 거리 풀 28/26/27.
-- 현재 규칙은 0.3 전까지 유효.
+- Comparison real (not adopted): saturation 0.52 · contrast 0.9 · earth-tone 0.26 · dirt 0.42 · wear 0.14 · edge 0.55 · grain 1px.
+- Profile file: `game-tools/image/tools/style/style_profiles.json` (branch gt/style-mid-test; commit 5ed6cb05 mechanism · 99d3f4ea test render settings · 45305bff sheet).
+- How to apply: `make_building.py --style mid`. With `--style` unspecified or `current` it is byte-identical to the existing render.
+- Unchanged: outlines·transparency·team-color layer·frames·anchors·LOD.
+- Visibility check result: outline·roof contrast distinguishable on 3 terrain types of grass·earth·snow. @32 roof-terrain color distance grass 28/26/27.
+- The current rules are valid until 0.3.

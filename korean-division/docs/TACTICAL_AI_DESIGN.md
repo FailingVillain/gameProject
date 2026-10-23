@@ -1,90 +1,90 @@
-# 전술 AI 설계 (2단계 완료, 2026-10-18)
+# Tactical AI Design (stage 2 complete, 2026-10-18)
 
-1단계 (`docs/ENGINE_NOTES.md` '전술 AI 1단계') 위에 쌓는다. 규칙은 그대로: **명령만** (`World` 공개 API), **`Fog.CanSee` 로 보이는 것만**, **결정적** (목록 · Id 순, 해시 선택, 틱 함수 시차, 상태는 스냅샷 저장).
+Built on top of stage 1 (`docs/ENGINE_NOTES.md` 'tactical AI stage 1'). Rules unchanged: **commands only** (`World` public API), **only what is visible via `Fog.CanSee`**, **deterministic** (list · Id order, hash selection, tick-function staggering, state stored in snapshots).
 
-## 1. 조사 — 게임 AI 기법
+## 1. Survey — game AI techniques
 
-| 기법 | 내용 | 채택 |
+| Technique | Content | Adopted |
 |---|---|---|
-| 영향력 지도 (influence / threat / cover map) | 거친 격자에 위협 · 엄폐 · 고지 · 사선 점수를 쌓아 위치를 고른다 (Total War · CoH 계열) | **채택** — 8칸 칸 단위 `TacMap`. 지형 층은 칸마다 게으른 계산 (지형 해시가 열쇠 → 순수 함수, 저장 불필요), 위협 층은 보이는 적 격자에서 질의 때 계산 |
-| 효용 점수 (utility) | 후보 (위치 · 표적 · 투입 시점) 마다 가중 합으로 고른다 | **채택** — 위치 선정 · 주공 선택 · 예비 투입. 가중치는 프로필 JSON |
-| HTN / 행동 트리 | 과제를 하위 과제로 분해 / 조건 트리 | **부분 채택** — 층마다 작은 상태 기계 (연대 국면 접근 → 준비사격 → 돌격, 중대 상태). HTN 계획기는 쓰지 않음 (1만 기에서 비용 · 저장 부담, 과제 종류가 적음) |
-| 블랙보드 | 층 사이 공유 기억 | **채택** — `TacFaction` · `TacDirective` (최근 본 적 · 관측 표적 · 주공 · 화력 표적) = 저장되는 블랙보드 |
-| 시차 계획 (staggered budget) | 층 · 단위마다 다른 틱에 생각 | **유지** — 전략 8호출 (≈2초), 연대 · 대대 4호출 (≈1초, 서로 2호출 엇갈림), 중대 2호출 (≈0.5초). 비싼 질의 (사선) 는 후보 상위 몇 개만 |
+| Influence map (influence / threat / cover map) | Accumulate threat · cover · highland · line-of-fire scores on a coarse grid to choose positions (Total War · CoH family) | **Adopted** — 8-cell `TacMap`. The terrain layer is lazily computed per cell (terrain hash is the key → pure function, no storage needed), the threat layer is computed at query time from the visible-enemy grid |
+| Utility score | Choose among candidates (position · target · commitment timing) by a weighted sum | **Adopted** — position selection · main effort selection · reserve commitment. Weights are in the profile JSON |
+| HTN / behavior tree | Decompose tasks into subtasks / condition tree | **Partially adopted** — small state machines per layer (regiment phase approach → preparatory fire → assault, company state). No HTN planner (cost · storage burden at 10,000 units, few task kinds) |
+| Blackboard | Memory shared between layers | **Adopted** — `TacFaction` · `TacDirective` (recently seen enemies · observed targets · main effort · fire targets) = the stored blackboard |
+| Staggered budget | Think on different ticks per layer · unit | **Kept** — strategy 8 calls (≈2 s), regiment · battalion 4 calls (≈1 s, offset from each other by 2 calls), company 2 calls (≈0.5 s). Expensive queries (line of fire) only for the top few candidates |
 
-## 2. 조사 — 1910~20년대 보병 교리 (흉내 낼 것)
+## 2. Survey — 1910~20s infantry doctrine (to imitate)
 
-- **사격과 기동** (fire and movement): 한 제대가 **화력 기반** (base of fire — 엎드려 사격, 기관총 중심) 으로 적을 제압하는 동안 다른 제대가 **기동** (엄폐에서 엄폐로 약진). 분대 단위 교대 약진 (1918 이후 표준).
-- **기관총 = 화력 기반**: 고지 · 사선 좋은 곳에 먼저 거치, 측사 (enfilade) 선호, 보병 돌격 전에 제압.
-- **포병 준비사격 → 사격 연신** (lifting / creeping): 돌격 전 적 전선에 준비사격, 아군 보병이 가까워지면 사격을 적 후방 (예비 · 2선) 으로 옮긴다.
-- **침투** (1918 독일 돌격대): 강점은 우회, 약점 (제압된 · 흐트러진 곳) 으로 파고든다 → 표적 선정에 제압 · 흐트러짐 가중.
-- **종심 방어**: 전초 (outpost — 접촉 · 지연 후 철수) → 주저항선 (엄폐 · 고지) → 역습 예비 (돌파 지점에 반격).
-- **측면 경계**: 열린 측면에 기병 · 소부대, 측면이 비면 거부 측면 (refused flank).
-- **기병**: 차장 (screen — 앞 · 측면 정찰), 추격 (무너진 적), 기관총 정면 돌격 금지.
-- **엄호 철수**: 일부가 사격으로 엄호하고 나머지가 물러난다.
+- **Fire and movement**: while one element suppresses the enemy as a **base of fire** (prone fire, machine-gun centered), another element **maneuvers** (bounds from cover to cover). Squad-level alternating bounds (standard after 1918).
+- **Machine gun = base of fire**: emplace first on highland · good lines of fire, prefer enfilade, suppress before the infantry assault.
+- **Artillery preparatory fire → lifting / creeping**: preparatory fire on the enemy front before an assault; as friendly infantry gets close, shift fire to the enemy rear (reserves · second line).
+- **Infiltration** (1918 German stormtroopers): bypass strong points, penetrate weak points (suppressed · disordered places) → weight suppression · disorder in target selection.
+- **Defense in depth**: outpost (contact · delay then withdraw) → main resistance line (cover · highland) → counterattack reserve (counterattack at the breakthrough point).
+- **Flank security**: cavalry · small units on open flanks, refused flank when the flank is empty.
+- **Cavalry**: screen (reconnaissance to the front · flanks), pursuit (of a broken enemy), no frontal charge against machine guns.
+- **Covering withdrawal**: some cover by fire while the rest withdraw.
 
-## 3. 방향 결정
+## 3. Direction decisions
 
-- **성능**: 1만 기에서 AI 비용은 "보이는 적 훑기 + 중대 수" 에 비례하게. 지형 점수는 칸 게으른 캐시, 사선 (`HasFiringLine`) 은 후보 상위 4개만, 위협은 보이는 적 격자 질의. 측정 목표: 16×1000 · 2×5000 에서 1단계 대비 +50% 이내.
-- **결정성**: 캐시는 (지도, `TerrainHash`) 열쇠의 순수 함수 → 저장 안 해도 불러온 쪽과 같다. 국면 · 역할 · 시각은 상태에 저장.
-- **데이터 주도**: 프로필 = `strategy` (세력 전략) · `tactics` (연대 이하 전술) 두 절. 세력별 + 미션별 (`aiProfile`, 병력별 지시 그룹).
-- **사거리 · 시야는 정의에서 읽는다** (밸런스 개편: 소총 24 · 기관총 24 · 카빈 22 · 시야 32 · 포 32/50/70 · 지도 ×1.5). 거리 상수는 "소총 사거리의 배수" 로 표현.
+- **Performance**: at 10,000 units AI cost should be proportional to "scanning visible enemies + number of companies". Terrain scores are lazily cached per cell, line of fire (`HasFiringLine`) only for the top 4 candidates, threat via a visible-enemy grid query. Measurement target: within +50% of stage 1 at 16×1000 · 2×5000.
+- **Determinism**: caches are pure functions keyed by (map, `TerrainHash`) → even if not stored they match the loading side. Phase · role · time are stored in state.
+- **Data-driven**: profile = two sections `strategy` (faction strategy) · `tactics` (regiment and below tactics). Per faction + per mission (`aiProfile`, per-force directive groups).
+- **Range · sight are read from the definitions** (balance overhaul: rifle 24 · machine gun 24 · carbine 22 · sight 32 · guns 32/50/70 · map ×1.5). Distance constants are expressed as "multiples of rifle range".
 
-## 4. 층 구조 (사용자 지시 2026-10-19: 두 주층)
+## 4. Layer structure (user directive 2026-10-19: two main layers)
 
 ```
-세력 전략 (Strategy, ≈2초)            ← 1단계 지휘관
-  └ 지시 그룹 (TacDirective: 미션 병력별 태세 · 구역)
-      └ 연대 전술 (Regiment, ≈1초)    ← 새 층 (AI 묶음: 대대 2~4)
-          └ 대대 실행 (Battalion, ≈1초) ← 1단계 대대 (월드 대대 번호와 연결)
-              └ 중대 실행 (Company, ≈0.5초) ← 1단계 중대 + 분대 교대 약진 · 전초
+Faction strategy (Strategy, ≈2 s)            ← stage 1 commander
+  └ Directive group (TacDirective: per-mission-force posture · area)
+      └ Regiment tactics (Regiment, ≈1 s)    ← new layer (AI bundle: 2~4 battalions)
+          └ Battalion execution (Battalion, ≈1 s) ← stage 1 battalion (linked to world battalion number)
+              └ Company execution (Company, ≈0.5 s) ← stage 1 company + squad alternating bounds · outposts
 ```
 
-| 1단계 | 2단계 |
+| Stage 1 | Stage 2 |
 |---|---|
-| 지휘관: 태세 · 목표 · 대대 정면 · 예비 대대 · 포병/기병 | **세력 전략**: 지시 그룹별 태세 · 목표 · **연대** 정면 배분 · 주공/조공 · 예비 연대 · 증원 배정 · 포병 배정 · 기병 (차장 · 측면 · 추격) · 태세 변경 |
-| (없음) | **연대 전술**: 국면 (접근 · 준비사격 · 돌격 / 종심 방어), 대대 역할 (화력 기반 · 기동 · 주저항선 · 역습 예비), 예비 대대, 포병 표적 · 연신, 측면 경계 |
-| 대대: 중대 정면 · 예비 중대 · 화력/기갑/마차 | **대대 실행**: 역할에 따른 중대 배치, 예비 중대 (대등전 = 측면 연장 투입), 기관총 화력 기반 위치, 주저항선 깊이 선택 (TacMap) |
-| 중대: 사격 진지 · 사수 · 약진 · 돌격 · 참호 · 후퇴 | **중대 실행**: + 분대 교대 약진 (화력 분대 ↔ 기동 분대), 방어 전초 분대 (접촉 시 철수), TacMap 사격 진지 |
+| Commander: posture · objective · battalion front · reserve battalion · artillery/cavalry | **Faction strategy**: per-directive-group posture · objective · **regiment** front allocation · main/secondary attack · reserve regiment · reinforcement assignment · artillery assignment · cavalry (screen · flank · pursuit) · posture change |
+| (none) | **Regiment tactics**: phase (approach · preparatory fire · assault / defense in depth), battalion role (base of fire · maneuver · main resistance line · counterattack reserve), reserve battalion, artillery target · lifting, flank security |
+| Battalion: company front · reserve company · firepower/armor/wagon | **Battalion execution**: company placement by role, reserve company (even battle = committed as flank extension), machine gun base-of-fire position, main resistance line depth selection (TacMap) |
+| Company: firing position · gunner · bound · assault · trench · retreat | **Company execution**: + squad alternating bounds (fire squad ↔ maneuver squad), defensive outpost squad (withdraws on contact), TacMap firing position |
 
-## 5. 데이터
+## 5. Data
 
-**프로필** (`assets/data/ai_profiles.json`, 절마다 default 위에 덮어쓰기):
-- `strategy`: `posture` · `aggressiveness` (태세 변경 · 예비 투입 속도) · `reserve` · `defendPatience` · `artillery` · `cavalry` · `scheme` (frontal · flank · defensive) · `mainEffort` (주공 정면 집중도 0~1) · `regimentSize` (연대당 대대 2~4) · `counterattackOdds` (방어→반격 우세 배수: 진지 앞 사거리 ×1.25 안의 보이는 적 기준, 2회 연속 → 20초 유지, 미션 지시 그룹은 안 함) · `culminate` (공격 한계: 그룹 병력 비율이 이 아래 + 적 우세면 방어 전환).
-- `tactics`: `aggressiveness` · `retreatStrength` · `retreatSuppression` · `trench` · `chargeRange` · `chargeSuppression` · `chargeOdds` · `engageFrac` · `fireAndMovement` (분대 교대 약진 0/1) · `boundLength` (약진 길이, 소총 사거리 배수) · `prepSeconds` (준비사격) · `liftDistance` (연신 거리, 칸 — 소총 사거리 16 기준, 실제 = 값 × 사거리/16) · `outposts` (전초 0/1) · `outpostDistance` · `depth` (주저항선→예비, 사거리 배수) · `coverWeight` · `highWeight` · `losWeight` · `threatWeight`.
+**Profile** (`assets/data/ai_profiles.json`, each section overrides on top of default):
+- `strategy`: `posture` · `aggressiveness` (speed of posture change · reserve commitment) · `reserve` · `defendPatience` · `artillery` · `cavalry` · `scheme` (frontal · flank · defensive) · `mainEffort` (main effort front concentration 0~1) · `regimentSize` (battalions per regiment 2~4) · `counterattackOdds` (defense→counterattack superiority multiplier: based on visible enemies within range ×1.25 in front of the position, 2 consecutive times → held 20 s, not done for mission directive groups) · `culminate` (offensive limit: if the group strength ratio is below this + the enemy is superior, switch to defense).
+- `tactics`: `aggressiveness` · `retreatStrength` · `retreatSuppression` · `trench` · `chargeRange` · `chargeSuppression` · `chargeOdds` · `engageFrac` · `fireAndMovement` (squad alternating bounds 0/1) · `boundLength` (bound length, multiple of rifle range) · `prepSeconds` (preparatory fire) · `liftDistance` (lifting distance, cells — based on rifle range 16, actual = value × range/16) · `outposts` (outposts 0/1) · `outpostDistance` · `depth` (main resistance line→reserve, multiple of range) · `coverWeight` · `highWeight` · `losWeight` · `threatWeight`.
 
-**지시 그룹** `IAiDirectable.SetDirective(faction, group, posture, area, radius, forces, units)`: 그룹 0 = 세력 기본 (기존 `SetDirective`). 미션은 병력 (`forces[]` · `reinforcements[]`) 마다 (태세 = 병력 posture ?? 세력 posture, 구역 = aiArea ?? area) 로 묶고, **구역 없는 hold / defend 는 병력마다 따로** (흩어진 매복조가 한 줄로 합쳐지던 문제 해결). 증원 유닛은 생기면 `Mission.ForceUnits` 로 그룹을 찾아 편입.
+**Directive group** `IAiDirectable.SetDirective(faction, group, posture, area, radius, forces, units)`: group 0 = faction default (existing `SetDirective`). The mission groups by force (`forces[]` · `reinforcements[]`) with (posture = force posture ?? faction posture, area = aiArea ?? area), and **hold / defend without an area are separate per force** (fixes the problem where scattered ambush parties were merged into one line). Reinforcement units, when they appear, find their group via `Mission.ForceUnits` and are incorporated.
 
-## 6. 층별 결정 루프
+## 6. Per-layer decision loops
 
-**세력 전략 (8호출)**: ① 새 유닛 편입 (중대 편성 · 대대 · 연대 배정 — 그룹의 가장 약한 연대, 가득 차면 새 연대) ② 그룹마다 인지 (최근 본 적 · 관측 표적) ③ 태세 (지시 > 지도 > 프로필, 방어 대기 → 공격, 공격 한계 → 방어, 우세하면 반격 — 미션이 방어 · 고수를 지시한 그룹은 세력 단위 반격 없이 진지를 지키고, 국지 역습은 연대 예비 대대가 맡는다) ④ 목표 (본 적 > 구역 > 점령 시설 > 적 시작) ⑤ 연대 정면 배분 (적 정면 폭에 맞춰 집중, 주공 = 가장 강한 연대 · 정면 좁게, 조공 = 고착) ⑥ 예비 연대 (3개 이상) 투입 = 붕괴 · 70% 미만 · 기회 (적 제압) ⑦ 포병 → 주공 연대 지원, 기병 → 차장 (접촉 전) / 주공 열린 측면 / 돌격 기회 ⑧ 정찰 → 관측자 (자율 정찰 플래그 병합 후 명령 안 함).
+**Faction strategy (8 calls)**: ① incorporate new units (company formation · battalion · regiment assignment — the group's weakest regiment, a new regiment when full) ② perception per group (recently seen enemies · observed targets) ③ posture (directive > map > profile, defense waiting → attack, offensive limit → defense, counterattack when superior — for a group the mission ordered to defend · hold, no faction-level counterattack but it holds the position, and local counterattacks are handled by the regiment's reserve battalion) ④ objective (seen enemy > area > capture facility > enemy start) ⑤ regiment front allocation (concentrate to match the enemy front width, main effort = strongest regiment · narrow front, secondary = fixing) ⑥ reserve regiment (3 or more) commitment = collapse · below 70% · opportunity (enemy suppressed) ⑦ artillery → supports the main effort regiment, cavalry → screen (before contact) / open flank of the main effort / assault opportunity ⑧ reconnaissance → observer (no order after the autonomous reconnaissance flag is merged).
 
-**연대 전술 (4호출)**: 공격 = 접근 (사거리+여유까지 횡대) → 접촉 시 역할 (대대 2개 이상: 사격 진지 점수가 좋은 대대 = 화력 기반, 나머지 = 기동 (scheme flank 면 측면 쪽으로 비스듬히); 1개면 대대 안에서 중대로 나눔) → **준비사격** (지원 포병이 있으면 `prepSeconds` 동안 기동 제대는 사격 진지에서 대기, 포병은 적 전선에 강제 공격) → **돌격** (약진 · 돌격 허용, 아군 기동 중대가 화력 표적에서 `liftDistance` 안이거나 돌격 (착검 · 돌격 약진) 중 2배 안이면 **연신**: 더 깊은 적 (적 쪽으로 15칸+) 을 표적, 없으면 엔진 자동 표적). 방어 = 앞 대대 주저항선 (TacMap 깊이 선택) + 예비 대대 = 역습 (돌파 · 앞 대대 후퇴 · 근접한 적이 제압되면, 또는 주저항선 앞 사거리 안의 공격이 꺾였을 때 = 연대 정면 전체의 보이는 적이 예비의 0.8배 이하이거나 제압 ≥ `chargeSuppression` 이고 1.5배 이하 → 그 지점으로 25초 공격 후 복귀).
+**Regiment tactics (4 calls)**: attack = approach (line up to range+margin) → on contact roles (2 or more battalions: the battalion with the better firing position score = base of fire, the rest = maneuver (diagonally toward the flank if scheme is flank); with 1, split by company within the battalion) → **preparatory fire** (if there is supporting artillery, for `prepSeconds` the maneuver element waits at the firing position and artillery is forced to attack the enemy front) → **assault** (bounds · assault permitted; if a friendly maneuver company is within `liftDistance` of the fire target or within 2x of it during an assault (bayonet · assault bound) then **lift**: target deeper enemies (15+ cells toward the enemy), if none the engine auto-targets). Defense = front battalion main resistance line (TacMap depth selection) + reserve battalion = counterattack (breakthrough · front battalion retreat · when nearby enemies are suppressed, or when an attack within range in front of the main resistance line is broken = visible enemies of the whole regiment front are 0.8x the reserve or below, or suppression ≥ `chargeSuppression` and 1.5x or below → attack that point for 25 s then return).
 
-**대대 (4호출, 연대와 2호출 엇갈림)**: 1단계 + 역할: 화력 기반 = 교전 거리에서 정지 사격만 (약진 · 돌격 금지), 기동 = 약진 · 돌격, 주저항선 = 깊이 선택, 붙은 기관총은 화력 기반 대대 (없으면 자기 대대) 정면의 고지 · 사선 좋은 칸. 예비 중대: 우세하면 결정적 순간 (적 제압 ≥ 돌격 기준) 까지 보유, **대등 · 열세면 접촉 즉시 측면 연장 (FlankSign 쪽 바깥) 으로 투입**.
+**Battalion (4 calls, offset from the regiment by 2 calls)**: stage 1 + roles: base of fire = stationary fire only at engagement distance (no bounds · assault), maneuver = bounds · assault, main resistance line = depth selection, attached machine guns go to highland · good lines of fire in front of the base-of-fire battalion (own battalion if none). Reserve company: if superior, held until the decisive moment (enemy suppression ≥ assault criterion), **if even · inferior, committed immediately on contact as a flank extension (outside on the FlankSign side)**.
 
-**중대 (2호출)**: 1단계 + 공격 이동이 사거리 끝에서 멈춰 9초 넘게 절반 넘게 사격 중이면 사격선 (교전) 으로 보고 (그 전에는 교전 거리 사격 진지까지 계속 접근), 화력 우세 뒤 사격선 전진은 **분대 교대 약진** (짝수/홀수 분대: 하나는 사수 · 하나는 엄폐 칸으로 `boundLength` 이동, 도착 · 6초면 교대), 방어 중 **전초 분대** (첫 분대를 `outpostDistance` 앞 엄폐로, 적이 사거리 80% 안이거나 제압되면 철수), 사격 진지 = TacMap 점수 (엄폐 · 고지 · 사선 · 위협 · 거리). 사격선 전진은 엄폐가 나아지거나 적이 제압 · 1.6배 우세일 때만, 단 참호 · 엄폐 속 적과 오래 (전진 대기 ×2) 쐈으면 다가간다. 방어 과제 중대의 후퇴는 다음 진지 (`depth` × 사거리 × 0.5, 최대 18 × K) 까지만.
+**Company (2 calls)**: stage 1 + if an attack move stops at the end of range and more than half are firing for over 9 s, treat it as a fire line (engagement) (before that keep approaching to the engagement-distance firing position), advancing the fire line after fire superiority is **squad alternating bounds** (even/odd squads: one fires · one moves to a cover cell by `boundLength`, swap on arrival · after 6 s), during defense an **outpost squad** (first squad to cover `outpostDistance` ahead, withdraws if the enemy is within 80% of range or suppressed), firing position = TacMap score (cover · highland · line of fire · threat · distance). Advancing the fire line only when cover improves or the enemy is suppressed · 1.6x superior, but if it fired for a long time (advance wait ×2) at enemies in trenches · cover, it approaches. A defending-task company retreats only to the next position (`depth` × range × 0.5, max 18 × K).
 
-**미션 보조 (`mission-aux`)**: 비무장 무리 (마차) 는 호위 중심보다 6칸 넘게 앞서지 않고, 보이는 무장 적이 20칸 안이면 위협 반대쪽 아군 무장 유닛 뒤로 피한다.
+**Mission auxiliary (`mission-aux`)**: unarmed groups (wagons) do not go more than 6 cells ahead of the escort center, and if a visible armed enemy is within 20 cells they evade behind friendly armed units on the side opposite the threat.
 
-## 7. 지형 지도 `TacMap`
+## 7. Terrain map `TacMap`
 
-칸 8×8. 지형 층 (칸마다 게으른 계산, 열쇠 `TerrainHash`): 평균 엄폐 (`TerrainCover` 숲 · 잔해 · 참호 · 포탄 구덩이 · 가옥 옆), 고지 비율, 통행 비율, 칸 안 최고 엄폐 타일. 위협 층 (질의 시): 보이는 적 격자 칸 수 × 거리 감쇠 (적 사거리 반경). `PickPosition(기준점, 적, 원하는 거리, 옆 허용 폭, 가중치)` = 후보 칸 점수 → 상위 4개 사선 검사 → 최고 칸의 타일 단위 `BestCover`. 공용 캐시 (스레드 정적, 세력 공유).
+Cell 8×8. Terrain layer (lazily computed per cell, key `TerrainHash`): average cover (`TerrainCover` forest · rubble · trench · shell crater · beside houses), highland ratio, passable ratio, highest-cover tile within the cell. Threat layer (at query): number of cells of the visible-enemy grid × distance attenuation (enemy range radius). `PickPosition(reference point, enemy, desired distance, lateral tolerance, weights)` = candidate cell scores → line-of-fire check of the top 4 → tile-level `BestCover` of the best cell. Shared cache (thread-static, shared across factions).
 
-## 8. 디버그 · 테스트
+## 8. Debug · tests
 
-- `KD_TAC_DBG=1` (교전 sim): 5초마다 연대 국면 · 대대 역할 · 중대 상태 (`--mission-run` 은 30초, `KD_TAC_DBG_SEC=N` 으로 간격). sim 끝 표에 준비사격 · 연신 · 교대 약진 · 전초 · 역습 · 증원 편입 누계 + `AI 비용` 줄 (교전 중 AI 사고 ms/틱 평균 · 최대, `StressTest.TimedAi` 껍데기).
-- `--stress ai ai=tactical` (16×1000, 2×5000) ms/틱.
-- 자체 시험 `KD_SELFTEST_ONLY=tactical`: 층 매핑 (세력 → 연대 → 대대 → 중대), 지시 그룹 (매복조 분리), 증원 편입, 월드 대대 번호 연결, TacMap (엄폐 · 고지 칸 선택 · 순수성), 사격과 기동 (분대 교대), 준비사격 → 연신, 종심 방어 (전초 철수 · 역습), 결정성 · 저장 이어 하기 · 안개.
-- 관찰: `--balance sim` 1단계 대 2단계 (지형 보병 · 혼성 · 포병 준비), 미션 3개 헤드리스.
+- `KD_TAC_DBG=1` (engagement sim): every 5 s regiment phase · battalion role · company state (`--mission-run` 30 s, interval via `KD_TAC_DBG_SEC=N`). At the end table of the sim: cumulative preparatory fire · lifting · alternating bounds · outposts · counterattacks · reinforcement incorporation + an `AI 비용` [AI cost] line (average · maximum ms/tick of AI thinking during engagement, `StressTest.TimedAi` shell).
+- `--stress ai ai=tactical` (16×1000, 2×5000) ms/tick.
+- Self test `KD_SELFTEST_ONLY=tactical`: layer mapping (faction → regiment → battalion → company), directive groups (ambush party separation), reinforcement incorporation, world battalion number linking, TacMap (cover · highland cell selection · purity), fire and movement (squad alternation), preparatory fire → lifting, defense in depth (outpost withdrawal · counterattack), determinism · save resume · fog.
+- Observation: `--balance sim` stage 1 vs stage 2 (terrain infantry · mixed · artillery preparation), 3 missions headless.
 
-## 9. 단계 로드맵
+## 9. Stage roadmap
 
-- **2단계 ✅ (2026-10-18 완료)**: 위 층 구조, TacMap, 사격과 기동, 종심 방어, 지시 그룹, 증원 편입, 월드 대대 연결, 준비사격 · 연신, 사계 접점 `InGunArc` 한 곳, 미션 보조 마차 대피.
-  - **결과 (1단계 c542a3f 대비)** — 미션 헤드리스 10시드 승수 (양쪽 같은 AI): yalu_crossing 10 → 8, village_defense 5 → 8, supply_escort 4 → 5 (WIP 직전 2단계 3 · 6 · 3).
-    전술 대 옛 battle AI (보병 200:200, 12시드): 평지 12 → 12, 지형 11 → 9. 혼성 (보병 150 · 중기관총 12 · 기병 20, 지형 3시드): 3/3 둘 다 (생존 보병 평균 103 → 101).
-    곡사포 4 + 정찰 4 준비사격 (3시드): 3/3 둘 다, 단 2단계는 준비사격 대기로 느림 (승리 97초 → 153초, 생존 116 → 78). 참호 속 사수 (보병 150 · 기관총 6) 공격 300초: 1단계 3판 전멸, 2단계 3판 무승부 (공격 측 21~54 생존 — 무모한 돌격 대신 멈춤).
-  - **AI 비용**: `--stress ai players=4 n=1000 ticks=450` (4008기) 사고 avg 0.038 ms/틱 (p95 0.18, max 1.21) — 1단계 0.029 (+31%, 목표 +50% · 1.5 ms 안). 교전 sim 400기 avg 0.01~0.015 ms/틱 (두 단계 같음).
-- **3단계 (미룸)**: 미션 목표 연결 (점령 · 호위 · 섬멸 우선순위), 침투 (약점 칸 돌파 축), 엄호 철수 (화력 분대가 엄호하는 단계 후퇴), 포병 탄막 이동 (creeping — 사격 지점 명령이 생기면), 지휘 지연 · 통신 (연대 명령에 전령 지연), 참호선 건설 계획 (방어 시간 길면 연결 참호).
-  2단계 검증에서 남은 것: 지형 보병전이 1단계보다 약함 (12판 9승 대 11승 — 화력 기반 중대가 사격만 하는 분할의 손해로 추정), 준비사격 국면이 공격을 늦춤 (포병 효과 대비 대기 시간 조정), 연신이 드묾 (돌격까지 가는 일이 적음), 참호 속 적 공격은 멈춘 채 끝남 (침투 · 연막 · 집중 돌격 필요), 곡사포는 관측자 (정찰 · 장교) 없이는 쏘지 않음 (교전 sim 에 정찰 필요), supply_escort 승률 절반 (마차 대피는 됐지만 호위 배치는 미션 목표 연결과 함께).
-- **4단계+**: 캠페인 연대 (월드 연대 편제와 연결), 난이도 (지각 지연 · 실수율), 학습형 가중치 조정 (관찰 표 기반 오프라인), 정찰 정보 기억 (안개 속 마지막 위치 지도).
+- **Stage 2 ✅ (completed 2026-10-18)**: the layer structure above, TacMap, fire and movement, defense in depth, directive groups, reinforcement incorporation, world battalion linking, preparatory fire · lifting, the single contact point of the firing arc `InGunArc`, mission-auxiliary wagon evacuation.
+  - **Results (vs stage 1 c542a3f)** — mission headless 10-seed wins (same AI on both sides): yalu_crossing 10 → 8, village_defense 5 → 8, supply_escort 4 → 5 (stage 2 just before WIP 3 · 6 · 3).
+    Tactical vs old battle AI (infantry 200:200, 12 seeds): flat 12 → 12, terrain 11 → 9. Mixed (infantry 150 · heavy machine gun 12 · cavalry 20, terrain 3 seeds): 3/3 both (average surviving infantry 103 → 101).
+    Howitzer 4 + reconnaissance 4 preparatory fire (3 seeds): 3/3 both, but stage 2 is slower due to the preparatory fire wait (victory 97 s → 153 s, survivors 116 → 78). Attack of gunners in trenches (infantry 150 · machine gun 6) 300 s: stage 1 annihilated in 3 games, stage 2 drew in 3 games (attacker 21~54 survivors — halts instead of reckless charges).
+  - **AI cost**: `--stress ai players=4 n=1000 ticks=450` (4008 units) thinking avg 0.038 ms/tick (p95 0.18, max 1.21) — stage 1 0.029 (+31%, within target +50% · 1.5 ms). Engagement sim 400 units avg 0.01~0.015 ms/tick (same in both stages).
+- **Stage 3 (deferred)**: mission objective linking (capture · escort · annihilation priority), infiltration (breakthrough axis through weak cells), covering withdrawal (staged retreat covered by a fire squad), artillery barrage movement (creeping — once a fire-point command exists), command delay · communication (messenger delay for regiment orders), trench line construction planning (connecting trenches when defense lasts long).
+  What remains from the stage 2 verification: terrain infantry battle is weaker than stage 1 (12 games 9 wins vs 11 wins — presumed loss from the split where the base-of-fire company only fires), the preparatory fire phase delays the attack (adjust the wait time against artillery effect), lifting is rare (little reaches the assault), attacking enemies in trenches ends stationary (needs infiltration · smoke · concentrated assault), howitzers do not fire without an observer (reconnaissance · officer) (the engagement sim needs reconnaissance), supply_escort win rate half (wagon evacuation works but escort placement comes with mission objective linking).
+- **Stage 4+**: campaign regiments (linked to the world regiment organization), difficulty (perception delay · error rate), learned weight adjustment (offline based on observation tables), reconnaissance information memory (map of last known positions in the fog).

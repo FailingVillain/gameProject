@@ -1,197 +1,197 @@
-# 캠페인 홈 설계 (v0.4, 2026-10-22 — 사용자 답변 Q1~Q10 반영: 3화면 15탭 · 자동 저장 · 슬롯 9개 · 구경별 탄약 MVP · 포탄 규칙)
+# Campaign Home Design (v0.4, 2026-10-22 — reflects user answers Q1~Q10: 3 screens 15 tabs · autosave · 9 slots · per-caliber ammo MVP · shell rules)
 
-> 사용자 결정을 모은 초안. 원문 인용은 `docs/ROADMAP_LONG.md` [1] "캠페인" 절. 수치는 모두 초안 — 구현 전 사용자 확인.
-> 캠페인 스토리 · 진행 방식 · 시간/계절은 사용자 구상 중 → 이 문서는 **홈 화면과 자원 규칙**만 다룬다.
+> A draft gathering user decisions. Original quotes are in `docs/ROADMAP_LONG.md` [1] "campaign" section. All values are drafts — confirm with the user before implementation.
+> Campaign story · progression · time/season are being conceived by the user → this document covers only the **home screen and resource rules**.
 
-## 0. 전제
-- 플레이어 = **'김 참장'** (이름 미공개). 부대 = **제17사단 '대한'**. 사단 최대 **1만 = 편성된 병력 기준**. **신병 풀 최대 7,000** (편성 전 대기). 승인 정원 제도 없음 — 본국이 **보내는 신병 수**로 규모 조절.
-- 시작 지역 = **압록강변**. 기존 1-1 회령 · 1-2 두만강 = 러시아 편 앞부분으로 옮기는 안 (확인 필요).
-- 편제: 분대 · 중대 · 대대 · 연대 (연대 ≤ 9). **소대 · 여단 = 명목상만** (시스템 없음). 화력 지원은 주로 **중대 단위**.
-- 패배: **큰 교전 · 중형 작전 = 재도전**, **소형 작전 = 캠페인 분기** (사용자 2026-10-21 중형 추가).
-- **초반 출시 범위 = 챕터 1 · 2** (사용자). 재도전 = **대가 없이** 전투 직전 상태로 (사용자). **장갑열차 = 챕터 2부터 등장** (사용자).
-- **지도 제작 방식** (사용자): 수동 제작 대신 **자동 생성 → 사용자가 보고 조금 수정**. → 미션별 생성 파라미터 (강 · 도시 · 철도 · 고지 · 참호선 위치) + 가벼운 지도 편집기 (지형 칠하기 · 가옥/참호/철조망 · 목표 배치) — 사용자 결정: ① 미션별 배치는 **추후 사용자가 구술** → 그 내용을 생성 파라미터로 옮김 ② **가벼운 지도 편집기 = 로드맵** ③ **철도 지형 추가** (진행 대기열). **챕터 0 튜토리얼 포함** = 압록강을 넘은 마적떼 소탕, **소형 1 + 중형 1** (사용자). 0-1 (소형) = **소규모, 5분 안에 끝남** (기본 조작). 0-2 (중형) = **대대급 교전** — 중대 단위 전술을 본격적으로 익히게 (사용자). 승인안: 0-1 = 한국 1개 중대 vs 마적 20~30, 선택 · 이동 · 공격 이동 · 엎드림/엄폐 · 사격 통제 K, 화면 안내문. 0-2 = 한국 1개 대대 (3~4 중대 + 기관총) vs 마적 본대 거점, 중대 대형 · 대대 선택 · 제압 + 측면 기동 · 중기관총 거치 · 돌격/착검 · '교전!', 참모장 김주현 쪽지 안내. **튜토리얼 = 시스템 익히기에 집중, 황손은 챕터 1부터 등장** (사용자). 캠페인 **저장 슬롯 9개 + 자동 저장(재도전 가능)** (사용자 2026-10-22, §15).
+## 0. Premises
+- Player = **'김 참장'** (name undisclosed). Unit = **17th Division '대한'**. Division maximum **10,000 = by organized force**. **Recruit pool max 7,000** (waiting before organization). No approved-strength system — scale is controlled by the **number of recruits** the homeland sends.
+- Starting region = **Yalu riverside**. Plan to move the existing 1-1 회령 · 1-2 두만강 to the front part of the Russian route (needs confirmation).
+- Organization: squad · company · battalion · regiment (regiments ≤ 9). **Platoon · brigade = nominal only** (no system). Fire support is mainly **company level**.
+- Defeat: **large engagement · medium operation = retry**, **small operation = campaign branch** (user 2026-10-21 added medium).
+- **Initial release scope = chapters 1 · 2** (user). Retry = **at no cost**, to the state just before combat (user). **Armored train = appears from chapter 2** (user).
+- **Map production method** (user): instead of manual production, **auto-generate → the user looks and edits a little**. → generation parameters per mission (river · city · railway · highland · trench line positions) + light map editor (terrain painting · houses/trenches/barbed wire · objective placement) — user decisions: ① per-mission placement is **dictated by the user later** → moved into generation parameters ② **light map editor = roadmap** ③ **add railway terrain** (progress queue). **Includes chapter 0 tutorial** = sweeping the bandit gangs that crossed the Yalu River, **small 1 + medium 1** (user). 0-1 (small) = **small scale, finishes within 5 minutes** (basic controls). 0-2 (medium) = **battalion-level engagement** — to properly learn company-level tactics (user). Approved plan: 0-1 = 1 Korean company vs bandits 20~30, selection · movement · attack-move · prone/cover · fire control K, on-screen guidance text. 0-2 = 1 Korean battalion (3~4 companies + machine guns) vs the bandit main force stronghold, company formations · battalion selection · suppression + flank maneuver · heavy MG emplacement · assault/bayonet · '교전!', guidance by chief of staff 김주현's notes. **Tutorial = focus on learning the systems, the imperial grandson appears from chapter 1** (user). Campaign **9 save slots + autosave (retry possible)** (user 2026-10-22, §15).
 
-## 1. 자원 (세 층)
-| 층 | 내용 | 쓰임 |
+## 1. Resources (three layers)
+| Layer | Content | Use |
 |---|---|---|
-| **인력** | 신병 풀 (본국 지원으로만, 작전마다 보충) · 부상자 (치료 대기) · 예비 (편성 안 된 병력) | 편성 · 보충 |
-| **보급품** (단일 수치) | 식량 · 의약품 · 사료 · 소모품 | 작전 투입 · 치료 · 신병 배치 |
-| **장비 재고** | 소총 (종류별) · **소총/기관총 탄약 (구경별 5종)** · **포탄 (보병포 · 야전포 · 곡사포별)** · 중화기 · 말 | 편성 때 실물 배분, 전투 시작 휴대량 |
-- **자금 = 외교 · 용병 고용 · 연구** 용. 부대 관리 (편성 · 병참) 에는 쓰지 않음. **예산 없음**.
-- **구경별 탄약은 캠페인 단위에서만** — 전투 안에서는 구분하지 않는다. 구경: 노식 (모신 · 맥심) · 일식 (아리사카 · 3년식) · 독식 (마우저 · 한양 88) · 불식 (르벨 · 쇼샤) · 구식 일본 (무라타).
+| **Manpower** | Recruit pool (homeland support only, replenished every operation) · wounded (awaiting treatment) · reserve (unorganized force) | Organization · replenishment |
+| **Supplies** (single value) | Food · medicine · fodder · consumables | Operation deployment · treatment · recruit placement |
+| **Equipment stock** | Rifles (by kind) · **rifle/machine gun ammo (5 per-caliber types)** · **shells (by infantry gun · field gun · howitzer)** · heavy weapons · horses | Physically distributed at organization, carried amount at combat start |
+- **Funds = for diplomacy · mercenary hiring · research.** Not used for unit management (organization · logistics). **No budget**.
+- **Per-caliber ammo only at the campaign level** — not distinguished inside combat. Calibers: Russian (Mosin · Maxim) · Japanese (Arisaka · Type 3) · German (Mauser · 한양 88) · French (Lebel · 쇼샤) · old Japanese (Murata).
 
-### 1-1. 작전 투입 비용 = Σ 병종 보급 소요 × 작전 규모 배수 (소형 1.0 · 대규모 1.5)
-| 병종 | 소요 (초안) |
+### 1-1. Operation deployment cost = Σ branch supply requirement × operation scale multiplier (small 1.0 · large-scale 1.5)
+| Branch | Requirement (draft) |
 |---|---|
-| 보병 · 신병 | 1 |
-| 돌격보병 · 저격병 | 1.5 |
-| 기관총 사수 | 2 |
-| 기병 | 3 (사료 포함) |
-| 보병포 / 야전포 / 곡사포 | 5 / 7 / 9 |
-| 장갑차 | 12 |
-| 장갑열차 | 40 |
-- 보급품이 모자라면 그 이상 투입 불가 ("투입 가능 병력" 게이지, 넘치면 투입 잠김). 예: 보급 3,000 → 보병만 3,000, 포·기병 섞으면 ~1,800.
-- 유지비 없음 (투입할 때만 소모).
+| Infantry · recruit | 1 |
+| Assault infantry · sniper | 1.5 |
+| Machine gunner | 2 |
+| Cavalry | 3 (including fodder) |
+| Infantry gun / field gun / howitzer | 5 / 7 / 9 |
+| Armored car | 12 |
+| Armored train | 40 |
+- If supplies are short, no more can be deployed ("deployable force" gauge, deployment locked when exceeded). Example: supplies 3,000 → infantry only 3,000, mixing guns·cavalry ~1,800.
+- No upkeep (consumed only when deploying).
 
-### 1-2. 치료 · 신병
-- 사상자의 **25% = 부상자로 복귀** (연구로 상향 가능). 치료 = 보급품 0.5/명. 치료 안 한 부상자는 출전 불가, 작전 3회 지나면 전역.
-- 신병 도착 = 무료 (본국). **배치** = 보급품 0.5 + 소총 1 (+ 탄약). 소총이 없으면 배치 불가.
+### 1-2. Treatment · recruits
+- **25% of casualties = return as wounded** (can be raised by research). Treatment = supplies 0.5/man. Untreated wounded cannot sortie and are discharged after 3 operations.
+- Recruit arrival = free (homeland). **Placement** = supplies 0.5 + 1 rifle (+ ammo). Without rifles placement is impossible.
 
-### 1-3. 들어오는 곳
-본국 정기 보급 (명령 수행에 따라 증감) · **노획** (보급품 · 소총 · 탄약 · 포탄 · 말, 적 손실 비례) · 거점 (점령 도시 · 철도역, 철도 연결 시 증가) · 민심 (추후, 현지 조달).
+### 1-3. Sources of income
+Homeland regular supply (increases/decreases according to carrying out orders) · **loot** (supplies · rifles · ammo · shells · horses, proportional to enemy losses) · strongholds (captured cities · railway stations, increases when the railway is connected) · public sentiment (later, local procurement).
 
-### 1-4. 전투 연결
-작전 시작 휴대 탄약 = 구경별 재고에서 채움 (모자라면 기본 휴대량보다 적게, 예 50%). **포탄도 같은 방식 (사용자 2026-10-22 Q6 확정)**: 작전 시작 때 포탄 종류별 (보병포 · 야전포 · 곡사포) 재고에서 휴대량을 채우고 (모자라면 기본 휴대량의 50%), 전투 뒤 **실제 발사 수**를 재고에서 뺌. **노획 포탄은 적 손실 비례로 재고에 가산**. 별도 규칙 없음 → 구현 한 벌. 전투 뒤 쓴 만큼 재고에서 뺌. 전투 안 탄약 규칙 (소총 60 · 느린 회복 · 마차) 은 그대로.
+### 1-4. Combat link
+The carried ammo at operation start = filled from the per-caliber stock (if short, less than the default carried amount, e.g. 50%). **Shells the same way (user 2026-10-22 Q6 confirmed)**: at operation start fill the carried amount from the stock per shell type (infantry gun · field gun · howitzer) (if short, 50% of the default carried amount), and after combat deduct the **actual number fired** from the stock. **Looted shells are added to stock in proportion to enemy losses**. No separate rule → one implementation. After combat deduct what was used from stock. Ammo rules inside combat (rifle 60 · slow recovery · wagon) unchanged.
 
-## 2. 탭
-1. **사단 상태 요약** (홈 첫 화면 = 일일 보고서): 병력 · 장비 충족률 · 보급품 · 사기 · 민심 · 다음 작전.
-2. **신병 · 부대 관리**: 대대 편성 · 배치, 연대 (≤9) 배속.
-3. **편제 관리**: 분대 · 중대 편제 틀 (소대 없음).
-4. **병참**: 보급품 · 장비 재고 · 무기 배분 · 치료.
-5. **장비 관리**: 장비 개량 · 도입 (본국 · 협력 세력).
-6. **훈련**: 대대 숙련 (신병 → 정규 → 노병) 상향, 대가 = 시간 · 탄약.
-7. **가벼운 외교**: 선택지 · 대민 지원 · 용병 고용 (코사크 · 간도 의용병 등, 자금 + 무기) · 포로 처리 (송환 · 수용 · 편입).
-8. **참모진**: 작전 참모 · 연대장 · 협력 세력 리더 (장교 학파 · 성격 = 장기 로드맵).
-9. **진급 · 군령권**.
-10. **작전 지도**: 만주 전선 · 도시 · 철도 · 다음 작전 후보 (분기 선택).
-11. **정보 (첩보)**: 적 병력 추정 · 정찰 보고.
-12. **부대 기록**: 부대 일지 · 전사자 명부 · 훈장.
-13. **본국**: 정부 · 황실 명령과 요구.
-14. **일정 · 이벤트 기록**: 다음 작전까지 · 명령 기한 (시간 · 계절 규칙은 추후 설계).
-15. **연구** (제안 — §4, 사용자 확인 대기).
-- 공통 상태: **사기 · 피로** (연속 작전 피로, 사기 → 출전 가능 · 중대 후퇴 문턱 보정). **민심** (수치 넣음, 적용은 추후).
+## 2. Tabs
+1. **Division status summary** (home first screen = daily report): force · equipment fulfillment rate · supplies · morale · public sentiment · next operation.
+2. **Recruits · unit management**: battalion organization · placement, regiment (≤9) assignment.
+3. **Organization management**: squad · company organization frameworks (no platoon).
+4. **Logistics**: supplies · equipment stock · weapon distribution · treatment.
+5. **Equipment management**: equipment improvement · introduction (homeland · cooperating factions).
+6. **Training**: raise battalion proficiency (recruit → regular → veteran), cost = time · ammo.
+7. **Light diplomacy**: options · civilian aid · mercenary hiring (Cossacks · Gando volunteers etc., funds + weapons) · prisoner handling (repatriation · internment · incorporation).
+8. **Staff**: operations staff · regiment commanders · cooperating faction leaders (officer school · personality = long-term roadmap).
+9. **Promotion · command authority**.
+10. **Operations map**: Manchurian front · cities · railways · next operation candidates (branch choice).
+11. **Intelligence (espionage)**: enemy force estimates · reconnaissance reports.
+12. **Unit records**: unit log · casualty roll · medals.
+13. **Homeland**: orders and demands from the government · imperial court.
+14. **Schedule · event record**: until the next operation · order deadlines (time · season rules to be designed later).
+15. **Research** (proposal — §4, awaiting user confirmation).
+- Common state: **morale · fatigue** (consecutive operation fatigue, morale → sortie eligibility · company retreat threshold modifier). **Public sentiment** (value included, application later).
 
-## 3. 작전 전후 화면
-- 작전 전: 브리핑 → 참가 부대 선택 (보급 비용 게이지) → 배치.
-- 작전 후: 전과 보고 (사상 · 부상 · 노획 · 진급 후보 · 포로) → 홈.
-- **자동 저장** (사용자 2026-10-22): 작전 시작 직전 · 전과 정산 직후에 자동 저장하며, 저장 실패 시 **재시도** (실패 알림 + 다시 시도). 수동 저장은 슬롯 9개 중 선택. 재도전 = 작전 시작 직전 자동 저장으로 복귀.
+## 3. Pre/post-operation screens
+- Pre-operation: briefing → participating unit selection (supply cost gauge) → placement.
+- Post-operation: results report (casualties · wounded · loot · promotion candidates · prisoners) → home.
+- **Autosave** (user 2026-10-22): autosave right before the operation starts · right after results settlement, and on save failure **retry** (failure notice + try again). Manual save chooses among 9 slots. Retry = return to the autosave right before the operation start.
 
-## 4. 연구 (사용자 승인)
-- **연구 점수 없음 — 자금 + 보급품을 소모**해 진행 (새 통화 없음). 한 번에 하나. **장교 학파와 연결** (예: 독일 학파 참모 → 침투 전술 연구 비용/기간 감소).
-- 세 갈래, 각 4~6개 (예):
-  - **의무 · 병참**: 야전 병원 (부상 복귀 25 → 35%) · 철도 수송 (투입 비용 −10%) · 탄약 창고 (휴대 탄약 부족 페널티 완화).
-  - **전술 · 교리**: 새 대형 · 전술 해금 (산개 파상 · 침투 전술 · 이동탄막 협동 · 중기관총 최후 저지선 등).
-  - **장비**: 경박격포 · 장갑차 운용 · 3년식 도입 같은 장비 해금 (장비 관리 탭과 연결).
+## 4. Research (user approved)
+- **No research points — it consumes funds + supplies** to proceed (no new currency). One at a time. **Linked to the officer school** (e.g. German school staff → reduced cost/time for infiltration tactics research).
+- Three branches, 4~6 each (examples):
+  - **Medical · logistics**: field hospital (wounded return 25 → 35%) · rail transport (deployment cost −10%) · ammunition depot (eases the carried ammo shortage penalty).
+  - **Tactics · doctrine**: unlock new formations · tactics (skirmish waves · infiltration tactics · creeping barrage cooperation · heavy MG last stop line etc.).
+  - **Equipment**: unlock equipment such as light mortars · armored car operation · Type 3 introduction (linked to the equipment management tab).
 
 ## 5. UI
-종이 질감 (사용자 "제안대로"): 홈 = 사령관 책상 (작전 지도 + 서류철 색인 탭, 전보 · 쪽지 · 임명장 직인), 전투 HUD = 야전 수첩 띠 · 인사 카드 · 전보 띠 알림 (질감 약하게). 9-slice 종이 텍스처 + 잡음, 명조 제목 · 타자기체 수치 (OFL 한글 글꼴). 먼저 시안 1장.
+Paper texture (user "as proposed"): home = commander's desk (operations map + file-index tabs, telegrams · notes · appointment-letter seals), combat HUD = field notebook strip · personnel card · telegram strip alerts (weak texture). 9-slice paper texture + noise, Myeongjo titles · typewriter-face numbers (OFL Korean font). First one mockup.
 
-## 6. 편의 (사용자 승인)
-- **자동 편성 · 보충 버튼** (편제 틀대로 자동 편성, 부족분 자동 보충, 보충 우선순위).
-- **보급 계산 미리보기** (투입 · 치료 · 신병 배치 · 연구 전에 남는 양 표시).
-- **참모 조언** (작전 참모 쪽지: 보급 부족 · 피로 · 심기 경고 등).
-- **난이도** (본국 보급 · 신병 수 배수).
-- 부대 이름 · 계보 = 로드맵.
+## 6. Conveniences (user approved)
+- **Auto organization · replenishment button** (auto-organize by the organization framework, auto-replenish shortfalls, replenishment priority).
+- **Supply calculation preview** (shows the remaining amount before deployment · treatment · recruit placement · research).
+- **Staff advice** (operations staff notes: supply shortage · fatigue · mood warnings etc.).
+- **Difficulty** (homeland supply · recruit count multiplier).
+- Unit name · lineage = roadmap.
 
-## 7. 부조리 — 황손 부사단장 · 본국 총사령관 (사용자 2026-10-21, 작품 핵심 축)
-- 사용자 원문: "이 작품의 핵심 중 하나는, 부조리함이다. 주인공은 크게 2개 인물에게 시달린다. 하나는 부사단장으로 임명된 황손 (황자에서 황손으로 변경), 다른 하나는 본국의 총사령관이다. 본국에 연락할 때는 총사령관을 경유. 부사단장은 주기적으로 주인공의 결정이 자신의 방향에 어긋난다면 훈수를 둔다. 심기가 많이 불편하다면 신병이 적어지거나 보급이 적어지는 등의 문제."
-- **세계관 변경: 황자 이태 → 황손** (기존 설정 'N26 황자 이태 = 고종의 아들' 수정 필요).
-- 본국 탭 = 모든 요청 · 보고가 **총사령관 경유** (지연 · 왜곡 · 공적 가로채기 · 정치적 명령 가능).
-- 황손 = **심기** 수치 (Claude 제안: 직접 숫자 대신 참모 쪽지 · 표정 · 대사로 간접 표시). 그의 '방향' (선호) 에 어긋난 결정마다 훈수 이벤트, 심기 낮으면 신병 · 보급 감소.
-- **확정 (사용자 2026-10-21)**: 황손 = **체면 · 과시 · 편애 셋 다, 특히 과시욕이 상당**, **시위대 편애**. 대응 선택지 · 불이익 상한 · 황손↔총사령관 충돌 = 승인. **총사령관 민 대장** = 공격적, 주인공에게 출혈을 강요하는 결정을 자주 내림, 부하의 죽음에 무관심.
-- **군단장 황자 이석 (부장)** (사용자 추가): 온화하지만 지나치게 수비적, 군사적으로 무능 — 황손 (공격 · 과시) 과 대비. 지휘 계통 = 사단 (김 참장) → 군단 (이석) → 총사령관 (민 대장). **황손 이태 = 이석의 조카**. **본국 연락 = 군단 경유** (총사령관에게 바로 보고하는 경우의 수도 있음 — 군단을 건너뛰는 대가/위험은 설계 시 정함). **11사단장 남 참장과의 연락** 추가 (17사단과 함께 핵심 북벌 부대 — 본국 탭 또는 별도 '인접 부대' 연락).
-- Claude 제안 (나머지 확인 대기): 선호 목록 정의 · 대응 선택지 (따름 · 설득 · 타협 · 무시 · 공적 양보) · 불이익 상한 (예 신병/보급 −20~30%, 게임 오버 없음) · 달래면 이득 (황실 하사품 · 증원) · 두 인물의 이해가 서로 충돌하는 사건.
+## 7. Absurdity — imperial grandson deputy division commander · homeland supreme commander (user 2026-10-21, the core axis of the work)
+- User's original: "One of the cores of this work is absurdity. The protagonist is tormented mainly by 2 people. One is the imperial grandson appointed deputy division commander (changed from imperial son to imperial grandson), the other is the supreme commander in the homeland. When contacting the homeland go via the supreme commander. The deputy division commander periodically meddles if the protagonist's decision runs against his direction. If his mood is greatly displeased, problems such as fewer recruits or less supply." (original Korean quote kept in the Korean-language history of this document)
+- **Worldbuilding change: imperial son 이태 → imperial grandson** (the existing setting 'N26 imperial son 이태 = Gojong's son' needs revision).
+- Homeland tab = all requests · reports **go via the supreme commander** (delay · distortion · credit-taking · political orders possible).
+- Imperial grandson = **mood** value (Claude proposal: show indirectly through staff notes · expressions · dialogue instead of a direct number). Meddling event for each decision against his 'direction' (preference), low mood reduces recruits · supplies.
+- **Confirmed (user 2026-10-21)**: imperial grandson = **face · display · favoritism all three, especially considerable craving for display**, **favors the 시위대**. Response choices · penalty cap · imperial grandson ↔ supreme commander conflict = approved. **Supreme commander General 민** = aggressive, often makes decisions forcing the protagonist to bleed, indifferent to subordinates' deaths.
+- **Corps commander imperial son 이석 (deputy)** (user addition): gentle but excessively defensive, militarily incompetent — contrast with the imperial grandson (offense · display). Chain of command = division (김 참장) → corps (이석) → supreme commander (General 민). **Imperial grandson 이태 = 이석's nephew**. **Homeland contact = via the corps** (a case of reporting directly to the supreme commander also exists — the cost/risk of skipping the corps is decided at design). Added **contact with 11th Division commander 남 참장** (a key northern expedition unit together with the 17th Division — in the homeland tab or a separate 'adjacent unit' contact).
+- Claude proposal (the rest awaiting confirmation): definition of the preference list · response choices (follow · persuade · compromise · ignore · cede credit) · penalty cap (e.g. recruits/supplies −20~30%, no game over) · gains from placating (imperial gifts · reinforcements) · events where the interests of the two people conflict.
 
-## 8. 인물 (사용자 2026-10-21)
-- 김 참장 (주인공, 17사단장) · **사단 참모장 김주현 = 주인공의 친동생** (참모 조언 쪽지의 목소리) · 부사단장 황손 이태 (이석의 조카) · **시위대장** (황손 측근, 출세욕, 시위대 편애의 실무자) · 군단장 황자 이석 (부장) · 총사령관 민 대장 · 11사단장 남 참장 (친우, 독일 학파, 1차대전 때 주인공의 상관).
-- 로드맵 (추후): 연대장 3~4명 (학파 · 성격 다양) · 본국 병참감 · 원수부 감찰관 · 부사관 대표.
+## 8. Characters (user 2026-10-21)
+- 김 참장 (protagonist, 17th Division commander) · **division chief of staff 김주현 = the protagonist's own younger brother** (voice of the staff advice notes) · deputy division commander imperial grandson 이태 (이석's nephew) · **guard unit commander (시위대장)** (imperial grandson's aide, ambitious, the practitioner of favoritism toward the 시위대) · corps commander imperial son 이석 (deputy) · supreme commander General 민 · 11th Division commander 남 참장 (close friend, German school, the protagonist's superior in WWI).
+- Roadmap (later): 3~4 regiment commanders (various schools · personalities) · homeland quartermaster general · Wonsubu inspector · NCO representative.
 
-## 9. 진격로 · 일본 (사용자 2026-10-21, 초안)
-- 진격로 (사용자 제안, 당대 명칭): 압록강 (안동 安東) → **안산 (鞍山)** → **봉천 (奉天)** → **장춘 (長春)** → **하얼빈 (哈爾濱)**. 안산 → 봉천 = 관동군과 교전, 장춘 → 하얼빈 = 러시아 계열 세력 본격 등장. 장춘 = 남만주철도 / 동청철도 경계 (일본 장춘역 · 러시아 관성자역).
-- **경로 확정 (사용자: "안동->안산 루트는 너가 적당히 정해봐. 중간 거점으로는 요양")**: 압록강 도하 (안동) → **봉황성 (鳳凰城)** (안봉선 따라 북상, 마적 · 봉천 지방군) → 수암 (岫巖) 산길로 서진 → **안산** (남만주철도 본선, 관동군 부속지 국지 충돌) → **요양 (遼陽)** (중간 거점) → **봉천** → 장춘 → 하얼빈.
-- **챕터 구성 (사용자 2026-10-21 확정)**: 챕터 0 = 튜토리얼 (압록강변 마적전). **챕터 1 = 압록강 도하 (안동) → 봉황성 → 수암 → 안산 → 요양 남쪽까지** (안동 토벌에 여러 과정, 안산 = 관동군 1차 국지 충돌). **챕터 2 = 요양 → 봉천 토벌 → 장작림 세력 말소** — 장작림이 나름대로 저항, **관동군 2차 개입으로 장작림 + 관동군 양면 공격**. 챕터 3 = 장춘 → 하얼빈 (러시아 계열). 그 뒤 일본 전면전.
-- **승인 (사용자 "승인한다. 지금 안 대로 간다")** + **관동군 개입 = 관동군의 폭주** (도쿄 정부 승인 없는 현지군 독단 — 사용자). **일본군의 한반도 상륙 = 더 추후** (전면전 단계). 세부: 관동군 2차 개입은 '철도 보호' 명분의 제한 개입 (부속지 수비대 · 독립수비대, 정규 사단 아님) 이라 전면전 복선 유지 · 양면 = 북쪽 장작림 전선 + 남서쪽 철도 부속지 (안산 · 요양) 에서 보급선 위협 → 캠페인 홈에서 대대를 두 전선에 나눠 배치 (보급 한도 압박) · 부조리: 본국 '일본군에 먼저 쏘지 말 것' vs 민 대장 '봉천 즉시 점령' vs 이석 '정지' vs 황손 '봉천 입성 과시' · 챕터 2 끝 = 봉천 함락 + 장작림 말소 + 관동군과 임시 정전.
-- **챕터 1 = 에피소드 6개** (사용자): 에피소드 = 큰 교전 1개 + 중형 작전 1~2개 + 소형 작전 2~4개 — **처음에는 하한 (중형 1 · 소형 2)**, **지도 적극 재사용** (중·소형 = 큰 교전 지도의 일부 구역) (사용자). **소형 작전 틀** (마적 토벌 · 호송 · 정찰 · 거점 · 철도 차단) + **선택 소형 작전** 넣음 (사용자). 큰 교전 (초안): ① 압록강 도하 (안동 맞은편) ② 안동 시가 소탕 ③ 구련성 고지 ④ 봉황성 공략 ⑤ 안산 (관동군 1차 국지 충돌) ⑥ 요양 남방 진지 돌파. **수암 산길은 큰 교전에서 뺌** (중·소형 작전 후보).
-- **장작림 세력 말소 = 챕터 2** (사용자). 인물: 장작림 + **휘하 고위 장군만 실존 인물**, 그 아래는 가상 (사용자 "높은 급만 실존 인물로").
-- **기존 두만강 미션 (c1_01 회령 · c1_02 두만강 도하) = WIP 미션으로 보관** (사용자) — 캠페인 순서에서 빼고 파일은 유지.
-- **관동군 = 초반에는 국지 충돌** (철도 부속지 경계 분쟁). **일본과의 전면전 = 북벌 완료 뒤** (사용자 방향).
-- Claude 제안 (확인 대기): 초반 교전 규칙 제약 (부속지 진입 · 철도 포격 금지, 일본군 사상자 → 외교 불이익) = 확전을 두려워하는 본국 · 총사령관 ↔ 출혈을 강요하는 민 대장 의 부조리 · 일본의 그림자 (마적 · 봉천 지원, 관동군 도발 · 공작) 를 북벌 내내 깔아 두고 하얼빈 이후 전면전의 복선으로.
+## 9. Advance route · Japan (user 2026-10-21, draft)
+- Advance route (user proposal, contemporary names): Yalu River (Andong 安東) → **안산 (鞍山)** → **봉천 (奉天)** → **장춘 (長春)** → **하얼빈 (哈爾濱)**. 안산 → 봉천 = engagement with the Kwantung Army, 장춘 → 하얼빈 = Russian-affiliated forces appear in earnest. 장춘 = boundary of the South Manchuria Railway / Chinese Eastern Railway (Japanese 장춘 station · Russian Kuancheng-tzu station).
+- **Route confirmed (user: "work out the Andong->안산 route as you see fit. Yoyang as the intermediate base")**: Yalu River crossing (Andong) → **봉황성 (鳳凰城)** (north along the Andong-Mukden line, bandits · Fengtian local army) → west along the 수암 (岫巖) mountain road → **안산** (South Manchuria Railway main line, local clashes at the Kwantung Army railway zone) → **요양 (遼陽)** (intermediate base) → **봉천** → 장춘 → 하얼빈.
+- **Chapter composition (user confirmed 2026-10-21)**: chapter 0 = tutorial (Yalu riverside bandit battle). **Chapter 1 = Yalu River crossing (Andong) → 봉황성 → 수암 → 안산 → to south of 요양** (many steps in the Andong suppression, 안산 = first local clash with the Kwantung Army). **Chapter 2 = 요양 → 봉천 suppression → erasing 장작림's faction** — 장작림 resists in his own way, **second Kwantung Army intervention gives a two-front attack from 장작림 + the Kwantung Army**. Chapter 3 = 장춘 → 하얼빈 (Russian-affiliated). Afterward full war with Japan.
+- **Approved (user "approved. We go with the current plan")** + **Kwantung Army intervention = a runaway of the Kwantung Army** (independent action by the local army without Tokyo government approval — user). **Japanese landing on the Korean peninsula = much later** (full-war stage). Details: the second Kwantung Army intervention is a limited intervention on the pretext of 'railway protection' (railway zone garrison · independent garrison, not a regular division) so the foreshadowing of full war is kept · two fronts = northern 장작림 front + the supply line threatened at the southwest railway zone (안산 · 요양) → in the campaign home, battalions are split between two fronts (pressure on the supply limit) · absurdity: homeland 'do not fire first on the Japanese' vs General 민 'occupy 봉천 immediately' vs 이석 'halt' vs imperial grandson 'show off by entering 봉천' · end of chapter 2 = 봉천 falls + 장작림 erased + temporary ceasefire with the Kwantung Army.
+- **Chapter 1 = 6 episodes** (user): episode = 1 large engagement + 1~2 medium operations + 2~4 small operations — **at first the lower bound (medium 1 · small 2)**, **reuse maps actively** (medium·small = parts of the large engagement map) (user). **Small operation frameworks** (bandit suppression · escort · reconnaissance · stronghold · railway cutting) + **optional small operations** included (user). Large engagements (draft): ① Yalu River crossing (opposite Andong) ② Andong urban mop-up ③ 구련성 highland ④ 봉황성 assault ⑤ 안산 (first local clash with the Kwantung Army) ⑥ 요양 southern position breakthrough. **The 수암 mountain road is removed from large engagements** (medium·small operation candidate).
+- **Erasing 장작림's faction = chapter 2** (user). Characters: 장작림 + **only his senior generals are real people**, below that fictional (user "only high ranks as real people").
+- **Existing Tumen missions (c1_01 회령 · c1_02 두만강 crossing) = kept as WIP missions** (user) — removed from the campaign order, files kept.
+- **Kwantung Army = local clashes in the early stage** (railway zone boundary disputes). **Full war with Japan = after the northern expedition is complete** (user direction).
+- Claude proposal (awaiting confirmation): early-engagement rule constraints (no entering the railway zone · no shelling the railway, Japanese casualties → diplomatic penalty) = the absurdity of the homeland · supreme commander fearing escalation ↔ General 민 forcing bleeding · lay Japan's shadow (bandit · Fengtian support, Kwantung Army provocation · scheming) throughout the northern expedition and use it as foreshadowing of full war after 하얼빈.
 
-## 10. 북벌군 규모 (사용자 2026-10-21)
-- **초기 북벌군 = 4개 사단** (주공 11사단 남 참장 · 17사단 주인공, 나머지 2개 = 측면 · 후방 · 철도 경비 — 이석 군단장 배치 판단). **추후 4개 사단 증파** — **증파 군단은 주인공과 진격 방향이 다름** (사용자).
-- 근거 (Gemini 웹 검색, 추정): 봉천군 1920 동삼성 약 10~15만 (1922 직봉전쟁 약 12만 입관), 관동군 1919~21 약 1~1.4만 (교대 사단 7~8.5천 + 독립수비대 6개 대대 4~5.5천, 조약상 1.5만 상한), 당시 사단 명목 1~1.25만 · 실제 7천~1.1만.
-- 표현: 봉천군 = 많지만 엉성 (지방 부대 · 대도병 비중 높음, 정예 = 장작림 직속 위대 일부), 관동군 = 적지만 강함. 부족한 병력 = 본국 · 민 대장 부조리.
-- **인물 설정 원문 = `docs/CHARACTERS.md`** (사용자 초안 2026-10-21: 김 참장 · 황손 이태 李鈦 · 황자 이석 李墿 · 민 대장 · 김주현). 이 절과 다르면 CHARACTERS.md 가 우선.
+## 10. Northern expedition force size (user 2026-10-21)
+- **Initial northern expedition force = 4 divisions** (main effort 11th Division 남 참장 · 17th Division protagonist, the other 2 = flank · rear · railway guard — corps commander 이석's deployment judgment). **4 more divisions reinforce later** — **the reinforcement corps advances in a different direction from the protagonist** (user).
+- Basis (Gemini web search, estimate): Fengtian army 1920 Three Eastern Provinces about 100,000~150,000 (1922 Zhili-Fengtian War about 120,000 entered the Pass), Kwantung Army 1919~21 about 10,000~14,000 (rotating divisions 7,000~8,500 + 6 independent garrison battalions 4,000~5,500, treaty cap 15,000), divisions of the time nominally 10,000~12,500 · actually 7,000~11,000.
+- Expression: Fengtian army = many but shabby (local units · high share of large-blade troops, elite = part of 장작림's direct guard), Kwantung Army = few but strong. The shortage of forces = homeland · General 민 absurdity.
+- **Original character settings = `docs/CHARACTERS.md`** (user draft 2026-10-21: 김 참장 · imperial grandson 이태 李鈦 · imperial son 이석 李墿 · General 민 · 김주현). If it differs from this section CHARACTERS.md takes precedence.
 
 ---
-# 11. 탭별 명세 (v0.3 추가 — 데이터 · 화면 · 기존 시스템 연결)
-> 새 기능을 만들지 않는다. §1~10 과 `ROADMAP_LONG.md` 에 이미 있는 항목만 탭에 배치한다. 현황: `wip/gemini-import` = 요약 · 부대 · 병참 · 지도 · 이벤트(본국) 5탭 MVP 가 이미 있음 (§13). "후속" = MVP 범위 밖 (`CAMPAIGN_MVP_SPEC.md` §1 OUT).
-| # | 탭 | 데이터 (CampaignState) | 화면 요소 | 연결되는 기존 시스템 | 단계 |
+# 11. Per-tab specification (v0.3 addition — data · screen · connection to existing systems)
+> No new features are created. Only items already in §1~10 and `ROADMAP_LONG.md` are placed in tabs. Status: `wip/gemini-import` already has a 5-tab MVP of summary · units · logistics · map · events (homeland) (§13). "Follow-up" = outside the MVP scope (`CAMPAIGN_MVP_SPEC.md` §1 OUT).
+| # | Tab | Data (CampaignState) | Screen elements | Connected existing systems | Stage |
 |---|---|---|---|---|---|
-| 1 | 사단 상태 요약 (규칙 15) | Manpower · Supply · Stock · Roster 합계, Flags(심기 · 신임 = 숨은 값), 사기 · 피로(후속), 다음 작전 | 일일 보고서 형식 한 장: 병력 · 장비 충족률 · 보급품 · 다음 작전 | `CampaignMenu` Summary | MVP |
-| 2 | 신병 · 부대 관리 | Roster(대대 → 중대 `RosterCompany`), 신병 풀 ≤7,000, 연대 배속(≤9) | 대대 목록 · 중대 빼기/더하기 · 신병 배치 버튼 | 규칙 9 (숫자 = 연대, Alt+숫자 = 대대) 와 같은 연대 번호 · `AssignRecruits` | 대대 단위 MVP, **연대 배속 UI 는 MVP 포함 (Q9 승인)** |
-| 3 | 편제 관리 | 분대 · 중대 편제 틀 (소대 · 여단 없음) | 편제 틀 편집 · 자동 편성 버튼(§6) | 미션 JSON 중대 구성 | 후속 |
-| 4 | 병참 | Supply · Stock(소총 · 탄약 5종 · 포탄 3종 · 중화기 · 말) · 부상자 | 재고표 · 치료 · 보급 계산 미리보기(§6) | `CampaignEconomy.HealWounded` · `BeginOperation` | MVP |
-| 5 | 장비 관리 (규칙 12) | 도입 · 개량 상태(데이터 모델 미정) | 장비 개량 · 도입 목록 | 연구 탭(§4) 해금 연결 | 후속 |
-| 6 | 훈련 (규칙 10) | 대대 숙련 등급(신병 → 정규 → 노병), 대가 = 시간 · 탄약 | 대대별 숙련 · 훈련 지시 | 전투 효과 연결 = **장기 검토(MVP 제외, 사용자 2026-10-22 Q4)** — 숙련 등급 표시 · 기록까지만 | 후속 |
-| 7 | 가벼운 외교 | 자금 · 용병 고용 · 포로(규칙 13) | 선택지 · 대민 지원 · 용병 · 포로 처리(송환 · 수용 · 편입) | 노획 정산의 포로 집계 | 후속 |
-| 8 | 참모진 | 작전 참모 · 연대장 · 협력 세력 리더 + 학파(`doctrines.json`) | 인물 카드(학파 · 성격), 참모 조언 쪽지(김주현) | `wip/doctrines` (§13) | 후속 |
-| 9 | 진급 · 군령권 | 진급 후보(전과 보고에서 산출), 군령권 | 진급 후보 목록 | 이월 `Units`/`Officers` 계급 | 후속 |
-| 10 | 작전 지도 | 클리어 미션 · 다음 작전 후보(분기) · 거점 | 만주 전선 지도, 후보 선택 | `CampaignState` Chain · 챕터 구성 §9 | 목록 MVP, 지도 후속 |
-| 11 | 정보(첩보) | 적 병력 추정 · 정찰 보고 | 보고서 목록 | 미션 브리핑 | 후속 |
-| 12 | 부대 기록 | `MissionRecord` · 전사자 명부 · 훈장 | 부대 일지 | `MissionRecord`(WIP 에 있음) | 일지 MVP, 명부 · 훈장 후속 |
-| 13 | 본국 | 이벤트(`campaign_events.json`), `heir_mood` · `cmd_favor` | 전보 · 쪽지 + 선택지, 총사령관 · 군단 경유(§7) | `CampaignEvents` | MVP |
-| 14 | 일정 · 이벤트 기록 (규칙 14) | 이벤트 이력, 명령 기한 | 연표 | 시간 · 계절 규칙 확정 전에는 이력만 | 이력 MVP |
-| 15 | 연구 (§4) | 진행 중 연구 1개, 완료 목록 | 세 갈래 목록 | 학파 연결(§12) | 후속 |
+| 1 | Division status summary (rule 15) | Manpower · Supply · Stock · Roster totals, Flags (mood · trust = hidden values), morale · fatigue (follow-up), next operation | One page in daily report format: force · equipment fulfillment rate · supplies · next operation | `CampaignMenu` Summary | MVP |
+| 2 | Recruits · unit management | Roster (battalion → company `RosterCompany`), recruit pool ≤7,000, regiment assignment (≤9) | Battalion list · remove/add companies · recruit placement button | Same regiment numbering as rule 9 (number = regiment, Alt+number = battalion) · `AssignRecruits` | Battalion-level MVP, **regiment assignment UI included in MVP (Q9 approved)** |
+| 3 | Organization management | Squad · company organization frameworks (no platoon · brigade) | Framework editing · auto organization button (§6) | Mission JSON company composition | Follow-up |
+| 4 | Logistics | Supply · Stock (rifles · ammo 5 types · shells 3 types · heavy weapons · horses) · wounded | Stock table · treatment · supply calculation preview (§6) | `CampaignEconomy.HealWounded` · `BeginOperation` | MVP |
+| 5 | Equipment management (rule 12) | Introduction · improvement state (data model undecided) | Equipment improvement · introduction list | Research tab (§4) unlock link | Follow-up |
+| 6 | Training (rule 10) | Battalion proficiency level (recruit → regular → veteran), cost = time · ammo | Per-battalion proficiency · training orders | Link to combat effects = **long-term review (excluded from MVP, user 2026-10-22 Q4)** — only proficiency display · record | Follow-up |
+| 7 | Light diplomacy | Funds · mercenary hiring · prisoners (rule 13) | Options · civilian aid · mercenaries · prisoner handling (repatriation · internment · incorporation) | Prisoner count of loot settlement | Follow-up |
+| 8 | Staff | Operations staff · regiment commanders · cooperating faction leaders + school (`doctrines.json`) | Character cards (school · personality), staff advice notes (김주현) | `wip/doctrines` (§13) | Follow-up |
+| 9 | Promotion · command authority | Promotion candidates (computed from the results report), command authority | Promotion candidate list | Carried-over `Units`/`Officers` ranks | Follow-up |
+| 10 | Operations map | Cleared missions · next operation candidates (branch) · strongholds | Manchurian front map, candidate selection | `CampaignState` Chain · chapter composition §9 | List MVP, map follow-up |
+| 11 | Intelligence (espionage) | Enemy force estimates · reconnaissance reports | Report list | Mission briefing | Follow-up |
+| 12 | Unit records | `MissionRecord` · casualty roll · medals | Unit log | `MissionRecord` (in WIP) | Log MVP, roll · medals follow-up |
+| 13 | Homeland | Events (`campaign_events.json`), `heir_mood` · `cmd_favor` | Telegrams · notes + choices, routing via supreme commander · corps (§7) | `CampaignEvents` | MVP |
+| 14 | Schedule · event record (rule 14) | Event history, order deadlines | Timeline | Only history until time · season rules are confirmed | History MVP |
+| 15 | Research (§4) | 1 research in progress, completed list | Three-branch list | School link (§12) | Follow-up |
 
-## 11-1. 3개 화면 배치 (사용자 2026-10-22 Q1: 중앙 9 + 좌 3 + 우 3 = 15탭) — 배치는 **Claude 제안, 사용자 검토 대기**
-| 화면 | 탭 | 근거 |
+## 11-1. Placement on 3 screens (user 2026-10-22 Q1: center 9 + left 3 + right 3 = 15 tabs) — placement is a **Claude proposal, awaiting user review**
+| Screen | Tabs | Basis |
 |---|---|---|
-| **중앙 9** (작전 사이클마다 조작) | 1 사단 상태 요약 · 2 신병 · 부대 관리 · 3 편제 관리 · 4 병참 · 5 장비 관리 · 6 훈련 · 10 작전 지도 · 13 본국 · 15 연구 → 위 목록에서 **연구(15)와 장비(5)는 연결 탭**이라 함께 둠 | 편성 · 보급 · 출격 준비 · 본국 명령 등 매 작전 전후에 쓰는 조작 탭을 중앙에 모음 |
-| **좌 3** (기록 · 정보, 읽기 위주) | 11 정보 · 12 부대 기록 · 14 일정 · 이벤트 기록 | 보고 · 이력 열람이 중심이라 보조 화면에 적합 |
-| **우 3** (인물 · 정치) | 7 가벼운 외교 · 8 참모진 · 9 진급 · 군령권 | 인물 · 세력과 관계된 탭끼리 묶음 |
-- 중앙은 번호순 1 · 2 · 3 · 4 · 5 · 6 · 10 · 13 · 15 = 정확히 9개, 좌 11 · 12 · 14, 우 7 · 8 · 9 (합 15, 중복 없음).
-- 본국(13)은 정치 성격이지만 매 작전 선택지가 오는 MVP 탭이라 중앙에 둠. 이견이 있으면 본국 ↔ 진급 · 군령권(9) 교환이 가장 작은 변경.
-- 구현 단계: MVP 5탭(1 · 2 · 4 · 10 · 13)은 모두 중앙 → **좌 · 우 화면은 후속 탭 추가 때 열면 됨** (T09/T19 영향은 §14).
+| **Center 9** (operated every operation cycle) | 1 Division status summary · 2 Recruits · unit management · 3 Organization management · 4 Logistics · 5 Equipment management · 6 Training · 10 Operations map · 13 Homeland · 15 Research → in the list above **research (15) and equipment (5) are linked tabs** so they are placed together | Gathers the controls used before/after every operation, such as organization · supply · sortie preparation · homeland orders, in the center |
+| **Left 3** (records · information, mostly reading) | 11 Intelligence · 12 Unit records · 14 Schedule · event record | Centered on viewing reports · history so suitable for a secondary screen |
+| **Right 3** (people · politics) | 7 Light diplomacy · 8 Staff · 9 Promotion · command authority | Groups tabs related to people · factions |
+- The center in number order is 1 · 2 · 3 · 4 · 5 · 6 · 10 · 13 · 15 = exactly 9, left 11 · 12 · 14, right 7 · 8 · 9 (total 15, no duplicates).
+- Homeland (13) is political in nature but is an MVP tab where choices come every operation, so it is placed in the center. If there is an objection, swapping homeland ↔ promotion · command authority (9) is the smallest change.
+- Implementation stages: the MVP 5 tabs (1 · 2 · 4 · 10 · 13) are all in the center → **the left · right screens can be opened when follow-up tabs are added** (effect on T09/T19 in §14).
 
-# 12. 규칙 결정 1~15 대응표 (`ROADMAP_LONG.md` "캠페인 규칙 결정", 사용자 2026-10-21)
-| 규칙 | 내용 | 설계 위치 |
+# 12. Correspondence table for rule decisions 1~15 (`ROADMAP_LONG.md` "campaign rule decisions", user 2026-10-21)
+| Rule | Content | Design location |
 |---|---|---|
-| 1 | 예산 없음 · 보급품 한계 | §1, §1-1 (WIP `TotalDeployCost`) |
-| 2 | 노획 | §1-3 (WIP `DebriefReport.Looted*`) |
-| 3 | 사상자 25% 부상 복귀 · 치료 보급품 | §1-2 (WIP `HealWounded`) |
-| 4 | 한국 · 봉천 색 | 캠페인 홈과 무관 (아트 작업, 이 문서 범위 밖) |
-| 5 | 사단 최대 1만 | §0 (편성 기준, 신병 풀 7,000) |
-| 6 | 패배: 대규모 재도전 / 소형 분기 (+ 중형 재도전, §0) | 탭 10 · 작전 후 화면(§3). 분기 저장 방식은 §15 (자동 저장 · 슬롯 9개로 해소, 분기 기록 구조는 구현 때 결정) |
-| 7 | 시간 · 계절 추후 | 탭 14 (이력만) |
-| 8 | 저장 슬롯 | §0. 슬롯 9개 + 자동 저장 (사용자 2026-10-22), 슬롯 UI 는 홈 상단 메뉴 |
-| 9 | 연대 숫자키, Alt+숫자 = 대대 | 탭 2. 구현은 별 작업 (ROADMAP_SHORT '전투 중 연대 선택') |
-| 10 | 훈련 | 탭 6 |
-| 11 | 사기 · 피로 | 공통 상태(§2), MVP 제외 |
-| 12 | 장비 개량 · 도입 = 장비 관리 탭 | 탭 5 |
-| 13 | 포로 처리 | 탭 7 |
-| 14 | 일정 · 이벤트 기록 | 탭 14 |
-| 15 | 사단 상태 요약 홈 첫 화면 | 탭 1 |
-- 부가 규칙: 신병 수급 = 본국 지원만(작전마다 보충) · 자금 = 외교 · 용병 · 연구 전용 · 용병식 유닛(코사크 · 간도 의용병)은 외교 탭에서 고용.
+| 1 | No budget · supply limit | §1, §1-1 (WIP `TotalDeployCost`) |
+| 2 | Loot | §1-3 (WIP `DebriefReport.Looted*`) |
+| 3 | 25% of casualties return wounded · treatment supplies | §1-2 (WIP `HealWounded`) |
+| 4 | Korea · Fengtian color | Unrelated to the campaign home (art work, outside this document's scope) |
+| 5 | Division max 10,000 | §0 (organization basis, recruit pool 7,000) |
+| 6 | Defeat: large-scale retry / small branch (+ medium retry, §0) | Tab 10 · post-operation screen (§3). Branch save method is §15 (resolved by autosave · 9 slots, branch record structure decided at implementation) |
+| 7 | Time · season later | Tab 14 (history only) |
+| 8 | Save slots | §0. 9 slots + autosave (user 2026-10-22), slot UI in the home top menu |
+| 9 | Regiment number keys, Alt+number = battalion | Tab 2. Implementation is separate work (ROADMAP_SHORT 'regiment selection in combat') |
+| 10 | Training | Tab 6 |
+| 11 | Morale · fatigue | Common state (§2), excluded from MVP |
+| 12 | Equipment improvement · introduction = equipment management tab | Tab 5 |
+| 13 | Prisoner handling | Tab 7 |
+| 14 | Schedule · event record | Tab 14 |
+| 15 | Division status summary home first screen | Tab 1 |
+- Additional rules: recruit supply = homeland support only (replenished every operation) · funds = for diplomacy · mercenaries · research only · mercenary-style units (Cossacks · Gando volunteers) are hired in the diplomacy tab.
 
-# 13. 진행 중 브랜치와의 정합 (읽기 전용 확인: 2026-10-22, 두 브랜치는 건드리지 않음)
-## 13-1. `wip/gemini-import` (패치 `wip-patches/gemini-import.patch`, T01 이 복원 중)
-- 이미 구현된 것: `CampaignState` v2(`Manpower` · `Supply` · `Stock` · `Roster` · `Flags` · `Seed` · `Pending` · `LastDebrief` · `MissionRecord`), `CampaignEconomy`(비용 표 §1-1 과 동일 · 치료 0.5 · 신병 배치 0.5 + 소총 1 · 작전 개시 · 심기/신임 페널티 합산 상한 30%), `CampaignEvents` + `campaign_events.json`(이벤트 5개: 시위대 전진 · 공적 가로채기 · 출혈 강요 · 황손 훈수 · 군단장 만류), `CampaignCarry.Patch` 의 출격 편성 · `ammoScale` 반영, `CampaignMenu` 5탭(요약 · 부대 · 병참 · 지도 · 이벤트), `CodexMenu`.
-- 이 설계와의 차이 · 확인 필요: (a) 탄약 적재는 `ru` 한 종만 기준 — §1 의 구경별 5종은 **MVP 부터 반영 (Q5 승인)** → T19 에서 구현. (b) 포탄 재고 · 중화기는 필드만 있고 소모 규칙 없음 → 포탄은 §1-4 규칙 (Q6) 으로 구현. (c) 이벤트 효과 수치(심기 ±5~15, 보급 ±50~300) = WIP 초안을 **승인 (Q7)**, `cmd_favor` 숨은 값 구조 **승인 (Q8)**. (d) 탭 이름 `Events` = 이 문서의 '본국' 탭(§2-13). (e) 캠페인 저장은 시뮬 상태가 아니나 `CampaignCarry.Patch` 가 미션 텍스트를 바꾸므로 스냅샷 · 결정성 확인 필요(MVP 명세 §2) — T19 에서 `--snaptest` · `--detcheck`.
-## 13-2. `wip/doctrines` (`assets/data/doctrines.json`, `src/Core/Doctrines.cs`, 읽기 전용 자료 · 시뮬 미사용)
-- 학파 5개(독일 · 불란서 · 노서아 · 평양 · 북경) + 적 세력별 성향. 각 학파에 `research`(연구 연결)와 `figures`(인물) 필드가 있음 → 참모진 탭(8)은 `figures` 를, 연구 탭(15)은 `research` 를 그대로 읽는다. AI 경향 수치(`axes`)는 null — 이 설계는 수치를 만들지 않는다.
-- 규칙: 홈 화면은 학파를 **표시 · 연구 비용/기간 보정의 근거**로만 쓴다. 전투 AI 에 적용하는 것은 별도 작업(ROADMAP_LONG '장교 학파').
-## 13-3. 파일 충돌 가능성
-- 둘 다 `Defs.cs` · `SelfTest.cs` 를 건드릴 수 있음 (doctrines 는 로더 등록 + 테스트 2줄, gemini-import 는 Defs.cs 변경 포함). T19 는 이 순서(gemini-import → doctrines)로 쌓는 것을 가정.
+# 13. Consistency with in-progress branches (read-only check: 2026-10-22, the two branches were not touched)
+## 13-1. `wip/gemini-import` (patch `wip-patches/gemini-import.patch`, being restored by T01)
+- Already implemented: `CampaignState` v2 (`Manpower` · `Supply` · `Stock` · `Roster` · `Flags` · `Seed` · `Pending` · `LastDebrief` · `MissionRecord`), `CampaignEconomy` (cost table same as §1-1 · treatment 0.5 · recruit placement 0.5 + 1 rifle · operation start · mood/trust penalty combined cap 30%), `CampaignEvents` + `campaign_events.json` (5 events: guard unit forward · taking credit · forced bleeding · the imperial grandson's meddling · corps commander's dissuasion), sortie organization · `ammoScale` reflection of `CampaignCarry.Patch`, `CampaignMenu` 5 tabs (summary · units · logistics · map · events), `CodexMenu`.
+- Differences from this design · needs confirmation: (a) ammo loading is based on only one type `ru` — the 5 per-caliber types of §1 are **reflected from the MVP (Q5 approved)** → implemented in T19. (b) shell stock · heavy weapons have only fields and no consumption rules → shells are implemented by the §1-4 rule (Q6). (c) event effect values (mood ±5~15, supplies ±50~300) = the WIP draft **approved (Q7)**, the `cmd_favor` hidden value structure **approved (Q8)**. (d) the tab name `Events` = the 'homeland' tab of this document (§2-13). (e) the campaign save is not sim state but `CampaignCarry.Patch` changes the mission text, so snapshot · determinism confirmation is needed (MVP spec §2) — `--snaptest` · `--detcheck` in T19.
+## 13-2. `wip/doctrines` (`assets/data/doctrines.json`, `src/Core/Doctrines.cs`, read-only data · not used by the sim)
+- 5 schools (German · French · Russian · Pyongyang · Beijing) + dispositions per enemy faction. Each school has `research` (research link) and `figures` (people) fields → the staff tab (8) reads `figures` and the research tab (15) reads `research` as is. The AI tendency values (`axes`) are null — this design does not create values.
+- Rule: the home screen uses schools **only for display · as the basis for research cost/duration adjustment**. Applying to the combat AI is separate work (ROADMAP_LONG 'officer school').
+## 13-3. Possible file conflicts
+- Both may touch `Defs.cs` · `SelfTest.cs` (doctrines: loader registration + 2 test lines, gemini-import includes a Defs.cs change). T19 assumes stacking in this order (gemini-import → doctrines).
 
-# 14. 구현 순서 제안 (T19 분할 근거, 승인 전 안)
-1. WIP MVP 복원(T01, 요약 · 부대 · 병참 · 지도 · 본국) → 2. 정산 · 저장 검증 → 3. 학파 데이터 연결(참모진 탭) → 4. 훈련 · 장비 · 외교 · 연구 탭 → 5. 종이 질감 스킨(시안 `docs/art_review/ui_paper_mock.png` 승인 뒤). 각 단계는 병합 가능 단위, 탭 추가는 `Tab` 열거형 + `StringsCampaign` 만 건드리도록 분리.
+# 14. Proposed implementation order (basis for the T19 split, plan before approval)
+1. WIP MVP restoration (T01, summary · units · logistics · map · homeland) → 2. settlement · save verification → 3. school data link (staff tab) → 4. training · equipment · diplomacy · research tabs → 5. paper texture skin (after approval of the mockup `docs/art_review/ui_paper_mock.png`). Each stage is a mergeable unit, tab additions are separated so they touch only the `Tab` enum + `StringsCampaign`.
 
-## 14-1. 사용자 답변(2026-10-22)이 T09 슬라이스 · T19 MVP 에 미치는 범위
-| 항목 | T09 (슬라이스: 0-1→0-2→1-1 한 사이클) | T19 (캠페인 홈 MVP) |
+## 14-1. Scope of the user answers (2026-10-22) for the T09 slice · T19 MVP
+| Item | T09 (slice: one cycle 0-1→0-2→1-1) | T19 (campaign home MVP) |
 |---|---|---|
-| 자동 저장 + 재시도 | **포함** (작전 직전 · 정산 직후 자동 저장, 실패 재시도; 저장 원자성이 T09 수용 기준) | 전체 시점 · 알림 UI |
-| 저장 슬롯 9개 | 슬롯 1개로 시작 가능 (구조는 9칸 호환) | **9개 + 슬롯 UI** |
-| 3화면 15탭 | 해당 없음 (탭 확장은 T09 범위 밖) | MVP 5탭은 중앙, 좌 · 우는 후속 탭과 함께 |
-| 구경별 탄약 5종 (Q5) | 슬라이스는 휴대 탄약 채움 · 차감 한 사이클 검증에 필요하면 `ru` 한 종으로 시작 가능 (확인 필요) | **MVP 포함** |
-| 포탄 규칙 (Q6) | 탄약과 같은 코드 한 벌, 포 없는 미션이면 미적용 | **MVP 포함** (노획 포탄 가산 포함) |
-| 훈련 효과 (Q4) | 해당 없음 | **MVP 제외**, 장기 검토 |
-| 이벤트 수치 (Q7) · cmd_favor (Q8) | T01 복원 값 그대로 | 그대로 사용 |
-| 연대 배속 UI (Q9) | 해당 없음 | **MVP 포함** |
-| 압록강 시작 · 1-1/1-2 재배치 (Q10) | 시작 지점 = 압록강 도하(1-1) | 반영 |
+| Autosave + retry | **Included** (autosave right before the operation · right after settlement, retry on failure; save atomicity is the T09 acceptance criterion) | Full timing · notification UI |
+| 9 save slots | May start with 1 slot (structure compatible with 9 cells) | **9 + slot UI** |
+| 3 screens 15 tabs | N/A (tab extension is outside T09 scope) | MVP 5 tabs in the center, left · right with follow-up tabs |
+| Per-caliber ammo 5 types (Q5) | The slice may start with one type `ru` if needed to verify one cycle of carried ammo fill · deduction (needs confirmation) | **Included in MVP** |
+| Shell rules (Q6) | One set of code same as ammo, not applied for missions without guns | **Included in MVP** (including looted shell addition) |
+| Training effect (Q4) | N/A | **Excluded from MVP**, long-term review |
+| Event values (Q7) · cmd_favor (Q8) | T01 restored values as is | Used as is |
+| Regiment assignment UI (Q9) | N/A | **Included in MVP** |
+| Yalu River start · 1-1/1-2 relocation (Q10) | Start point = Yalu River crossing (1-1) | Reflected |
 
-# 15. 남은 질문
-없음 — Q1~Q10 은 사용자가 2026-10-22 모두 답함 (`ops/DECISIONS.md` C2 정본). 아래는 답에서 나온 **Claude 제안 사항** (이견 시 사용자 검토):
-- §11-1 의 탭 15개 3화면 배치 (중앙 9 · 좌 3 · 우 3).
-- 자동 저장 시점(작전 직전 · 정산 직후)과 재시도 방식은 §3 의 제안값.
-- T09 에서 구경별 탄약을 `ru` 한 종으로 시작해도 되는지 (§14-1).
+# 15. Remaining questions
+None — Q1~Q10 were all answered by the user on 2026-10-22 (`ops/DECISIONS.md` C2 is canonical). Below are **Claude proposals** from the answers (user review if there are objections):
+- The 3-screen placement of the 15 tabs in §11-1 (center 9 · left 3 · right 3).
+- The autosave timing (right before the operation · right after settlement) and retry method are the proposed values of §3.
+- Whether T09 may start per-caliber ammo with one type `ru` (§14-1).

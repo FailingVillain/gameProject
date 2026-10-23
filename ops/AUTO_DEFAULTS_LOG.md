@@ -155,3 +155,10 @@ T33e: MapDoc.MaxDim=1500 mirror of Config.MaxMapSize (test-checked); synthetic b
 2026-10-22 | 장부 5차 반영(DECISIONS BM, D14·D18 재보고 묶음 1~8 추천안 일괄 승인 · BACKLOG D14·D18 해결 표시 · 표 F 발주 대기 6건 등재) · TW2 눈보라 유지 확정 정정(사용자 요청 기능, 106줄 낡은 "사용자 보류" 기록 정정) · 임의: 표 F 선행조건 배정(T57·RV·TF-C·색각 = bugfix-1 병합·N2/N3 후, 색각은 설정 패널 충돌 회피) · 이월 목록에 T10 N3 포함 · 등급은 사용자 지시 값 그대로 · 커밋 없음 | docs
 
 2026-10-23 | 사용자 명령: 0.3 승격 ("지금까지 올라간 작업들이 마무리되는 대로, 0.3 으로 올리자. clear 후 0.3에서 작업할 거임.") -> 태그 v0.3 = 2531ec16, 번들 2종 백업. 승격 스크립트 verify 단계 버그(git bundle verify 의 stderr 를 PowerShell 5.1 이 오류로 처리)로 중단, 수동 검증으로 대체.
+- 10-23 F1 HUD 목표 패널 높이 상한 = 뷰포트 45%(최소 54px), 에이전트 임의값
+- 10-23 T61d(kd/t61d-company-merge) 임의값: 병합 남는 중대 = 의무 중대 우선 > 병력 큰 쪽 > 명부 앞(Q-F 초안 '병력 큰 쪽' 적용) · 의무 중대끼리 병합 거부 · 외인 여부 같아야 병합 · 상급자 = 계급>경험치>키 작은 쪽 · 부상자 합산 UnhealedOps = 큰 값 · 병력 0 끼리 사기/피로 = 단순 평균
+- 10-23 T61d 임의값: 병합 제외 병종 = mg·heavy_maxim·heavy_machinegunner·infGun·heavy_infantry_gun·fieldGun·heavy_field_gun·howitzer·heavy_howitzer (Q-F '기관총·포', campaign_economy mergeExcludedKinds) · 연대 0(직할)도 같은 연대로 취급 · 제안 짝 = 큰 중대부터 합계 최대 짝(겹침 없음)
+- 10-23 T61d 임의값: 자동 배정(켜짐) 범위·순서 = 병합 제안 전부 실행 → 공석 중대(명부 순)에 상급 대기 장교 → 정원 미달 중대 신병 충원(§2.5(a) '신병 충원' 포함, 보급 남김 없음); 승리 정산 끝에서만; 기록 = 연표 Kind 'personnel' 1줄/정산 + 입고 로그 1줄(수동 조작은 기록 안 함); 설정 = Flags['personnel.autoAssign'] (저장 스키마 불변)
+- 10-23 T61d 임의값: 명부 탭 한 줄 UI = 병합 제안 요약 + [제안 모두 병합](확인 창 없음) + [자동 배정 켜짐/꺼짐] 토글; 제안별 선택·확인 창은 T61e3 보충 제안 화면 몫
+- 10-23 T61g-3 해석: 전멸 중대 부상자는 정산 미치료 전역 계수에서 제외(보존), 해체·신편 때 사단 부상자 풀로(기존 T61a 동작 유지)
+- 10-23 T57f(FU-5) 임의값: 기반 = kd/t57c-delegation-ui(T57 포함, v0.3 태그 포함; T57/T57c 미병합); 머리말 필드 DelegateOverrideSeconds(float?)는 위임 가능한 판(CompanyRegiment 있음)만 기록, null = 재생 쪽 설정(옛 리플레이 호환); 판 값은 처음 읽을 때 고정, 스냅샷에는 저장 안 함(FV 불변 — 저장 후 설정 변경 시 이후 개입 기한은 새 값); FV·Replay 번호 불변이라 fv_claim 없음; 성능 측정 생략(틱 경로 변화 없음)

@@ -9,7 +9,7 @@ Repo `C:\gameProject\korean-division`. Report in Korean, short. Procedures: `doc
 - game-tools: never switch branches in the shared `C:/gameProject/game-tools` checkout (stays on main). Use `git -C <game-tools> worktree add ../gt-<task> -b <branch>`, remove it after (no --force).
 
 ## Token economy (mandatory)
-- Big docs (`ENGINE_NOTES.md`, `ROADMAP_LONG.md`, `HANDOFF.md`, `docs/legacy/*`): Grep the heading, Read only that range. Code: Grep `PROJECT_MAP.md`, read only the functions you change. Same file: read once, keep notes.
+- Big docs (engine notes are split by topic in `docs/engine/*.md` - Grep there; `docs/ENGINE_NOTES.md` is only the index; `ROADMAP_LONG.md`, `HANDOFF.md`, `docs/legacy/*`): Grep the heading, Read only that range. Code: Grep `PROJECT_MAP.md`, read only the functions you change. Same file: read once, keep notes.
 - Pipe long output through grep/tail; logs >150 lines or >=4 unmodified files to read -> Gemini flash (`python C:/works/agentHub/agy_delegate.py -m flash -r reader|finder [-w] -f ...`; pro for a stuck bug's 2nd review). Gemini output is a lead: verify cited lines. Never give Gemini deterministic-sim core, save format, files you are about to edit, or secrets.
 - Long commands (selftest / detcheck): foreground, timeout 590000, once; no polling turns.
 - Context ~200k, or first mergeable slice done: merge / WIP-commit, then stop and report the rest.
@@ -18,7 +18,7 @@ Repo `C:\gameProject\korean-division`. Report in Korean, short. Procedures: `doc
 - ENGINE_NOTES / DECISIONS_PENDING: do NOT edit those files; write your short section / lines to your own one file `docs/engine_notes.d/<branch>.md` / `docs/decisions_pending.d/<branch>.md` (branch with `/`->`__`; optional first line `date: YYYY-MM-DD HH:mm`); the merge line assembles them (tools/agent/assemble_notes.ps1). Never rewrite others' text. Your task card: write only its 결과/상태 lines. ops/*.md: not yours (owners in ops/PIPELINE.md). Count lines (selftest totals, FormatVersion) are replaced, never appended. Per-merge CLAUDE.md / SELFTEST_HISTORY / BASELINE / HANDOFF updates are NOT yours - the release role does them at queue end.
 - Ambiguous instruction (value, direction, unit): ask in the report, or implement the safest reading behind a JSON switch and say so.
 - Determinism: DetMath, hash RNG, commands only; new state -> checksum + Audit + save + FormatVersion bump: do not pick the final number - run `tools/agent/fv_claim.ps1 -Fv 1 [-Replay 1] -Reason ...` (writes ops/fv_claims/<branch>.txt) and use base FV+1 as the temporary number; the merge line assigns it (fv_assign.ps1). Never edit ops/QUEUE.md / STATE.md / MERGE_QUEUE.md (queue_guard.ps1 checks).
-- ObjCodec(AI/컨트롤러 직렬화) 작업 버퍼에는 Squad/Company/Battalion 등 월드 소유 객체를 남기지 말 것 — 사용 뒤 Clear 하거나 [NonSerialized] (후자는 직렬화 배치가 바뀌어 FV 를 올린다). selftest 단언(kd/objcodec-guard)이 월드 소유 형식을 잡는다.
+- ObjCodec (AI/controller serialization) work buffers must not retain world-owned objects (Squad/Company/Battalion etc.) - Clear after use or mark [NonSerialized] (the latter changes the serialization layout, so it bumps FV). The selftest assertion (kd/objcodec-guard) catches world-owned types.
 - No test dodging: never change a test's seed/map/values to pass an invariant; fix the cause or report and stop.
 - Two real fix attempts failed: WIP-commit, report the diagnosis.
 
@@ -28,13 +28,13 @@ Repo `C:\gameProject\korean-division`. Report in Korean, short. Procedures: `doc
 - Permission-prone command -> permissions.md (DECISIONS_PENDING line, continue).
 - When done: report in the role card's format, leave no background jobs.
 
-## 창 규칙 (사용자 2026-10-22)
-- 게임·편집기 창을 **전체화면/테두리 없는 전체화면/최대화로 띄우지 않는다.** 항상 창 모드(windowed), 크기는 1280x720 이하(해상도 시험은 `--size WxH` 로 캡처하되 최대화 금지). `settings.json` 의 `Mode` 를 fullscreen/borderless 로 바꾸지 말 것(바꿨다면 원복).
-- 스크린샷 검수용 이미지는 이미지 뷰어를 열지 말고 파일만 만든다(지휘자가 폴더로 안내).
-- 창은 `tools/agent/run_game.ps1` 로 보조 모니터에 띄운다.
-- (명확화 2026-10-22) `--uifuzz` 의 무작위 창 크기 변경(최대 1920x1080)은 **허용**: 창 모드·보조 모니터이고 전체화면/최대화가 아니기 때문. 금지 대상은 fullscreen/borderless/최대화와 settings.json Mode 변경.
-- (토큰 절약 2026-10-22) **최종 보고는 역할 카드의 줄 수(보통 <=8, reviewer <=12, 지휘자 지정 시 그 값)를 넘지 않는다**(요약 + 경로 + 막힌 것). 보고 끝에 **'임의 결정' 항목**: 카드가 정하지 않아 네가 임의로 정한 값·가정·해석·삭제·완화를 한 줄씩 전부 나열(없으면 '없음'; 지휘자가 AUTO_DEFAULTS_LOG 에 기록한다). 긴 표·원인 설명은 커밋 메시지·카드 파일에 쓰고 보고에는 경로만. 백그라운드 작업이 끝나길 기다릴 때 '대기 중' 보고로 멈추지 말고 블로킹 대기(`Monitor` 또는 폴링 루프)로 끝까지 진행한다. 큰 컨텍스트(>150k) 에이전트에 SendMessage 로 재개시키지 않는다(전체 기록 재처리) — 후속은 새 에이전트 + 카드/커밋 인계.
-- 창 위치: 환경변수 KD_MONITOR=secondary 가 이미 설정돼 있다(게임이 T38n 병합 뒤 따른다). 게임을 직접 실행할 땐 `tools/agent/run_game.ps1` 사용.
+## Window rules (user 2026-10-22)
+- Never open game/editor windows fullscreen / borderless fullscreen / maximized. Always windowed, size <=1280x720 (resolution tests: capture with `--size WxH`, never maximize). Do not change `Mode` in `settings.json` to fullscreen/borderless (revert if you did).
+- For screenshot-review images, do not open an image viewer; just produce the files (the conductor points to the folder).
+- Launch windows on the secondary monitor via `tools/agent/run_game.ps1`.
+- (clarification 2026-10-22) `--uifuzz` random window resizing (up to 1920x1080) is **allowed**: it is windowed, on the secondary monitor, not fullscreen/maximized. Forbidden: fullscreen/borderless/maximize and changing settings.json Mode.
+- (token saving 2026-10-22) **The final report must not exceed the role card's line count** (usually <=8, reviewer <=12, or the conductor's value if given) (summary + paths + blockers). End the report with an **'임의 결정' (arbitrary decisions) item**: list one line each for every value, assumption, interpretation, deletion, or relaxation you chose yourself because the card did not specify it ('없음' if none; the conductor logs it in AUTO_DEFAULTS_LOG). Put long tables/cause explanations in commit messages or the card file; the report gets only the path. When waiting for background jobs, do not stop with a "waiting" report; block until done (`Monitor` or a polling loop). Do not resume agents with a large context (>150k) via SendMessage (reprocesses the whole transcript) - follow up with a new agent + card/commit handoff.
+- Window position: env var KD_MONITOR=secondary is already set (the game follows it after the T38n merge). To run the game directly use `tools/agent/run_game.ps1`.
 
 ## Running the game window
 - Whenever the game window opens (visual check, screenshot, uifuzz, manual run) launch it via `powershell -File tools/agent/run_game.ps1 <KoreanDivision.exe | project dir> [game args]`: it moves the window to the SECONDARY monitor (primary if only one); `KD_MONITOR=primary|secondary|<index>` overrides; exit code is the game's. Headless flags (`--selftest`, `--detcheck`) need no launcher.
@@ -46,4 +46,4 @@ Repo `C:\gameProject\korean-division`. Report in Korean, short. Procedures: `doc
 - Each group has its own `KD_TMP` / `KD_CAMPAIGN_DIR`; groups writing shared files go in `$SharedState` (one bucket). A new group needs no registration (parsed from SelfTest.cs); new inline test code outside a group is NOT run in parallel mode - add it to a `core_*` case.
 - Output: per-group PASS/FAIL + seconds, last 30 log lines of each failure, logs in `<OutDir>/logs/<group>.log`. Exit 0 pass, 1 fail, 2 partial. `-DetCheck` also runs `--detcheck` and prints the DETCHECK/GOLDEN lines.
 - `-SelfCheck` = 3 tiny groups in 2 jobs (~10 s) to prove the harness works.
-- (파이프라인 v2 2026-10-22) ops/QUEUE·STATE·MERGE_QUEUE 와 ops/ 전체는 작업 브랜치에서 수정하지 않는다(`tools/agent/queue_guard.ps1`). FV/Replay 를 올릴 때는 번호를 확정하지 말고 기반+1 임시값 + `fv_claim.ps1`. DECISIONS_PENDING·ENGINE_NOTES 는 `docs/decisions_pending.d/`·`docs/engine_notes.d/` 조각 파일에 쓴다. 한도 숫자는 프롬프트의 값이 아니라 `ops/LIMITS.md` 를 따른다. 병합 단계는 `merge_step.ps1` 만(snapshot + `--snaptest` 포함).
+- (pipeline v2 2026-10-22) Never modify ops/QUEUE, STATE, MERGE_QUEUE or anything under ops/ on a work branch (`tools/agent/queue_guard.ps1`). When bumping FV/Replay, do not fix the number: use base+1 as a temporary value + `fv_claim.ps1`. Write DECISIONS_PENDING / ENGINE_NOTES into the fragment files under `docs/decisions_pending.d/` / `docs/engine_notes.d/`. Follow `ops/LIMITS.md` for limit numbers, not values in the prompt. Merge steps only via `merge_step.ps1` (including snapshot + `--snaptest`).
