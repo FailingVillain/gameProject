@@ -7,8 +7,11 @@
     { "from": "2026-10-24", "gb": 6.5 },
     { "from": "2026-10-25", "gb": 6 }
   ],
-  "_stages_doc": "Staged plan (user 2026-10-23): build/merge/selftest/measure free-RAM floor 7 -> 6.5 -> 6, one stage per day; the stage with the latest 'from' <= today wins (floor_heavy_gb is the fallback before the first stage). To HALT the descent edit/delete the later stages. Render floor and emergency floor are not staged.",
+  "_stages_doc": "Staged plan (user 2026-10-23): build/merge/selftest/measure free-RAM floor 7 -> 6.5 -> 6, one stage per day; the stage with the latest 'from' <= today wins (floor_heavy_gb is the fallback before the first stage). To HALT the descent edit/delete the later stages. The descent happens AUTOMATICALLY at local midnight (10-24 -> 6.5, 10-25 -> 6) with no human check. Render floor and emergency floor are not staged.",
   "floor_render_gb": 8,
   "floor_emergency_gb": 4,
-  "waiter_cap": 6
+  "floor_priority_gb": 5,
+  "_floor_doc": "Allowed ranges (out-of-range / NaN / text values are ignored with a CONFIG_IGNORED log line, default used): floor_heavy_gb and stage gb 6..64, floor_render_gb 6..64, floor_emergency_gb 3..8, floor_priority_gb 3..12, budget_gb 0.5..256, waiter_cap 0..1000. -Priority floor = max(floor_emergency_gb, floor_priority_gb), never above the purpose floor.",
+  "waiter_cap": 6,
+  "_waiter_cap_doc": "Target 6. The main checkout ran 99 (= effectively off) temporarily until every caller checked the gate exit code (REVIEW-3 F1); callers fixed on kd/gate-v3, set 6 after that is merged."
 }
