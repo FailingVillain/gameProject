@@ -1,0 +1,14 @@
+{
+  "_doc": "heavy_gate.ps1 v3 settings, read at every gate start. Missing or broken file/key -> v2.1 values (budget 14, floors 8/8, emergency 3). Env vars override: KD_GATE_BUDGET_GB KD_GATE_FLOOR_HEAVY_GB KD_GATE_FLOOR_RENDER_GB KD_GATE_FLOOR_EMERGENCY_GB KD_GATE_WAITER_CAP.",
+  "budget_gb": 20,
+  "floor_heavy_gb": 7,
+  "floor_heavy_stages": [
+    { "from": "2026-10-23", "gb": 7 },
+    { "from": "2026-10-24", "gb": 6.5 },
+    { "from": "2026-10-25", "gb": 6 }
+  ],
+  "_stages_doc": "Staged plan (user 2026-10-23): build/merge/selftest/measure free-RAM floor 7 -> 6.5 -> 6, one stage per day; the stage with the latest 'from' <= today wins (floor_heavy_gb is the fallback before the first stage). To HALT the descent edit/delete the later stages. Render floor and emergency floor are not staged.",
+  "floor_render_gb": 8,
+  "floor_emergency_gb": 4,
+  "waiter_cap": 6
+}
