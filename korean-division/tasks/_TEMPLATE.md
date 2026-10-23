@@ -1,3 +1,19 @@
+---
+id: Tnn                       # from card_id.ps1 only
+title: <one line>
+role: feature                 # sim|feature|art|docs|reviewer|measure|spec|scout
+tier: mid                     # informational; model derived (up=opus, else sonnet) unless model: is set
+grade: D H1                   # D and H required
+branch: feat/xyz
+base: merge/0.2-final         # hash filled by dispatch.ps1
+blockedBy: []
+hotspots: [src/File.cs]       # exact repo-relative files
+fv: none                      # none | claim
+read_first: [src/File.cs:Symbol()]
+forbidden: []
+report_lines: 8
+gates: [build, detcheck]
+---
 # Tnn <제목>  (파일명 Tnn-<slug>.md, 예 T13-release.md, 카드 ≤1.5KB)
 - id | 역할(sim/feature/art/docs/measure/merger/reviewer/release/scout/spec) | 등급: D(G/下/中/上)·H(핫스팟 0~3) 필수, R·S·W 는 선택 메모
 - 선행(blockedBy) | 후행

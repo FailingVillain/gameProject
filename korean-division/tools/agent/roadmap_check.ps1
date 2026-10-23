@@ -2,7 +2,7 @@
 # UTF-8 with BOM.
 #   roadmap_check.ps1 -Keywords "날씨","weather" [-Card T58]
 # Sources: (1) ROADMAP_SHORT/LONG  (2) legacy docs  (3) ops docs  (4) docs/specs + tasks of every ref  (5) code (src, assets/data) of merge line refs
-# Output <= 40 lines: "source . file:line . summary" + conclusion. Exit 1 when any hit (= "already exists / related candidate"), 0 when none.
+# Output <= 40 lines (last line is always the marker 'ROADMAP HITS' or 'ROADMAP NONE'): "source . file:line . summary" + conclusion. Exit 1 when any hit (= "already exists / related candidate"), 0 when none.
 #   -Top <dir>        repo top (default: main worktree via git common dir; docs/ops are read from there)
 #   -RefTimeSec <n>   time cap for the all-refs docs/tasks search (default 40; recent refs first)
 #   -Card <id>        the card being drafted: its own tasks/<id>-*.md file is excluded from hits
@@ -222,10 +222,12 @@ $concl = if ($codeHits -gt 0) { '결론: 구현 존재 가능 - 이미 있음/�
           else { '결론: 히트 없음 (키워드: {0})' -f ($kws -join ', ') }
 [void]$out.Add($concl)
 # enforce <= 40 lines (drop trailing example lines, never the section headers / conclusion)
-while ($out.Count -gt 40) {
+while ($out.Count -gt 39) {
     $idx = -1; for ($i = $out.Count - 2; $i -ge 0; $i--) { if ($out[$i].StartsWith('  ') -and -not $out[$i].StartsWith('  (')) { $idx = $i; break } }
     if ($idx -lt 0) { break }; $out.RemoveAt($idx)
 }
 foreach ($l in $out) { Write-Host $l }
-if (($docHits + $codeHits) -gt 0) { exit 1 }
+# last line = machine marker for dispatch_guard / dispatch.ps1 (DISPATCH spec section 5/8)
+if (($docHits + $codeHits) -gt 0) { Write-Host 'ROADMAP HITS'; exit 1 }
+Write-Host 'ROADMAP NONE'
 exit 0
