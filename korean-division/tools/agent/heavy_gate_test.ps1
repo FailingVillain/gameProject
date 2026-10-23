@@ -158,8 +158,34 @@ $env:KD_GATE_FLOOR_HEAVY_GB = '7'
 Ok ((RR 'heavy' 7 10 -1) -eq '' -and (RR 'heavy' 6.9 10 -1) -eq 'RAM' -and (RR 'build' 6.9 10 -1) -eq 'RAM') 'build/merge/selftest/measure floor 7'
 Ok ((RR 'art' 7.9 10 -1) -eq 'RAM' -and (RR 'art' 8 10 -1) -eq '') 'render floor 8 unchanged'
 Ok ((RR 'heavy' 3.9 10 -1) -eq 'RAM,EMERG' -and (RR 'art' 3.9 10 -1) -eq 'RAM,EMERG') 'below emergency floor 4: EMERG'
-Ok ((RQ 'build' 5 10 -1 $true) -eq '' -and (RQ 'build' 5 10 -1 $false) -eq 'RAM') 'priority is exempt from the purpose floor'
-Ok ((RQ 'build' 3.9 10 -1 $true) -eq 'EMERG' -and (RQ 'build' 4 10 -1 $true) -eq '') 'priority still blocked below the emergency floor'
+Ok ((RQ 'build' 5 10 -1 $true) -eq '' -and (RQ 'build' 5 10 -1 $false) -eq 'RAM') 'priority is exempt from the purpose floor down to its own floor 5'
+Ok ((RQ 'build' 4.9 10 -1 $true) -eq 'RAM' -and (RQ 'build' 4.2 10 -1 $true) -eq 'RAM') 'F2: priority keeps a floor of 5 GB (4.9 / 4.2 GB closed)'
+Ok ((RQ 'build' 3.9 10 -1 $true) -eq 'RAM,EMERG') 'priority below the emergency floor: RAM + EMERG'
+Ok ((Get-FloorPriority) -eq 5 -and (Get-EffectiveFloor 'build' $true) -eq 5 -and (Get-EffectiveFloor 'build' $false) -eq 7 -and (Get-EffectiveFloor 'art' $true) -eq 5) 'effective priority floor = max(emergency 4, 5) = 5; normal = purpose floor'
+$env:KD_GATE_FLOOR_EMERGENCY_GB = '6'; Ok ((Get-EffectiveFloor 'build' $true) -eq 6 -and (RQ 'build' 5.5 10 -1 $true) -eq 'RAM,EMERG') 'emergency floor 6 raises the priority floor to 6'; Remove-Item Env:KD_GATE_FLOOR_EMERGENCY_GB
+$env:KD_GATE_FLOOR_PRIORITY_GB = '9'; Ok ((Get-EffectiveFloor 'build' $true) -eq 7) 'priority floor never above the purpose floor (9 -> 7)'; Remove-Item Env:KD_GATE_FLOOR_PRIORITY_GB
+# --- F3: floor clamps (config AND env): NaN / Infinity / negative / 0.6 typo / text are ignored, the default is used, one CONFIG_IGNORED note each
+$script:CfgNoted = @{}; $script:CfgNotes.Clear()
+foreach ($bad in 'NaN', 'Infinity', '-1', '0', '0.6', 'abc', '5.9', '100') {
+  $env:KD_GATE_FLOOR_HEAVY_GB = $bad
+  Ok ((Get-FloorHeavy) -ge 6 -and -not [double]::IsNaN((Get-FloorHeavy))) "env heavy floor '$bad' ignored -> $(Get-FloorHeavy)"
+}
+Remove-Item Env:KD_GATE_FLOOR_HEAVY_GB
+Ok ($script:CfgNotes.Count -ge 8 -and ($script:CfgNotes -join '|') -match 'CONFIG_IGNORED KD_GATE_FLOOR_HEAVY_GB=\[NaN\]') 'ignored env values leave CONFIG_IGNORED notes'
+$env:KD_GATE_FLOOR_HEAVY_GB = '6.5'; Ok ((Get-FloorHeavy) -eq 6.5) 'env heavy floor 6.5 accepted'; Remove-Item Env:KD_GATE_FLOOR_HEAVY_GB
+foreach ($bad in 'NaN', '-1', '0.6', '2.9', '8.1', 'x') { $env:KD_GATE_FLOOR_EMERGENCY_GB = $bad; Ok ((Get-FloorEmergency) -eq 4) "env emergency floor '$bad' ignored -> 4 (config)" }
+$env:KD_GATE_FLOOR_EMERGENCY_GB = '3'; Ok ((Get-FloorEmergency) -eq 3) 'env emergency floor 3 accepted'; Remove-Item Env:KD_GATE_FLOOR_EMERGENCY_GB
+foreach ($bad in 'NaN', '0.6', '5.9', 'abc') { $env:KD_GATE_FLOOR_RENDER_GB = $bad; Ok ((Get-FloorRender) -eq 8) "env render floor '$bad' ignored -> 8" }
+Remove-Item Env:KD_GATE_FLOOR_RENDER_GB
+foreach ($bad in 'NaN', '-1', '0', 'abc', '1000') { $env:KD_GATE_BUDGET_GB = $bad; Ok ((Get-BudgetGB) -eq 20) "env budget '$bad' ignored -> 20" }
+Remove-Item Env:KD_GATE_BUDGET_GB
+$env:KD_GATE_WAITER_CAP = '-3'; Ok ((Get-WaiterCap) -eq 6) 'env waiter cap -3 ignored'; Remove-Item Env:KD_GATE_WAITER_CAP
+$script:CfgNotes.Clear()
+$cfgTypo = WriteTxt 'typo.json' '{"budget_gb":"NaN","floor_heavy_gb":0.6,"floor_render_gb":-8,"floor_emergency_gb":"abc","floor_priority_gb":1,"waiter_cap":-1,"floor_heavy_stages":[{"from":"2026-10-24","gb":0.65},{"from":"2026-10-25","gb":6}]}'
+Import-GateConfig $cfgTypo
+Ok ($script:CfgSource -eq 'file-partial' -and (Get-BudgetGB) -eq 14 -and (Get-FloorHeavy) -ge 6 -and (Get-FloorRender) -eq 8 -and (Get-FloorEmergency) -eq 3 -and (Get-FloorPriority) -eq 5 -and (Get-WaiterCap) -eq 6) 'F3: config NaN / 0.6 typo / negative / text ignored per key, defaults used'
+Ok (@($script:CfgStages).Count -eq 1 -and $script:CfgStages[0].gb -eq 6 -and $script:CfgNotes.Count -ge 7) "F3: stage with gb 0.65 dropped, bad keys noted ($($script:CfgNotes.Count) notes)"
+Import-GateConfig $shipped
 Ok ((RQ 'build' 12 95 -1 $true) -eq 'CPU') 'priority still obeys CPU'
 $env:KD_GATE_CONFIG = $shipped
 $env:KD_GATE_FREEGB_OVERRIDE = '7.5'; $o = G -DryRun -Build
@@ -167,9 +193,14 @@ Ok ($o -match 'DRYRUN gate open') "dryrun build open at 7.5 GB (floor 7): $($o.T
 $env:KD_GATE_FREEGB_OVERRIDE = '6.5'; $o = G -DryRun -Build
 Ok ($o -match 'DRYRUN gate closed' -and $o -match 'why=RAM') 'dryrun build closed at 6.5 GB (RAM)'
 $o = G -DryRun -Build -Priority
-Ok ($o -match 'DRYRUN gate open') 'dryrun -Priority build open at 6.5 GB (exempt from floor)'
+Ok ($o -match 'DRYRUN gate open') 'dryrun -Priority build open at 6.5 GB (above its floor 5)'
+$env:KD_GATE_FREEGB_OVERRIDE = '4.5'; $o = G -DryRun -Build -Priority
+Ok ($o -match 'DRYRUN gate closed' -and $o -match 'why=RAM') 'dryrun -Priority closed at 4.5 GB (priority floor 5)'
 $env:KD_GATE_FREEGB_OVERRIDE = '3.5'; $o = G -DryRun -Build -Priority
-Ok ($o -match 'DRYRUN gate closed' -and $o -match 'why=EMERG') 'dryrun -Priority closed at 3.5 GB (EMERG)'
+Ok ($o -match 'DRYRUN gate closed' -and $o -match 'EMERG') 'dryrun -Priority closed at 3.5 GB (EMERG)'
+$env:KD_GATE_FREEGB_OVERRIDE = '9'; $env:KD_GATE_FLOOR_HEAVY_GB = 'NaN'; $o = G -DryRun -Build
+Ok ($o -match 'DRYRUN note: CONFIG_IGNORED KD_GATE_FLOOR_HEAVY_GB=\[NaN\]' -and $o -match 'DRYRUN gate open') 'dryrun with FLOOR_HEAVY=NaN: note printed, config floor used'
+$env:KD_GATE_FLOOR_HEAVY_GB = '7'
 $env:KD_GATE_FREEGB_OVERRIDE = '12'
 $env:KD_GATE_HEAVYRAM_OVERRIDE = '20'; $o = G -DryRun -Build
 Ok ($o -match 'DRYRUN gate open') 'heavy RAM 20 GB = budget -> open'
@@ -269,6 +300,28 @@ Ok ($tc -lt $ta -and $ta -lt $tb) "admission order C(priority) < A < B (C $($tc.
 Ok ((Get-Content $env:KD_GATE_LOG -Raw) -match 'why=QUEUE') 'log shows non-head callers waiting with why=QUEUE'
 Ok (@(Get-ChildItem $qd -Filter *.tkt -ErrorAction SilentlyContinue).Count -eq 0) 'all tickets removed after the run'
 $env:KD_GATE_SPACING_SEC = '0'
+# non-head caller that times out: message says 'timed out in queue', exit code stays 1, no ticket left
+Add-GateTicket 'heavy' $false $PID ((UtcTicks) - [long]100000000) | Out-Null   # a live (this test's) ticket ahead of the call
+$o = G -Build -TimeoutSec 2 -PollSec 1
+Ok ($GC -eq 1 -and $o -match 'timed out in queue' -and $o -match 'NOT RUN' -and $o -notmatch 'proceed carefully') "non-head timeout: exit 1, 'timed out in queue', NOT RUN: $($o.Trim())"
+Remove-Item "$qd\*" -Force -ErrorAction SilentlyContinue
+# --- F1 caller contract: every script that calls heavy_gate.ps1 must test the exit code (75 overloaded / 1 timeout = NOT RUN) within 3 lines of the call
+$repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path   # tools\agent -> korean-division -> repo root (game-tools sits next to korean-division)
+$callers = @('korean-division\tools\agent\soak.ps1', 'korean-division\tools\perf_overnight.ps1', 'korean-division\tools\smoke_missions.ps1', 'korean-division\tools\autoplay\autoplay.ps1',
+             'korean-division\tools\nightly_soak.ps1', 'korean-division\tools\selftest_parallel.ps1', 'korean-division\tools\agent\merge_step.ps1', 'korean-division\tools\agent\fv_renumber.ps1',
+             'korean-division\tools\bn_campaign\run.py', 'korean-division\tools\soak_allon\soak_allon.py', 'game-tools\image\rerender96.py')
+foreach ($cf in $callers) {
+  $cp = Join-Path $repo $cf
+  if (-not (Test-Path -LiteralPath $cp)) { "skip: $cf not present"; continue }
+  $ln = @(Get-Content -LiteralPath $cp -Encoding UTF8); $calls = 0; $missing = @()
+  for ($i = 0; $i -lt $ln.Count; $i++) {
+    if ($ln[$i] -match '^\s*#' -or $ln[$i] -notmatch '-File' -or $ln[$i] -notmatch '(?i)\$gate\b|\bGATE\b|a\.gate') { continue }
+    $calls++
+    $win = ($ln[$i..([math]::Min($i + 3, $ln.Count - 1))]) -join "`n"
+    if ($win -notmatch 'LASTEXITCODE|returncode|gateClosed') { $missing += ($i + 1) }
+  }
+  Ok ($calls -gt 0 -and $missing.Count -eq 0) "caller contract: $cf checks the gate exit code at all $calls call(s)$(if ($missing.Count) { ' (missing at line ' + ($missing -join ',') + ')' })"
+}
 # --- gate_stats.ps1 on a synthetic log
 $slog = WriteTxt 'stats.log' (@(
   '2026-10-23 10:00:00 pid=11 WAIT_START kind=heavy free=6 GB why=RAM occupants=[] json={}',

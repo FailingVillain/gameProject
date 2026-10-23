@@ -74,7 +74,10 @@ def main():
     t0 = time.time(); log = open(os.path.join(a.out, 'runlog.tsv'), 'a')
     for i, (c, s) in enumerate(todo):
         if a.gate and i % a.gate_every == 0:
-            subprocess.run(['powershell', '-ExecutionPolicy', 'Bypass', '-File', a.gate], check=False)
+            g = subprocess.run(['powershell', '-ExecutionPolicy', 'Bypass', '-File', a.gate], check=False)
+            if g.returncode != 0:   # gate overloaded (75) / timeout (1): NOT RUN - never start heavy work past a closed gate; rerun resumes (done cells are skipped)
+                print(f'heavy gate exit {g.returncode} (75 = overloaded, 1 = timeout): stopping before run {i + 1}/{len(todo)}; rerun later to resume', flush=True)
+                sys.exit(75)
         tag = f"{c['id']}_s{s}"
         j = os.path.join(runs, tag + '.json'); t = os.path.join(runs, tag + '.txt')
         env = dict(os.environ, KD_BN_OUT=j); env.update(c.get('env') or {})

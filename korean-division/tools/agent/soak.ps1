@@ -15,9 +15,10 @@ $out = Join-Path $root ("docs\soak\" + (Get-Date -Format "yyyy-MM-dd")); $runs =
 New-Item -ItemType Directory -Force $runs | Out-Null
 $csv = Join-Path $out "results.csv"
 if (-not (Test-Path $csv)) { "time,kind,name,seed,exit,sec,status,args" | Out-File -Encoding utf8 $csv }
-$missions = Get-ChildItem (Join-Path $root "assets\missions\*.json") | ForEach-Object { $_.BaseName }
+$missions = @(Get-ChildItem (Join-Path $root "assets\missions\*.json") -ErrorAction SilentlyContinue | ForEach-Object { $_.BaseName })
+if ($missions.Count -eq 0) { Write-Error "no missions found under $rootssets\missions - soak aborted"; exit 2 }
 $end = [datetime]::ParseExact($Until, "HH:mm", $null); if ($end -lt (Get-Date)) { $end = $end.AddDays(1) }
-$gate = Join-Path $PSScriptRoot "heavy_gate.ps1"
+$gate = if ($env:KD_HEAVY_GATE) { $env:KD_HEAVY_GATE } else { Join-Path $PSScriptRoot "heavy_gate.ps1" }   # KD_HEAVY_GATE = test stub
 $rng = New-Object System.Random 20261020
 $lines = @('infantry','infantry_regular','infantry_fengtian','infantry_assault','infantry_dadao_fengtian','infantry_guard','veteran','recruit','infantry_reserve','bandit_rifleman')
 $support = @('heavy_machinegunner','heavy_machinegunner_fengtian','heavy_maxim','heavy_infantry_gun','heavy_field_gun','heavy_howitzer','cavalry_default','bandit_horseman','infantry_sniper','scout','officer')
@@ -28,6 +29,10 @@ function Army {
 }
 function Run($kind, $name, $seed, $argList, $envs) {
   & powershell -ExecutionPolicy Bypass -File $gate -Max $GateMax | Out-Null
+  if ($LASTEXITCODE -ne 0) {   # gate timeout/closed: do NOT run (heavy-job cap); log and back off
+    "$(Get-Date -Format HH:mm),$kind,$name,$seed,,0,GATE_TIMEOUT," | Out-File -Append -Encoding utf8 $csv
+    Start-Sleep -Seconds 60; return
+  }
   $tag = "$kind-$name-$seed" -replace '[^\w\-]', '_'; $log = Join-Path $runs "$tag.log"
   foreach ($k in $envs.Keys) { Set-Item "env:$k" $envs[$k] }
   $t0 = Get-Date

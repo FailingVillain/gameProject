@@ -53,7 +53,13 @@ def main():
             if u in done(): continue
             try: os.close(os.open(os.path.join(cdir, u + ".claim"), os.O_CREAT | os.O_EXCL | os.O_WRONLY))
             except FileExistsError: continue
-        subprocess.run(["powershell", "-ExecutionPolicy", "Bypass", "-File", GATE, "-Render"], check=False)
+        g = subprocess.run(["powershell", "-ExecutionPolicy", "Bypass", "-File", GATE, "-Render"], check=False)
+        if g.returncode != 0:      # gate overloaded (75) / timeout (1): NOT RUN - release the claim, stop; a rerun resumes
+            if shard:
+                try: os.remove(os.path.join(cdir, u + ".claim"))
+                except OSError: pass
+            print(f"heavy gate exit {g.returncode} (75 = overloaded, 1 = timeout): render of {u} NOT run, stopping; rerun later")
+            sys.exit(75)
         t = time.time()
         p = subprocess.run([sys.executable, "-u", os.path.join(HERE, "make_unit.py"), u, "--res96", "--out", OUT], capture_output=True, text=True, encoding="utf-8", errors="replace", cwd=HERE)
         m = re.search(r"interpenetration check[^:]*: (?:clean|(\d+) frame/dir hits)", p.stdout or "")
